@@ -1,0 +1,275 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://www.ntreev.com" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.ntreev.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://www.ntreev.com/Imports">
+      <xsd:import namespace="http://www.ntreev.com" />
+      <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import namespace="http://schemas.ntreev.com" />
+      <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IDataBaseCollectionService_DefinitionType_InputMessage">
+    <wsdl:part name="parameters" element="tns:DefinitionType" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_DefinitionType_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DefinitionTypeResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_Subscribe_InputMessage">
+    <wsdl:part name="parameters" element="tns:Subscribe" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_Subscribe_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SubscribeResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_Unsubscribe_InputMessage">
+    <wsdl:part name="parameters" element="tns:Unsubscribe" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_Unsubscribe_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UnsubscribeResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_SetPublic_InputMessage">
+    <wsdl:part name="parameters" element="tns:SetPublic" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_SetPublic_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SetPublicResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_SetPrivate_InputMessage">
+    <wsdl:part name="parameters" element="tns:SetPrivate" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_SetPrivate_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SetPrivateResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_AddAccessMember_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddAccessMember" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_AddAccessMember_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddAccessMemberResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_SetAccessMember_InputMessage">
+    <wsdl:part name="parameters" element="tns:SetAccessMember" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_SetAccessMember_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SetAccessMemberResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_RemoveAccessMember_InputMessage">
+    <wsdl:part name="parameters" element="tns:RemoveAccessMember" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_RemoveAccessMember_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RemoveAccessMemberResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_Lock_InputMessage">
+    <wsdl:part name="parameters" element="tns:Lock" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_Lock_OutputMessage">
+    <wsdl:part name="parameters" element="tns:LockResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_Unlock_InputMessage">
+    <wsdl:part name="parameters" element="tns:Unlock" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_Unlock_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UnlockResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_Load_InputMessage">
+    <wsdl:part name="parameters" element="tns:Load" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_Load_OutputMessage">
+    <wsdl:part name="parameters" element="tns:LoadResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_Unload_InputMessage">
+    <wsdl:part name="parameters" element="tns:Unload" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_Unload_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UnloadResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_Create_InputMessage">
+    <wsdl:part name="parameters" element="tns:Create" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_Create_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_Copy_InputMessage">
+    <wsdl:part name="parameters" element="tns:Copy" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_Copy_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CopyResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_Rename_InputMessage">
+    <wsdl:part name="parameters" element="tns:Rename" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_Rename_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RenameResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_Delete_InputMessage">
+    <wsdl:part name="parameters" element="tns:Delete" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_Delete_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_GetLog_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetLog" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_GetLog_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetLogResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_Revert_InputMessage">
+    <wsdl:part name="parameters" element="tns:Revert" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_Revert_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RevertResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_IsAlive_InputMessage">
+    <wsdl:part name="parameters" element="tns:IsAlive" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_IsAlive_OutputMessage">
+    <wsdl:part name="parameters" element="tns:IsAliveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_OnServiceClosed_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnServiceClosed" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_OnDataBasesCreated_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnDataBasesCreated" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_OnDataBasesRenamed_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnDataBasesRenamed" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_OnDataBasesDeleted_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnDataBasesDeleted" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_OnDataBasesLoaded_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnDataBasesLoaded" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_OnDataBasesUnloaded_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnDataBasesUnloaded" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_OnDataBasesAuthenticationEntered_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnDataBasesAuthenticationEntered" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_OnDataBasesAuthenticationLeft_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnDataBasesAuthenticationLeft" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_OnDataBasesInfoChanged_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnDataBasesInfoChanged" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_OnDataBasesStateChanged_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnDataBasesStateChanged" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_OnDataBasesAccessChanged_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnDataBasesAccessChanged" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_OnDataBasesLockChanged_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnDataBasesLockChanged" />
+  </wsdl:message>
+  <wsdl:portType msc:usingSession="true" name="IDataBaseCollectionService">
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="DefinitionType">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/DefinitionType" message="tns:IDataBaseCollectionService_DefinitionType_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/DefinitionTypeResponse" message="tns:IDataBaseCollectionService_DefinitionType_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Subscribe">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/Subscribe" message="tns:IDataBaseCollectionService_Subscribe_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/SubscribeResponse" message="tns:IDataBaseCollectionService_Subscribe_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Unsubscribe">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/Unsubscribe" message="tns:IDataBaseCollectionService_Unsubscribe_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/UnsubscribeResponse" message="tns:IDataBaseCollectionService_Unsubscribe_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="SetPublic">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/SetPublic" message="tns:IDataBaseCollectionService_SetPublic_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/SetPublicResponse" message="tns:IDataBaseCollectionService_SetPublic_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="SetPrivate">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/SetPrivate" message="tns:IDataBaseCollectionService_SetPrivate_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/SetPrivateResponse" message="tns:IDataBaseCollectionService_SetPrivate_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AddAccessMember">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/AddAccessMember" message="tns:IDataBaseCollectionService_AddAccessMember_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/AddAccessMemberResponse" message="tns:IDataBaseCollectionService_AddAccessMember_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="SetAccessMember">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/SetAccessMember" message="tns:IDataBaseCollectionService_SetAccessMember_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/SetAccessMemberResponse" message="tns:IDataBaseCollectionService_SetAccessMember_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="RemoveAccessMember">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/RemoveAccessMember" message="tns:IDataBaseCollectionService_RemoveAccessMember_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/RemoveAccessMemberResponse" message="tns:IDataBaseCollectionService_RemoveAccessMember_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Lock">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/Lock" message="tns:IDataBaseCollectionService_Lock_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/LockResponse" message="tns:IDataBaseCollectionService_Lock_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Unlock">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/Unlock" message="tns:IDataBaseCollectionService_Unlock_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/UnlockResponse" message="tns:IDataBaseCollectionService_Unlock_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Load">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/Load" message="tns:IDataBaseCollectionService_Load_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/LoadResponse" message="tns:IDataBaseCollectionService_Load_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Unload">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/Unload" message="tns:IDataBaseCollectionService_Unload_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/UnloadResponse" message="tns:IDataBaseCollectionService_Unload_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Create">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/Create" message="tns:IDataBaseCollectionService_Create_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/CreateResponse" message="tns:IDataBaseCollectionService_Create_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Copy">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/Copy" message="tns:IDataBaseCollectionService_Copy_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/CopyResponse" message="tns:IDataBaseCollectionService_Copy_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Rename">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/Rename" message="tns:IDataBaseCollectionService_Rename_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/RenameResponse" message="tns:IDataBaseCollectionService_Rename_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Delete">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/Delete" message="tns:IDataBaseCollectionService_Delete_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/DeleteResponse" message="tns:IDataBaseCollectionService_Delete_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetLog">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/GetLog" message="tns:IDataBaseCollectionService_GetLog_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/GetLogResponse" message="tns:IDataBaseCollectionService_GetLog_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Revert">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/Revert" message="tns:IDataBaseCollectionService_Revert_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/RevertResponse" message="tns:IDataBaseCollectionService_Revert_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="IsAlive">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/IsAlive" message="tns:IDataBaseCollectionService_IsAlive_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/IsAliveResponse" message="tns:IDataBaseCollectionService_IsAlive_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnServiceClosed">
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/OnServiceClosed" message="tns:IDataBaseCollectionService_OnServiceClosed_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnDataBasesCreated">
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/OnDataBasesCreated" message="tns:IDataBaseCollectionService_OnDataBasesCreated_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnDataBasesRenamed">
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/OnDataBasesRenamed" message="tns:IDataBaseCollectionService_OnDataBasesRenamed_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnDataBasesDeleted">
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/OnDataBasesDeleted" message="tns:IDataBaseCollectionService_OnDataBasesDeleted_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnDataBasesLoaded">
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/OnDataBasesLoaded" message="tns:IDataBaseCollectionService_OnDataBasesLoaded_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnDataBasesUnloaded">
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/OnDataBasesUnloaded" message="tns:IDataBaseCollectionService_OnDataBasesUnloaded_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnDataBasesAuthenticationEntered">
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/OnDataBasesAuthenticationEntered" message="tns:IDataBaseCollectionService_OnDataBasesAuthenticationEntered_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnDataBasesAuthenticationLeft">
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/OnDataBasesAuthenticationLeft" message="tns:IDataBaseCollectionService_OnDataBasesAuthenticationLeft_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnDataBasesInfoChanged">
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/OnDataBasesInfoChanged" message="tns:IDataBaseCollectionService_OnDataBasesInfoChanged_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnDataBasesStateChanged">
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/OnDataBasesStateChanged" message="tns:IDataBaseCollectionService_OnDataBasesStateChanged_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnDataBasesAccessChanged">
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/OnDataBasesAccessChanged" message="tns:IDataBaseCollectionService_OnDataBasesAccessChanged_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnDataBasesLockChanged">
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/OnDataBasesLockChanged" message="tns:IDataBaseCollectionService_OnDataBasesLockChanged_OutputCallbackMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

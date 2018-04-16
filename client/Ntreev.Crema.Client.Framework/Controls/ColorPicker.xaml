@@ -1,0 +1,271 @@
+﻿<!--===================================================================================================================
+Released under the MIT License.
+    
+Copyright (c) 2018 Ntreev Soft co., Ltd.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the 
+Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+====================================================================================================================-->
+<UserControl x:Class="Ntreev.Crema.Client.Framework.Controls.ColorPicker"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mui="clr-namespace:FirstFloor.ModernUI;assembly=FirstFloor.ModernUI"
+             xmlns:nmfc="clr-namespace:Ntreev.ModernUI.Framework.Controls;assembly=Ntreev.ModernUI.Framework"
+             xmlns:nmfv="clr-namespace:Ntreev.ModernUI.Framework.Converters;assembly=Ntreev.ModernUI.Framework">
+
+    <UserControl.Resources>
+        <nmfv:ColorToBrushConverter x:Key="colorToBrushConverter" />
+        <Style TargetType="{x:Type nmfc:BrowserExpander}" BasedOn="{StaticResource {x:Type nmfc:BrowserExpander}}">
+            <Setter Property="Background" Value="{Binding CurrentColor, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Converter={StaticResource colorToBrushConverter}}" />
+        </Style>
+        <Style x:Key="ButtonFocusVisual1">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle SnapsToDevicePixels="true" Margin="3" Stroke="Black" StrokeDashArray="1 2" StrokeThickness="1" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <LinearGradientBrush x:Key="ButtonNormalBackgroundFill1" EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#FFFFFFFF" Offset="0" />
+            <GradientStop Color="#FFF0F0EA" Offset="0.9" />
+        </LinearGradientBrush>
+        <Style x:Key="ButtonFocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle SnapsToDevicePixels="true" Margin="3" Stroke="Black" StrokeDashArray="1 2" StrokeThickness="1" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <LinearGradientBrush x:Key="ButtonNormalBackgroundFill" EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#EDEDED" Offset="0" />
+            <GradientStop Color="#EDEDED" Offset="0.9" />
+        </LinearGradientBrush>
+        <Style x:Key="ColorButtonStyleFirstRow" TargetType="{x:Type Button}">
+            <EventSetter Event="Click" Handler="Button_Click" />
+            
+            <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}" />
+            <Setter Property="Background" Value="{StaticResource ButtonNormalBackgroundFill}" />
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="buttonBorder" Width="40" Height="40" BorderThickness="3" Margin="0" 
+                                BorderBrush="{TemplateBinding Background}" Background="{TemplateBinding Background}">
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="False">
+                                <Setter Property="BorderBrush" Value="Transparent" TargetName="buttonBorder" />
+                                <!--<Setter Property="BorderBrush" Value="#FFFFFF" TargetName="innerBorder" />-->
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ColorButtonStyleSecondRow" TargetType="{x:Type Button}">
+            <EventSetter Event="Click" Handler="Button_Click" />
+            
+            <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}" />
+            <Setter Property="Background" Value="{StaticResource ButtonNormalBackgroundFill}" />
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="buttonBorder" Width="40" Height="40"  BorderThickness="1,1,1,0" Margin="0" BorderBrush="#D0D0D0" Background="{TemplateBinding Background}" />
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="BorderThickness" Value="2" TargetName="buttonBorder" />
+                                <Setter Property="BorderBrush" Value="#FEAB38" TargetName="buttonBorder" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ColorButtonStyle" TargetType="{x:Type Button}">
+            <EventSetter Event="Click" Handler="Button_Click" />
+
+            <Setter Property="Background" Value="{StaticResource ButtonNormalBackgroundFill}" />
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="buttonBorder" Width="40" Height="40" BorderThickness="1,0,1,0" Margin="0" 
+                                BorderBrush="#D0D0D0" Background="{TemplateBinding Background}" />
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="BorderThickness" Value="2" TargetName="buttonBorder" />
+                                <Setter Property="BorderBrush" Value="{DynamicResource WindowBorder}" TargetName="buttonBorder" />
+
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="toggleButtonStyle" TargetType="{x:Type ToggleButton}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual1}" />
+            <Setter Property="Background" Value="{StaticResource ButtonNormalBackgroundFill1}" />
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="VerticalAlignment" Value="Bottom" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Border x:Name="buttonBorder" Height="Auto" Width="Auto">
+                            <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                              Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" RecognizesAccessKey="True" Width="50" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                                <Setter Property="BorderThickness" Value="1.5,1.5,0,0" TargetName="buttonBorder" />
+                                <Setter Property="BorderBrush" Value="DarkGray" TargetName="buttonBorder" />
+                                <Setter Property="Background" Value="LightGray" TargetName="buttonBorder" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <LinearGradientBrush x:Key="ButtonNormalBackgroundFill2" EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#FFFFFFFF" Offset="0" />
+            <GradientStop Color="#FFF0F0EA" Offset="0.9" />
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="ButtonBorder" Color="#FF003C74" />
+    </UserControl.Resources>
+    <Border BorderThickness="1">
+        <StackPanel Orientation="Vertical">
+            <nmfc:BrowserExpander IsExpanded="True" Header="Modern Colors" Padding="0 3">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Style="{StaticResource ColorButtonStyleFirstRow}" Background="#a4c400" CommandParameter="#a4c400" Margin="3" />
+                        <Button Style="{StaticResource ColorButtonStyleFirstRow}" Background="#60a917" CommandParameter="#60a917" Margin="3" />
+                        <Button Style="{StaticResource ColorButtonStyleFirstRow}" Background="#008a00" CommandParameter="#008a00" Margin="3" />
+                        <Button Style="{StaticResource ColorButtonStyleFirstRow}" Background="#00aba9" CommandParameter="#00aba9" Margin="3" />
+                        <Button Style="{StaticResource ColorButtonStyleFirstRow}" Background="#1ba1e2" CommandParameter="#1ba1e2" Margin="3" />
+                        <Button Style="{StaticResource ColorButtonStyleFirstRow}" Background="#0050ef" CommandParameter="#0050ef" Margin="3" />
+                        <Button Style="{StaticResource ColorButtonStyleFirstRow}" Background="#6a00ff" CommandParameter="#6a00ff" Margin="3" />
+                        <Button Style="{StaticResource ColorButtonStyleFirstRow}" Background="#aa00ff" CommandParameter="#aa00ff" Margin="3" />
+                        <Button Style="{StaticResource ColorButtonStyleFirstRow}" Background="#f472d0" CommandParameter="#f472d0" Margin="3" />
+                        <Button Style="{StaticResource ColorButtonStyleFirstRow}" Background="#d80073" CommandParameter="#d80073" Margin="3" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Style="{StaticResource ColorButtonStyleFirstRow}" Background="#a20025" CommandParameter="#a20025" Margin="3" />
+                        <Button Style="{StaticResource ColorButtonStyleFirstRow}" Background="#e51400" CommandParameter="#e51400" Margin="3" />
+                        <Button Style="{StaticResource ColorButtonStyleFirstRow}" Background="#fa6800" CommandParameter="#fa6800" Margin="3" />
+                        <Button Style="{StaticResource ColorButtonStyleFirstRow}" Background="#f0a30a" CommandParameter="#f0a30a" Margin="3" />
+                        <Button Style="{StaticResource ColorButtonStyleFirstRow}" Background="#e3c800" CommandParameter="#e3c800" Margin="3" />
+                        <Button Style="{StaticResource ColorButtonStyleFirstRow}" Background="#825a2c" CommandParameter="#825a2c" Margin="3" />
+                        <Button Style="{StaticResource ColorButtonStyleFirstRow}" Background="#6d8764" CommandParameter="#6d8764" Margin="3" />
+                        <Button Style="{StaticResource ColorButtonStyleFirstRow}" Background="#647687" CommandParameter="#647687" Margin="3" />
+                        <Button Style="{StaticResource ColorButtonStyleFirstRow}" Background="#76608a" CommandParameter="#76608a" Margin="3" />
+                        <Button Style="{StaticResource ColorButtonStyleFirstRow}" Background="#87794e" CommandParameter="#87794e" Margin="3" />
+                    </StackPanel>
+                </StackPanel>
+            </nmfc:BrowserExpander>
+            <nmfc:BrowserExpander IsExpanded="True" Header="Theme Colors" Padding="0 3">
+                <StackPanel>
+                    <StackPanel SnapsToDevicePixels="True" x:Name="FirstRow" Margin="2,0,0,0" Orientation="Horizontal">
+                        <Button Style="{StaticResource ColorButtonStyleFirstRow}" Background="#d08f25" CommandParameter="#d08f25" Margin="3,4,3,4" />
+                        <Button Style="{StaticResource ColorButtonStyleFirstRow}" Background="#f0b30f" CommandParameter="#f0b30f" Margin="3,4,3,4" />
+                        <Button Style="{StaticResource ColorButtonStyleFirstRow}" Background="#938953" CommandParameter="#938953" Margin="3,4,3,4" />
+                        <Button Style="{StaticResource ColorButtonStyleFirstRow}" Background="#1f497d" CommandParameter="#1f497d" Margin="3,4,3,4" />
+                        <Button Style="{StaticResource ColorButtonStyleFirstRow}" Background="#4f81bd" CommandParameter="#4f81bd" Margin="3,4,3,4" />
+                        <Button Style="{StaticResource ColorButtonStyleFirstRow}" Background="#c0504d" CommandParameter="#c0504d" Margin="3,4,3,4" />
+                        <Button Style="{StaticResource ColorButtonStyleFirstRow}" Background="#9bbb59" CommandParameter="#9bbb59" Margin="3,4,3,4" />
+                        <Button Style="{StaticResource ColorButtonStyleFirstRow}" Background="#8064a2" CommandParameter="#8064a2" Margin="3,4,3,4" />
+                        <Button Style="{StaticResource ColorButtonStyleFirstRow}" Background="#4bacc6" CommandParameter="#4bacc6" Margin="3,4,3,4" />
+                        <Button Style="{StaticResource ColorButtonStyleFirstRow}" Background="#f79646" CommandParameter="#f79646" Margin="3,4,3,4" />
+                    </StackPanel>
+                    <StackPanel SnapsToDevicePixels="True" x:Name="SecondRow" Margin="2,2,0,0" Orientation="Horizontal">
+                        <Button Style="{StaticResource ColorButtonStyleSecondRow}" Background="#ebc88e" CommandParameter="#ebc88e" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyleSecondRow}" Background="#fbdb85" CommandParameter="#fbdb85" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyleSecondRow}" Background="#ddd9c3" CommandParameter="#ddd9c3" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyleSecondRow}" Background="#c6d9f0" CommandParameter="#c6d9f0" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyleSecondRow}" Background="#dbe5f1" CommandParameter="#dbe5f1" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyleSecondRow}" Background="#f2dcdb" CommandParameter="#f2dcdb" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyleSecondRow}" Background="#ebf1dd" CommandParameter="#ebf1dd" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyleSecondRow}" Background="#e5e0ec" CommandParameter="#e5e0ec" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyleSecondRow}" Background="#dbeef3" CommandParameter="#dbeef3" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyleSecondRow}" Background="#fdeada" CommandParameter="#fdeada" Margin="3,0,3,0" />
+                    </StackPanel>
+                    <StackPanel SnapsToDevicePixels="True" Margin="2,0,0,0" Orientation="Horizontal">
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#e5ac4f" CommandParameter="#e5ac4f" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#f8c640" CommandParameter="#f8c640" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#c4bd97" CommandParameter="#c4bd97" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#8db3e2" CommandParameter="#8db3e2" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#b8cce4" CommandParameter="#b8cce4" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#e5b9b7" CommandParameter="#e5b9b7" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#d7e3bc" CommandParameter="#d7e3bc" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#ccc1d9" CommandParameter="#ccc1d9" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#b7dde8" CommandParameter="#b7dde8" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#fbd5b5" CommandParameter="#fbd5b5" Margin="3,0,3,0" />
+                    </StackPanel>
+                    <StackPanel SnapsToDevicePixels="True" Margin="2,0,0,0" Orientation="Horizontal">
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#d08f25" CommandParameter="#d08f25" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#f0b30f" CommandParameter="#f0b30f" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#938953" CommandParameter="#938953" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#548dd4" CommandParameter="#548dd4" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#95b3d7" CommandParameter="#95b3d7" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#d99694" CommandParameter="#d99694" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#c3d69b" CommandParameter="#c3d69b" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#b2a2c7" CommandParameter="#b2a2c7" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#92cddc" CommandParameter="#92cddc" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#fac08f" CommandParameter="#fac08f" Margin="3,0,3,0" />
+                    </StackPanel>
+                    <StackPanel SnapsToDevicePixels="True" Margin="2,0,0,0" Orientation="Horizontal">
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#ae7313" CommandParameter="#ae7313" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#d69e08" CommandParameter="#d69e08" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#494429" CommandParameter="#494429" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#17365d" CommandParameter="#17365d" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#366092" CommandParameter="#366092" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#953734" CommandParameter="#953734" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#76923c" CommandParameter="#76923c" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#5f497a" CommandParameter="#5f497a" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#31859b" CommandParameter="#31859b" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#e36c09" CommandParameter="#e36c09" Margin="3,0,3,0" />
+                    </StackPanel>
+                    <StackPanel SnapsToDevicePixels="True" x:Name="ThirdRow" Margin="2,0,0,3" Orientation="Horizontal">
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#734700" CommandParameter="#734700" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#b28200" CommandParameter="#b28200" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#1d1b10" CommandParameter="#1d1b10" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#0f243e" CommandParameter="#0f243e" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#244061" CommandParameter="#244061" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#632423" CommandParameter="#632423" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#4f6128" CommandParameter="#4f6128" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#3f3151" CommandParameter="#3f3151" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#205867" CommandParameter="#205867" Margin="3,0,3,0" />
+                        <Button Style="{StaticResource ColorButtonStyle}" Background="#974806" CommandParameter="#974806" Margin="3,0,3,0" />
+                    </StackPanel>
+                </StackPanel>
+            </nmfc:BrowserExpander>
+        </StackPanel>
+    </Border>
+</UserControl>
+

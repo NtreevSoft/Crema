@@ -1,0 +1,337 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AddAccessMemberToTableItem" xml:space="preserve">
+    <value>'{0}({1})' added '{3}' to the user list of table item '{2}'.</value>
+  </data>
+  <data name="AddAccessMemberToTypeItem" xml:space="preserve">
+    <value>'{0}({1})' added '{3}' to the user list of type item '{2}'.</value>
+  </data>
+  <data name="BanUser" xml:space="preserve">
+    <value>'{0}({1})' banned user '{2}({3})'.</value>
+  </data>
+  <data name="BeginDomain" xml:space="preserve">
+    <value>'{0}({1})' created domain '{2}'.</value>
+  </data>
+  <data name="CancelDomain" xml:space="preserve">
+    <value>'{0}({1})' has canceled domain '{2}'.</value>
+  </data>
+  <data name="ChangeTableContent" xml:space="preserve">
+    <value>'{0}({1})' changed contents of Table '{2}'.</value>
+  </data>
+  <data name="ChangeTableTemplate" xml:space="preserve">
+    <value>'{0}({1})' changed template of Table '{2}'.</value>
+  </data>
+  <data name="ChangeTypeTemplate" xml:space="preserve">
+    <value>'{0}({1})' changed template of Type '{2}'.</value>
+  </data>
+  <data name="ChangeUserInfo" xml:space="preserve">
+    <value>'{0}({1})' changed information of user '{2}({3})'.</value>
+  </data>
+  <data name="Comment" xml:space="preserve">
+    <value>Comment</value>
+  </data>
+  <data name="CreateDataBase" xml:space="preserve">
+    <value>'{0}({1})' created database '{2}'.</value>
+  </data>
+  <data name="CreateTable" xml:space="preserve">
+    <value>'{0}({1})' created table '{2}'.</value>
+  </data>
+  <data name="CreateTableCategory" xml:space="preserve">
+    <value>'{0}({1})' created table path '{2}'.</value>
+  </data>
+  <data name="CreateType" xml:space="preserve">
+    <value>'{0}({1})' created type '{2}'.</value>
+  </data>
+  <data name="CreateTypeCategory" xml:space="preserve">
+    <value>'{0}({1})' created type path '{2}'.</value>
+  </data>
+  <data name="CreateUser" xml:space="preserve">
+    <value>'{0}({1})' created user '{2}({3})'.</value>
+  </data>
+  <data name="CreateUserCategory" xml:space="preserve">
+    <value>'{0}({1})' created user path '{2}'.</value>
+  </data>
+  <data name="DeleteDataBase" xml:space="preserve">
+    <value>'{0}({1})' deleted database '{2}'.</value>
+  </data>
+  <data name="DeleteTable" xml:space="preserve">
+    <value>'{0}({1})' deleted table '{2}'.</value>
+  </data>
+  <data name="DeleteTableCategory" xml:space="preserve">
+    <value>'{0}({1})' deleted table path '{2}'.</value>
+  </data>
+  <data name="DeleteType" xml:space="preserve">
+    <value>'{0}({1})' deleted type '{2}'.</value>
+  </data>
+  <data name="DeleteTypeCategory" xml:space="preserve">
+    <value>'{0}({1})' deleted type path '{2}'.</value>
+  </data>
+  <data name="DeleteUser" xml:space="preserve">
+    <value>'{0}({1})' deleted user '{2}'.</value>
+  </data>
+  <data name="DeleteUserCategory" xml:space="preserve">
+    <value>'{0}({1})' deleted user path '{2}'.</value>
+  </data>
+  <data name="EndDomain" xml:space="preserve">
+    <value>'{0}({1})' has exited domain '{2}'.</value>
+  </data>
+  <data name="EnterDataBase" xml:space="preserve">
+    <value>'{0}({1})' has entered database '{2}'.</value>
+  </data>
+  <data name="EnterDomainUser" xml:space="preserve">
+    <value>'{0}({1})' has entered domain '{2}'.</value>
+  </data>
+  <data name="KickDomainUser" xml:space="preserve">
+    <value>'{0}({1})' kicked '{2}({3})' from domain '{4}'.</value>
+  </data>
+  <data name="KickUser" xml:space="preserve">
+    <value>'{0}({1})' kicked user '{2}({3})'.</value>
+  </data>
+  <data name="LeaveDataBase" xml:space="preserve">
+    <value>'{0}({1})' has left database '{2}'.</value>
+  </data>
+  <data name="LeaveDomainUser" xml:space="preserve">
+    <value>'{0}({1})' has left domain '{2}'.</value>
+  </data>
+  <data name="LoadDataBase" xml:space="preserve">
+    <value>'{0}({1})' has activated database '{2}'.</value>
+  </data>
+  <data name="LockTableItem" xml:space="preserve">
+    <value>'{0}({1})' locked table item.</value>
+  </data>
+  <data name="LockTypeItem" xml:space="preserve">
+    <value>'{0}({1})' locked type item.</value>
+  </data>
+  <data name="LoginUser" xml:space="preserve">
+    <value>'{0}({1})' has logged in crema service.</value>
+  </data>
+  <data name="LogoutUser" xml:space="preserve">
+    <value>'{0}({1})' has logged out crema service.</value>
+  </data>
+  <data name="MoveTable" xml:space="preserve">
+    <value>'{0}({1})' moved table '{2}' from '{3}' to '{4}'.</value>
+  </data>
+  <data name="MoveTableCategory" xml:space="preserve">
+    <value>'{0}({1})' moved table path '{2}' from '{3}' to '{4}'.</value>
+  </data>
+  <data name="MoveType" xml:space="preserve">
+    <value>'{0}({1})' moved type '{2}' from '{3}' to '{4}'.</value>
+  </data>
+  <data name="MoveTypeCategory" xml:space="preserve">
+    <value>'{0}({1})' moved type path '{2}' from '{3}' to '{4}'.</value>
+  </data>
+  <data name="MoveUser" xml:space="preserve">
+    <value>'{0}({1})' moved user '{2}({3})' from '{4}' to '{5}'.</value>
+  </data>
+  <data name="MoveUserCategory" xml:space="preserve">
+    <value>'{0}({1})' moved user path '{2}' from '{3}' to '{4}'.</value>
+  </data>
+  <data name="NotifyMessage" xml:space="preserve">
+    <value>'{0}({1})' notified to '{2}'.
+notification : "{3}"</value>
+  </data>
+  <data name="Reason" xml:space="preserve">
+    <value>Reason</value>
+  </data>
+  <data name="RemoveAccessMemberFromTableItem" xml:space="preserve">
+    <value>'{0}({1})' removed '{3}' to the user list of table item '{2}'.</value>
+  </data>
+  <data name="RemoveAccessMemberFromTypeItem" xml:space="preserve">
+    <value>'{0}({1})' removed '{3}' to the user list of type item '{2}'.</value>
+  </data>
+  <data name="RenameDataBase" xml:space="preserve">
+    <value>'{0}({1})' renamed  database '{2}' to '{3}'.</value>
+  </data>
+  <data name="RenameTable" xml:space="preserve">
+    <value>'{0}({1})' renamed  table '{2}' to '{3}'.</value>
+  </data>
+  <data name="RenameTableCategory" xml:space="preserve">
+    <value>'{0}({1})' renamed  table path '{2}' to '{3}'.</value>
+  </data>
+  <data name="RenameType" xml:space="preserve">
+    <value>'{0}({1})' renamed  type '{2}' to '{3}'.</value>
+  </data>
+  <data name="RenameTypeCategory" xml:space="preserve">
+    <value>'{0}({1})' renamed  type path '{2}' to '{3}'.</value>
+  </data>
+  <data name="RenameUserCategory" xml:space="preserve">
+    <value>'{0}({1})' renamed  user path '{2}' to '{3}'.</value>
+  </data>
+  <data name="RevertDataBase" xml:space="preserve">
+    <value>'{0}({1})' revert revision of database '{2}' to '{3}'.</value>
+  </data>
+  <data name="SendMessage" xml:space="preserve">
+    <value>'{0}({1})' send message '{2}({3})'.</value>
+  </data>
+  <data name="SetDomainOwner" xml:space="preserve">
+    <value>'{0}({1})' set owner of domain '{4}' to '{2}({3})'.</value>
+  </data>
+  <data name="SetPrivateTableItem" xml:space="preserve">
+    <value>'{0}({1})' set authority of table item '{2}' to private.</value>
+  </data>
+  <data name="SetPrivateTypeItem" xml:space="preserve">
+    <value>'{0}({1})' set authority of type item '{2}' to private.</value>
+  </data>
+  <data name="SetPublicTableItem" xml:space="preserve">
+    <value>'{0}({1})' set authority of table item '{2}' to public.</value>
+  </data>
+  <data name="SetPublicTypeItem" xml:space="preserve">
+    <value>'{0}({1})' set authority of type item '{2}' to public.</value>
+  </data>
+  <data name="UnbanUser" xml:space="preserve">
+    <value>'{0}({1})' unbanned user '{2}({3})'.</value>
+  </data>
+  <data name="UnloadDataBase" xml:space="preserve">
+    <value>'{0}({1})' has inactivated database '{2}'.</value>
+  </data>
+  <data name="UnlockTableItem" xml:space="preserve">
+    <value>'{0}({1})' unlocked table item.</value>
+  </data>
+  <data name="UnlockTypeItem" xml:space="preserve">
+    <value>'{0}({1})' unlocked type item.</value>
+  </data>
+  <data name="UnlockDataBase" xml:space="preserve">
+    <value>'{0}({1})' unlocked database.</value>
+  </data>
+  <data name="LockDataBase" xml:space="preserve">
+    <value>'{0}({1})' locked database: "{2}"</value>
+  </data>
+  <data name="RemoveAccessMemberFromDataBase" xml:space="preserve">
+    <value>'{0}({1})' removed '{3}' to the user list of database '{2}'.</value>
+  </data>
+  <data name="SetPrivateDataBase" xml:space="preserve">
+    <value>'{0}({1})' set authority of database '{2}' to private.</value>
+  </data>
+  <data name="SetPublicDataBase" xml:space="preserve">
+    <value>'{0}({1})' set authority of database '{2}' to public.</value>
+  </data>
+  <data name="AddAccessMemberToDataBase" xml:space="preserve">
+    <value>'{0}({1})' added '{3}({4})' to the user list of database '{2}'.</value>
+  </data>
+  <data name="SetAccessMemberOfDataBase" xml:space="preserve">
+    <value>'{0}({1})' set type of '{3}' user of database '{2}' to '{4}'.</value>
+  </data>
+  <data name="SetAccessMemberOfTableItem" xml:space="preserve">
+    <value>{0}({1})' set type of '{3}' user of table item '{2}' to '{4}'.</value>
+  </data>
+  <data name="SetAccessMemberOfTypeItem" xml:space="preserve">
+    <value>{0}({1})' set type of '{3}' user of type item '{2}' to '{4}'.</value>
+  </data>
+</root>

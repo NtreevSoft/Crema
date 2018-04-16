@@ -1,0 +1,47 @@
+﻿<!--===================================================================================================================
+Released under the MIT License.
+    
+Copyright (c) 2018 Ntreev Soft co., Ltd.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the 
+Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+====================================================================================================================-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+                    xmlns:ncfc="clr-namespace:Ntreev.Crema.Client.Framework.Controls">
+
+    <mui:ToUpperConverter x:Key="ToUpperConverter" />
+
+    <ControlTemplate x:Key="CremaSplashControl_Template" TargetType="{x:Type ncfc:CremaSplashControl}" >
+        <Grid Margin="30">
+            <Viewbox>
+                <Path Data="F1M78.073,72.619C83.524,72.537,89.33,73.251,95.793,75.294L102.486,77.8 101.16,88.5C98.373,111 96.143,129 96.143,129 96.143,129 16.857,129 16.857,129 16.857,129 14.627,111 11.84,88.5L10.514,77.8 17.655,79.432C42.888,83.932,58.088,72.92,78.073,72.619z M1,1C1,1 112,1 112,1 112,1 108.965,25.5 105.55,53.062L104.073,64.985 104.654,60.3C105.211,55.8 105.657,52.2 105.657,52.2 73.906,32.389 41.879,60.843 12.627,50.678L6.837,48.114 6.017,41.5C3.23,19,1,1,1,1z" 
+                      Fill="{TemplateBinding Theme}" Height="130" Canvas.Left="18" Canvas.Top="10" Width="113" />
+            </Viewbox>
+            <TextBlock Text="NtreevSoft Co..LTD. All Rights Reserved." Foreground="{TemplateBinding Foreground}"
+                       HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="61,0,62,24" />
+
+            <TextBlock Text="{Binding Title, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ToUpperConverter}}" 
+                       Foreground="{TemplateBinding Foreground}"
+                       HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="65" Margin="0,0,0,17" />
+        </Grid>
+    </ControlTemplate>
+
+    <Style TargetType="{x:Type ncfc:CremaSplashControl}">
+        <Setter Property="Template" Value="{StaticResource CremaSplashControl_Template}" />
+        <Setter Property="Height" Value="600" /> 
+        <Setter Property="Width" Value="450" /> 
+    </Style>
+    
+</ResourceDictionary>

@@ -1,0 +1,254 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\packages\MSTest.TestAdapter.1.1.18\build\net45\MSTest.TestAdapter.props" Condition="Exists('..\..\packages\MSTest.TestAdapter.1.1.18\build\net45\MSTest.TestAdapter.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{42056CDE-090A-414C-8964-8D1C933A7CEB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Ntreev.Crema.Services.Test</RootNamespace>
+    <AssemblyName>Ntreev.Crema.Services.Test</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">15.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
+    <IsCodedUITest>False</IsCodedUITest>
+    <TestProjectType>UnitTest</TestProjectType>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;CLIENT</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;CLIENT</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MSTest.TestFramework.1.1.18\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MSTest.TestFramework.1.1.18\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\CremaHost_AssemblyInitializer.cs">
+      <Link>CremaHost_AssemblyInitializer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\Deleted_DispatcherTest\IDataBase_Deleted_DispatcherTest.cs">
+      <Link>Deleted_DispatcherTest\IDataBase_Deleted_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\Deleted_DispatcherTest\ITableCategoryCollection_Deleted_DispatcherTest.cs">
+      <Link>Deleted_DispatcherTest\ITableCategoryCollection_Deleted_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\Deleted_DispatcherTest\ITableCategory_Deleted_DispatcherTest.cs">
+      <Link>Deleted_DispatcherTest\ITableCategory_Deleted_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\Deleted_DispatcherTest\ITableCollection_Deleted_DispatcherTest.cs">
+      <Link>Deleted_DispatcherTest\ITableCollection_Deleted_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\Deleted_DispatcherTest\ITableColumn_Deleted_DispatcherTest.cs">
+      <Link>Deleted_DispatcherTest\ITableColumn_Deleted_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\Deleted_DispatcherTest\ITableContent_Deleted_DispatcherTest.cs">
+      <Link>Deleted_DispatcherTest\ITableContent_Deleted_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\Deleted_DispatcherTest\ITableContext_Deleted_DispatcherTest.cs">
+      <Link>Deleted_DispatcherTest\ITableContext_Deleted_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\Deleted_DispatcherTest\ITableItem_Deleted_DispatcherTest.cs">
+      <Link>Deleted_DispatcherTest\ITableItem_Deleted_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\Deleted_DispatcherTest\ITableRow_Deleted_DispatcherTest.cs">
+      <Link>Deleted_DispatcherTest\ITableRow_Deleted_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\Deleted_DispatcherTest\ITableTemplate_Deleted_DispatcherTest.cs">
+      <Link>Deleted_DispatcherTest\ITableTemplate_Deleted_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\Deleted_DispatcherTest\ITable_Deleted_DispatcherTest.cs">
+      <Link>Deleted_DispatcherTest\ITable_Deleted_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\Deleted_DispatcherTest\ITypeCategoryCollection_Deleted_DispatcherTest.cs">
+      <Link>Deleted_DispatcherTest\ITypeCategoryCollection_Deleted_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\Deleted_DispatcherTest\ITypeCategory_Deleted_DispatcherTest.cs">
+      <Link>Deleted_DispatcherTest\ITypeCategory_Deleted_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\Deleted_DispatcherTest\ITypeCollection_Deleted_DispatcherTest.cs">
+      <Link>Deleted_DispatcherTest\ITypeCollection_Deleted_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\Deleted_DispatcherTest\ITypeContext_Deleted_DispatcherTest.cs">
+      <Link>Deleted_DispatcherTest\ITypeContext_Deleted_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\Deleted_DispatcherTest\ITypeItem_Deleted_DispatcherTest.cs">
+      <Link>Deleted_DispatcherTest\ITypeItem_Deleted_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\Deleted_DispatcherTest\ITypeMember_Deleted_DispatcherTest.cs">
+      <Link>Deleted_DispatcherTest\ITypeMember_Deleted_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\Deleted_DispatcherTest\ITypeTemplate_Deleted_DispatcherTest.cs">
+      <Link>Deleted_DispatcherTest\ITypeTemplate_Deleted_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\Deleted_DispatcherTest\IType_Deleted_DispatcherTest.cs">
+      <Link>Deleted_DispatcherTest\IType_Deleted_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\DispatcherTest\IDataBase_DispatcherTest.cs">
+      <Link>DispatcherTest\IDataBase_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\DispatcherTest\IDomainCategoryCollection_DispatcherTest.cs">
+      <Link>DispatcherTest\IDomainCategoryCollection_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\DispatcherTest\IDomainCollection_DispatcherTest.cs">
+      <Link>DispatcherTest\IDomainCollection_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\DispatcherTest\IDomainContext_DispatcherTest.cs">
+      <Link>DispatcherTest\IDomainContext_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\DispatcherTest\IDomain_DispatcherTest.cs">
+      <Link>DispatcherTest\IDomain_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\DispatcherTest\ITableCategoryCollection_DispatcherTest.cs">
+      <Link>DispatcherTest\ITableCategoryCollection_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\DispatcherTest\ITableCategory_DispatcherTest.cs">
+      <Link>DispatcherTest\ITableCategory_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\DispatcherTest\ITableCollection_DispatcherTest.cs">
+      <Link>DispatcherTest\ITableCollection_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\DispatcherTest\ITableColumn_DispatcherTest.cs">
+      <Link>DispatcherTest\ITableColumn_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\DispatcherTest\ITableContent_DispatcherTest.cs">
+      <Link>DispatcherTest\ITableContent_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\DispatcherTest\ITableContext_DispatcherTest.cs">
+      <Link>DispatcherTest\ITableContext_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\DispatcherTest\ITableItem_DispatcherTest.cs">
+      <Link>DispatcherTest\ITableItem_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\DispatcherTest\ITableRow_DispatcherTest.cs">
+      <Link>DispatcherTest\ITableRow_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\DispatcherTest\ITableTemplate_DispatcherTest.cs">
+      <Link>DispatcherTest\ITableTemplate_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\DispatcherTest\ITable_DispatcherTest.cs">
+      <Link>DispatcherTest\ITable_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\DispatcherTest\ITypeCategoryCollection_DispatcherTest.cs">
+      <Link>DispatcherTest\ITypeCategoryCollection_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\DispatcherTest\ITypeCategory_DispatcherTest.cs">
+      <Link>DispatcherTest\ITypeCategory_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\DispatcherTest\ITypeCollection_DispatcherTest.cs">
+      <Link>DispatcherTest\ITypeCollection_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\DispatcherTest\ITypeContext_DispatcherTest.cs">
+      <Link>DispatcherTest\ITypeContext_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\DispatcherTest\ITypeItem_DispatcherTest.cs">
+      <Link>DispatcherTest\ITypeItem_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\DispatcherTest\ITypeMember_DispatcherTest.cs">
+      <Link>DispatcherTest\ITypeMember_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\DispatcherTest\ITypeTemplate_DispatcherTest.cs">
+      <Link>DispatcherTest\ITypeTemplate_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\DispatcherTest\IType_DispatcherTest.cs">
+      <Link>DispatcherTest\IType_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\DispatcherTest\IUserCategoryCollection_DispatcherTest.cs">
+      <Link>DispatcherTest\IUserCategoryCollection_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\DispatcherTest\IUserCategory_DispatcherTest.cs">
+      <Link>DispatcherTest\IUserCategory_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\DispatcherTest\IUserCollection_DispatcherTest.cs">
+      <Link>DispatcherTest\IUserCollection_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\DispatcherTest\IUserContext_DispatcherTest.cs">
+      <Link>DispatcherTest\IUserContext_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\DispatcherTest\IUserItem_DispatcherTest.cs">
+      <Link>DispatcherTest\IUserItem_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\DispatcherTest\IUser_DispatcherTest.cs">
+      <Link>DispatcherTest\IUser_DispatcherTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\Extensions.cs">
+      <Link>Extensions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\ITableCategory_ComplexTest.cs">
+      <Link>ITableCategory_ComplexTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\server\Ntreev.Crema.Services.Test\Utility.cs">
+      <Link>Utility.cs</Link>
+    </Compile>
+    <Compile Include="Authenticator.cs" />
+    <Compile Include="CremaServeHost.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\common\Ntreev.Crema.Data\Ntreev.Crema.Data.csproj">
+      <Project>{04aeb614-3510-4064-99af-0aa807c7f957}</Project>
+      <Name>Ntreev.Crema.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\common\Ntreev.Crema.ServiceModel\Ntreev.Crema.ServiceModel.csproj">
+      <Project>{6478450a-dfa5-445d-890f-bc5f57c9a148}</Project>
+      <Name>Ntreev.Crema.ServiceModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\sub-modules\Ntreev.Library\Ntreev.Library.Random\Ntreev.Library.Random.csproj">
+      <Project>{83f1180f-f170-48cf-be1e-ca60d6851800}</Project>
+      <Name>Ntreev.Library.Random</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\sub-modules\Ntreev.Library\Ntreev.Library\Ntreev.Library.csproj">
+      <Project>{1918437f-4fbf-4731-ac5b-981a4a4cb1f1}</Project>
+      <Name>Ntreev.Library</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ntreev.Crema.Services.Random\Ntreev.Crema.Services.Random.csproj">
+      <Project>{d3c76815-432c-4bc5-9815-04c2f1e905cd}</Project>
+      <Name>Ntreev.Crema.Services.Random</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ntreev.Crema.Services\Ntreev.Crema.Services.csproj">
+      <Project>{0eac90ab-7c7e-47e3-9954-148b45521fcb}</Project>
+      <Name>Ntreev.Crema.Services</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>이 프로젝트는 이 컴퓨터에 없는 NuGet 패키지를 참조합니다. 해당 패키지를 다운로드하려면 NuGet 패키지 복원을 사용하십시오. 자세한 내용은 http://go.microsoft.com/fwlink/?LinkID=322105를 참조하십시오. 누락된 파일은 {0}입니다.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\MSTest.TestAdapter.1.1.18\build\net45\MSTest.TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MSTest.TestAdapter.1.1.18\build\net45\MSTest.TestAdapter.props'))" />
+    <Error Condition="!Exists('..\..\packages\MSTest.TestAdapter.1.1.18\build\net45\MSTest.TestAdapter.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MSTest.TestAdapter.1.1.18\build\net45\MSTest.TestAdapter.targets'))" />
+  </Target>
+  <Import Project="..\..\packages\MSTest.TestAdapter.1.1.18\build\net45\MSTest.TestAdapter.targets" Condition="Exists('..\..\packages\MSTest.TestAdapter.1.1.18\build\net45\MSTest.TestAdapter.targets')" />
+</Project>

@@ -1,0 +1,59 @@
+﻿<!--===================================================================================================================
+Released under the MIT License.
+    
+Copyright (c) 2018 Ntreev Soft co., Ltd.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the 
+Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+====================================================================================================================-->
+<UserControl x:Class="Ntreev.Crema.Client.Framework.Dialogs.Views.CloseDocumentServiceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:nmfvm="clr-namespace:Ntreev.ModernUI.Framework.ViewModels;assembly=Ntreev.ModernUI.Framework"
+             mc:Ignorable="d" Width="350">
+   
+    <Grid Margin="3">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Text="다음 항목의 변경 내용을 저장하시겠습니까?" />
+        <TreeView Grid.Row="1" Height="150" ItemsSource="{Binding Items}" BorderThickness="1" BorderBrush="{DynamicResource ItemBorder}">
+            <TreeView.Resources>
+                <HierarchicalDataTemplate DataType="{x:Type nmfvm:TreeViewItemViewModel}" ItemsSource="{Binding Items}">
+                    <Grid Tag="{Binding}" Background="Transparent">
+                        <StackPanel Orientation="Horizontal" Margin="2,1,5,2">
+                            <TextBlock Text="{Binding Text}" />
+                        </StackPanel>
+                    </Grid>
+                </HierarchicalDataTemplate>
+            </TreeView.Resources>
+        </TreeView>
+        <StackPanel Orientation="Horizontal" Grid.Row="2"
+                    Margin="0 8 0 8">
+            <Button x:Name="Yes" Padding="10, 3" IsDefault="True" Style="{StaticResource Dialog_Button_Style}"
+                    Margin="15 0 0 0" 
+                    Content="_Yes" />
+            <Button x:Name="No" Padding="10, 3"
+                    Margin="15 0 0 0" Style="{StaticResource Dialog_Button_Style}"
+                    Content="_No" />
+            <Button x:Name="Cancel" Padding="10, 3" IsCancel="True"
+                    Margin="15 0 15 0" Style="{StaticResource Dialog_Button_Style}"
+                    Content="_Cancel" />
+        </StackPanel>
+    </Grid>
+   
+</UserControl>

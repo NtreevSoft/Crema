@@ -1,0 +1,56 @@
+﻿<!--===================================================================================================================
+Released under the MIT License.
+    
+Copyright (c) 2018 Ntreev Soft co., Ltd.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the 
+Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+====================================================================================================================-->
+<ResourceDictionary x:Class="Ntreev.Crema.Client.Framework.Assets.BrowserTreeView"
+                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:ncfc="clr-namespace:Ntreev.Crema.Client.Framework.Controls">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Ntreev.ModernUI.Framework;component/Assets/TreeView.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <Style x:Key="BrowserTreeViewItem_Style" TargetType="{x:Type ncfc:BrowserTreeViewItem}" BasedOn="{StaticResource TreeViewItem_Style}">
+        <EventSetter Event="Selected" Handler="BrowserTreeViewItem_Selected" />
+    </Style>
+
+    <Style TargetType="{x:Type ncfc:BrowserTreeView}" BasedOn="{StaticResource {x:Type TreeView}}">
+        <Setter Property="ItemContainerStyle" Value="{StaticResource BrowserTreeViewItem_Style}" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True" />
+        <Setter Property="VirtualizingStackPanel.VirtualizationMode" Value="Recycling" />
+        <Style.Triggers>
+            <Trigger Property="HasScrollViewer" Value="False">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <!--스크롤뷰어를 없애는것이 특징-->
+                        <ControlTemplate TargetType="{x:Type TreeView}">
+                            <Border BorderBrush="{TemplateBinding BorderBrush}"
+                                    Background="{TemplateBinding Background}"
+                                    BorderThickness="{TemplateBinding BorderThickness}">
+                                <ItemsPresenter />
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+</ResourceDictionary>

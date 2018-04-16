@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>1f4a20ae-f955-4231-8636-27b7a38eb4b3</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Ntreev.Crema.Random</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)ActionTargetAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ActionWeightAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ActionTypeAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ActionTargets.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ActionTypes.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CremaDataRandomUtility.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CremaDataTableCreator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CremaHostExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DataBaseExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TableRowExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TableContextExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TableContentExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TypeExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TableColumnExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TypeMemberExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TableTemplateExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TypeTemplateExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TypeContextExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CremaTypeCreator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CremaDataSetTypesCreator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CremaDataSetTagsCreator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CremaDataCreator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CremaDataBaseExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CremaRandomUtility.cs" />
+  </ItemGroup>
+</Project>

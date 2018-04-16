@@ -1,0 +1,43 @@
+﻿<!--===================================================================================================================
+Released under the MIT License.
+    
+Copyright (c) 2018 Ntreev Soft co., Ltd.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the 
+Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+====================================================================================================================-->
+<UserControl x:Class="Ntreev.Crema.Client.Differences.Documents.Views.TableDocumentView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ncpc="clr-namespace:Ntreev.Crema.Presentation.Controls;assembly=Ntreev.Crema.Presentation"
+             mc:Ignorable="d" ncpc:DiffUndoService.UndoService="{Binding DataContext.UndoService, RelativeSource={RelativeSource Self}}"
+             d:DesignHeight="300" d:DesignWidth="300">
+
+    <UserControl.Resources>
+
+        <Style TargetType="{x:Type ncpc:DiffDataTableItemControl}" BasedOn="{StaticResource {x:Type ncpc:DiffDataTableItemControl}}">
+            <Setter Property="ResolveCommand" Value="{Binding DataContext.ResolveCommand, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" />
+            <Setter Property="ncpc:DiffUndoService.Selector" Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" />
+        </Style>
+
+    </UserControl.Resources>
+
+    <TabControl x:Name="childTables" 
+                ItemsSource="{Binding ItemsSource}" 
+                SelectedItem="{Binding SelectedItem}"
+                Style="{StaticResource TabControl_Document_Style}">
+    </TabControl>
+
+</UserControl>

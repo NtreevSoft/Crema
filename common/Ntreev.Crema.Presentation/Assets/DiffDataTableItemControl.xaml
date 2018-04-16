@@ -1,0 +1,156 @@
+﻿<!--===================================================================================================================
+Released under the MIT License.
+    
+Copyright (c) 2018 Ntreev Soft co., Ltd.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the 
+Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+====================================================================================================================-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid"
+                    xmlns:nmfc="clr-namespace:Ntreev.ModernUI.Framework.Controls;assembly=Ntreev.ModernUI.Framework"
+                    xmlns:ncpc="clr-namespace:Ntreev.Crema.Presentation.Controls">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Ntreev.Crema.Presentation;component/Assets/CremaDataTableItemControl.xaml" />
+        <ResourceDictionary Source="/Ntreev.Crema.Presentation;component/Assets/DiffDataGridControl.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <DataTemplate x:Key="DiffDataTableItemControl_HeaderTempalte">
+        <Label Content="{Binding}" Margin="4" HorizontalAlignment="Center" />
+    </DataTemplate>
+
+    <xcdg:TableView x:Key="DataGridControl_View" x:Shared="false"
+                    Style="{StaticResource TableView_Style}"
+                    UseDefaultHeadersFooters="False">
+        <xcdg:TableView.FixedHeaders>
+            <DataTemplate>
+                <ncpc:DiffColumnManagerRow />
+            </DataTemplate>
+        </xcdg:TableView.FixedHeaders>
+    </xcdg:TableView>
+
+    <ControlTemplate x:Key="DataTableControl_Template" TargetType="{x:Type ncpc:CremaDataTableItemControl}">
+        <ncpc:DiffDataGridControl x:Name="PART_DataGridControl" 
+                                  View="{StaticResource DataGridControl_View}"
+                                  SelectionUnit="Row"
+                                  SelectionMode="Extended"
+                                  AutoCreateDetailConfigurations="True"
+                                  DefaultDetailConfiguration="{StaticResource DiffDataGridControl_DefaultDetailConfiguration}"
+                                  BorderBrush="{TemplateBinding BorderBrush}"
+                                  BorderThickness="{TemplateBinding BorderThickness}">
+        </ncpc:DiffDataGridControl>
+    </ControlTemplate>
+
+    <Style x:Key="Left_DiffDataCell_Style" TargetType="{x:Type ncpc:DiffDataCell}" BasedOn="{StaticResource DiffDataCell_Style}">
+        <Setter Property="ContextMenu" Value="{StaticResource LeftSide_ContextMenu}" />
+    </Style>
+
+    <Style x:Key="Right_DiffDataCell_Style" TargetType="{x:Type ncpc:DiffDataCell}" BasedOn="{StaticResource DiffDataCell_Style}">
+        <Setter Property="ContextMenu" Value="{StaticResource RightSide_ContextMenu}" />
+    </Style>
+
+    <Style x:Key="CremaDataTableItemControl_Style" TargetType="{x:Type ncpc:CremaDataTableItemControl}" BasedOn="{StaticResource {x:Type ncpc:CremaDataTableItemControl}}">
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DataGridGridLines}" />
+        <Setter Property="Template" Value="{StaticResource DataTableControl_Template}" />
+    </Style>
+
+    <ControlTemplate x:Key="DiffDataTableItemControl_Template" TargetType="{x:Type ncpc:DiffDataTableItemControl}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="1" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <nmfc:ExpandableToolBar>
+                <nmfc:IconButton Source="/Ntreev.Crema.Presentation;component/Images/arrow_up.png" Command="{x:Static ncpc:DiffCommands.PrevDifferenceItem}" />
+                <nmfc:IconButton Source="/Ntreev.Crema.Presentation;component/Images/arrow_down.png" Command="{x:Static ncpc:DiffCommands.NextDifferenceItem}" />
+                <nmfc:IconButton Source="/Ntreev.Crema.Presentation;component/Images/arrow_left.png" Command="{x:Static ncpc:DiffCommands.PrevDifferenceField}" />
+                <nmfc:IconButton Source="/Ntreev.Crema.Presentation;component/Images/arrow_right.png" Command="{x:Static ncpc:DiffCommands.NextDifferenceField}" />
+                <Separator />
+                <nmfc:IconButton Source="/Ntreev.ModernUI.Framework;component/Images/undo.png" Command="{x:Static ApplicationCommands.Undo}" 
+                                 DropDownTemplate="{StaticResource Undo_DropDownTemplate}" />
+                <nmfc:IconButton Source="/Ntreev.ModernUI.Framework;component/Images/redo.png" Command="{x:Static ApplicationCommands.Redo}"
+                                 DropDownTemplate="{StaticResource Redo_DropDownTemplate}" />
+                <nmfc:IconButton Source="/Ntreev.Crema.Presentation;component/Images/resolve.png" Command="{x:Static ncpc:DiffCommands.Resolve}" />
+                <Separator />
+                <nmfc:IconToggleButton Source="/Ntreev.Crema.Presentation;component/Images/clock.png" Command="{x:Static ncpc:DiffCommands.IncludeDateTime}" />
+                <!--<nmfc:IconButton Source="/Ntreev.ModernUI.Framework;component/Images/document.png" Command="{x:Static ncpc:DiffCommands.ExportLeft}" ToolTip="Export Left" />
+                <nmfc:IconButton Source="/Ntreev.ModernUI.Framework;component/Images/document.png" Command="{x:Static ncpc:DiffCommands.ExportRight}" ToolTip="Export Right" />-->
+            </nmfc:ExpandableToolBar>
+            <Border Grid.Row="1" BorderThickness="1" BorderBrush="{DynamicResource DataGridGridLines}" />
+            <Grid x:Name="grid" Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="0" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="20" />
+                </Grid.RowDefinitions>
+                <ContentControl Grid.Column="0" Padding="4" Content="{TemplateBinding Header1}" 
+                                ContentTemplate="{StaticResource DiffContentControl_DataTemplate}" />
+                <ContentControl Grid.Column="4" Padding="4" Content="{TemplateBinding Header2}" 
+                                ContentTemplate="{StaticResource DiffContentControl_DataTemplate}" />
+
+                <ncpc:CremaDataTableItemControl x:Name="PART_DataGrid1" Grid.Column="0" Grid.Row="1" IsVerticalScrollBarOnLeftSide="True" ReadOnly="True"
+                                                Source="{Binding Source1, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                                Style="{StaticResource CremaDataTableItemControl_Style}">
+                    <ncpc:CremaDataTableItemControl.Resources>
+                        <Style TargetType="{x:Type ncpc:DiffDataCell}" BasedOn="{StaticResource Left_DiffDataCell_Style}" />
+                    </ncpc:CremaDataTableItemControl.Resources>
+                </ncpc:CremaDataTableItemControl>
+
+                <ncpc:DiffVertMinimap x:Name="PART_VertMinimap1" Grid.Column="1" Grid.Row="0" Grid.RowSpan="3" Padding="4 0" />
+                <ncpc:DiffVertMinimap x:Name="PART_VertMinimap2" Grid.Column="3" Grid.Row="0" Grid.RowSpan="3" Padding="4 0" FlowDirection="RightToLeft" />
+                <ncpc:DiffVertScrollBar x:Name="PART_MiddleScrollBar" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="3" Grid.RowSpan="3"
+                                        Orientation="Vertical" Width="Auto" />
+
+                <ncpc:CremaDataTableItemControl x:Name="PART_DataGrid2" Grid.Column="4" Grid.Row="1" ReadOnly="True"
+                                                Source="{Binding Source2, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                                Style="{StaticResource CremaDataTableItemControl_Style}">
+                    <ncpc:CremaDataTableItemControl.Resources>
+                        <Style TargetType="{x:Type ncpc:DiffDataCell}" BasedOn="{StaticResource Right_DiffDataCell_Style}" />
+                    </ncpc:CremaDataTableItemControl.Resources>
+                </ncpc:CremaDataTableItemControl>
+
+                <Border Grid.Column="0" Grid.Row="4" BorderThickness="1 0 1 0" BorderBrush="{Binding BorderBrush, ElementName=PART_DataGrid1}">
+                    <Grid>
+                        <ncpc:DiffHorzMinimap x:Name="PART_HorzMinimap1" Margin="0 3" />
+                        <ncpc:DiffHorzScrollBar x:Name="PART_HorzScrollBar1" />
+                    </Grid>
+                </Border>
+
+                <Border Grid.Column="4" Grid.Row="4" BorderThickness="1 0 1 0" BorderBrush="{Binding BorderBrush, ElementName=PART_DataGrid2}">
+                    <Grid>
+                        <ncpc:DiffHorzMinimap x:Name="PART_HorzMinimap2" Margin="0 3" />
+                        <ncpc:DiffHorzScrollBar x:Name="PART_HorzScrollBar2" />
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+    </ControlTemplate>
+
+    <Style TargetType="{x:Type ncpc:DiffDataTableItemControl}">
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Template" Value="{StaticResource DiffDataTableItemControl_Template}" />
+    </Style>
+
+</ResourceDictionary>

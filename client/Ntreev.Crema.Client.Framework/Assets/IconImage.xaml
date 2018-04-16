@@ -1,0 +1,386 @@
+﻿<!--===================================================================================================================
+Released under the MIT License.
+    
+Copyright (c) 2018 Ntreev Soft co., Ltd.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the 
+Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+====================================================================================================================-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:cal="http://www.caliburnproject.org"
+                    xmlns:nmfc="clr-namespace:Ntreev.ModernUI.Framework.Controls;assembly=Ntreev.ModernUI.Framework"
+                    xmlns:nmfm="clr-namespace:Ntreev.ModernUI.Framework.Markup;assembly=Ntreev.ModernUI.Framework"
+                    xmlns:nmfv="clr-namespace:Ntreev.ModernUI.Framework.Converters;assembly=Ntreev.ModernUI.Framework">
+
+    <Style x:Key="LockImage_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource {x:Type nmfc:IconImage}}">
+        <Setter Property="Visibility" Value="Collapsed" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="UseLayoutRounding" Value="True" />
+        <Setter Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/lock_checked.png" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsLocked}" Value="True">
+                <Setter Property="Visibility" Value="Visible" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsLockInherited}" Value="True">
+                <Setter Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/lock.png" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsLockOwner}" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource Accent}" />
+            </DataTrigger>
+
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Selectable_LockImage_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource LockImage_Style}">
+        <Style.Triggers>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsSelected}" Value="True" />
+                    <Condition Binding="{Binding IsLockOwner}" Value="True" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Foreground" Value="{DynamicResource WindowBackground}" />
+            </MultiDataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="AccessImage_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource {x:Type nmfc:IconImage}}">
+        <Setter Property="Visibility" Value="Collapsed" />
+        <Setter Property="UseLayoutRounding" Value="True" />
+        <Setter Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/access_member.png" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsPrivate}" Value="True">
+                <Setter Property="Visibility" Value="Visible" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsAccessInherited}" Value="True">
+                <Setter Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/access.png" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsAccessOwner}" Value="True">
+                <Setter Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/access_owner.png" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsAccessMember}" Value="False">
+                <Setter Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/access_restriction.png" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Selectable_AccessImage_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource AccessImage_Style}">
+        <Style.Triggers>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsSelected}" Value="True" />
+                    <Condition Binding="{Binding IsAccessOwner}" Value="True" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Foreground" Value="{DynamicResource WindowBackground}" />
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsSelected}" Value="False" />
+                    <Condition Binding="{Binding IsAccessOwner}" Value="True" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Foreground" Value="{DynamicResource Accent}" />
+            </MultiDataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="TypeEditingImage_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource {x:Type nmfc:IconImage}}">
+        <Setter Property="Visibility" Value="Collapsed" />
+        <Setter Property="ToolTip" Value="편집중입니다." />
+        <Setter Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/edit.png" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsBeingEdited}" Value="True">
+                <Setter Property="Visibility" Value="Visible" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsBeingEditedClient}" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource Accent}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Selectable_TypeEditingImage_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource TypeEditingImage_Style}">
+        <Style.Triggers>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsSelected}" Value="True" />
+                    <Condition Binding="{Binding IsBeingEditedClient}" Value="True" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Foreground" Value="{DynamicResource WindowBackground}" />
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsSelected}" Value="True" />
+                    <Condition Binding="{Binding IsBeingEditedClient}" Value="False" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Foreground" Value="{DynamicResource ItemTextDisabled}" />
+            </MultiDataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="TableEditingImage_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource {x:Type nmfc:IconImage}}">
+        <Setter Property="Visibility" Value="Collapsed" />
+        <Setter Property="ToolTip" Value="편집중입니다." />
+        <Setter Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/edit.png" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsBeingEdited}" Value="True">
+                <Setter Property="Visibility" Value="Visible" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsBeingEditedClient}" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource Accent}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Selectable_TableEditingImage_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource TableEditingImage_Style}">
+        <Style.Triggers>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsSelected}" Value="True" />
+                    <Condition Binding="{Binding IsBeingEditedClient}" Value="True" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Foreground" Value="{DynamicResource WindowBackground}" />
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsSelected}" Value="True" />
+                    <Condition Binding="{Binding IsBeingEditedClient}" Value="False" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Foreground" Value="{DynamicResource ItemTextDisabled}" />
+            </MultiDataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="TableSettingImage_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource {x:Type nmfc:IconImage}}">
+        <Setter Property="Visibility" Value="Collapsed" />
+        <Setter Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/setting.png" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsBeingSetup}" Value="True">
+                <Setter Property="Visibility" Value="Visible" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsBeingSetupClient}" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource Accent}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Selectable_TableSettingImage_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource TableSettingImage_Style}">
+        <Style.Triggers>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsSelected}" Value="True" />
+                    <Condition Binding="{Binding IsBeingSetupClient}" Value="True" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Foreground" Value="{DynamicResource WindowBackground}" />
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsSelected}" Value="True" />
+                    <Condition Binding="{Binding IsBeingSetupClient}" Value="False" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Foreground" Value="{DynamicResource ItemTextDisabled}" />
+            </MultiDataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="CategoryImage_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource {x:Type nmfc:IconImage}}">
+        <Setter Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/folder_c.png" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsExpanded}" Value="True">
+                <Setter Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/folder_o.png" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Selectable_CategoryImage_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource CategoryImage_Style}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                <Setter Property="Background" Value="{DynamicResource WindowText}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="TypeImage_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource {x:Type nmfc:IconImage}}">
+        <Setter Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/type_enum.png" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsFlag}" Value="True">
+                <Setter Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/type_flag.png" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Selectable_TypeImage_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource TypeImage_Style}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                <Setter Property="Background" Value="{DynamicResource WindowText}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="TableImage_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource {x:Type nmfc:IconImage}}">
+        <Setter Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/table.png" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsInherited}" Value="True">
+                <Setter Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/table_derived.png" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsBaseTemplate}" Value="True">
+                <Setter Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/table_base.png" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Selectable_TableImage_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource TableImage_Style}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                <Setter Property="Background" Value="{DynamicResource WindowText}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="DataBaseImage_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource {x:Type nmfc:IconImage}}">
+        <Setter Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/database.png" />
+    </Style>
+
+    <Style x:Key="Selectable_DataBaseImage_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource DataBaseImage_Style}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                <Setter Property="Background" Value="{DynamicResource WindowText}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="UserIcon_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource {x:Type nmfc:IconImage}}">
+        <Setter Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/user_member.png" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsAdmin}" Value="True">
+                <Setter Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/user_admin.png" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsGuest}" Value="True">
+                <Setter Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/user_guest.png" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Selectable_UserIcon_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource UserIcon_Style}">
+        <Style.Triggers>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsSelected}" Value="True" />
+                    <Condition Binding="{Binding IsOnline}" Value="True" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="TextElement.Foreground" Value="{DynamicResource WindowBackground}" />
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsSelected}" Value="False" />
+                    <Condition Binding="{Binding IsOnline}" Value="True" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="TextElement.Foreground" Value="{DynamicResource Accent}" />
+            </MultiDataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="DataBaseUserIcon_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource {x:Type nmfc:IconImage}}">
+        <Setter Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/user_member.png" />
+        <Setter Property="Foreground" Value="{DynamicResource Accent}" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Authority}" Value="Admin">
+                <Setter Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/user_admin.png" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Authority}" Value="Guest">
+                <Setter Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/user_guest.png" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="DomainUserImage_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource {x:Type nmfc:IconImage}}">
+        <Setter Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/user_member.png" />
+        <Setter Property="Foreground" Value="{DynamicResource ItemTextDisabled}" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding CanWrite}" Value="False">
+                <Setter Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/user_guest.png" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsOnline}" Value="True">
+                <Setter Property="Foreground" Value="{Binding Foreground}" />
+            </DataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsSelected}" Value="True" />
+                    <Condition Binding="{Binding IsOnline}" Value="True" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Foreground" Value="{DynamicResource Complementary}" />
+            </MultiDataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="DomainImage_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource {x:Type nmfc:IconImage}}">
+        <Setter Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/table.png" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding DomainInfo.ItemType}" Value="TypeTemplate">
+                <Setter Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/type_enum.png" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Selectable_DomainImage_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource DomainImage_Style}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                <Setter Property="Background" Value="{DynamicResource WindowText}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="DomainItemTypeImage_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource {x:Type nmfc:IconImage}}">
+        <Setter Property="Height" Value="16" />
+        <Setter Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/edit.png" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding DomainInfo.ItemType}" Value="TypeTemplate">
+                <Setter Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/setting.png" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding DomainInfo.ItemType}" Value="TableTemplate">
+                <Setter Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/setting.png" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="IsModifiedImage_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource {x:Type nmfc:IconImage}}">
+        <Setter Property="Height" Value="16" />
+        <Setter Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/small_star.png" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsModified}" Value="False">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="IsOwnerImage_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource {x:Type nmfc:IconImage}}">
+        <Setter Property="Margin" Value="2 0" />
+        <Setter Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/star.png" />
+        <Setter Property="Foreground" Value="{DynamicResource ItemTextDisabled}" />
+        <Setter Property="Visibility" Value="Collapsed" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsOnline}" Value="True">
+                <Setter Property="Foreground" Value="{Binding Foreground}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsOwner}" Value="True">
+                <Setter Property="Visibility" Value="Visible" />
+            </DataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsSelected}" Value="True" />
+                    <Condition Binding="{Binding IsOnline}" Value="True" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Foreground" Value="{DynamicResource Complementary}" />
+            </MultiDataTrigger>
+        </Style.Triggers>
+    </Style>
+
+</ResourceDictionary>

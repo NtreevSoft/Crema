@@ -1,0 +1,279 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="#Filter" xml:space="preserve">
+    <value>표시할 목록에 필터를 설정합니다. 필터는 와일드카드 형태이며 ; 구분자로 여러개를 설정할 수 있습니다. 
+예를들어, word*;*string*</value>
+  </data>
+  <data name="@CurrentDirectoryCommand" xml:space="preserve">
+    <value>현재 경로를 보여주거나 경로를 변경합니다.</value>
+  </data>
+  <data name="@DataBaseCommand" xml:space="preserve">
+    <value>데이터 베이스와 관련된 명령들을 제공합니다.</value>
+  </data>
+  <data name="@DataBaseCommand.Create" xml:space="preserve">
+    <value>새로운 데이터 베이스를 생성합니다.</value>
+  </data>
+  <data name="@DataBaseCommand.Create.comment" xml:space="preserve">
+    <value />
+  </data>
+  <data name="@DataBaseCommand.Create.dataBaseName" xml:space="preserve">
+    <value />
+  </data>
+  <data name="@DomainCommand" xml:space="preserve">
+    <value>도메인과 관련된 명령들을 제공합니다.</value>
+  </data>
+  <data name="@ListCommand" xml:space="preserve">
+    <value>현재 경로내에 있는 항목의 목록을 표시합니다.</value>
+  </data>
+  <data name="@LogCommand" xml:space="preserve">
+    <value>로그와 관련된 명령들을 제공합니다.</value>
+  </data>
+  <data name="@LogCommand.List.filter" xml:space="preserve">
+    <value>#Filter</value>
+  </data>
+  <data name="@MakeDirectoryCommand" xml:space="preserve">
+    <value>새로운 경로를 생성합니다.</value>
+  </data>
+  <data name="@MoveCommand" xml:space="preserve">
+    <value>특정 항목을 특정 경로로 이동합니다.</value>
+  </data>
+  <data name="@NotifyCommand" xml:space="preserve">
+    <value>모든 사용자들에게 메세지를 전송합니다.</value>
+  </data>
+  <data name="@PropertyCommand" xml:space="preserve">
+    <value>속성과 관련된 명령을 제공합니다.</value>
+  </data>
+  <data name="@PropertyCommand.Edit" xml:space="preserve">
+    <value>다수의 속성을 편집할 수 있도록 편집기를 실행합니다.</value>
+  </data>
+  <data name="@PropertyCommand.List" xml:space="preserve">
+    <value>속성의 목록을 표시합니다.</value>
+  </data>
+  <data name="@PropertyCommand.List.filter" xml:space="preserve">
+    <value>#Filter</value>
+  </data>
+  <data name="@PropertyCommand.Reset" xml:space="preserve">
+    <value>속성의 값을 초기값으로 설정합니다.</value>
+  </data>
+  <data name="@PropertyCommand.Set" xml:space="preserve">
+    <value>속성의 값을 설정합니다.</value>
+  </data>
+  <data name="@RemoveCommand" xml:space="preserve">
+    <value>특정 항목을 삭제합니다.</value>
+  </data>
+  <data name="@ResetCommand" xml:space="preserve">
+    <value>화면을 깨끗이 지웁니다.</value>
+  </data>
+  <data name="@SystemInfoCommand" xml:space="preserve">
+    <value>시스템의 정보를 표시합니다.</value>
+  </data>
+  <data name="@TableCommand" xml:space="preserve">
+    <value>테이블과 관련된 명령들을 제공합니다.</value>
+  </data>
+  <data name="@TypeCommand" xml:space="preserve">
+    <value>타입과 관련된 명령들을 제공합니다.</value>
+  </data>
+  <data name="@UserCommand" xml:space="preserve">
+    <value>사용자와 관련된 명령들을 제공합니다.</value>
+  </data>
+  <data name="@UserCommand.Ban" xml:space="preserve">
+    <value>사용자를 크레마 서비스에 접속하지 못하도록 차단합니다.</value>
+  </data>
+  <data name="@UserCommand.Create" xml:space="preserve">
+    <value>새로운 사용자를 생성합니다.</value>
+  </data>
+  <data name="@UserCommand.Delete" xml:space="preserve">
+    <value>사용자를 삭제합니다.</value>
+  </data>
+  <data name="@UserCommand.Info" xml:space="preserve">
+    <value>사용자의 정보를 표시합니다.</value>
+  </data>
+  <data name="@UserCommand.IsBanned" xml:space="preserve">
+    <value>차단된 사용자를 나타냅니다.</value>
+  </data>
+  <data name="@UserCommand.IsOnline" xml:space="preserve">
+    <value>온라인된 사용자를 나타냅니다.</value>
+  </data>
+  <data name="@UserCommand.Kick" xml:space="preserve">
+    <value>로그인된 사용자를 추방합니다.</value>
+  </data>
+  <data name="@UserCommand.List" xml:space="preserve">
+    <value>사용자의 목록을 표시합니다.</value>
+  </data>
+  <data name="@UserCommand.Message" xml:space="preserve">
+    <value>특정 사용자에게 메세지를 전송합니다.</value>
+  </data>
+  <data name="@UserCommand.Move" xml:space="preserve">
+    <value>관리를 위해 사용자를 특정 경로로 이동합니다.</value>
+  </data>
+  <data name="@UserCommand.Password" xml:space="preserve">
+    <value>사용자의 암호를 변경합니다.</value>
+  </data>
+  <data name="@UserCommand.Rename" xml:space="preserve">
+    <value>사용자의 이름을 변경합니다.</value>
+  </data>
+  <data name="@UserCommand.SetAuthority" xml:space="preserve">
+    <value>사용자의 권한을 변경합니다.</value>
+  </data>
+  <data name="@UserCommand.Unban" xml:space="preserve">
+    <value>차단된 사용자를 해제 합니다.</value>
+  </data>
+  <data name="CurrentDirectoryCommand" xml:space="preserve">
+    <value>현재 경로를 보여주거나 경로를 변경합니다.
+이 명령은 크레마의 데이터 구조를 트리 형태로 표현하여 해당 위치로 이동할 수 있게 해줍니다.
+
+최상위 경로는 / 이며 데이터 베이스의 목록을 포함하고 있습니다.
+각 데이터 베이스는 types와 tables 항목이 있습니다.
+
+전체적인 데이터 구조는 아래와 같습니다.
+
+/ ┬ default
+  │   ├ types
+  │   └ tables
+  ├ dabase1
+  │   ├ types
+  │   └ tables
+  ├ dabase2
+  │   ├ types
+  │   └ tables
+  ...
+
+
+만약 default 데이터 베이스의 테이블과 관련된 작업을 하길 원할 경우
+cd default/tables 로 해당 위치로 이동하면 됩니다.
+경로에는 ./ ../ 와 같이 상대 경로를 포함될 수 있습니다.
+최상위 경로로 이동시에는 cd / 를 입력하시면 됩니다.</value>
+  </data>
+  <data name="NotifyCommand" xml:space="preserve">
+    <value>로그인된 모든 사용자들에게 지정된 메세지를 전송합니다. 이 명령은 관리자 전용입니다.</value>
+  </data>
+  <data name="NotifyCommand.Message" xml:space="preserve">
+    <value>전송할 메세지를 나타냅니다.</value>
+  </data>
+  <data name="PropertyCommand.List" xml:space="preserve">
+    <value>속성의 목록을 표시합니다. </value>
+  </data>
+  <data name="ResetCommand" xml:space="preserve">
+    <value>화면을 깨끗이 지웁니다. Windows 계열에서는 cls 명령과 같은 효과를 나타내며, Unix계열에서는 Reset 명령과 같은 효과를 나타냅니다.</value>
+  </data>
+  <data name="TableCommand.CopyForce" xml:space="preserve">
+    <value>원본 데이터 베이스가 편집중인 항목이 있거나 저장되지 않은 항목이 있어도 복사를 진행합니다.</value>
+  </data>
+</root>

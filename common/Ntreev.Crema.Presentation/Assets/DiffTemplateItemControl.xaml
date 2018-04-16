@@ -1,0 +1,228 @@
+﻿<!--===================================================================================================================
+Released under the MIT License.
+    
+Copyright (c) 2018 Ntreev Soft co., Ltd.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the 
+Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+====================================================================================================================-->
+<ResourceDictionary x:Class="Ntreev.Crema.Presentation.Assets.DiffTemplateItemControl"
+                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid"
+                    xmlns:nmfc="clr-namespace:Ntreev.ModernUI.Framework.Controls;assembly=Ntreev.ModernUI.Framework"
+                    xmlns:ncpc="clr-namespace:Ntreev.Crema.Presentation.Controls"
+                    xmlns:p="clr-namespace:Ntreev.Crema.Presentation.Properties">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Ntreev.Crema.Presentation;component/Assets/CremaTemplateControl.xaml" />
+        <ResourceDictionary Source="/Ntreev.Crema.Presentation;component/Assets/DiffDataGridControl.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <DataTemplate x:Key="DiffTemplateControl_HeaderTempalte">
+        <Label Content="{Binding}" Margin="4" HorizontalAlignment="Center" />
+    </DataTemplate>
+
+    <xcdg:TableView x:Key="DataGridControl_View" x:Shared="false"
+                    AllowRowResize="False"
+                    Style="{StaticResource TableView_Style}"
+                    UseDefaultHeadersFooters="False">
+        <xcdg:TableView.FixedHeaders>
+            <DataTemplate>
+                <ncpc:DiffColumnManagerRow />
+            </DataTemplate>
+        </xcdg:TableView.FixedHeaders>
+    </xcdg:TableView>
+
+    <Style x:Key="TableName_TextBox_Style" TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
+    </Style>
+
+    <!--<Style x:Key="Tags_TagSelector_Style" TargetType="{x:Type ncpc:TagSelector}" BasedOn="{StaticResource {x:Type ncpc:TagSelector}}" />-->
+
+    <Style x:Key="Comment_TextBox_Style" TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
+    </Style>
+
+    <ControlTemplate x:Key="CremaTemplateControl_Template" TargetType="{x:Type ncpc:CremaTemplateControl}">
+        <ncpc:DiffDataGridControl x:Name="PART_DataGridControl" 
+                                  View="{StaticResource DataGridControl_View}"
+                                  AllowRowDrag="True"
+                                  SelectionUnit="Row"
+                                  SelectionMode="Extended"
+                                  AutoCreateDetailConfigurations="True"
+                                  DefaultDetailConfiguration="{StaticResource DiffDataGridControl_DefaultDetailConfiguration}"
+                                  BorderBrush="{TemplateBinding BorderBrush}"
+                                  BorderThickness="{TemplateBinding BorderThickness}">
+            <ncpc:DiffDataGridControl.Resources>
+                <Style TargetType="{x:Type ncpc:DiffDataContainer}" BasedOn="{StaticResource DiffDataContainer_Style}" />
+            </ncpc:DiffDataGridControl.Resources>
+        </ncpc:DiffDataGridControl>
+        <ControlTemplate.Triggers>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Source.ReadOnly}" Value="True">
+                <Setter TargetName="PART_DataGridControl" Property="AllowRowDrag" Value="False" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=ReadOnly}" Value="True">
+                <Setter TargetName="PART_DataGridControl" Property="AllowRowDrag" Value="False" />
+            </DataTrigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <Style x:Key="Left_DiffDataCell_Style" TargetType="{x:Type ncpc:DiffDataCell}" BasedOn="{StaticResource DiffDataCell_Style}">
+        <Setter Property="ContextMenu" Value="{StaticResource LeftSide_ContextMenu}" />
+    </Style>
+
+    <Style x:Key="Right_DiffDataCell_Style" TargetType="{x:Type ncpc:DiffDataCell}" BasedOn="{StaticResource DiffDataCell_Style}">
+        <Setter Property="ContextMenu" Value="{StaticResource RightSide_ContextMenu}" />
+    </Style>
+
+    <Style x:Key="CremaTemplateControl_Style" TargetType="{x:Type ncpc:CremaTemplateControl}" BasedOn="{StaticResource {x:Type ncpc:CremaTemplateControl}}">
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DataGridGridLines}" />
+        <Setter Property="Template" Value="{StaticResource CremaTemplateControl_Template}" />
+    </Style>
+
+    <ControlTemplate x:Key="DiffTemplateControl_Template" TargetType="{x:Type ncpc:DiffTemplateItemControl}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="1" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <nmfc:ExpandableToolBar>
+                <nmfc:IconButton Source="/Ntreev.Crema.Presentation;component/Images/arrow_up.png" Command="{x:Static ncpc:DiffCommands.PrevDifferenceItem}" />
+                <nmfc:IconButton Source="/Ntreev.Crema.Presentation;component/Images/arrow_down.png" Command="{x:Static ncpc:DiffCommands.NextDifferenceItem}" />
+                <nmfc:IconButton Source="/Ntreev.Crema.Presentation;component/Images/arrow_left.png" Command="{x:Static ncpc:DiffCommands.PrevDifferenceField}" />
+                <nmfc:IconButton Source="/Ntreev.Crema.Presentation;component/Images/arrow_right.png" Command="{x:Static ncpc:DiffCommands.NextDifferenceField}" />
+                <Separator />
+                <nmfc:IconButton Source="/Ntreev.ModernUI.Framework;component/Images/undo.png" Command="{x:Static ApplicationCommands.Undo}" 
+                                 DropDownTemplate="{StaticResource Undo_DropDownTemplate}" />
+                <nmfc:IconButton Source="/Ntreev.ModernUI.Framework;component/Images/redo.png" Command="{x:Static ApplicationCommands.Redo}" 
+                                 DropDownTemplate="{StaticResource Redo_DropDownTemplate}" />
+                <Separator />
+                <nmfc:IconButton Source="/Ntreev.Crema.Presentation;component/Images/merge.png" Command="{x:Static ncpc:DiffCommands.Merge}" />
+                <nmfc:IconButton Source="/Ntreev.Crema.Presentation;component/Images/resolve.png" Command="{x:Static ncpc:DiffCommands.Resolve}" />
+            </nmfc:ExpandableToolBar>
+            <Border Grid.Row="1" BorderThickness="1" BorderBrush="{DynamicResource DataGridGridLines}" />
+            <Grid x:Name="grid" Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="0" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="4" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="20" />
+                </Grid.RowDefinitions>
+                <ContentControl Grid.Column="0" Padding="4" Content="{TemplateBinding Header1}" 
+                                ContentTemplate="{StaticResource DiffContentControl_DataTemplate}" />
+                <ContentControl Grid.Column="4" Padding="4" Content="{TemplateBinding Header2}" 
+                                ContentTemplate="{StaticResource DiffContentControl_DataTemplate}" />
+
+                <Expander x:Name="propExpander" Header="Properties" Grid.ColumnSpan="5" IsExpanded="True" />
+
+                <nmfc:PropertyItemsControl x:Name="props1" Grid.Column="0" Grid.Row="1" Style="{StaticResource DiffPropertyItemsControl1_Style}"
+                                           DataContext="{Binding Source, RelativeSource={RelativeSource TemplatedParent}}">
+                    <TextBox nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_TableName}" IsReadOnly="True" 
+                             ncpc:DiffCommands.Command="{x:Static ncpc:DiffCommands.CopyPropertyToRightSide}"
+                             ncpc:DiffCommands.CommandParameter="Name"
+                             Text="{Binding ItemName1, Mode=OneWay}"
+                             Style="{StaticResource TableName_TextBox_Style}" />
+                    <ncpc:TagSelector nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_Tags}" IsReadOnly="True" 
+                                      ncpc:DiffCommands.Command="{x:Static ncpc:DiffCommands.CopyPropertyToRightSide}"
+                                      ncpc:DiffCommands.CommandParameter="Tags"
+                                      Value="{Binding Tags1, Mode=OneWay}" />
+                    <TextBox nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_Comment}" IsReadOnly="True"
+                             ncpc:DiffCommands.Command="{x:Static ncpc:DiffCommands.CopyPropertyToRightSide}"
+                             ncpc:DiffCommands.CommandParameter="Comment"
+                             Text="{Binding Comment1, Mode=OneWay}"
+                             Style="{StaticResource Comment_TextBox_Style}" />
+                </nmfc:PropertyItemsControl>
+
+                <nmfc:PropertyItemsControl x:Name="props2" Grid.Column="4" Grid.Row="1" Style="{StaticResource DiffPropertyItemsControl2_Style}"
+                                           DataContext="{Binding Source, RelativeSource={RelativeSource TemplatedParent}}">
+                    <TextBox nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_TableName}" IsReadOnly="True"
+                             ncpc:DiffCommands.Command="{x:Static ncpc:DiffCommands.CopyPropertyToLeftSide}"
+                             ncpc:DiffCommands.CommandParameter="Name"
+                             Text="{Binding ItemName2, Mode=OneWay}"
+                             Style="{StaticResource TableName_TextBox_Style}" />
+                    <ncpc:TagSelector nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_Tags}" IsReadOnly="True" 
+                                      ncpc:DiffCommands.Command="{x:Static ncpc:DiffCommands.CopyPropertyToLeftSide}"
+                                      ncpc:DiffCommands.CommandParameter="Tags"
+                                      Value="{Binding Tags2, Mode=OneWay}" />
+                    <TextBox nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_Comment}" IsReadOnly="True"
+                             ncpc:DiffCommands.Command="{x:Static ncpc:DiffCommands.CopyPropertyToLeftSide}"
+                             ncpc:DiffCommands.CommandParameter="Comment"
+                             Text="{Binding Comment2, Mode=OneWay}"
+                             Style="{StaticResource Comment_TextBox_Style}" />
+                </nmfc:PropertyItemsControl>
+
+                <ncpc:CremaTemplateControl x:Name="PART_DataGrid1" Grid.Column="0" Grid.Row="3" IsVerticalScrollBarOnLeftSide="True" 
+                                           Source="{Binding Source.SourceItem1, RelativeSource={RelativeSource TemplatedParent}}"
+                                           Style="{StaticResource CremaTemplateControl_Style}">
+                    <ncpc:CremaTemplateControl.Resources>
+                        <Style TargetType="{x:Type ncpc:DiffDataCell}" BasedOn="{StaticResource Left_DiffDataCell_Style}" />
+                    </ncpc:CremaTemplateControl.Resources>
+                </ncpc:CremaTemplateControl>
+
+                <ncpc:DiffVertMinimap x:Name="PART_VertMinimap1" Grid.Column="1" Grid.Row="3" Grid.RowSpan="3" Padding="4 0" />
+                <ncpc:DiffVertMinimap x:Name="PART_VertMinimap2" Grid.Column="3" Grid.Row="3" Grid.RowSpan="3" Padding="4 0" FlowDirection="RightToLeft" />
+                <ncpc:DiffVertScrollBar x:Name="PART_MiddleScrollBar" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="3" Grid.RowSpan="3"
+                                    Orientation="Vertical" Width="Auto" />
+
+                <ncpc:CremaTemplateControl x:Name="PART_DataGrid2" Grid.Column="4" Grid.Row="3"
+                                           Source="{Binding Source.SourceItem2, RelativeSource={RelativeSource TemplatedParent}}"
+                                           Style="{StaticResource CremaTemplateControl_Style}">
+                    <ncpc:CremaTemplateControl.Resources>
+                        <Style TargetType="{x:Type ncpc:DiffDataCell}" BasedOn="{StaticResource Right_DiffDataCell_Style}" />
+                    </ncpc:CremaTemplateControl.Resources>
+                </ncpc:CremaTemplateControl>
+
+                <Border Grid.Column="0" Grid.Row="4" BorderThickness="1 0 1 0" BorderBrush="{Binding BorderBrush, ElementName=PART_DataGrid1}">
+                    <Grid>
+                        <ncpc:DiffHorzMinimap x:Name="PART_HorzMinimap1" Margin="0 3" />
+                        <ncpc:DiffHorzScrollBar x:Name="PART_HorzScrollBar1" />
+                    </Grid>
+                </Border>
+
+                <Border Grid.Column="4" Grid.Row="4" BorderThickness="1 0 1 0" BorderBrush="{Binding BorderBrush, ElementName=PART_DataGrid2}">
+                    <Grid>
+                        <ncpc:DiffHorzMinimap x:Name="PART_HorzMinimap2" Margin="0 3" />
+                        <ncpc:DiffHorzScrollBar x:Name="PART_HorzScrollBar2" />
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="ReadOnly1" Value="True">
+                <Setter TargetName="PART_DataGrid1" Property="ReadOnly" Value="True" />
+            </Trigger>
+            <Trigger Property="ReadOnly2" Value="True">
+                <Setter TargetName="PART_DataGrid2" Property="ReadOnly" Value="True" />
+            </Trigger>
+            <DataTrigger Binding="{Binding ElementName=propExpander, Path=IsExpanded}" Value="False">
+                <Setter TargetName="props1" Property="Visibility" Value="Collapsed" />
+                <Setter TargetName="props2" Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <Style TargetType="{x:Type ncpc:DiffTemplateItemControl}">
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Template" Value="{StaticResource DiffTemplateControl_Template}" />
+    </Style>
+
+</ResourceDictionary>

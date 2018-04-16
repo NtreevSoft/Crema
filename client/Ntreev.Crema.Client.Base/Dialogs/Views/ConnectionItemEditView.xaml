@@ -1,0 +1,73 @@
+﻿<!--===================================================================================================================
+Released under the MIT License.
+    
+Copyright (c) 2018 Ntreev Soft co., Ltd.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the 
+Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+====================================================================================================================-->
+<UserControl x:Class="Ntreev.Crema.Client.Base.Dialogs.Views.ConnectionItemEditView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:nmfc="clr-namespace:Ntreev.ModernUI.Framework.Controls;assembly=Ntreev.ModernUI.Framework"
+             xmlns:ncfc="clr-namespace:Ntreev.Crema.Client.Framework.Controls;assembly=Ntreev.Crema.Client.Framework"
+             xmlns:nmfv="clr-namespace:Ntreev.ModernUI.Framework.Converters;assembly=Ntreev.ModernUI.Framework"
+             xmlns:p="clr-namespace:Ntreev.Crema.Client.Base.Properties"
+             mc:Ignorable="d">
+
+    <UserControl.Resources>
+        
+        <nmfv:ColorToBrushConverter x:Key="colorToBrushConverter" />
+        <Style x:Key="ChangeButton_Style" TargetType="{x:Type Button}" BasedOn="{StaticResource Dialog_Button_Style}">
+            <Setter Property="Content" Value="{x:Static p:Resources.Button_Change}" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsNew}" Value="True">
+                    <Setter Property="Content" Value="{x:Static p:Resources.Button_Create}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        
+    </UserControl.Resources>
+    
+    <StackPanel>
+        <nmfc:PropertyItemsControl HeaderWidth="auto" Margin="0 10" HorizontalAlignment="Center" HorizontalContentAlignment="Left" FocusManager.IsFocusScope="True" >
+            <TextBox nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_Name}" Text="{Binding ConnectionInfo.Name, UpdateSourceTrigger=PropertyChanged}" Width="176" />
+            <TextBox nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_Address}" x:Name="Address" Text="{Binding ConnectionInfo.Address, UpdateSourceTrigger=PropertyChanged}" Width="176" />
+            <TextBox nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_UserID}" Text="{Binding ConnectionInfo.ID, UpdateSourceTrigger=PropertyChanged}" Width="176" />
+            <PasswordBox x:Name="passwordBox" nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_Password}" Width="176" PasswordChanged="PasswordBox_PasswordChanged" />
+            <StackPanel nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_DataBase}" Orientation="Horizontal">
+                <TextBox Text="{Binding ConnectionInfo.DataBaseName, UpdateSourceTrigger=PropertyChanged}" Width="148" />
+                <Border Width="4" />
+                <nmfc:IconButton x:Name="SelectDataBase" Width="24" Height="24" Source="/Ntreev.Crema.Client.Framework;component/Images/list.png" />
+            </StackPanel>
+            <StackPanel nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_Theme}" 
+                        nmfc:PropertyItemsControl.Target="{Binding ElementName=ThemeComboBox}"
+                        Orientation="Horizontal">
+                <Button x:Name="SelectThemeColor" Background="{Binding ConnectionInfo.ThemeColor, Converter={StaticResource colorToBrushConverter}}" 
+                        Width="50" HorizontalAlignment="Left" BorderThickness="0" />
+                <Border Width="4" />
+                <ComboBox x:Name="ThemeComboBox" Width="122" ItemsSource="{Binding Themes}" SelectedItem="{Binding ConnectionInfo.Theme}" />
+            </StackPanel>
+            <!--<CheckBox Content="{x:Static p:Resources.Label_SavePassword}" IsChecked="{Binding IsPasswordRememberable}" />-->
+            <!--<CheckBox Content="서버에 접속하면 [서버 목록]에 추가" IsChecked="{Binding IsServerItemAddable}" />-->
+        </nmfc:PropertyItemsControl>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button x:Name="Change" IsDefault="True" Style="{DynamicResource ChangeButton_Style}" />
+            <Border Width="4" />
+            <Button x:Name="TryClose" Content="{x:Static p:Resources.Button_Close}" Style="{DynamicResource Dialog_Button_Style}" />
+        </StackPanel>
+    </StackPanel>
+    
+</UserControl>

@@ -1,0 +1,332 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{5775FED7-233E-48B2-8F83-538DC1123527}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Ntreev.Crema.Client.Base</RootNamespace>
+    <AssemblyName>Ntreev.Crema.Client.Base</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\Debug\crema\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\Release\crema\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Caliburn.Micro, Version=3.0.3.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Caliburn.Micro.Core.3.1.0\lib\net45\Caliburn.Micro.dll</HintPath>
+    </Reference>
+    <Reference Include="Caliburn.Micro.Platform, Version=3.0.3.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Caliburn.Micro.3.1.0\lib\net45\Caliburn.Micro.Platform.dll</HintPath>
+    </Reference>
+    <Reference Include="Caliburn.Micro.Platform.Core, Version=3.0.3.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Caliburn.Micro.3.1.0\lib\net45\Caliburn.Micro.Platform.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="FirstFloor.ModernUI, Version=1.0.9.0, Culture=neutral, PublicKeyToken=bc9b0c37bf06c6a9, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\ModernUI.WPF.1.0.9\lib\net45\FirstFloor.ModernUI.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Caliburn.Micro.3.1.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="Xceed.Wpf.DataGrid.v5.7, Version=5.7.15459.10040, Culture=neutral, PublicKeyToken=ba83ff368b7563c6, processorArchitecture=MSIL" />
+    <Reference Include="Xceed.Wpf.Toolkit, Version=3.4.17280.14430, Culture=neutral, PublicKeyToken=ba83ff368b7563c6, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Xceed.Wpf.Toolkit.3.4.17280.14430\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Assets\ConnectionListBox.xaml.cs">
+      <DependentUpon>ConnectionListBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="BrowserItems\ViewModels\DomainTreeViewItemViewModel.cs" />
+    <Compile Include="BrowserItems\ViewModels\DomainCategoryTreeViewItemViewModel.cs" />
+    <Compile Include="BrowserItems\ViewModels\DomainsViewModel.cs" />
+    <Compile Include="BrowserItems\Views\DomainsView.xaml.cs">
+      <DependentUpon>DomainsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="BrowserService.cs" />
+    <Compile Include="Controls\ConnectionListBox.cs" />
+    <Compile Include="DataBaseServiceView.xaml.cs">
+      <DependentUpon>DataBaseServiceView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DataBaseServiceViewModel.cs" />
+    <Compile Include="DataBaseUtility.cs" />
+    <Compile Include="Dialogs\ViewModels\CreateDataBaseViewModel.cs" />
+    <Compile Include="Dialogs\ViewModels\DataBaseItemViewModel.cs" />
+    <Compile Include="Dialogs\ViewModels\LogInfoViewModel.cs" />
+    <Compile Include="Dialogs\ViewModels\LogViewModel.cs" />
+    <Compile Include="Dialogs\ViewModels\RenameDataBaseViewModel.cs" />
+    <Compile Include="Dialogs\ViewModels\SelectDataBaseViewModel.cs" />
+    <Compile Include="Dialogs\ViewModels\ConnectionItemEditViewModel.cs" />
+    <Compile Include="Dialogs\Views\CreateDataBaseView.xaml.cs">
+      <DependentUpon>CreateDataBaseView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Views\LogView.xaml.cs">
+      <DependentUpon>LogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Views\SelectDataBaseView.xaml.cs">
+      <DependentUpon>SelectDataBaseView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Views\ConnectionItemEditView.xaml.cs">
+      <DependentUpon>ConnectionItemEditView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="IBrowserService.cs" />
+    <Compile Include="IPropertyService.cs" />
+    <Compile Include="MenuItems\MovoToWikiMenuItem.cs" />
+    <Compile Include="MenuItems\Services\ConnectionItemCopyMenuItem.cs" />
+    <Compile Include="MenuItems\Services\ConnectionItemLoginMenuItem.cs" />
+    <Compile Include="MenuItems\Services\EnterDataBaseMenuItem.cs" />
+    <Compile Include="MenuItems\AboutMenuItem.cs" />
+    <Compile Include="MenuItems\ChangeDataBaseMenuItem.cs" />
+    <Compile Include="MenuItems\DataBaseMenuItem.cs" />
+    <Compile Include="MenuItems\DeleteDataBaseMenuItem.cs" />
+    <Compile Include="MenuItems\CreateDataBaseMenuItem.cs" />
+    <Compile Include="MenuItems\DeleteConnectionItemMenuItem.cs" />
+    <Compile Include="ToolBarItems\MovoToWikiToolBarItem.cs" />
+    <Compile Include="ToolBarItems\CreateDataBaseToolBarItem.cs" />
+    <Compile Include="ToolBarItems\LoadDataBaseIcon.xaml.cs">
+      <DependentUpon>LoadDataBaseIcon.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolBarItems\LoadDataBaseToolBarItem.cs" />
+    <Compile Include="MenuItems\FileMenuItem.cs" />
+    <Compile Include="MenuItems\HelpMenuItem.cs" />
+    <Compile Include="MenuItems\LeaveDataBaseMenuItem.cs" />
+    <Compile Include="MenuItems\LogoutMenuItem.cs" />
+    <Compile Include="MenuItems\MainMenuViewModel.cs" />
+    <Compile Include="MenuItems\EditConnectionItemMenuItem.cs" />
+    <Compile Include="MenuItems\ToolsMenuItem.cs" />
+    <Compile Include="PropertyItems\ViewModels\AccessInfoViewModel.cs" />
+    <Compile Include="PropertyItems\ViewModels\DataBaseDomainsViewModel.cs" />
+    <Compile Include="PropertyItems\ViewModels\DomainItemViewModel.cs" />
+    <Compile Include="PropertyItems\ViewModels\DomainInfoViewModel.cs" />
+    <Compile Include="PropertyItems\ViewModels\DomainUsersViewModel.cs" />
+    <Compile Include="PropertyItems\ViewModels\LockInfoViewModel.cs" />
+    <Compile Include="PropertyItems\ViewModels\DataBaseInfoViewModel.cs" />
+    <Compile Include="PropertyItems\Views\DataBaseDomainsView.xaml.cs">
+      <DependentUpon>DataBaseDomainsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyItems\Views\DataBaseInfoView.xaml.cs">
+      <DependentUpon>DataBaseInfoView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyItems\Views\DomainInfoView.xaml.cs">
+      <DependentUpon>DomainInfoView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyItems\Views\DomainUsersView.xaml.cs">
+      <DependentUpon>DomainUsersView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyService.cs" />
+    <Compile Include="Services\ViewModels\CremaAppHostViewModel.cs" />
+    <Compile Include="Authenticator.cs" />
+    <Compile Include="Dialogs\Views\CopyDataBaseView.xaml.cs">
+      <DependentUpon>CopyDataBaseView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ViewModels\CopyDataBaseViewModel.cs" />
+    <Compile Include="MenuItems\CopyDataBaseMenuItem.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Services\ViewModels\DataBaseItemViewModel.cs" />
+    <Compile Include="Services\ViewModels\DataBaseListViewModel.cs" />
+    <Compile Include="Services\ViewModels\ConnectionItemInfo.cs" />
+    <Compile Include="Services\ViewModels\ServerInfo.cs" />
+    <Compile Include="Services\ViewModels\ConnectionItemCollection.cs" />
+    <Compile Include="Services\ViewModels\ServerItemCollection.cs" />
+    <Compile Include="Services\ViewModels\ConnectionItemViewModel.cs" />
+    <Compile Include="Services\ViewModels\TaskWaiter.cs" />
+    <Compile Include="Services\Views\CremaAppHostView.xaml.cs">
+      <DependentUpon>CremaAppHostView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Services\Views\DataBaseListView.xaml.cs">
+      <DependentUpon>DataBaseListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Settings.cs" />
+    <EmbeddedResource Include="Properties\Resources.ko-KR.resx" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\common\Ntreev.Crema.Presentation\Ntreev.Crema.Presentation.csproj">
+      <Project>{ea40ac57-d041-44f4-bd03-5e81d0572625}</Project>
+      <Name>Ntreev.Crema.Presentation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\common\Ntreev.Crema.ServiceModel\Ntreev.Crema.ServiceModel.csproj">
+      <Project>{6478450a-dfa5-445d-890f-bc5f57c9a148}</Project>
+      <Name>Ntreev.Crema.ServiceModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\sub-modules\Ntreev.Library\Ntreev.Library\Ntreev.Library.csproj">
+      <Project>{1918437f-4fbf-4731-ac5b-981a4a4cb1f1}</Project>
+      <Name>Ntreev.Library</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\sub-modules\Ntreev.ModernUI.Framework\Ntreev.ModernUI.Framework.DataGrid\Ntreev.ModernUI.Framework.DataGrid.csproj">
+      <Project>{1c55fed2-99eb-469d-9dac-a1f7b9e7c790}</Project>
+      <Name>Ntreev.ModernUI.Framework.DataGrid</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\sub-modules\Ntreev.ModernUI.Framework\Ntreev.ModernUI.Framework\Ntreev.ModernUI.Framework.csproj">
+      <Project>{20c3d3dd-de99-4126-9449-bca12e4d255d}</Project>
+      <Name>Ntreev.ModernUI.Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ntreev.Crema.Client.Framework\Ntreev.Crema.Client.Framework.csproj">
+      <Project>{4c1fbd82-bca7-44d2-b832-bfa2ab80eebb}</Project>
+      <Name>Ntreev.Crema.Client.Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ntreev.Crema.Services\Ntreev.Crema.Services.csproj">
+      <Project>{0eac90ab-7c7e-47e3-9954-148b45521fcb}</Project>
+      <Name>Ntreev.Crema.Services</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\message.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Assets\AccountView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Assets\ConnectionListBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="BrowserItems\Views\DomainsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="DataBaseServiceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\Views\CreateDataBaseView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\Views\LogView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\Views\SelectDataBaseView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\Views\ConnectionItemEditView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PropertyItems\Views\AccessInfoView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PropertyItems\Views\DataBaseDomainsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PropertyItems\Views\DomainInfoView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PropertyItems\Views\DomainUsersView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PropertyItems\Views\LockInfoView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PropertyItems\Views\DataBaseInfoView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Services\Views\CremaAppHostView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\Views\CopyDataBaseView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Services\Views\DataBaseListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolBarItems\LoadDataBaseIcon.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\wiki.png" />
+  </ItemGroup>
+  <Import Project="..\..\common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems" Label="Shared" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,428 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8F45555B-E07A-4627-806F-821FF294A049}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Ntreev.Crema.Designer</RootNamespace>
+    <AssemblyName>cremadesigner</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <AssemblyInfoFilePath>..\..\GlobalAssemblyInfo.cs</AssemblyInfoFilePath>
+    <UpdateAssemblyVersion>False</UpdateAssemblyVersion>
+    <UpdateAssemblyFileVersion>False</UpdateAssemblyFileVersion>
+    <UpdateAssemblyInfoVersion>False</UpdateAssemblyInfoVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\Debug\cremadesigner\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\devbin\Release\cremadesigner\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Caliburn.Micro, Version=3.0.3.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Caliburn.Micro.Core.3.1.0\lib\net45\Caliburn.Micro.dll</HintPath>
+    </Reference>
+    <Reference Include="Caliburn.Micro.Platform, Version=3.0.3.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Caliburn.Micro.3.1.0\lib\net45\Caliburn.Micro.Platform.dll</HintPath>
+    </Reference>
+    <Reference Include="Caliburn.Micro.Platform.Core, Version=3.0.3.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Caliburn.Micro.3.1.0\lib\net45\Caliburn.Micro.Platform.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="FirstFloor.ModernUI, Version=1.0.9.0, Culture=neutral, PublicKeyToken=bc9b0c37bf06c6a9, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\ModernUI.WPF.1.0.9\lib\net45\FirstFloor.ModernUI.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MahApps.Metro, Version=1.5.0.23, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MahApps.Metro.1.5.0\lib\net45\MahApps.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\WindowsAPICodePack-Core.1.1.2\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\WindowsAPICodePack-Shell.1.1.1\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MahApps.Metro.1.5.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.4.17280.14430, Culture=neutral, PublicKeyToken=ba83ff368b7563c6, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Xceed.Wpf.AvalonDock.3.4.17280.14430\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Controls.v5.7, Version=5.7.15459.10040, Culture=neutral, PublicKeyToken=ba83ff368b7563c6, processorArchitecture=MSIL" />
+    <Reference Include="Xceed.Wpf.DataGrid.v5.7, Version=5.7.15459.10040, Culture=neutral, PublicKeyToken=ba83ff368b7563c6, processorArchitecture=MSIL" />
+    <Reference Include="Xceed.Wpf.Toolkit, Version=3.4.17280.14430, Culture=neutral, PublicKeyToken=ba83ff368b7563c6, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Xceed.Wpf.Toolkit.3.4.17280.14430\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="AppBootstrapper.cs" />
+    <Compile Include="Assets\ShellView.xaml.cs">
+      <DependentUpon>ShellView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ContentLink.cs" />
+    <Compile Include="DataSetProperties.cs" />
+    <Compile Include="IContent.cs" />
+    <Compile Include="IPropertyItem.cs" />
+    <Compile Include="IPropertyService.cs" />
+    <Compile Include="ITypePropertyService.cs" />
+    <Compile Include="ITablePropertyService.cs" />
+    <Compile Include="ITypeDescriptor.cs" />
+    <Compile Include="ITableDescriptor.cs" />
+    <Compile Include="PropertyItemBase.cs" />
+    <Compile Include="PropertyServiceBase.cs" />
+    <Compile Include="Tables\ViewModels\ColumnInfoItemViewModel.cs" />
+    <Compile Include="Tables\ViewModels\ColumnInfoViewModel.cs" />
+    <Compile Include="Tables\ViewModels\ReferencedTablesViewModel.cs" />
+    <Compile Include="Tables\ViewModels\TableListBoxItemViewModel.cs" />
+    <Compile Include="Tables\Views\ReferencedTablesView.xaml.cs">
+      <DependentUpon>ReferencedTablesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TypeState.cs" />
+    <Compile Include="TypeAttribute.cs" />
+    <Compile Include="TableAttribute.cs" />
+    <Compile Include="TableState.cs" />
+    <Compile Include="Tables\Assets\TreeViewItem.xaml.cs">
+      <DependentUpon>TreeViewItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ContentLoader.cs" />
+    <Compile Include="IShell.cs" />
+    <Compile Include="Tables\ViewModels\CategoryTreeViewItemViewModel.cs" />
+    <Compile Include="Tables\ViewModels\DataBaseTreeViewItemViewModel.cs" />
+    <Compile Include="Tables\ViewModels\EditTemplateViewModel.cs" />
+    <Compile Include="Tables\ViewModels\NewChildTableViewModel.cs" />
+    <Compile Include="Tables\ViewModels\NewTableViewModel.cs" />
+    <Compile Include="Tables\ViewModels\RenameTableViewModel.cs" />
+    <Compile Include="Tables\ViewModels\TableDocumentViewModel.cs" />
+    <Compile Include="Tables\ViewModels\TableEditorViewModel.cs" />
+    <Compile Include="Tables\ViewModels\TableInfoViewModel.cs" />
+    <Compile Include="Tables\ViewModels\TablePropertyViewModel.cs" />
+    <Compile Include="Tables\ViewModels\TablesViewModel.cs" />
+    <Compile Include="ShellViewModel.cs" />
+    <Compile Include="Tables\ViewModels\TemplateViewModel.cs" />
+    <Compile Include="Tables\Views\TableEditorView.xaml.cs">
+      <DependentUpon>TableEditorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tables\Views\TableInfoView.xaml.cs">
+      <DependentUpon>TableInfoView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tables\Views\TemplateView.xaml.cs">
+      <DependentUpon>TemplateView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Types\Assets\TreeViewItem.xaml.cs">
+      <DependentUpon>TreeViewItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Types\ViewModels\CategoryTreeViewItemViewModel.cs" />
+    <Compile Include="Types\ViewModels\DataBaseTreeViewItemViewModel.cs" />
+    <Compile Include="Types\ViewModels\EditTemplateViewModel.cs" />
+    <Compile Include="Types\ViewModels\NewTypeViewModel.cs" />
+    <Compile Include="Types\ViewModels\ReferencedTypesViewModel.cs" />
+    <Compile Include="Types\ViewModels\RenameTypeViewModel.cs" />
+    <Compile Include="Types\ViewModels\TypeInfoViewModel.cs" />
+    <Compile Include="Types\ViewModels\TypeListBoxItemViewModel.cs" />
+    <Compile Include="Types\ViewModels\TypePropertyViewModel.cs" />
+    <Compile Include="Types\ViewModels\TemplateViewModel.cs" />
+    <Compile Include="Types\ViewModels\TypeViewerViewModel.cs" />
+    <Compile Include="Types\ViewModels\TypeDocumentViewModel.cs" />
+    <Compile Include="Types\ViewModels\TypeTreeViewItemViewModel.cs" />
+    <Compile Include="Types\ViewModels\TypeBrowserViewModel.cs" />
+    <Compile Include="Types\ViewModels\TypesViewModel.cs" />
+    <Compile Include="Types\Views\ReferencedTypesView.xaml.cs">
+      <DependentUpon>ReferencedTypesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Types\Views\TemplateView.xaml.cs">
+      <DependentUpon>TemplateView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Types\Views\TypeBrowserView.xaml.cs">
+      <DependentUpon>TypeBrowserView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Types\Views\TypeInfoView.xaml.cs">
+      <DependentUpon>TypeInfoView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Types\Views\TypesView.xaml.cs">
+      <DependentUpon>TypesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Types\Views\TypeViewerView.xaml.cs">
+      <DependentUpon>TypeViewerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Types\Views\UserControl1.xaml.cs">
+      <DependentUpon>UserControl1.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\TabItemViewModel.cs" />
+    <Compile Include="Tables\ViewModels\TableBrowserViewModel.cs" />
+    <Compile Include="Tables\ViewModels\TableTreeViewItemViewModel.cs" />
+    <Compile Include="ViewModels\TypeItemViewModel.cs" />
+    <Compile Include="Tables\ViewModels\TableItemViewModel.cs" />
+    <Compile Include="ViewModels\TypeNameItemViewModel.cs" />
+    <Compile Include="Views\Differences.xaml.cs">
+      <DependentUpon>Differences.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Home.xaml.cs">
+      <DependentUpon>Home.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ModernContentLoader.cs" />
+    <Compile Include="ShellView.xaml.cs">
+      <DependentUpon>ShellView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tables\Views\TableBrowserView.xaml.cs">
+      <DependentUpon>TableBrowserView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tables\Views\TablesView.xaml.cs">
+      <DependentUpon>TablesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tables\Views\TableItemView.xaml.cs">
+      <DependentUpon>TableItemView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TypeItemView.xaml.cs">
+      <DependentUpon>TypeItemView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TypesView.xaml.cs">
+      <DependentUpon>TypesView.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Assets\ButtonSpinner.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Assets\IconImage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Assets\ShellView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Assets\TimePicker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tables\Assets\TreeViewItem.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Tables\Views\ColumnInfoView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Tables\Views\ReferencedTablesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tables\Views\TableEditorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tables\Views\TableInfoView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tables\Views\TemplateView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Types\Assets\TreeViewItem.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Types\Views\ReferencedTypesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Types\Views\TemplateView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Types\Views\TypeBrowserView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Types\Views\TypeInfoView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Types\Views\TypesView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Types\Views\TypeViewerView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Types\Views\UserControl1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Differences.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Home.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ShellView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tables\Views\TableBrowserView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tables\Views\TablesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tables\Views\TableItemView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TypeItemView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TypesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\licenses\Xceed.Wpf.DataGrid.license">
+      <Link>Licenses\Xceed.Wpf.DataGrid.license</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\licenses\Xceed.Wpf.Toolkit.license">
+      <Link>Licenses\Xceed.Wpf.Toolkit.license</Link>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Controls\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\common\Ntreev.Crema.Data\Ntreev.Crema.Data.csproj">
+      <Project>{04aeb614-3510-4064-99af-0aa807c7f957}</Project>
+      <Name>Ntreev.Crema.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\common\Ntreev.Crema.Presentation\Ntreev.Crema.Presentation.csproj">
+      <Project>{ea40ac57-d041-44f4-bd03-5e81d0572625}</Project>
+      <Name>Ntreev.Crema.Presentation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\sub-modules\Ntreev.Library\Ntreev.Library\Ntreev.Library.csproj">
+      <Project>{1918437f-4fbf-4731-ac5b-981a4a4cb1f1}</Project>
+      <Name>Ntreev.Library</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\sub-modules\Ntreev.ModernUI.Framework\Ntreev.ModernUI.Framework.DataGrid\Ntreev.ModernUI.Framework.DataGrid.csproj">
+      <Project>{1c55fed2-99eb-469d-9dac-a1f7b9e7c790}</Project>
+      <Name>Ntreev.ModernUI.Framework.DataGrid</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\sub-modules\Ntreev.ModernUI.Framework\Ntreev.ModernUI.Framework\Ntreev.ModernUI.Framework.csproj">
+      <Project>{20c3d3dd-de99-4126-9449-bca12e4d255d}</Project>
+      <Name>Ntreev.ModernUI.Framework</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\close.png" />
+    <Resource Include="Images\rename.png" />
+    <Resource Include="Images\table.png" />
+    <Resource Include="Images\type_enum.png" />
+    <Resource Include="Images\type_flag.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\database.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\table_base.png" />
+    <Resource Include="Images\table_derived.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\folder_c.png" />
+    <Resource Include="Images\folder_o.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\edit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\setting.png" />
+  </ItemGroup>
+  <Import Project="..\..\common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems" Label="Shared" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

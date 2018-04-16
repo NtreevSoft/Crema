@@ -1,0 +1,89 @@
+﻿<!--===================================================================================================================
+Released under the MIT License.
+    
+Copyright (c) 2018 Ntreev Soft co., Ltd.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the 
+Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+====================================================================================================================-->
+<UserControl x:Class="Ntreev.Crema.Designer.Tables.Views.ReferencedTablesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:nmfc="clr-namespace:Ntreev.ModernUI.Framework.Controls;assembly=Ntreev.ModernUI.Framework"
+             xmlns:nmfm="clr-namespace:Ntreev.ModernUI.Framework.Markup;assembly=Ntreev.ModernUI.Framework"
+             xmlns:nmfv="clr-namespace:Ntreev.ModernUI.Framework.Converters;assembly=Ntreev.ModernUI.Framework"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+
+    <UserControl.Resources>
+        <nmfv:IsNullConverter x:Key="IsNullConverter" />
+        <nmfv:IsNullConverter x:Key="IsNotNullConverter" Inverse="True" />
+
+        <Style x:Key="ItemContainerStyle" TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource ListBoxItem_Style}">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        </Style>
+
+        <Style x:Key="TextBlock_Style" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding TableInfo.DerivedTags.Color, Converter={StaticResource IsNotNullConverter}}" Value="True">
+                    <Setter Property="TextElement.Foreground" Value="{Binding TableInfo.DerivedTags.Color, TargetNullValue=Green}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <ControlTemplate x:Key="ListBox_Template" TargetType="{x:Type ListBox}">
+            <Border Name="Border"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    Background="{TemplateBinding Background}"
+                    BorderThickness="{TemplateBinding BorderThickness}">
+                <ItemsPresenter />
+            </Border>
+        </ControlTemplate>
+
+        <DataTemplate x:Key="ListBox_ItemTemplate">
+            <DataTemplate.Resources>
+                <nmfc:ExpandableContextMenu x:Key="ListBoxItem_ContextMenu" ItemsSource="{Binding ContextMenus}">
+                    <MenuItem x:Name="SelectInBrowser" Header="테이블 브라우저에서 보기(_V)..." TextElement.FontWeight="Bold" />
+                    <MenuItem x:Name="Lock" Header="잠금 설정(_K)..." Visibility="{nmfm:VisibilityBinding CanLock}" />
+                    <MenuItem x:Name="Unlock" Header="잠금 해제(_U)" Visibility="{nmfm:VisibilityBinding CanUnlock}" />
+                </nmfc:ExpandableContextMenu>
+            </DataTemplate.Resources>
+            <ContentControl Focusable="False" Margin="2" ContextMenu="{StaticResource ListBoxItem_ContextMenu}" ContextMenuOpening="ContentControl_ContextMenuOpening">
+                <DockPanel Background="Transparent" >
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal"  >
+                        <nmfc:IconImage Style="{StaticResource EditingImage_Style}" />
+                        <nmfc:IconImage Style="{StaticResource TableSettingImage_Style}" />
+                    </StackPanel>
+                    <StackPanel x:Name="label" Orientation="Horizontal">
+                        <nmfc:IconImage Style="{StaticResource TableImage_Style}" Margin="0 0 4 0" />
+                        <TextBlock Text="{Binding DisplayName}" Style="{StaticResource TextBlock_Style}" />
+                    </StackPanel>
+                </DockPanel>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="PreviewMouseDoubleClick">
+                        <i:InvokeCommandAction Command="{Binding SelectInBrowserCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </ContentControl>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <ListBox ItemsSource="{Binding Tables}" SelectedItem="{Binding SelectedTable}"
+             Template="{StaticResource ListBox_Template}"
+             ItemTemplate="{StaticResource ListBox_ItemTemplate}"
+             ItemContainerStyle="{StaticResource ItemContainerStyle}" />
+
+</UserControl>

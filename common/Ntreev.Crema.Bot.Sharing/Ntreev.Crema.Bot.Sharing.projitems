@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>35ad4803-bec1-4f3e-98ab-5c7961f2c261</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Ntreev.Crema.Bot</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AutobotBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AutobotServiceBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ITaskProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TaskClassAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TaskSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TaskContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TaskMethodAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Tasks\IAutobotTask.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Tasks\IDataBaseCollectionTask.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Tasks\IDataBaseTask.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Tasks\ITableCategoryTask.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Tasks\ITableColumnTask.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Tasks\ITableContentTask.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Tasks\ITableRowTask.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Tasks\ITableTask.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Tasks\ITableTemplateTask.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Tasks\ITypeCategoryTask.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Tasks\ITypeMemberTask.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Tasks\ITypeTask.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Tasks\ITypeTemplateTask.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Tasks\IUserCategoryTask.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Tasks\IUserTask.cs" />
+  </ItemGroup>
+</Project>

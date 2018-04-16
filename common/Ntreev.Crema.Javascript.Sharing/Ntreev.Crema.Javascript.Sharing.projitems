@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>a4955825-195f-4677-9695-5fc67362a449</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Ntreev.Crema.Javascript</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\GenerateDeclarationCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GenerateArgumentsCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GenerateDeclarationCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IScriptMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\ReadFileTextMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\ReadFileMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\WriteFileTextMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\WriteFileMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\GetDataBaseInfoByTagsMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\GetDataBaseInfoMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\GetDataBaseLogInfoMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\GetTableInfoByTagsMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\GetTableListByTagsMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\GetTypeDataMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\GetTableDataMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\GetTableItemListMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\GetTypeInfoByTagsMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\GetTypeItemListMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\GetTypeListByTagsMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\GetTypeListMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\GetTypeInfoMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\GetUserItemListMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\IsTypeItemLockedMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\GetTableItemLogInfoMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\IsTypeItemPrivateMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\IsTableItemPrivateMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\IsTableItemLockedMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\PrivateTypeItemMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\PrivateTableItemMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\NotifyMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\PublicTypeItemMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\PublicTableItemMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\UnlockTableItemMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\LockTableItemMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\IsDataBaseLoadedMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\LeaveDataBaseMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\EnterDataBaseMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\UnloadDataBaseMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\LoadDataBaseMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\GetTableListMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\GetDomainInfoMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\GetTableInfoMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\SleepMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\GetUserBanInfoMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\IsUserBannedMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\UnbanUserMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\DeleteDomainMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\GetDomainUserListMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\GetDomainListMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\BanUserMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\KickUserMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\GetUserStateMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\GetUserInfoMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\LogMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\SendMessageMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DataBaseScriptMethodBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IScriptMethodContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ScriptMethodBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\GetUserListMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\GetDataBaseListMethod.cs" />
+    <None Include="$(MSBuildThisFileDirectory)Methods\CallMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ScriptContextBase.cs" />
+  </ItemGroup>
+</Project>

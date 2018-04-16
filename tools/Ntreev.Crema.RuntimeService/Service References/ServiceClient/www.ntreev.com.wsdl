@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://www.ntreev.com" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.ntreev.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://www.ntreev.com/Imports">
+      <xsd:import namespace="http://www.ntreev.com" />
+      <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/System" />
+      <xsd:import namespace="http://schemas.ntreev.com" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IRuntimeService_GetCodeGenerationData_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetCodeGenerationData" />
+  </wsdl:message>
+  <wsdl:message name="IRuntimeService_GetCodeGenerationData_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetCodeGenerationDataResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRuntimeService_GetDataGenerationData_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDataGenerationData" />
+  </wsdl:message>
+  <wsdl:message name="IRuntimeService_GetDataGenerationData_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDataGenerationDataResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRuntimeService_GetMetaData_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetMetaData" />
+  </wsdl:message>
+  <wsdl:message name="IRuntimeService_GetMetaData_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetMetaDataResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRuntimeService_ResetData_InputMessage">
+    <wsdl:part name="parameters" element="tns:ResetData" />
+  </wsdl:message>
+  <wsdl:message name="IRuntimeService_ResetData_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ResetDataResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRuntimeService_GetRevision_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetRevision" />
+  </wsdl:message>
+  <wsdl:message name="IRuntimeService_GetRevision_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetRevisionResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IRuntimeService">
+    <wsdl:operation name="GetCodeGenerationData">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IRuntimeService/GetCodeGenerationData" message="tns:IRuntimeService_GetCodeGenerationData_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IRuntimeService/GetCodeGenerationDataResponse" message="tns:IRuntimeService_GetCodeGenerationData_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDataGenerationData">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IRuntimeService/GetDataGenerationData" message="tns:IRuntimeService_GetDataGenerationData_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IRuntimeService/GetDataGenerationDataResponse" message="tns:IRuntimeService_GetDataGenerationData_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMetaData">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IRuntimeService/GetMetaData" message="tns:IRuntimeService_GetMetaData_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IRuntimeService/GetMetaDataResponse" message="tns:IRuntimeService_GetMetaData_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ResetData">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IRuntimeService/ResetData" message="tns:IRuntimeService_ResetData_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IRuntimeService/ResetDataResponse" message="tns:IRuntimeService_ResetData_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRevision">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IRuntimeService/GetRevision" message="tns:IRuntimeService_GetRevision_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IRuntimeService/GetRevisionResponse" message="tns:IRuntimeService_GetRevision_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

@@ -1,0 +1,432 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{92B62CA2-3246-4AB0-B190-B3D3381F15A5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Ntreev.Crema.Client.Tables</RootNamespace>
+    <AssemblyName>Ntreev.Crema.Client.Tables</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\Release\crema\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Caliburn.Micro, Version=3.0.3.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Caliburn.Micro.Core.3.1.0\lib\net45\Caliburn.Micro.dll</HintPath>
+    </Reference>
+    <Reference Include="Caliburn.Micro.Platform, Version=3.0.3.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Caliburn.Micro.3.1.0\lib\net45\Caliburn.Micro.Platform.dll</HintPath>
+    </Reference>
+    <Reference Include="Caliburn.Micro.Platform.Core, Version=3.0.3.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Caliburn.Micro.3.1.0\lib\net45\Caliburn.Micro.Platform.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="FirstFloor.ModernUI, Version=1.0.9.0, Culture=neutral, PublicKeyToken=bc9b0c37bf06c6a9, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\ModernUI.WPF.1.0.9\lib\net45\FirstFloor.ModernUI.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Caliburn.Micro.3.1.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.4.17280.14430, Culture=neutral, PublicKeyToken=ba83ff368b7563c6, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Xceed.Wpf.AvalonDock.3.4.17280.14430\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Controls.v5.7, Version=5.7.15459.10040, Culture=neutral, PublicKeyToken=ba83ff368b7563c6, processorArchitecture=MSIL" />
+    <Reference Include="Xceed.Wpf.DataGrid.v5.7, Version=5.7.15459.10040, Culture=neutral, PublicKeyToken=ba83ff368b7563c6, processorArchitecture=MSIL" />
+    <Reference Include="Xceed.Wpf.Toolkit, Version=3.4.17280.14430, Culture=neutral, PublicKeyToken=ba83ff368b7563c6, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Xceed.Wpf.Toolkit.3.4.17280.14430\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Authenticator.cs" />
+    <Compile Include="BrowserService.cs" />
+    <Compile Include="BrowserItems\ViewModels\TableTreeViewItemViewModel.cs" />
+    <Compile Include="BrowserItems\ViewModels\TableCategoryTreeViewItemViewModel.cs" />
+    <Compile Include="Dialogs\ViewModels\EditTemplateViewModel.cs" />
+    <Compile Include="Dialogs\ViewModels\CopyTableViewModel.cs" />
+    <Compile Include="BrowserItems\ViewModels\TableRootTreeViewItemViewModel.cs" />
+    <Compile Include="Dialogs\ViewModels\DeleteTableCategoryViewModel.cs" />
+    <Compile Include="Dialogs\ViewModels\DeleteTableViewModel.cs" />
+    <Compile Include="Dialogs\ViewModels\LogInfoViewModel.cs" />
+    <Compile Include="Dialogs\ViewModels\MoveTableCategoryViewModel.cs" />
+    <Compile Include="Dialogs\ViewModels\MoveTableViewModel.cs" />
+    <Compile Include="Dialogs\ViewModels\NewTableCategoryViewModel.cs" />
+    <Compile Include="Dialogs\ViewModels\NewChildTableViewModel.cs" />
+    <Compile Include="Dialogs\ViewModels\NewTableViewModel.cs" />
+    <Compile Include="Dialogs\ViewModels\PreviewDocumentViewModel.cs" />
+    <Compile Include="Dialogs\ViewModels\PreviewTableDocumentViewModel.cs" />
+    <Compile Include="Dialogs\ViewModels\PreviewTableTreeViewItemViewModel.cs" />
+    <Compile Include="Dialogs\ViewModels\PreviewTableCategoryTreeViewItemViewModel.cs" />
+    <Compile Include="Dialogs\ViewModels\PreviewTableCategoryViewModel.cs" />
+    <Compile Include="Dialogs\ViewModels\PreviewTableViewModel.cs" />
+    <Compile Include="Dialogs\ViewModels\PreviewTreeViewItemViewModelBuilder.cs" />
+    <Compile Include="Dialogs\ViewModels\RenameCategoryViewModel.cs" />
+    <Compile Include="Dialogs\ViewModels\RenameTableViewModel.cs" />
+    <Compile Include="BrowserItems\ViewModels\TableBrowserViewModel.cs" />
+    <Compile Include="Dialogs\ViewModels\ViewTemplateViewModel.cs" />
+    <Compile Include="Dialogs\ViewModels\TemplateViewModel.cs" />
+    <Compile Include="Dialogs\ViewModels\LogViewModel.cs" />
+    <Compile Include="BrowserItems\Views\TableBrowserView.xaml.cs">
+      <DependentUpon>TableBrowserView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Views\CopyTableView.xaml.cs">
+      <DependentUpon>CopyTableView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Views\LogView.xaml.cs">
+      <DependentUpon>LogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Views\PreviewTableDocumentView.xaml.cs">
+      <DependentUpon>PreviewTableDocumentView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Views\ViewTemplateView.xaml.cs">
+      <DependentUpon>ViewTemplateView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Views\TemplateView.xaml.cs">
+      <DependentUpon>TemplateView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Documents\Assets\TableSourceControl.xaml.cs">
+      <DependentUpon>TableSourceControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Documents\ViewModels\FindResultItemViewModel.cs" />
+    <Compile Include="Documents\ViewModels\TableDocumentBase.cs" />
+    <Compile Include="Documents\ViewModels\TableViewerViewModel.cs" />
+    <Compile Include="Documents\Views\TableViewerView.xaml.cs">
+      <DependentUpon>TableViewerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Documents\Views\TableSourceColumnManagerRow.cs" />
+    <Compile Include="Documents\Views\TableSourceCommands.cs" />
+    <Compile Include="Documents\Views\TableSourceControl.cs" />
+    <Compile Include="Documents\Views\TableSourceInsertionRow.cs" />
+    <Compile Include="Documents\Views\TableSourceDataCell.cs" />
+    <Compile Include="Documents\Views\TableSourceDataGridControl.cs" />
+    <Compile Include="Documents\Views\TableSourceDataRow.cs" />
+    <Compile Include="Documents\Views\TableSourceTagDataCell.cs" />
+    <Compile Include="Documents\Views\TableSourceEnableDataCell.cs" />
+    <Compile Include="IBrowserService.cs" />
+    <Compile Include="ITableDocumentItem.cs" />
+    <Compile Include="ITableDocument.cs" />
+    <Compile Include="ITableDocumentService.cs" />
+    <Compile Include="IPropertyService.cs" />
+    <Compile Include="ITableBrowser.cs" />
+    <None Include="LayoutUpdateStrategy.cs" />
+    <Compile Include="MenuItems\SelectInBrowserMenuItem.cs" />
+    <Compile Include="MenuItems\CancelTemplateEditMenuItem.cs" />
+    <Compile Include="MenuItems\CancelContentEditMenuItem.cs" />
+    <Compile Include="MenuItems\EndContentEditMenuItem.cs" />
+    <Compile Include="MenuItems\EndTemplateEditMenuItem.cs" />
+    <Compile Include="MenuItems\TableMenuItem.cs" />
+    <Compile Include="MenuItems\TreeViewItems\ViewContentMenuItem.cs" />
+    <Compile Include="MenuItems\TreeViewItems\EditContentMenuItem.cs" />
+    <Compile Include="MenuItems\TreeViewItems\TagMenus\AllTagsMenuItem.cs" />
+    <Compile Include="MenuItems\TableMenus\QuickFindTableDataMenuItem.cs" />
+    <Compile Include="MenuItems\TreeViewItems\TagMenus\UnusedTagsMenuItem.cs" />
+    <Compile Include="MenuItems\TableMenus\FindTableDataMenuItem.cs" />
+    <Compile Include="MenuItems\TreeViewItems\TagMenus\ClientTagsMenuItem.cs" />
+    <Compile Include="MenuItems\TreeViewItems\TagMenus\ServerTagsMenuItem.cs" />
+    <Compile Include="MenuItems\TreeViewItems\TagsMenuItem.cs" />
+    <Compile Include="PropertyItems\ViewModels\AccessInfoViewModel.cs" />
+    <Compile Include="PropertyItems\ViewModels\ColumnInfoItemViewModel.cs" />
+    <Compile Include="PropertyItems\ViewModels\ColumnInfoViewModel.cs" />
+    <Compile Include="PropertyItems\ViewModels\BaseTableViewModel.cs" />
+    <Compile Include="PropertyItems\ViewModels\LockInfoViewModel.cs" />
+    <Compile Include="PropertyItems\ViewModels\DerivedTablesViewModel.cs" />
+    <Compile Include="PropertyItems\Views\BaseTableView.xaml.cs">
+      <DependentUpon>BaseTableView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyItems\Views\DerivedTablesView.xaml.cs">
+      <DependentUpon>DerivedTablesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyItems\Views\ReferencedTablesView.xaml.cs">
+      <DependentUpon>ReferencedTablesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyItems\Views\TableInfoView.xaml.cs">
+      <DependentUpon>TableInfoView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyService.cs" />
+    <Compile Include="PropertyItems\ViewModels\ReferencedTablesViewModel.cs" />
+    <Compile Include="PropertyItems\ViewModels\TableInfoViewModel.cs" />
+    <Compile Include="PropertyItems\ViewModels\TableListBoxItemViewModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Documents\ViewModels\TableDocumentServiceViewModel.cs" />
+    <Compile Include="Documents\ViewModels\TableEditorViewModel.cs" />
+    <Compile Include="Documents\ViewModels\TableItemViewModel.cs" />
+    <Compile Include="Documents\ViewModels\TableDataFinderViewModel.cs" />
+    <Compile Include="Documents\Views\TableItemView.xaml.cs">
+      <DependentUpon>TableItemView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Documents\Views\TableEditorView.xaml.cs">
+      <DependentUpon>TableEditorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Documents\Views\TableDataFinderView.xaml.cs">
+      <DependentUpon>TableDataFinderView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Settings.cs" />
+    <Compile Include="TableItemUtility.cs" />
+    <Compile Include="TableUtility.cs" />
+    <Compile Include="TableCategoryUtility.cs" />
+    <Compile Include="TableServiceDockView.xaml.cs">
+      <DependentUpon>TableServiceDockView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TableServiceView.xaml.cs">
+      <DependentUpon>TableServiceView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TableServiceViewModel.cs" />
+    <EmbeddedResource Include="Properties\Resources.ko-KR.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Assets\MenuItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Assets\TreeView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\Views\CopyTableView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\Views\PreviewTableCategoryView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\Views\PreviewTableDocumentView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\Views\PreviewTableView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="BrowserItems\Views\TableBrowserView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\Views\ViewTemplateView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\Views\TemplateView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\Views\LogView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Documents\Assets\TableSourceControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Documents\Views\TableViewerView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Documents\Views\TableEditorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Documents\Views\TableItemView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Documents\Views\TableDataFinderView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PropertyItems\Views\AccessInfoView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PropertyItems\Views\ColumnInfoView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PropertyItems\Views\BaseTableView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PropertyItems\Views\LockInfoView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PropertyItems\Views\DerivedTablesView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PropertyItems\Views\ReferencedTablesView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PropertyItems\Views\TableInfoView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="TableServiceDockView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="TableServiceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\common\Ntreev.Crema.Data\Ntreev.Crema.Data.csproj">
+      <Project>{04aeb614-3510-4064-99af-0aa807c7f957}</Project>
+      <Name>Ntreev.Crema.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\common\Ntreev.Crema.Presentation\Ntreev.Crema.Presentation.csproj">
+      <Project>{ea40ac57-d041-44f4-bd03-5e81d0572625}</Project>
+      <Name>Ntreev.Crema.Presentation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\common\Ntreev.Crema.ServiceModel\Ntreev.Crema.ServiceModel.csproj">
+      <Project>{6478450a-dfa5-445d-890f-bc5f57c9a148}</Project>
+      <Name>Ntreev.Crema.ServiceModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\sub-modules\Ntreev.Library\Ntreev.Library\Ntreev.Library.csproj">
+      <Project>{1918437f-4fbf-4731-ac5b-981a4a4cb1f1}</Project>
+      <Name>Ntreev.Library</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\sub-modules\Ntreev.ModernUI.Framework\Ntreev.ModernUI.Framework.DataGrid\Ntreev.ModernUI.Framework.DataGrid.csproj">
+      <Project>{1c55fed2-99eb-469d-9dac-a1f7b9e7c790}</Project>
+      <Name>Ntreev.ModernUI.Framework.DataGrid</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\sub-modules\Ntreev.ModernUI.Framework\Ntreev.ModernUI.Framework\Ntreev.ModernUI.Framework.csproj">
+      <Project>{20c3d3dd-de99-4126-9449-bca12e4d255d}</Project>
+      <Name>Ntreev.ModernUI.Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ntreev.Crema.Client.Base\Ntreev.Crema.Client.Base.csproj">
+      <Project>{5775fed7-233e-48b2-8f83-538dc1123527}</Project>
+      <Name>Ntreev.Crema.Client.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ntreev.Crema.Client.Framework\Ntreev.Crema.Client.Framework.csproj">
+      <Project>{4c1fbd82-bca7-44d2-b832-bfa2ab80eebb}</Project>
+      <Name>Ntreev.Crema.Client.Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ntreev.Crema.Services\Ntreev.Crema.Services.csproj">
+      <Project>{0eac90ab-7c7e-47e3-9954-148b45521fcb}</Project>
+      <Name>Ntreev.Crema.Services</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="BrowserItems\Assets\" />
+    <Folder Include="PropertyItems\Converters\" />
+    <Folder Include="Resources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\star10.png" />
+  </ItemGroup>
+  <Import Project="..\..\common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems" Label="Shared" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

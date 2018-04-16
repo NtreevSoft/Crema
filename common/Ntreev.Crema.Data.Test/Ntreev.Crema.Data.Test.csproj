@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{DEBB7753-6410-47C4-ACEA-6771DD271940}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Ntreev.Crema.Data.Test</RootNamespace>
+    <AssemblyName>Ntreev.Crema.Data.Test</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
+    <IsCodedUITest>False</IsCodedUITest>
+    <TestProjectType>UnitTest</TestProjectType>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <Choose>
+    <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+  <ItemGroup>
+    <Compile Include="CremaDataColumn_ChangeBooleanToOtherTypeTest.cs" />
+    <Compile Include="CremaDataColumn_ChangeDoubleToOtherTypeTest.cs" />
+    <Compile Include="CremaDataColumn_ChangeInt64ToOtherTypeTest.cs" />
+    <Compile Include="CremaDataColumn_ChangeInt32ToOtherTypeTest.cs" />
+    <Compile Include="CremaDataColumn_ChangeUInt64ToOtherTypeTest.cs" />
+    <Compile Include="CremaDataColumn_ChangeUInt32ToOtherTypeTest.cs" />
+    <Compile Include="CremaDataColumn_ChangeUInt16ToOtherTypeTest.cs" />
+    <Compile Include="CremaDataColumn_ChangeInt16ToOtherTypeTest.cs" />
+    <Compile Include="CremaDataColumn_ChangeUInt8ToOtherTypeTest.cs" />
+    <Compile Include="CremaDataColumn_ChangeInt8ToOtherTypeTest.cs" />
+    <Compile Include="CremaDataColumn_ChangeSingleToOtherTypeTest.cs" />
+    <Compile Include="CremaDataColumn_ChangeStringToOtherTypeTest.cs" />
+    <Compile Include="CremaDataColumn_Complex_Test.cs" />
+    <Compile Include="CremaDataColumn_DerivedTest.cs" />
+    <Compile Include="CremaDataColumn_InTableTest.cs" />
+    <Compile Include="CremaDataColumn_MemberTest.cs" />
+    <Compile Include="CremaDataColumn_ChangeTypeTestBase.cs" />
+    <Compile Include="CremaDataTable_MethodTest.cs" />
+    <Compile Include="CremaDataTypeMemberCollection_Test.cs" />
+    <Compile Include="CremaTemplateColumn_InTableTest.cs" />
+    <Compile Include="CremaTemplateColumn_InTemplate_PropertyTest.cs" />
+    <Compile Include="CremaTemplateColumn_PropertyTest.cs" />
+    <Compile Include="CremaTemplate_PropertyTest.cs" />
+    <Compile Include="CremaTemplate_NewTest.cs" />
+    <Compile Include="CremaDataType_NewTest.cs" />
+    <Compile Include="CremaDataTable_PropertyTest.cs" />
+    <Compile Include="CremaDataTable_NewTest.cs" />
+    <Compile Include="CremaDataColumn_NewTest.cs" />
+    <Compile Include="CremaAttribute_NewTest.cs" />
+    <Compile Include="CremaAttribute_MemberTest.cs" />
+    <Compile Include="CremaDataColumnCollection_MethodTest.cs" />
+    <Compile Include="CremaDataSet_ComplexTest.cs" />
+    <Compile Include="CremaDataTable_ComplexTest.cs" />
+    <Compile Include="CremaComparer.cs" />
+    <Compile Include="CremaDataColumn_InEmptyTable_Test.cs" />
+    <Compile Include="CremaTemplate_ComplexTest.cs" />
+    <Compile Include="CremaTypeCollection_Test.cs" />
+    <Compile Include="CremaAttribute_Test.cs" />
+    <Compile Include="CremaDataTypeMember_Test.cs" />
+    <Compile Include="CremaDataType_ComplexTest.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\sub-modules\Ntreev.Library\Ntreev.Library.Random\Ntreev.Library.Random.csproj">
+      <Project>{83f1180f-f170-48cf-be1e-ca60d6851800}</Project>
+      <Name>Ntreev.Library.Random</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\sub-modules\Ntreev.Library\Ntreev.Library\Ntreev.Library.csproj">
+      <Project>{1918437f-4fbf-4731-ac5b-981a4a4cb1f1}</Project>
+      <Name>Ntreev.Library</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ntreev.Crema.Data.Random\Ntreev.Crema.Data.Random.csproj">
+      <Project>{678b4d6c-4331-4909-855d-3086b0b71f1e}</Project>
+      <Name>Ntreev.Crema.Data.Random</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ntreev.Crema.Data\Ntreev.Crema.Data.csproj">
+      <Project>{04aeb614-3510-4064-99af-0aa807c7f957}</Project>
+      <Name>Ntreev.Crema.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Choose>
+    <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.CodedUITestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Extension, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITesting, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

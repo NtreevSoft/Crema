@@ -1,0 +1,118 @@
+﻿<!--===================================================================================================================
+Released under the MIT License.
+    
+Copyright (c) 2018 Ntreev Soft co., Ltd.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the 
+Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+====================================================================================================================-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:ncpc="clr-namespace:Ntreev.Crema.Presentation.Controls"
+                    xmlns:nmfc="clr-namespace:Ntreev.ModernUI.Framework.Controls;assembly=Ntreev.ModernUI.Framework">
+
+    <DataTemplate x:Key="SeparatorTemplate">
+        <Border Margin="5 0" BorderThickness="1 0 0 0" BorderBrush="{DynamicResource SeparatorBackground}" />
+    </DataTemplate>
+
+    <ControlTemplate x:Key="HeaderedContentListItem_Template" TargetType="{x:Type ncpc:HeaderedContentListItem}">
+        <Border Name="Bd"
+                Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                Padding="{TemplateBinding Padding}"
+                SnapsToDevicePixels="true">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="{Binding HeaderActualWidth, RelativeSource={RelativeSource AncestorType={x:Type ncpc:HeaderedContentList}}}" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.Resources>
+                    
+                </Grid.Resources>
+                <ContentPresenter ContentSource="Header" ContentTemplate="{TemplateBinding HeaderTemplate}" 
+                                  ContentTemplateSelector="{TemplateBinding HeaderTemplateSelector}">
+                    <ContentPresenter.Resources>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="HorizontalAlignment" Value="Right" />
+                            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                            <Setter Property="nmfc:TextBlockService.ShowTrimmedText" Value="True" />
+                            <Style.Triggers>
+                                <Trigger Property="nmfc:TextBlockService.IsTextTrimmed" Value="True">
+                                    <Setter Property="ToolTip" Value="{Binding Text, RelativeSource={RelativeSource Self}}" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ContentPresenter.Resources>
+                </ContentPresenter>
+                <Border Grid.Column="1" Margin="5 0" BorderThickness="1 0 0 0" BorderBrush="{DynamicResource SeparatorBackground}" />
+                <ContentPresenter Grid.Column="2" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}">
+                    <ContentPresenter.Resources>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                            <Setter Property="nmfc:TextBlockService.ShowTrimmedText" Value="True" />
+                            <Style.Triggers>
+                                <Trigger Property="nmfc:TextBlockService.IsTextTrimmed" Value="True">
+                                    <Setter Property="ToolTip" Value="{Binding Text, RelativeSource={RelativeSource Self}}" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ContentPresenter.Resources>
+                </ContentPresenter>
+            </Grid>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="true">
+                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ItemBackgroundHover}" />
+                <Setter Property="Foreground" Value="{DynamicResource ItemTextHover}" />
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ItemBackgroundSelected}" />
+                <Setter Property="Foreground" Value="{DynamicResource ItemTextSelected}" />
+            </Trigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="True" />
+                    <Condition Binding="{Binding Path=IsKeyboardFocusWithin, RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}" Value="False" />
+                </MultiDataTrigger.Conditions>
+                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ItemBackgroundHover}" />
+            </MultiDataTrigger>
+            <Trigger Property="IsEnabled" Value="false">
+                <Setter Property="Foreground" Value="{DynamicResource ItemTextDisabled}" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <Style x:Key="HeaderedContentList_ItemContainerStyle" TargetType="{x:Type ncpc:HeaderedContentListItem}" BasedOn="{StaticResource ListBoxItem_Style}">
+        <Setter Property="Header" Value="{Binding Header}" />
+        <Setter Property="Content" Value="{Binding Content}" />
+        <Setter Property="Template" Value="{StaticResource HeaderedContentListItem_Template}" />
+    </Style>
+
+    <ControlTemplate x:Key="HeaderedContentList_Template" TargetType="{x:Type ncpc:HeaderedContentList}">
+        <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}"
+                BorderBrush="{TemplateBinding BorderBrush}" Padding="{TemplateBinding Padding}">
+            <ItemsPresenter Grid.ColumnSpan="3" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+        </Border>
+    </ControlTemplate>
+
+    <Style TargetType="{x:Type ncpc:HeaderedContentList}" BasedOn="{StaticResource {x:Type ListBox}}">
+        <Setter Property="Focusable" Value="True" />
+        <Setter Property="SelectionMode" Value="Single" />
+        <Setter Property="Template" Value="{StaticResource HeaderedContentList_Template}" />
+        <Setter Property="ItemContainerStyle" Value="{StaticResource HeaderedContentList_ItemContainerStyle}" />
+    </Style>
+
+</ResourceDictionary>

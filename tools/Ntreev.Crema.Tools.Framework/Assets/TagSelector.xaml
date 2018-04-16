@@ -1,0 +1,144 @@
+﻿<!--===================================================================================================================
+Released under the MIT License.
+    
+Copyright (c) 2018 Ntreev Soft co., Ltd.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the 
+Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+====================================================================================================================-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:ntfc="clr-namespace:Ntreev.Crema.Tools.Framework.Controls"
+                    xmlns:sm="clr-namespace:Ntreev.Crema.ServiceModel;assembly=Ntreev.Crema.ServiceModel">
+
+    <Geometry x:Key="Checkmark">M 15,21L 22,28L 32.9999,14.0001L 35.9999,17.0001L 22,34L 12.0001,24L 15,21 Z</Geometry>
+
+    <Style TargetType="{x:Type ntfc:TagSelector}">
+        <Style.Resources>
+            <ControlTemplate x:Key="{ComponentResourceKey TypeInTargetAssembly={x:Type MenuItem}, ResourceId=SubmenuItemTemplateKey}" TargetType="{x:Type MenuItem}">
+                <Grid SnapsToDevicePixels="true">
+                    <Rectangle Name="Bg" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="21" />
+                            <ColumnDefinition MinWidth="24" Width="Auto" SharedSizeGroup="MenuItemIconColumnGroup"/>
+                            <ColumnDefinition Width="4"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="37"/>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="MenuItemIGTColumnGroup"/>
+                            <ColumnDefinition Width="17"/>
+                        </Grid.ColumnDefinitions>
+                        <Rectangle Fill="{TemplateBinding MenuItem.Background}"  />
+                        <ContentPresenter Grid.Column="1" x:Name="Icon" Margin="1" VerticalAlignment="Center" ContentSource="Icon"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        <Border x:Name="GlyphPanel" Grid.Column="1" Visibility="Hidden">
+                            <Path Name="Glyph" Width="10" Height="10" Stretch="Fill" Fill="{DynamicResource WindowText}"
+                                  FlowDirection="LeftToRight" Data="{StaticResource Checkmark}"/>
+                        </Border>
+                        <ContentPresenter Grid.Column="3" ContentSource="Header" Margin="0,2,8,2"
+                                          RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        <TextBlock Grid.Column="5" Text="{TemplateBinding MenuItem.InputGestureText}" Margin="0,2"/>
+                    </Grid>
+                </Grid>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="Icon" Value="{x:Null}">
+                        <Setter TargetName="Icon" Property="Visibility" Value="Collapsed"/>
+                    </Trigger>
+                    <Trigger Property="IsChecked" Value="true">
+                        <Setter TargetName="GlyphPanel" Property="Visibility" Value="Visible"/>
+                        <Setter TargetName="Icon" Property="Visibility" Value="Collapsed"/>
+                    </Trigger>
+                    <Trigger Property="IsHighlighted" Value="true">
+                        <Setter TargetName="Bg" Property="Fill" Value="{DynamicResource Accent}"/>
+                        <Setter Property="Foreground" Value="{DynamicResource ItemTextSelected}"/>
+                        <Setter TargetName="Glyph" Property="Fill" Value="{DynamicResource ItemTextSelected}"/>
+                    </Trigger>
+                    <Trigger Property="IsEnabled" Value="false">
+                        <Setter Property="Foreground" Value="{DynamicResource ItemTextDisabled}"/>
+                        <Setter TargetName="Glyph" Property="Fill" Value="{DynamicResource ItemTextDisabled}"/>
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+        </Style.Resources>
+        <Setter Property="ClickMode" Value="Press" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ntfc:TagSelector}">
+                    <Grid x:Name="Border" Background="Transparent">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                        <Canvas Grid.Column="1" Width="16" Height="12">
+                            <Rectangle x:Name="ServerRect" Height="6" Stroke="{TemplateBinding Foreground}" Width="8" >
+                                <Rectangle.Fill>
+                                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                        <LinearGradientBrush.RelativeTransform>
+                                            <TransformGroup>
+                                                <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                                <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                                                <RotateTransform Angle="-45" CenterY="0.5" CenterX="0.5"/>
+                                                <TranslateTransform/>
+                                            </TransformGroup>
+                                        </LinearGradientBrush.RelativeTransform>
+                                        <GradientStop Color="#FFFBBEBE" Offset="0"/>
+                                        <GradientStop Color="#dc2222" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                            <Rectangle x:Name="ClientRect" Height="6" Canvas.Left="8" Stroke="{TemplateBinding Foreground}" Canvas.Top="6" Width="8">
+                                <Rectangle.Fill>
+                                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                        <LinearGradientBrush.RelativeTransform>
+                                            <TransformGroup>
+                                                <ScaleTransform/>
+                                                <SkewTransform/>
+                                                <RotateTransform Angle="-45"/>
+                                                <TranslateTransform/>
+                                            </TransformGroup>
+                                        </LinearGradientBrush.RelativeTransform>
+                                        <GradientStop Color="#FF99B7FB" Offset="0"/>
+                                        <GradientStop Color="#1f52c8" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                            <Rectangle Height="1" Canvas.Left="3" Stroke="{TemplateBinding Foreground}" Canvas.Top="10" Width="4"/>
+                            <Rectangle Height="4" Canvas.Left="3" Stroke="{TemplateBinding Foreground}" Canvas.Top="7" Width="1"/>
+                            <Rectangle Height="1" Canvas.Left="2" Stroke="{TemplateBinding Foreground}" Canvas.Top="8" Width="3"/>
+                            <Rectangle Height="1" Canvas.Left="9 " Stroke="{TemplateBinding Foreground}" Canvas.Top="1" Width="4"/>
+                            <Rectangle Height="4" Canvas.Left="12" Stroke="{TemplateBinding Foreground}" Canvas.Top="1" Width="1"/>
+                            <Rectangle Height="1" Canvas.Left="11" Stroke="{TemplateBinding Foreground}" Canvas.Top="3" Width="3"/>
+
+                        </Canvas>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Value" Value="Server" >
+                            <Setter TargetName="ClientRect" Property="Fill" Value="Gray" />
+                        </Trigger>
+                        <Trigger Property="Value" Value="Client" >
+                            <Setter TargetName="ServerRect" Property="Fill" Value="Gray" />
+                        </Trigger>
+                        <Trigger Property="Value" Value="Unused" >
+                            <Setter TargetName="ServerRect" Property="Fill" Value="Gray" />
+                            <Setter TargetName="ClientRect" Property="Fill" Value="Gray" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        
+    </Style>
+    
+</ResourceDictionary>

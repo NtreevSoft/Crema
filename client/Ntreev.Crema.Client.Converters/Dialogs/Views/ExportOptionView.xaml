@@ -1,0 +1,131 @@
+﻿<!--===================================================================================================================
+Released under the MIT License.
+    
+Copyright (c) 2018 Ntreev Soft co., Ltd.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the 
+Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+====================================================================================================================-->
+<UserControl x:Class="Ntreev.Crema.Client.Converters.Dialogs.Views.ExportOptionView" 
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:nmfc="clr-namespace:Ntreev.ModernUI.Framework.Controls;assembly=Ntreev.ModernUI.Framework"
+             xmlns:p="clr-namespace:Ntreev.Crema.Client.Converters.Properties"
+             xmlns:vm="clr-namespace:Ntreev.Crema.Client.Converters.Dialogs.ViewModels"
+             mc:Ignorable="d" d:DesignHeight="400" d:DesignWidth="600">
+    
+    <UserControl.Resources>
+
+    </UserControl.Resources>
+   
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250" />
+            <ColumnDefinition Width="10" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <TreeView x:Name="TreeView"
+                  Grid.Column="0"
+                  BorderThickness="1"
+                  BorderBrush="{DynamicResource ItemBorder}"
+                  ScrollViewer.VerticalScrollBarVisibility="Visible"
+                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                  ItemContainerStyle="{StaticResource TreeViewItem_Style}"
+                  ItemsSource="{Binding Path=Categories}">
+
+            <TreeView.Resources>
+                <HierarchicalDataTemplate DataType="{x:Type vm:TableRootTreeViewItemViewModel}" ItemsSource="{Binding Items}">
+                    <Grid Tag="{Binding}" x:Name="grid" IsEnabled="{Binding CanCheck}">
+                        <StackPanel Orientation="Horizontal" Margin="2,1,5,2" VerticalAlignment="Bottom">
+                            <CheckBox IsChecked="{Binding IsChecked}" IsThreeState="True" Focusable="False" />
+                            <Border Width="4" />
+                            <nmfc:IconImage Style="{StaticResource Selectable_DataBaseImage_Style}" />
+                            <Border Width="4" />
+                            <TextBlock Text="{Binding DisplayName}" />
+                        </StackPanel>
+                    </Grid>
+                    <HierarchicalDataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding CanCheck}" Value="False">
+                            <Setter TargetName="grid" Property="TextElement.Foreground" Value="{DynamicResource ItemTextDisabled}" />
+                        </DataTrigger>
+                    </HierarchicalDataTemplate.Triggers>
+                </HierarchicalDataTemplate>
+
+                <HierarchicalDataTemplate DataType="{x:Type vm:TableCategoryTreeViewItemViewModel}" ItemsSource="{Binding Items}">
+                    <Grid Tag="{Binding}" x:Name="grid" IsEnabled="{Binding CanCheck}">
+                        <StackPanel Orientation="Horizontal" Margin="2,1,5,2" VerticalAlignment="Bottom">
+                            <CheckBox IsChecked="{Binding IsChecked}" IsThreeState="True" Focusable="False" />
+                            <Border Width="4" />
+                            <nmfc:IconImage Style="{StaticResource Selectable_CategoryImage_Style}" />
+                            <Border Width="4" />
+                            <TextBlock Text="{Binding DisplayName}" />
+                        </StackPanel>
+                    </Grid>
+                    <HierarchicalDataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding CanCheck}" Value="False">
+                            <Setter TargetName="grid" Property="TextElement.Foreground" Value="{DynamicResource ItemTextDisabled}" />
+                        </DataTrigger>
+                    </HierarchicalDataTemplate.Triggers>
+                </HierarchicalDataTemplate>
+
+                <HierarchicalDataTemplate DataType="{x:Type vm:TableTreeViewItemViewModel}" ItemsSource="{Binding Items}">
+                    <Grid Tag="{Binding}" x:Name="grid" IsEnabled="{Binding CanCheck}">
+                        <StackPanel Orientation="Horizontal" Margin="2,1,5,2" VerticalAlignment="Bottom">
+                            <CheckBox IsChecked="{Binding IsChecked}" IsThreeState="True" Focusable="False" />
+                            <Border Width="4" />
+                            <nmfc:IconImage Style="{StaticResource Selectable_TableImage_Style}" />
+                            <Border Width="4" />
+                            <TextBlock Text="{Binding DisplayName}" Style="{StaticResource TableTextBlock_Style}" />
+                        </StackPanel>
+                    </Grid>
+                    <HierarchicalDataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding CanCheck}" Value="False">
+                            <Setter TargetName="grid" Property="TextElement.Foreground" Value="{DynamicResource ItemTextDisabled}" />
+                        </DataTrigger>
+                    </HierarchicalDataTemplate.Triggers>
+                </HierarchicalDataTemplate>
+            </TreeView.Resources>
+        </TreeView>
+
+        <GridSplitter Grid.Column="1" Background="Transparent" ResizeDirection="Columns"  VerticalAlignment="Stretch"  HorizontalAlignment="Stretch" />
+
+        <DockPanel Grid.Column="2">
+            <GroupBox Header="{x:Static p:Resources.Label_ExportingInformation}" DockPanel.Dock="Top" Padding="10">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="4" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <nmfc:PropertyItemsControl>
+                        <ComboBox nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_ExportingType}" ItemsSource="{Binding Exporters}"
+                                  SelectedItem="{Binding SelectedExporter}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </nmfc:PropertyItemsControl>
+                    <ContentControl Grid.Row="2" cal:View.Model="{Binding SelectedExporter}" Focusable="False" />
+                </Grid>
+            </GroupBox>
+            
+        </DockPanel>
+
+    </Grid>
+</UserControl>

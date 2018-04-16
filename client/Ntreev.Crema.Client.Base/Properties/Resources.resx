@@ -1,0 +1,414 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Button_Change" xml:space="preserve">
+    <value>C_hange</value>
+  </data>
+  <data name="Button_Close" xml:space="preserve">
+    <value>_Close</value>
+  </data>
+  <data name="Button_Copy" xml:space="preserve">
+    <value>_Copy...</value>
+  </data>
+  <data name="Button_Create" xml:space="preserve">
+    <value>_Create</value>
+  </data>
+  <data name="Button_Login" xml:space="preserve">
+    <value>Log In</value>
+  </data>
+  <data name="Button_OK" xml:space="preserve">
+    <value>_OK</value>
+  </data>
+  <data name="Exception_CannotSelectWithoutLoggingIn" xml:space="preserve">
+    <value>You can not select a database without logging in.</value>
+  </data>
+  <data name="Exception_NonExistentDataBase" xml:space="preserve">
+    <value>'{0}' is a non-existent data base.</value>
+  </data>
+  <data name="Label_AddConnectionItem" xml:space="preserve">
+    <value>Add Connection Item</value>
+  </data>
+  <data name="Label_Address" xml:space="preserve">
+    <value>_Address</value>
+  </data>
+  <data name="Label_Comment" xml:space="preserve">
+    <value>Comment</value>
+  </data>
+  <data name="Label_MoveToWiki" xml:space="preserve">
+    <value>Move To Wiki</value>
+  </data>
+  <data name="Label_CreatedDateTime" xml:space="preserve">
+    <value>Created DateTime</value>
+  </data>
+  <data name="Label_Creator" xml:space="preserve">
+    <value>Creator</value>
+  </data>
+  <data name="Label_DataBase" xml:space="preserve">
+    <value>DataBase</value>
+  </data>
+  <data name="Label_EditConnectionItem" xml:space="preserve">
+    <value>Edit Connection Item</value>
+  </data>
+  <data name="Label_RemoveConnectionItem" xml:space="preserve">
+    <value>Remove Connection Item</value>
+  </data>
+  <data name="Label_ManageConnectionItemList" xml:space="preserve">
+    <value>Manage Connection List</value>
+  </data>
+  <data name="Label_ModifiedDateTime" xml:space="preserve">
+    <value>Modified DateTime</value>
+  </data>
+  <data name="Label_Modifier" xml:space="preserve">
+    <value>Modifier</value>
+  </data>
+  <data name="Label_Name" xml:space="preserve">
+    <value>_Name</value>
+  </data>
+  <data name="Label_Password" xml:space="preserve">
+    <value>_Password</value>
+  </data>
+  <data name="Label_RecentServerList" xml:space="preserve">
+    <value>Recent Server List</value>
+  </data>
+  <data name="Label_Revision" xml:space="preserve">
+    <value>Revision</value>
+  </data>
+  <data name="Label_SavePassword" xml:space="preserve">
+    <value>_Save Password</value>
+  </data>
+  <data name="Label_ServerList" xml:space="preserve">
+    <value>Server List</value>
+  </data>
+  <data name="Label_Theme" xml:space="preserve">
+    <value>Th_eme</value>
+  </data>
+  <data name="Label_UserID" xml:space="preserve">
+    <value>_ID</value>
+  </data>
+  <data name="MenuItem_About" xml:space="preserve">
+    <value>_About</value>
+  </data>
+  <data name="MenuItem_ChangeDataBase" xml:space="preserve">
+    <value>_Change DataBase...</value>
+  </data>
+  <data name="MenuItem_LeaveDataBase" xml:space="preserve">
+    <value>Leave DataBase</value>
+  </data>
+  <data name="MenuItem_CopyDataBase" xml:space="preserve">
+    <value>Copy DataBase...</value>
+  </data>
+  <data name="MenuItem_CreateDataBase" xml:space="preserve">
+    <value>_Create DataBase...</value>
+  </data>
+  <data name="MenuItem_Delete" xml:space="preserve">
+    <value>_Delete</value>
+  </data>
+  <data name="MenuItem_DeleteDataBase" xml:space="preserve">
+    <value>_Delete DataBase...</value>
+  </data>
+  <data name="MenuItem_File" xml:space="preserve">
+    <value>_File</value>
+  </data>
+  <data name="MenuItem_Help" xml:space="preserve">
+    <value>_Help</value>
+  </data>
+  <data name="MenuItem_Logout" xml:space="preserve">
+    <value>Log _out</value>
+  </data>
+  <data name="MenuItem_ManageDataBase" xml:space="preserve">
+    <value>_Manage DataBase...</value>
+  </data>
+  <data name="MenuItem_Edit" xml:space="preserve">
+    <value>_Edit</value>
+  </data>
+  <data name="MenuItem_Tools" xml:space="preserve">
+    <value>_Tools</value>
+  </data>
+  <data name="Message_CloseDataBase" xml:space="preserve">
+    <value>Do you want to close DataBase?</value>
+  </data>
+  <data name="Message_ConnectingToServer" xml:space="preserve">
+    <value>Connecting to server. please wait a second.</value>
+  </data>
+  <data name="Message_ConnectionFailed" xml:space="preserve">
+    <value>Unable to connect to the server. Check your address.</value>
+  </data>
+  <data name="Message_CopiedDataBase" xml:space="preserve">
+    <value>New database has been copied.</value>
+  </data>
+  <data name="Message_CopingDataBase" xml:space="preserve">
+    <value>New database is being copied.</value>
+  </data>
+  <data name="Message_CreatedNewDataBase" xml:space="preserve">
+    <value>New database has been created.</value>
+  </data>
+  <data name="Message_CreatingNewDataBase" xml:space="preserve">
+    <value>New database is being created.</value>
+  </data>
+  <data name="Message_LoadingDataBase" xml:space="preserve">
+    <value>Loading DataBase.</value>
+  </data>
+  <data name="Message_Logout" xml:space="preserve">
+    <value>Do you want to log out?</value>
+  </data>
+  <data name="Message_ReceivingInformation" xml:space="preserve">
+    <value>Receiving Information.</value>
+  </data>
+  <data name="Message_SameIDConnected" xml:space="preserve">
+    <value>Same ID is being connected. Would you like to disconnect and connect?</value>
+  </data>
+  <data name="Title_CopyDataBase" xml:space="preserve">
+    <value>Copy DataBase</value>
+  </data>
+  <data name="Title_CreateDataBase" xml:space="preserve">
+    <value>Create DataBase</value>
+  </data>
+  <data name="Title_SelectDataBase" xml:space="preserve">
+    <value>Select DataBase</value>
+  </data>
+  <data name="Title_Start" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="Label_Etc" xml:space="preserve">
+    <value>Etc</value>
+  </data>
+  <data name="Label_ConnectionList" xml:space="preserve">
+    <value>Connection List</value>
+  </data>
+  <data name="Title_AddConnectionItem" xml:space="preserve">
+    <value>Add Connection Item</value>
+  </data>
+  <data name="Title_EditConnectionItem" xml:space="preserve">
+    <value>Edit Connection Item</value>
+  </data>
+  <data name="Exception_InvalidConnectionItem" xml:space="preserve">
+    <value>Invalid Connection Item</value>
+  </data>
+  <data name="MenuItem_SetAuthority" xml:space="preserve">
+    <value>Set _Authority...</value>
+  </data>
+  <data name="MenuItem_SetPrivate" xml:space="preserve">
+    <value>Set _Private</value>
+  </data>
+  <data name="MenuItem_SetPublic" xml:space="preserve">
+    <value>Set _Public</value>
+  </data>
+  <data name="MenuItem_Unlock" xml:space="preserve">
+    <value>_Unlock</value>
+  </data>
+  <data name="MenuItem_Lock" xml:space="preserve">
+    <value>_Lock...</value>
+  </data>
+  <data name="MenuItem_Load" xml:space="preserve">
+    <value>_Load...</value>
+  </data>
+  <data name="MenuItem_Unload" xml:space="preserve">
+    <value>_Unload...</value>
+  </data>
+  <data name="Message_ConfirmToSetPrivate" xml:space="preserve">
+    <value>Do you want to set it to Private?</value>
+  </data>
+  <data name="Message_Deleted" xml:space="preserve">
+    <value>Deleted.</value>
+  </data>
+  <data name="Label_Owner" xml:space="preserve">
+    <value>Owner</value>
+  </data>
+  <data name="Label_SettingDateTime" xml:space="preserve">
+    <value>Setting DateTime</value>
+  </data>
+  <data name="Label_Path" xml:space="preserve">
+    <value>Path</value>
+  </data>
+  <data name="Title_AccessInfo" xml:space="preserve">
+    <value>Access Information</value>
+  </data>
+  <data name="Title_LockInfo" xml:space="preserve">
+    <value>Lock Info</value>
+  </data>
+  <data name="Label_User" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="Title_DataBase" xml:space="preserve">
+    <value>DataBase</value>
+  </data>
+  <data name="Title_DataBaseInfo" xml:space="preserve">
+    <value>DataBase Info</value>
+  </data>
+  <data name="Label_BranchRevision" xml:space="preserve">
+    <value>BranchRevision</value>
+  </data>
+  <data name="Label_BranchSource" xml:space="preserve">
+    <value>BranchSource</value>
+  </data>
+  <data name="Label_BranchSourceRevision" xml:space="preserve">
+    <value>BranchSourceRevision</value>
+  </data>
+  <data name="Message_ReceivingInfo" xml:space="preserve">
+    <value>Receiving information.</value>
+  </data>
+  <data name="Title_ViewLog" xml:space="preserve">
+    <value>View Log</value>
+  </data>
+  <data name="Label_DateTime" xml:space="preserve">
+    <value>DateTime</value>
+  </data>
+  <data name="Label_ID" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="Label_ItemPath" xml:space="preserve">
+    <value>Item Path</value>
+  </data>
+  <data name="Label_ItemType" xml:space="preserve">
+    <value>Item Type</value>
+  </data>
+  <data name="Label_DomainType" xml:space="preserve">
+    <value>Domain Type</value>
+  </data>
+  <data name="Title_DomainInfo" xml:space="preserve">
+    <value>Domain Information</value>
+  </data>
+  <data name="Title_DomainUserList" xml:space="preserve">
+    <value>Domain User List</value>
+  </data>
+  <data name="Title_DomainList" xml:space="preserve">
+    <value>Domain List</value>
+  </data>
+  <data name="Title_DataBaseDomainList" xml:space="preserve">
+    <value>DataBase Domain List</value>
+  </data>
+  <data name="Button_Enter" xml:space="preserve">
+    <value>Enter</value>
+  </data>
+  <data name="MenuItem_Enter" xml:space="preserve">
+    <value>Enter</value>
+  </data>
+  <data name="Message_VerifyToCloseDataBase" xml:space="preserve">
+    <value>There are users using the database. Do you want to close it anyway?</value>
+  </data>
+  <data name="MenuItem_Login" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="MenuItem_Copy" xml:space="preserve">
+    <value>_Copy...</value>
+  </data>
+  <data name="Title_CopyConnectionItem" xml:space="preserve">
+    <value>Copy Connection Item</value>
+  </data>
+</root>

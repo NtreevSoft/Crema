@@ -1,0 +1,148 @@
+﻿<!--===================================================================================================================
+Released under the MIT License.
+    
+Copyright (c) 2018 Ntreev Soft co., Ltd.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the 
+Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+====================================================================================================================-->
+<UserControl x:Class="Ntreev.Crema.Tools.Framework.Dialogs.Views.DataBaseListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid"
+             xmlns:nmfc="clr-namespace:Ntreev.ModernUI.Framework.Controls;assembly=Ntreev.ModernUI.Framework"
+             xmlns:nmfv="clr-namespace:Ntreev.ModernUI.Framework.Converters;assembly=Ntreev.ModernUI.Framework"
+             xmlns:nmgc="clr-namespace:Ntreev.ModernUI.Framework.Controls;assembly=Ntreev.ModernUI.Framework.DataGrid"
+             mc:Ignorable="d" nmfc:DialogWindow.DesiredWidth="975" nmfc:DialogWindow.DesiredHeight="250"  nmfc:DialogWindow.DesiredResizeMode="CanResizeWithGrip"
+             d:DesignWidth="975" d:DesignHeight="250">
+    
+    <UserControl.Resources>
+
+        <ControlTemplate x:Key="EnableEditor_ControlTemplate" TargetType="{x:Type CheckBox}">
+            <Border Width="18" Height="18">
+                <Ellipse x:Name="Mark" Margin="2" Fill="{DynamicResource ButtonTextDisabled}" 
+                     Stroke="{TemplateBinding Foreground}" />
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter TargetName="Mark" Property="Fill" Value="{DynamicResource WindowBorderActive}" />
+                </Trigger>
+                <Trigger Property="IsChecked" Value="{x:Null}">
+                    <Setter TargetName="Mark" Property="Fill" Value="{DynamicResource WindowBorderActive}" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        
+        <Style TargetType="{x:Type xcdg:HierarchicalGroupByControl}" BasedOn="{StaticResource {x:Type xcdg:HierarchicalGroupByControl}}">
+            <Setter Property="Background" Value="{DynamicResource WindowBackground}" />
+            <!--<Setter Property="Visibility" Value="Collapsed" />-->
+            <Setter Property="BorderThickness" Value="0 0 0 1" />
+            <Setter Property="BorderBrush" Value="{DynamicResource ItemBorder}" />
+        </Style>
+
+        <Style TargetType="{x:Type xcdg:GroupLevelIndicatorPane}" BasedOn="{StaticResource {x:Type xcdg:GroupLevelIndicatorPane}}">
+            <!--<Setter Property="Visibility" Value="Collapsed" />-->
+            
+        </Style>
+
+        <Style TargetType="{x:Type xcdg:ColumnManagerRow}" BasedOn="{StaticResource {x:Type xcdg:ColumnManagerRow}}">
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+
+
+        <Style TargetType="{x:Type nmgc:ModernDataRow}" BasedOn="{StaticResource {x:Type nmgc:ModernDataRow}}">
+            <EventSetter Event="MouseDoubleClick" Handler="DataGridRow_MouseDoubleClick"/>
+        </Style>
+
+        <ControlTemplate x:Key="IsLoaded_ControlTemplate" TargetType="{x:Type CheckBox}">
+            <Border Width="14" Height="14">
+                <Ellipse x:Name="Mark" Margin="2 0" Fill="{DynamicResource ButtonTextDisabled}" 
+                         Stroke="{TemplateBinding Foreground}" />
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter TargetName="Mark" Property="Fill" Value="{DynamicResource WindowBorderActive}" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <DataTemplate x:Key="IsLoaded_ContentTemplate">
+            <CheckBox IsChecked="{Binding Mode=OneWay, TargetNullValue=False}" IsEnabled="False" 
+                      Template="{StaticResource EnableEditor_ControlTemplate}"
+                      Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type xcdg:Cell}}}" />
+        </DataTemplate>
+
+        <nmfv:ContentToStringConverter x:Key="contentToStringConverter" />
+
+        <DataTemplate x:Key="DateTime_DataTemplate">
+            <TextBlock Text="{Binding Converter={StaticResource contentToStringConverter}}" />
+        </DataTemplate>
+
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <nmgc:ModernDataGridControl Grid.Row="0" ItemsSource="{Binding ItemsSource}" ReadOnly="True" 
+                                    BorderThickness="1" BorderBrush="{DynamicResource ItemBorder}"
+                                    AutoCreateColumns="False" SelectionUnit="Row" 
+                                    SelectedItem="{Binding SelectedItem}" >
+            <nmgc:ModernDataGridControl.Columns>
+                <xcdg:Column FieldName="Name" Title="이름" />
+                <xcdg:Column FieldName="Comment" Title="설명" />
+                <xcdg:Column FieldName="CreationInfo.ID" Title="생성한 사람" />
+                <xcdg:Column FieldName="CreationInfo.DateTime" Title="생성한 시간" CellContentTemplate="{StaticResource DateTime_DataTemplate}" />
+                <xcdg:Column FieldName="ModificationInfo.ID" Title="편집한 사람" />
+                <xcdg:Column FieldName="ModificationInfo.DateTime" Title="편집한 시간" CellContentTemplate="{StaticResource DateTime_DataTemplate}" />
+            </nmgc:ModernDataGridControl.Columns>
+            <nmgc:ModernDataGridControl.View>
+            <xcdg:TableView RowSelectorPaneWidth="0" AllowDrop="True" ShowFixedColumnSplitter="False"
+                            VerticalGridLineBrush="{DynamicResource DataGridGridLines}" 
+                            HorizontalGridLineBrush="{DynamicResource DataGridGridLines}" 
+                            IsAlternatingRowStyleEnabled="False" AllowRowResize="True">
+            </xcdg:TableView>
+            </nmgc:ModernDataGridControl.View>
+        </nmgc:ModernDataGridControl>
+
+        <!--<DataGrid Grid.Row="1" ItemsSource="{Binding Items}" AutoGenerateColumns="False"
+                  SelectedItem="{Binding SelectedItem}" 
+                  ncfc:GridViewSort.AutoSort="True" Height="250" Width="616" >
+            <DataGrid.ItemContainerStyle>
+                <Style TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                    <EventSetter Event="MouseDoubleClick" Handler="DataGridRow_MouseDoubleClick"/>
+                </Style>
+            </DataGrid.ItemContainerStyle>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="이름" Width="80"  Binding="{Binding Name}" />
+                <DataGridTextColumn Header="내용" Width="100" Binding="{Binding Comment}" />
+                <DataGridTextColumn Header="생성한 사람" Width="80" Binding="{Binding Creator}" />
+                <DataGridTextColumn Header="생성 일시" Width="130" 
+                                    Binding="{Binding CreatedDateTime, StringFormat='{}{0:yyyy:MM:dd HH:mm:ss}'}" 
+                                    ncfc:GridViewSort.PropertyName="Time"/>
+                <DataGridTextColumn Header="수정한 사람" Width="80" Binding="{Binding Modifier}" />
+                <DataGridTextColumn Header="수정 일시" Width="130" 
+                                    Binding="{Binding ModifiedDateTime, StringFormat='{}{0:yyyy:MM:dd HH:mm:ss}'}" 
+                                    ncfc:GridViewSort.PropertyName="Time"/>
+            </DataGrid.Columns>
+        </DataGrid>-->
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="OK" Content="확인(_O)" Padding="8 4" Style="{StaticResource Dialog_Button_Style}" />
+        </StackPanel>
+    </Grid>
+</UserControl>

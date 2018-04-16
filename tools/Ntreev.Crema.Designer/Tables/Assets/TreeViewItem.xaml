@@ -1,0 +1,147 @@
+﻿<!--===================================================================================================================
+Released under the MIT License.
+    
+Copyright (c) 2018 Ntreev Soft co., Ltd.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the 
+Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+====================================================================================================================-->
+<ResourceDictionary x:Class="Ntreev.Crema.Designer.Tables.Assets.TreeViewItem"
+                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vm="clr-namespace:Ntreev.Crema.Designer.Tables.ViewModels"
+                    xmlns:cal="http://www.caliburnproject.org"
+                    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                    xmlns:nmfc="clr-namespace:Ntreev.ModernUI.Framework.Controls;assembly=Ntreev.ModernUI.Framework"
+                    xmlns:nmfm="clr-namespace:Ntreev.ModernUI.Framework.Markup;assembly=Ntreev.ModernUI.Framework"
+                    xmlns:nmfv="clr-namespace:Ntreev.ModernUI.Framework.Converters;assembly=Ntreev.ModernUI.Framework"
+                    xmlns:p="clr-namespace:Ntreev.Crema.Designer.Properties">
+
+    <nmfv:IsNullConverter x:Key="IsNotNullConverter" Inverse="True" />
+
+    <Style x:Key="TextBlock_Style" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Tags.Color, Converter={StaticResource IsNotNullConverter}}" Value="True">
+                <Setter Property="TextElement.Foreground" Value="{Binding Tags.Color, TargetNullValue=Green}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="HighlightTextBlock_Style" TargetType="{x:Type nmfc:HighlightTextBlock}" BasedOn="{StaticResource {x:Type nmfc:HighlightTextBlock}}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Tags.Color, Converter={StaticResource IsNotNullConverter}}" Value="True">
+                <Setter Property="TextElement.Foreground" Value="{Binding Tags.Color, TargetNullValue=Green}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <nmfc:IconImage x:Key="folder_icon" Source="/Ntreev.ModernUI.Framework;component/Images/folder_c.png" />
+    <nmfc:IconImage x:Key="table_icon" Source="/Images/table.png" />
+    <nmfc:IconImage x:Key="delete_icon" Source="/Images/close.png" />
+    <nmfc:IconImage x:Key="find_icon" Source="/Ntreev.ModernUI.Framework;component/Images/magnify.png" />
+    <nmfc:IconImage x:Key="rename_icon" Source="/Images/rename.png" />
+    
+    <HierarchicalDataTemplate DataType="{x:Type vm:DataBaseTreeViewItemViewModel}" ItemsSource="{Binding Items}">
+        <HierarchicalDataTemplate.Resources>
+            <nmfc:ExpandableContextMenu x:Key="DataBase_ContextMenu" ItemsSource="{Binding ContextMenus}">
+                <MenuItem x:Name="NewFolder" Header="{x:Static p:Resources.MenuItem_NewFolder}" Icon="{StaticResource folder_icon}" />
+                <MenuItem x:Name="NewTable" Header="{x:Static p:Resources.MenuItem_NewTable}" Icon="{StaticResource table_icon}" />
+                <Separator />
+                <MenuItem x:Name="Find" Header="{x:Static p:Resources.MenuItem_Find}" Icon="{StaticResource find_icon}" />
+            </nmfc:ExpandableContextMenu>
+        </HierarchicalDataTemplate.Resources>
+        <ContentControl Focusable="False" Margin="2" ContextMenu="{StaticResource DataBase_ContextMenu}" ContextMenuOpening="ContentControl_ContextMenuOpening">
+            <DockPanel Background="Transparent">
+                <StackPanel Orientation="Horizontal">
+                    <nmfc:IconImage Style="{StaticResource DataBaseImage_Style}" Margin="0 0 4 0" />
+                    <TextBlock Text="{Binding DisplayName}" />
+                </StackPanel>
+            </DockPanel>
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="PreviewMouseDoubleClick">
+                    <i:InvokeCommandAction Command="{Binding ExpandCommand}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </ContentControl>
+    </HierarchicalDataTemplate>
+
+    <HierarchicalDataTemplate DataType="{x:Type vm:CategoryTreeViewItemViewModel}" ItemsSource="{Binding Items}">
+        <HierarchicalDataTemplate.Resources>
+            <nmfc:ExpandableContextMenu x:Key="Category_ContextMenu" ItemsSource="{Binding ContextMenus}">
+                <MenuItem x:Name="NewFolder" Header="{x:Static p:Resources.MenuItem_NewFolder}" Icon="{StaticResource folder_icon}" />
+                <MenuItem x:Name="NewTable" Header="{x:Static p:Resources.MenuItem_NewTable}" Icon="{StaticResource table_icon}" />
+                <Separator />
+                <MenuItem x:Name="Delete" Header="{x:Static p:Resources.MenuItem_Delete}" Icon="{StaticResource delete_icon}" InputGestureText="Del" />
+                <MenuItem x:Name="Move" Header="{x:Static p:Resources.MenuItem_Move}" />
+                <MenuItem x:Name="Find" Header="{x:Static p:Resources.MenuItem_Find}" Icon="{StaticResource find_icon}" />
+                <MenuItem x:Name="Rename" Header="{x:Static p:Resources.MenuItem_Rename}" Icon="{StaticResource rename_icon}" InputGestureText="F2" />
+            </nmfc:ExpandableContextMenu>
+        </HierarchicalDataTemplate.Resources>
+        <ContentControl Focusable="False" Margin="2" ContextMenu="{StaticResource Category_ContextMenu}" ContextMenuOpening="ContentControl_ContextMenuOpening">
+            <DockPanel Background="Transparent">
+                <StackPanel Orientation="Horizontal">
+                    <nmfc:IconImage Style="{StaticResource CategoryImage_Style}" Margin="0 0 4 0" />
+                    <nmfc:HighlightTextBlock x:Name="textBox" Text="{Binding DisplayName}" />
+                </StackPanel>
+            </DockPanel>
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="PreviewMouseDoubleClick">
+                    <i:InvokeCommandAction Command="{Binding ExpandCommand}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </ContentControl>
+        <HierarchicalDataTemplate.Triggers>
+            <DataTrigger Binding="{Binding HasPattern}" Value="True">
+                <Setter TargetName="textBox" Property="Pattern" Value="{Binding Pattern}" />
+                <Setter TargetName="textBox" Property="CaseSensitive" Value="{Binding CaseSensitive}" />
+            </DataTrigger>
+        </HierarchicalDataTemplate.Triggers>
+    </HierarchicalDataTemplate>
+
+    
+    <HierarchicalDataTemplate DataType="{x:Type vm:TableTreeViewItemViewModel}" ItemsSource="{Binding Items}">
+        <HierarchicalDataTemplate.Resources>
+            <nmfc:ExpandableContextMenu x:Key="Table_ContextMenu" ItemsSource="{Binding ContextMenus}">
+                <MenuItem x:Name="EditContent" Header="{x:Static p:Resources.MenuItem_EditContent}" FontWeight="Bold" Visibility="{nmfm:VisibilityBinding CanEditContent}" />
+                <Separator />
+                <MenuItem x:Name="EditTemplate" Header="{x:Static p:Resources.MenuItem_EditTemplate}" Visibility="{nmfm:VisibilityBinding CanEditTemplate}" />
+                <MenuItem x:Name="AddChildTable" Header="{x:Static p:Resources.MenuItem_AddChildTable}" Icon="{StaticResource table_icon}" />
+                <MenuItem x:Name="Copy" Header="{x:Static p:Resources.MenuItem_Copy}" />
+                <MenuItem x:Name="Inherit" Header="{x:Static p:Resources.MenuItem_Inherit}" />
+                <MenuItem x:Name="Delete" Header="{x:Static p:Resources.MenuItem_Delete}" Icon="{StaticResource delete_icon}" InputGestureText="Del" />
+                <MenuItem x:Name="Move" Header="{x:Static p:Resources.MenuItem_Move}" />
+                <MenuItem x:Name="Rename" Header="{x:Static p:Resources.MenuItem_Rename}" Icon="{StaticResource rename_icon}" InputGestureText="F2" />
+            </nmfc:ExpandableContextMenu>
+        </HierarchicalDataTemplate.Resources>
+        <ContentControl Focusable="False" Margin="2" ContextMenu="{StaticResource Table_ContextMenu}" ContextMenuOpening="ContentControl_ContextMenuOpening" >
+            <DockPanel Background="Transparent">
+                <StackPanel x:Name="label" Orientation="Horizontal">
+                    <nmfc:IconImage Style="{StaticResource TableImage_Style}" Margin="0 0 4 0" />
+                    <nmfc:HighlightTextBlock x:Name="textBox" Text="{Binding DisplayName}" Style="{StaticResource HighlightTextBlock_Style}" />
+                </StackPanel>
+            </DockPanel>
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="PreviewMouseDoubleClick">
+                    <i:InvokeCommandAction Command="{Binding EditCommand}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </ContentControl>
+        <HierarchicalDataTemplate.Triggers>
+            <DataTrigger Binding="{Binding HasPattern}" Value="True">
+                <Setter TargetName="textBox" Property="Pattern" Value="{Binding Pattern}" />
+                <Setter TargetName="textBox" Property="CaseSensitive" Value="{Binding CaseSensitive}" />
+            </DataTrigger>
+        </HierarchicalDataTemplate.Triggers>
+    </HierarchicalDataTemplate>
+
+</ResourceDictionary>

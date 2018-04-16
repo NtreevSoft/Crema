@@ -1,0 +1,414 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Button_Change" xml:space="preserve">
+    <value>변경(_H)</value>
+  </data>
+  <data name="Button_Close" xml:space="preserve">
+    <value>닫기(_C)</value>
+  </data>
+  <data name="Button_Copy" xml:space="preserve">
+    <value>복사(_C)...</value>
+  </data>
+  <data name="Button_Create" xml:space="preserve">
+    <value>생성(_C)</value>
+  </data>
+  <data name="Button_Login" xml:space="preserve">
+    <value>접  속</value>
+  </data>
+  <data name="Button_OK" xml:space="preserve">
+    <value>확인(_O)</value>
+  </data>
+  <data name="Exception_CannotSelectWithoutLoggingIn" xml:space="preserve">
+    <value>로그인이 되지 않은 상태에서는 데이터 베이스를 선택할 수 없습니다.</value>
+  </data>
+  <data name="Exception_NonExistentDataBase" xml:space="preserve">
+    <value>'{0}'은(는) 존재하지 않는 데이터 베이스입니다.</value>
+  </data>
+  <data name="Label_AddConnectionItem" xml:space="preserve">
+    <value>접속 정보 추가</value>
+  </data>
+  <data name="Label_Address" xml:space="preserve">
+    <value>주소</value>
+  </data>
+  <data name="Label_Comment" xml:space="preserve">
+    <value>설명</value>
+  </data>
+  <data name="Label_MoveToWiki" xml:space="preserve">
+    <value>위키로 이동</value>
+  </data>
+  <data name="Label_CreatedDateTime" xml:space="preserve">
+    <value>생성 일자</value>
+  </data>
+  <data name="Label_Creator" xml:space="preserve">
+    <value>생성자</value>
+  </data>
+  <data name="Label_DataBase" xml:space="preserve">
+    <value>데이터 베이스</value>
+  </data>
+  <data name="Label_EditConnectionItem" xml:space="preserve">
+    <value>접속 정보 편집</value>
+  </data>
+  <data name="Label_RemoveConnectionItem" xml:space="preserve">
+    <value>접속 정보 삭제</value>
+  </data>
+  <data name="Label_ManageConnectionItemList" xml:space="preserve">
+    <value>접속 정보 관리</value>
+  </data>
+  <data name="Label_ModifiedDateTime" xml:space="preserve">
+    <value>변경자</value>
+  </data>
+  <data name="Label_Modifier" xml:space="preserve">
+    <value>변경 일자</value>
+  </data>
+  <data name="Label_Name" xml:space="preserve">
+    <value>이름</value>
+  </data>
+  <data name="Label_Password" xml:space="preserve">
+    <value>암호</value>
+  </data>
+  <data name="Label_RecentServerList" xml:space="preserve">
+    <value>최근 접속 서버</value>
+  </data>
+  <data name="Label_Revision" xml:space="preserve">
+    <value>리비전</value>
+  </data>
+  <data name="Label_SavePassword" xml:space="preserve">
+    <value>암호 저장</value>
+  </data>
+  <data name="Label_ServerList" xml:space="preserve">
+    <value>서버 목록</value>
+  </data>
+  <data name="Label_Theme" xml:space="preserve">
+    <value>테마</value>
+  </data>
+  <data name="Label_UserID" xml:space="preserve">
+    <value>아이디</value>
+  </data>
+  <data name="MenuItem_About" xml:space="preserve">
+    <value>정보(_A)</value>
+  </data>
+  <data name="MenuItem_ChangeDataBase" xml:space="preserve">
+    <value>데이터 베이스 변경(_C)...</value>
+  </data>
+  <data name="MenuItem_LeaveDataBase" xml:space="preserve">
+    <value>데이터 베이스 나가기</value>
+  </data>
+  <data name="MenuItem_CopyDataBase" xml:space="preserve">
+    <value>데이터 베이스 복사...</value>
+  </data>
+  <data name="MenuItem_CreateDataBase" xml:space="preserve">
+    <value>데이터 베이스 생성(_N)...</value>
+  </data>
+  <data name="MenuItem_Delete" xml:space="preserve">
+    <value>삭제(_D)</value>
+  </data>
+  <data name="MenuItem_DeleteDataBase" xml:space="preserve">
+    <value>데이터 베이스 삭제(_D)...</value>
+  </data>
+  <data name="MenuItem_File" xml:space="preserve">
+    <value>파일(_F)</value>
+  </data>
+  <data name="MenuItem_Help" xml:space="preserve">
+    <value>도움말(_H)</value>
+  </data>
+  <data name="MenuItem_Logout" xml:space="preserve">
+    <value>로그아웃(_O)</value>
+  </data>
+  <data name="MenuItem_ManageDataBase" xml:space="preserve">
+    <value>데이터 베이스 관리(_M)...</value>
+  </data>
+  <data name="MenuItem_Edit" xml:space="preserve">
+    <value>편집(_E)</value>
+  </data>
+  <data name="MenuItem_Tools" xml:space="preserve">
+    <value>도구(_T)</value>
+  </data>
+  <data name="Message_CloseDataBase" xml:space="preserve">
+    <value>데이터 베이스를 닫으시겠습니까?</value>
+  </data>
+  <data name="Message_ConnectingToServer" xml:space="preserve">
+    <value>서버에 연결중입니다. 잠시만 기다려주세요.</value>
+  </data>
+  <data name="Message_ConnectionFailed" xml:space="preserve">
+    <value>서버에 접속할 수 없습니다. 주소를 확인하세요.</value>
+  </data>
+  <data name="Message_CopiedDataBase" xml:space="preserve">
+    <value>데이터 베이스가 복사되었습니다.</value>
+  </data>
+  <data name="Message_CopingDataBase" xml:space="preserve">
+    <value>데이터 베이스가 복사중입니다.</value>
+  </data>
+  <data name="Message_CreatedNewDataBase" xml:space="preserve">
+    <value>새로운 데이터 베이스를 생성하였습니다.</value>
+  </data>
+  <data name="Message_CreatingNewDataBase" xml:space="preserve">
+    <value>새로운 데이터 베이스를 생성중입니다.</value>
+  </data>
+  <data name="Message_LoadingDataBase" xml:space="preserve">
+    <value>데이터 베이스를 읽어들이고 있습니다.</value>
+  </data>
+  <data name="Message_Logout" xml:space="preserve">
+    <value>로그아웃 하시겠습니까?</value>
+  </data>
+  <data name="Message_ReceivingInformation" xml:space="preserve">
+    <value>정보를 받아오고 있습니다.</value>
+  </data>
+  <data name="Message_SameIDConnected" xml:space="preserve">
+    <value>같은 아이디가 연결중입니다. 접속을 끊고 연결하시겠습니까?</value>
+  </data>
+  <data name="Title_CopyDataBase" xml:space="preserve">
+    <value>데이터 베이스 복사</value>
+  </data>
+  <data name="Title_CreateDataBase" xml:space="preserve">
+    <value>데이터 베이스 생성</value>
+  </data>
+  <data name="Title_SelectDataBase" xml:space="preserve">
+    <value>데이터 베이스 선택</value>
+  </data>
+  <data name="Title_Start" xml:space="preserve">
+    <value>시작</value>
+  </data>
+  <data name="Label_Etc" xml:space="preserve">
+    <value>기타</value>
+  </data>
+  <data name="Label_ConnectionList" xml:space="preserve">
+    <value>접속 목록</value>
+  </data>
+  <data name="Title_AddConnectionItem" xml:space="preserve">
+    <value>접속 정보 추가</value>
+  </data>
+  <data name="Title_EditConnectionItem" xml:space="preserve">
+    <value>접속 정보 편집</value>
+  </data>
+  <data name="Exception_InvalidConnectionItem" xml:space="preserve">
+    <value>잘못된 접속 정보입니다.</value>
+  </data>
+  <data name="MenuItem_SetAuthority" xml:space="preserve">
+    <value>권한 설정(_A)...</value>
+  </data>
+  <data name="MenuItem_SetPrivate" xml:space="preserve">
+    <value>비공개로 설정(_P)</value>
+  </data>
+  <data name="MenuItem_SetPublic" xml:space="preserve">
+    <value>공개로 설정(_P)</value>
+  </data>
+  <data name="MenuItem_Unlock" xml:space="preserve">
+    <value>잠금 해제(_U)</value>
+  </data>
+  <data name="MenuItem_Lock" xml:space="preserve">
+    <value>잠금 설정(_L)...</value>
+  </data>
+  <data name="MenuItem_Load" xml:space="preserve">
+    <value>활성화</value>
+  </data>
+  <data name="MenuItem_Unload" xml:space="preserve">
+    <value>비활성화</value>
+  </data>
+  <data name="Message_ConfirmToSetPrivate" xml:space="preserve">
+    <value>비공개로 설정하시겠습니까?</value>
+  </data>
+  <data name="Message_Deleted" xml:space="preserve">
+    <value>삭제되었습니다.</value>
+  </data>
+  <data name="Label_Owner" xml:space="preserve">
+    <value>소유자</value>
+  </data>
+  <data name="Label_SettingDateTime" xml:space="preserve">
+    <value>설정 날짜</value>
+  </data>
+  <data name="Label_Path" xml:space="preserve">
+    <value>경로</value>
+  </data>
+  <data name="Title_AccessInfo" xml:space="preserve">
+    <value>보안 정보</value>
+  </data>
+  <data name="Title_LockInfo" xml:space="preserve">
+    <value>잠금 정보</value>
+  </data>
+  <data name="Label_User" xml:space="preserve">
+    <value>사용자</value>
+  </data>
+  <data name="Title_DataBase" xml:space="preserve">
+    <value>데이터 베이스</value>
+  </data>
+  <data name="Title_DataBaseInfo" xml:space="preserve">
+    <value>데이터 베이스 정보</value>
+  </data>
+  <data name="Label_BranchRevision" xml:space="preserve">
+    <value>브랜치 리비전</value>
+  </data>
+  <data name="Label_BranchSource" xml:space="preserve">
+    <value>브랜치 원본</value>
+  </data>
+  <data name="Label_BranchSourceRevision" xml:space="preserve">
+    <value>브랜치 원본 리비전</value>
+  </data>
+  <data name="Message_ReceivingInfo" xml:space="preserve">
+    <value>정보를 가져오는 중입니다.</value>
+  </data>
+  <data name="Title_ViewLog" xml:space="preserve">
+    <value>로그 보기</value>
+  </data>
+  <data name="Label_DateTime" xml:space="preserve">
+    <value>날짜</value>
+  </data>
+  <data name="Label_ID" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="Label_ItemPath" xml:space="preserve">
+    <value>항목 경로</value>
+  </data>
+  <data name="Label_ItemType" xml:space="preserve">
+    <value>항목 타입</value>
+  </data>
+  <data name="Label_DomainType" xml:space="preserve">
+    <value>도메인 타입</value>
+  </data>
+  <data name="Title_DomainInfo" xml:space="preserve">
+    <value>도메인 정보</value>
+  </data>
+  <data name="Title_DomainUserList" xml:space="preserve">
+    <value>도메인 사용자 목록</value>
+  </data>
+  <data name="Title_DomainList" xml:space="preserve">
+    <value>도메인 목록</value>
+  </data>
+  <data name="Title_DataBaseDomainList" xml:space="preserve">
+    <value>데이터 베이스 도메인 목록</value>
+  </data>
+  <data name="Button_Enter" xml:space="preserve">
+    <value>들어가기</value>
+  </data>
+  <data name="MenuItem_Enter" xml:space="preserve">
+    <value>들어가기</value>
+  </data>
+  <data name="Message_VerifyToCloseDataBase" xml:space="preserve">
+    <value>데이터 베이스를 사용중인 사용자가 있습니다. 그래도 닫으시겠습니까?</value>
+  </data>
+  <data name="MenuItem_Login" xml:space="preserve">
+    <value>로그인</value>
+  </data>
+  <data name="MenuItem_Copy" xml:space="preserve">
+    <value>복사(_C)...</value>
+  </data>
+  <data name="Title_CopyConnectionItem" xml:space="preserve">
+    <value>접속 정보 복사</value>
+  </data>
+</root>

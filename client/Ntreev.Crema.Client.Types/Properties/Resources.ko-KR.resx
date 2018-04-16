@@ -1,0 +1,351 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Button_Change" xml:space="preserve">
+    <value>변경(_S)</value>
+  </data>
+  <data name="Button_Copy" xml:space="preserve">
+    <value>복사(_C)...</value>
+  </data>
+  <data name="Button_Create" xml:space="preserve">
+    <value>생성(_S)</value>
+  </data>
+  <data name="Button_FindAll" xml:space="preserve">
+    <value>모두 찾기(_A)</value>
+  </data>
+  <data name="Button_OK" xml:space="preserve">
+    <value>확인(_O)</value>
+  </data>
+  <data name="Label_Column" xml:space="preserve">
+    <value>열</value>
+  </data>
+  <data name="Label_Comment" xml:space="preserve">
+    <value>설명</value>
+  </data>
+  <data name="Label_CreatedDateTime" xml:space="preserve">
+    <value>생성 날짜</value>
+  </data>
+  <data name="Label_Creator" xml:space="preserve">
+    <value>생성한 사람</value>
+  </data>
+  <data name="Label_DateTime" xml:space="preserve">
+    <value>날짜</value>
+  </data>
+  <data name="Label_FindWhat" xml:space="preserve">
+    <value>찾을 내용</value>
+  </data>
+  <data name="Label_IsFlag" xml:space="preserve">
+    <value>플래그 집합</value>
+  </data>
+  <data name="Label_LookIn" xml:space="preserve">
+    <value>찾는 위치</value>
+  </data>
+  <data name="Label_ModifiedDateTime" xml:space="preserve">
+    <value>편집 날짜</value>
+  </data>
+  <data name="Label_Modifier" xml:space="preserve">
+    <value>편집한 사람</value>
+  </data>
+  <data name="Label_Name" xml:space="preserve">
+    <value>이름</value>
+  </data>
+  <data name="Label_NewName" xml:space="preserve">
+    <value>새 이름</value>
+  </data>
+  <data name="Label_OriginalName" xml:space="preserve">
+    <value>원본 이름</value>
+  </data>
+  <data name="Label_Owner" xml:space="preserve">
+    <value>소유자</value>
+  </data>
+  <data name="Label_Path" xml:space="preserve">
+    <value>경로</value>
+  </data>
+  <data name="Label_Revision" xml:space="preserve">
+    <value>리비전</value>
+  </data>
+  <data name="Label_Row" xml:space="preserve">
+    <value>행</value>
+  </data>
+  <data name="Label_SettingDateTime" xml:space="preserve">
+    <value>설정 날짜</value>
+  </data>
+  <data name="Label_TargetFolder" xml:space="preserve">
+    <value>대상 폴더</value>
+  </data>
+  <data name="Label_TypeName" xml:space="preserve">
+    <value>타입 이름</value>
+  </data>
+  <data name="Label_User" xml:space="preserve">
+    <value>사용자</value>
+  </data>
+  <data name="Label_UserID" xml:space="preserve">
+    <value>사용자 아이디</value>
+  </data>
+  <data name="Label_Value" xml:space="preserve">
+    <value>값</value>
+  </data>
+  <data name="MenuItem_CancelTemplateEditing" xml:space="preserve">
+    <value>형태 편집 취소</value>
+  </data>
+  <data name="Button_Close" xml:space="preserve">
+    <value>닫기(_C)</value>
+  </data>
+  <data name="MenuItem_Delete" xml:space="preserve">
+    <value>삭제(_D)...</value>
+  </data>
+  <data name="MenuItem_Edit" xml:space="preserve">
+    <value>내용 편집(_E)</value>
+  </data>
+  <data name="MenuItem_EndTemplateEditing" xml:space="preserve">
+    <value>형태 편집 종료</value>
+  </data>
+  <data name="MenuItem_Find" xml:space="preserve">
+    <value>찾기(_F)</value>
+  </data>
+  <data name="MenuItem_FindAll" xml:space="preserve">
+    <value>모두 찾기</value>
+  </data>
+  <data name="MenuItem_Lock" xml:space="preserve">
+    <value>잠금 설정(_L)...</value>
+  </data>
+  <data name="MenuItem_Move" xml:space="preserve">
+    <value>이동(_M)...</value>
+  </data>
+  <data name="MenuItem_NewFolder" xml:space="preserve">
+    <value>새 폴더(_N)...</value>
+  </data>
+  <data name="MenuItem_NewType" xml:space="preserve">
+    <value>새 타입(_T)...</value>
+  </data>
+  <data name="MenuItem_Preview" xml:space="preserve">
+    <value>미리보기(_V)...</value>
+  </data>
+  <data name="MenuItem_QuickFind" xml:space="preserve">
+    <value>빠른 찾기(_F)</value>
+  </data>
+  <data name="MenuItem_Rename" xml:space="preserve">
+    <value>이름 변경(_R)...</value>
+  </data>
+  <data name="MenuItem_SelectInTypeBrowser" xml:space="preserve">
+    <value>타입 브라우저에서 보기(_V)...</value>
+  </data>
+  <data name="MenuItem_SetAuthority" xml:space="preserve">
+    <value>권한 설정(_A)...</value>
+  </data>
+  <data name="MenuItem_SetPrivate" xml:space="preserve">
+    <value>비공개로 설정(_P)</value>
+  </data>
+  <data name="MenuItem_SetPublic" xml:space="preserve">
+    <value>공개로 설정(_P)</value>
+  </data>
+  <data name="MenuItem_Type" xml:space="preserve">
+    <value>타입(_Y)</value>
+  </data>
+  <data name="MenuItem_Unlock" xml:space="preserve">
+    <value>잠금 해제(_U)</value>
+  </data>
+  <data name="MenuItem_View" xml:space="preserve">
+    <value>내용 보기(_E)</value>
+  </data>
+  <data name="MenuItem_ViewLog" xml:space="preserve">
+    <value>로그 보기(_L)...</value>
+  </data>
+  <data name="Message_TypeCopied" xml:space="preserve">
+    <value>타입 복사를 완료했습니다.</value>
+  </data>
+  <data name="Message_Changing" xml:space="preserve">
+    <value>변경중입니다.</value>
+  </data>
+  <data name="Message_ExitEditByUser_Format" xml:space="preserve">
+    <value>'{0}'에 의해서 편집이 종료되었습니다.</value>
+  </data>
+  <data name="Message_CopingType" xml:space="preserve">
+    <value>타입을 복사중입니다.</value>
+  </data>
+  <data name="Message_Creating" xml:space="preserve">
+    <value>생성중입니다.</value>
+  </data>
+  <data name="Message_ConfirmToSetPrivate" xml:space="preserve">
+    <value>비공개로 설정하시겠습니까?</value>
+  </data>
+  <data name="Title_AccessInfo" xml:space="preserve">
+    <value>보안 정보</value>
+  </data>
+  <data name="Title_CopyType" xml:space="preserve">
+    <value>타입 복사하기</value>
+  </data>
+  <data name="Title_DeleteType" xml:space="preserve">
+    <value>타입 삭제</value>
+  </data>
+  <data name="Title_DeleteTypeFolder" xml:space="preserve">
+    <value>타입 폴더 삭제</value>
+  </data>
+  <data name="Title_EditTypeTemplate" xml:space="preserve">
+    <value>타입 편집</value>
+  </data>
+  <data name="Title_Find" xml:space="preserve">
+    <value>찾기</value>
+  </data>
+  <data name="Title_LockInfo" xml:space="preserve">
+    <value>잠금 정보</value>
+  </data>
+  <data name="Title_MoveType" xml:space="preserve">
+    <value>타입 이동</value>
+  </data>
+  <data name="Title_MoveTypeFolder" xml:space="preserve">
+    <value>타입 폴더 이동</value>
+  </data>
+  <data name="Title_NewType" xml:space="preserve">
+    <value>타입 생성</value>
+  </data>
+  <data name="Title_NewTypeFolder" xml:space="preserve">
+    <value>타입 폴더 생성</value>
+  </data>
+  <data name="Title_RenameType" xml:space="preserve">
+    <value>타입 이름 변경</value>
+  </data>
+  <data name="Title_RenameTypeFolder" xml:space="preserve">
+    <value>타입 폴더 이름 변경</value>
+  </data>
+  <data name="Title_Type" xml:space="preserve">
+    <value>타입</value>
+  </data>
+  <data name="Title_TypeBrowser" xml:space="preserve">
+    <value>타입 탐색기</value>
+  </data>
+  <data name="Title_TypeInfo" xml:space="preserve">
+    <value>타입 정보</value>
+  </data>
+  <data name="Title_Types" xml:space="preserve">
+    <value>Types</value>
+  </data>
+  <data name="Title_TypesBeingUsed" xml:space="preserve">
+    <value>사용되고 있는 타입들</value>
+  </data>
+  <data name="Title_ViewLog" xml:space="preserve">
+    <value>로그 보기</value>
+  </data>
+  <data name="Comment_Search" xml:space="preserve">
+    <value>찾기</value>
+  </data>
+  <data name="Message_ReceivingInfo" xml:space="preserve">
+    <value>정보를 가져오는 중입니다.</value>
+  </data>
+</root>

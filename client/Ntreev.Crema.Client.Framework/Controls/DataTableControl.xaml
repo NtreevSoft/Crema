@@ -1,0 +1,245 @@
+﻿<UserControl x:Class="Ntreev.Crema.Client.Framework.Controls.DataTableControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid"
+             xmlns:nmfc="clr-namespace:Ntreev.ModernUI.Framework.Controls;assembly=Ntreev.ModernUI.Framework"
+             xmlns:ncfc="clr-namespace:Ntreev.Crema.Client.Framework.Controls"
+             xmlns:lconv="clr-namespace:Ntreev.Crema.Client.Framework.Converters"
+             mc:Ignorable="d" Loaded="UserControl_Loaded" Initialized="UserControl_Initialized" 
+             d:DesignHeight="300" >
+
+    <UserControl.Resources>
+        <lconv:ObjectEqualsToBooleanConverter x:Key="objectEqualsToBooleanConverter" />
+        <!--<nmfc:ModernDataGridCollectionViewSource x:Key="viewSource" Source="{Binding Path=ItemsSource, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />-->
+
+        <xcdg:DataGridCollectionViewSource x:Key="viewSource" Source="{Binding Path=ItemsSource, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
+
+        <xcdg:CellEditor x:Key="EnumTypeEditor">
+            <xcdg:CellEditor.EditTemplate>
+                <DataTemplate>
+                    <ComboBox SelectedItem="{xcdg:CellEditorBinding}" Margin="0" BorderThickness="0" Padding="0" Background="Transparent"
+                              ItemsSource="{Binding Path=TypeSelector, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">
+                        <ComboBox.Resources>
+                            <Style TargetType="{x:Type Popup}">
+                                <Setter Property="PlacementTarget" Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type xcdg:Cell}}}" />
+                                <Setter Property="Width" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type xcdg:Cell}}}" />
+                            </Style>
+                        </ComboBox.Resources>
+                    </ComboBox>
+                </DataTemplate>
+            </xcdg:CellEditor.EditTemplate>
+        </xcdg:CellEditor>
+
+        <xcdg:CellEditor x:Key="TagSelector">
+            <xcdg:CellEditor.EditTemplate>
+                <DataTemplate>
+                    <ncfc:TagSelector Value="{xcdg:CellEditorBinding}" IsLabelVisible="false" Margin="0" ValueChanged="TagSelector_ValueChanged" />
+                </DataTemplate>
+            </xcdg:CellEditor.EditTemplate>
+        </xcdg:CellEditor>
+
+        <DataTemplate x:Key="TagSelector_ContentTemplate">
+            <ncfc:TagSelector Value="{Binding}" IsEnabled="False" IsLabelVisible="false" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="Title_Template">
+            <TextBlock Margin="2 0" Text="{Binding}" Padding="5 2" Foreground="{DynamicResource WindowText}" />
+        </DataTemplate>
+
+        <ControlTemplate x:Key="EnableEditor_ControlTemplate" TargetType="{x:Type CheckBox}">
+            <Border Width="18" Height="18">
+                <Ellipse x:Name="Mark" Margin="2" Fill="{DynamicResource ButtonTextDisabled}" 
+                         Stroke="{TemplateBinding Foreground}" />
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter TargetName="Mark" Property="Fill" Value="{DynamicResource WindowBorderActive}" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <xcdg:CellEditor x:Key="EnableEditor">
+            <xcdg:CellEditor.EditTemplate>
+                <DataTemplate>
+                    <CheckBox IsChecked="{xcdg:CellEditorBinding}" Template="{StaticResource EnableEditor_ControlTemplate}"
+                              Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type nmfc:ModernDataCell}}}" />
+                </DataTemplate>
+            </xcdg:CellEditor.EditTemplate>
+        </xcdg:CellEditor>
+
+        <DataTemplate x:Key="EnableContentTemplate">
+            <CheckBox IsChecked="{Binding Mode=OneWay}" IsEnabled="False" Template="{StaticResource EnableEditor_ControlTemplate}"
+                      Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type nmfc:ModernDataCell}}}" />
+        </DataTemplate>
+
+        <xcdg:Column x:Key="tagColumn" x:Shared="False"
+                     MaxWidth="40" MinWidth="40" xcdg:TableView.CanScrollHorizontally="False"
+                     CellEditor="{StaticResource TagSelector}" FieldName="Tags" Title="" ShowInColumnChooser="True" 
+                     CellHorizontalContentAlignment="Center"
+                     CellContentTemplate="{StaticResource TagSelector_ContentTemplate}" VisiblePosition="0" />
+        <xcdg:Column x:Key="enableColumn" x:Shared="False"
+                     MaxWidth="28" MinWidth="28"
+                     CellEditor="{StaticResource EnableEditor}"
+                     CellContentTemplate="{StaticResource EnableContentTemplate}"
+                     FieldName="Enable" Title="" VisiblePosition="1" />
+        <xcdg:Column x:Key="modifierColumn" x:Shared="False" 
+                     Width="100"
+                     FieldName="Modifier" Title="수정한 사람" 
+                     ReadOnly="True" VisiblePosition="10000" />
+        <xcdg:Column x:Key="modifiedDateTimeColumn" x:Shared="False" 
+                     Width="150"
+                     FieldName="ModifiedDateTime" Title="수정된 시간" ReadOnly="True" VisiblePosition="10001" />
+
+        <xcdg:DefaultDetailConfiguration x:Key="defaultDetailConfiguration" UseDefaultHeadersFooters="False" x:Shared="false">
+            <xcdg:DefaultDetailConfiguration.DetailIndicatorStyle>
+                <Style TargetType="{x:Type xcdg:DetailIndicator}">
+                    <Setter Property="BorderThickness" Value="1 0 0 0" />
+                    <Setter Property="BorderBrush" Value="{DynamicResource DataGridGridLines}" />
+                    <Style.Triggers>
+                        <DataTrigger Value="False">
+                            <DataTrigger.Binding>
+                                <MultiBinding Converter="{StaticResource objectEqualsToBooleanConverter}">
+                                    <Binding RelativeSource="{RelativeSource Self}" Path="ActualWidth" />
+                                    <Binding RelativeSource="{RelativeSource AncestorType={x:Type xcdg:HierarchicalGroupLevelIndicatorPane}}" Path="ActualWidth" />
+                                </MultiBinding>
+                            </DataTrigger.Binding>
+                            <Setter Property="BorderThickness" Value="0" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </xcdg:DefaultDetailConfiguration.DetailIndicatorStyle>
+            <xcdg:DefaultDetailConfiguration.Headers>
+                <DataTemplate>
+                    <Grid xcdg:TableView.CanScrollHorizontally="False" Height="3" 
+                                  xcdg:RowSelector.RowSelectorStyle="{DynamicResource DetailTopBorder_RowSelector_Style}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <xcdg:HierarchicalGroupLevelIndicatorPane Grid.Column="0" xcdg:GroupLevelIndicatorPane.ShowIndicators="True" />
+                        <xcdg:GroupLevelIndicatorPane Grid.Column="1" Visibility="Hidden" />
+                        <Border Grid.Column="3" BorderThickness="0" BorderBrush="{DynamicResource DataGridGridLines}" />
+                    </Grid>
+                </DataTemplate>
+                <DataTemplate>
+                    <Grid  xcdg:TableView.CanScrollHorizontally="False">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <xcdg:HierarchicalGroupLevelIndicatorPane Grid.Column="0" xcdg:GroupLevelIndicatorPane.ShowIndicators="True" />
+                        <xcdg:GroupLevelIndicatorPane Grid.Column="1" Visibility="Hidden" />
+                        <Border Grid.Column="1" BorderThickness="1 1 0 0" BorderBrush="{DynamicResource DataGridGridLines}" />
+                        <Border Grid.Column="3" BorderBrush="{DynamicResource DataGridGridLines}" BorderThickness="0 1 1 0">
+                            <ContentPresenter Content="{Binding RelativeSource={RelativeSource Self}, Path=(xcdg:DataGridControl.DataGridContext).SourceDetailConfiguration.Title}"
+                                                      ContentTemplate="{Binding RelativeSource={RelativeSource Self}, Path=(xcdg:DataGridControl.DataGridContext).SourceDetailConfiguration.TitleTemplate}" />
+                        </Border>
+
+                    </Grid>
+                </DataTemplate>
+                <DataTemplate>
+                    <nmfc:ModernColumnManagerRow />
+                </DataTemplate>
+                <DataTemplate>
+                    <nmfc:ModernInsertionRow />
+                </DataTemplate>
+                <DataTemplate>
+                    <Grid xcdg:TableView.CanScrollHorizontally="False" Height="3" xcdg:RowSelector.RowSelectorStyle="{DynamicResource EmptyRowSelector_Style}" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <xcdg:HierarchicalGroupLevelIndicatorPane Grid.Column="0" xcdg:GroupLevelIndicatorPane.ShowIndicators="True" />
+                        <xcdg:GroupLevelIndicatorPane Grid.Column="1" Visibility="Hidden" />
+                        <Border Grid.Column="1" BorderThickness="1 1 0 0" BorderBrush="{DynamicResource DataGridGridLines}" />
+                        <Border Grid.Column="3" BorderThickness="0 1 1 0" BorderBrush="{DynamicResource DataGridGridLines}" />
+                    </Grid>
+                </DataTemplate>
+            </xcdg:DefaultDetailConfiguration.Headers>
+            <xcdg:DefaultDetailConfiguration.Footers>
+                <DataTemplate>
+                    <Grid xcdg:TableView.CanScrollHorizontally="False" Height="3" xcdg:RowSelector.RowSelectorStyle="{DynamicResource EmptyRowSelector_Style}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <xcdg:HierarchicalGroupLevelIndicatorPane Grid.Column="0" xcdg:GroupLevelIndicatorPane.ShowIndicators="True" />
+                        <xcdg:GroupLevelIndicatorPane Grid.Column="1" Visibility="Hidden" x:Name="glip" />
+                        <Border Grid.Column="1" Width="{Binding Width, ElementName=glip}" BorderThickness="0 1 0 0" BorderBrush="{DynamicResource DataGridGridLines}" />
+                        <Border Grid.Column="3" BorderThickness="0 1 0 0" BorderBrush="{DynamicResource DataGridGridLines}" />
+                    </Grid>
+                </DataTemplate>
+            </xcdg:DefaultDetailConfiguration.Footers>
+        </xcdg:DefaultDetailConfiguration>
+
+        <xcdg:TableView x:Key="view" RowSelectorPaneWidth="50" AllowDrop="True" x:Shared="false"
+                        VerticalGridLineBrush="{DynamicResource DataGridGridLines}" 
+                        HorizontalGridLineBrush="{DynamicResource DataGridGridLines}" 
+                        ExpandGroupGlyph="{DynamicResource ExpandGroupGlyph}"
+                        CollapseGroupGlyph="{DynamicResource CollapseGroupGlyph}"
+                        UseDefaultHeadersFooters="False"
+                        IsAlternatingRowStyleEnabled="False" AllowRowResize="True">
+            <xcdg:TableView.FixedHeaders>
+                <DataTemplate>
+                    <xcdg:HierarchicalGroupByControl/>
+                </DataTemplate>
+                <DataTemplate>
+                    <nmfc:ModernColumnManagerRow />
+                </DataTemplate>
+                <DataTemplate>
+                    <nmfc:ModernInsertionRow x:Name="InsertionRow" />
+                    <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding Path=ReadOnly, RelativeSource={RelativeSource AncestorType={x:Type xcdg:DataGridControl}}}" Value="True">
+                            <Setter TargetName="InsertionRow" Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </DataTemplate.Triggers>
+                </DataTemplate>
+                <DataTemplate>
+                    <Border x:Name="RowSplitter" BorderThickness="0 1 1 0" Height="3"
+                                BorderBrush="{DynamicResource DataGridGridLines}" 
+                                xcdg:RowSelector.RowSelectorStyle="{DynamicResource EmptyRowSelector_Style}"
+                                xcdg:TableView.CanScrollHorizontally="False" />
+                </DataTemplate>
+            </xcdg:TableView.FixedHeaders>
+        </xcdg:TableView>
+
+        <Style TargetType="{x:Type nmfc:ModernDataGridControl}" BasedOn="{StaticResource {x:Type nmfc:ModernDataGridControl}}" >
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True" />
+            <Setter Property="VirtualizingStackPanel.CacheLength" Value="20" />
+            <Setter Property="AutoCreateDetailConfigurations" Value="True" />
+            <Setter Property="ItemsSource" Value="{Binding Source={StaticResource viewSource}}" />
+            <Setter Property="ReadOnly" Value="{Binding Path=ReadOnly, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
+            <Setter Property="View" Value="{StaticResource view}"/>
+            <Setter Property="DefaultDetailConfiguration" Value="{StaticResource defaultDetailConfiguration}" />
+        </Style>
+
+    </UserControl.Resources>
+
+    <!--<UserControl.Template>
+        <ControlTemplate>
+            <nmfc:ModernDataGridControl x:Name="PART_DataGridControl" Style="{StaticResource {x:Type nmfc:ModernDataGridControl}}" />
+        </ControlTemplate>
+    </UserControl.Template>-->
+    
+
+    <nmfc:ModernDataGridControl x:Name="dataGridControl" BorderThickness="0" VirtualizingStackPanel.IsVirtualizing="True"
+                                ItemsSource="{Binding Source={StaticResource viewSource}}"
+                                AutoCreateDetailConfigurations="True" VirtualizingPanel.CacheLength="20"
+                                ReadOnly="{Binding Path=ReadOnly, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                ItemsSourceChangeCompleted="dataGridControl_ItemsSourceChangeCompleted"
+                                View="{StaticResource view}"
+                                DefaultDetailConfiguration="{StaticResource defaultDetailConfiguration}"
+                                />
+
+</UserControl>

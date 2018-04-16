@@ -1,0 +1,43 @@
+﻿<!--===================================================================================================================
+Released under the MIT License.
+    
+Copyright (c) 2018 Ntreev Soft co., Ltd.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the 
+Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+====================================================================================================================-->
+<UserControl x:Class="Ntreev.Crema.Client.Types.Dialogs.Views.CopyTypeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:nmfc="clr-namespace:Ntreev.ModernUI.Framework.Controls;assembly=Ntreev.ModernUI.Framework"
+             xmlns:p="clr-namespace:Ntreev.Crema.Client.Types.Properties"
+             mc:Ignorable="d" Width="400" nmfc:DialogWindow.ProgressType="Bar" Loaded="UserControl_Loaded">
+
+    <StackPanel>
+        <nmfc:PropertyItemsControl>
+            <TextBlock x:Name="TypeName" nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_OriginalName}" 
+                       VerticalAlignment="Center" Margin="7 0" />
+            <TextBox x:Name="NewName" nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_NewName}" />
+            <nmfc:TreeViewItemSelector x:Name="CategoryName" nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_TargetFolder}"
+                                       ItemsSource="{Binding CategoryPaths}" SelectedItem="{Binding CategoryPath}" />
+        </nmfc:PropertyItemsControl>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+            <Button x:Name="Copy" Content="{x:Static p:Resources.Button_Copy}" IsDefault="True" Style="{DynamicResource Dialog_Button_Style}" />
+            <Border Width="4" />
+            <Button x:Name="TryClose" Content="{x:Static p:Resources.Button_Close}" Style="{DynamicResource Dialog_Button_Style}" />
+        </StackPanel>
+    </StackPanel>
+
+</UserControl>

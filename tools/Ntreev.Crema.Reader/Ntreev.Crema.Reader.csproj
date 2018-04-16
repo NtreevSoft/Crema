@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D8F5B983-C45E-4230-96F5-E2C494D5FF5C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Ntreev.Crema.Reader</RootNamespace>
+    <AssemblyName>Ntreev.Crema.Reader</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <SccProjectName>Svn</SccProjectName>
+    <SccLocalPath>Svn</SccLocalPath>
+    <SccAuxPath>Svn</SccAuxPath>
+    <SccProvider>SubversionScc</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CremaReader.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="IColumn.cs" />
+    <Compile Include="IColumnCollection.cs" />
+    <Compile Include="Binary\CremaBinaryColumn.cs" />
+    <Compile Include="Binary\CremaBinaryRow.cs" />
+    <Compile Include="Binary\CremaBinaryRowCollection.cs" />
+    <Compile Include="Binary\CremaBinaryTable.cs" />
+    <Compile Include="Binary\CremaBinaryTableCollection.cs" />
+    <Compile Include="Binary\CremaBinaryReader.cs" />
+    <Compile Include="Binary\CremaBinaryType.cs" />
+    <Compile Include="Binary\CremaBinaryColumnCollection.cs" />
+    <Compile Include="IDataSet.cs" />
+    <Compile Include="Internal\RemoteStream.cs" />
+    <Compile Include="Internal\SocketStream.cs" />
+    <Compile Include="Internal\Utility.cs" />
+    <Compile Include="IO\BinaryWriterExtension.cs" />
+    <Compile Include="Internal\StringResource.cs" />
+    <Compile Include="IRow.cs" />
+    <Compile Include="IRowCollection.cs" />
+    <Compile Include="ITableCollection.cs" />
+    <Compile Include="IO\BinaryReaderExtension.cs" />
+    <Compile Include="ReadOptions.cs" />
+    <Compile Include="ITable.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="..\..\common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems" Label="Shared" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

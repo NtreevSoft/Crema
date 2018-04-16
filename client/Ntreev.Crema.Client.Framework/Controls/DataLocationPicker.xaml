@@ -1,0 +1,70 @@
+﻿<UserControl x:Class="Ntreev.Crema.Client.Framework.Controls.DataLocationPicker"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:conv="clr-namespace:Ntreev.Crema.Client.Framework.Converters"
+             mc:Ignorable="d" x:Name="uc1">
+    
+    <UserControl.Resources>
+        <conv:DataLocationToNullableBooleanConverter x:Key="dataLocationToNullableBooleanConverter" />
+        
+        <ControlTemplate x:Key="DataLocationPicker_Template" TargetType="{x:Type CheckBox}">
+            <Canvas Width="16" Height="12">
+                <Rectangle x:Name="ServerMark" Height="6" Stroke="{DynamicResource WindowText}" Width="8">
+                    <Rectangle.Fill>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <LinearGradientBrush.RelativeTransform>
+                                <TransformGroup>
+                                    <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                    <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                                    <RotateTransform Angle="-45" CenterY="0.5" CenterX="0.5"/>
+                                    <TranslateTransform/>
+                                </TransformGroup>
+                            </LinearGradientBrush.RelativeTransform>
+                            <GradientStop Color="#FFFBBEBE" Offset="0"/>
+                            <GradientStop Color="#FFD56868" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Rectangle.Fill>
+                </Rectangle>
+                <Rectangle x:Name="ClientMark" Height="6" Canvas.Left="8" Stroke="{DynamicResource WindowText}" Canvas.Top="6" Width="8">
+                    <Rectangle.Fill>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <LinearGradientBrush.RelativeTransform>
+                                <TransformGroup>
+                                    <ScaleTransform/>
+                                    <SkewTransform/>
+                                    <RotateTransform Angle="-45"/>
+                                    <TranslateTransform/>
+                                </TransformGroup>
+                            </LinearGradientBrush.RelativeTransform>
+                            <GradientStop Color="#FF99B7FB" Offset="0"/>
+                            <GradientStop Color="#FF5678C7" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Rectangle.Fill>
+                </Rectangle>
+                <Rectangle Height="1" Canvas.Left="3" Stroke="{DynamicResource WindowText}" Canvas.Top="10" Width="4"/>
+                <Rectangle Height="4" Canvas.Left="3" Stroke="{DynamicResource WindowText}" Canvas.Top="7" Width="1"/>
+                <Rectangle Height="1" Canvas.Left="2" Stroke="{DynamicResource WindowText}" Canvas.Top="8" Width="3"/>
+                <Rectangle Height="1" Canvas.Left="9 " Stroke="{DynamicResource WindowText}" Canvas.Top="1" Width="4"/>
+                <Rectangle Height="4" Canvas.Left="12" Stroke="{DynamicResource WindowText}" Canvas.Top="1" Width="1"/>
+                <Rectangle Height="1" Canvas.Left="11" Stroke="{DynamicResource WindowText}" Canvas.Top="3" Width="3"/>
+            </Canvas>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter TargetName="ClientMark" Property="Fill" Value="{x:Null}" />
+                </Trigger>
+                <Trigger Property="IsChecked" Value="{x:Null}">
+                    <Setter TargetName="ServerMark" Property="Fill" Value="{x:Null}" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+    </UserControl.Resources>
+    
+    <Grid>
+        <CheckBox x:Name="checkBox" IsThreeState="True" 
+                  IsChecked="{Binding ElementName=uc1, Path=Value, Converter={StaticResource dataLocationToNullableBooleanConverter}, Mode=TwoWay}" 
+                  Template="{StaticResource DataLocationPicker_Template}" >
+        </CheckBox>
+    </Grid>
+</UserControl>

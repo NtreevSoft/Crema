@@ -1,0 +1,288 @@
+﻿<!--===================================================================================================================
+Released under the MIT License.
+    
+Copyright (c) 2018 Ntreev Soft co., Ltd.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the 
+Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+====================================================================================================================-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:nmfc="clr-namespace:Ntreev.ModernUI.Framework.Controls;assembly=Ntreev.ModernUI.Framework"
+                    xmlns:ncf="clr-namespace:Ntreev.Crema.Client.Framework"
+                    xmlns:ncfc="clr-namespace:Ntreev.Crema.Client.Framework.Controls">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="IconImage.xaml" />
+        <ResourceDictionary Source="MenuItem.xaml" />
+        <ResourceDictionary Source="TextBlock.xaml" />
+        <ResourceDictionary Source="HighlightTextBlock.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <Style x:Key="DomainUserDescriptor_ContentControl_Style" TargetType="{x:Type ContentControl}">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Margin" Value="2" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContentControl}">
+                    <DockPanel Background="Transparent">
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                            <nmfc:IconImage Style="{StaticResource IsModifiedImage_Style}" />
+                            <nmfc:IconImage Style="{StaticResource IsOwnerImage_Style}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <nmfc:IconImage Style="{StaticResource DomainUserImage_Style}" />
+                            <Border Width="4" />
+                            <nmfc:HighlightTextBlock Style="{StaticResource HasPattern_HighlightTextBlock_Style}" />
+                        </StackPanel>
+                    </DockPanel>
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding IsOnline}" Value="False">
+                            <Setter Property="TextElement.Foreground" Value="{DynamicResource ItemTextDisabled}" />
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="TypeRootDescriptor_ContentControl_Style" TargetType="{x:Type ContentControl}">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Margin" Value="2" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContentControl}">
+                    <DockPanel Background="Transparent">
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                            <nmfc:IconImage Style="{StaticResource Selectable_LockImage_Style}" />
+                            <nmfc:IconImage Style="{StaticResource Selectable_AccessImage_Style}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <nmfc:IconImage Style="{StaticResource Selectable_DataBaseImage_Style}" />
+                            <Border Width="4" />
+                            <nmfc:HighlightTextBlock Style="{StaticResource HasPattern_HighlightTextBlock_Style}" />
+                        </StackPanel>
+                    </DockPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="TypeCategoryDescriptor_ContentControl_Style" TargetType="{x:Type ContentControl}">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Margin" Value="2" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContentControl}">
+                    <DockPanel Background="Transparent">
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                            <nmfc:IconImage Style="{StaticResource Selectable_LockImage_Style}" />
+                            <nmfc:IconImage Style="{StaticResource Selectable_AccessImage_Style}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <nmfc:IconImage Style="{StaticResource Selectable_CategoryImage_Style}" />
+                            <Border Width="4" />
+                            <nmfc:HighlightTextBlock Style="{StaticResource HasPattern_HighlightTextBlock_Style}" />
+                        </StackPanel>
+                    </DockPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="TypeDescriptor_ContentControl_Style" TargetType="{x:Type ContentControl}">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Margin" Value="2" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContentControl}">
+                    <DockPanel Background="Transparent">
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                            <nmfc:IconImage Style="{StaticResource TypeEditingImage_Style}" />
+                            <nmfc:IconImage Style="{StaticResource Selectable_LockImage_Style}" />
+                            <nmfc:IconImage Style="{StaticResource Selectable_AccessImage_Style}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <nmfc:IconImage Style="{StaticResource Selectable_TypeImage_Style}" />
+                            <Border Width="4" />
+                            <nmfc:HighlightTextBlock Style="{StaticResource TypeHighlightTextBlock_Style}" />
+                        </StackPanel>
+                    </DockPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="TableRootDescriptor_ContentControl_Style" TargetType="{x:Type ContentControl}">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Margin" Value="2" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContentControl}">
+                    <DockPanel Background="Transparent">
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                            <nmfc:IconImage Style="{StaticResource Selectable_LockImage_Style}" />
+                            <nmfc:IconImage Style="{StaticResource Selectable_AccessImage_Style}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <nmfc:IconImage Style="{StaticResource Selectable_DataBaseImage_Style}" />
+                            <Border Width="4" />
+                            <nmfc:HighlightTextBlock Style="{StaticResource HasPattern_HighlightTextBlock_Style}" />
+                        </StackPanel>
+                    </DockPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="TableCategoryDescriptor_ContentControl_Style" TargetType="{x:Type ContentControl}">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Margin" Value="2" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContentControl}">
+                    <DockPanel Background="Transparent">
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                            <nmfc:IconImage Style="{StaticResource Selectable_LockImage_Style}" />
+                            <nmfc:IconImage Style="{StaticResource Selectable_AccessImage_Style}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <nmfc:IconImage Style="{StaticResource Selectable_CategoryImage_Style}" />
+                            <Border Width="4" />
+                            <nmfc:HighlightTextBlock Style="{StaticResource HasPattern_HighlightTextBlock_Style}" />
+                        </StackPanel>
+                    </DockPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="TableDescriptor_ContentControl_Style" TargetType="{x:Type ContentControl}">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Margin" Value="2" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContentControl}">
+                    <DockPanel Background="Transparent">
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                            <nmfc:IconImage Style="{StaticResource Selectable_TableEditingImage_Style}" />
+                            <nmfc:IconImage Style="{StaticResource Selectable_TableSettingImage_Style}" />
+                            <nmfc:IconImage Style="{StaticResource Selectable_LockImage_Style}" />
+                            <nmfc:IconImage Style="{StaticResource Selectable_AccessImage_Style}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <nmfc:IconImage Style="{StaticResource Selectable_TableImage_Style}" />
+                            <Border Width="4" />
+                            <nmfc:HighlightTextBlock Style="{StaticResource TableHighlightTextBlock_Style}" />
+                        </StackPanel>
+                    </DockPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="DomainCategoryDescriptor_ContentControl_Style" TargetType="{x:Type ContentControl}">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Margin" Value="2" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContentControl}">
+                    <DockPanel Background="Transparent">
+                        <StackPanel Orientation="Horizontal">
+                            <nmfc:IconImage Style="{StaticResource Selectable_CategoryImage_Style}" />
+                            <Border Width="4" />
+                            <nmfc:HighlightTextBlock Style="{StaticResource HasPattern_HighlightTextBlock_Style}" />
+                        </StackPanel>
+                    </DockPanel>
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding IsActivated}" Value="False">
+                            <Setter Property="TextElement.Foreground" Value="{DynamicResource ItemTextDisabled}" />
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="DomainDescriptor_ContentControl_Style" TargetType="{x:Type ContentControl}">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Margin" Value="2" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContentControl}">
+                    <DockPanel Background="Transparent">
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                            <nmfc:IconImage Style="{StaticResource IsModifiedImage_Style}" />
+                            <nmfc:IconImage Style="{StaticResource DomainItemTypeImage_Style}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <nmfc:IconImage Style="{StaticResource Selectable_DomainImage_Style}" />
+                            <Border Width="4" />
+                            <nmfc:HighlightTextBlock Style="{StaticResource HasPattern_HighlightTextBlock_Style}" />
+                        </StackPanel>
+                    </DockPanel>
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding IsActivated}" Value="False">
+                            <Setter Property="TextElement.Foreground" Value="{DynamicResource ItemTextDisabled}" />
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="UserCategoryDescriptor_ContentControl_Style" TargetType="{x:Type ContentControl}">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Margin" Value="2" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContentControl}">
+                    <DockPanel Background="Transparent">
+                        <StackPanel Orientation="Horizontal" Background="Transparent">
+                            <nmfc:IconImage Style="{StaticResource Selectable_CategoryImage_Style}" />
+                            <Border Width="4" />
+                            <nmfc:HighlightTextBlock Style="{StaticResource HasPattern_HighlightTextBlock_Style}" />
+                        </StackPanel>
+                    </DockPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <Style x:Key="UserDescriptor_ContentControl_Style" TargetType="{x:Type ContentControl}">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Margin" Value="2" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContentControl}">
+                    <DockPanel Background="Transparent">
+                        <StackPanel Orientation="Horizontal">
+                            <nmfc:IconImage Style="{StaticResource Selectable_UserIcon_Style}" />
+                            <Border Width="4" />
+                            <nmfc:HighlightTextBlock x:Name="textBox" Style="{StaticResource HasPattern_HighlightTextBlock_Style}" />
+                        </StackPanel>
+                    </DockPanel>
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding IsBanned}" Value="True">
+                            <Setter TargetName="textBox" Property="TextDecorations" Value="Strikethrough" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsOnline}" Value="False">
+                            <Setter Property="TextElement.Foreground" Value="{DynamicResource ItemTextDisabled}" />
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

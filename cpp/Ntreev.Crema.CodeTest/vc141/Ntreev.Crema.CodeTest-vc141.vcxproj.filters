@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\src\stdafx.cpp" />
+    <ClCompile Include="..\src\Program.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\crema_base.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\crema_tables.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\crema_types.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\reader\src\binary_data.cpp">
+      <Filter>reader\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\reader\src\binary_reader.cpp">
+      <Filter>reader\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\reader\src\inidata.cpp">
+      <Filter>reader\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\reader\src\iniexception.cpp">
+      <Filter>reader\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\reader\src\inireader.cpp">
+      <Filter>reader\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\reader\src\iniutils.cpp">
+      <Filter>reader\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\reader\src\internal_utils.cpp">
+      <Filter>reader\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\reader\src\socket_istream.cpp">
+      <Filter>reader\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\reader\src\socketbuf.cpp">
+      <Filter>reader\src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\stdafx.h" />
+    <ClInclude Include="..\src\targetver.h" />
+    <ClInclude Include="..\src\reader\include\crema\inidata.h">
+      <Filter>reader\include\crema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\reader\include\crema\inidefine.h">
+      <Filter>reader\include\crema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\reader\include\crema\iniexception.h">
+      <Filter>reader\include\crema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\reader\include\crema\inireader.h">
+      <Filter>reader\include\crema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\reader\include\crema\initype.h">
+      <Filter>reader\include\crema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\reader\include\crema\iniutils.h">
+      <Filter>reader\include\crema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\reader\src\binary_data.h">
+      <Filter>reader\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\reader\src\binary_reader.h">
+      <Filter>reader\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\reader\src\binary_type.h">
+      <Filter>reader\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\crema_base.h">
+      <Filter>reader\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\crema_tables.h">
+      <Filter>reader\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\crema_types.h">
+      <Filter>reader\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\reader\src\internal_utils.h">
+      <Filter>reader\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\reader\src\socket_istream.h">
+      <Filter>reader\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\reader\src\socketbuf.h">
+      <Filter>reader\src</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="reader">
+      <UniqueIdentifier>{74386aa2-e85a-4efd-9dd2-9ba88d022840}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="reader\include">
+      <UniqueIdentifier>{4d1a34f6-eda4-4c68-b923-542bab461410}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="reader\include\crema">
+      <UniqueIdentifier>{31d8cbfc-8fb8-430f-b6d8-485382f6ceba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="reader\src">
+      <UniqueIdentifier>{462e514e-4691-4aa1-aaf6-a2b6c1ffd1c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{bb26d16a-5319-4753-9073-0207612b32e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{8898b508-9484-4a1d-b27a-09ac9aaa6164}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{fd22874e-b489-48ec-954f-b6a84947b539}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

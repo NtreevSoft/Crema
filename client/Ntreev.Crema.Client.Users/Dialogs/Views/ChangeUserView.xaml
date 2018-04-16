@@ -1,0 +1,57 @@
+﻿<!--===================================================================================================================
+Released under the MIT License.
+    
+Copyright (c) 2018 Ntreev Soft co., Ltd.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the 
+Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+====================================================================================================================-->
+<UserControl x:Class="Ntreev.Crema.Client.Users.Dialogs.Views.ChangeUserView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:nmfc="clr-namespace:Ntreev.ModernUI.Framework.Controls;assembly=Ntreev.ModernUI.Framework"
+             xmlns:nmfm="clr-namespace:Ntreev.ModernUI.Framework.Markup;assembly=Ntreev.ModernUI.Framework"
+             xmlns:p="clr-namespace:Ntreev.Crema.Client.Users.Properties"
+             mc:Ignorable="d" Width="250" Loaded="UserControl_Loaded">
+
+    <UserControl.Resources>
+        <ControlTemplate x:Key="TextBoxErrorTemplate">
+            <DockPanel LastChildFill="True">
+                <TextBlock DockPanel.Dock="Right" Foreground="Orange" FontSize="12pt">!!!!</TextBlock>
+                <Border BorderBrush="Green" BorderThickness="1">
+                    <AdornedElementPlaceholder />
+                </Border>
+            </DockPanel>
+        </ControlTemplate>
+    </UserControl.Resources>
+
+    <StackPanel>
+        <nmfc:PropertyItemsControl>
+            <TextBox x:Name="ID" nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_ID}" 
+                     IsReadOnly="True" Validation.ErrorTemplate="{StaticResource TextBoxErrorTemplate}" />
+            <PasswordBox x:Name="passwordBox1" nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_Password}" 
+                         nmfc:PasswordBoxUtility.ValidationTarget="{Binding ElementName=passwordBox2}"
+                         PasswordChanged="PasswordBox1_PasswordChanged" />
+            <PasswordBox x:Name="passwordBox2" nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_PasswordConfirm}"
+                         PasswordChanged="PasswordBox2_PasswordChanged" />
+            <ComboBox nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_Authority}" 
+                      ItemsSource="{Binding Authorities}" SelectedItem="{Binding Authority}" />
+            <TextBox x:Name="UserName" nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_Name}" />
+        </nmfc:PropertyItemsControl>
+        <Button x:Name="Change" Content="{x:Static p:Resources.Button_Change}" 
+                Style="{DynamicResource Dialog_Button_Style}" IsDefault="True" />
+    </StackPanel>
+
+</UserControl>

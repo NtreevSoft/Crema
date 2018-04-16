@@ -1,0 +1,155 @@
+﻿<!--===================================================================================================================
+Released under the MIT License.
+    
+Copyright (c) 2018 Ntreev Soft co., Ltd.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the 
+Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+====================================================================================================================-->
+<UserControl x:Class="Ntreev.Crema.Client.Base.Services.Views.DataBaseListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid"
+             xmlns:nmfc="clr-namespace:Ntreev.ModernUI.Framework.Controls;assembly=Ntreev.ModernUI.Framework"
+             xmlns:nmfv="clr-namespace:Ntreev.ModernUI.Framework.Converters;assembly=Ntreev.ModernUI.Framework"
+             xmlns:nmgc="clr-namespace:Ntreev.ModernUI.Framework.Controls;assembly=Ntreev.ModernUI.Framework.DataGrid"
+             xmlns:nmgv="clr-namespace:Ntreev.ModernUI.Framework.Converters;assembly=Ntreev.ModernUI.Framework.DataGrid"
+             xmlns:p="clr-namespace:Ntreev.Crema.Client.Base.Properties"
+             mc:Ignorable="d" 
+             d:DesignHeight="694" d:DesignWidth="1022">
+
+    <UserControl.Resources>
+       
+        <nmfc:ExpandableContextMenu x:Key="contextMenu"
+                                    DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}"
+                                    ItemsSource="{Binding ContextMenus}">
+            <MenuItem x:Name="Copy" Style="{StaticResource Copy_MenuItem_Style}" />
+            <MenuItem x:Name="Delete" Style="{StaticResource Delete_MenuItem_Style}" InputGestureText="Del" />
+            <MenuItem x:Name="Rename" Style="{StaticResource Rename_MenuItem_Style}" InputGestureText="F2" />
+            <Separator />
+            <MenuItem x:Name="Load" Style="{StaticResource Load_MenuItem_Style}" />
+            <MenuItem x:Name="Unload" Style="{StaticResource Unload_MenuItem_Style}" />
+            <Separator />
+            <MenuItem x:Name="ViewLog" Style="{StaticResource ViewLog_MenuItem_Style}" />
+        </nmfc:ExpandableContextMenu>
+
+        <Style TargetType="{x:Type xcdg:HierarchicalGroupByControl}" BasedOn="{StaticResource {x:Type xcdg:HierarchicalGroupByControl}}">
+            <Setter Property="Background" Value="{DynamicResource WindowBackground}" />
+            <!--<Setter Property="Visibility" Value="Collapsed" />-->
+            <Setter Property="BorderThickness" Value="0 0 0 1" />
+            <Setter Property="BorderBrush" Value="{DynamicResource ItemBorder}" />
+        </Style>
+
+        <Style TargetType="{x:Type xcdg:GroupLevelIndicatorPane}" BasedOn="{StaticResource {x:Type xcdg:GroupLevelIndicatorPane}}">
+            <!--<Setter Property="Visibility" Value="Collapsed" />-->
+
+        </Style>
+
+        <Style TargetType="{x:Type xcdg:ColumnManagerRow}" BasedOn="{StaticResource {x:Type xcdg:ColumnManagerRow}}">
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+
+        <Style TargetType="{x:Type nmgc:ModernDataRow}" BasedOn="{StaticResource {x:Type nmgc:ModernDataRow}}">
+            <Setter Property="ContextMenu" Value="{StaticResource contextMenu}" />
+            <EventSetter Event="MouseDoubleClick" Handler="DataGridRow_MouseDoubleClick" />
+            <Style.Triggers>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType={x:Type xcdg:DataGridControl}}}" Value="True" />
+                        <Condition Binding="{Binding Color}" Value="Transparent" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Foreground" Value="{DynamicResource ItemTextDisabled}" />
+                </MultiDataTrigger>
+                <DataTrigger Binding="{Binding IsCurrent}" Value="True">
+                    <Setter Property="FontWeight" Value="Bold" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <DataTemplate x:Key="IsLoaded_ContentTemplate">
+            <CheckBox IsChecked="{Binding Mode=OneWay}" IsEnabled="False" 
+                      Template="{StaticResource EnableEditor_ControlTemplate}"
+                      Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type xcdg:Cell}}}" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="LockInfo_ContentTemplate">
+            <nmfc:IconImage Style="{StaticResource LockImage_Style}" DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type nmgc:ModernDataCell}}}" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="AccessInfo_ContentTemplate">
+            <nmfc:IconImage Style="{StaticResource AccessImage_Style}" DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type nmgc:ModernDataCell}}}" />
+        </DataTemplate>
+
+        <nmfv:ColorToBrushConverter x:Key="colorToBrushConverter" />
+
+        <DataTemplate x:Key="Color_ContentTemplate">
+            <Border Background="{Binding Converter={StaticResource colorToBrushConverter}}" />
+        </DataTemplate>
+
+        <nmfv:ContentToStringConverter x:Key="contentToStringConverter" />
+
+        <DataTemplate x:Key="DateTime_DataTemplate">
+            <TextBlock Text="{Binding Converter={StaticResource contentToStringConverter}}" />
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <Border BorderThickness="1 1 1 0" BorderBrush="{DynamicResource ItemBorder}">
+            <nmfc:ExpandableToolBar ItemsSource="{Binding ToolBarItems}" />
+        </Border>
+
+        <nmgc:ModernDataGridControl x:Name="gridControl" Grid.Row="1" ItemsSource="{Binding ItemsSource}" ReadOnly="True" 
+                                    BorderThickness="1" BorderBrush="{DynamicResource ItemBorder}"
+                                    AutoCreateColumns="False" SelectionUnit="Row"
+                                    SelectionMode="Single"
+                                    SelectedItem="{Binding SelectedItem}" >
+            <nmgc:ModernDataGridControl.Columns>
+                <xcdg:Column FieldName="Color"
+                             MaxWidth="30" MinWidth="30"
+                             CellContentTemplate="{StaticResource Color_ContentTemplate}" />
+                <xcdg:Column FieldName="LockInfo" Title="L"
+                             MaxWidth="30" MinWidth="30"
+                             CellContentTemplate="{StaticResource LockInfo_ContentTemplate}" />
+                <xcdg:Column FieldName="AccessInfo" Title="S" 
+                             MaxWidth="30" MinWidth="30"
+                             CellContentTemplate="{StaticResource AccessInfo_ContentTemplate}" />
+                <xcdg:Column FieldName="IsLoaded" 
+                             MaxWidth="30" MinWidth="30"
+                             CellContentTemplate="{StaticResource IsLoaded_ContentTemplate}" />
+                <xcdg:Column FieldName="DataBaseInfo.Name" Title="{x:Static p:Resources.Label_Name}" />
+                <xcdg:Column FieldName="DataBaseInfo.Revision" Title="{x:Static p:Resources.Label_Revision}" />
+                <xcdg:Column FieldName="DataBaseInfo.Comment" Title="{x:Static p:Resources.Label_Comment}" />
+                <xcdg:Column FieldName="DataBaseInfo.CreationInfo.ID" Title="{x:Static p:Resources.Label_Creator}" />
+                <xcdg:Column FieldName="DataBaseInfo.CreationInfo.DateTime" Title="{x:Static p:Resources.Label_CreatedDateTime}" CellContentTemplate="{StaticResource DateTime_DataTemplate}" />
+                <xcdg:Column FieldName="DataBaseInfo.ModificationInfo.ID" Title="{x:Static p:Resources.Label_Modifier}" />
+                <xcdg:Column FieldName="DataBaseInfo.ModificationInfo.DateTime" Title="{x:Static p:Resources.Label_ModifiedDateTime}" CellContentTemplate="{StaticResource DateTime_DataTemplate}" />
+            </nmgc:ModernDataGridControl.Columns>
+            <nmgc:ModernDataGridControl.View>
+                <xcdg:TableView AllowDrop="True" ShowFixedColumnSplitter="False" Style="{StaticResource TableView_Style}" />
+            </nmgc:ModernDataGridControl.View>
+        </nmgc:ModernDataGridControl>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button x:Name="Enter" Style="{StaticResource Dialog_Button_Style}" Content="{x:Static p:Resources.Button_Enter}" />
+        </StackPanel>
+        
+    </Grid>
+</UserControl>

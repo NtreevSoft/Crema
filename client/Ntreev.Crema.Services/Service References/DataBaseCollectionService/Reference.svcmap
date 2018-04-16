@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="abd4dc32-e944-4c1c-827b-2b6a7539d78f" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>true</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="net.tcp://localhost:4004/DataBaseCollectionService/mex" Protocol="mex" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="www.ntreev.com.wsdl" MetadataType="Wsdl" ID="48fdd700-0388-487f-99af-1ee0e96165ba" SourceId="1" SourceUrl="net.tcp://localhost:4004/DataBaseCollectionService/mex" />
+    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="f7086020-aefb-4ae3-b5fa-096d16ebdfa5" SourceId="1" SourceUrl="net.tcp://localhost:4004/DataBaseCollectionService/mex" />
+    <MetadataFile FileName="www.ntreev.com.xsd" MetadataType="Schema" ID="24a4d84a-14b8-4456-b891-a6fb432c4a28" SourceId="1" SourceUrl="net.tcp://localhost:4004/DataBaseCollectionService/mex" />
+    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="1966854b-2d2a-4527-a84f-af36a12cea54" SourceId="1" SourceUrl="net.tcp://localhost:4004/DataBaseCollectionService/mex" />
+    <MetadataFile FileName="schemas.ntreev.com.xsd" MetadataType="Schema" ID="6ca9a6fc-392c-4d4d-a86f-2936f0424d48" SourceId="1" SourceUrl="net.tcp://localhost:4004/DataBaseCollectionService/mex" />
+    <MetadataFile FileName="Arrays.xsd" MetadataType="Schema" ID="bfff9634-f075-4f01-8294-f14d3af8d90e" SourceId="1" SourceUrl="net.tcp://localhost:4004/DataBaseCollectionService/mex" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

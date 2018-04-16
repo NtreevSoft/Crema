@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="d33f3b92-7319-4697-871e-61b18c924920" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>true</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="net.tcp://localhost:4004/RuntimeService/mex" Protocol="mex" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="www.ntreev.com.wsdl" MetadataType="Wsdl" ID="7b3a0b07-711a-4d0a-a347-b04375175cec" SourceId="1" SourceUrl="net.tcp://localhost:4004/RuntimeService/mex" />
+    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="1bdaf5df-1042-404c-b56d-a8887e584316" SourceId="1" SourceUrl="net.tcp://localhost:4004/RuntimeService/mex" />
+    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="9736ed5b-4838-4b1d-abf8-5e68fc42013d" SourceId="1" SourceUrl="net.tcp://localhost:4004/RuntimeService/mex" />
+    <MetadataFile FileName="System.xsd" MetadataType="Schema" ID="8f9bde18-5860-44ef-973f-a70b5356843f" SourceId="1" SourceUrl="net.tcp://localhost:4004/RuntimeService/mex" />
+    <MetadataFile FileName="www.ntreev.com.xsd" MetadataType="Schema" ID="c9e566e5-3300-4ed0-b096-de0b19516dc9" SourceId="1" SourceUrl="net.tcp://localhost:4004/RuntimeService/mex" />
+    <MetadataFile FileName="schemas.ntreev.com.xsd" MetadataType="Schema" ID="392a1b78-405d-4f5c-b7e8-22293a2b8bff" SourceId="1" SourceUrl="net.tcp://localhost:4004/RuntimeService/mex" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

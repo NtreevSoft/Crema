@@ -1,0 +1,166 @@
+﻿<!--===================================================================================================================
+Released under the MIT License.
+    
+Copyright (c) 2018 Ntreev Soft co., Ltd.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the 
+Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+====================================================================================================================-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:p="clr-namespace:Ntreev.Crema.Client.Framework.Properties"
+                    xmlns:nmfc="clr-namespace:Ntreev.ModernUI.Framework.Controls;assembly=Ntreev.ModernUI.Framework"
+                    xmlns:ncfv="clr-namespace:Ntreev.Crema.Client.Framework.Converters">
+
+    <ncfv:IsHighlightedConverter x:Key="isHighlightedConverter" />
+
+    <Style x:Key="MenuItem_IconImage_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource {x:Type nmfc:IconImage}}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsHighlighted, RelativeSource={RelativeSource AncestorType={x:Type MenuItem}}}" Value="True">
+                <Setter Property="Background" Value="{DynamicResource WindowText}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <nmfc:IconImage x:Key="folder_icon" Source="/Ntreev.Crema.Client.Framework;component/Images/folder_c.png" Style="{StaticResource MenuItem_IconImage_Style}" x:Shared="False" />
+    <nmfc:IconImage x:Key="find_icon" Source="/Ntreev.Crema.Client.Framework;component/Images/magnify.png" Style="{StaticResource MenuItem_IconImage_Style}" x:Shared="False" />
+    <nmfc:IconImage x:Key="rename_icon" Source="/Ntreev.Crema.Client.Framework;component/Images/rename.png" Style="{StaticResource MenuItem_IconImage_Style}" x:Shared="False" />
+    <nmfc:IconImage x:Key="delete_icon" Source="/Ntreev.Crema.Client.Framework;component/Images/close.png" Style="{StaticResource MenuItem_IconImage_Style}" x:Shared="False" />
+    <nmfc:IconImage x:Key="access_icon" Source="/Ntreev.Crema.Client.Framework;component/Images/access.png" Style="{StaticResource MenuItem_IconImage_Style}" x:Shared="False" />
+    <nmfc:IconImage x:Key="lock_icon" Source="/Ntreev.Crema.Client.Framework;component/Images/lock.png" Style="{StaticResource MenuItem_IconImage_Style}" x:Shared="False" />
+
+    <Style x:Key="NewFolder_MenuItem_Style" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource {x:Type MenuItem}}">
+        <Setter Property="Header" Value="{x:Static p:Resources.MenuItem_NewFolder}" />
+        <Setter Property="Icon" Value="{StaticResource folder_icon}" />
+    </Style>
+
+    <Style x:Key="Find_MenuItem_Style" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource {x:Type MenuItem}}">
+        <Setter Property="Header" Value="{x:Static p:Resources.MenuItem_Find}" />
+        <Setter Property="Icon" Value="{StaticResource find_icon}" />
+    </Style>
+
+    <Style x:Key="Copy_MenuItem_Style" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource {x:Type MenuItem}}">
+        <Setter Property="Header" Value="{x:Static p:Resources.MenuItem_Copy}" />
+    </Style>
+
+    <Style x:Key="Rename_MenuItem_Style" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource {x:Type MenuItem}}">
+        <Setter Property="Header" Value="{x:Static p:Resources.MenuItem_Rename}" />
+        <Setter Property="Icon" Value="{StaticResource rename_icon}" />
+    </Style>
+
+    <Style x:Key="Move_MenuItem_Style" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource {x:Type MenuItem}}">
+        <Setter Property="Header" Value="{x:Static p:Resources.MenuItem_Move}" />
+    </Style>
+
+    <Style x:Key="Delete_MenuItem_Style" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource {x:Type MenuItem}}">
+        <Setter Property="Header" Value="{x:Static p:Resources.MenuItem_Delete}" />
+        <Setter Property="Icon" Value="{StaticResource delete_icon}" />
+    </Style>
+
+    <Style x:Key="Load_MenuItem_Style" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource {x:Type MenuItem}}">
+        <Setter Property="Header" Value="{x:Static p:Resources.MenuItem_Load}" />
+        <Setter Property="Icon">
+            <Setter.Value>
+                <Border Width="18" Height="18">
+                    <Ellipse Margin="2" Fill="{DynamicResource Accent}" Stroke="{DynamicResource WindowText}" />
+                </Border>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsLoaded}" Value="True">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Unload_MenuItem_Style" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource {x:Type MenuItem}}">
+        <Setter Property="Header" Value="{x:Static p:Resources.MenuItem_Unload}" />
+        <Setter Property="Icon">
+            <Setter.Value>
+                <Border Width="18" Height="18">
+                    <Ellipse Margin="2" Fill="{DynamicResource ButtonTextDisabled}" Stroke="{DynamicResource WindowText}" />
+                </Border>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsLoaded}" Value="False">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Lock_MenuItem_Style" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource {x:Type MenuItem}}">
+        <Setter Property="Visibility" Value="Collapsed" />
+        <Setter Property="Header" Value="{x:Static p:Resources.MenuItem_Lock}" />
+        <Setter Property="Icon" Value="{StaticResource lock_icon}" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsLockInherited}" Value="True">
+                <Setter Property="Visibility" Value="Visible" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsLocked}" Value="False">
+                <Setter Property="Visibility" Value="Visible" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Unlock_MenuItem_Style" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource {x:Type MenuItem}}">
+        <Setter Property="Visibility" Value="Collapsed" />
+        <Setter Property="Header" Value="{x:Static p:Resources.MenuItem_Unlock}" />
+        <Style.Triggers>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsLocked}" Value="True" />
+                    <Condition Binding="{Binding IsLockInherited}" Value="False" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Visibility" Value="Visible" />
+            </MultiDataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="SetPrivate_MenuItem_Style" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource {x:Type MenuItem}}">
+        <Setter Property="Visibility" Value="Collapsed" />
+        <Setter Property="Header" Value="{x:Static p:Resources.MenuItem_SetPrivate}" />
+        <Setter Property="Icon" Value="{StaticResource access_icon}" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsAccessInherited}" Value="True">
+                <Setter Property="Visibility" Value="Visible" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsPrivate}" Value="False">
+                <Setter Property="Visibility" Value="Visible" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="SetPublic_MenuItem_Style" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource {x:Type MenuItem}}">
+        <Setter Property="Visibility" Value="Collapsed" />
+        <Setter Property="Header" Value="{x:Static p:Resources.MenuItem_SetPublic}" />
+        <Style.Triggers>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsPrivate}" Value="True" />
+                    <Condition Binding="{Binding IsAccessInherited}" Value="False" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Visibility" Value="Visible" />
+            </MultiDataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="SetAuthority_MenuItem_Style" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource {x:Type MenuItem}}">
+        <Setter Property="Header" Value="{x:Static p:Resources.MenuItem_SetAuthority}" />
+    </Style>
+
+    <Style x:Key="ViewLog_MenuItem_Style" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource {x:Type MenuItem}}">
+        <Setter Property="Header" Value="{x:Static p:Resources.MenuItem_ViewLog}" />
+    </Style>
+
+</ResourceDictionary>

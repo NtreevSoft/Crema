@@ -1,0 +1,198 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Exception_CannotRename" xml:space="preserve">
+    <value>같은 이름으로 변경할 수 없습니다.</value>
+  </data>
+  <data name="Exception_CategoryNotFound_Format" xml:space="preserve">
+    <value>"{0}" 경로를 찾을 수 없습니다.</value>
+  </data>
+  <data name="Exception_DataBaseNotFound_Format" xml:space="preserve">
+    <value>"{0}" 데이터 베이스를 찾을 수 없습니다.</value>
+  </data>
+  <data name="Exception_DomainNotFound_Format" xml:space="preserve">
+    <value>"{0}" 도메인 아이디를 찾을 수 없습니다.</value>
+  </data>
+  <data name="Exception_ItemNotFound_Format" xml:space="preserve">
+    <value>"{0}" 아이템 경로를 찾을 수 없습니다.</value>
+  </data>
+  <data name="Exception_TableNotFound_Format" xml:space="preserve">
+    <value>"{0}" 테이블을 찾을 수 없습니다.</value>
+  </data>
+  <data name="Exception_TypeNotFound_Format" xml:space="preserve">
+    <value>"{0}" 타입을 찾을 수 없습니다.</value>
+  </data>
+  <data name="Exception_UserNotFound_Format" xml:space="preserve">
+    <value>"{0}" 사용자 아이디를 찾을 수 없습니다.</value>
+  </data>
+  <data name="Exception_AlreadyPublic" xml:space="preserve">
+    <value>이미 공개 사용으로 설정되어 있습니다.</value>
+  </data>
+  <data name="Exception_AlreadyPrivate" xml:space="preserve">
+    <value>이미 개인 사용으로 설정되어 있습니다.</value>
+  </data>
+  <data name="Exception_InvalidIDorPath" xml:space="preserve">
+    <value>잘못된 아이디이거나 잘못된 경로입니다.</value>
+  </data>
+  <data name="Exception_CannotAddToPublic" xml:space="preserve">
+    <value>공개 사용으로 설정되어 있기 때문에 사용자를 추가할 수 없습니다..</value>
+  </data>
+  <data name="Exception_CannotRemoveToPublic" xml:space="preserve">
+    <value>공개 사용으로 설정되어 있기 때문에 사용자를 삭제할 수 없습니다..</value>
+  </data>
+  <data name="Exception_AlreadyLocked" xml:space="preserve">
+    <value>이미 잠겨 있습니다.</value>
+  </data>
+  <data name="Exception_NotLocked" xml:space="preserve">
+    <value>잠겨 있지 않습니다.</value>
+  </data>
+  <data name="Exception_CannotMoveToSameFolder" xml:space="preserve">
+    <value>같은 폴더로 이동할 수 없습니다.</value>
+  </data>
+  <data name="Exception_InheritedChildCannotRename" xml:space="preserve">
+    <value>상속된 자식 테이블은 이름을 변경할 수 없습니다.</value>
+  </data>
+  <data name="Exception_InheritedChildCannotMove" xml:space="preserve">
+    <value>상속된 자식 테이블은 이동할 수 없습니다.</value>
+  </data>
+  <data name="Exception_InheritedChildCannotDelete" xml:space="preserve">
+    <value>상속된 자식 테이블은 삭제할 수 없습니다.</value>
+  </data>
+  <data name="Exception_CannotSetTemplateToInherited" xml:space="preserve">
+    <value>상속된 테이블에 템플릿을 지정할 수 없습니다.</value>
+  </data>
+  <data name="Exception_CannotSetTemplateItself" xml:space="preserve">
+    <value>자기 자신을 템플릿으로 지정할 수 없습니다.</value>
+  </data>
+  <data name="Exception_RootFolderCannotRename" xml:space="preserve">
+    <value>최상위 폴더는 이름을 변경할 수 없습니다.</value>
+  </data>
+  <data name="Exception_RootFolderCannotMove" xml:space="preserve">
+    <value>최상위 폴더는 이동할 수 없습니다.</value>
+  </data>
+  <data name="Exception_HaveNotPermission" xml:space="preserve">
+    <value>작업 수행 권한을 가지고 있지 않습니다.</value>
+  </data>
+  <data name="Exception_InheritedPrivateItemCannotAdd" xml:space="preserve">
+    <value>개인 사용 설정이 상속된 객체이기 때문에 사용자를 추가할 수 없습니다.</value>
+  </data>
+  <data name="Exception_InheritedPrivateItemCannotRemove" xml:space="preserve">
+    <value>개인 사용 설정이 상속된 객체이기 때문에 사용자를 삭제할 수 없습니다.</value>
+  </data>
+</root>

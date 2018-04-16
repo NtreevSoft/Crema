@@ -1,0 +1,438 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Button_Change" xml:space="preserve">
+    <value>_Change</value>
+  </data>
+  <data name="Button_Close" xml:space="preserve">
+    <value>_Close</value>
+  </data>
+  <data name="Button_Copy" xml:space="preserve">
+    <value>_Copy...</value>
+  </data>
+  <data name="Button_Create" xml:space="preserve">
+    <value>_Create</value>
+  </data>
+  <data name="Button_Find" xml:space="preserve">
+    <value>_Find</value>
+  </data>
+  <data name="Button_OK" xml:space="preserve">
+    <value>_OK</value>
+  </data>
+  <data name="Label_Comment" xml:space="preserve">
+    <value>Comment</value>
+  </data>
+  <data name="Label_ContentModifiedDateTime" xml:space="preserve">
+    <value>Content Modified DateTime</value>
+  </data>
+  <data name="Label_ContentModifier" xml:space="preserve">
+    <value>Content Modifier</value>
+  </data>
+  <data name="Label_CopyData" xml:space="preserve">
+    <value>Copy Data</value>
+  </data>
+  <data name="Label_CreatedDateTime" xml:space="preserve">
+    <value>Created DateTime</value>
+  </data>
+  <data name="Label_Creator" xml:space="preserve">
+    <value>Creator</value>
+  </data>
+  <data name="Label_DateTime" xml:space="preserve">
+    <value>DateTime</value>
+  </data>
+  <data name="Label_ModifiedDateTime" xml:space="preserve">
+    <value>Modified DateTime</value>
+  </data>
+  <data name="Label_Modifier" xml:space="preserve">
+    <value>Modifier</value>
+  </data>
+  <data name="Label_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Label_NewName" xml:space="preserve">
+    <value>New Name</value>
+  </data>
+  <data name="Label_OriginalName" xml:space="preserve">
+    <value>Original Name</value>
+  </data>
+  <data name="Label_Path" xml:space="preserve">
+    <value>Path</value>
+  </data>
+  <data name="Label_Revision" xml:space="preserve">
+    <value>Revision</value>
+  </data>
+  <data name="Label_TableName" xml:space="preserve">
+    <value>Table Name</value>
+  </data>
+  <data name="Label_Tags" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="Label_TargetFolder" xml:space="preserve">
+    <value>Target Folder</value>
+  </data>
+  <data name="Label_TemplatedParent" xml:space="preserve">
+    <value>Parent Template</value>
+  </data>
+  <data name="Label_TemplateModifiedDateTime" xml:space="preserve">
+    <value>Template Modified DateTime</value>
+  </data>
+  <data name="Label_TemplateModifier" xml:space="preserve">
+    <value>Template Modifier</value>
+  </data>
+  <data name="Label_UserID" xml:space="preserve">
+    <value>UserID</value>
+  </data>
+  <data name="Label_UseTemplate" xml:space="preserve">
+    <value>Use Template</value>
+  </data>
+  <data name="Label_User" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="Label_SettingDateTime" xml:space="preserve">
+    <value>Setting DateTime</value>
+  </data>
+  <data name="MenuItem_QuickFind" xml:space="preserve">
+    <value>Quick _Find</value>
+  </data>
+  <data name="MenuItem_CopyTable" xml:space="preserve">
+    <value>_Copy Table...</value>
+  </data>
+  <data name="MenuItem_Delete" xml:space="preserve">
+    <value>_Delete...</value>
+  </data>
+  <data name="MenuItem_EditContent" xml:space="preserve">
+    <value>_Edit Content</value>
+  </data>
+  <data name="MenuItem_EditTemplate" xml:space="preserve">
+    <value>Edit _Template...</value>
+  </data>
+  <data name="MenuItem_Find" xml:space="preserve">
+    <value>_Find...</value>
+  </data>
+  <data name="MenuItem_InheritTable" xml:space="preserve">
+    <value>_Inherite Table...</value>
+  </data>
+  <data name="MenuItem_Lock" xml:space="preserve">
+    <value>_Lock...</value>
+  </data>
+  <data name="MenuItem_Move" xml:space="preserve">
+    <value>_Move...</value>
+  </data>
+  <data name="MenuItem_NewChildTable" xml:space="preserve">
+    <value>New _ChildTable...</value>
+  </data>
+  <data name="MenuItem_NewFolder" xml:space="preserve">
+    <value>New _Folder...</value>
+  </data>
+  <data name="MenuItem_NewTable" xml:space="preserve">
+    <value>New _Table...</value>
+  </data>
+  <data name="MenuItem_Preview" xml:space="preserve">
+    <value>Pre_view...</value>
+  </data>
+  <data name="MenuItem_Rename" xml:space="preserve">
+    <value>_Rename...</value>
+  </data>
+  <data name="MenuItem_SetAuthority" xml:space="preserve">
+    <value>Set _Authority...</value>
+  </data>
+  <data name="MenuItem_SetPrivate" xml:space="preserve">
+    <value>Set _Private</value>
+  </data>
+  <data name="MenuItem_SetPublic" xml:space="preserve">
+    <value>Set _Public</value>
+  </data>
+  <data name="MenuItem_Unlock" xml:space="preserve">
+    <value>_Unlock</value>
+  </data>
+  <data name="MenuItem_ViewContent" xml:space="preserve">
+    <value>View Content</value>
+  </data>
+  <data name="MenuItem_ViewLog" xml:space="preserve">
+    <value>View Log</value>
+  </data>
+  <data name="MenuItem_ViewTemplate" xml:space="preserve">
+    <value>View Template</value>
+  </data>
+  <data name="Message_ExitEditByUser_Format" xml:space="preserve">
+    <value>Edit has been exited by '{0}'.</value>
+  </data>
+  <data name="Message_ConfirmToSetPrivate" xml:space="preserve">
+    <value>Do you want to set it to Private?</value>
+  </data>
+  <data name="Message_Changing" xml:space="preserve">
+    <value>Changing.</value>
+  </data>
+  <data name="Message_Coping" xml:space="preserve">
+    <value>Copying.</value>
+  </data>
+  <data name="Message_Creating" xml:space="preserve">
+    <value>Creating.</value>
+  </data>
+  <data name="Message_ReceivingInfo" xml:space="preserve">
+    <value>Receiving information.</value>
+  </data>
+  <data name="Message_Saving" xml:space="preserve">
+    <value>Saving.</value>
+  </data>
+  <data name="Message_LoadingData" xml:space="preserve">
+    <value>Loading Data</value>
+  </data>
+  <data name="Message_IsReadOnly" xml:space="preserve">
+    <value>It's ReadOnly</value>
+  </data>
+  <data name="Title_CopyTable" xml:space="preserve">
+    <value>Copy Table</value>
+  </data>
+  <data name="Title_DeleteTable" xml:space="preserve">
+    <value>Delete Table</value>
+  </data>
+  <data name="Title_DeleteTableFolder" xml:space="preserve">
+    <value>Delete Table Folder</value>
+  </data>
+  <data name="Title_Find" xml:space="preserve">
+    <value>Find</value>
+  </data>
+  <data name="Title_InheritTable" xml:space="preserve">
+    <value>Inherit Table</value>
+  </data>
+  <data name="Title_MoveTable" xml:space="preserve">
+    <value>Move Table</value>
+  </data>
+  <data name="Title_MoveTableFolder" xml:space="preserve">
+    <value>Move Table Folder</value>
+  </data>
+  <data name="Title_NewChildTable" xml:space="preserve">
+    <value>New Child Table</value>
+  </data>
+  <data name="Title_NewTable" xml:space="preserve">
+    <value>New Table</value>
+  </data>
+  <data name="Title_NewTableFolder" xml:space="preserve">
+    <value>New Table Folder</value>
+  </data>
+  <data name="Title_RenameTable" xml:space="preserve">
+    <value>Rename Table</value>
+  </data>
+  <data name="Title_RenameTableFolder" xml:space="preserve">
+    <value>Rename Table Folder</value>
+  </data>
+  <data name="Title_TableBrowser" xml:space="preserve">
+    <value>Table Browser</value>
+  </data>
+  <data name="Title_TableColumnInfo" xml:space="preserve">
+    <value>Column Info</value>
+  </data>
+  <data name="Title_TableInfo" xml:space="preserve">
+    <value>Table Info</value>
+  </data>
+  <data name="Title_Tables" xml:space="preserve">
+    <value>Tables</value>
+  </data>
+  <data name="Title_TableTemplateEditing" xml:space="preserve">
+    <value>Editing Table Template</value>
+  </data>
+  <data name="Title_ViewLog" xml:space="preserve">
+    <value>View Log</value>
+  </data>
+  <data name="Comment_EnterWordToFind" xml:space="preserve">
+    <value>Enter word to find</value>
+  </data>
+  <data name="MenuItem_TagsAll" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="MenuItem_TagsClient" xml:space="preserve">
+    <value>Client</value>
+  </data>
+  <data name="MenuItem_TagsServer" xml:space="preserve">
+    <value>Server</value>
+  </data>
+  <data name="MenuItem_TagsUnused" xml:space="preserve">
+    <value>Unused</value>
+  </data>
+  <data name="MenuItem_CancelContentEditing" xml:space="preserve">
+    <value>Cancel Content Editing</value>
+  </data>
+  <data name="MenuItem_CancelTemplateEditing" xml:space="preserve">
+    <value>Cancel Template Editing</value>
+  </data>
+  <data name="MenuItem_EndContentEditing" xml:space="preserve">
+    <value>End Content Editing</value>
+  </data>
+  <data name="MenuItem_EndTemplateEditing" xml:space="preserve">
+    <value>End Template Editing</value>
+  </data>
+  <data name="MenuItem_FindAll" xml:space="preserve">
+    <value>Find All</value>
+  </data>
+  <data name="MenuItem_Table" xml:space="preserve">
+    <value>Tabl_e</value>
+  </data>
+  <data name="MenuItem_Tags" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="MenuItem_SelectInTableBrowser" xml:space="preserve">
+    <value>Select in table browser...</value>
+  </data>
+  <data name="Message_ConfirmToCancelContentEditing" xml:space="preserve">
+    <value>Cancel editing the contents. Items that are not saved will disappear. Would you like to go on?</value>
+  </data>
+  <data name="Message_ConfirmToEndContentEditing" xml:space="preserve">
+    <value>Finishes the contents of the contents. Would you like to go on?</value>
+  </data>
+  <data name="Title_AccessInfo" xml:space="preserve">
+    <value>Access Information</value>
+  </data>
+  <data name="Title_LockInfo" xml:space="preserve">
+    <value>Lock Info</value>
+  </data>
+  <data name="Title_BaseTable" xml:space="preserve">
+    <value>Base Table</value>
+  </data>
+  <data name="Title_DerivedTable" xml:space="preserve">
+    <value>Derived Tables</value>
+  </data>
+  <data name="Title_TablesBeingUsed" xml:space="preserve">
+    <value>Tables being used</value>
+  </data>
+  <data name="Label_Owner" xml:space="preserve">
+    <value>Owner</value>
+  </data>
+  <data name="Label_FindWhat" xml:space="preserve">
+    <value>find what</value>
+  </data>
+  <data name="Label_LookIn" xml:space="preserve">
+    <value>looking</value>
+  </data>
+  <data name="Button_FindAll" xml:space="preserve">
+    <value>_Find All</value>
+  </data>
+  <data name="Label_Row" xml:space="preserve">
+    <value>Row</value>
+  </data>
+  <data name="Label_Column" xml:space="preserve">
+    <value>Column</value>
+  </data>
+  <data name="Label_Value" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="Title_ViewTableTemplate" xml:space="preserve">
+    <value>View Table Template</value>
+  </data>
+</root>

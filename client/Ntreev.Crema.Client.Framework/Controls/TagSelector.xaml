@@ -1,0 +1,79 @@
+﻿<ButtonBase x:Class="Ntreev.Crema.Client.Framework.Controls.TagSelector"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ncfv="clr-namespace:Ntreev.Crema.Client.Framework.Converters"
+             xmlns:ncfc="clr-namespace:Ntreev.Crema.Client.Framework.Controls"
+             xmlns:sm="clr-namespace:Ntreev.Crema.ServiceModel;assembly=Ntreev.Crema.ServiceModel"
+             mc:Ignorable="d" x:Name="uc1" Margin="4 0">
+    
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+
+        <Button x:Name="selector" DataContext="{Binding Path=Value, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" Click="selector_Click" Visibility="Collapsed">
+            <Button.Template>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <StackPanel Orientation="Horizontal" >
+                        <Label Content="Tags : " Padding="0" VerticalAlignment="Center" 
+                               Visibility="{Binding IsLabelVisible, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Converter={StaticResource trueToVisible}}" />
+
+                        <Canvas Width="16" Height="12">
+                            <Rectangle x:Name="ServerRect" Height="6" Stroke="{TemplateBinding Foreground}" Width="8" >
+                                <Rectangle.Fill>
+                                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                        <LinearGradientBrush.RelativeTransform>
+                                            <TransformGroup>
+                                                <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                                <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                                                <RotateTransform Angle="-45" CenterY="0.5" CenterX="0.5"/>
+                                                <TranslateTransform/>
+                                            </TransformGroup>
+                                        </LinearGradientBrush.RelativeTransform>
+                                        <GradientStop Color="#FFFBBEBE" Offset="0"/>
+                                        <GradientStop Color="#dc2222" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                            <Rectangle x:Name="ClientRect" Height="6" Canvas.Left="8" Stroke="{TemplateBinding Foreground}" Canvas.Top="6" Width="8">
+                                <Rectangle.Fill>
+                                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                        <LinearGradientBrush.RelativeTransform>
+                                            <TransformGroup>
+                                                <ScaleTransform/>
+                                                <SkewTransform/>
+                                                <RotateTransform Angle="-45"/>
+                                                <TranslateTransform/>
+                                            </TransformGroup>
+                                        </LinearGradientBrush.RelativeTransform>
+                                        <GradientStop Color="#FF99B7FB" Offset="0"/>
+                                        <GradientStop Color="#1f52c8" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                            <Rectangle Height="1" Canvas.Left="3" Stroke="{TemplateBinding Foreground}" Canvas.Top="10" Width="4"/>
+                            <Rectangle Height="4" Canvas.Left="3" Stroke="{TemplateBinding Foreground}" Canvas.Top="7" Width="1"/>
+                            <Rectangle Height="1" Canvas.Left="2" Stroke="{TemplateBinding Foreground}" Canvas.Top="8" Width="3"/>
+                            <Rectangle Height="1" Canvas.Left="9 " Stroke="{TemplateBinding Foreground}" Canvas.Top="1" Width="4"/>
+                            <Rectangle Height="4" Canvas.Left="12" Stroke="{TemplateBinding Foreground}" Canvas.Top="1" Width="1"/>
+                            <Rectangle Height="1" Canvas.Left="11" Stroke="{TemplateBinding Foreground}" Canvas.Top="3" Width="3"/>
+
+                        </Canvas>
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding}" Value="{x:Static sm:TagInfo.Server}" >
+                            <Setter TargetName="ClientRect" Property="Fill" Value="Gray" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding}" Value="{x:Static sm:TagInfo.Client}" >
+                            <Setter TargetName="ServerRect" Property="Fill" Value="Gray" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding}" Value="{x:Static sm:TagInfo.Unused}" >
+                            <Setter TargetName="ServerRect" Property="Fill" Value="Gray" />
+                            <Setter TargetName="ClientRect" Property="Fill" Value="Gray" />
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+    </Grid>
+    
+</ButtonBase>

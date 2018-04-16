@@ -1,0 +1,91 @@
+﻿<!--===================================================================================================================
+Released under the MIT License.
+    
+Copyright (c) 2018 Ntreev Soft co., Ltd.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the 
+Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+====================================================================================================================-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:nmfc="clr-namespace:Ntreev.ModernUI.Framework.Controls;assembly=Ntreev.ModernUI.Framework"
+                    xmlns:local="clr-namespace:Ntreev.Crema.Designer.Assets">
+
+    <Style x:Key="CategoryImage_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource {x:Type nmfc:IconImage}}">
+        <Setter Property="Foreground" Value="{DynamicResource WindowText}" />
+        <Setter Property="Background" Value="{DynamicResource WindowBackground}" />
+        <Setter Property="Source" Value="/Images/folder_c.png" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsExpanded}" Value="True">
+                <Setter Property="Source" Value="/Images/folder_o.png" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="TypeImage_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource {x:Type nmfc:IconImage}}">
+        <Setter Property="Foreground" Value="{DynamicResource WindowText}" />
+        <Setter Property="Background" Value="{DynamicResource WindowBackground}" />
+        <Setter Property="Source" Value="/Images/type_enum.png" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsFlag}" Value="True">
+                <Setter Property="Source" Value="/Images/type_flag.png" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="TableImage_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource {x:Type nmfc:IconImage}}">
+        <Setter Property="Foreground" Value="{DynamicResource WindowText}" />
+        <Setter Property="Background" Value="{DynamicResource WindowBackground}" />
+        <Setter Property="Source" Value="/Images/table.png" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsInherited}" Value="True">
+                <Setter Property="Source" Value="/Images/table_derived.png" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsBaseTemplate}" Value="True">
+                <Setter Property="Source" Value="/Images/table_base.png" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="DataBaseImage_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource {x:Type nmfc:IconImage}}">
+        <Setter Property="Foreground" Value="{DynamicResource WindowText}" />
+        <Setter Property="Background" Value="{DynamicResource WindowBackground}" />
+        <Setter Property="Source" Value="/Images/database.png" />
+    </Style>
+
+    <Style x:Key="EditingImage_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource {x:Type nmfc:IconImage}}">
+        <Setter Property="Height" Value="16" />
+        <Setter Property="Foreground" Value="{DynamicResource WindowText}" />
+        <Setter Property="Visibility" Value="Collapsed" />
+        <Setter Property="ToolTip" Value="편집중입니다." />
+        <Setter Property="Source" Value="/Images/edit.png" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsBeingEdited}" Value="True">
+                <Setter Property="Visibility" Value="Visible" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="TableSettingImage_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource {x:Type nmfc:IconImage}}">
+        <Setter Property="Height" Value="16" />
+        <Setter Property="Foreground" Value="{DynamicResource WindowText}" />
+        <Setter Property="Visibility" Value="Collapsed" />
+        <Setter Property="Source" Value="/Images/setting.png" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsBeingSetup}" Value="True">
+                <Setter Property="Visibility" Value="Visible" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+</ResourceDictionary>

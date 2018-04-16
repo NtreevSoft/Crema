@@ -1,0 +1,88 @@
+﻿<!--===================================================================================================================
+Released under the MIT License.
+    
+Copyright (c) 2018 Ntreev Soft co., Ltd.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the 
+Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+====================================================================================================================-->
+<nmfc:BrowserExpander x:Class="Ntreev.Crema.Comparer.Tables.Views.TableInfoView"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+                      xmlns:ncpc="clr-namespace:Ntreev.Crema.Presentation.Controls;assembly=Ntreev.Crema.Presentation"
+                      xmlns:nmfc="clr-namespace:Ntreev.ModernUI.Framework.Controls;assembly=Ntreev.ModernUI.Framework"
+                      xmlns:nmfv="clr-namespace:Ntreev.ModernUI.Framework.Converters;assembly=Ntreev.ModernUI.Framework"
+                      xmlns:p="clr-namespace:Ntreev.Crema.Comparer.Properties"
+                      mc:Ignorable="d" d:DesignWidth="300" Style="{StaticResource {x:Type nmfc:BrowserExpander}}">
+
+    <nmfc:BrowserExpander.Resources>
+        <nmfv:ContentToStringConverter x:Key="contentToStringConverter" />
+
+        <Style x:Key="IconImage_Style" TargetType="{x:Type nmfc:IconImage}" BasedOn="{StaticResource {x:Type nmfc:IconImage}}">
+            <Setter Property="Margin" Value="0 0 2 0" />
+            <Setter Property="Source" Value="/cremacomparer;component/Images/right_side.png" />
+            <Setter Property="Foreground" Value="{DynamicResource WindowBackground}" />
+            <Setter Property="Background" Value="{DynamicResource WindowBorderActive}" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding DataContext.IsLeft, RelativeSource={RelativeSource AncestorType={x:Type nmfc:BrowserExpander}}}" Value="True">
+                    <Setter Property="Source" Value="/cremacomparer;component/Images/left_side.png" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </nmfc:BrowserExpander.Resources>
+
+    <nmfc:BrowserExpander.HeaderTemplate>
+        <DataTemplate>
+            <DockPanel>
+                <nmfc:IconImage DockPanel.Dock="Right" Style="{StaticResource IconImage_Style}" />
+                <TextBlock Text="{Binding}" />
+            </DockPanel>
+        </DataTemplate>
+    </nmfc:BrowserExpander.HeaderTemplate>
+
+    <ncpc:HeaderedContentList HeaderWidth="0.33*">
+        <HeaderedContentControl Header="{x:Static p:Resources.Label_Name}" 
+                                Content="{Binding TableInfo.Name}" />
+        <HeaderedContentControl Header="{x:Static p:Resources.Label_TableName}" 
+                                Content="{Binding TableInfo.TableName}" />
+        <HeaderedContentControl Header="{x:Static p:Resources.Label_Path}" 
+                                Content="{Binding TableInfo.CategoryName}" />
+        <HeaderedContentControl Header="{x:Static p:Resources.Label_Creator}" 
+                                Content="{Binding TableInfo.CreationInfo.ID}" />
+        <HeaderedContentControl Header="{x:Static p:Resources.Label_CreatedDateTime}" 
+                                Content="{Binding TableInfo.CreationInfo.DateTime, Converter={StaticResource contentToStringConverter}}" />
+        <HeaderedContentControl Header="{x:Static p:Resources.Label_TemplateModifier}" 
+                                Content="{Binding TableInfo.ModificationInfo.ID}" />
+        <HeaderedContentControl Header="{x:Static p:Resources.Label_TemplateModifiedDateTime}" 
+                                Content="{Binding TableInfo.ModificationInfo.DateTime, Converter={StaticResource contentToStringConverter}}" />
+        <HeaderedContentControl Header="{x:Static p:Resources.Label_ContentModifier}" 
+                                Content="{Binding TableInfo.ContentsInfo.ID}" />
+        <HeaderedContentControl Header="{x:Static p:Resources.Label_ContentModifiedDateTime}" 
+                                Content="{Binding TableInfo.ContentsInfo.DateTime, Converter={StaticResource contentToStringConverter}}" />
+        <HeaderedContentControl Header="{x:Static p:Resources.Label_TemplatedParent}" 
+                                Content="{Binding TableInfo.TemplatedParent}" />
+        <HeaderedContentControl Header="{x:Static p:Resources.Label_Comment}" 
+                                Content="{Binding TableInfo.Comment}" />
+        <HeaderedContentControl Header="{x:Static p:Resources.Label_Tags}">
+            <HeaderedContentControl.Content>
+                <ncpc:TagSelector DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type HeaderedContentControl}}}" 
+                                  Value="{Binding TableInfo.DerivedTags}" IsReadOnly="True" />
+            </HeaderedContentControl.Content>
+        </HeaderedContentControl>
+    </ncpc:HeaderedContentList>
+
+</nmfc:BrowserExpander>

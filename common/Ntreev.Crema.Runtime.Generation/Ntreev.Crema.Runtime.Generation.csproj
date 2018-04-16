@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{79AEF7D1-93D1-4EEB-B09C-1595C82E7492}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Ntreev.Crema.Runtime.Generation</RootNamespace>
+    <AssemblyName>Ntreev.Crema.Runtime.Generation</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>0612</NoWarn>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\tools\Ntreev.Crema.Reader\Binary\CremaBinaryColumn.cs">
+      <Link>CSharp\Reader\Binary\CremaBinaryColumn.cs</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\tools\Ntreev.Crema.Reader\Binary\CremaBinaryColumnCollection.cs">
+      <Link>CSharp\Reader\Binary\CremaBinaryColumnCollection.cs</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\tools\Ntreev.Crema.Reader\Binary\CremaBinaryReader.cs">
+      <Link>CSharp\Reader\Binary\CremaBinaryReader.cs</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\tools\Ntreev.Crema.Reader\Binary\CremaBinaryRow.cs">
+      <Link>CSharp\Reader\Binary\CremaBinaryRow.cs</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\tools\Ntreev.Crema.Reader\Binary\CremaBinaryRowCollection.cs">
+      <Link>CSharp\Reader\Binary\CremaBinaryRowCollection.cs</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\tools\Ntreev.Crema.Reader\Binary\CremaBinaryTable.cs">
+      <Link>CSharp\Reader\Binary\CremaBinaryTable.cs</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\tools\Ntreev.Crema.Reader\Binary\CremaBinaryTableCollection.cs">
+      <Link>CSharp\Reader\Binary\CremaBinaryTableCollection.cs</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\tools\Ntreev.Crema.Reader\Binary\CremaBinaryType.cs">
+      <Link>CSharp\Reader\Binary\CremaBinaryType.cs</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\tools\Ntreev.Crema.Reader\CremaReader.cs">
+      <Link>CSharp\Reader\CremaReader.cs</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\tools\Ntreev.Crema.Reader\Extensions.cs">
+      <Link>CSharp\Reader\Extensions.cs</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\tools\Ntreev.Crema.Reader\IColumn.cs">
+      <Link>CSharp\Reader\IColumn.cs</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\tools\Ntreev.Crema.Reader\IColumnCollection.cs">
+      <Link>CSharp\Reader\IColumnCollection.cs</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\tools\Ntreev.Crema.Reader\IDataSet.cs">
+      <Link>CSharp\Reader\IDataSet.cs</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\tools\Ntreev.Crema.Reader\Internal\SocketStream.cs">
+      <Link>CSharp\Reader\Internal\SocketStream.cs</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\tools\Ntreev.Crema.Reader\Internal\StringResource.cs">
+      <Link>CSharp\Reader\Internal\StringResource.cs</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\tools\Ntreev.Crema.Reader\Internal\Utility.cs">
+      <Link>CSharp\Reader\Internal\Utility.cs</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\tools\Ntreev.Crema.Reader\IO\BinaryReaderExtension.cs">
+      <Link>CSharp\Reader\IO\BinaryReaderExtension.cs</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\tools\Ntreev.Crema.Reader\IO\BinaryWriterExtension.cs">
+      <Link>CSharp\Reader\IO\BinaryWriterExtension.cs</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\tools\Ntreev.Crema.Reader\IRow.cs">
+      <Link>CSharp\Reader\IRow.cs</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\tools\Ntreev.Crema.Reader\IRowCollection.cs">
+      <Link>CSharp\Reader\IRowCollection.cs</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\tools\Ntreev.Crema.Reader\ITable.cs">
+      <Link>CSharp\Reader\ITable.cs</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\tools\Ntreev.Crema.Reader\ITableCollection.cs">
+      <Link>CSharp\Reader\ITableCollection.cs</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\tools\Ntreev.Crema.Reader\ReadOptions.cs">
+      <Link>CSharp\Reader\ReadOptions.cs</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\tools\Ntreev.Crema.Reader\Internal\RemoteStream.cs">
+      <Link>CSharp\Reader\Internal\RemoteStream.cs</Link>
+    </EmbeddedResource>
+    <Compile Include="CodeGenerationOptions.cs" />
+    <Compile Include="GenerationSet.cs" />
+    <Compile Include="CodeGenerationSettings.cs" />
+    <Compile Include="CSharp\CodeGenerationInfo.cs" />
+    <EmbeddedResource Include="CSharp\Code\CremaBase.cs" />
+    <Compile Include="CSharp\ColumnInfoExtensions.cs" />
+    <Compile Include="CSharp\CremaCodeGenerator.cs" />
+    <Compile Include="CSharp\CremaDataClassCreator.cs" />
+    <Compile Include="CSharp\CremaRowClassCreator.cs" />
+    <Compile Include="CSharp\CremaTableClassCreator.cs" />
+    <Compile Include="CSharp\CremaTypeEnumCreator.cs" />
+    <Compile Include="CSharp\Extensions.cs" />
+    <Compile Include="CSharp\TableInfoExtensions.cs" />
+    <Compile Include="CSharp\Utility.cs" />
+    <Compile Include="ICodeCompiler.cs" />
+    <Compile Include="ICodeGenerator.cs" />
+    <Compile Include="ICodePropertyProvider.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\sub-modules\Ntreev.Library\Ntreev.Library\Ntreev.Library.csproj">
+      <Project>{1918437f-4fbf-4731-ac5b-981a4a4cb1f1}</Project>
+      <Name>Ntreev.Library</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ntreev.Crema.Data\Ntreev.Crema.Data.csproj">
+      <Project>{04aeb614-3510-4064-99af-0aa807c7f957}</Project>
+      <Name>Ntreev.Crema.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="..\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems" Label="Shared" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

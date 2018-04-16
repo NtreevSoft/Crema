@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="a26eb252-7ba4-40e1-8507-a6518014fafd" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>true</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="net.tcp://localhost:4004/DataBaseService/mex" Protocol="mex" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="www.ntreev.com.wsdl" MetadataType="Wsdl" ID="74acf892-c19c-4687-85f4-6e3f48080a2c" SourceId="1" SourceUrl="net.tcp://localhost:4004/DataBaseService/mex" />
+    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="fe9d6ee9-dfd1-45af-a360-5290c64f3e90" SourceId="1" SourceUrl="net.tcp://localhost:4004/DataBaseService/mex" />
+    <MetadataFile FileName="www.ntreev.com.xsd" MetadataType="Schema" ID="a5817552-38bd-4cfb-a110-3d8ea669a409" SourceId="1" SourceUrl="net.tcp://localhost:4004/DataBaseService/mex" />
+    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="90b9e2f8-5251-4682-a0e6-220f03044644" SourceId="1" SourceUrl="net.tcp://localhost:4004/DataBaseService/mex" />
+    <MetadataFile FileName="schemas.ntreev.com.xsd" MetadataType="Schema" ID="285ef272-b222-4ca7-be45-275e905e44f9" SourceId="1" SourceUrl="net.tcp://localhost:4004/DataBaseService/mex" />
+    <MetadataFile FileName="Ntreev.Crema.Data1.xsd" MetadataType="Schema" ID="baf4541f-119b-4418-bdc7-7e996ada44eb" SourceId="1" SourceUrl="net.tcp://localhost:4004/DataBaseService/mex" />
+    <MetadataFile FileName="Ntreev.Crema.ServiceModel.xsd" MetadataType="Schema" ID="3f557c45-fd94-499e-ae01-75bc9f459750" SourceId="1" SourceUrl="net.tcp://localhost:4004/DataBaseService/mex" />
+    <MetadataFile FileName="Arrays.xsd" MetadataType="Schema" ID="86ec3038-2bce-44b2-b725-8948e22438fb" SourceId="1" SourceUrl="net.tcp://localhost:4004/DataBaseService/mex" />
+    <MetadataFile FileName="System.xsd" MetadataType="Schema" ID="69143c35-45a9-4ad6-bc26-60010952ffad" SourceId="1" SourceUrl="net.tcp://localhost:4004/DataBaseService/mex" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

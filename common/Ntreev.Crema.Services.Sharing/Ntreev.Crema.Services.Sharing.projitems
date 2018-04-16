@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>24ecbee1-2859-4f09-969b-f382e6341814</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Ntreev.Crema.Services</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AuthenticationEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ClosedEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ClosedEventHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EventMetaDataBuilder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IStateProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IInfoProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IDispatcherObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IExtendedProperties.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UsingDataBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DomainDeletedEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DomainEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DomainPropertyEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DomainRowEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DomainUserRemovedEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DomainUserEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EventLogBuilder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EventMessageBuilder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IAccessible.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IAuthenticationProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ICremaConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ICremaHost.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IDataBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IDataBaseCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IDomainItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IDomain.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IDomainCategory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IDomainCategoryCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IDomainCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IDomainContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IDomainExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IDomainHost.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IDomainUser.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IDomainUserCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ILockable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ILogServiceExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IPermission.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IPlugin.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ITable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ITableCategory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ITableCategoryCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ITableCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ITableColumn.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ITableContent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ITableContentCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ITableContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ITableItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ITableRow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ITableTemplate.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ItemEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ItemEventHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ItemsCreatedEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ItemsCreatedEventHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ItemsDeletedEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ItemsDeletedEventHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ItemsEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ItemsEventHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ItemsMovedEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ItemsMovedEventHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ItemsRenamedEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ItemsRenamedEventHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ITransaction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ITypeCategory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ITypeCategoryCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ITypeCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ITypeContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ITypeItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ITypeMember.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ITypeTemplate.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IUser.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IUserCategory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IUserCategoryCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IUserCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IUserContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IUserItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GlobalLogService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CremaLog.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ILogService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LogService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LogVerbose.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MessageEventArgs.cs" />
+  </ItemGroup>
+</Project>

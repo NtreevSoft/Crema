@@ -1,0 +1,106 @@
+﻿<!--===================================================================================================================
+Released under the MIT License.
+    
+Copyright (c) 2018 Ntreev Soft co., Ltd.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the 
+Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+====================================================================================================================-->
+<UserControl x:Class="Ntreev.Crema.Client.Tables.Dialogs.Views.PreviewTableCategoryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:nmfc="clr-namespace:Ntreev.ModernUI.Framework.Controls;assembly=Ntreev.ModernUI.Framework"
+             xmlns:vm="clr-namespace:Ntreev.Crema.Client.Tables.Dialogs.ViewModels"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:avalonDock="http://schemas.xceed.com/wpf/xaml/avalondock"
+             xmlns:avalonTheme="clr-namespace:Ntreev.Crema.Presentation.Assets;assembly=Ntreev.Crema.Presentation"
+             mc:Ignorable="d" nmfc:DialogWindow.DesiredHeight="600" nmfc:DialogWindow.DesiredWidth="800"
+             nmfc:DialogWindow.DesiredResizeMode="CanResizeWithGrip">
+
+    <UserControl.Resources>
+        
+        <HierarchicalDataTemplate DataType="{x:Type vm:PreviewTableCategoryTreeViewItemViewModel}" ItemsSource="{Binding Items}">
+            <ContentControl Focusable="False" Margin="2">
+                <DockPanel Background="Transparent">
+                    <StackPanel Orientation="Horizontal">
+                        <nmfc:IconImage x:Name="icon" Style="{StaticResource CategoryImage_Style}" Margin="0 0 4 0" />
+                        <nmfc:HighlightTextBlock x:Name="textBox" Text="{Binding DisplayName}" />
+                    </StackPanel>
+                </DockPanel>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="PreviewMouseDoubleClick">
+                        <i:InvokeCommandAction Command="{Binding ExpandCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </ContentControl>
+            <HierarchicalDataTemplate.Triggers>
+                <DataTrigger Binding="{Binding DisplayName}" Value="">
+                    <Setter TargetName="icon" Property="Source" Value="/Ntreev.Crema.Client.Framework;component/Images/database.png" />
+                </DataTrigger>
+            </HierarchicalDataTemplate.Triggers>
+        </HierarchicalDataTemplate>
+
+        <HierarchicalDataTemplate DataType="{x:Type vm:PreviewTableTreeViewItemViewModel}" ItemsSource="{Binding Items}">
+            <ContentControl Focusable="False" Margin="2">
+                <DockPanel Background="Transparent">
+                    <StackPanel Orientation="Horizontal">
+                        <nmfc:IconImage Source="/Ntreev.Crema.Client.Framework;component/Images/table.png" Margin="0 0 4 0"
+                                        Foreground="{DynamicResource WindowText}" Background="{DynamicResource WindowBackground}" />
+                        <nmfc:HighlightTextBlock x:Name="textBox" Text="{Binding DisplayName}" />
+                    </StackPanel>
+                </DockPanel>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="PreviewMouseDoubleClick">
+                        <i:InvokeCommandAction Command="{Binding ViewCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </ContentControl>
+        </HierarchicalDataTemplate>
+
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <nmfc:ModernTreeView ItemsSource="{Binding ItemsSource}" />
+        <GridSplitter Grid.Column="1" Width="4" />
+        <avalonDock:DockingManager Grid.Column="2" x:Name="_dockingManager" 
+                                   DocumentsSource="{Binding Documents.Documents}"
+                                   AllowMixedOrientation="True" 
+                                   ActiveContent="{Binding Documents.SelectedDocument, Mode=TwoWay}">
+            <avalonDock:DockingManager.Theme>
+                <avalonTheme:AvalonDockTheme />
+            </avalonDock:DockingManager.Theme>
+            <avalonDock:DockingManager.LayoutItemTemplate>
+                <DataTemplate>
+                    <ContentControl cal:View.Model="{Binding}" IsTabStop="False" />
+                </DataTemplate>
+            </avalonDock:DockingManager.LayoutItemTemplate>
+            <avalonDock:DockingManager.LayoutItemContainerStyle>
+                <Style TargetType="{x:Type avalonDock:LayoutItem}">
+                    <Setter Property="CanFloat" Value="False" />
+                    <Setter Property="Title" Value="{Binding Model.DisplayName, Mode=OneWay}" />
+                    <Setter Property="CloseCommand" Value="{Binding Model.CloseCommand}" />
+                    <Setter Property="ContentId" Value="{Binding Model.DisplayName, Mode=OneWay}" />
+                </Style>
+            </avalonDock:DockingManager.LayoutItemContainerStyle>
+        </avalonDock:DockingManager>
+    </Grid>
+
+</UserControl>

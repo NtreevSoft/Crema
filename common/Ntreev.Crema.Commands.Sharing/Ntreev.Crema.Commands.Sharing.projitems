@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>3d3128aa-908d-44c4-9efd-0e1a903f5287</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Ntreev.Crema.Commands</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\UnbanCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\BanCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\KickCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\UserCommandBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\LockCommandBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\AccessCommandBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\PublicCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\PrivateCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\UnlockCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\StateCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\InformationCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\LockCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\AuthorityAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\ConsoleCommandBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\ConsoleCommandContextBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\ConsoleCommandProviderBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\ConsoleCommandMethodBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\ConsoleTerminalBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\ChangeDirectoryCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\DataBaseCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\DataBaseUsing.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\DataBasesPath.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\DomainCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\IConsoleCommandProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\IConsoleCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\ConsoleDriveBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\IConsoleDrive.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\ChangeDriveCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\ListDriveCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\PrintWorkingDirectoryCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\Properties\QuietProperties.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\Properties\DetailProperties.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\Serializations\EnumStringGenerationProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\SystemInfoCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\ListCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\LoggerCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\MoveCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\PropertyCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\Serializations\JsonTableInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\DataBasesConsoleDrive.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\DomainsConsoleDrive.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\UsersConsoleDrive.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TextSerializerType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TextSerializer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DateTimeValue.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DateTimeValueConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IConfigurationProperties.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TextEditorHost.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\ResetCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\Properties\ColumnInfoProperties.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\Properties\ViewProperties.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\Properties\LogProperties.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\Properties\TagsProperties.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\Properties\FilterProperties.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\RemoveCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\MakeDirectoryCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\NotifyCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\Serializations\JsonSchemaUtility.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\Serializations\JsonColumnInfos.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\Serializations\JsonColumnInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\Serializations\JsonEditorHost.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\Serializations\JsonPropertiesInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\Serializations\JsonTypeMemberInfos.cs" />
+    <None Include="$(MSBuildThisFileDirectory)Consoles\Serializations\JsonTypeMemberInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\Serializations\JsonTypeInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\TableContent\RemoveCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\TableContent\LeaveCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\TableContent\AddCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\TableContent\EditCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\TableContent\ContentCommandBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\TableContent\ViewCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\TableTemplate\TemplateEditor.cs" />
+    <None Include="$(MSBuildThisFileDirectory)Consoles\TypeTemplate\CancelCommand.cs" />
+    <None Include="$(MSBuildThisFileDirectory)Consoles\TypeTemplate\ITemplateCommand.cs" />
+    <None Include="$(MSBuildThisFileDirectory)Consoles\TypeTemplate\SaveCommand.cs" />
+    <None Include="$(MSBuildThisFileDirectory)Consoles\TypeTemplate\SetCommand.cs" />
+    <None Include="$(MSBuildThisFileDirectory)Consoles\TypeTemplate\TemplateCommandBase.cs" />
+    <None Include="$(MSBuildThisFileDirectory)Consoles\TypeTemplate\TemplateCommandContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\TypeTemplate\TemplateEditor.cs" />
+    <None Include="$(MSBuildThisFileDirectory)Consoles\TypeTemplate\TemplateTerminal.cs" />
+    <None Include="$(MSBuildThisFileDirectory)Consoles\TypeTemplate\ViewCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\TableTemplate\CancelCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\TableTemplate\TemplateCommandBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\TableTemplate\SetCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\TableTemplate\SaveCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\TableTemplate\ITemplateCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\TableTemplate\TemplateCommandContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\TableTemplate\TemplateTerminal.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\TableTemplate\ViewCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\TypeCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\TableCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\UserCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\Serializations\JsonUserInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Consoles\Resources.ko-KR.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Consoles\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

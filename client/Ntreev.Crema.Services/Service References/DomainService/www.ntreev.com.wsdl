@@ -1,0 +1,215 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://www.ntreev.com" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.ntreev.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://www.ntreev.com/Imports">
+      <xsd:import namespace="http://www.ntreev.com" />
+      <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/System" />
+      <xsd:import namespace="http://schemas.ntreev.com" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IDomainService_Subscribe_InputMessage">
+    <wsdl:part name="parameters" element="tns:Subscribe" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_Subscribe_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SubscribeResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_Unsubscribe_InputMessage">
+    <wsdl:part name="parameters" element="tns:Unsubscribe" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_Unsubscribe_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UnsubscribeResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_SetUserLocation_InputMessage">
+    <wsdl:part name="parameters" element="tns:SetUserLocation" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_SetUserLocation_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SetUserLocationResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_NewRow_InputMessage">
+    <wsdl:part name="parameters" element="tns:NewRow" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_NewRow_OutputMessage">
+    <wsdl:part name="parameters" element="tns:NewRowResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_RemoveRow_InputMessage">
+    <wsdl:part name="parameters" element="tns:RemoveRow" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_RemoveRow_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RemoveRowResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_SetRow_InputMessage">
+    <wsdl:part name="parameters" element="tns:SetRow" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_SetRow_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SetRowResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_SetProperty_InputMessage">
+    <wsdl:part name="parameters" element="tns:SetProperty" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_SetProperty_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SetPropertyResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_BeginUserEdit_InputMessage">
+    <wsdl:part name="parameters" element="tns:BeginUserEdit" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_BeginUserEdit_OutputMessage">
+    <wsdl:part name="parameters" element="tns:BeginUserEditResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_EndUserEdit_InputMessage">
+    <wsdl:part name="parameters" element="tns:EndUserEdit" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_EndUserEdit_OutputMessage">
+    <wsdl:part name="parameters" element="tns:EndUserEditResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_Kick_InputMessage">
+    <wsdl:part name="parameters" element="tns:Kick" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_Kick_OutputMessage">
+    <wsdl:part name="parameters" element="tns:KickResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_SetOwner_InputMessage">
+    <wsdl:part name="parameters" element="tns:SetOwner" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_SetOwner_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SetOwnerResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_DeleteDomain_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteDomain" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_DeleteDomain_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteDomainResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_IsAlive_InputMessage">
+    <wsdl:part name="parameters" element="tns:IsAlive" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_IsAlive_OutputMessage">
+    <wsdl:part name="parameters" element="tns:IsAliveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_OnServiceClosed_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnServiceClosed" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_OnDomainCreated_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnDomainCreated" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_OnDomainDeleted_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnDomainDeleted" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_OnDomainInfoChanged_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnDomainInfoChanged" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_OnDomainStateChanged_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnDomainStateChanged" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_OnUserAdded_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnUserAdded" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_OnUserChanged_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnUserChanged" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_OnUserRemoved_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnUserRemoved" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_OnRowAdded_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnRowAdded" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_OnRowChanged_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnRowChanged" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_OnRowRemoved_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnRowRemoved" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_OnPropertyChanged_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnPropertyChanged" />
+  </wsdl:message>
+  <wsdl:portType msc:usingSession="true" name="IDomainService">
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Subscribe">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDomainService/Subscribe" message="tns:IDomainService_Subscribe_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDomainService/SubscribeResponse" message="tns:IDomainService_Subscribe_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Unsubscribe">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDomainService/Unsubscribe" message="tns:IDomainService_Unsubscribe_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDomainService/UnsubscribeResponse" message="tns:IDomainService_Unsubscribe_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="SetUserLocation">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDomainService/SetUserLocation" message="tns:IDomainService_SetUserLocation_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDomainService/SetUserLocationResponse" message="tns:IDomainService_SetUserLocation_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="NewRow">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDomainService/NewRow" message="tns:IDomainService_NewRow_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDomainService/NewRowResponse" message="tns:IDomainService_NewRow_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="RemoveRow">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDomainService/RemoveRow" message="tns:IDomainService_RemoveRow_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDomainService/RemoveRowResponse" message="tns:IDomainService_RemoveRow_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="SetRow">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDomainService/SetRow" message="tns:IDomainService_SetRow_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDomainService/SetRowResponse" message="tns:IDomainService_SetRow_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="SetProperty">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDomainService/SetProperty" message="tns:IDomainService_SetProperty_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDomainService/SetPropertyResponse" message="tns:IDomainService_SetProperty_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="BeginUserEdit">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDomainService/BeginUserEdit" message="tns:IDomainService_BeginUserEdit_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDomainService/BeginUserEditResponse" message="tns:IDomainService_BeginUserEdit_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="EndUserEdit">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDomainService/EndUserEdit" message="tns:IDomainService_EndUserEdit_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDomainService/EndUserEditResponse" message="tns:IDomainService_EndUserEdit_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Kick">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDomainService/Kick" message="tns:IDomainService_Kick_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDomainService/KickResponse" message="tns:IDomainService_Kick_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="SetOwner">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDomainService/SetOwner" message="tns:IDomainService_SetOwner_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDomainService/SetOwnerResponse" message="tns:IDomainService_SetOwner_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="DeleteDomain">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDomainService/DeleteDomain" message="tns:IDomainService_DeleteDomain_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDomainService/DeleteDomainResponse" message="tns:IDomainService_DeleteDomain_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="IsAlive">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDomainService/IsAlive" message="tns:IDomainService_IsAlive_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDomainService/IsAliveResponse" message="tns:IDomainService_IsAlive_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnServiceClosed">
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDomainService/OnServiceClosed" message="tns:IDomainService_OnServiceClosed_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnDomainCreated">
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDomainService/OnDomainCreated" message="tns:IDomainService_OnDomainCreated_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnDomainDeleted">
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDomainService/OnDomainDeleted" message="tns:IDomainService_OnDomainDeleted_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnDomainInfoChanged">
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDomainService/OnDomainInfoChanged" message="tns:IDomainService_OnDomainInfoChanged_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnDomainStateChanged">
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDomainService/OnDomainStateChanged" message="tns:IDomainService_OnDomainStateChanged_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnUserAdded">
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDomainService/OnUserAdded" message="tns:IDomainService_OnUserAdded_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnUserChanged">
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDomainService/OnUserChanged" message="tns:IDomainService_OnUserChanged_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnUserRemoved">
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDomainService/OnUserRemoved" message="tns:IDomainService_OnUserRemoved_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnRowAdded">
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDomainService/OnRowAdded" message="tns:IDomainService_OnRowAdded_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnRowChanged">
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDomainService/OnRowChanged" message="tns:IDomainService_OnRowChanged_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnRowRemoved">
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDomainService/OnRowRemoved" message="tns:IDomainService_OnRowRemoved_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnPropertyChanged">
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDomainService/OnPropertyChanged" message="tns:IDomainService_OnPropertyChanged_OutputCallbackMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

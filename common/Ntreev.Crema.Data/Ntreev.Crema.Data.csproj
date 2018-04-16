@@ -1,0 +1,181 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{04AEB614-3510-4064-99AF-0AA807C7F957}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Ntreev.Crema.Data</RootNamespace>
+    <AssemblyName>Ntreev.Crema.Data</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ColumnInfo.cs" />
+    <Compile Include="CremaChildTableCollection.cs" />
+    <Compile Include="CremaConvert.cs" />
+    <Compile Include="CremaAttribute.cs" />
+    <Compile Include="CremaAttributeCollection.cs" />
+    <Compile Include="CremaDataColumn.cs" />
+    <Compile Include="CremaDataColumnChangeEventArgs.cs" />
+    <Compile Include="CremaDataColumnChangeEventHandler.cs" />
+    <Compile Include="CremaDataColumnCollection.cs" />
+    <Compile Include="CremaDataException.cs" />
+    <Compile Include="CremaDataRow.cs" />
+    <Compile Include="CremaDataRowBuilder.cs" />
+    <Compile Include="CremaDataRowChangeEventArgs.cs" />
+    <Compile Include="CremaDataRowChangeEventHandler.cs" />
+    <Compile Include="CremaDataRowCollection.cs" />
+    <Compile Include="CremaDataRowExtensions.cs" />
+    <Compile Include="CremaDataRowUtility.cs" />
+    <Compile Include="CremaDataSet.cs" />
+    <Compile Include="CremaDataTable.cs" />
+    <Compile Include="CremaDataTableClearEventArgs.cs" />
+    <Compile Include="CremaDataTableClearEventHandler.cs" />
+    <Compile Include="CremaDataTableCollection.cs" />
+    <Compile Include="CremaDataTableExtensions.cs" />
+    <Compile Include="CremaDataTableNamespace.cs" />
+    <Compile Include="CremaDataTableNewRowEventArgs.cs" />
+    <Compile Include="CremaDataTableNewRowEventHandler.cs" />
+    <Compile Include="CremaDomainUtility.cs" />
+    <Compile Include="CremaTemplate.cs" />
+    <Compile Include="CremaTemplateClearEventArgs.cs" />
+    <Compile Include="CremaTemplateClearEventHandler.cs" />
+    <Compile Include="CremaTemplateColumn.cs" />
+    <Compile Include="CremaTemplateColumnBuilder.cs" />
+    <Compile Include="CremaTemplateColumnChangeEventArgs.cs" />
+    <Compile Include="CremaTemplateColumnChangeEventHandler.cs" />
+    <Compile Include="CremaTemplateColumnCollection.cs" />
+    <Compile Include="CremaTemplateNewColumnEventArgs.cs" />
+    <Compile Include="CremaTemplateNewColumnEventHandler.cs" />
+    <Compile Include="CremaDataType.cs" />
+    <Compile Include="CremaDataTypeClearEventArgs.cs" />
+    <Compile Include="CremaDataTypeClearEventHandler.cs" />
+    <Compile Include="CremaDataTypeCollection.cs" />
+    <Compile Include="CremaDataTypeMember.cs" />
+    <Compile Include="CremaDataTypeMemberBuilder.cs" />
+    <Compile Include="CremaDataTypeMemberChangeEventArgs.cs" />
+    <Compile Include="CremaDataTypeMemberChangeEventHandler.cs" />
+    <Compile Include="CremaDataTypeMemberCollection.cs" />
+    <Compile Include="CremaDataTypeNewMemberEventArgs.cs" />
+    <Compile Include="CremaDataTypeNewMemberEventHandler.cs" />
+    <Compile Include="CremaDataTypeUtility.cs" />
+    <Compile Include="InternalColumnBase.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="InternalAttribute.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="InternalDataRowChangeEventArgs.cs" />
+    <Compile Include="InternalRelation.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="InternalDataColumn.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="InternalDataRow.cs" />
+    <Compile Include="InternalDataSet.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="InternalDataTable.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="InternalExtensions.cs" />
+    <Compile Include="InternalRowBase.cs" />
+    <Compile Include="InternalSetBase.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="InternalTableBase.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="InternalTemplateColumn.cs" />
+    <Compile Include="InternalTemplate.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="InternalDataTypeMember.cs" />
+    <Compile Include="InternalDataType.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="TableInfo.cs" />
+    <Compile Include="TagInfoUtility.cs" />
+    <Compile Include="TypeInfo.cs" />
+    <Compile Include="TypeMemberInfo.cs" />
+    <Compile Include="Xml\CremaTypeXmlResolver.cs" />
+    <Compile Include="Xml\CremaXmlConvert.cs" />
+    <Compile Include="Xml\CremaXmlExtension.cs" />
+    <Compile Include="Xml\CremaXmlReader.cs" />
+    <Compile Include="Xml\CremaXmlReadInfo.cs" />
+    <Compile Include="Xml\CremaXmlResolver.cs" />
+    <Compile Include="Xml\CremaXmlString.cs" />
+    <Compile Include="Xml\CremaXmlWriter.cs" />
+    <Compile Include="Xml\Schema\CremaSchema.cs" />
+    <Compile Include="Xml\Schema\CremaSchemaExtension.cs" />
+    <Compile Include="Xml\Schema\CremaSchemaObsolete.cs" />
+    <Compile Include="Xml\Schema\CremaSchemaReader.cs" />
+    <Compile Include="Xml\Schema\CremaSchemaReadInfo.cs" />
+    <Compile Include="Xml\Schema\CremaSchemaWriter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.ko-KR.resx" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\sub-modules\Ntreev.Library\Ntreev.Library\Ntreev.Library.csproj">
+      <Project>{1918437f-4fbf-4731-ac5b-981a4a4cb1f1}</Project>
+      <Name>Ntreev.Library</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="..\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems" Label="Shared" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

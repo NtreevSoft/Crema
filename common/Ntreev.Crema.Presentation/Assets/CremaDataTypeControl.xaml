@@ -1,0 +1,103 @@
+﻿<!--===================================================================================================================
+Released under the MIT License.
+    
+Copyright (c) 2018 Ntreev Soft co., Ltd.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the 
+Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+====================================================================================================================-->
+<ResourceDictionary x:Class="Ntreev.Crema.Presentation.Assets.CremaDataTypeControl"
+                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid"
+                    xmlns:nmfc="clr-namespace:Ntreev.ModernUI.Framework.Controls;assembly=Ntreev.ModernUI.Framework"
+                    xmlns:nmfm="clr-namespace:Ntreev.ModernUI.Framework.Markup;assembly=Ntreev.ModernUI.Framework"
+                    xmlns:nmgc="clr-namespace:Ntreev.ModernUI.Framework.Controls;assembly=Ntreev.ModernUI.Framework.DataGrid"
+                    xmlns:ncpc="clr-namespace:Ntreev.Crema.Presentation.Controls"
+                    xmlns:p="clr-namespace:Ntreev.Crema.Presentation.Properties">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="CremaDataControl.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <ControlTemplate x:Key="CremaTypeControl_Template" TargetType="{x:Type ncpc:CremaDataTypeControl}">
+        <nmgc:ModernDataGridControl x:Name="PART_DataGridControl" 
+                                    AllowRowDrag="True"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    ReadOnly="{TemplateBinding ReadOnly}">
+            <!--<nmgc:ModernDataGridControl.Columns>
+                <xcdg:Column MaxWidth="40" MinWidth="40" xcdg:TableView.CanScrollHorizontally="False"
+                             CellEditor="{StaticResource TagSelector}" FieldName="Tags" ShowInColumnChooser="True" 
+                             TitleTemplate="{StaticResource EmptyTitle_DataTemplate}"
+                             CellHorizontalContentAlignment="Center"
+                             CellContentTemplate="{StaticResource TagSelector_ContentTemplate}" VisiblePosition="0" />
+                <xcdg:Column MaxWidth="28" MinWidth="28"
+                             TitleTemplate="{StaticResource EmptyTitle_DataTemplate}"
+                             CellEditor="{StaticResource EnableEditor}"
+                             CellContentTemplate="{StaticResource EnableContentTemplate}"
+                             FieldName="Enable" VisiblePosition="1" />
+                <xcdg:Column FieldName="Name" Title="{x:Static p:Resources.Label_Name}" />
+                <xcdg:Column FieldName="Value" Title="{x:Static p:Resources.Label_Value}" />
+                <xcdg:Column FieldName="Comment" Title="{x:Static p:Resources.Label_Comment}" />
+                <xcdg:Column FieldName="Modifier" Title="{x:Static p:Resources.Label_Modifier}" ReadOnly="True" />
+                <xcdg:Column FieldName="ModifiedDateTime" Title="{x:Static p:Resources.Label_ModifiedDateTime}" ReadOnly="True" CellContentTemplate="{StaticResource DateTime_ContentTemplate}" />
+                <xcdg:Column FieldName="Creator" Title="{x:Static p:Resources.Label_Creator}" ReadOnly="True" />
+                <xcdg:Column FieldName="CreatedDateTime" Title="{x:Static p:Resources.Label_CreatedDateTime}" ReadOnly="True" CellContentTemplate="{StaticResource DateTime_ContentTemplate}" />
+            </nmgc:ModernDataGridControl.Columns>-->
+            <nmgc:ModernDataGridControl.View>
+                <xcdg:TableView RowSelectorPaneWidth="50" AllowDrop="True" 
+                                FixedColumnCount="2"
+                                ShowFixedColumnSplitter="False"
+                                ColumnVirtualizationMode="Recycling"
+                                VerticalGridLineBrush="{DynamicResource DataGridGridLines}" 
+                                HorizontalGridLineBrush="{DynamicResource DataGridGridLines}" 
+                                IsAlternatingRowStyleEnabled="False" AllowRowResize="True">
+                    <xcdg:TableView.FixedHeaders>
+                        <DataTemplate>
+                            <nmgc:ModernInsertionRow x:Name="InsertionRow" />
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding Path=ReadOnly, RelativeSource={RelativeSource AncestorType={x:Type xcdg:DataGridControl}}}" Value="True">
+                                    <Setter TargetName="InsertionRow" Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                        <DataTemplate>
+                            <Border x:Name="RowSplitter" BorderThickness="0 0 0 1" Height="3"
+                                    BorderBrush="{DynamicResource DataGridGridLines}" 
+                                    xcdg:RowSelector.RowSelectorStyle="{DynamicResource EmptyRowSelector_Style}"
+                                    xcdg:TableView.CanScrollHorizontally="False" />
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding Path=ReadOnly, RelativeSource={RelativeSource AncestorType={x:Type xcdg:DataGridControl}}}" Value="True">
+                                    <Setter TargetName="RowSplitter" Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </xcdg:TableView.FixedHeaders>
+                </xcdg:TableView>
+            </nmgc:ModernDataGridControl.View>
+        </nmgc:ModernDataGridControl>
+    </ControlTemplate>
+
+    <Style TargetType="{x:Type ncpc:CremaDataTypeControl}">
+        <Style.Resources>
+            <Style TargetType="{x:Type xcdg:HierarchicalGroupByControl}">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </Style>
+        </Style.Resources>
+        <Setter Property="BorderBrush" Value="{DynamicResource ItemBorder}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Template" Value="{StaticResource CremaTypeControl_Template}" />
+    </Style>
+
+</ResourceDictionary>

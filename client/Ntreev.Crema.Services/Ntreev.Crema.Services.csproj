@@ -1,0 +1,340 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0EAC90AB-7C7E-47E3-9954-148B45521FCB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Ntreev.Crema.Services</RootNamespace>
+    <AssemblyName>Ntreev.Crema.Services</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\client\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;CLIENT</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;CLIENT</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <NoWarn>0168</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.IdentityModel" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AuthenticationToken.cs" />
+    <Compile Include="AuthenticatorBase.cs" />
+    <Compile Include="CremaConfiguration.cs" />
+    <Compile Include="CremaBootstrapper.cs" />
+    <Compile Include="Authentication.cs" />
+    <Compile Include="Data\DataBaseCollectionServiceFactory.cs" />
+    <Compile Include="Data\DataBaseCollection.cs" />
+    <Compile Include="Data\DataBaseTransaction.cs" />
+    <Compile Include="Data\TableContentCollection.cs" />
+    <Compile Include="Data\DataServiceFactory.cs" />
+    <Compile Include="Data\DomainBasedRow.cs" />
+    <Compile Include="Data\NewChildTableTemplate.cs" />
+    <Compile Include="Data\NewTypeTemplate.cs" />
+    <Compile Include="Data\TableColumn.cs" />
+    <Compile Include="Data\TableContent.cs" />
+    <Compile Include="Data\NewTableTemplate.cs" />
+    <Compile Include="Data\TableContentBase.cs" />
+    <Compile Include="Data\TableRow.cs" />
+    <Compile Include="Data\TableTemplate.cs" />
+    <Compile Include="Data\TableTemplateBase.cs" />
+    <Compile Include="Data\TypeMember.cs" />
+    <Compile Include="Data\TypeTemplate.cs" />
+    <Compile Include="Data\TypeTemplateBase.cs" />
+    <Compile Include="DescriptorServiceFactory.cs" />
+    <Compile Include="Domains\TableTemplateDomain.cs" />
+    <Compile Include="Domains\TableContentDomain.cs" />
+    <Compile Include="Domains\TypeDomain.cs" />
+    <Compile Include="AuthenticationProvider.cs" />
+    <Compile Include="ResultBaseExtensions.cs" />
+    <Compile Include="ICremaService.cs" />
+    <Compile Include="Service References\DataBaseCollectionService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\DataBaseService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="CremaHost.cs" />
+    <Compile Include="Data\DataBase.cs" />
+    <Compile Include="Data\Type.cs" />
+    <Compile Include="Data\Table.cs" />
+    <Compile Include="Data\TableCategory.cs" />
+    <Compile Include="Data\TableCategoryCollection.cs" />
+    <Compile Include="Data\TableCollection.cs" />
+    <Compile Include="Data\TableContext.cs" />
+    <Compile Include="Data\TypeCategory.cs" />
+    <Compile Include="Data\TypeCategoryCollection.cs" />
+    <Compile Include="Data\TypeCollection.cs" />
+    <Compile Include="Data\TypeContext.cs" />
+    <Compile Include="Domains\DomainUser.cs" />
+    <Compile Include="Domains\DomainUserCollection.cs" />
+    <Compile Include="Domains\DomainCategory.cs" />
+    <Compile Include="Domains\DomainCategoryCollection.cs" />
+    <Compile Include="Domains\DomainCollection.cs" />
+    <Compile Include="Domains\DomainContext.cs" />
+    <Compile Include="Service References\DescriptorService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\UserService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\DomainService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Domains\Domain.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Users\UserAuthenticationProvider.cs" />
+    <Compile Include="Users\UserServiceFactory.cs" />
+    <Compile Include="Users\User.cs" />
+    <Compile Include="Users\UserCategory.cs" />
+    <Compile Include="Users\UserCategoryCollection.cs" />
+    <Compile Include="Users\UserCollection.cs" />
+    <Compile Include="Users\UserContext.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="Service References\DataBaseCollectionService\Arrays.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DataBaseCollectionService\schemas.ntreev.com.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DataBaseCollectionService\service.wsdl" />
+    <None Include="Service References\DataBaseCollectionService\service1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DataBaseCollectionService\www.ntreev.com.wsdl" />
+    <None Include="Service References\DataBaseCollectionService\www.ntreev.com.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DataBaseService\Arrays.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DataBaseService\Ntreev.Crema.Data1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DataBaseService\Ntreev.Crema.ServiceModel.Data.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DataBaseService\Ntreev.Crema.ServiceModel.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DataBaseService\schemas.ntreev.com.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DataBaseService\service.wsdl" />
+    <None Include="Service References\DataBaseService\service1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DataBaseService\System.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DataBaseService\www.ntreev.com.wsdl" />
+    <None Include="Service References\DataBaseService\www.ntreev.com.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DescriptorService\schemas.ntreev.com.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DescriptorService\service.wsdl" />
+    <None Include="Service References\DescriptorService\service1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DescriptorService\www.ntreev.com.wsdl" />
+    <None Include="Service References\DescriptorService\www.ntreev.com.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DomainService\schemas.ntreev.com.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DomainService\service1.wsdl" />
+    <None Include="Service References\DomainService\service21.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DomainService\System.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DomainService\www.ntreev.com.wsdl" />
+    <None Include="Service References\DomainService\www.ntreev.com.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\UserService\Arrays.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\UserService\schemas.ntreev.com.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\UserService\service.wsdl" />
+    <None Include="Service References\UserService\service1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\UserService\System.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\UserService\www.ntreev.com.wsdl" />
+    <None Include="Service References\UserService\www.ntreev.com.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\DataBaseCollectionService\" />
+    <WCFMetadataStorage Include="Service References\DataBaseService\" />
+    <WCFMetadataStorage Include="Service References\DescriptorService\" />
+    <WCFMetadataStorage Include="Service References\DomainService\" />
+    <WCFMetadataStorage Include="Service References\UserService\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DomainService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DomainService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DomainService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\common\Ntreev.Crema.Data\Ntreev.Crema.Data.csproj">
+      <Project>{04aeb614-3510-4064-99af-0aa807c7f957}</Project>
+      <Name>Ntreev.Crema.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\common\Ntreev.Crema.ServiceModel\Ntreev.Crema.ServiceModel.csproj">
+      <Project>{6478450a-dfa5-445d-890f-bc5f57c9a148}</Project>
+      <Name>Ntreev.Crema.ServiceModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\sub-modules\Ntreev.Library\Ntreev.Library\Ntreev.Library.csproj">
+      <Project>{1918437f-4fbf-4731-ac5b-981a4a4cb1f1}</Project>
+      <Name>Ntreev.Library</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.ko-KR.resx" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DescriptorService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DataBaseCollectionService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DataBaseCollectionService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DataBaseCollectionService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DataBaseService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DataBaseService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DataBaseService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\UserService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\UserService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\UserService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DescriptorService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DescriptorService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <Import Project="..\..\common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems" Label="Shared" />
+  <Import Project="..\..\common\Ntreev.Crema.Services.Sharing\Ntreev.Crema.Services.Sharing.projitems" Label="Shared" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

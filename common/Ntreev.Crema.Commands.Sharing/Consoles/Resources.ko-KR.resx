@@ -1,0 +1,911 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="#Filter" xml:space="preserve">
+    <value>표시할 목록에 필터를 설정합니다. 필터는 와일드카드 형태이며 ; 구분자로 여러개를 설정할 수 있습니다. 
+예를들어, word*;*string*</value>
+  </data>
+  <data name="@CurrentDirectoryCommand" xml:space="preserve">
+    <value>현재 경로를 보여주거나 경로를 변경합니다.</value>
+  </data>
+  <data name="@DataBaseCommand" xml:space="preserve">
+    <value>데이터 베이스와 관련된 명령들을 제공합니다.</value>
+  </data>
+  <data name="@DataBaseCommand.Copy" xml:space="preserve">
+    <value>특정 데이터 베이스의 사본을 생성합니다.</value>
+  </data>
+  <data name="@DataBaseCommand.Create" xml:space="preserve">
+    <value>새로운 데이터 베이스를 생성합니다.</value>
+  </data>
+  <data name="@DataBaseCommand.Create.comment" xml:space="preserve">
+    <value />
+  </data>
+  <data name="@DataBaseCommand.Create.dataBaseName" xml:space="preserve">
+    <value />
+  </data>
+  <data name="@DataBaseCommand.Delete" xml:space="preserve">
+    <value>데이터 베이스를 삭제합니다.</value>
+  </data>
+  <data name="@DataBaseCommand.Info" xml:space="preserve">
+    <value>데이터 베이스의 정보를 표시합니다.</value>
+  </data>
+  <data name="@DataBaseCommand.List" xml:space="preserve">
+    <value>데이터 베이스의 목록을 표시합니다.</value>
+  </data>
+  <data name="@DataBaseCommand.Load" xml:space="preserve">
+    <value>데이터 베이스를 읽어들여 사용 가능한 상태로 변경합니다.</value>
+  </data>
+  <data name="@DataBaseCommand.Log" xml:space="preserve">
+    <value>데이터 베이스의 로그를 표시합니다.</value>
+  </data>
+  <data name="@DataBaseCommand.Rename" xml:space="preserve">
+    <value>데이터 베이스의 이름을 변경합니다.</value>
+  </data>
+  <data name="@DataBaseCommand.Revert" xml:space="preserve">
+    <value>데이터 베이스를 특정 리비전으로 되돌립니다.</value>
+  </data>
+  <data name="@DataBaseCommand.Unload" xml:space="preserve">
+    <value>데이터 베이스 현재 상태를 저장하고 사용하지 않음 상태로 전환합니다.</value>
+  </data>
+  <data name="@DomainCommand" xml:space="preserve">
+    <value>도메인과 관련된 명령들을 제공합니다.</value>
+  </data>
+  <data name="@ListCommand" xml:space="preserve">
+    <value>현재 경로내에 있는 항목의 목록을 표시합니다.</value>
+  </data>
+  <data name="@LogCommand" xml:space="preserve">
+    <value>로그와 관련된 명령들을 제공합니다.</value>
+  </data>
+  <data name="@LogCommand.List.filter" xml:space="preserve">
+    <value>#Filter</value>
+  </data>
+  <data name="@MakeDirectoryCommand" xml:space="preserve">
+    <value>새로운 경로를 생성합니다.</value>
+  </data>
+  <data name="@MoveCommand" xml:space="preserve">
+    <value>특정 항목을 특정 경로로 이동합니다.</value>
+  </data>
+  <data name="@NotifyCommand" xml:space="preserve">
+    <value>접속중인 모든 사용자들에게 메세지를 전송합니다.</value>
+  </data>
+  <data name="@PropertyCommand" xml:space="preserve">
+    <value>속성과 관련된 명령을 제공합니다.</value>
+  </data>
+  <data name="@PropertyCommand.Edit" xml:space="preserve">
+    <value>다수의 속성을 편집할 수 있도록 편집기를 실행합니다.</value>
+  </data>
+  <data name="@PropertyCommand.List" xml:space="preserve">
+    <value>속성의 목록을 표시합니다.</value>
+  </data>
+  <data name="@PropertyCommand.List.filter" xml:space="preserve">
+    <value>#Filter</value>
+  </data>
+  <data name="@PropertyCommand.Reset" xml:space="preserve">
+    <value>속성의 값을 초기값으로 설정합니다.</value>
+  </data>
+  <data name="@PropertyCommand.Set" xml:space="preserve">
+    <value>속성의 값을 설정합니다.</value>
+  </data>
+  <data name="@RemoveCommand" xml:space="preserve">
+    <value>특정 항목을 삭제합니다.</value>
+  </data>
+  <data name="@ResetCommand" xml:space="preserve">
+    <value>화면을 깨끗이 지웁니다.</value>
+  </data>
+  <data name="@SystemInfoCommand" xml:space="preserve">
+    <value>시스템의 정보를 표시합니다.</value>
+  </data>
+  <data name="@TableCommand" xml:space="preserve">
+    <value>테이블과 관련된 명령들을 제공합니다.</value>
+  </data>
+  <data name="@TypeCommand" xml:space="preserve">
+    <value>타입과 관련된 명령들을 제공합니다.</value>
+  </data>
+  <data name="@UserCommand" xml:space="preserve">
+    <value>사용자와 관련된 명령들을 제공합니다.</value>
+  </data>
+  <data name="@UserCommand.Ban" xml:space="preserve">
+    <value>사용자를 크레마 서비스에 접속하지 못하도록 차단합니다.</value>
+  </data>
+  <data name="@UserCommand.Create" xml:space="preserve">
+    <value>새로운 사용자를 생성합니다.</value>
+  </data>
+  <data name="@UserCommand.Delete" xml:space="preserve">
+    <value>사용자를 삭제합니다.</value>
+  </data>
+  <data name="@UserCommand.Info" xml:space="preserve">
+    <value>사용자의 정보를 표시합니다.</value>
+  </data>
+  <data name="@UserCommand.IsBanned" xml:space="preserve">
+    <value>차단된 사용자를 나타냅니다.</value>
+  </data>
+  <data name="@UserCommand.IsOnline" xml:space="preserve">
+    <value>접속중인 사용자를 나타냅니다.</value>
+  </data>
+  <data name="@UserCommand.Kick" xml:space="preserve">
+    <value>접속중인 사용자를 추방합니다.</value>
+  </data>
+  <data name="@UserCommand.List" xml:space="preserve">
+    <value>사용자의 목록을 표시합니다.</value>
+  </data>
+  <data name="@UserCommand.Message" xml:space="preserve">
+    <value>특정 사용자에게 메세지를 전송합니다.</value>
+  </data>
+  <data name="@UserCommand.Move" xml:space="preserve">
+    <value>사용자를 특정 경로로 이동합니다.</value>
+  </data>
+  <data name="@UserCommand.Password" xml:space="preserve">
+    <value>사용자의 암호를 변경합니다.</value>
+  </data>
+  <data name="@UserCommand.Rename" xml:space="preserve">
+    <value>사용자의 이름을 변경합니다.</value>
+  </data>
+  <data name="@UserCommand.SetAuthority" xml:space="preserve">
+    <value>사용자의 권한을 변경합니다.</value>
+  </data>
+  <data name="@UserCommand.Unban" xml:space="preserve">
+    <value>차단된 사용자를 해제 합니다.</value>
+  </data>
+  <data name="CurrentDirectoryCommand" xml:space="preserve">
+    <value>현재 경로를 보여주거나 경로를 변경합니다.
+이 명령은 크레마의 데이터 구조를 트리 형태로 표현하여 해당 위치로 이동할 수 있게 해줍니다.
+
+최상위 경로는 / 이며 데이터 베이스의 목록을 포함하고 있습니다.
+각 데이터 베이스는 types와 tables 항목이 있습니다.
+
+전체적인 데이터 구조는 아래와 같습니다.
+
+/ ┬ default
+  │   ├ types
+  │   └ tables
+  ├ dabase1
+  │   ├ types
+  │   └ tables
+  ├ dabase2
+  │   ├ types
+  │   └ tables
+  ...
+
+
+만약 default 데이터 베이스의 테이블과 관련된 작업을 하길 원할 경우
+cd default/tables 로 해당 위치로 이동하면 됩니다.
+경로에는 ./ ../ 와 같이 상대 경로를 포함될 수 있습니다.
+최상위 경로로 이동시에는 cd / 를 입력하시면 됩니다.</value>
+  </data>
+  <data name="DataBaseCommand.Create" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DataBaseCommand.Create.comment" xml:space="preserve">
+    <value>데이터 베이스의 주석을 나타냅니다.</value>
+  </data>
+  <data name="DataBaseCommand.Create.dataBaseName" xml:space="preserve">
+    <value>생성할 데이터 베이스의 이름을 나타냅니다.</value>
+  </data>
+  <data name="DataBaseCommand.dataBaseName" xml:space="preserve">
+    <value>이름 변경할 데이터 베이스의 이름을 나타냅니다.</value>
+  </data>
+  <data name="DataBaseCommand.Delete" xml:space="preserve">
+    <value>default 데이터 베이스는 삭제할 수 없습니다.
+이미 사용중인(loaded) 데이터 베이스는 삭제할 수 없습니다. 
+이미 사용중인 데이터 베이스를 삭제하고 싶은 경우 database unload 명령으로 사용하지 않음 상태(unloaded)로 전환후 삭제할 수 있습니다.
+관리자 이상의 권한에서만 사용할 수 있습니다.</value>
+  </data>
+  <data name="DataBaseCommand.newDataBaseName" xml:space="preserve">
+    <value>새로운 데이터 베이스의 이름을 나타냅니다.</value>
+  </data>
+  <data name="DataBaseCommand.Rename" xml:space="preserve">
+    <value>default 데이터 베이스는 이름을 변경할 수 없습니다.
+이미 사용중인(loaded) 데이터 베이스는 이름을 변경할 수 없습니다. 
+이미 사용중인 데이터 베이스의 이름을 변경하고 싶은 경우 database unload 명령으로 사용하지 않음 상태(unloaded)로 전환후 이름을 변경할 수 있습니다.
+관리자 이상의 권한에서만 사용할 수 있습니다.</value>
+  </data>
+  <data name="NotifyCommand" xml:space="preserve">
+    <value>로그인된 모든 사용자들에게 지정된 메세지를 전송합니다. 이 명령은 관리자 전용입니다.</value>
+  </data>
+  <data name="NotifyCommand.Message" xml:space="preserve">
+    <value>전송할 메세지를 나타냅니다.</value>
+  </data>
+  <data name="PropertyCommand.List" xml:space="preserve">
+    <value>속성의 목록을 표시합니다. </value>
+  </data>
+  <data name="ResetCommand" xml:space="preserve">
+    <value>화면을 깨끗이 지웁니다. Windows 계열에서는 cls 명령과 같은 효과를 나타내며, Unix계열에서는 reset 명령과 같은 효과를 나타냅니다.</value>
+  </data>
+  <data name="TableCommand.CopyForce" xml:space="preserve">
+    <value>원본 데이터 베이스가 편집중인 항목이 있거나 저장되지 않은 항목이 있어도 복사를 진행합니다.</value>
+  </data>
+  <data name="UserCommand.Ban" xml:space="preserve">
+    <value>접속중인 사용자를 차단할 경우 강제로 추방됩니다. 차단시 차단 사유가 필요하며 접속중인 사용자일 경우 해당 내용이 전달됩니다.
+자기 자신 및 관리자는 차단대상이 될 수 없으며 관리자 이상의 권한에서만 사용할 수 있습니다.</value>
+  </data>
+  <data name="UserCommand.Ban.comment" xml:space="preserve">
+    <value>차단 사유를 나타냅니다.</value>
+  </data>
+  <data name="UserCommand.Ban.userID" xml:space="preserve">
+    <value>차단할 사용자의 아이디를 나타냅니다.</value>
+  </data>
+  <data name="UserCommand.Create" xml:space="preserve">
+    <value>#TextEditor</value>
+  </data>
+  <data name="UserCommand.Create.categoryPath" xml:space="preserve">
+    <value>사용자를 생성할 경로를 나타냅니다. 기본값은 '/' 입니다.</value>
+  </data>
+  <data name="UserCommand.Delete" xml:space="preserve">
+    <value>접속중인 사용자는 삭제할 수 없습니다. 
+자기 자신과 Admin(root) 계정은 삭제 대상이 될 수 없으며 관리자 이상의 권한에서만 사용할 수 있습니다.</value>
+  </data>
+  <data name="UserCommand.Delete.userID" xml:space="preserve">
+    <value>삭제할 사용자의 아이디를 나타냅니다.</value>
+  </data>
+  <data name="UserCommand.Info.userID" xml:space="preserve">
+    <value>정보를 표시할 사용자의 아이디를 나타냅니다.</value>
+  </data>
+  <data name="UserCommand.IsBanned" xml:space="preserve">
+    <value>차단된 사용자를 표시합니다. 이 옵션이 설정되면 차단되지 않은 사용자는 표시 목록에서 제외됩니다.</value>
+  </data>
+  <data name="UserCommand.IsOnline" xml:space="preserve">
+    <value>접속중인 사용자를 표시합니다. 이 옵션이 설정되면 접속중이지 않은 사용자는 표시 목록에서 제외됩니다.</value>
+  </data>
+  <data name="UserCommand.Kick" xml:space="preserve">
+    <value>접속중인 사용자만 추방이 가능합니다. 추방시 추방 사유가 필요하며 추방된 사용자에게 해당 내용이 전달됩니다.
+자기 자신 및 관리자는 추방대상이 될 수 없으며 관리자 이상의 권한에서만 사용할 수 있습니다.</value>
+  </data>
+  <data name="UserCommand.Kick.comment" xml:space="preserve">
+    <value>추방할 사용자에게 전달되는 메세지를 나타냅니다.</value>
+  </data>
+  <data name="UserCommand.Kick.userID" xml:space="preserve">
+    <value>추방할 사용자의 아이디를 나타냅니다.</value>
+  </data>
+  <data name="UserCommand.List" xml:space="preserve">
+    <value>표시 목록에는 여러 조건을 설정할 수 있습니다. 접속중인 사용자는 파란색으로 표시되며, 차단된 사용자는 빨간색으로 표시됩니다.</value>
+  </data>
+  <data name="UserCommand.Message" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UserCommand.Message.message" xml:space="preserve">
+    <value>보낼 메세지를 나타냅니다.</value>
+  </data>
+  <data name="UserCommand.Message.userID" xml:space="preserve">
+    <value>메세지를 보낼 아이디를 나타냅니다.</value>
+  </data>
+  <data name="UserCommand.Move" xml:space="preserve">
+    <value>사용자를 특정 경로로 이동합니다.</value>
+  </data>
+  <data name="UserCommand.Password.userID" xml:space="preserve">
+    <value>암호를 변경할 사용자의 아이디를 나타냅니다.</value>
+  </data>
+  <data name="UserCommand.Rename.userID" xml:space="preserve">
+    <value>이름을 변경할 사용자의 아이디를 나타냅니다.</value>
+  </data>
+  <data name="UserCommand.SetAuthority.authority" xml:space="preserve">
+    <value>권한을 나타냅니다. 설정할 수 있는 값은 'admin', 'member', 'guest'중 하나입니다.</value>
+  </data>
+  <data name="UserCommand.SetAuthority.userID" xml:space="preserve">
+    <value>권한을 변경할 사용자의 아이디를 나타냅니다.</value>
+  </data>
+  <data name="UserCommand.Unban" xml:space="preserve">
+    <value>차단된 사용자만 해제할 수 있습니다.
+관리자 이상의 권한에서만 사용할 수 있습니다.</value>
+  </data>
+  <data name="UserCommand.Unban.userID" xml:space="preserve">
+    <value>차단 해제할 사용자의 아이디를 나타냅니다.</value>
+  </data>
+  <data name="#TextEditor" xml:space="preserve">
+    <value>json 형식의 문서를 생성하고 텍스트 편집기를 실행합니다.
+
+문서의 편집이 완료되면 문서를 저장하고 텍스트 편집기를 종료합니다.
+
+Windows 계열에서는 메모장이 실행되며 Unix계열에서는 vi 텍스트 편집기가 실행됩니다.
+
+좀더 쉬운 문서 편집을 하기 위해서는 Microsoft Visual Code 사용을 권장합니다.
+
+Microsoft Visual Code 설치후 텍스트 편집기 경로를 설정해주시면 됩니다.
+
+Windows 에서는
+    prop set textEditor.fileName "C:\Program Files (x86)\Microsoft VS Code\Code.exe"
+    prop set textEditor.arguments "-w -n"
+
+Unix 에서는
+    prop set textEditor.fileName "code"
+    prop set textEditor.arguments "-w -n"
+
+명령을 실행해주시면 됩니다.
+
+arguments 값을 "-w -n"으로 해주는 이유는 편집기가 새로운 인스턴스로 실행이 되야하고
+
+새로운 편집기 인스턴스가 종료될때까지 대기해야 하기 때문입니다.
+
+기본 편집기로 되돌리기 위해서는
+    prop reset textEditor.fileName
+    prop reset textEditor.arguments
+
+명령을 실행해주시면 됩니다.</value>
+  </data>
+  <data name="@TableCommand.ColumnInfo" xml:space="preserve">
+    <value>테이블의 특정 컬럼 정보를 표시합니다.</value>
+  </data>
+  <data name="@TableCommand.ColumnList" xml:space="preserve">
+    <value>테이블의 컬럼 목록을 표시합니다.</value>
+  </data>
+  <data name="@TableCommand.Copy" xml:space="preserve">
+    <value>테이블을 복사합니다.</value>
+  </data>
+  <data name="@TableCommand.Create" xml:space="preserve">
+    <value>새로운 테이블을 생성합니다.</value>
+  </data>
+  <data name="@TableCommand.Delete" xml:space="preserve">
+    <value>테이블을 삭제합니다.</value>
+  </data>
+  <data name="@TableCommand.Edit" xml:space="preserve">
+    <value>테이블의 내용을 편집합니다.</value>
+  </data>
+  <data name="@TableCommand.EditTemplate" xml:space="preserve">
+    <value>테이블의 형태를 편집합니다.</value>
+  </data>
+  <data name="@TableCommand.Info" xml:space="preserve">
+    <value>테이블의 정보를 표시합니다.</value>
+  </data>
+  <data name="@TableCommand.Inherit" xml:space="preserve">
+    <value>테이블을 상속받아 새로운 테이블을 생성합니다.</value>
+  </data>
+  <data name="@TableCommand.List" xml:space="preserve">
+    <value>테이블의 목록을 표시합니다.</value>
+  </data>
+  <data name="@TableCommand.Log" xml:space="preserve">
+    <value>테이블의 로그를 표시합니다.</value>
+  </data>
+  <data name="@TableCommand.Move" xml:space="preserve">
+    <value>테이블을 특정 경로로 이동합니다.</value>
+  </data>
+  <data name="@TableCommand.Rename" xml:space="preserve">
+    <value>테이블의 이름을 변경합니다.</value>
+  </data>
+  <data name="@TableCommand.SetTags" xml:space="preserve">
+    <value>테이블의 태그를 설정합니다.</value>
+  </data>
+  <data name="@TableCommand.View" xml:space="preserve">
+    <value>테이블의 내용을 표시합니다.</value>
+  </data>
+  <data name="@TypeCommand.Copy" xml:space="preserve">
+    <value>타입을 복사합니다.</value>
+  </data>
+  <data name="@TypeCommand.Create" xml:space="preserve">
+    <value>새로운 타입을 생성합니다.</value>
+  </data>
+  <data name="@TypeCommand.Delete" xml:space="preserve">
+    <value>타입을 삭제합니다.</value>
+  </data>
+  <data name="@TypeCommand.Edit" xml:space="preserve">
+    <value>타입의 편집작업을 시작합니다.</value>
+  </data>
+  <data name="@TypeCommand.Info" xml:space="preserve">
+    <value>타입의 정보를 표시합니다.</value>
+  </data>
+  <data name="@TypeCommand.List" xml:space="preserve">
+    <value>타입의 목록을 표시합니다.</value>
+  </data>
+  <data name="@TypeCommand.Log" xml:space="preserve">
+    <value>타입의 로그를 표시합니다.</value>
+  </data>
+  <data name="@TypeCommand.Move" xml:space="preserve">
+    <value>타입을 특정 경로로 이동합니다.</value>
+  </data>
+  <data name="@TypeCommand.Rename" xml:space="preserve">
+    <value>타입의 이름을 변경합니다.</value>
+  </data>
+  <data name="@TypeCommand.View" xml:space="preserve">
+    <value>타입의 내용을 표시합니다.</value>
+  </data>
+  <data name="DataBaseCommand.Copy" xml:space="preserve">
+    <value>데이터 베이스의 테이블이나 타입이 편집중일때는 복사를 할 수 없습니다.
+관리자 이상의 권한에서만 사용할 수 있습니다.</value>
+  </data>
+  <data name="DataBaseCommand.Copy.comment" xml:space="preserve">
+    <value>새로운 데이터 베이스의 주석을 나타냅니다.</value>
+  </data>
+  <data name="DataBaseCommand.Copy.dataBaseName" xml:space="preserve">
+    <value>복사를 할 데이터 베이스의 이름을 나타냅니다.</value>
+  </data>
+  <data name="DataBaseCommand.Copy.newDataBaseName" xml:space="preserve">
+    <value>새로운 데이터 베이스의 이름을 나타냅니다.</value>
+  </data>
+  <data name="DataBaseCommand.CopyForce" xml:space="preserve">
+    <value>데이터 베이스의 테이블이나 타입이 편집중일때도 강제로 복사를 진행하도록 합니다.</value>
+  </data>
+  <data name="DataBaseCommand.Delete.dataBaseName" xml:space="preserve">
+    <value>삭제할 데이터 베이스의 이름을 나타냅니다.</value>
+  </data>
+  <data name="DataBaseCommand.Info" xml:space="preserve">
+    <value>데이터 베이스의 정보를 표시합니다.</value>
+  </data>
+  <data name="DataBaseCommand.Info.dataBaseName" xml:space="preserve">
+    <value>정보를 표시할 데이터 베이스의 이름을 나타냅니다.</value>
+  </data>
+  <data name="DataBaseCommand.List" xml:space="preserve">
+    <value>사용중인 데이터 베이스는 기본색상으로, 사용중이 아닌 데이터 베이스는 회색으로 표시됩니다.</value>
+  </data>
+  <data name="DataBaseCommand.Load" xml:space="preserve">
+    <value>이 명령은 저장소 내에 저장되어 있는 데이터 베이스를 읽어들여 메모리에 적재시킨후 사용자가 사용할 수 있도록 준비합니다.
+또한 저장되지 않은 테이블이나 타입의 상태를 편집 가능한 상태로 복구합니다.</value>
+  </data>
+  <data name="DataBaseCommand.Load.dataBaseName" xml:space="preserve">
+    <value>사용중 상태로 전환할 데이터 베이스의 이름을 나타냅니다.</value>
+  </data>
+  <data name="DataBaseCommand.Log" xml:space="preserve">
+    <value>로그는 최근 리비전 기준으로 정렬되어 표시됩니다.</value>
+  </data>
+  <data name="DataBaseCommand.Log.dataBaseName" xml:space="preserve">
+    <value>로그를 표시할 데이터 베이스의 이름을 나타냅니다.</value>
+  </data>
+  <data name="DataBaseCommand.Revert" xml:space="preserve">
+    <value>이미 사용중인(loaded) 데이터 베이스는 복구할 수 없습니다.
+이미 사용중인 데이터 베이스를 복구하고 싶은 경우 database unload 명령으로 사용하지 않음 상태(unloaded)로 전환후 복구할 수 있습니다.
+관리자 이상의 권한에서만 사용할 수 있습니다.
+
+복구할 리비전은 database log 명령으로 확인할 수 있습니다.</value>
+  </data>
+  <data name="DataBaseCommand.Revert.dataBaseName" xml:space="preserve">
+    <value>복구할 데이터 베이스의 이름을 나타냅니다.</value>
+  </data>
+  <data name="DataBaseCommand.Revert.revision" xml:space="preserve">
+    <value>복구할 데이터 베이스의 리비전을 나타냅니다.</value>
+  </data>
+  <data name="DataBaseCommand.Unload" xml:space="preserve">
+    <value>이 명령은 데이터 베이스를 사용하지 않음 상태로 전환합니다. 
+아직 저장되지 않은 테이블 이나 타입의 편집은 상태가 그대로 저장되며 다음 데이터 베이스 활성화시에 복구가 됩니다.</value>
+  </data>
+  <data name="DataBaseCommand.Unload.dataBaseName" xml:space="preserve">
+    <value>사용중이 아님 상태로 전환할 데이터 베이스의 이름을 나타냅니다.</value>
+  </data>
+  <data name="FilterProperties.FilterExpression" xml:space="preserve">
+    <value>표시할 목록에 필터를 설정합니다. 필터는 와일드카드 형태이며 ; 구분자로 여러개를 설정할 수 있습니다. 
+예를들어, word*;*string*</value>
+  </data>
+  <data name="LogProperties.IsQuiet" xml:space="preserve">
+    <value>로그를 간략하게 표시합니다.</value>
+  </data>
+  <data name="LogProperties.Limit" xml:space="preserve">
+    <value>로그 표시 항목의 갯수를 설정합니다.</value>
+  </data>
+  <data name="PropertyCommand.Edit" xml:space="preserve">
+    <value>#TextEditor</value>
+  </data>
+  <data name="TableCommand.CategoryPath" xml:space="preserve">
+    <value>경로를 나타냅니다.</value>
+  </data>
+  <data name="TableCommand.ColumnInfo" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TableCommand.ColumnInfo.columnName" xml:space="preserve">
+    <value>정보를 표시할 컬럼의 이름을 나타냅니다.</value>
+  </data>
+  <data name="TableCommand.ColumnInfo.tableName" xml:space="preserve">
+    <value>컬럼의 정보를 표시할 테이블의 이름을 나타냅니다.</value>
+  </data>
+  <data name="TableCommand.ColumnList" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TableCommand.ColumnList.tableName" xml:space="preserve">
+    <value>컬럼의 목록을 표시할 테이블의 이름을 나타냅니다.</value>
+  </data>
+  <data name="TableCommand.Copy" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TableCommand.Copy.newTableName" xml:space="preserve">
+    <value>새로운 테이블의 이름을 나타냅니다.</value>
+  </data>
+  <data name="TableCommand.Copy.tableName" xml:space="preserve">
+    <value>복사할 테이블의 이름을 나타냅니다.</value>
+  </data>
+  <data name="TableCommand.CopyContent" xml:space="preserve">
+    <value>테이블이 복사될때 내용도 함께 복사할지에 대한 여부를 나타냅니다.</value>
+  </data>
+  <data name="TableCommand.Create" xml:space="preserve">
+    <value>#TextEditor</value>
+  </data>
+  <data name="TableCommand.Delete" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TableCommand.Delete.tableName" xml:space="preserve">
+    <value>삭제할 테이블의 이름을 나타냅니다.</value>
+  </data>
+  <data name="TableCommand.Edit" xml:space="preserve">
+    <value>테이블 내용 편집 모드로 진입합니다.
+
+테이블 내용 편집 모드에서는 편집에 관련된 명령만 사용할 수 있습니다.
+
+테이블 내용 편집을 종료하기 위해서는 leave 명령을 사용하시면 됩니다.</value>
+  </data>
+  <data name="TableCommand.Edit.tableName" xml:space="preserve">
+    <value>내용을 편집할 테이블의 이름을 나타냅니다.</value>
+  </data>
+  <data name="TableCommand.EditTemplate" xml:space="preserve">
+    <value>#TextEditor</value>
+  </data>
+  <data name="TableCommand.EditTemplate.tableName" xml:space="preserve">
+    <value>형태를 편집할 테이블의 이름을 나타냅니다.</value>
+  </data>
+  <data name="TableCommand.Info" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TableCommand.Info.tableName" xml:space="preserve">
+    <value>정보를 표시할 테이블의 이름을 나타냅니다.</value>
+  </data>
+  <data name="TableCommand.Inherit" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TableCommand.Inherit.newTableName" xml:space="preserve">
+    <value>새로운 테이블의 이름을 나타냅니다.</value>
+  </data>
+  <data name="TableCommand.Inherit.tableName" xml:space="preserve">
+    <value>상속받을 테이블의 이름을 나타냅니다.</value>
+  </data>
+  <data name="TableCommand.List" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TableCommand.Log" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TableCommand.Log.tableName" xml:space="preserve">
+    <value>로그를 표시할 테이블의 이름을 나타냅니다.</value>
+  </data>
+  <data name="TableCommand.Move" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TableCommand.Move.categoryPath" xml:space="preserve">
+    <value>테이블이 이동할 경로를 나타냅니다.</value>
+  </data>
+  <data name="TableCommand.Move.tableName" xml:space="preserve">
+    <value>이동할 테이블의 이름을 나타냅니다.</value>
+  </data>
+  <data name="TableCommand.Rename" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TableCommand.Rename.newTableName" xml:space="preserve">
+    <value>새로운 테이블의 이름을 나타냅니다.</value>
+  </data>
+  <data name="TableCommand.Rename.tableName" xml:space="preserve">
+    <value>이름을 변경할 테이블의 이름을 나타냅니다.</value>
+  </data>
+  <data name="TableCommand.SetTags" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TableCommand.SetTags.tableName" xml:space="preserve">
+    <value>태그를 설정할 테이블의 이름을 나타냅니다.</value>
+  </data>
+  <data name="TableCommand.SetTags.tags" xml:space="preserve">
+    <value>태그를 나타냅니다. 설정할 수 있는 값은 'all', 'server', 'client', 'unused" 입니다.</value>
+  </data>
+  <data name="TableCommand.View.revision" xml:space="preserve">
+    <value>내용을 표시할 테이블의 리비전을 나타냅니다. 기본값은 -1 입니다. -1 현재 테이블의 내용을 나타냅니다.
+테이블의 리비전은 table log 명령을 통해 확인할 수 있습니다.</value>
+  </data>
+  <data name="TableCommand.View.tableName" xml:space="preserve">
+    <value>내용을 표시할 테이블의 이름을 나타냅니다.</value>
+  </data>
+  <data name="TypeCommand.CategoryPath" xml:space="preserve">
+    <value>타입이 생성될 경로를 나타냅니다. </value>
+  </data>
+  <data name="TypeCommand.Copy" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TypeCommand.Copy.newTypeName" xml:space="preserve">
+    <value>새로운 타입의 이름을 나타냅니다.</value>
+  </data>
+  <data name="TypeCommand.Copy.typeName" xml:space="preserve">
+    <value>복사할 타입의 이름을 나타냅니다.</value>
+  </data>
+  <data name="TypeCommand.Create" xml:space="preserve">
+    <value>#TextEditor</value>
+  </data>
+  <data name="TypeCommand.Delete" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TypeCommand.Delete.typeName" xml:space="preserve">
+    <value>삭제할 타입의 이름을 나타냅니다.</value>
+  </data>
+  <data name="TypeCommand.Edit" xml:space="preserve">
+    <value>#TextEditor</value>
+  </data>
+  <data name="TypeCommand.Edit.typeName" xml:space="preserve">
+    <value>편집할 타입의 이름을 나타냅니다.</value>
+  </data>
+  <data name="TypeCommand.List" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TypeCommand.List.filter" xml:space="preserve">
+    <value>#Filter</value>
+  </data>
+  <data name="TypeCommand.Log" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TypeCommand.Log.typeName" xml:space="preserve">
+    <value>로그를 표시할 타입의 이름을 나타냅니다.</value>
+  </data>
+  <data name="TypeCommand.Move" xml:space="preserve">
+    <value>타입을 특정 경로로 이동합니다.</value>
+  </data>
+  <data name="TypeCommand.Move.categoryPath" xml:space="preserve">
+    <value>타입이 이동할 경로를 나타냅니다.</value>
+  </data>
+  <data name="TypeCommand.Move.typeName" xml:space="preserve">
+    <value>이동할 타입의 이름을 나타냅니다.</value>
+  </data>
+  <data name="TypeCommand.Rename" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TypeCommand.Rename.newTypeName" xml:space="preserve">
+    <value>새로운 타입의 이름을 나타냅니다.</value>
+  </data>
+  <data name="TypeCommand.Rename.typeName" xml:space="preserve">
+    <value>이름을 변경할 타입의 이름을 나타냅니다.</value>
+  </data>
+  <data name="@TableContent.AddCommand" xml:space="preserve">
+    <value>테이블에 새로운 행을 추가합니다.</value>
+  </data>
+  <data name="@TableContent.EditCommand" xml:space="preserve">
+    <value>테이블의 특정 행을 편집합니다.</value>
+  </data>
+  <data name="@TableContent.LeaveCommand" xml:space="preserve">
+    <value>편집 모드를 종료합니다.</value>
+  </data>
+  <data name="@TableContent.RemoveCommand" xml:space="preserve">
+    <value>테이블의 특정 행을 삭제합니다.</value>
+  </data>
+  <data name="@TableContent.ViewCommand" xml:space="preserve">
+    <value>현재 테이블의 내용을 표시합니다.</value>
+  </data>
+  <data name="ColumnInfoProperties.All" xml:space="preserve">
+    <value>컬럼 목록 표시에 모든 열을 추가합니다.</value>
+  </data>
+  <data name="ColumnInfoProperties.AllowNull" xml:space="preserve">
+    <value>컬럼 목록 표시에 'AllowNull' 열을 추가합니다.</value>
+  </data>
+  <data name="ColumnInfoProperties.AutoIncrement" xml:space="preserve">
+    <value>컬럼 목록 표시에 'AutoIncrement' 열을 추가합니다.</value>
+  </data>
+  <data name="ColumnInfoProperties.DefaultValue" xml:space="preserve">
+    <value>컬럼 목록 표시에 'DefaultValue' 열을 추가합니다.</value>
+  </data>
+  <data name="ColumnInfoProperties.ID" xml:space="preserve">
+    <value>컬럼 목록 표시에 'ID' 열을 추가합니다.</value>
+  </data>
+  <data name="ColumnInfoProperties.ReadOnly" xml:space="preserve">
+    <value>컬럼 목록 표시에 'ReadOnly' 열을 추가합니다.</value>
+  </data>
+  <data name="ColumnInfoProperties.SignatureDate" xml:space="preserve">
+    <value>컬럼 목록 표시에 변경 정보 열을 추가합니다.</value>
+  </data>
+  <data name="ColumnInfoProperties.Tags" xml:space="preserve">
+    <value>컬럼 목록 표시에 'Tags' 열을 추가합니다.</value>
+  </data>
+  <data name="ColumnInfoProperties.Unique" xml:space="preserve">
+    <value>컬럼 목록 표시에 'Unique' 열을 추가합니다.</value>
+  </data>
+  <data name="TableContent.AddCommand" xml:space="preserve">
+    <value>#TextEditor</value>
+  </data>
+  <data name="TableContent.EditCommand" xml:space="preserve">
+    <value>테이블의 특정 행을 삭제하기 위해서는 키 값이 필요합니다. 
+edit를 입력한후 한칸 띄고 tab키를 입력하면 테이블의 키 값을 쉽게 입력할 수 있습니다.
+편집이 시작되면 텍스트 편집기가 실행됩니다.</value>
+  </data>
+  <data name="TableContent.LeaveCommand" xml:space="preserve">
+    <value>편집 모드 종료가 테이블 내용이 곧바로 저장되는것은 아닙니다.
+
+테이블은 여러사람이 같이 편집할 수 있는 영역이기 때문에 
+
+영역내에 누군가가 있으면 테이블 내용은 저장되지 않습니다.
+
+모든 편집자가 테이블 영역에서 나가게 되면 테이블 내용은 바로 저장됩니다.</value>
+  </data>
+  <data name="TableContent.RemoveCommand" xml:space="preserve">
+    <value>테이블의 특정 행을 삭제하기 위해서는 키 값이 필요합니다. 
+remove를 입력한후 한칸 띄고 tab키를 입력하면 테이블의 키 값을 쉽게 입력할 수 있습니다.</value>
+  </data>
+  <data name="ViewProperties.ColumnLimit" xml:space="preserve">
+    <value>표시할 열의 갯수를 설정합니다. 기본값은 '-1' 이며 모든 열을 표시합니다.</value>
+  </data>
+  <data name="ViewProperties.Columns" xml:space="preserve">
+    <value>표시할 열의 필터를 설정합니다.</value>
+  </data>
+  <data name="ViewProperties.Expression" xml:space="preserve">
+    <value>표시할 행에 조건식을 설정합니다.
+
+ColumnName&gt;1
+ColumnName=2
+ColumnName='text'
+
+와 같은 표현법을 사용합니다.
+
+여러개의 조건을 사용할때는 and 또는 or 를 사용할 수 있습니다.
+
+Column1&gt;1 and Column2&lt;100</value>
+  </data>
+  <data name="ViewProperties.Limit" xml:space="preserve">
+    <value>표시할 행의 갯수를 설정합니다. 기본값은 '-1' 이며 모든 행을 표시합니다.</value>
+  </data>
+  <data name="ViewProperties.Sort" xml:space="preserve">
+    <value>행의 정렬 방식을 설정합니다.
+
+오름차순은 
+"ColumnName ASC" 
+
+내림차순은
+"ColumnName DESC"
+
+으로 설정하면 됩니다. 
+
+여러개를 설정하고자 할 경우 "," 로 구분합니다.
+
+예를들면 아래와 같습니다.
+"Column1 ASC, Column2 DESC"</value>
+  </data>
+  <data name="@UserCommand.CreateCategory" xml:space="preserve">
+    <value>사용자 범주를 생성합니다.</value>
+  </data>
+  <data name="@UserCommand.DeleteCategory" xml:space="preserve">
+    <value>사용자 범주를 삭제합니다.</value>
+  </data>
+  <data name="@UserCommand.ListCategory" xml:space="preserve">
+    <value>사용자 범주의 목록을 표시합니다.</value>
+  </data>
+  <data name="@UserCommand.MoveCategory" xml:space="preserve">
+    <value>사용자 범주를 특정 경로로 이동합니다.</value>
+  </data>
+  <data name="@UserCommand.RenameCategory" xml:space="preserve">
+    <value>사용자 범주의 이름을 변경합니다.</value>
+  </data>
+  <data name="UserCommand.CreateCategory" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UserCommand.CreateCategory.categoryName" xml:space="preserve">
+    <value>생성될 범주의 이름을 나타냅니다.</value>
+  </data>
+  <data name="UserCommand.CreateCategory.categoryPath" xml:space="preserve">
+    <value>범주가 생성될 경로를 나타냅니다.</value>
+  </data>
+  <data name="UserCommand.DeleteCategory" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UserCommand.DeleteCategory.categoryPath" xml:space="preserve">
+    <value>삭제할 범주의 경로를 나타냅니다.</value>
+  </data>
+  <data name="UserCommand.ListCategory" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UserCommand.MoveCategory" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UserCommand.MoveCategory.categoryPath" xml:space="preserve">
+    <value>이동할 범주의 경로를 나타냅니다.</value>
+  </data>
+  <data name="UserCommand.MoveCategory.parentPath" xml:space="preserve">
+    <value>범주가 이동할 경로를 나타냅니다.</value>
+  </data>
+  <data name="UserCommand.RenameCategory" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UserCommand.RenameCategory.categoryPath" xml:space="preserve">
+    <value>이름을 변경할 범주의 경로를 나타냅니다.</value>
+  </data>
+  <data name="UserCommand.RenameCategory.newName" xml:space="preserve">
+    <value>변결할 새로운 범주의 이름을 나타냅니다.</value>
+  </data>
+</root>

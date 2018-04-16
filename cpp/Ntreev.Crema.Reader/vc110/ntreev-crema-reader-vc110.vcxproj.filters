@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\src\binary_data.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\binary_reader.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\inidata.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\iniexception.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\inireader.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\iniutils.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\internal_utils.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\socket_istream.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\socketbuf.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\crema\inidata.h">
+      <Filter>include\crema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\crema\iniexception.h">
+      <Filter>include\crema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\crema\inireader.h">
+      <Filter>include\crema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\crema\initype.h">
+      <Filter>include\crema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\crema\iniutils.h">
+      <Filter>include\crema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\binary_data.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\binary_reader.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\binary_type.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\internal_utils.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\socket_istream.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\socketbuf.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\crema\inidefine.h">
+      <Filter>include\crema</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{cd8d8063-989f-49ac-829c-9d41c2e5adc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\crema">
+      <UniqueIdentifier>{add1248d-d114-42b6-9ad3-dc9bee1b9c01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{e9fa2646-79b2-47ba-9597-f79b961bc2a0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
