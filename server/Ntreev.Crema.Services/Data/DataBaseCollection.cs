@@ -86,17 +86,34 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public void RestoreState()
+        public void RestoreState(CremaSettings settings)
         {
-            var stateCaches = this.ReadStateCaches();
-            foreach (var item in this)
+            if (settings.NoCache == false)
             {
-                if (stateCaches.ContainsKey($"{item.ID}") == true)
+                var stateCaches = this.ReadStateCaches();
+                foreach (var item in this)
                 {
-                    if (stateCaches[$"{item.ID}"] == DataBaseState.IsLoaded)
+                    if (stateCaches.ContainsKey($"{item.ID}") == true)
                     {
-                        item.Load(Authentication.System);
+                        if (stateCaches[$"{item.ID}"] == DataBaseState.IsLoaded)
+                        {
+                            item.Load(Authentication.System);
+                        }
                     }
+                }
+            }
+
+            foreach (var item in settings.DataBaseList)
+            {
+                if (this.ContainsKey(item) == true)
+                {
+                    var dataBase = this[item];
+                    if (dataBase.IsLoaded == false)
+                        dataBase.Load(Authentication.System);
+                }
+                else
+                {
+                    CremaLog.Error(new DataBaseNotFoundException(item));
                 }
             }
         }

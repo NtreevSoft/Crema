@@ -131,8 +131,6 @@ namespace Ntreev.Crema.Client.Base.Dialogs.ViewModels
                     return false;
                 if (this.connectionItemInfo.ID == string.Empty)
                     return false;
-                if (this.connectionItemInfo.DataBaseName == string.Empty)
-                    return false;
                 return true;
             }
         }

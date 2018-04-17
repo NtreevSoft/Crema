@@ -124,6 +124,13 @@ namespace Ntreev.Crema.ConsoleHost.Commands
             get; set;
         }
 
+        [CommandPropertyArray]
+        [Description("database list to load")]
+        public string[] DataBaseList
+        {
+            get; set;
+        }
+
 #if DEBUG
 
         [CommandProperty('l', IsExplicit = true)]
@@ -151,6 +158,7 @@ namespace Ntreev.Crema.ConsoleHost.Commands
             this.application.Verbose = this.Verbose ? LogVerbose.Debug : LogVerbose.Info;
             this.application.NoCache = this.NoCache;
             this.application.Culture = this.Culture;
+            this.application.DataBaseList = this.DataBaseList;
 #if DEBUG
             this.application.ValidationMode = this.ValidationMode;
 #endif

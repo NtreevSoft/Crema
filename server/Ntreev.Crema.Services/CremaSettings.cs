@@ -69,6 +69,12 @@ namespace Ntreev.Crema.Services
             set;
         }
 
+        public string[] DataBaseList
+        {
+            get;
+            set;
+        }
+
 #if DEBUG
         public bool ValidationMode
         {
