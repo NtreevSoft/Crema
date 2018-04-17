@@ -49,11 +49,23 @@ UI 기반 크레마 클라이언트 프로그램
 UI 기반 크레마 코드 및 바이너리 데이터 생성 프로그램
 
 ## Development Environment
-* Visual Studio 2017
-* c# 7.0
+* Microsoft Visual Studio Professional 2017
+* C# 7.0
 * .NET Framework 4.5
 * WPF(Windows Presentation Foundation)
 * WCF(Windows Communication Foundation)
+
+## 실행 필수 요소
+* [svn](https://tortoisesvn.net/)
+    * 미설치시 cremaserve 구동 불가능
+
+## 빌드시 필요 라이선스
+* [Xceed DataGrid for WPF v5.7](https://xceed.com/product/xceed-datagrid-for-wpf/)
+    * 라이선스 없을시에 crema 실행 불가능
+* [Xceed Toolkit Plus for WPF](https://xceed.com/xceed-toolkit-plus-for-wpf/)
+    * 라이선스 없을시에 crema, cremadev 빌드후 실행 불가능
+* [Newtonsoft.Json.Schema](https://www.newtonsoft.com/jsonschema)
+    * cremaserve 구동후 일부 기능 사용횟수 제한(자주 사용되지 않는 기능)
 
 ## Libraries
 * [Caliburn.Micro](https://caliburnmicro.com/)
@@ -70,21 +82,3 @@ UI 기반 크레마 코드 및 바이너리 데이터 생성 프로그램
 * [Xceed DataGrid for WPF v5.7](https://xceed.com/product/xceed-datagrid-for-wpf/)
 * [Xceed Toolkit Plus for WPF](https://xceed.com/xceed-toolkit-plus-for-wpf/)
 * [diffplex](https://github.com/mmanela/diffplex)
-
-## License
-    Released under the MIT License.
-
-    Copyright(c) 2018 Ntreev Soft co., Ltd.
-
-    Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
-    documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
-    rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit
-    persons to whom the Software is furnished to do so, subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be included in all copies or substantial portions of the
-    Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
-    WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-    COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
