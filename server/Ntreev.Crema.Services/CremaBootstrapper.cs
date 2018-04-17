@@ -261,6 +261,12 @@ namespace Ntreev.Crema.Services
             }
         }
 
+        public string[] DataBaseList
+        {
+            get { return this.settings.DataBaseList; }
+            set { this.settings.DataBaseList = value; }
+        }
+
 #if DEBUG
 
         public bool ValidationMode

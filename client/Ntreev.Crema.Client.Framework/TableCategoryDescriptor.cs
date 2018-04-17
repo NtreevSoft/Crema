@@ -219,6 +219,8 @@ namespace Ntreev.Crema.Client.Framework
                         var descriptorList = new List<TableDescriptor>(e.NewItems.Count);
                         foreach (ITable item in e.NewItems)
                         {
+                            if (item.Parent != null)
+                                continue;
                             if (item.ExtendedProperties.ContainsKey(this.owner) == true)
                             {
                                 var descriptor = item.ExtendedProperties[this.owner] as TableDescriptor;

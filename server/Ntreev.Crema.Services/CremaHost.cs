@@ -180,8 +180,7 @@ namespace Ntreev.Crema.Services
                     this.Info("Plugin : {0}", item.Name);
                 }
 
-                if (this.settings.NoCache == false)
-                    this.dispatcher.InvokeAsync(() => this.dataBases.RestoreState());
+                this.dispatcher.InvokeAsync(() => this.dataBases.RestoreState(this.settings));
 
                 GC.Collect();
                 this.Info("Crema module has been started.");

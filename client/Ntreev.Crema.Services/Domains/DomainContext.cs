@@ -410,13 +410,13 @@ namespace Ntreev.Crema.Services.Domains
             }
         }
 
-        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        private async void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             this.timer.Stop();
             try
             {
-                this.serviceDispatcher.Invoke(() => this.service.IsAlive());
-                this.timer.Start();
+                await this.serviceDispatcher.InvokeAsync(() => this.service.IsAlive());
+                this.timer?.Start();
             }
             catch
             {

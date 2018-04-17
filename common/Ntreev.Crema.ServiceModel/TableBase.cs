@@ -515,6 +515,10 @@ namespace Ntreev.Crema.ServiceModel
 
         protected void Delete(IAuthentication authentication)
         {
+            foreach (var item in this.derivedTables.ToArray())
+            {
+                item.Dispose();
+            }
             base.Dispose();
         }
 
