@@ -99,7 +99,7 @@ namespace Ntreev.Crema.Client.Framework
         public Guid DomainID => this.domainInfo.DomainID;
 
         [DescriptorProperty]
-        public string DisplayName => new ItemName(this.domainInfo.ItemPath).Name;
+        public string DisplayName => NameValidator.VerifyItemPath(this.domainInfo.ItemPath) ? new ItemName(this.domainInfo.ItemPath).Name : $"{this.domainInfo.DomainID}";
 
         [DescriptorProperty(nameof(domainInfo))]
         public DomainInfo DomainInfo => this.domainInfo;

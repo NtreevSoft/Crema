@@ -219,12 +219,14 @@ namespace Ntreev.Crema.Presentation.Controls
                 this.dataGridControl.Columns[CremaSchema.Tags].CellEditor = this.TryFindResource("TagSelector") as CellEditor;
                 this.dataGridControl.Columns[CremaSchema.Tags].CellContentTemplate = this.TryFindResource("TagSelector_ContentTemplate") as DataTemplate;
                 this.dataGridControl.Columns[CremaSchema.Tags].VisiblePosition = index++;
+                this.dataGridControl.Columns[CremaSchema.Tags].Visible = false;
                 this.dataGridControl.Columns[CremaSchema.Enable].MaxWidth = 28;
                 this.dataGridControl.Columns[CremaSchema.Enable].MinWidth = 28;
                 this.dataGridControl.Columns[CremaSchema.Enable].TitleTemplate = this.TryFindResource("EmptyTitle_DataTemplate") as DataTemplate;
                 this.dataGridControl.Columns[CremaSchema.Enable].VisiblePosition = index++;
                 this.dataGridControl.Columns[CremaSchema.Enable].CellEditor = this.TryFindResource("EnableEditor") as CellEditor;
                 this.dataGridControl.Columns[CremaSchema.Enable].CellContentTemplate = this.TryFindResource("EnableContentTemplate") as DataTemplate;
+                this.dataGridControl.Columns[CremaSchema.Enable].Visible = false;
                 this.dataGridControl.Columns[CremaSchema.ID].VisiblePosition = index++;
                 this.dataGridControl.Columns[CremaSchema.Name].VisiblePosition = index++;
                 this.dataGridControl.Columns[CremaSchema.Value].VisiblePosition = index++;

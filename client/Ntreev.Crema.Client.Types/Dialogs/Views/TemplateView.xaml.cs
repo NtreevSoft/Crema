@@ -93,6 +93,8 @@ namespace Ntreev.Crema.Client.Types.Dialogs.Views
         private void PART_DataGridControl_Loaded(object sender, RoutedEventArgs e)
         {
             var gridControl = sender as ModernDataGridControl;
+            gridControl.Columns["ID"].Visible = false;
+
             this.configs.Update(this);
             if (this.Settings != null)
                 gridControl.LoadUserSettings(this.Settings, Xceed.Wpf.DataGrid.Settings.UserSettings.All);
@@ -132,6 +134,11 @@ namespace Ntreev.Crema.Client.Types.Dialogs.Views
                     AppMessageBox.ShowError(ex);
                 }
             }
+        }
+
+        private void PART_DataGridControl_ItemsSourceChangeCompleted(object sender, EventArgs e)
+        {
+            
         }
     }
 }

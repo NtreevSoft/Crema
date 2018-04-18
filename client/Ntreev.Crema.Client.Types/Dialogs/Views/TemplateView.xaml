@@ -28,7 +28,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
              xmlns:ncpc="clr-namespace:Ntreev.Crema.Presentation.Controls;assembly=Ntreev.Crema.Presentation"
              xmlns:ncfc="clr-namespace:Ntreev.Crema.Client.Framework.Controls;assembly=Ntreev.Crema.Client.Framework"
              xmlns:p="clr-namespace:Ntreev.Crema.Client.Types.Properties"
-             mc:Ignorable="d" nmfc:DialogWindow.DesiredHeight="600" nmfc:DialogWindow.DesiredWidth="800"
+             mc:Ignorable="d" nmfc:DialogWindow.DesiredHeight="400" nmfc:DialogWindow.DesiredWidth="800"
              nmfc:DialogWindow.DesiredResizeMode="CanResizeWithGrip"
              Loaded="UserControl_Loaded">
 
@@ -86,12 +86,12 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
                                         BorderThickness="{TemplateBinding BorderThickness}"
                                         View="{StaticResource CremaTypeControl_View}" >
                 <ncfc:DomainDataGridControl.Columns>
-                    <xcdg:Column MaxWidth="40" MinWidth="40" xcdg:TableView.CanScrollHorizontally="False"
+                    <xcdg:Column MaxWidth="40" MinWidth="40" xcdg:TableView.CanScrollHorizontally="False" Visible="False"
                                  CellEditor="{StaticResource TagSelector}" FieldName="Tags" ShowInColumnChooser="True" 
                                  TitleTemplate="{StaticResource EmptyTitle_DataTemplate}"
-                                 CellHorizontalContentAlignment="Center"
+                                 CellHorizontalContentAlignment="Center" 
                                  CellContentTemplate="{StaticResource TagSelector_ContentTemplate}" VisiblePosition="0" />
-                    <xcdg:Column MaxWidth="28" MinWidth="28"
+                    <xcdg:Column MaxWidth="28" MinWidth="28" Visible="False"
                                  TitleTemplate="{StaticResource EmptyTitle_DataTemplate}"
                                  CellEditor="{StaticResource EnableEditor}"
                                  CellContentTemplate="{StaticResource EnableContentTemplate}"
@@ -207,7 +207,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
                      Style="{StaticResource Comment_TextBox_Style}" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
         </nmfc:PropertyItemsControl>
 
-        <ncpc:CremaDataTypeControl x:Name="typeControl" Grid.Row="1" Source="{Binding Source}" />
+        <ncpc:CremaDataTypeControl x:Name="typeControl" Grid.Row="1" Source="{Binding Source}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
             <Button x:Name="Change" DockPanel.Dock="Right" IsDefault="True" Style="{StaticResource Change_Button_Style}" />

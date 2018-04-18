@@ -134,10 +134,6 @@ namespace Ntreev.Crema.Presentation.Controls
                     this.dataGridControl.Columns.Add(new Column() { FieldName = CremaSchema.Index, Title = CremaSchema.Index, });
 #endif
                     this.dataGridControl.Columns.Add(new Column() { FieldName = CremaSchema.ID, Title = CremaSchema.ID, });
-                    //this.dataGridControl.Columns.Add(this.FindResource("modifierColumn") as ColumnBase);
-                    //this.dataGridControl.Columns.Add(this.FindResource("modifiedDateTimeColumn") as ColumnBase);
-                    //this.dataGridControl.Columns.Add(this.FindResource("creatorColumn") as ColumnBase);
-                    //this.dataGridControl.Columns.Add(this.FindResource("createdDateTimeColumn") as ColumnBase);
                 }
                 catch
                 {
@@ -185,10 +181,10 @@ namespace Ntreev.Crema.Presentation.Controls
                 this.dataGridControl.Columns[CremaSchema.Creator].VisiblePosition = index++;
                 this.dataGridControl.Columns[CremaSchema.CreatedDateTime].VisiblePosition = index++;
 
-#if DEBUG
                 this.dataGridControl.Columns["ColumnName"].VisiblePosition = 0;
                 this.dataGridControl.Columns["DataType"].VisiblePosition = 1;
-#endif
+                this.dataGridControl.Columns["IsKey"].VisiblePosition = 2;
+                this.dataGridControl.Columns["Comment"].VisiblePosition = 3;
 
                 foreach (var item in this.dataGridControl.Columns)
                 {

@@ -28,7 +28,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
              xmlns:ncpc="clr-namespace:Ntreev.Crema.Presentation.Controls;assembly=Ntreev.Crema.Presentation"
              xmlns:ncfc="clr-namespace:Ntreev.Crema.Client.Framework.Controls;assembly=Ntreev.Crema.Client.Framework"
              xmlns:p="clr-namespace:Ntreev.Crema.Client.Tables.Properties"
-             mc:Ignorable="d" nmfc:DialogWindow.DesiredHeight="600" nmfc:DialogWindow.DesiredWidth="800" 
+             mc:Ignorable="d" nmfc:DialogWindow.DesiredHeight="400" nmfc:DialogWindow.DesiredWidth="800" 
              nmfc:DialogWindow.DesiredResizeMode="CanResizeWithGrip"
              Loaded="UserControl_Loaded">
 

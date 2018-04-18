@@ -83,9 +83,6 @@ namespace Ntreev.Crema.Client.Types.BrowserItems.ViewModels
             }
         }
 
-        
-
-
         public bool IsVisible
         {
             get { return this.isVisible; }
