@@ -127,41 +127,6 @@ namespace Ntreev.Crema.ApplicationHost
             catch (Exception)
             {
             }
-
-            //var sb = new StringBuilder();
-
-            //sb.AppendLine($"General Information");
-            //if (this.settings.ReportDetails == true)
-            //    sb.AppendLine($"{nameof(Environment.MachineName)} : {Environment.MachineName}");
-            //sb.AppendLine($"DateTime : {DateTime.Now}");
-            //sb.AppendLine($"AppDomainName : {AppDomain.CurrentDomain.FriendlyName}");
-            //if (this.settings.ReportDetails == true)
-            //    sb.AppendLine($"{nameof(Environment.UserDomainName)} : {Environment.UserDomainName}");
-            //if (this.settings.ReportDetails == true)
-            //    sb.AppendLine($"{nameof(Environment.UserName)} : {Environment.UserName}");
-            //sb.AppendLine($"Program Version : {AppUtility.ProductVersion}");
-            //sb.AppendLine();
-
-            //sb.AppendLine($"Exception Information");
-            //if (e.Exception == null)
-            //    sb.AppendLine($"exception object is null");
-            //else
-            //    sb.AppendLine(e.Exception.ToString());
-
-            //var errorPath = AppUtility.GetDocumentFilename($"errors\\{DateTime.Now.ToString("yyyy-MM-dd_HH_mm")}.log");
-            //FileUtility.WriteAllText(sb.ToString(), errorPath);
-
-            //var exceptionWindow = new ExceptionWindow(e.Exception, sb.ToString())
-            //{
-            //    Topmost = true,
-            //    ReportDetails = this.settings.ReportDetails,
-            //};
-            //if (exceptionWindow != Application.Current.MainWindow)
-            //{
-            //    exceptionWindow.Owner = Application.Current.MainWindow;
-            //}
-
-            //exceptionWindow.ShowDialog();
         }
 
         private static string MessageSelector(object message)

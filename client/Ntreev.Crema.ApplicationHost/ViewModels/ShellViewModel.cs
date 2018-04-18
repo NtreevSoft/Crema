@@ -35,6 +35,7 @@ using System.Collections.ObjectModel;
 using Ntreev.Library.Linq;
 using Ntreev.ModernUI.Framework;
 using System.Diagnostics;
+using System.Windows.Input;
 
 #pragma warning disable 0649
 namespace Ntreev.Crema.ApplicationHost.ViewModels
@@ -107,7 +108,12 @@ namespace Ntreev.Crema.ApplicationHost.ViewModels
 
         public double Width
         {
-            get { return Ntreev.Crema.ApplicationHost.Properties.Settings.Default.Width; }
+            get
+            {
+                if (Keyboard.IsKeyDown(Key.LeftShift) == true)
+                    return 700;
+                return  Ntreev.Crema.ApplicationHost.Properties.Settings.Default.Width;
+            }
             set
             {
                 if (this.WindowState == WindowState.Maximized)
@@ -119,7 +125,12 @@ namespace Ntreev.Crema.ApplicationHost.ViewModels
 
         public double Height
         {
-            get { return Ntreev.Crema.ApplicationHost.Properties.Settings.Default.Height; }
+            get
+            {
+                if (Keyboard.IsKeyDown(Key.LeftShift) == true)
+                    return 525;
+                return Ntreev.Crema.ApplicationHost.Properties.Settings.Default.Height;
+            }
             set
             {
                 if (this.WindowState == WindowState.Maximized)

@@ -28,6 +28,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
         <Style.Triggers>
             <DataTrigger Binding="{Binding IsHighlighted, RelativeSource={RelativeSource AncestorType={x:Type MenuItem}}}" Value="True">
                 <Setter Property="Background" Value="{DynamicResource WindowText}" />
+                <Setter Property="Foreground" Value="{DynamicResource WindowBackground}" />
             </DataTrigger>
         </Style.Triggers>
     </Style>

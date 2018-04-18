@@ -58,10 +58,14 @@ namespace Ntreev.Crema.Client.Tables.Dialogs.Views
 
         private void PART_DataGridControl_Loaded(object sender, RoutedEventArgs e)
         {
-            var gridControl = sender as ModernDataGridControl;
-            this.configs.Update(this);
-            if (this.Settings != null)
-                gridControl.LoadUserSettings(this.Settings, Xceed.Wpf.DataGrid.Settings.UserSettings.All);
+            this.Dispatcher.InvokeAsync(() =>
+            {
+                var gridControl = sender as ModernDataGridControl;
+                gridControl.Columns["ID"].Visible = false;
+                this.configs.Update(this);
+                if (this.Settings != null && Keyboard.IsKeyDown(Key.LeftShift) == false)
+                    gridControl.LoadUserSettings(this.Settings, Xceed.Wpf.DataGrid.Settings.UserSettings.All);
+            }, System.Windows.Threading.DispatcherPriority.Background);
         }
 
         private void PART_DataGridControl_Unloaded(object sender, RoutedEventArgs e)

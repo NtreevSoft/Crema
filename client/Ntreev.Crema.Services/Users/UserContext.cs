@@ -502,7 +502,7 @@ namespace Ntreev.Crema.Services.Users
 
         private async void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            this.timer.Stop();
+            this.timer?.Stop();
             try
             {
                 await this.serviceDispatcher.InvokeAsync(() => this.service.IsAlive());
