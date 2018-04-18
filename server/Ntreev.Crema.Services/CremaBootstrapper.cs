@@ -75,6 +75,8 @@ namespace Ntreev.Crema.Services
                 var basePath = directoryInfo.FullName;
                 var repoProviders = this.GetInstances(typeof(IRepositoryProvider)).OfType<IRepositoryProvider>();
                 var repoProvider = repoProviders.FirstOrDefault(item => item.Name == this.RepositoryModule);
+                if (repoProvider == null)
+                    throw new InvalidOperationException("저장소를 생성할 수 있는 모듈이 존재하지 않습니다.");
                 var repositoryPath = Path.Combine(basePath, repositoryName);
 
                 DirectoryUtility.Create(repositoryPath);
