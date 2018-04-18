@@ -27,16 +27,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ntreev.Crema.Client.Base.MenuItems.Services
+namespace Ntreev.Crema.Client.Base.MenuItems
 {
     [Export(typeof(IMenuItem))]
     [ParentType(typeof(ConnectionItemViewModel))]
     class ConnectionItemCopyMenuItem : MenuItemBase
     {
         private readonly CremaAppHostViewModel cremaAppHost;
-
-        [Import]
-        private Authenticator authenticator = null;
 
         [ImportingConstructor]
         public ConnectionItemCopyMenuItem(CremaAppHostViewModel cremaAppHost)
@@ -58,7 +55,7 @@ namespace Ntreev.Crema.Client.Base.MenuItems.Services
         {
             if (this.cremaAppHost.IsOpened == false && parameter is ConnectionItemViewModel connectionItem)
             {
-                var dialog = new ConnectionItemEditViewModel(this.authenticator)
+                var dialog = new ConnectionItemEditViewModel()
                 {
                     DisplayName = Resources.Title_CopyConnectionItem,
                     ConnectionInfo = connectionItem.Clone(),

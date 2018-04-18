@@ -40,7 +40,7 @@ namespace Ntreev.Crema.ApplicationHost.ViewModels
     {
         private readonly ICremaAppHost cremaAppHost;
 
-        private TaskbarItemInfo _taskbarItemInfo;
+        private TaskbarItemInfo taskbarItemInfo;
         private string message;
         private ILineInfo lineInfo;
         private ObservableCollection<BackgroundTaskItemViewModel> taskItemList = new ObservableCollection<BackgroundTaskItemViewModel>();
@@ -54,16 +54,8 @@ namespace Ntreev.Crema.ApplicationHost.ViewModels
             this.cremaAppHost.Loaded += CremaAppHost_Loaded;
             this.cremaAppHost.Unloaded += CremaAppHost_Unloaded;
             this.taskItems = new ReadOnlyObservableCollection<BackgroundTaskItemViewModel>(this.taskItemList);
-            this._taskbarItemInfo = new TaskbarItemInfo();
-            this._taskbarItemInfo.Description = "Crema Des1";
-        }
-
-        public void ViewDialog()
-        {
-            //if (this.Worker == null)
-            //    return;
-
-            //this.Worker.RestoreView();
+            this.taskbarItemInfo = new TaskbarItemInfo();
+            this.taskbarItemInfo.Description = "Crema Desc";
         }
 
         public void AddTask(IBackgroundTask task)
@@ -79,7 +71,7 @@ namespace Ntreev.Crema.ApplicationHost.ViewModels
 
         public TaskbarItemInfo TaskbarItemInfo
         {
-            get { return _taskbarItemInfo; }
+            get { return taskbarItemInfo; }
         }
 
         public string Message
@@ -102,42 +94,6 @@ namespace Ntreev.Crema.ApplicationHost.ViewModels
             }
         }
 
-        public void Sad()
-        {
-            //var dialog = new ReportViewModel()
-            //{
-            //    IsSad = true,
-            //    Comment = Resources.Message_Sad,
-            //};
-            //dialog.ShowDialog();
-        }
-
-        public void Smile()
-        {
-            //var dialog = new ReportViewModel()
-            //{
-            //    IsSad = false,
-            //    Comment = Resources.Message_Smile,
-            //};
-            //dialog.ShowDialog();
-        }
-
-        public void TestTask()
-        {
-            var task = new BackgroundTask((p, c) =>
-            {
-                for (var i = 0; i < 100; i++)
-                {
-                    if (c.IsCancellationRequested == true)
-                        break;
-                    p.Report((double)i / 100, i.ToString());
-                    Thread.Sleep(100);
-                }
-            });
-            var dialog = new BackgroundTaskViewModel(task);
-            dialog.ShowDialog();
-        }
-
         public ReadOnlyObservableCollection<BackgroundTaskItemViewModel> TaskItems
         {
             get { return this.taskItems; }
@@ -152,16 +108,6 @@ namespace Ntreev.Crema.ApplicationHost.ViewModels
                 this.NotifyOfPropertyChange(nameof(this.SelectedTask));
             }
         }
-
-        //void _worker_ErrorInvoked(object sender, EventArgs e)
-        //{
-        //    this._taskbarItemInfo.ProgressState = TaskbarItemProgressState.Error;
-        //}
-
-        //void _worker_ProgressChanged(object sender, EventArgs e)
-        //{
-        //    //this._taskbarItemInfo.ProgressValue = (double)_worker.Progress / 100;
-        //}
 
         private void CremaAppHost_Unloaded(object sender, EventArgs e)
         {

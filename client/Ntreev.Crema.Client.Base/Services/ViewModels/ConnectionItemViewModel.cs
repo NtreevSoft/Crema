@@ -44,6 +44,7 @@ namespace Ntreev.Crema.Client.Base.Services.ViewModels
         private string theme;
         private bool isDefault;
         private bool isCurrentTheme;
+        private bool isTemporary;
         private DateTime lastConnectedDateTime;
 
         [Import]
@@ -218,6 +219,16 @@ namespace Ntreev.Crema.Client.Base.Services.ViewModels
             {
                 this.isCurrentTheme = value;
                 this.NotifyOfPropertyChange(nameof(this.IsCurrentTheme));
+            }
+        }
+
+        public bool IsTemporary
+        {
+            get { return this.isTemporary; }
+            set
+            {
+                this.isTemporary = value;
+                this.NotifyOfPropertyChange(nameof(this.IsTemporary));
             }
         }
 

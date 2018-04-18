@@ -29,7 +29,7 @@ namespace Ntreev.Crema.Client.Framework
 {
     public interface ICremaAppHost : IServiceProvider
     {
-        void Login(string address, string userID, SecureString password, string dataBaseName);
+        void Login(string address, string userID, string password, string dataBaseName);
 
         void Logout();
 

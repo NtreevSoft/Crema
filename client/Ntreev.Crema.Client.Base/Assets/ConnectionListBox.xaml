@@ -79,7 +79,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
                             </Style.Triggers>
                         </Style>
                     </StackPanel.Resources>
-                    <TextBlock Text="{Binding Theme}" Visibility="Hidden" />
+                    <nmfc:IconImage x:Name="temporary_icon" Source="/Ntreev.Crema.Client.Base;component/Images/lock.png" HorizontalAlignment="Left" Visibility="Hidden" />
                     <nmfc:HighlightTextBlock Text="{Binding Name, FallbackValue=Connection}" />
                     <nmfc:HighlightTextBlock Text="{Binding Address, FallbackValue=127.0.0.1:5005}" TextTrimming="CharacterEllipsis" nmfc:TextBlockService.ShowTrimmedText="True" />
                     <nmfc:HighlightTextBlock Text="{Binding ID, FallbackValue=Admin}" />
@@ -93,6 +93,9 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
             </DataTrigger>
             <DataTrigger Binding="{Binding IsCurrentTheme}" Value="True">
                 <Setter TargetName="themePath" Property="Fill" Value="Transparent" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsTemporary}" Value="True">
+                <Setter TargetName="temporary_icon" Property="Visibility" Value="Visible" />
             </DataTrigger>
         </DataTemplate.Triggers>
     </DataTemplate>

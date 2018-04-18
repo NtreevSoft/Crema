@@ -118,6 +118,8 @@ namespace Ntreev.Crema.Client.Base.Services.ViewModels
 
             foreach (var item in this)
             {
+                if (item.IsTemporary == true)
+                    continue;
                 var connectionItemInfo = new ConnectionItemInfo()
                 {
                     Version = versionString,

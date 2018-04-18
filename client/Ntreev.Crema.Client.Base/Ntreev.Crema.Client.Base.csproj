@@ -117,15 +117,15 @@
     <Compile Include="IBrowserService.cs" />
     <Compile Include="IPropertyService.cs" />
     <Compile Include="MenuItems\MovoToWikiMenuItem.cs" />
-    <Compile Include="MenuItems\Services\ConnectionItemCopyMenuItem.cs" />
-    <Compile Include="MenuItems\Services\ConnectionItemLoginMenuItem.cs" />
-    <Compile Include="MenuItems\Services\EnterDataBaseMenuItem.cs" />
+    <Compile Include="MenuItems\ConnectionItemCopyMenuItem.cs" />
+    <Compile Include="MenuItems\ConnectionItemLoginMenuItem.cs" />
+    <Compile Include="MenuItems\EnterDataBaseMenuItem.cs" />
     <Compile Include="MenuItems\AboutMenuItem.cs" />
     <Compile Include="MenuItems\ChangeDataBaseMenuItem.cs" />
     <Compile Include="MenuItems\DataBaseMenuItem.cs" />
     <Compile Include="MenuItems\DeleteDataBaseMenuItem.cs" />
     <Compile Include="MenuItems\CreateDataBaseMenuItem.cs" />
-    <Compile Include="MenuItems\DeleteConnectionItemMenuItem.cs" />
+    <Compile Include="MenuItems\ConnectionItemDeleteMenuItem.cs" />
     <Compile Include="ToolBarItems\MovoToWikiToolBarItem.cs" />
     <Compile Include="ToolBarItems\CreateDataBaseToolBarItem.cs" />
     <Compile Include="ToolBarItems\LoadDataBaseIcon.xaml.cs">
@@ -137,7 +137,7 @@
     <Compile Include="MenuItems\LeaveDataBaseMenuItem.cs" />
     <Compile Include="MenuItems\LogoutMenuItem.cs" />
     <Compile Include="MenuItems\MainMenuViewModel.cs" />
-    <Compile Include="MenuItems\EditConnectionItemMenuItem.cs" />
+    <Compile Include="MenuItems\ConnectionItemEditMenuItem.cs" />
     <Compile Include="MenuItems\ToolsMenuItem.cs" />
     <Compile Include="PropertyItems\ViewModels\AccessInfoViewModel.cs" />
     <Compile Include="PropertyItems\ViewModels\DataBaseDomainsViewModel.cs" />
@@ -318,6 +318,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\wiki.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\lock.png" />
   </ItemGroup>
   <Import Project="..\..\common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

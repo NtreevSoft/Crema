@@ -32,25 +32,24 @@ namespace Ntreev.Crema.Client.Base.Dialogs.ViewModels
 {
     class ConnectionItemEditViewModel : ModalDialogBase
     {
-        private readonly Authentication authentication;
         private ConnectionItemViewModel connectionItemInfo;
         private bool isModified;
         private bool isPasswordChanged;
         private bool isNew;
 
-        public ConnectionItemEditViewModel(Authentication authentication)
+        public ConnectionItemEditViewModel()
         {
-            this.authentication = authentication;
             this.connectionItemInfo = new ConnectionItemViewModel();
             this.connectionItemInfo.PropertyChanged += ConnectionItemInfo_PropertyChanged;
             this.isNew = true;
             this.DisplayName = Resources.Title_AddConnectionItem;
         }
 
-        public ConnectionItemEditViewModel(Authentication authentication, ConnectionItemViewModel connectionItemInfo)
+        public ConnectionItemEditViewModel(ConnectionItemViewModel connectionItemInfo)
         {
-            this.authentication = authentication;
-            this.connectionItemInfo = connectionItemInfo;
+            this.connectionItemInfo = connectionItemInfo ?? throw new ArgumentNullException(nameof(connectionItemInfo));
+            if (this.connectionItemInfo.IsTemporary == true)
+                throw new ArgumentException();
             this.connectionItemInfo.PropertyChanged += ConnectionItemInfo_PropertyChanged;
             this.DisplayName = Resources.Title_EditConnectionItem;
         }
@@ -66,7 +65,7 @@ namespace Ntreev.Crema.Client.Base.Dialogs.ViewModels
 
         public void SelectDataBase()
         {
-            var dialog = new SelectDataBaseViewModel(this.authentication, this.ConnectionInfo.Address)
+            var dialog = new SelectDataBaseViewModel(this.ConnectionInfo.Address)
             {
                 SelectedValue = this.connectionItemInfo.DataBaseName,
             };

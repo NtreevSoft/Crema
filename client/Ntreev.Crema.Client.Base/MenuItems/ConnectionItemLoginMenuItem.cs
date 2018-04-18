@@ -26,26 +26,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ntreev.Crema.Client.Base.MenuItems.Services
+namespace Ntreev.Crema.Client.Base.MenuItems
 {
     [Export(typeof(IMenuItem))]
-    [ParentType(typeof(DataBaseItemViewModel))]
+    [ParentType(typeof(ConnectionItemViewModel))]
     [DefaultMenu]
-    class EnterDataBaseMenuItem : MenuItemBase
+    class ConnectionItemLoginMenuItem : MenuItemBase
     {
-        private readonly DataBaseListViewModel dataBases;
+        private readonly CremaAppHostViewModel cremaAppHost;
 
         [ImportingConstructor]
-        public EnterDataBaseMenuItem(DataBaseListViewModel dataBases)
+        public ConnectionItemLoginMenuItem(CremaAppHostViewModel cremaAppHost)
         {
-            this.dataBases = dataBases;
-            this.dataBases.PropertyChanged += DataBases_PropertyChanged;
-            this.DisplayName = Resources.MenuItem_Enter;
+            this.cremaAppHost = cremaAppHost;
+            this.cremaAppHost.Opened += this.InvokeCanExecuteChangedEvent;
+            this.cremaAppHost.Closed += this.InvokeCanExecuteChangedEvent;
+            this.cremaAppHost.PropertyChanged += CremaAppHost_PropertyChanged;
+            this.DisplayName = Resources.MenuItem_Login;
         }
 
-        private void DataBases_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void CremaAppHost_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(this.dataBases.CanEnter))
+            if (e.PropertyName == nameof(this.cremaAppHost.ConnectionItem))
             {
                 this.InvokeCanExecuteChangedEvent();
             }
@@ -53,12 +55,21 @@ namespace Ntreev.Crema.Client.Base.MenuItems.Services
 
         protected override bool OnCanExecute(object parameter)
         {
-            return this.dataBases.CanEnter;
+            if (this.cremaAppHost.IsOpened == true)
+                return false;
+            if (parameter is ConnectionItemViewModel connectionItem)
+            {
+                return this.cremaAppHost.ConnectionItem == connectionItem && this.cremaAppHost.CanLogin;
+            }
+            return false;
         }
 
-        protected async override void OnExecute(object parameter)
+        protected override void OnExecute(object parameter)
         {
-            await this.dataBases.EnterAsync();
+            if (parameter is ConnectionItemViewModel connectionItem && this.cremaAppHost.ConnectionItem == connectionItem)
+            {
+                this.cremaAppHost.Login();
+            }
         }
     }
 }

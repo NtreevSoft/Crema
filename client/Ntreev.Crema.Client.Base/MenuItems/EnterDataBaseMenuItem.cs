@@ -20,6 +20,7 @@ using Ntreev.Crema.Client.Base.Services.ViewModels;
 using Ntreev.ModernUI.Framework;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
@@ -28,32 +29,36 @@ using System.Threading.Tasks;
 namespace Ntreev.Crema.Client.Base.MenuItems
 {
     [Export(typeof(IMenuItem))]
-    [ParentType(typeof(ConnectionItemViewModel))]
-    class DeleteConnectionItemMenuItem : MenuItemBase
+    [ParentType(typeof(DataBaseItemViewModel))]
+    [DefaultMenu]
+    class EnterDataBaseMenuItem : MenuItemBase
     {
-        [Import]
-        private Lazy<CremaAppHostViewModel> cremaAppHost = null;
+        private readonly DataBaseListViewModel dataBases;
 
-        public DeleteConnectionItemMenuItem()
+        [ImportingConstructor]
+        public EnterDataBaseMenuItem(DataBaseListViewModel dataBases)
         {
-            this.DisplayName = Resources.MenuItem_Delete;
+            this.dataBases = dataBases;
+            this.dataBases.PropertyChanged += DataBases_PropertyChanged;
+            this.DisplayName = Resources.MenuItem_Enter;
+        }
+
+        private void DataBases_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(this.dataBases.CanEnter))
+            {
+                this.InvokeCanExecuteChangedEvent();
+            }
         }
 
         protected override bool OnCanExecute(object parameter)
         {
-            return parameter is ConnectionItemViewModel;
+            return this.dataBases.CanEnter;
         }
 
-        protected override void OnExecute(object parameter)
+        protected async override void OnExecute(object parameter)
         {
-            if (parameter is ConnectionItemViewModel connectionItem)
-            {
-                if (AppMessageBox.ConfirmDelete() == false)
-                    return;
-                this.CremaAppHost.RemoveConnectionItem(connectionItem);
-            }
+            await this.dataBases.EnterAsync();
         }
-
-        private CremaAppHostViewModel CremaAppHost => this.cremaAppHost.Value;
     }
 }

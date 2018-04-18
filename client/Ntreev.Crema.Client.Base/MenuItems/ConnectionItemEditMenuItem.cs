@@ -29,19 +29,21 @@ namespace Ntreev.Crema.Client.Base.MenuItems
 {
     [Export(typeof(IMenuItem))]
     [ParentType(typeof(ConnectionItemViewModel))]
-    class EditConnectionItemMenuItem : MenuItemBase
+    class ConnectionItemEditMenuItem : MenuItemBase
     {
         [Import]
         private Lazy<CremaAppHostViewModel> cremaAppHost = null;
 
-        public EditConnectionItemMenuItem()
+        public ConnectionItemEditMenuItem()
         {
             this.DisplayName = Resources.MenuItem_Edit;
         }
 
         protected override bool OnCanExecute(object parameter)
         {
-            return parameter is ConnectionItemViewModel;
+            if (parameter is ConnectionItemViewModel item && item.IsTemporary == false)
+                return true;
+            return false;
         }
 
         protected override void OnExecute(object parameter)
