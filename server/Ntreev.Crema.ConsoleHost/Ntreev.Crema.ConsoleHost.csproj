@@ -9,7 +9,7 @@
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Ntreev.Crema.ConsoleHost</RootNamespace>
-    <AssemblyName>cremaserve</AssemblyName>
+    <AssemblyName>cremaserver</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -39,7 +39,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\..\bin\Debug\cremaserve\</OutputPath>
+    <OutputPath>..\..\bin\Debug\cremaserver\</OutputPath>
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -49,7 +49,7 @@
     <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>..\..\bin\Release\cremaserve\</OutputPath>
+    <OutputPath>..\..\bin\Release\cremaserver\</OutputPath>
     <DefineConstants>TRACE;SERVER</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
