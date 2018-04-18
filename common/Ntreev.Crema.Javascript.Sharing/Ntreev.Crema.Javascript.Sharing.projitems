@@ -69,7 +69,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)ScriptMethodBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\GetUserListMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\GetDataBaseListMethod.cs" />
-    <None Include="$(MSBuildThisFileDirectory)Methods\CallMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ScriptContextBase.cs" />
   </ItemGroup>
 </Project>
