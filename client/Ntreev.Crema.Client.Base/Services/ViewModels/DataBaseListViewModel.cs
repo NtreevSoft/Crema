@@ -53,7 +53,7 @@ namespace Ntreev.Crema.Client.Base.Services.ViewModels
 
         public async void SelectDataBase()
         {
-            var dialog = new SelectDataBaseViewModel(this.authenticator, this.CremaAppHost.ConnectionItem.Address);
+            var dialog = new SelectDataBaseViewModel(this.authenticator, this.CremaAppHost);
             if (dialog.ShowDialog() != true)
                 return;
 

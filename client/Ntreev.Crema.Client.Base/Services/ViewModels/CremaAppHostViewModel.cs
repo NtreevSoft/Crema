@@ -216,7 +216,7 @@ namespace Ntreev.Crema.Client.Base.Services.ViewModels
 
         public void AddConnectionItem()
         {
-            var dialog = new ConnectionItemEditViewModel(this.authenticator);
+            var dialog = new ConnectionItemEditViewModel();
             if (dialog.ShowDialog() == true)
             {
                 this.connectionItems.Add(dialog.ConnectionInfo);
@@ -247,7 +247,7 @@ namespace Ntreev.Crema.Client.Base.Services.ViewModels
 
         public void EditConnectionItem(ConnectionItemViewModel connectionItem)
         {
-            var dialog = new ConnectionItemEditViewModel(this.authenticator, connectionItem.Clone());
+            var dialog = new ConnectionItemEditViewModel(connectionItem.Clone());
             if (dialog.ShowDialog() == true)
             {
                 connectionItem.Assign(dialog.ConnectionInfo);
@@ -846,6 +846,25 @@ namespace Ntreev.Crema.Client.Base.Services.ViewModels
         #endregion
 
         #region ICremaAppHost
+
+        void ICremaAppHost.Login(string address, string userID, string password, string dataBaseName)
+        {
+            var connectionItem = new ConnectionItemViewModel()
+            {
+                Name = "Temporary",
+                Address = address,
+                ID = userID,
+                Password = StringUtility.Encrypt(password, userID),
+                DataBaseName = dataBaseName,
+                IsTemporary = true,
+                Theme = this.Theme,
+                ThemeColor = this.ThemeColor,
+            };
+
+            this.ConnectionItems.Add(connectionItem);
+            this.ConnectionItem = connectionItem;
+            this.Login();
+        }
 
         IEnumerable<IConnectionItem> ICremaAppHost.ConnectionItems
         {

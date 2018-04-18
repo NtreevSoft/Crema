@@ -67,6 +67,13 @@ UI 기반 크레마 코드 및 바이너리 데이터 생성 프로그램
 * [svn](https://tortoisesvn.net/)
     * 미설치시 cremaserve 구동 불가능
 
+## 사용된 프로젝트
+* Second Earth
+* 프로야구 630
+* 소환사가 되고 싶어
+* H2
+* 팡야 모바일
+
 ## Libraries
 * [Caliburn.Micro](https://caliburnmicro.com/)
 * [ClosedXML](https://github.com/ClosedXML/ClosedXML)

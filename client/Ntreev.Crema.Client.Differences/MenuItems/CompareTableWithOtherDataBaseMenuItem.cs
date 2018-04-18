@@ -84,7 +84,7 @@ namespace Ntreev.Crema.Client.Differences.MenuItems
 
         private string SelectDataBase()
         {
-            var dialog = new SelectDataBaseViewModel(this.authenticator, this.cremaHost.Address, (info) => info.Name != this.cremaAppHost.DataBaseName);
+            var dialog = new SelectDataBaseViewModel(this.authenticator, this.cremaAppHost, (info) => info.Name != this.cremaAppHost.DataBaseName);
             if (dialog.ShowDialog() == true)
             {
                 return dialog.SelectedValue;

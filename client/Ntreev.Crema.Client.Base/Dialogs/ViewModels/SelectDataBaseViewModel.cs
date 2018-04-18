@@ -46,15 +46,14 @@ namespace Ntreev.Crema.Client.Base.Dialogs.ViewModels
         private ICompositionService compositionService = null;
         private Action action;
 
-        public SelectDataBaseViewModel(Authentication authentication, string address)
-            : this(authentication, address, (s) => true)
+        public SelectDataBaseViewModel(string address)
+            : this(address, (s) => true)
         {
 
         }
 
-        public SelectDataBaseViewModel(Authentication authentication, string address, Func<DataBaseItemViewModel, bool> predicate)
+        public SelectDataBaseViewModel(string address, Func<DataBaseItemViewModel, bool> predicate)
         {
-            this.authentication = authentication;
             this.predicate = predicate;
             this.action = new Action(() => this.Initialize(address));
             this.DisplayName = Resources.Title_SelectDataBase;
@@ -63,11 +62,12 @@ namespace Ntreev.Crema.Client.Base.Dialogs.ViewModels
         public SelectDataBaseViewModel(Authentication authentication, ICremaAppHost cremaAppHost)
             : this(authentication, cremaAppHost, (s) => true)
         {
-
+            
         }
 
         public SelectDataBaseViewModel(Authentication authentication, ICremaAppHost cremaAppHost, Func<DataBaseItemViewModel, bool> predicate)
         {
+            this.authentication = authentication;
             this.predicate = predicate;
             this.action = new Action(() => this.Initialize(authentication, cremaAppHost));
             this.supportsDescriptor = true;

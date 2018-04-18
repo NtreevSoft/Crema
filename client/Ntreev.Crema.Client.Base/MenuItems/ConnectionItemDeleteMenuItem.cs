@@ -20,56 +20,42 @@ using Ntreev.Crema.Client.Base.Services.ViewModels;
 using Ntreev.ModernUI.Framework;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ntreev.Crema.Client.Base.MenuItems.Services
+namespace Ntreev.Crema.Client.Base.MenuItems
 {
     [Export(typeof(IMenuItem))]
     [ParentType(typeof(ConnectionItemViewModel))]
-    [DefaultMenu]
-    class ConnectionItemLoginMenuItem : MenuItemBase
+    class ConnectionItemDeleteMenuItem : MenuItemBase
     {
-        private readonly CremaAppHostViewModel cremaAppHost;
+        [Import]
+        private Lazy<CremaAppHostViewModel> cremaAppHost = null;
 
-        [ImportingConstructor]
-        public ConnectionItemLoginMenuItem(CremaAppHostViewModel cremaAppHost)
+        public ConnectionItemDeleteMenuItem()
         {
-            this.cremaAppHost = cremaAppHost;
-            this.cremaAppHost.Opened += this.InvokeCanExecuteChangedEvent;
-            this.cremaAppHost.Closed += this.InvokeCanExecuteChangedEvent;
-            this.cremaAppHost.PropertyChanged += CremaAppHost_PropertyChanged;
-            this.DisplayName = Resources.MenuItem_Login;
-        }
-
-        private void CremaAppHost_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(this.cremaAppHost.ConnectionItem))
-            {
-                this.InvokeCanExecuteChangedEvent();
-            }
+            this.DisplayName = Resources.MenuItem_Delete;
         }
 
         protected override bool OnCanExecute(object parameter)
         {
-            if (this.cremaAppHost.IsOpened == true)
-                return false;
-            if (parameter is ConnectionItemViewModel connectionItem)
-            {
-                return this.cremaAppHost.ConnectionItem == connectionItem && this.cremaAppHost.CanLogin;
-            }
+            if (parameter is ConnectionItemViewModel item && item.IsTemporary == false)
+                return true;
             return false;
         }
 
         protected override void OnExecute(object parameter)
         {
-            if (parameter is ConnectionItemViewModel connectionItem && this.cremaAppHost.ConnectionItem == connectionItem)
+            if (parameter is ConnectionItemViewModel connectionItem)
             {
-                this.cremaAppHost.Login();
+                if (AppMessageBox.ConfirmDelete() == false)
+                    return;
+                this.CremaAppHost.RemoveConnectionItem(connectionItem);
             }
         }
+
+        private CremaAppHostViewModel CremaAppHost => this.cremaAppHost.Value;
     }
 }

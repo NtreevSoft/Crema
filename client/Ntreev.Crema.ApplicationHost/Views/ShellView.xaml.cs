@@ -128,10 +128,8 @@ namespace Ntreev.Crema.ApplicationHost.Views
         private void CremaHost_Opened(object sender, EventArgs e)
         {
             var userContext = this.cremaHost.GetService(typeof(IUserContext)) as IUserContext;
-
             userContext.UsersKicked += UserContext_UsersKicked;
             userContext.UsersBanChanged += UserContext_UsersBanChanged;
-            //userContext.MessageReceived += UserContext_MessageReceived;
 
             var logService = this.cremaHost.GetService(typeof(ILogService)) as ILogService;
             logService.RedirectionWriter = new LogWriter() { TextBox = this.logView, };
@@ -205,21 +203,6 @@ namespace Ntreev.Crema.ApplicationHost.Views
             }
         }
 
-        //private async void UserContext_MessageReceived(object sender, MessageEventArgs e)
-        //{
-        //    var userID = this.cremaHost.UserID;
-        //    if (e.TargetID == userID || e.UserID == userID)
-        //        return;
-
-        //    await this.Dispatcher.InvokeAsync(() =>
-        //    {
-        //        if (this.IsActive == false)
-        //        {
-        //            FlashWindowUtility.FlashWindow(this);
-        //        }
-        //    });
-        //}
-
         private void SetInputBindings(IMenuItem menuItem)
         {
             if (menuItem.InputGesture != null)
@@ -259,15 +242,11 @@ namespace Ntreev.Crema.ApplicationHost.Views
         private void ModernWindow_Activated(object sender, EventArgs e)
         {
             FlashWindowUtility.StopFlashingWindow(this);
-            //FlashWindowUtility.FlashWindow(this);
         }
 
         private void ModernWindow_Initialized(object sender, EventArgs e)
         {
-            this.Dispatcher.InvokeAsync(() =>
-            {
-                this.shell.Value.ServiceChanged += Value_ServiceChanged;
-            });
+            
         }
 
         private void ModernWindow_Loaded(object sender, RoutedEventArgs e)
@@ -278,11 +257,6 @@ namespace Ntreev.Crema.ApplicationHost.Views
                 this.logRow.Height = new GridLength(this.LogViewHeight);
             this.shell.Value.Closed += Shell_Closed;
             this.Dispatcher.InvokeAsync(this.ConnectWithSettings, DispatcherPriority.Background);
-        }
-
-        private void Value_ServiceChanged(object sender, EventArgs e)
-        {
-            //throw new NotImplementedException();
         }
 
         private void Shell_Closed(object sender, EventArgs e)
@@ -322,7 +296,7 @@ namespace Ntreev.Crema.ApplicationHost.Views
                 {
                     var ss = uri.UserInfo.Split(':');
                     var dataBaseName = uri.LocalPath.TrimStart(PathUtility.SeparatorChar);
-                    this.cremaAppHost.Login(uri.Authority, ss[0], StringUtility.ToSecureString(ss[1]), dataBaseName);
+                    this.cremaAppHost.Login(uri.Authority, ss[0], ss[1], dataBaseName);
                 }
                 catch (Exception e)
                 {
@@ -352,7 +326,6 @@ namespace Ntreev.Crema.ApplicationHost.Views
                     {
                         CremaLog.Error(e);
                     }
-
                 }
             }
         }
