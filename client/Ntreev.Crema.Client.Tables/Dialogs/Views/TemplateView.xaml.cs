@@ -61,7 +61,8 @@ namespace Ntreev.Crema.Client.Tables.Dialogs.Views
             this.Dispatcher.InvokeAsync(() =>
             {
                 var gridControl = sender as ModernDataGridControl;
-                gridControl.Columns["ID"].Visible = false;
+                if (gridControl.Columns[CremaSchema.ID] is ColumnBase column)
+                    column.Visible = false;
                 this.configs.Update(this);
                 if (this.Settings != null && Keyboard.IsKeyDown(Key.LeftShift) == false)
                     gridControl.LoadUserSettings(this.Settings, Xceed.Wpf.DataGrid.Settings.UserSettings.All);

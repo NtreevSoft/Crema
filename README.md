@@ -28,7 +28,7 @@
 ![Alt text](cremaserver.png)
 
     실행 예시
-    C:\Crema>cremaserver.exe run repo-path
+    cremaserver.exe run repo-path
 ### crema
 UI 기반 크레마 클라이언트 프로그램
 ![Alt text](crema.png)
@@ -36,17 +36,14 @@ UI 기반 크레마 클라이언트 프로그램
 콘솔 기반 크레마 클라이언트 프로그램
 
     실행 예시
-    C:\Crema>cremaconsole.exe connect localhost
-    C:\Crema>cremaconsole.exe run javascript.js
+    cremaconsole.exe connect localhost
+    cremaconsole.exe run javascript.js
 ### cremadev
 콘솔 기반 크레마 코드 및 바이너리 데이터 생성 프로그램
 
     실행 예시
-    C:\Crema>cremadev.exe get localhost outputPath
-    C:\Crema>cremadev.exe get localhost outputPath --lang ts
-
-### cremadevapp
-UI 기반 크레마 코드 및 바이너리 데이터 생성 프로그램
+    cremadev.exe get localhost outputPath
+    cremadev.exe get localhost outputPath --lang ts
 
 ## Development Environment
 * Microsoft Visual Studio Professional 2017
@@ -61,7 +58,8 @@ UI 기반 크레마 코드 및 바이너리 데이터 생성 프로그램
 * [Xceed Toolkit Plus for WPF](https://xceed.com/xceed-toolkit-plus-for-wpf/)
     * 라이선스 없을시에 crema, cremadev 빌드후 실행 불가능
 * [Newtonsoft.Json.Schema](https://www.newtonsoft.com/jsonschema)
-    * cremaserve 구동후 일부 기능 사용횟수 제한(자주 사용되지 않는 기능)
+    * cremaserver와 cremaconsole에서 사용
+    * 구동에는 문제가 없으나 일부 기능의 사용횟수가 제한됨(자주 사용되지 않는 기능)
 
 ## 실행 필수 요소
 * [svn](https://tortoisesvn.net/)
