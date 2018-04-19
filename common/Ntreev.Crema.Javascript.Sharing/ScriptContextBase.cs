@@ -110,10 +110,18 @@ namespace Ntreev.Crema.Javascript
 
                 foreach (var item in methodItems)
                 {
-                    sb.Append($"declare function {item.Name} ");
-                    sb.Append("(");
                     var methodInfo = item.Delegate.Method;
                     var parameters = methodInfo.GetParameters();
+
+                    if (methodInfo.GetCustomAttribute<ReturnParameterNameAttribute>() is ReturnParameterNameAttribute attr)
+                    {
+                        if (methodInfo.ReturnType == typeof(void))
+                            throw new InvalidOperationException($"{item.Name} does not have return parameter.");
+                        sb.AppendLine($"/** @returns {attr.Name} */");
+                    }
+                    
+                    sb.Append($"declare function {item.Name} ");
+                    sb.Append("(");
 
                     var argsString = string.Join(", ", methodInfo.GetParameters().Select(i => this.GetParameterString(i)));
                     sb.Append(argsString);

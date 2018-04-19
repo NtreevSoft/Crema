@@ -13,6 +13,17 @@
     <Compile Include="$(MSBuildThisFileDirectory)GenerateArgumentsCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GenerateDeclarationCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IScriptMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\CancelTypeEditMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\AddTypeMemberMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\DeleteTypeItemMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\EndTypeEditMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\BeginTypeCreateMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\IsDataBaseEnteredMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\DeleteTypeMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\MoveTypeItemMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\RenameTypeItemMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\MoveTypeMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\RenameTypeMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\ReadFileTextMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\ReadFileMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\WriteFileTextMethod.cs" />
@@ -66,6 +77,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Methods\SendMessageMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataBaseScriptMethodBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IScriptMethodContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ReturnParameterNameAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ScriptMethodBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\GetUserListMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\GetDataBaseListMethod.cs" />
