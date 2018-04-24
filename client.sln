@@ -508,7 +508,7 @@ Global
 		{99DAB5B1-1EB8-462C-8BA0-837F2A45CC52} = {6BD932D9-A567-4BC3-88B0-B7950B6002AD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {3A345B68-213C-4BA4-8420-8419E3900B67}
 		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.ExceptionHandling.6.0.1304.0\lib\NET45
+		SolutionGuid = {3A345B68-213C-4BA4-8420-8419E3900B67}
 	EndGlobalSection
 EndGlobal
