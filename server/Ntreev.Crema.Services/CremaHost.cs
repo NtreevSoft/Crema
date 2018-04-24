@@ -51,11 +51,13 @@ namespace Ntreev.Crema.Services
         private const string workingString = "working";
         private const string trunkString = "trunk";
         private const string tagsString = "tags";
+        private const string branchesString = "branches";
 
         private readonly string basePath;
         private readonly string repositoryPath;
         private readonly string trunkPath;
         private readonly string tagsPath;
+        private readonly string branchesPath;
         private readonly string workingPath;
 
         private CremaConfiguration configs;
@@ -87,6 +89,7 @@ namespace Ntreev.Crema.Services
             this.repositoryPath = Path.Combine(settings.BasePath, settings.RepositoryName);
             this.trunkPath = Path.Combine(this.repositoryPath, trunkString);
             this.tagsPath = Path.Combine(this.repositoryPath, tagsString);
+            this.branchesPath = Path.Combine(this.repositoryPath, branchesString);
             this.workingPath = Path.Combine(this.basePath, workingString);
             this.repositoryProvider = repoProviders.First(item => item.Name == this.settings.RepositoryModule);
             this.repositoryProvider.ValidateRepository(this.basePath, this.repositoryPath);
@@ -336,6 +339,11 @@ namespace Ntreev.Crema.Services
         public string TagsPath
         {
             get { return this.tagsPath; }
+        }
+
+        public string BranchesPath
+        {
+            get { return this.branchesPath; }
         }
 
         public bool IsOpened

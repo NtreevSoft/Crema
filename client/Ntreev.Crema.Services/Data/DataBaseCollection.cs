@@ -142,7 +142,7 @@ namespace Ntreev.Crema.Services.Data
             var dataBase = new DataBase(this.cremaHost, dataBaseInfo);
             this.AddBase(dataBase.Name, dataBase);
             authentication.SignatureDate = dataBaseInfo.CreationInfo;
-            this.InvokeItemsCreateEvent(authentication, new DataBase[] { dataBase });
+            this.InvokeItemsCreateEvent(authentication, new DataBase[] { dataBase }, comment);
             return dataBase;
         }
 
@@ -237,12 +237,13 @@ namespace Ntreev.Crema.Services.Data
             };
         }
 
-        public void InvokeItemsCreateEvent(Authentication authentication, IDataBase[] items)
+        public void InvokeItemsCreateEvent(Authentication authentication, IDataBase[] items, string comment)
         {
             var args = items.Select(item => (object)item.DataBaseInfo).ToArray();
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsCreateEvent), items);
+            var commentMessage = EventMessageBuilder.CreateDataBase(authentication, items) + Environment.NewLine + comment;
             this.CremaHost.Debug(eventLog);
-            this.CremaHost.Info(EventMessageBuilder.CreateDataBase(authentication, items));
+            this.CremaHost.Info(commentMessage);
             this.OnItemsCreated(new ItemsCreatedEventArgs<IDataBase>(authentication, items, args, null));
         }
 

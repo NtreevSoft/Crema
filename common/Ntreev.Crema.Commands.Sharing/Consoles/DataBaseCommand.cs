@@ -71,12 +71,13 @@ namespace Ntreev.Crema.Commands.Consoles
         }
 
         [CommandMethod]
-        public void Create(string dataBaseName, string comment)
+        [CommandMethodProperty(nameof(Comment))]
+        public void Create(string dataBaseName)
         {
             this.CremaHost.Dispatcher.Invoke(() =>
             {
                 var authentication = this.CommandContext.GetAuthentication(this);
-                this.CremaHost.DataBases.AddNewDataBase(authentication, dataBaseName, comment);
+                this.CremaHost.DataBases.AddNewDataBase(authentication, dataBaseName, this.Comment);
             });
         }
 
@@ -121,10 +122,8 @@ namespace Ntreev.Crema.Commands.Consoles
                 }
                 finally
                 {
-                    this.Out.WriteLine();
                     timer.Stop();
                 }
-
             });
         }
 

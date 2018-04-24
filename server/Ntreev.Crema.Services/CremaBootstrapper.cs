@@ -46,6 +46,7 @@ namespace Ntreev.Crema.Services
         private const string defaultString = "default";
         private const string trunkString = "trunk";
         private const string tagsString = "tags";
+        private const string branchesString = "branches";
         private CremaSettings settings = new CremaSettings();
         private CompositionContainer container;
 
@@ -81,6 +82,7 @@ namespace Ntreev.Crema.Services
 
                 DirectoryUtility.Create(repositoryPath);
                 DirectoryUtility.Prepare(repositoryPath, tagsString);
+                DirectoryUtility.Prepare(repositoryPath, branchesString);
                 DirectoryUtility.Prepare(repositoryPath, trunkString);
                 DirectoryUtility.Prepare(repositoryPath, trunkString, CremaSchema.TypeDirectory);
                 DirectoryUtility.Prepare(repositoryPath, trunkString, CremaSchema.TableDirectory);
@@ -108,9 +110,14 @@ namespace Ntreev.Crema.Services
             var repositoryPath = Path.Combine(basePath, repositoryName);
             var trunkPath = Path.Combine(repositoryPath, trunkString);
             var tagsPath = Path.Combine(repositoryPath, tagsString);
+            var branchesPath = Path.Combine(repositoryPath, branchesString);
 
             CremaDataSet.ValidateDirectory(trunkPath);
             foreach (var item in Directory.GetDirectories(tagsPath))
+            {
+                CremaDataSet.ValidateDirectory(item);
+            }
+            foreach (var item in Directory.GetDirectories(branchesPath))
             {
                 CremaDataSet.ValidateDirectory(item);
             }
@@ -212,7 +219,11 @@ namespace Ntreev.Crema.Services
         public string BasePath
         {
             get { return this.settings.BasePath; }
-            set { this.settings.BasePath = ToAbsolutePath(value); }
+            set
+            {
+                var fullpath = Path.GetFullPath(value);
+                this.settings.BasePath = PathUtility.GetCaseSensitivePath(fullpath);
+            }
         }
 
         public string RepositoryName
@@ -342,18 +353,6 @@ namespace Ntreev.Crema.Services
             CremaLog.Debug("Initialize.");
             this.OnInitialize();
             CremaLog.Debug("Initialized.");
-        }
-
-        private static string ToAbsolutePath(string path)
-        {
-            var uri = new Uri(path, UriKind.RelativeOrAbsolute);
-            if (uri.IsAbsoluteUri == false)
-            {
-                var directoryInfo = new DirectoryInfo(path);
-                return directoryInfo.FullName;
-            }
-
-            return uri.LocalPath;
         }
     }
 }
