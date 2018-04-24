@@ -10,8 +10,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Consoles\GenerateDeclarationCommand.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)GenerateArgumentsCommand.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)GenerateDeclarationCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IScriptMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\CancelTypeEditMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\AddTypeMemberMethod.cs" />

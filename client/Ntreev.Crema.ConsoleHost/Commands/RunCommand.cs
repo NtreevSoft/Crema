@@ -54,6 +54,7 @@ namespace Ntreev.Crema.ConsoleHost.Commands
         }
 
         [CommandProperty(IsRequired = true)]
+        [CommandPropertyTrigger(nameof(List), false)]
         [DefaultValue("")]
         public string ScriptPath
         {
@@ -61,16 +62,18 @@ namespace Ntreev.Crema.ConsoleHost.Commands
             set;
         }
 
-        [CommandProperty("entry")]
-        [DefaultValue("")]
-        public string ScriptEntry
+        [CommandProperty("list", 'l')]
+        [CommandPropertyTrigger(nameof(ScriptPath), "")]
+        [DefaultValue(false)]
+        public bool List
         {
-            get;
-            set;
+            get; set;
         }
 
-        [CommandProperty]
-        public bool Compile
+        [CommandProperty("entry")]
+        [CommandPropertyTrigger(nameof(List), false)]
+        [DefaultValue("")]
+        public string ScriptEntry
         {
             get;
             set;
@@ -99,19 +102,15 @@ namespace Ntreev.Crema.ConsoleHost.Commands
             CremaLog.Verbose = LogVerbose.Fatal;
             this.cremaHost.Verbose = LogVerbose.Fatal;
             this.application.Culture = this.Culture;
-            if (File.Exists(this.ScriptPath) == false)
-                throw new FileNotFoundException(this.ScriptPath);
-            if (this.Compile == true)
+
+            if (this.List == true)
             {
-                var tempPath = PathUtility.GetTempFileName();
-                var args = $"\"{this.ScriptPath}\" --outFile {tempPath}";
-                var props = this.GetProperties();
-                ExecuteCmd("tsc", args);
-                var script = File.ReadAllText(tempPath);
-                this.ScriptContext.Run(script, this.ScriptEntry, this.GetProperties(), null);
+                Console.WriteLine(this.ScriptContext.GenerateDeclaration(this.GetArgumentTypes()));
             }
             else
             {
+                if (File.Exists(this.ScriptPath) == false)
+                    throw new FileNotFoundException(this.ScriptPath);
                 this.ScriptContext.RunFromFile(this.ScriptPath, this.ScriptEntry, this.GetProperties(), null);
             }
         }
@@ -182,6 +181,44 @@ namespace Ntreev.Crema.ConsoleHost.Commands
         private IDictionary<string, object> GetProperties()
         {
             return CommandStringUtility.ArgumentsToDictionary(this.Arguments);
+        }
+
+        private Dictionary<string, Type> GetArgumentTypes()
+        {
+            var properties = new Dictionary<string, Type>(this.Arguments.Length);
+            foreach (var item in this.Arguments)
+            {
+                if (CommandStringUtility.TryGetKeyValue(item, out var key, out var value) == true)
+                {
+                    var typeName = value;
+                    if (CommandStringUtility.IsWrappedOfQuote(value))
+                    {
+                        value = CommandStringUtility.TrimQuot(value);
+                    }
+
+                    if (value == "number")
+                    {
+                        properties.Add(key, typeof(decimal));
+                    }
+                    else if (value == "boolean")
+                    {
+                        properties.Add(key, typeof(bool));
+                    }
+                    else if (value == "string")
+                    {
+                        properties.Add(key, typeof(string));
+                    }
+                    else
+                    {
+                        throw new ArgumentException(typeName);
+                    }
+                }
+                else
+                {
+                    throw new ArgumentException(item);
+                }
+            }
+            return properties;
         }
 
         public bool Parse(string key, string value)

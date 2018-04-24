@@ -42,8 +42,28 @@ namespace Ntreev.Crema.Javascript.Consoles
         }
 
         [CommandProperty(IsRequired = true)]
+        [CommandPropertyTrigger(nameof(Filename), "")]
+        [CommandPropertyTrigger(nameof(List), false)]
         [DefaultValue("")]
         public string Scripts
+        {
+            get; set;
+        }
+
+        [CommandProperty()]
+        [DefaultValue("")]
+        [CommandPropertyTrigger(nameof(Scripts), "")]
+        [CommandPropertyTrigger(nameof(List), false)]
+        public string Filename
+        {
+            get; set;
+        }
+
+        [CommandProperty("list", 'l')]
+        [CommandPropertyTrigger(nameof(Scripts), "")]
+        [CommandPropertyTrigger(nameof(Filename), "")]
+        [DefaultValue(false)]
+        public bool List
         {
             get; set;
         }
@@ -63,11 +83,23 @@ namespace Ntreev.Crema.Javascript.Consoles
 
         protected override void OnExecute()
         {
-            var authentication = this.CommandContext.GetAuthenticationInternal(this);
-            if (this.IsAsync == false)
-                this.ScriptContext.RunInternal(this.Scripts, authentication, this.GetProperties());
+            if (this.List == true)
+            {
+                this.Out.WriteLine(this.ScriptContext.GenerateDeclaration(ScriptContextBase.GetArgumentTypes(this.Arguments)));
+            }
             else
-                this.ScriptContext.RunAsyncInternal(this.Scripts, authentication, this.GetProperties());
+            {
+                if (this.Filename != string.Empty)
+                {
+                    this.Scripts = File.ReadAllText(this.Filename);
+                }
+
+                var authentication = this.CommandContext.GetAuthenticationInternal(this);
+                if (this.IsAsync == false)
+                    this.ScriptContext.RunInternal(this.Scripts, authentication, this.GetProperties());
+                else
+                    this.ScriptContext.RunAsyncInternal(this.Scripts, authentication, this.GetProperties());
+            }
         }
 
         private IDictionary<string, object> GetProperties()

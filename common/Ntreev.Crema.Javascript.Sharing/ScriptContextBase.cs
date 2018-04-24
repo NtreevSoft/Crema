@@ -22,6 +22,7 @@ using Ntreev.Crema.Commands;
 using Ntreev.Crema.Commands.Consoles;
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services;
+using Ntreev.Library.Commands;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -47,6 +48,44 @@ namespace Ntreev.Crema.Javascript
             this.cremaHost = cremaHost;
             this.cremaHost.Opened += CremaHost_Opened;
             this.cremaHost.Closed += CremaHost_Closed;
+        }
+
+        public static Dictionary<string, Type> GetArgumentTypes(string[] arguments)
+        {
+            var properties = new Dictionary<string, Type>(arguments.Length);
+            foreach (var item in arguments)
+            {
+                if (CommandStringUtility.TryGetKeyValue(item, out var key, out var value) == true)
+                {
+                    var typeName = value;
+                    if (CommandStringUtility.IsWrappedOfQuote(value))
+                    {
+                        value = CommandStringUtility.TrimQuot(value);
+                    }
+
+                    if (value == "number")
+                    {
+                        properties.Add(key, typeof(decimal));
+                    }
+                    else if (value == "boolean")
+                    {
+                        properties.Add(key, typeof(bool));
+                    }
+                    else if (value == "string")
+                    {
+                        properties.Add(key, typeof(string));
+                    }
+                    else
+                    {
+                        throw new ArgumentException(typeName);
+                    }
+                }
+                else
+                {
+                    throw new ArgumentException(item);
+                }
+            }
+            return properties;
         }
 
         public void Run(string script, string functionName, IDictionary<string, object> properties, object state)
@@ -99,12 +138,25 @@ namespace Ntreev.Crema.Javascript
 
         public string GenerateDeclaration()
         {
+            return this.GenerateDeclaration(new Dictionary<string, Type>());
+        }
+
+        public string GenerateDeclaration(IDictionary<string, Type> properties)
+        {
             var sb = new StringBuilder();
             sb.AppendLine($"// declaration for {this.name}");
 
             var methodItems = this.CreateMethods().OrderBy(item => item.Name);
             try
             {
+                if (properties.Any() == true)
+                    sb.AppendLine();
+
+                foreach (var item in properties)
+                {
+                    sb.AppendLine($"declare var {item.Key}: {this.GetTypeString(item.Value)}; ");
+                }
+
                 if (methodItems.Any() == true)
                     sb.AppendLine();
 

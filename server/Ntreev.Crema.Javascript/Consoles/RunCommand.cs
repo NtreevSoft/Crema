@@ -46,37 +46,65 @@ namespace Ntreev.Crema.Javascript.Consoles
         }
 
         [CommandProperty(IsRequired = true)]
+        [CommandPropertyTrigger(nameof(Filename), "")]
+        [CommandPropertyTrigger(nameof(List), false)]
         [DefaultValue("")]
         public string Scripts
         {
             get; set;
         }
 
-        [CommandProperty]
+        [CommandProperty()]
         [DefaultValue("")]
+        [CommandPropertyTrigger(nameof(Scripts), "")]
+        [CommandPropertyTrigger(nameof(List), false)]
         public string Filename
         {
             get; set;
         }
 
+        [CommandProperty("list", 'l')]
+        [CommandPropertyTrigger(nameof(Scripts), "")]
+        [CommandPropertyTrigger(nameof(Filename), "")]
+        [DefaultValue(false)]
+        public bool List
+        {
+            get; set;
+        }
+
         [CommandProperty("async")]
+        [CommandPropertyTrigger(nameof(List), false)]
         public bool IsAsync
         {
             get; set;
         }
 
+        [CommandPropertyArray]
+        public string[] Arguments
+        {
+            get;
+            set;
+        }
+
         protected override void OnExecute()
         {
-            if (this.Scripts == string.Empty && this.Filename != string.Empty)
+            if (this.List == true)
             {
-                this.Scripts = File.ReadAllText(this.Filename);
+                this.Out.WriteLine(this.ScriptContext.GenerateDeclaration(ScriptContextBase.GetArgumentTypes(this.Arguments)));
             }
-
-            var authentication = this.CommandContext.GetAuthenticationInternal(this);
-            if (this.IsAsync == false)
-                this.ScriptContext.RunInternal(this.Scripts, authentication);
             else
-                this.ScriptContext.RunAsyncInternal(this.Scripts, authentication);
+            {
+                if (this.Filename != string.Empty)
+                {
+                    this.Scripts = File.ReadAllText(this.Filename);
+                }
+
+                var authentication = this.CommandContext.GetAuthenticationInternal(this);
+                if (this.IsAsync == false)
+                    this.ScriptContext.RunInternal(this.Scripts, authentication);
+                else
+                    this.ScriptContext.RunAsyncInternal(this.Scripts, authentication);
+            }
         }
 
         private ScriptContext ScriptContext => this.scriptContext.Value;
