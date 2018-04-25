@@ -177,6 +177,21 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ResultBaseOfArrayOfLogInfoq8erDhHE" nillable="true" type="tns:ResultBaseOfArrayOfLogInfoq8erDhHE" />
+  <xs:complexType name="ResultBaseOfstring">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ResultBaseOf{0}{#}" Namespace="http://schemas.ntreev.com" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="string" Namespace="http://www.w3.org/2001/XMLSchema">
+          </GenericParameter>
+        </GenericType>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Xml" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ResultBaseOfstring" nillable="true" type="tns:ResultBaseOfstring" />
   <xs:complexType name="SignatureDate">
     <xs:annotation>
       <xs:appinfo>

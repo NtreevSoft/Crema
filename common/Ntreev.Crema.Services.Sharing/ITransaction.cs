@@ -22,10 +22,12 @@ using System.Text;
 
 namespace Ntreev.Crema.Services
 {
-    public interface ITransaction
+    public interface ITransaction : IDispatcherObject
     {
         void Commit(Authentication authentication);
 
         void Rollback(Authentication authentication);
+
+        Guid ID { get; }
     }
 }

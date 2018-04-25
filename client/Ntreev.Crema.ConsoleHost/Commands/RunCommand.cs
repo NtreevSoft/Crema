@@ -105,7 +105,7 @@ namespace Ntreev.Crema.ConsoleHost.Commands
 
             if (this.List == true)
             {
-                Console.WriteLine(this.ScriptContext.GenerateDeclaration(this.GetArgumentTypes()));
+                Console.Write(this.ScriptContext.GenerateDeclaration(this.GetArgumentTypes()));
             }
             else
             {

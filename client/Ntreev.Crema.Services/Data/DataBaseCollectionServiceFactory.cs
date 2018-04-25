@@ -59,7 +59,7 @@ namespace Ntreev.Crema.Services.Data
             throw new NotImplementedException();
         }
 
-        void IDataBaseCollectionServiceCallback.OnDataBasesCreated(SignatureDate signatureDate, string[] dataBaseNames, DataBaseInfo[] dataBaseInfos)
+        void IDataBaseCollectionServiceCallback.OnDataBasesCreated(SignatureDate signatureDate, string[] dataBaseNames, DataBaseInfo[] dataBaseInfos, string comment)
         {
             throw new NotImplementedException();
         }

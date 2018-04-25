@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Services
 {
-    public interface IDataBase : IAccessible, IPermission, ILockable, IServiceProvider, IDispatcherObject
+    public interface IDataBase : IAccessible, IPermission, ILockable, IServiceProvider, IDispatcherObject, IExtendedProperties
     {
         void Load(Authentication authentication);
 

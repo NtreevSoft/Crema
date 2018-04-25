@@ -26,6 +26,7 @@ using Ntreev.Library.Commands;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
@@ -109,6 +110,19 @@ namespace Ntreev.Crema.Javascript
                 item.Context = context;
                 engine.SetValue(item.Name, item.Delegate);
             }
+
+            var enumTypes = this.GetEnums(methodItems);
+            foreach (var item in enumTypes)
+            {
+                var names = Enum.GetNames(item);
+                var dictionary = new Dictionary<string, decimal>(names.Length);
+                foreach (var name in names)
+                {
+                    dictionary.Add(name, Convert.ToDecimal(Enum.Parse(item, name)));
+                }
+                engine.SetValue(item.Name, dictionary);
+            }
+
             try
             {
                 engine.Execute(script);
@@ -145,42 +159,14 @@ namespace Ntreev.Crema.Javascript
         {
             var sb = new StringBuilder();
             sb.AppendLine($"// declaration for {this.name}");
+            sb.AppendLine();
 
             var methodItems = this.CreateMethods().OrderBy(item => item.Name);
             try
             {
-                if (properties.Any() == true)
-                    sb.AppendLine();
-
-                foreach (var item in properties)
-                {
-                    sb.AppendLine($"declare var {item.Key}: {this.GetTypeString(item.Value)}; ");
-                }
-
-                if (methodItems.Any() == true)
-                    sb.AppendLine();
-
-                foreach (var item in methodItems)
-                {
-                    var methodInfo = item.Delegate.Method;
-                    var parameters = methodInfo.GetParameters();
-
-                    if (methodInfo.GetCustomAttribute<ReturnParameterNameAttribute>() is ReturnParameterNameAttribute attr)
-                    {
-                        if (methodInfo.ReturnType == typeof(void))
-                            throw new InvalidOperationException($"{item.Name} does not have return parameter.");
-                        sb.AppendLine($"/** @returns {attr.Name} */");
-                    }
-                    
-                    sb.Append($"declare function {item.Name} ");
-                    sb.Append("(");
-
-                    var argsString = string.Join(", ", methodInfo.GetParameters().Select(i => this.GetParameterString(i)));
-                    sb.Append(argsString);
-                    sb.Append($"): {this.GetTypeString(methodInfo.ReturnType)};");
-
-                    sb.AppendLine();
-                }
+                this.WriteProperties(sb, properties);
+                this.WriteEnums(sb, methodItems);
+                this.WriteMethods(sb, methodItems);
 
                 return sb.ToString();
             }
@@ -291,7 +277,7 @@ namespace Ntreev.Crema.Javascript
         {
             if (IsNullableType(p.ParameterType) == true)
             {
-                return $"{p.Name}?: {this.GetTypeString(p.ParameterType)}";
+                return $"{p.Name}?: {this.GetTypeString(p.ParameterType.GetGenericArguments().First())}";
             }
             else
             {
@@ -299,10 +285,24 @@ namespace Ntreev.Crema.Javascript
             }
         }
 
+        private string GetNameTypeString(string name, Type type)
+        {
+            if (IsNullableType(type) == true)
+            {
+                return $"{name}?: {this.GetTypeString(type.GetGenericArguments().First())}";
+            }
+            else
+            {
+                return $"{name}: {this.GetTypeString(type)}";
+            }
+        }
+
         private string GetTypeString(Type type)
         {
             if (type.IsArray == true)
                 return this.GetTypeString(type.GetElementType()) + "[]";
+            else if (type.IsEnum == true)
+                return type.Name;
             else if (type == typeof(object))
                 return "any";
             else if (type == typeof(bool))
@@ -325,6 +325,17 @@ namespace Ntreev.Crema.Javascript
                 return "number";
             else if (type == typeof(decimal))
                 return "number";
+            else if (IsActionType(type))
+            {
+                var sb = new StringBuilder();
+                var argList = new List<string>();
+                for (var i = 0; i < type.GetGenericArguments().Length; i++)
+                {
+                    argList.Add(this.GetNameTypeString($"e{i + 1}", type.GetGenericArguments()[i]));
+                }
+
+                return $"({string.Join(", ", argList)}) => {this.GetTypeString(typeof(void))}";
+            }
             else if (IsDictionaryType(type))
             {
                 var keyType = type.GetGenericArguments()[0];
@@ -334,14 +345,133 @@ namespace Ntreev.Crema.Javascript
             return "number";
         }
 
+        private void WriteProperties(StringBuilder sb, IDictionary<string, Type> properties)
+        {
+            foreach (var item in properties)
+            {
+                sb.AppendLine($"declare var {item.Key}: {this.GetTypeString(item.Value)}; ");
+            }
+
+            if (properties.Any() == true)
+                sb.AppendLine();
+        }
+
+        private void WriteEnums(StringBuilder sb, IEnumerable<IScriptMethod> methodItems)
+        {
+            var enumTypes = this.GetEnums(methodItems).ToArray();
+
+            foreach (var item in enumTypes)
+            {
+                sb.AppendLine($"declare enum {item.Name} {{");
+
+                var index = 0;
+                foreach (var name in Enum.GetNames(item))
+                {
+                    if (index > 0)
+                        sb.AppendLine(",");
+                    sb.Append($"    {name} = {Convert.ToDecimal(Enum.Parse(item, name))}");
+                    index++;
+                }
+                sb.AppendLine();
+                sb.AppendLine("}");
+            }
+
+            if (enumTypes.Any())
+                sb.AppendLine();
+        }
+
+        private void WriteMethods(StringBuilder sb, IEnumerable<IScriptMethod> methodItems)
+        {
+            var query = from item in methodItems
+                        group item by this.GetCategory(item) into groupItem
+                        orderby groupItem.Key
+                        select groupItem;
+
+            var comparer = new Comparer();
+            foreach (var groupItem in query.OrderBy(i => i.Key, comparer))
+            {
+                sb.AppendLine($"// {groupItem.Key}");
+                foreach (var item in groupItem)
+                {
+                    var methodInfo = item.Delegate.Method;
+                    var parameters = methodInfo.GetParameters();
+
+                    if (methodInfo.GetCustomAttribute<ReturnParameterNameAttribute>() is ReturnParameterNameAttribute attr)
+                    {
+                        if (methodInfo.ReturnType == typeof(void))
+                            throw new InvalidOperationException($"{item.Name} does not have return parameter.");
+                        sb.AppendLine($"/** @returns {attr.Name} */");
+                    }
+
+                    foreach (var parameter in methodInfo.GetParameters())
+                    {
+                        if (parameter.GetCustomAttribute<DescriptionAttribute>() is DescriptionAttribute descAttr)
+                        {
+                            sb.AppendLine($"/** @param {this.GetTypeString(parameter.ParameterType)} {descAttr.Description} */");
+                        }
+                    }
+
+                    sb.Append($"declare function {item.Name} ");
+                    sb.Append("(");
+
+                    var argsString = string.Join(", ", methodInfo.GetParameters().Select(i => this.GetParameterString(i)));
+                    sb.Append(argsString);
+                    sb.Append($"): {this.GetTypeString(methodInfo.ReturnType)};");
+
+                    sb.AppendLine();
+                }
+                sb.AppendLine();
+            }
+        }
+
+        private string GetCategory(object item)
+        {
+            if (Attribute.GetCustomAttribute(item.GetType(), typeof(CategoryAttribute), false) is CategoryAttribute categoryAttr)
+            {
+                if (string.IsNullOrEmpty(categoryAttr.Category) == true)
+                    return CategoryAttribute.Default.Category;
+                return categoryAttr.Category;
+            }
+            return CategoryAttribute.Default.Category;
+        }
+
+        private IEnumerable<Type> GetEnums(IEnumerable<IScriptMethod> methodItems)
+        {
+            var query = from methodItem in methodItems
+                        let methodInfo = methodItem.Delegate.Method
+                        from parameterInfo in methodInfo.GetParameters()
+                        where parameterInfo.ParameterType.IsEnum
+                        select parameterInfo.ParameterType;
+            return query.Distinct();
+        }
+
         internal static bool IsDictionaryType(Type type)
         {
             return type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(IDictionary<,>) || type.GetGenericTypeDefinition() == typeof(Dictionary<,>));
+        }
+
+        internal static bool IsActionType(Type type)
+        {
+            return type.Name.StartsWith("Action`");
         }
 
         internal static bool IsNullableType(Type type)
         {
             return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
+
+        #region classes
+
+        class Comparer : IComparer<string>
+        {
+            public int Compare(string x, string y)
+            {
+                var x1 = x == CategoryAttribute.Default.Category ? string.Empty : x;
+                var y1 = y == CategoryAttribute.Default.Category ? string.Empty : y;
+                return x1.CompareTo(y1);
+            }
+        }
+
+        #endregion
     }
 }

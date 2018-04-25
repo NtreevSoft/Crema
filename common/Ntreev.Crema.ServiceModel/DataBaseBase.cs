@@ -30,6 +30,7 @@ using Ntreev.Crema.Data.Xml.Schema;
 using System.ComponentModel;
 using Ntreev.Library;
 using System.Text.RegularExpressions;
+using System.Data;
 
 namespace Ntreev.Crema.ServiceModel
 {
@@ -51,6 +52,8 @@ namespace Ntreev.Crema.ServiceModel
 
         private DataBaseInfo dataBaseInfo;
         private DataBaseState dataBaseState;
+
+        private PropertyCollection extendedProperties;
 
         protected DataBaseBase()
         {
@@ -158,6 +161,19 @@ namespace Ntreev.Crema.ServiceModel
             {
                 this.dataBaseState = value;
                 this.OnDataBaseStateChanged(EventArgs.Empty);
+            }
+        }
+
+        [Browsable(false)]
+        public PropertyCollection ExtendedProperties
+        {
+            get
+            {
+                if (this.extendedProperties == null)
+                {
+                    this.extendedProperties = new PropertyCollection();
+                }
+                return this.extendedProperties;
             }
         }
 

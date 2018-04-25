@@ -19,6 +19,7 @@ using Ntreev.Crema.Services;
 using Ntreev.Library;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
@@ -28,6 +29,7 @@ namespace Ntreev.Crema.Javascript.Methods
 {
     [Export(typeof(IScriptMethod))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
+    [Category(nameof(User))]
     class LogoutMethod : ScriptMethodBase
     {
         protected override Delegate CreateDelegate()

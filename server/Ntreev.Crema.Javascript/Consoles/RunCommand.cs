@@ -90,20 +90,29 @@ namespace Ntreev.Crema.Javascript.Consoles
         {
             if (this.List == true)
             {
-                this.Out.WriteLine(this.ScriptContext.GenerateDeclaration(ScriptContextBase.GetArgumentTypes(this.Arguments)));
+                this.Out.Write(this.ScriptContext.GenerateDeclaration(ScriptContextBase.GetArgumentTypes(this.Arguments)));
             }
             else
             {
-                if (this.Filename != string.Empty)
+                var oldPath = Directory.GetCurrentDirectory();
+                try
                 {
-                    this.Scripts = File.ReadAllText(this.Filename);
-                }
+                    Directory.SetCurrentDirectory(this.CommandContext.BaseDirectory);
+                    if (this.Filename != string.Empty)
+                    {
+                        this.Scripts = File.ReadAllText(this.Filename);
+                    }
 
-                var authentication = this.CommandContext.GetAuthenticationInternal(this);
-                if (this.IsAsync == false)
-                    this.ScriptContext.RunInternal(this.Scripts, authentication);
-                else
-                    this.ScriptContext.RunAsyncInternal(this.Scripts, authentication);
+                    var authentication = this.CommandContext.GetAuthenticationInternal(this);
+                    if (this.IsAsync == false)
+                        this.ScriptContext.RunInternal(this.Scripts, authentication);
+                    else
+                        this.ScriptContext.RunAsyncInternal(this.Scripts, authentication);
+                }
+                finally
+                {
+                    Directory.SetCurrentDirectory(oldPath);
+                }
             }
         }
 

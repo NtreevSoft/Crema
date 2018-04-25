@@ -40,6 +40,7 @@ namespace Ntreev.Crema.SvnModule
         private readonly string transactionPath;
         private readonly ILogService logService;
         private readonly Dictionary<string, string> transactions = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> transactionMessages = new Dictionary<string, string>();
         private bool needToUpdate;
         private Uri repositoryRoot;
         private long revision;
@@ -104,15 +105,18 @@ namespace Ntreev.Crema.SvnModule
         {
             this.logService?.Debug("repository begin transaction \"{0}\" \"{1}\"", path, name);
             this.transactions.Add(path, name);
+            this.transactionMessages.Add(path, string.Empty);
         }
 
         public void EndTransaction(string path)
         {
             this.logService?.Debug("repository end transaction \"{0}\"", path);
             var patchPath = Path.Combine(this.transactionPath, this.transactions[path] + patchExtension);
+            var message = this.transactionMessages[path];
             this.transactions.Remove(path);
-            this.Run("patch", patchPath.WrapQuot());
-            this.Commit(path, "transaction", new LogPropertyInfo[] { });
+            this.transactionMessages.Remove(path);
+            this.Run("patch", patchPath.WrapQuot(), path.WrapQuot());
+            this.Commit(path, "Transaction" + Environment.NewLine + message, new LogPropertyInfo[] { });
             FileUtility.Delete(patchPath);
         }
 
@@ -121,8 +125,9 @@ namespace Ntreev.Crema.SvnModule
             this.logService?.Debug("repository cancel transaction \"{0}\"", path);
             var patchPath = Path.Combine(this.transactionPath, this.transactions[path] + patchExtension);
             this.transactions.Remove(path);
-            DirectoryUtility.Delete(path);
-            SvnClientHost.Run(path.WrapQuot(), "-R");
+            this.transactionMessages.Remove(path);
+            //DirectoryUtility.Delete(path);
+            SvnClientHost.Run("revert", path.WrapQuot(), "-R");
             FileUtility.Delete(patchPath);
         }
 
@@ -131,8 +136,9 @@ namespace Ntreev.Crema.SvnModule
             if (this.transactions.ContainsKey(path) == true)
             {
                 var patchPath = Path.Combine(this.transactionPath, this.transactions[path] + ".patch");
-                var text = this.Run("diff", path.WrapQuot(), "--patch-compatiable");
+                var text = this.Run("diff", path.WrapQuot(), "--patch-compatible");
                 FileUtility.WriteAllText(text, patchPath);
+                this.transactionMessages[path] = this.transactionMessages[path] + message + Environment.NewLine;
                 return DateTime.UtcNow;
             }
 
@@ -326,7 +332,7 @@ namespace Ntreev.Crema.SvnModule
 
             if (oldPath == string.Empty)
                 return;
-            
+
             foreach (var item in log.ChangedPaths)
             {
                 if (item.Action == "D" && item.Path == oldPath)
@@ -337,7 +343,5 @@ namespace Ntreev.Crema.SvnModule
                 }
             }
         }
-
-        
     }
 }
