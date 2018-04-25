@@ -203,7 +203,7 @@ namespace Ntreev.Crema.Services.Data
             var newDataBase = new DataBase(this.cremaHost, dataBaseInfo);
             this.AddBase(newDataBase.Name, newDataBase);
             authentication.SignatureDate = dataBaseInfo.CreationInfo;
-            this.InvokeItemsCreateEvent(authentication, new DataBase[] { newDataBase });
+            this.InvokeItemsCreateEvent(authentication, new DataBase[] { newDataBase }, comment);
             return newDataBase;
         }
 
@@ -244,7 +244,7 @@ namespace Ntreev.Crema.Services.Data
             var commentMessage = EventMessageBuilder.CreateDataBase(authentication, items) + Environment.NewLine + comment;
             this.CremaHost.Debug(eventLog);
             this.CremaHost.Info(commentMessage);
-            this.OnItemsCreated(new ItemsCreatedEventArgs<IDataBase>(authentication, items, args, null));
+            this.OnItemsCreated(new ItemsCreatedEventArgs<IDataBase>(authentication, items, args, comment));
         }
 
         public void InvokeItemsRenamedEvent(Authentication authentication, IDataBase[] items, string[] oldNames)
@@ -451,6 +451,11 @@ namespace Ntreev.Crema.Services.Data
             get { return this.cremaHost; }
         }
 
+        public IDataBaseCollectionService Service
+        {
+            get { return this.service; }
+        }
+
         public new int Count
         {
             get
@@ -557,7 +562,6 @@ namespace Ntreev.Crema.Services.Data
                 this.itemsAuthenticationLeft -= value;
             }
         }
-
 
         public event ItemsEventHandler<IDataBase> ItemsInfoChanged
         {
@@ -747,7 +751,7 @@ namespace Ntreev.Crema.Services.Data
             }, nameof(IDataBaseCollectionServiceCallback.OnServiceClosed));
         }
 
-        void IDataBaseCollectionServiceCallback.OnDataBasesCreated(SignatureDate signatureDate, string[] dataBaseNames, DataBaseInfo[] dataBaseInfos)
+        void IDataBaseCollectionServiceCallback.OnDataBasesCreated(SignatureDate signatureDate, string[] dataBaseNames, DataBaseInfo[] dataBaseInfos, string comment)
         {
             this.InvokeAsync(() =>
             {
@@ -761,7 +765,7 @@ namespace Ntreev.Crema.Services.Data
                     this.AddBase(dataBase.Name, dataBase);
                     dataBases[i] = dataBase;
                 }
-                this.InvokeItemsCreateEvent(authentication, dataBases);
+                this.InvokeItemsCreateEvent(authentication, dataBases, comment);
             }, nameof(IDataBaseCollectionServiceCallback.OnDataBasesCreated));
         }
 

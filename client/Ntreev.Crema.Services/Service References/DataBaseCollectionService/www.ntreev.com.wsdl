@@ -116,6 +116,24 @@
   <wsdl:message name="IDataBaseCollectionService_Revert_OutputMessage">
     <wsdl:part name="parameters" element="tns:RevertResponse" />
   </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_BeginTransaction_InputMessage">
+    <wsdl:part name="parameters" element="tns:BeginTransaction" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_BeginTransaction_OutputMessage">
+    <wsdl:part name="parameters" element="tns:BeginTransactionResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_EndTransaction_InputMessage">
+    <wsdl:part name="parameters" element="tns:EndTransaction" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_EndTransaction_OutputMessage">
+    <wsdl:part name="parameters" element="tns:EndTransactionResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_CancelTransaction_InputMessage">
+    <wsdl:part name="parameters" element="tns:CancelTransaction" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_CancelTransaction_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CancelTransactionResponse" />
+  </wsdl:message>
   <wsdl:message name="IDataBaseCollectionService_IsAlive_InputMessage">
     <wsdl:part name="parameters" element="tns:IsAlive" />
   </wsdl:message>
@@ -230,6 +248,18 @@
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Revert">
       <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/Revert" message="tns:IDataBaseCollectionService_Revert_InputMessage" />
       <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/RevertResponse" message="tns:IDataBaseCollectionService_Revert_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="BeginTransaction">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/BeginTransaction" message="tns:IDataBaseCollectionService_BeginTransaction_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/BeginTransactionResponse" message="tns:IDataBaseCollectionService_BeginTransaction_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="EndTransaction">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/EndTransaction" message="tns:IDataBaseCollectionService_EndTransaction_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/EndTransactionResponse" message="tns:IDataBaseCollectionService_EndTransaction_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="CancelTransaction">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/CancelTransaction" message="tns:IDataBaseCollectionService_CancelTransaction_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/CancelTransactionResponse" message="tns:IDataBaseCollectionService_CancelTransaction_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="IsAlive">
       <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/IsAlive" message="tns:IDataBaseCollectionService_IsAlive_InputMessage" />

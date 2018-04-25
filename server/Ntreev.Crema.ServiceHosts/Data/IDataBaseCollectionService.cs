@@ -89,6 +89,15 @@ namespace Ntreev.Crema.ServiceHosts.Data
         ResultBase Revert(string dataBaseName, long revision);
 
         [OperationContract]
+        ResultBase<string> BeginTransaction(string dataBaseName);
+
+        [OperationContract]
+        ResultBase EndTransaction(string dataBaseName, string transactionID);
+
+        [OperationContract]
+        ResultBase CancelTransaction(string dataBaseName, string transactionID);
+
+        [OperationContract]
         bool IsAlive();
     }
 }

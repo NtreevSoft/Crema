@@ -223,12 +223,9 @@ namespace Ntreev.Crema.Services.Data
         public DataBaseTransaction BeginTransaction(Authentication authentication)
         {
             this.ValidateDispatcher();
-
-            if (this.IsLoaded == false)
-                throw new NotImplementedException();
-
-            throw new NotImplementedException();
-            //return new DataBaseTransaction(this, this.CremaHost.Storage);
+            var result = this.DataBases.Service.BeginTransaction(this.Name);
+            this.Sign(authentication, result);
+            return new DataBaseTransaction(authentication, this, this.DataBases.Service, Guid.Parse(result.Value));
         }
 
         public void ValidateBeginInDataBase(Authentication authentication)
@@ -895,6 +892,16 @@ namespace Ntreev.Crema.Services.Data
                 this.authenticationLeft?.Invoke(this, new AuthenticationEventArgs(authentication.AuthenticationInfo));
                 this.DataBases.InvokeItemsAuthenticationLeftEvent(authentication, new IDataBase[] { this });
             }
+        }
+
+        private void Sign(Authentication authentication, ResultBase result)
+        {
+            result.Validate(authentication);
+        }
+
+        private void Sign<T>(Authentication authentication, ResultBase<T> result)
+        {
+            result.Validate(authentication);
         }
 
         #region IDataBase

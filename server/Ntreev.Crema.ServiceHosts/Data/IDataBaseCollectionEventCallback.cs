@@ -33,7 +33,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
         void OnServiceClosed(SignatureDate signatureDate, CloseInfo closeInfo);
 
         [OperationContract(IsOneWay = true)]
-        void OnDataBasesCreated(SignatureDate signatureDate, string[] dataBaseNames, DataBaseInfo[] dataBaseInfos);
+        void OnDataBasesCreated(SignatureDate signatureDate, string[] dataBaseNames, DataBaseInfo[] dataBaseInfos, string comment);
 
         [OperationContract(IsOneWay = true)]
         void OnDataBasesRenamed(SignatureDate signatureDate, string[] dataBaseNames, string[] newDataBaseNames);

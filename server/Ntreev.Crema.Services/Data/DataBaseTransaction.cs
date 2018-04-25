@@ -27,31 +27,78 @@ namespace Ntreev.Crema.Services.Data
 {
     class DataBaseTransaction : ITransaction
     {
+        private readonly Authentication authentication;
         private readonly DataBase dataBase;
         private readonly DataBaseRepositoryHost repository;
         private readonly TypeInfo[] typeInfos;
         private readonly TableInfo[] tableInfos;
+        private readonly Guid transactionID;
 
-        public DataBaseTransaction(DataBase dataBase, DataBaseRepositoryHost repository)
+        public DataBaseTransaction(Authentication authentication, DataBase dataBase, DataBaseRepositoryHost repository)
+            : this(authentication, dataBase, repository, Guid.NewGuid())
         {
+
+        }
+
+        public DataBaseTransaction(Authentication authentication, DataBase dataBase, DataBaseRepositoryHost repository, Guid transactionID)
+        {
+            if (transactionID == Guid.Empty)
+                throw new ArgumentException("transactionID is not valid", nameof(transactionID));
+            this.authentication = authentication;
             this.dataBase = dataBase;
             this.repository = repository;
             this.typeInfos = dataBase.TypeContext.Types.Select((Type item) => item.TypeInfo).ToArray();
             this.tableInfos = dataBase.TableContext.Tables.Select((Table item) => item.TableInfo).ToArray();
+            this.transactionID = transactionID;
             this.repository.BeginTransaction(dataBase.Name);
+            this.authentication.Expired += Authentication_Expired;
+            this.dataBase.ExtendedProperties[this.transactionID] = this;
         }
 
         public void Commit(Authentication authentication)
         {
             this.dataBase.VerifyAccess(authentication);
+            this.Sign(authentication);
             this.repository.EndTransaction();
+            this.dataBase.ExtendedProperties.Remove(this.transactionID);
+            this.authentication.Expired -= Authentication_Expired;
+            if (this.dataBase.LockInfo.Comment == $"{this.transactionID}" && this.dataBase.IsLocked == true)
+            {
+                this.dataBase.Unlock(authentication);
+            }
         }
 
         public void Rollback(Authentication authentication)
         {
             this.dataBase.VerifyAccess(authentication);
+            this.Sign(authentication);
             this.repository.CancelTransaction();
+            this.dataBase.ClearDomains(authentication);
             this.dataBase.Reset(authentication, this.typeInfos, this.tableInfos);
+            this.dataBase.ExtendedProperties.Remove(this.transactionID);
+            this.authentication.Expired -= Authentication_Expired;
+            if (this.dataBase.LockInfo.Comment == $"{this.transactionID}" && this.dataBase.IsLocked == true)
+            {
+                this.dataBase.Unlock(authentication);
+            }
+        }
+
+        public CremaDispatcher Dispatcher => this.dataBase.Dispatcher;
+
+        public Guid ID => this.transactionID;
+
+        private async void Authentication_Expired(object sender, EventArgs e)
+        {
+            this.authentication.Expired -= Authentication_Expired;
+            await this.dataBase.Dispatcher.InvokeAsync(() =>
+            {
+                this.Rollback(this.authentication);
+            });
+        }
+
+        private void Sign(Authentication authentication)
+        {
+            authentication.Sign();
         }
     }
 }

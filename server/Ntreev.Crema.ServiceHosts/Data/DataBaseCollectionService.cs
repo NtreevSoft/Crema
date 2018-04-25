@@ -258,6 +258,38 @@ namespace Ntreev.Crema.ServiceHosts.Data
             });
         }
 
+        public ResultBase<string> BeginTransaction(string dataBaseName)
+        {
+            return this.Invoke(() =>
+            {
+                var dataBase = GetDataBase(dataBaseName);
+                var transaction = dataBase.BeginTransaction(this.authentication);
+                return $"{transaction.ID}";
+            });
+        }
+
+        public ResultBase EndTransaction(string dataBaseName, string transactionID)
+        {
+            return this.Invoke(() =>
+            {
+                var dataBase = GetDataBase(dataBaseName);
+                var guid = Guid.Parse(transactionID);
+                var transaction = dataBase.ExtendedProperties[guid] as ITransaction;
+                transaction.Commit(this.authentication);
+            });
+        }
+
+        public ResultBase CancelTransaction(string dataBaseName, string transactionID)
+        {
+            return this.Invoke(() =>
+            {
+                var dataBase = GetDataBase(dataBaseName);
+                var guid = Guid.Parse(transactionID);
+                var transaction = dataBase.ExtendedProperties[guid] as ITransaction;
+                transaction.Rollback(this.authentication);
+            });
+        }
+
         public bool IsAlive()
         {
             if (this.authentication == null)
@@ -312,9 +344,10 @@ namespace Ntreev.Crema.ServiceHosts.Data
             var userID = this.authentication.ID;
             var exceptionUserID = e.UserID;
             var signatureDate = e.SignatureDate;
-            var itemNames = e.Items.Select(item => item.Name).ToArray();
-            var arguments = e.Arguments.Select(item => (DataBaseInfo)item).ToArray();
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnDataBasesCreated(signatureDate, itemNames, arguments));
+            var dataBaseNames = e.Items.Select(item => item.Name).ToArray();
+            var dataBaseInfos = e.Arguments.Select(item => (DataBaseInfo)item).ToArray();
+            var comment = e.MetaData as string;
+            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnDataBasesCreated(signatureDate, dataBaseNames, dataBaseInfos, comment));
         }
 
         private void DataBases_ItemRenamed(object sender, ItemsRenamedEventArgs<IDataBase> e)

@@ -53,8 +53,8 @@ namespace Ntreev.Crema.Commands.Consoles
             {
                 case nameof(Load):
                 case nameof(Unload):
-                //case nameof(Rename):
-                //case nameof(Delete):
+                case nameof(Rename):
+                case nameof(Delete):
                 case nameof(Copy):
                 case nameof(Info):
                 case nameof(Log):
@@ -81,29 +81,28 @@ namespace Ntreev.Crema.Commands.Consoles
             });
         }
 
-        //[CommandMethod]
-        //public void Rename(string dataBaseName, string newDataBaseName)
-        //{
-        //    var dataBase = this.GetDataBase(dataBaseName);
+        [CommandMethod]
+        public void Rename(string dataBaseName, string newDataBaseName)
+        {
+            this.CremaHost.Dispatcher.Invoke(() =>
+            {
+                var dataBase = this.GetDataBase(dataBaseName);
+                var authentication = this.CommandContext.GetAuthentication(this);
+                dataBase.Rename(authentication, newDataBaseName);
+            });
+        }
 
-        //    this.CremaHost.Dispatcher.Invoke(() =>
-        //    {
-        //        dataBase.Rename(authentication, newDataBaseName);
-        //    });
-        //}
-
-        //[CommandMethod]
-        //public void Delete(string dataBaseName)
-        //{
-        //    this.CremaHost.Dispatcher.Invoke(() =>
-        //    {
-        //        var dataBase = this.GetDataBase(dataBaseName);
-        //        Console.Write("type 'delete':");
-        //        if (Console.ReadLine() != "delete")
-        //            return;
-        //        dataBase.Delete(authentication);
-        //    });
-        //}
+        [CommandMethod]
+        public void Delete(string dataBaseName)
+        {
+            this.CremaHost.Dispatcher.Invoke(() =>
+            {
+                var dataBase = this.GetDataBase(dataBaseName);
+                var authentication = this.CommandContext.GetAuthentication(this);
+                if (this.CommandContext.ConfirmToDelete() == true)
+                    dataBase.Delete(authentication);
+            });
+        }
 
         [CommandMethod]
         [CommandMethodProperty(nameof(Comment), nameof(CopyForce))]

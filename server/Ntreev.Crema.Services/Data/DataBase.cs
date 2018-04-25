@@ -297,11 +297,15 @@ namespace Ntreev.Crema.Services.Data
         public DataBaseTransaction BeginTransaction(Authentication authentication)
         {
             this.ValidateDispatcher();
-
-            if (this.IsLoaded == false)
-                throw new NotImplementedException();
-
-            return new DataBaseTransaction(this, this.repositoryHost);
+            this.ValidateBeginTransaction(authentication);
+            this.Sign(authentication);
+            if (this.IsLocked == false)
+            {
+                var transactionID = Guid.NewGuid();
+                this.Lock(authentication, $"{transactionID}");
+                return new DataBaseTransaction(authentication, this, this.repositoryHost, transactionID);
+            }
+            return new DataBaseTransaction(authentication, this, this.repositoryHost);
         }
 
         public void ValidateBeginInDataBase(Authentication authentication)
@@ -412,6 +416,16 @@ namespace Ntreev.Crema.Services.Data
             this.tableContext = null;
             this.typeContext = null;
             this.Delete(authentication);
+        }
+
+        public void ClearDomains(Authentication authentication)
+        {
+            var domainContext = this.CremaHost.DomainContext;
+            var domains = domainContext.Domains.Where<Domain>(item => item.DataBaseID == this.ID).ToArray();
+            foreach (var item in domains)
+            {
+                item.Dispatcher.Invoke(() => item.Delete(authentication, true));
+            }
         }
 
         public void Reset(IAuthentication authentication, IEnumerable<TypeInfo> typeInfos, IEnumerable<TableInfo> tableInfos)
@@ -849,6 +863,18 @@ namespace Ntreev.Crema.Services.Data
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
+        public override void OnValidateDelete(IAuthentication authentication, object target)
+        {
+            base.OnValidateDelete(authentication, target);
+
+            if (this.ID == DataBase.defaultID)
+                throw new PermissionDeniedException("default 데이터 베이스는 삭제할 수 없습니다.");
+
+            if (this.IsLoaded == true)
+                throw new CremaException("데이터 베이스가 사용중입니다.");
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public void SetAccessInfo(AccessInfo accessInfo)
         {
             accessInfo.Path = this.Name;
@@ -1147,15 +1173,17 @@ namespace Ntreev.Crema.Services.Data
                 throw new CremaException($"{revision} 으로 되돌릴수 없습니다.");
         }
 
-        public override void OnValidateDelete(IAuthentication authentication, object target)
+        private void ValidateBeginTransaction(Authentication authentication)
         {
-            base.OnValidateDelete(authentication, target);
-
-            if (this.ID == DataBase.defaultID)
-                throw new PermissionDeniedException("default 데이터 베이스는 삭제할 수 없습니다.");
-
-            if (this.IsLoaded == true)
-                throw new CremaException("데이터 베이스가 사용중입니다.");
+            if (this.IsLoaded == false)
+                throw new NotImplementedException();
+            if (authentication.IsSystem == false && authentication.IsAdmin == false)
+                throw new PermissionDeniedException();
+            if (this.VerifyAccessType(authentication, AccessType.Owner) == false)
+                throw new PermissionDeniedException();
+            var domainContext = this.CremaHost.DomainContext;
+            if (domainContext.Domains.Any<Domain>(item => item.DataBaseID == this.ID) == true)
+                throw new InvalidOperationException("편집중인 내용이 있을때는 사용할 수 없습니다.");
         }
 
         private void OnEnter(Authentication authentication)

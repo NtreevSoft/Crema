@@ -265,6 +265,50 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="BeginTransaction">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="dataBaseName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="BeginTransactionResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q23="http://schemas.ntreev.com" minOccurs="0" name="BeginTransactionResult" type="q23:ResultBaseOfstring" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="EndTransaction">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="dataBaseName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="transactionID" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="EndTransactionResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q24="http://schemas.ntreev.com" minOccurs="0" name="EndTransactionResult" type="q24:ResultBase" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CancelTransaction">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="dataBaseName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="transactionID" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CancelTransactionResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q25="http://schemas.ntreev.com" minOccurs="0" name="CancelTransactionResult" type="q25:ResultBase" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="IsAlive">
     <xs:complexType>
       <xs:sequence />
@@ -280,63 +324,55 @@
   <xs:element name="OnServiceClosed">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q23="http://schemas.ntreev.com" minOccurs="0" name="signatureDate" type="q23:SignatureDate" />
-        <xs:element xmlns:q24="http://schemas.ntreev.com" minOccurs="0" name="closeInfo" type="q24:CloseInfo" />
+        <xs:element xmlns:q26="http://schemas.ntreev.com" minOccurs="0" name="signatureDate" type="q26:SignatureDate" />
+        <xs:element xmlns:q27="http://schemas.ntreev.com" minOccurs="0" name="closeInfo" type="q27:CloseInfo" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="OnDataBasesCreated">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q25="http://schemas.ntreev.com" minOccurs="0" name="signatureDate" type="q25:SignatureDate" />
-        <xs:element xmlns:q26="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="dataBaseNames" nillable="true" type="q26:ArrayOfstring" />
-        <xs:element xmlns:q27="http://schemas.ntreev.com" minOccurs="0" name="dataBaseInfos" nillable="true" type="q27:ArrayOfDataBaseInfo" />
+        <xs:element xmlns:q28="http://schemas.ntreev.com" minOccurs="0" name="signatureDate" type="q28:SignatureDate" />
+        <xs:element xmlns:q29="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="dataBaseNames" nillable="true" type="q29:ArrayOfstring" />
+        <xs:element xmlns:q30="http://schemas.ntreev.com" minOccurs="0" name="dataBaseInfos" nillable="true" type="q30:ArrayOfDataBaseInfo" />
+        <xs:element minOccurs="0" name="comment" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="OnDataBasesRenamed">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q28="http://schemas.ntreev.com" minOccurs="0" name="signatureDate" type="q28:SignatureDate" />
-        <xs:element xmlns:q29="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="dataBaseNames" nillable="true" type="q29:ArrayOfstring" />
-        <xs:element xmlns:q30="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="newDataBaseNames" nillable="true" type="q30:ArrayOfstring" />
+        <xs:element xmlns:q31="http://schemas.ntreev.com" minOccurs="0" name="signatureDate" type="q31:SignatureDate" />
+        <xs:element xmlns:q32="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="dataBaseNames" nillable="true" type="q32:ArrayOfstring" />
+        <xs:element xmlns:q33="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="newDataBaseNames" nillable="true" type="q33:ArrayOfstring" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="OnDataBasesDeleted">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q31="http://schemas.ntreev.com" minOccurs="0" name="signatureDate" type="q31:SignatureDate" />
-        <xs:element xmlns:q32="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="dataBaseNames" nillable="true" type="q32:ArrayOfstring" />
+        <xs:element xmlns:q34="http://schemas.ntreev.com" minOccurs="0" name="signatureDate" type="q34:SignatureDate" />
+        <xs:element xmlns:q35="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="dataBaseNames" nillable="true" type="q35:ArrayOfstring" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="OnDataBasesLoaded">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q33="http://schemas.ntreev.com" minOccurs="0" name="signatureDate" type="q33:SignatureDate" />
-        <xs:element xmlns:q34="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="dataBaseNames" nillable="true" type="q34:ArrayOfstring" />
+        <xs:element xmlns:q36="http://schemas.ntreev.com" minOccurs="0" name="signatureDate" type="q36:SignatureDate" />
+        <xs:element xmlns:q37="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="dataBaseNames" nillable="true" type="q37:ArrayOfstring" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="OnDataBasesUnloaded">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q35="http://schemas.ntreev.com" minOccurs="0" name="signatureDate" type="q35:SignatureDate" />
-        <xs:element xmlns:q36="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="dataBaseNames" nillable="true" type="q36:ArrayOfstring" />
+        <xs:element xmlns:q38="http://schemas.ntreev.com" minOccurs="0" name="signatureDate" type="q38:SignatureDate" />
+        <xs:element xmlns:q39="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="dataBaseNames" nillable="true" type="q39:ArrayOfstring" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="OnDataBasesAuthenticationEntered">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element xmlns:q37="http://schemas.ntreev.com" minOccurs="0" name="signatureDate" type="q37:SignatureDate" />
-        <xs:element xmlns:q38="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="dataBaseNames" nillable="true" type="q38:ArrayOfstring" />
-        <xs:element xmlns:q39="http://schemas.ntreev.com" minOccurs="0" name="authenticationInfo" type="q39:AuthenticationInfo" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="OnDataBasesAuthenticationLeft">
     <xs:complexType>
       <xs:sequence>
         <xs:element xmlns:q40="http://schemas.ntreev.com" minOccurs="0" name="signatureDate" type="q40:SignatureDate" />
@@ -345,41 +381,50 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="OnDataBasesInfoChanged">
+  <xs:element name="OnDataBasesAuthenticationLeft">
     <xs:complexType>
       <xs:sequence>
         <xs:element xmlns:q43="http://schemas.ntreev.com" minOccurs="0" name="signatureDate" type="q43:SignatureDate" />
-        <xs:element xmlns:q44="http://schemas.ntreev.com" minOccurs="0" name="dataBaseInfos" nillable="true" type="q44:ArrayOfDataBaseInfo" />
+        <xs:element xmlns:q44="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="dataBaseNames" nillable="true" type="q44:ArrayOfstring" />
+        <xs:element xmlns:q45="http://schemas.ntreev.com" minOccurs="0" name="authenticationInfo" type="q45:AuthenticationInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="OnDataBasesInfoChanged">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q46="http://schemas.ntreev.com" minOccurs="0" name="signatureDate" type="q46:SignatureDate" />
+        <xs:element xmlns:q47="http://schemas.ntreev.com" minOccurs="0" name="dataBaseInfos" nillable="true" type="q47:ArrayOfDataBaseInfo" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="OnDataBasesStateChanged">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q45="http://schemas.ntreev.com" minOccurs="0" name="signatureDate" type="q45:SignatureDate" />
-        <xs:element xmlns:q46="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="dataBaseNames" nillable="true" type="q46:ArrayOfstring" />
-        <xs:element xmlns:q47="http://schemas.ntreev.com" minOccurs="0" name="dataBaseStates" nillable="true" type="q47:ArrayOfDataBaseState" />
+        <xs:element xmlns:q48="http://schemas.ntreev.com" minOccurs="0" name="signatureDate" type="q48:SignatureDate" />
+        <xs:element xmlns:q49="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="dataBaseNames" nillable="true" type="q49:ArrayOfstring" />
+        <xs:element xmlns:q50="http://schemas.ntreev.com" minOccurs="0" name="dataBaseStates" nillable="true" type="q50:ArrayOfDataBaseState" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="OnDataBasesAccessChanged">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q48="http://schemas.ntreev.com" minOccurs="0" name="signatureDate" type="q48:SignatureDate" />
-        <xs:element xmlns:q49="http://schemas.ntreev.com" minOccurs="0" name="changeType" type="q49:AccessChangeType" />
-        <xs:element xmlns:q50="http://schemas.ntreev.com" minOccurs="0" name="accessInfos" nillable="true" type="q50:ArrayOfAccessInfo" />
-        <xs:element xmlns:q51="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="memberIDs" nillable="true" type="q51:ArrayOfstring" />
-        <xs:element xmlns:q52="http://schemas.ntreev.com" minOccurs="0" name="accessTypes" nillable="true" type="q52:ArrayOfAccessType" />
+        <xs:element xmlns:q51="http://schemas.ntreev.com" minOccurs="0" name="signatureDate" type="q51:SignatureDate" />
+        <xs:element xmlns:q52="http://schemas.ntreev.com" minOccurs="0" name="changeType" type="q52:AccessChangeType" />
+        <xs:element xmlns:q53="http://schemas.ntreev.com" minOccurs="0" name="accessInfos" nillable="true" type="q53:ArrayOfAccessInfo" />
+        <xs:element xmlns:q54="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="memberIDs" nillable="true" type="q54:ArrayOfstring" />
+        <xs:element xmlns:q55="http://schemas.ntreev.com" minOccurs="0" name="accessTypes" nillable="true" type="q55:ArrayOfAccessType" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="OnDataBasesLockChanged">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q53="http://schemas.ntreev.com" minOccurs="0" name="signatureDate" type="q53:SignatureDate" />
-        <xs:element xmlns:q54="http://schemas.ntreev.com" minOccurs="0" name="changeType" type="q54:LockChangeType" />
-        <xs:element xmlns:q55="http://schemas.ntreev.com" minOccurs="0" name="lockInfos" nillable="true" type="q55:ArrayOfLockInfo" />
-        <xs:element xmlns:q56="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="comments" nillable="true" type="q56:ArrayOfstring" />
+        <xs:element xmlns:q56="http://schemas.ntreev.com" minOccurs="0" name="signatureDate" type="q56:SignatureDate" />
+        <xs:element xmlns:q57="http://schemas.ntreev.com" minOccurs="0" name="changeType" type="q57:LockChangeType" />
+        <xs:element xmlns:q58="http://schemas.ntreev.com" minOccurs="0" name="lockInfos" nillable="true" type="q58:ArrayOfLockInfo" />
+        <xs:element xmlns:q59="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="comments" nillable="true" type="q59:ArrayOfstring" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

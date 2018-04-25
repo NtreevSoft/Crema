@@ -85,7 +85,7 @@ namespace Ntreev.Crema.Javascript.Consoles
         {
             if (this.List == true)
             {
-                this.Out.WriteLine(this.ScriptContext.GenerateDeclaration(ScriptContextBase.GetArgumentTypes(this.Arguments)));
+                this.Out.Write(this.ScriptContext.GenerateDeclaration(ScriptContextBase.GetArgumentTypes(this.Arguments)));
             }
             else
             {
