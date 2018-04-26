@@ -85,6 +85,23 @@ namespace Ntreev.Crema.Services.Domains
             this.cremaHost.AddService(this);
         }
 
+        public DomainMetaData[] Restore(DataBase dataBase)
+        {
+            var result = this.service.GetMetaData();
+            result.Validate();
+            var metaData = result.Value;
+
+            var metaDataList = new List<DomainMetaData>();
+            foreach (var item in metaData.Domains)
+            {
+                if (item.DomainInfo.DataBaseID == dataBase.ID)
+                {
+                    metaDataList.Add(item);
+                }
+            }
+            return metaDataList.ToArray();
+        }
+
         public void InvokeItemsCreatedEvent(Authentication authentication, IDomainItem[] items, object[] args)
         {
             this.OnItemsCreated(new ItemsCreatedEventArgs<IDomainItem>(authentication, items, args));
@@ -122,8 +139,10 @@ namespace Ntreev.Crema.Services.Domains
 
         public void AddDomains(DomainMetaData[] metaDatas)
         {
+            System.Diagnostics.Trace.WriteLine(metaDatas.Length);
             foreach (var item in metaDatas)
             {
+                System.Diagnostics.Trace.WriteLine(item.DomainID);
                 var domain = this.Domains.AddDomain(null, item.DomainInfo);
                 if (domain == null)
                     continue;
@@ -487,6 +506,8 @@ _Invoke:
             this.InvokeAsync(() =>
             {
                 var domain = this.Domains[domainID];
+                if (domain == null)
+                    return;
                 var authentication = this.userContext.Authenticate(signatureDate);
                 domain.InvokeDomainStateChanged(authentication, domainState);
             }, nameof(IDomainServiceCallback.OnDomainStateChanged));

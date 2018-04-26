@@ -170,7 +170,7 @@ namespace Ntreev.Crema.Services
                 {
                     foreach (var item in this.dataBases)
                     {
-                        this.domainContext.Restore(item);
+                        this.domainContext.Restore(Authentication.System, item);
                     }
                 }
 

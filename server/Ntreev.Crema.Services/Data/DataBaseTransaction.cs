@@ -107,7 +107,7 @@ namespace Ntreev.Crema.Services.Data
             if (this.dataBase.GetService(typeof(DomainContext)) is DomainContext domainContext)
             {
                 DirectoryUtility.Copy(this.transactionPath, this.domainPath);
-                domainContext.Restore(this.dataBase);
+                domainContext.Restore(authentication, this.dataBase);
                 DirectoryUtility.Delete(this.transactionPath);
             }
             else

@@ -160,15 +160,15 @@ namespace Ntreev.Crema.Services.Domains
             });
         }
 
-        public void Restore(Domain domain)
+        public void Restore(Authentication authentication, Domain domain)
         {
-            Authentication.System.Sign();
+            authentication.Sign();
             var dataBase = this.Context.CremaHost.DataBases[domain.DataBaseID];
             var categoryName = CategoryName.Create(dataBase.Name, domain.DomainInfo.ItemType);
             var category = this.Context.Categories.Prepare(categoryName);
             domain.Category = category;
             domain.Dispatcher = new CremaDispatcher(domain);
-            domain.Dispatcher.InvokeAsync(() => this.InvokeDomainCreatedEvent(Authentication.System, domain));
+            domain.Dispatcher.InvokeAsync(() => this.InvokeDomainCreatedEvent(authentication, domain));
         }
 
         public void Add(Authentication authentication, Domain domain)

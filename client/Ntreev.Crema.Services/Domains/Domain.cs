@@ -755,8 +755,6 @@ namespace Ntreev.Crema.Services.Domains
             get { return this.Context.Service; }
         }
 
-        internal Guid LoadID { get; set; }
-
         #region IDomain
 
         IDomainUserCollection IDomain.Users

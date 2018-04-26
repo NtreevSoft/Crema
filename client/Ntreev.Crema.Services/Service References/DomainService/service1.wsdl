@@ -34,6 +34,15 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="GetMetaData">
+      <soap12:operation soapAction="http://www.ntreev.com/IDomainService/GetMetaData" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="SetUserLocation">
       <soap12:operation soapAction="http://www.ntreev.com/IDomainService/SetUserLocation" style="document" />
       <wsdl:input>

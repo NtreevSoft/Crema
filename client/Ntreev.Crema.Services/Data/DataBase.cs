@@ -50,7 +50,6 @@ namespace Ntreev.Crema.Services.Data
         private EventHandler<AuthenticationEventArgs> authenticationLeft;
 
         private readonly HashSet<AuthenticationToken> authentications = new HashSet<AuthenticationToken>();
-        public Guid loadID;
         private bool isResetting;
 
         public DataBase(CremaHost cremaHost, DataBaseInfo dataBaseInfo)
@@ -344,6 +343,7 @@ namespace Ntreev.Crema.Services.Data
 
         public void SetResetting(Authentication authentication)
         {
+            System.Diagnostics.Trace.WriteLine("Resetting");
             this.typeContext?.Dispose();
             this.tableContext?.Dispose();
             this.isResetting = true;
@@ -374,14 +374,15 @@ namespace Ntreev.Crema.Services.Data
                 var result = this.service.GetMetaData();
                 this.typeContext = new TypeContext(this, result.Value);
                 this.tableContext = new TableContext(this, result.Value);
-                base.ResetDataBase(authentication);
+                this.AttachDomainHost();
                 base.UpdateLockParent();
                 base.UpdateAccessParent();
-                this.AttachDomainHost();
             }
             
             this.isResetting = false;
+            base.ResetDataBase(authentication);
             this.DataBases.InvokeItemsResetEvent(authentication, new IDataBase[] { this, });
+            System.Diagnostics.Trace.WriteLine("Reset");
         }
 
         public void SetAuthenticationEntered(Authentication authentication)
@@ -820,7 +821,6 @@ namespace Ntreev.Crema.Services.Data
                 {
                     var target = this.FindDomainHost(item);
                     target.Restore(item);
-                    item.LoadID = this.loadID;
                     item.Host = target;
                     item.AttachUser();
                 }
@@ -834,12 +834,11 @@ namespace Ntreev.Crema.Services.Data
         private void DetachDomainHost()
         {
             var domainContext = this.CremaHost.DomainContext;
-            var domains = domainContext.Domains.Where<Domain>(item => item.DataBaseID == this.ID && item.LoadID == this.loadID).ToArray();
+            var domains = domainContext.Domains.Where<Domain>(item => item.DataBaseID == this.ID).ToArray();
 
             foreach (var item in domains)
             {
                 item.Host?.Detach();
-                item.LoadID = Guid.Empty;
                 item.Host = null;
                 item.DetachUser();
             }
@@ -950,7 +949,6 @@ namespace Ntreev.Crema.Services.Data
                 });
                 this.typeContext = new TypeContext(this, metaData);
                 this.tableContext = new TableContext(this, metaData);
-                this.loadID = Guid.NewGuid();
                 this.AttachDomainHost();
                 this.cremaHost.AddService(this);
                 base.UpdateAccessParent();

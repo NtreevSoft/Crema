@@ -45,6 +45,7 @@ namespace Ntreev.Crema.Services.Domains
             IgnoreWhitespace = true,
         };
 
+        private readonly Authentication authentication;
         private readonly DomainContext domainContext;
         private readonly string workingPath;
 
@@ -56,8 +57,9 @@ namespace Ntreev.Crema.Services.Domains
 
         private long lastID;
 
-        public DomainRestorer(DomainContext domainContext, string workingPath)
+        public DomainRestorer(Authentication authentication, DomainContext domainContext, string workingPath)
         {
+            this.authentication = authentication;
             this.domainContext = domainContext;
             this.workingPath = workingPath;
         }
@@ -157,7 +159,7 @@ namespace Ntreev.Crema.Services.Domains
             {
                 this.domain = formatter.Deserialize(stream) as Domain;
                 this.domain.Logger = new DomainLogger(this.workingPath);
-                this.domainContext.Domains.Restore(this.domain);
+                this.domainContext.Domains.Restore(this.authentication, this.domain);
             }
         }
 

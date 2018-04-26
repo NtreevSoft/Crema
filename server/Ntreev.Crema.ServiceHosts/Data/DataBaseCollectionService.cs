@@ -383,7 +383,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
             var exceptionUserID = e.UserID;
             var signatureDate = e.SignatureDate;
             var itemNames = e.Items.Select(item => item.Name).ToArray();
-            this.InvokeEvent(userID, null, () => this.Callback.OnDataBasesResetting(signatureDate, itemNames));
+            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnDataBasesResetting(signatureDate, itemNames));
         }
 
         private void DataBases_ItemsReset(object sender, ItemsEventArgs<IDataBase> e)
@@ -393,7 +393,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
             var signatureDate = e.SignatureDate;
             var itemNames = e.Items.Select(item => item.Name).ToArray();
             var metaDatas = e.MetaData as DomainMetaData[];
-            this.InvokeEvent(userID, null, () => this.Callback.OnDataBasesReset(signatureDate, itemNames, metaDatas));
+            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnDataBasesReset(signatureDate, itemNames, metaDatas));
         }
 
         private void DataBases_ItemsAuthenticationEntered(object sender, ItemsEventArgs<IDataBase> e)
