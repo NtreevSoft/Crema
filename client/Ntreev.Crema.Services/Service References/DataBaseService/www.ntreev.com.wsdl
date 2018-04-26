@@ -29,6 +29,12 @@
   <wsdl:message name="IDataBaseService_Unsubscribe_OutputMessage">
     <wsdl:part name="parameters" element="tns:UnsubscribeResponse" />
   </wsdl:message>
+  <wsdl:message name="IDataBaseService_GetMetaData_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetMetaData" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseService_GetMetaData_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetMetaDataResponse" />
+  </wsdl:message>
   <wsdl:message name="IDataBaseService_GetDataSet_InputMessage">
     <wsdl:part name="parameters" element="tns:GetDataSet" />
   </wsdl:message>
@@ -392,6 +398,10 @@
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Unsubscribe">
       <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseService/Unsubscribe" message="tns:IDataBaseService_Unsubscribe_InputMessage" />
       <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseService/UnsubscribeResponse" message="tns:IDataBaseService_Unsubscribe_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetMetaData">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseService/GetMetaData" message="tns:IDataBaseService_GetMetaData_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseService/GetMetaDataResponse" message="tns:IDataBaseService_GetMetaData_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetDataSet">
       <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseService/GetDataSet" message="tns:IDataBaseService_GetDataSet_InputMessage" />

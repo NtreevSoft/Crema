@@ -48,6 +48,12 @@ namespace Ntreev.Crema.ServiceHosts.Data
         void OnDataBasesUnloaded(SignatureDate signatureDate, string[] dataBaseNames);
 
         [OperationContract(IsOneWay = true)]
+        void OnDataBasesResetting(SignatureDate signatureDate, string[] dataBaseNames);
+
+        [OperationContract(IsOneWay = true)]
+        void OnDataBasesReset(SignatureDate signatureDate, string[] dataBaseNames, DomainMetaData[] metaDatas);
+
+        [OperationContract(IsOneWay = true)]
         void OnDataBasesAuthenticationEntered(SignatureDate signatureDate, string[] dataBaseNames, AuthenticationInfo authenticationInfo);
 
         [OperationContract(IsOneWay = true)]

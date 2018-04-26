@@ -110,14 +110,6 @@ namespace Ntreev.Crema.ServiceHosts.Data
             return result;
         }
 
-        //public ResultBase<DataBaseInfo[]> GetDataBaseInfos()
-        //{
-        //    return this.Invoke(() =>
-        //    {
-        //        return this.cremaHost.DataBases.Select(item => item.DataBaseInfo).ToArray();
-        //    });
-        //}
-
         public ResultBase SetPublic(string dataBaseName)
         {
             return this.Invoke(() =>
@@ -258,34 +250,32 @@ namespace Ntreev.Crema.ServiceHosts.Data
             });
         }
 
-        public ResultBase<string> BeginTransaction(string dataBaseName)
+        public ResultBase BeginTransaction(string dataBaseName)
         {
             return this.Invoke(() =>
             {
                 var dataBase = GetDataBase(dataBaseName);
                 var transaction = dataBase.BeginTransaction(this.authentication);
-                return $"{transaction.ID}";
+                dataBase.ExtendedProperties[typeof(ITransaction)] = transaction;
             });
         }
 
-        public ResultBase EndTransaction(string dataBaseName, string transactionID)
+        public ResultBase EndTransaction(string dataBaseName)
         {
             return this.Invoke(() =>
             {
                 var dataBase = GetDataBase(dataBaseName);
-                var guid = Guid.Parse(transactionID);
-                var transaction = dataBase.ExtendedProperties[guid] as ITransaction;
+                var transaction = dataBase.ExtendedProperties[typeof(ITransaction)] as ITransaction;
                 transaction.Commit(this.authentication);
             });
         }
 
-        public ResultBase CancelTransaction(string dataBaseName, string transactionID)
+        public ResultBase CancelTransaction(string dataBaseName)
         {
             return this.Invoke(() =>
             {
                 var dataBase = GetDataBase(dataBaseName);
-                var guid = Guid.Parse(transactionID);
-                var transaction = dataBase.ExtendedProperties[guid] as ITransaction;
+                var transaction = dataBase.ExtendedProperties[typeof(ITransaction)] as ITransaction;
                 transaction.Rollback(this.authentication);
             });
         }
@@ -387,6 +377,25 @@ namespace Ntreev.Crema.ServiceHosts.Data
             this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnDataBasesUnloaded(signatureDate, itemNames));
         }
 
+        private void DataBases_ItemsResetting(object sender, ItemsEventArgs<IDataBase> e)
+        {
+            var userID = this.authentication.ID;
+            var exceptionUserID = e.UserID;
+            var signatureDate = e.SignatureDate;
+            var itemNames = e.Items.Select(item => item.Name).ToArray();
+            this.InvokeEvent(userID, null, () => this.Callback.OnDataBasesResetting(signatureDate, itemNames));
+        }
+
+        private void DataBases_ItemsReset(object sender, ItemsEventArgs<IDataBase> e)
+        {
+            var userID = this.authentication.ID;
+            var exceptionUserID = e.UserID;
+            var signatureDate = e.SignatureDate;
+            var itemNames = e.Items.Select(item => item.Name).ToArray();
+            var metaDatas = e.MetaData as DomainMetaData[];
+            this.InvokeEvent(userID, null, () => this.Callback.OnDataBasesReset(signatureDate, itemNames, metaDatas));
+        }
+
         private void DataBases_ItemsAuthenticationEntered(object sender, ItemsEventArgs<IDataBase> e)
         {
             var userID = this.authentication.ID;
@@ -485,6 +494,8 @@ namespace Ntreev.Crema.ServiceHosts.Data
             this.cremaHost.DataBases.ItemsDeleted += DataBases_ItemDeleted;
             this.cremaHost.DataBases.ItemsLoaded += DataBases_ItemsLoaded;
             this.cremaHost.DataBases.ItemsUnloaded += DataBases_ItemsUnloaded;
+            this.cremaHost.DataBases.ItemsResetting += DataBases_ItemsResetting;
+            this.cremaHost.DataBases.ItemsReset += DataBases_ItemsReset;
             this.cremaHost.DataBases.ItemsAuthenticationEntered += DataBases_ItemsAuthenticationEntered;
             this.cremaHost.DataBases.ItemsAuthenticationLeft += DataBases_ItemsAuthenticationLeft;
             this.cremaHost.DataBases.ItemsInfoChanged += DataBases_ItemsInfoChanged;
@@ -503,6 +514,8 @@ namespace Ntreev.Crema.ServiceHosts.Data
             this.cremaHost.DataBases.ItemsDeleted -= DataBases_ItemDeleted;
             this.cremaHost.DataBases.ItemsLoaded -= DataBases_ItemsLoaded;
             this.cremaHost.DataBases.ItemsUnloaded -= DataBases_ItemsUnloaded;
+            this.cremaHost.DataBases.ItemsResetting -= DataBases_ItemsResetting;
+            this.cremaHost.DataBases.ItemsReset -= DataBases_ItemsReset;
             this.cremaHost.DataBases.ItemsAuthenticationEntered -= DataBases_ItemsAuthenticationEntered;
             this.cremaHost.DataBases.ItemsAuthenticationLeft -= DataBases_ItemsAuthenticationLeft;
             this.cremaHost.DataBases.ItemsInfoChanged -= DataBases_ItemsInfoChanged;

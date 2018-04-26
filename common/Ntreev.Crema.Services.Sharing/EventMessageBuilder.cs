@@ -172,6 +172,30 @@ namespace Ntreev.Crema.Services
             return sb.ToString();
         }
 
+        public static string ResettingDataBase(Authentication authentication, IDataBase[] dataBases)
+        {
+            var sb = new StringBuilder();
+            for (var i = 0; i < dataBases.Length; i++)
+            {
+                if (i > 0)
+                    sb.AppendLine();
+                sb.AppendFormat(EventResources.ResettingDataBase, authentication.ID, authentication.Name, dataBases[i]);
+            }
+            return sb.ToString();
+        }
+
+        public static string ResetDataBase(Authentication authentication, IDataBase[] dataBases)
+        {
+            var sb = new StringBuilder();
+            for (var i = 0; i < dataBases.Length; i++)
+            {
+                if (i > 0)
+                    sb.AppendLine();
+                sb.AppendFormat(EventResources.ResetDataBase, authentication.ID, authentication.Name, dataBases[i]);
+            }
+            return sb.ToString();
+        }
+
         public static string EnterDataBase(Authentication authentication, IDataBase[] dataBases)
         {
             var sb = new StringBuilder();

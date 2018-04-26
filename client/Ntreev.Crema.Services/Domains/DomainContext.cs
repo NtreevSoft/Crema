@@ -120,6 +120,18 @@ namespace Ntreev.Crema.Services.Domains
             return this.Domains.AddDomain(authentication, domainInfo);
         }
 
+        public void AddDomains(DomainMetaData[] metaDatas)
+        {
+            foreach (var item in metaDatas)
+            {
+                var domain = this.Domains.AddDomain(null, item.DomainInfo);
+                if (domain == null)
+                    continue;
+
+                domain.Initialize(Authentication.System, item);
+            }
+        }
+
         public void Close(CloseInfo closeInfo)
         {
             this.serviceDispatcher?.Invoke(() =>
@@ -399,9 +411,23 @@ namespace Ntreev.Crema.Services.Domains
 
         private async void InvokeAsync(Action action, string callbackName)
         {
+            var count = 0;
+_Invoke:
             try
             {
+                
                 await this.Dispatcher.InvokeAsync(action);
+            }
+            catch (NullReferenceException e)
+            {
+                await Task.Delay(1);
+                if (count == 0)
+                {
+                    count++;
+                    goto _Invoke;
+                }
+                this.cremaHost.Error(callbackName);
+                this.cremaHost.Error(e);
             }
             catch (Exception e)
             {
@@ -478,7 +504,6 @@ namespace Ntreev.Crema.Services.Domains
 
         void IDomainServiceCallback.OnUserRemoved(SignatureDate signatureDate, Guid domainID, DomainUserInfo domainUserInfo, RemoveInfo removeInfo)
         {
-            //System.Diagnostics.Trace.WriteLine("OnUserRemoved");
             this.InvokeAsync(() =>
             {
                 var domain = this.Domains[domainID];

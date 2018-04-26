@@ -46,6 +46,10 @@ namespace Ntreev.Crema.Services
 
         event ItemsEventHandler<IDataBase> ItemsUnloaded;
 
+        event ItemsEventHandler<IDataBase> ItemsResetting;
+
+        event ItemsEventHandler<IDataBase> ItemsReset;
+
         event ItemsEventHandler<IDataBase> ItemsAuthenticationEntered;
 
         event ItemsEventHandler<IDataBase> ItemsAuthenticationLeft;

@@ -38,10 +38,12 @@ namespace Ntreev.Crema.ServiceHosts.Domains
         private readonly ICremaHost cremaHost;
         private readonly ILogService logService;
         private readonly IDomainContext domainContext;
+        private readonly IDataBaseCollection dataBases;
         private readonly IUserContext userContext;
 
         private Authentication authentication;
         private readonly HashSet<Guid> domains = new HashSet<Guid>();
+        private readonly HashSet<Guid> resettings = new HashSet<Guid>();
 
         public DomainService(ICremaHost cremaHost)
             : base(cremaHost.GetService(typeof(ILogService)) as ILogService)
@@ -50,6 +52,7 @@ namespace Ntreev.Crema.ServiceHosts.Domains
             this.logService = cremaHost.GetService(typeof(ILogService)) as ILogService;
             this.userContext = cremaHost.GetService(typeof(IUserContext)) as IUserContext;
             this.domainContext = cremaHost.GetService(typeof(IDomainContext)) as IDomainContext;
+            this.dataBases = cremaHost.GetService(typeof(IDataBaseCollection)) as IDataBaseCollection;
 
             this.logService.Debug($"{nameof(DomainService)} Constructor");
         }
@@ -253,6 +256,8 @@ namespace Ntreev.Crema.ServiceHosts.Domains
             this.domainContext.Domains.DomainRowChanged += DomainContext_DomainRowChanged;
             this.domainContext.Domains.DomainRowRemoved += DomainContext_DomainRowRemoved;
             this.domainContext.Domains.DomainPropertyChanged += DomainContext_DomainPropertyChanged;
+            this.dataBases.ItemsResetting += DataBases_ItemsResetting;
+            this.dataBases.ItemsReset += DataBases_ItemsReset;
 
             this.logService.Debug($"[{this.OwnerID}] {nameof(DomainService)} {nameof(AttachEventHandlers)}");
         }
@@ -272,6 +277,8 @@ namespace Ntreev.Crema.ServiceHosts.Domains
             this.domainContext.Domains.DomainRowChanged -= DomainContext_DomainRowChanged;
             this.domainContext.Domains.DomainRowRemoved -= DomainContext_DomainRowRemoved;
             this.domainContext.Domains.DomainPropertyChanged -= DomainContext_DomainPropertyChanged;
+            this.dataBases.ItemsResetting -= DataBases_ItemsResetting;
+            this.dataBases.ItemsReset -= DataBases_ItemsReset;
 
             this.logService.Debug($"[{this.OwnerID}] {nameof(DomainService)} {nameof(DetachEventHandlers)}");
         }
@@ -294,6 +301,8 @@ namespace Ntreev.Crema.ServiceHosts.Domains
             var signatureDate = e.SignatureDate;
             var domainInfo = e.DomainInfo;
             var domainState = e.DomainState;
+            if (this.resettings.Contains(domainInfo.DataBaseID))
+                return;
             this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnDomainCreated(e.SignatureDate, domainInfo, domainState));
         }
 
@@ -305,6 +314,8 @@ namespace Ntreev.Crema.ServiceHosts.Domains
             var domainID = e.DomainInfo.DomainID;
             var isCanceled = e.IsCanceled;
             this.domains.Remove(domainID);
+            if (this.resettings.Contains(e.DomainInfo.DataBaseID))
+                return;
             this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnDomainDeleted(signatureDate, domainID, isCanceled));
         }
 
@@ -315,6 +326,8 @@ namespace Ntreev.Crema.ServiceHosts.Domains
             var signatureDate = e.SignatureDate;
             var domainID = e.DomainInfo.DomainID;
             var domainInfo = e.DomainInfo;
+            if (this.resettings.Contains(domainInfo.DataBaseID))
+                return;
             this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnDomainInfoChanged(signatureDate, domainID, domainInfo));
         }
 
@@ -325,6 +338,8 @@ namespace Ntreev.Crema.ServiceHosts.Domains
             var signatureDate = e.SignatureDate;
             var domainID = e.DomainInfo.DomainID;
             var domainState = e.DomainState;
+            if (this.resettings.Contains(e.DomainInfo.DataBaseID))
+                return;
             this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnDomainStateChanged(signatureDate, domainID, domainState));
         }
 
@@ -338,6 +353,8 @@ namespace Ntreev.Crema.ServiceHosts.Domains
             var domainUserState = e.DomainUserState;
             if (domainUserInfo.UserID == this.OwnerID)
                 this.domains.Add(domainID);
+            if (this.resettings.Contains(e.DomainInfo.DataBaseID))
+                return;
             this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnUserAdded(signatureDate, domainID, domainUserInfo, domainUserState));
         }
 
@@ -351,7 +368,8 @@ namespace Ntreev.Crema.ServiceHosts.Domains
             var domainUserInfo = e.DomainUserInfo;
             if (this.domains.Contains(domainID) == false)
                 domainUserInfo.Location = DomainLocationInfo.Empty;
-
+            if (this.resettings.Contains(e.DomainInfo.DataBaseID))
+                return;
             this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnUserChanged(signatureDate, domainID, domainUserInfo, domainUserState));
         }
 
@@ -365,6 +383,8 @@ namespace Ntreev.Crema.ServiceHosts.Domains
             var removeInfo = e.RemoveInfo;
             if (domainUserInfo.UserID == this.OwnerID)
                 this.domains.Remove(domainID);
+            if (this.resettings.Contains(e.DomainInfo.DataBaseID))
+                return;
             this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnUserRemoved(signatureDate, domainID, domainUserInfo, removeInfo));
         }
 
@@ -377,6 +397,8 @@ namespace Ntreev.Crema.ServiceHosts.Domains
             var signatureDate = e.SignatureDate;
             var domainID = e.DomainInfo.DomainID;
             var rows = e.Rows;
+            if (this.resettings.Contains(e.DomainInfo.DataBaseID))
+                return;
             this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnRowAdded(signatureDate, domainID, rows));
         }
 
@@ -389,6 +411,8 @@ namespace Ntreev.Crema.ServiceHosts.Domains
             var signatureDate = e.SignatureDate;
             var domainID = e.DomainInfo.DomainID;
             var rows = e.Rows;
+            if (this.resettings.Contains(e.DomainInfo.DataBaseID))
+                return;
             this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnRowChanged(signatureDate, domainID, rows));
         }
 
@@ -401,6 +425,8 @@ namespace Ntreev.Crema.ServiceHosts.Domains
             var signatureDate = e.SignatureDate;
             var domainID = e.DomainInfo.DomainID;
             var rows = e.Rows;
+            if (this.resettings.Contains(e.DomainInfo.DataBaseID))
+                return;
             this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnRowRemoved(signatureDate, domainID, rows));
         }
 
@@ -412,7 +438,25 @@ namespace Ntreev.Crema.ServiceHosts.Domains
             var domainID = e.DomainInfo.DomainID;
             var propertyName = e.PropertyName;
             var value = e.Value;
+            if (this.resettings.Contains(e.DomainInfo.DataBaseID))
+                return;
             this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnPropertyChanged(signatureDate, domainID, propertyName, value));
+        }
+
+        private void DataBases_ItemsResetting(object sender, ItemsEventArgs<IDataBase> e)
+        {
+            foreach (var item in e.Items)
+            {
+                this.resettings.Add(item.ID);
+            }
+        }
+
+        private void DataBases_ItemsReset(object sender, ItemsEventArgs<IDataBase> e)
+        {
+            foreach (var item in e.Items)
+            {
+                this.resettings.Remove(item.ID);
+            }
         }
 
         private ResultBase<T> Invoke<T>(Guid domainID, Func<IDomain, T> func)

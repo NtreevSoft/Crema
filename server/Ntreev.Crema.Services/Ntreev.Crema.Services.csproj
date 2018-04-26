@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="AuthenticationToken.cs" />
     <Compile Include="CremaConfiguration.cs" />
+    <Compile Include="CremaPath.cs" />
     <Compile Include="CremaSettings.cs" />
     <Compile Include="Data\AccessMemberSerializationInfo.cs" />
     <Compile Include="Data\AccessSerializationInfo.cs" />

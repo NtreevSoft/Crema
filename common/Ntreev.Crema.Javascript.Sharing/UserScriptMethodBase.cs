@@ -15,17 +15,45 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.ServiceModel;
+using Ntreev.Crema.Services;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
-namespace Ntreev.Crema.Services
+namespace Ntreev.Crema.Javascript
 {
-    public interface ITransaction : IDispatcherObject
+    public abstract class UserScriptMethodBase : ScriptMethodBase
     {
-        void Commit(Authentication authentication);
+        private readonly ICremaHost cremaHost;
 
-        void Rollback(Authentication authentication);
+        protected UserScriptMethodBase(ICremaHost cremaHost)
+        {
+            this.cremaHost = cremaHost;
+        }
+
+        protected UserScriptMethodBase(ICremaHost cremaHost, string name)
+            : base(name)
+        {
+            this.cremaHost = cremaHost;
+        }
+
+        protected IUser GetUser(string userID)
+        {
+            if (userID == null)
+                throw new ArgumentNullException(nameof(userID));
+
+            if (this.CremaHost.GetService(typeof(IUserContext)) is IUserContext userContext)
+            {
+                var user = userContext.Dispatcher.Invoke(() => userContext.Users[userID]);
+                if (user == null)
+                    throw new UserNotFoundException(userID);
+                return user;
+            }
+            throw new NotImplementedException();
+        }
+
+        protected ICremaHost CremaHost => this.cremaHost;
     }
 }

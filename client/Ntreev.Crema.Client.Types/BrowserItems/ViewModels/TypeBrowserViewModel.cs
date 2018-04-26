@@ -64,6 +64,8 @@ namespace Ntreev.Crema.Client.Types.BrowserItems.ViewModels
             this.cremaAppHost = cremaAppHost;
             this.cremaAppHost.Loaded += CremaAppHost_Loaded;
             this.cremaAppHost.Unloaded += CremaAppHost_Unloaded;
+            this.cremaAppHost.Resetting += CremaAppHost_Resetting;
+            this.cremaAppHost.Reset += CremaAppHost_Reset;
             this.renameCommand = new DelegateCommand(this.Rename_Execute, this.Rename_CanExecute);
             this.deleteCommand = new DelegateCommand(this.Delete_Execute, this.Delete_CanExecute);
             this.DisplayName = Resources.Title_TypeBrowser;
@@ -103,27 +105,25 @@ namespace Ntreev.Crema.Client.Types.BrowserItems.ViewModels
             get { return this.deleteCommand; }
         }
 
-        private async void CremaAppHost_Loaded(object sender, EventArgs e)
+        private void CremaAppHost_Loaded(object sender, EventArgs e)
         {
-            if (this.cremaAppHost.GetService(typeof(IDataBase)) is IDataBase dataBase)
-            {
-                this.dataBaseID = dataBase.ID;
-                var viewModel = await dataBase.Dispatcher.InvokeAsync(() =>
-                {
-                    return new TypeRootTreeViewItemViewModel(this.authenticator, dataBase, this);
-                });
-                this.compositionService.SatisfyImportsOnce(viewModel);
-                this.Items.Add(viewModel);
-            };
-
-            this.LoadSettings();
+            this.Initialize();
         }
 
         private void CremaAppHost_Unloaded(object sender, EventArgs e)
         {
             this.SaveSettings();
-            this.FilterExpression = string.Empty;
-            this.Items.Clear();
+            this.Release();
+        }
+
+        private void CremaAppHost_Resetting(object sender, EventArgs e)
+        {
+            this.Release();
+        }
+
+        private void CremaAppHost_Reset(object sender, EventArgs e)
+        {
+            this.Initialize();
         }
 
         private void Delete_Execute(object parameter)
@@ -191,6 +191,28 @@ namespace Ntreev.Crema.Client.Types.BrowserItems.ViewModels
             {
                 this.SetSettings(savedItems);
             }
+        }
+
+        private async void Initialize()
+        {
+            if (this.cremaAppHost.GetService(typeof(IDataBase)) is IDataBase dataBase)
+            {
+                this.dataBaseID = dataBase.ID;
+                var viewModel = await dataBase.Dispatcher.InvokeAsync(() =>
+                {
+                    return new TypeRootTreeViewItemViewModel(this.authenticator, dataBase, this);
+                });
+                this.compositionService.SatisfyImportsOnce(viewModel);
+                this.Items.Add(viewModel);
+            };
+
+            this.LoadSettings();
+        }
+
+        private void Release()
+        {
+            this.FilterExpression = string.Empty;
+            this.Items.Clear();
         }
 
         #region ITypeBrowser

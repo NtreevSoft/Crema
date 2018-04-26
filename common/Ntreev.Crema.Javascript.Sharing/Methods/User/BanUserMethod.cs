@@ -28,10 +28,14 @@ namespace Ntreev.Crema.Javascript.Methods.User
     [Export(typeof(IScriptMethod))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
     [Category(nameof(User))]
-    class BanUserMethod : ScriptMethodBase
+    class BanUserMethod : UserScriptMethodBase
     {
-        [Import]
-        private Lazy<ICremaHost> cremaHost = null;
+        [ImportingConstructor]
+        public BanUserMethod(ICremaHost cremaHost)
+            : base(cremaHost)
+        {
+
+        }
 
         protected override Delegate CreateDelegate()
         {
@@ -40,15 +44,9 @@ namespace Ntreev.Crema.Javascript.Methods.User
 
         private void BanUser(string userID, string comment = null)
         {
-            var userContext = this.CremaHost.GetService(typeof(IUserContext)) as IUserContext;
-            userContext.Dispatcher.Invoke(() =>
-            {
-                var user = userContext.Users[userID];
-                var authentication = this.Context.GetAuthentication(this);
-                user.Ban(authentication, comment);
-            });
+            var user = this.GetUser(userID);
+            var authentication = this.Context.GetAuthentication(this);
+            user.Dispatcher.Invoke(() => user.Ban(authentication, comment));
         }
-
-        private ICremaHost CremaHost => this.cremaHost.Value;
     }
 }

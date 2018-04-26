@@ -70,13 +70,13 @@ namespace Ntreev.Crema.Services.DataBaseCollectionService {
         Ntreev.Crema.ServiceModel.ResultBase Revert(string dataBaseName, long revision);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseCollectionService/BeginTransaction", ReplyAction="http://www.ntreev.com/IDataBaseCollectionService/BeginTransactionResponse")]
-        Ntreev.Crema.ServiceModel.ResultBase<string> BeginTransaction(string dataBaseName);
+        Ntreev.Crema.ServiceModel.ResultBase BeginTransaction(string dataBaseName);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseCollectionService/EndTransaction", ReplyAction="http://www.ntreev.com/IDataBaseCollectionService/EndTransactionResponse")]
-        Ntreev.Crema.ServiceModel.ResultBase EndTransaction(string dataBaseName, string transactionID);
+        Ntreev.Crema.ServiceModel.ResultBase EndTransaction(string dataBaseName);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseCollectionService/CancelTransaction", ReplyAction="http://www.ntreev.com/IDataBaseCollectionService/CancelTransactionResponse")]
-        Ntreev.Crema.ServiceModel.ResultBase CancelTransaction(string dataBaseName, string transactionID);
+        Ntreev.Crema.ServiceModel.ResultBase CancelTransaction(string dataBaseName);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseCollectionService/IsAlive", ReplyAction="http://www.ntreev.com/IDataBaseCollectionService/IsAliveResponse")]
         bool IsAlive();
@@ -102,6 +102,12 @@ namespace Ntreev.Crema.Services.DataBaseCollectionService {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://www.ntreev.com/IDataBaseCollectionService/OnDataBasesUnloaded")]
         void OnDataBasesUnloaded(Ntreev.Library.SignatureDate signatureDate, string[] dataBaseNames);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://www.ntreev.com/IDataBaseCollectionService/OnDataBasesResetting")]
+        void OnDataBasesResetting(Ntreev.Library.SignatureDate signatureDate, string[] dataBaseNames);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://www.ntreev.com/IDataBaseCollectionService/OnDataBasesReset")]
+        void OnDataBasesReset(Ntreev.Library.SignatureDate signatureDate, string[] dataBaseNames, Ntreev.Crema.ServiceModel.DomainMetaData[] metaDatas);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://www.ntreev.com/IDataBaseCollectionService/OnDataBasesAuthenticationEntered" +
             "")]
@@ -223,16 +229,16 @@ namespace Ntreev.Crema.Services.DataBaseCollectionService {
             return base.Channel.Revert(dataBaseName, revision);
         }
         
-        public Ntreev.Crema.ServiceModel.ResultBase<string> BeginTransaction(string dataBaseName) {
+        public Ntreev.Crema.ServiceModel.ResultBase BeginTransaction(string dataBaseName) {
             return base.Channel.BeginTransaction(dataBaseName);
         }
         
-        public Ntreev.Crema.ServiceModel.ResultBase EndTransaction(string dataBaseName, string transactionID) {
-            return base.Channel.EndTransaction(dataBaseName, transactionID);
+        public Ntreev.Crema.ServiceModel.ResultBase EndTransaction(string dataBaseName) {
+            return base.Channel.EndTransaction(dataBaseName);
         }
         
-        public Ntreev.Crema.ServiceModel.ResultBase CancelTransaction(string dataBaseName, string transactionID) {
-            return base.Channel.CancelTransaction(dataBaseName, transactionID);
+        public Ntreev.Crema.ServiceModel.ResultBase CancelTransaction(string dataBaseName) {
+            return base.Channel.CancelTransaction(dataBaseName);
         }
         
         public bool IsAlive() {

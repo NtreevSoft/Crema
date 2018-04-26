@@ -334,4 +334,10 @@ notification : "{3}"</value>
   <data name="SetAccessMemberOfTypeItem" xml:space="preserve">
     <value>{0}({1})' set type of '{3}' user of type item '{2}' to '{4}'.</value>
   </data>
+  <data name="ResetDataBase" xml:space="preserve">
+    <value>database '{2}' reset by '{0}({1})'</value>
+  </data>
+  <data name="ResettingDataBase" xml:space="preserve">
+    <value>database '{2}' is resetting by '{0}({1})'</value>
+  </data>
 </root>

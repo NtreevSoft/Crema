@@ -30,10 +30,14 @@ namespace Ntreev.Crema.Javascript.Methods.User
     [Export(typeof(IScriptMethod))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
     [Category(nameof(User))]
-    class SendMessageMethod : ScriptMethodBase
+    class SendMessageMethod : UserScriptMethodBase
     {
-        [Import]
-        private ICremaHost cremaHost = null;
+        [ImportingConstructor]
+        public SendMessageMethod(ICremaHost cremaHost)
+            : base(cremaHost)
+        {
+
+        }
 
         protected override Delegate CreateDelegate()
         {
@@ -42,13 +46,9 @@ namespace Ntreev.Crema.Javascript.Methods.User
 
         private void SendMessage(string userID, string message)
         {
-            var userContext = this.cremaHost.GetService(typeof(IUserContext)) as IUserContext;
-            userContext.Dispatcher.Invoke(() =>
-            {
-                var authentication = this.Context.GetAuthentication(this);
-                var user = userContext.Users[userID];
-                user.SendMessage(authentication, message);
-            });
+            var user = this.GetUser(userID);
+            var authentication = this.Context.GetAuthentication(this);
+            user.Dispatcher.Invoke(() => user.SendMessage(authentication, message));
         }
     }
 }

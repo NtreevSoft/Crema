@@ -61,6 +61,10 @@ namespace Ntreev.Crema.Client.Framework
 
         event EventHandler Unloaded;
 
+        event EventHandler Resetting;
+
+        event EventHandler Reset;
+
         event EventHandler Opened;
 
         event EventHandler Closed;

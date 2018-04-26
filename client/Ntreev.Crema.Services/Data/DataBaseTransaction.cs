@@ -30,15 +30,12 @@ namespace Ntreev.Crema.Services.Data
         private Authentication authentication;
         private readonly DataBase dataBase;
         private readonly IDataBaseCollectionService service;
-        private readonly Guid transactionID;
 
-        public DataBaseTransaction(Authentication authentication, DataBase dataBase, IDataBaseCollectionService service, Guid transactionID)
+        public DataBaseTransaction(Authentication authentication, DataBase dataBase, IDataBaseCollectionService service)
         {
             this.authentication = authentication;
             this.dataBase = dataBase;
             this.service = service;
-            this.transactionID = transactionID;
-            this.dataBase.ExtendedProperties[this.transactionID] = this;
         }
 
         public void Commit(Authentication authentication)
@@ -46,9 +43,9 @@ namespace Ntreev.Crema.Services.Data
             this.dataBase.VerifyAccess(authentication);
             if (this.authentication == null)
                 throw new InvalidOperationException();
-            var result = this.service.EndTransaction(this.dataBase.Name, $"{this.transactionID}");
+            var result = this.service.EndTransaction(this.dataBase.Name);
             this.Sign(authentication, result);
-            this.dataBase.ExtendedProperties.Remove(this.transactionID);
+            this.OnDisposed(EventArgs.Empty);
         }
 
         public void Rollback(Authentication authentication)
@@ -56,9 +53,10 @@ namespace Ntreev.Crema.Services.Data
             this.dataBase.VerifyAccess(authentication);
             if (this.authentication == null)
                 throw new InvalidOperationException();
-            var result = this.service.EndTransaction(this.dataBase.Name, $"{this.transactionID}");
+            var result = this.service.CancelTransaction(this.dataBase.Name);
             this.Sign(authentication, result);
-            this.dataBase.ExtendedProperties.Remove(this.transactionID);
+            //this.dataBase.SetReset(authentication);
+            this.OnDisposed(EventArgs.Empty);
         }
 
         public void Dispose()
@@ -68,7 +66,12 @@ namespace Ntreev.Crema.Services.Data
 
         public CremaDispatcher Dispatcher => this.dataBase.Dispatcher;
 
-        public Guid ID => this.transactionID;
+        public event EventHandler Disposed;
+
+        protected virtual void OnDisposed(EventArgs e)
+        {
+            this.Disposed?.Invoke(this, e);
+        }
 
         private void Sign(Authentication authentication, ResultBase result)
         {

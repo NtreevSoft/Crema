@@ -15,17 +15,44 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.Services;
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Text;
+using System.ComponentModel;
 
-namespace Ntreev.Crema.Services
+namespace Ntreev.Crema.Javascript.Methods.Domain
 {
-    public interface ITransaction : IDispatcherObject
+    [Export(typeof(IScriptMethod))]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
+    [Category(nameof(Domain))]
+    class ContainsDomainMethod : ScriptMethodBase
     {
-        void Commit(Authentication authentication);
+        private readonly ICremaHost cremaHost;
 
-        void Rollback(Authentication authentication);
+        [ImportingConstructor]
+        public ContainsDomainMethod(ICremaHost cremaHost)
+        {
+            this.cremaHost = cremaHost;
+        }
+
+        protected override Delegate CreateDelegate()
+        {
+            return new Func<string, bool>(this.ContainsDomain);
+        }
+
+        private bool ContainsDomain(string domainID)
+        {
+            if (this.cremaHost.GetService(typeof(IDomainContext)) is IDomainContext domainContext)
+            {
+                if (Guid.TryParse(domainID, out var guid) == true)
+                {
+                    return domainContext.Dispatcher.Invoke(() => domainContext.Domains.Contains(guid));
+                }
+            }
+            return false;
+        }
     }
 }

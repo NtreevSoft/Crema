@@ -51,8 +51,8 @@ namespace Ntreev.Crema.Javascript.Methods.DataBase
             return dataBase.Dispatcher.Invoke(() =>
             {
                 var transaction = dataBase.BeginTransaction(authentication);
-                this.Context.Properties[$"{transaction.ID}"] = transaction;
-                return $"{transaction.ID}";
+                this.Context.Properties[$"{dataBase.ID}"] = transaction;
+                return $"{dataBase.ID}";
             });
         }
     }

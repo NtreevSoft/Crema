@@ -372,7 +372,7 @@ namespace Ntreev.Crema.Services.Domains
             {
                 base.DomainState &= ~DomainState.IsActivated;
             }
-            this.dispatcher.InvokeAsync(() =>
+            this.dispatcher.Invoke(() =>
             {
                 this.OnDomainStateChanged(new DomainEventArgs(Authentication.System, this));
                 this.Container.InvokeDomainStateChangedEvent(Authentication.System, this);

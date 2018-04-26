@@ -29,10 +29,14 @@ namespace Ntreev.Crema.Javascript.Methods.User
     [Export(typeof(IScriptMethod))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
     [Category(nameof(User))]
-    class IsUserOnlineMethod : ScriptMethodBase
+    class IsUserOnlineMethod : UserScriptMethodBase
     {
-        [Import]
-        private Lazy<ICremaHost> cremaHost = null;
+        [ImportingConstructor]
+        public IsUserOnlineMethod(ICremaHost cremaHost)
+            : base(cremaHost)
+        {
+
+        }
 
         protected override Delegate CreateDelegate()
         {
@@ -41,14 +45,8 @@ namespace Ntreev.Crema.Javascript.Methods.User
 
         private bool IsUserOnline(string userID)
         {
-            var userContext = this.CremaHost.GetService(typeof(IUserContext)) as IUserContext;
-            return userContext.Dispatcher.Invoke(() =>
-            {
-                var user = userContext.Users[userID];
-                return user.UserState == UserState.Online;
-            });
+            var user = this.GetUser(userID);
+            return user.Dispatcher.Invoke(() => user.UserState == UserState.Online);
         }
-
-        private ICremaHost CremaHost => this.cremaHost.Value;
     }
 }

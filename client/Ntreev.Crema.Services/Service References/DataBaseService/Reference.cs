@@ -24,6 +24,9 @@ namespace Ntreev.Crema.Services.DataBaseService {
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/Unsubscribe", ReplyAction="http://www.ntreev.com/IDataBaseService/UnsubscribeResponse")]
         Ntreev.Crema.ServiceModel.ResultBase Unsubscribe();
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/GetMetaData", ReplyAction="http://www.ntreev.com/IDataBaseService/GetMetaDataResponse")]
+        Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.DataBaseMetaData> GetMetaData();
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/GetDataSet", ReplyAction="http://www.ntreev.com/IDataBaseService/GetDataSetResponse")]
         Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.Data.CremaDataSet> GetDataSet(long revision);
         
@@ -268,6 +271,10 @@ namespace Ntreev.Crema.Services.DataBaseService {
         
         public Ntreev.Crema.ServiceModel.ResultBase Unsubscribe() {
             return base.Channel.Unsubscribe();
+        }
+        
+        public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.DataBaseMetaData> GetMetaData() {
+            return base.Channel.GetMetaData();
         }
         
         public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.Data.CremaDataSet> GetDataSet(long revision) {

@@ -66,23 +66,6 @@ namespace Ntreev.Crema.ServiceModel
             get { return this.domainInfo; }
         }
 
-        //public BanInfo BanInfo
-        //{
-        //    get
-        //    {
-        //        if (this.banInfo.DomainID != string.Empty)
-        //        {
-        //            this.banInfo.Path = this.Path;
-        //        }
-        //        return this.banInfo;
-        //    }
-        //    protected set
-        //    {
-        //        this.banInfo = value;
-        //        this.OnDomainBanInfoChanged(EventArgs.Empty);
-        //    }
-        //}
-
         public DomainState DomainState
         {
             get { return this.domainState; }
@@ -94,11 +77,6 @@ namespace Ntreev.Crema.ServiceModel
                 this.OnDomainStateChanged(EventArgs.Empty);
             }
         }
-
-        //public Authority Authority
-        //{
-        //    get { return this.domainInfo.Authority; }
-        //}
 
         public bool IsModified
         {
@@ -163,12 +141,6 @@ namespace Ntreev.Crema.ServiceModel
                 this.domainInfo.CategoryPath = this.Category == null ? PathUtility.Separator : this.Category.Path;
                 this.OnDomainInfoChanged(EventArgs.Empty);
             }
-
-            //if (this.banInfo.DomainID != string.Empty)
-            //{
-            //    this.banInfo.Path = Regex.Replace(this.banInfo.Path, "^" + oldPath, newPath);
-            //    this.OnDomainBanInfoChanged(EventArgs.Empty);
-            //}
         }
 
         protected void ValidateMove(IAuthentication authentication, string categoryPath)
