@@ -20,6 +20,12 @@
   <wsdl:message name="IDomainService_Unsubscribe_OutputMessage">
     <wsdl:part name="parameters" element="tns:UnsubscribeResponse" />
   </wsdl:message>
+  <wsdl:message name="IDomainService_GetMetaData_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetMetaData" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_GetMetaData_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetMetaDataResponse" />
+  </wsdl:message>
   <wsdl:message name="IDomainService_SetUserLocation_InputMessage">
     <wsdl:part name="parameters" element="tns:SetUserLocation" />
   </wsdl:message>
@@ -130,6 +136,10 @@
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Unsubscribe">
       <wsdl:input wsaw:Action="http://www.ntreev.com/IDomainService/Unsubscribe" message="tns:IDomainService_Unsubscribe_InputMessage" />
       <wsdl:output wsaw:Action="http://www.ntreev.com/IDomainService/UnsubscribeResponse" message="tns:IDomainService_Unsubscribe_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetMetaData">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDomainService/GetMetaData" message="tns:IDomainService_GetMetaData_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDomainService/GetMetaDataResponse" message="tns:IDomainService_GetMetaData_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="SetUserLocation">
       <wsdl:input wsaw:Action="http://www.ntreev.com/IDomainService/SetUserLocation" message="tns:IDomainService_SetUserLocation_InputMessage" />

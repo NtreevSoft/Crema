@@ -179,6 +179,7 @@ namespace Ntreev.Crema.Services.Domains
                 {
                     domain = new TypeDomain(metaData.DomainInfo, this.Context.CremaHost.Dispatcher);
                 }
+
                 this.Add(domain);
                 domain.Category = this.Context.Categories.Prepare(metaData.DomainInfo.CategoryPath);
                 domain.Initialize(authentication, metaData);

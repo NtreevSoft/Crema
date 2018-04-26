@@ -29,6 +29,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Timers;
@@ -53,7 +54,6 @@ namespace Ntreev.Crema.Services.Data
         private UserContext userContext;
         private CremaDataSet dataSetCache;
         private DataBaseMetaData? metaData;
-        private bool isResetting;
 
         private EventHandler<AuthenticationEventArgs> authenticationEntered;
         private EventHandler<AuthenticationEventArgs> authenticationLeft;
@@ -449,7 +449,7 @@ namespace Ntreev.Crema.Services.Data
 
         public void ResettingDataBase(Authentication authentication)
         {
-            this.isResetting = true;
+            Trace.WriteLine("resetting");
             this.typeContext?.Dispose();
             this.tableContext?.Dispose();
             this.DataBases.InvokeDataBaseResetting(authentication, this);
@@ -460,7 +460,7 @@ namespace Ntreev.Crema.Services.Data
         public void ResetDataBase(Authentication authentication, IEnumerable<TypeInfo> typeInfos, IEnumerable<TableInfo> tableInfos)
         {
             this.DataBases.InvokeDataBaseReset(authentication, this);
-            
+
             this.typeContext = new TypeContext(this, typeInfos);
             this.typeContext.ItemsLockChanged += (s, e) => this.metaData = null;
             this.typeContext.ItemsAccessChanged += (s, e) => this.metaData = null;
@@ -478,9 +478,8 @@ namespace Ntreev.Crema.Services.Data
                     this.AttachUsers(authentication);
                 }
             }
-            this.isResetting = false;
-            this.Dispatcher.InvokeAsync(() =>
-            {
+            //this.Dispatcher.InvokeAsync(() =>
+            //{
                 var metaDataList = new List<DomainMetaData>();
                 foreach (var item in this.cremaHost.DomainContext.Domains)
                 {
@@ -490,8 +489,9 @@ namespace Ntreev.Crema.Services.Data
                         metaDataList.Add(metaData);
                     }
                 }
+            Trace.WriteLine("reset");
                 this.DataBases.InvokeItemsResetEvent(authentication, new IDataBase[] { this }, metaDataList.ToArray());
-            });
+            //});
         }
 
         public IDomainHost FindDomainHost(Domain domain)

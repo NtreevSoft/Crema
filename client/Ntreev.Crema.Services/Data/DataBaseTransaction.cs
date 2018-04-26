@@ -17,6 +17,7 @@
 
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services.DataBaseCollectionService;
+using Ntreev.Crema.Services.Domains;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,8 +56,22 @@ namespace Ntreev.Crema.Services.Data
                 throw new InvalidOperationException();
             var result = this.service.CancelTransaction(this.dataBase.Name);
             this.Sign(authentication, result);
-            //this.dataBase.SetReset(authentication);
+            this.RollbackDomains(authentication);
             this.OnDisposed(EventArgs.Empty);
+        }
+
+        private void RollbackDomains(Authentication authentication)
+        {
+            if (this.dataBase.GetService(typeof(DomainContext)) is DomainContext domainContext)
+            {
+                this.dataBase.SetResetting(authentication);
+                var metaDatas = domainContext.Restore(this.dataBase);
+                this.dataBase.SetReset(authentication, metaDatas);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
 
         public void Dispose()

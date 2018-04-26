@@ -118,6 +118,21 @@ namespace Ntreev.Crema.ServiceHosts.Domains
             return result;
         }
 
+        public ResultBase<DomainContextMetaData> GetMetaData()
+        {
+            var result = new ResultBase<DomainContextMetaData>();
+            try
+            {
+                result.Value = this.domainContext.Dispatcher.Invoke(() => this.domainContext.GetMetaData(this.authentication));
+                result.SignatureDate = this.authentication.SignatureDate;
+            }
+            catch (Exception e)
+            {
+                result.Fault = new CremaFault(e);
+            }
+            return result;
+        }
+
         public ResultBase<DomainRowInfo[]> SetRow(Guid domainID, DomainRowInfo[] rows)
         {
             return this.Invoke(domainID, (domain) =>
@@ -340,6 +355,7 @@ namespace Ntreev.Crema.ServiceHosts.Domains
             var domainState = e.DomainState;
             if (this.resettings.Contains(e.DomainInfo.DataBaseID))
                 return;
+            System.Diagnostics.Trace.WriteLine("DomainContext_DomainStateChanged");
             this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnDomainStateChanged(signatureDate, domainID, domainState));
         }
 

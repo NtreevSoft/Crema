@@ -183,7 +183,7 @@ namespace Ntreev.Crema.Services.Domains
             }
         }
 
-        public void Restore(DataBase dataBase)
+        public void Restore(Authentication authentication, DataBase dataBase)
         {
             var succeededCount = 0;
             var failedCount = 0;
@@ -200,7 +200,7 @@ namespace Ntreev.Crema.Services.Domains
                 if (Guid.TryParse(dirInfo.Name, out Guid domainID) == false)
                     continue;
 
-                var restorer = new DomainRestorer(this, item);
+                var restorer = new DomainRestorer(authentication, this, item);
 
                 if (totalCount == 0)
                     this.cremaHost.Info(Resources.Message_DomainRestorationMessage);
