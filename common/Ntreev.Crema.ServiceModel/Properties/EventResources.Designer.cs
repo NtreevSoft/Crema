@@ -557,6 +557,24 @@ namespace Ntreev.Crema.ServiceModel.Properties {
         }
         
         /// <summary>
+        ///   database &apos;{2}&apos; reset by &apos;{0}({1})&apos;과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string ResetDataBase {
+            get {
+                return ResourceManager.GetString("ResetDataBase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   database &apos;{2}&apos; is resetting by &apos;{0}({1})&apos;과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string ResettingDataBase {
+            get {
+                return ResourceManager.GetString("ResettingDataBase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   &apos;{0}({1})&apos; revert revision of database &apos;{2}&apos; to &apos;{3}&apos;.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string RevertDataBase {

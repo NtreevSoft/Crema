@@ -10,13 +10,25 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Consoles\GenerateDeclarationCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\IO\CreateDirectoryMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\IO\DirectoryExistsMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\IO\FileExistsMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\User\ContainsUserItemMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\User\ContainsUserMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UserScriptMethodBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DomainScriptMethodBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IScriptMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\CancelDataBaseTransactionMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\ContainsDataBaseMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\ContainsTypeItemMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\ContainsTableItemMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\ContainsTypeMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\DeleteTableMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\DeleteTableItemMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\EndDataBaseTransactionMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\BeginDataBaseTransactionMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\ContainsTableMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\Domain\ContainsDomainMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\Domain\ContainsDomainUserMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\AddEventListenerMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\TableContent\GetTableContentRowCountMethod.cs" />
@@ -130,7 +142,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)ScriptContextBase.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)Methods\IO\" />
     <Folder Include="$(MSBuildThisFileDirectory)Methods\Permission\" />
   </ItemGroup>
 </Project>

@@ -48,7 +48,7 @@ namespace Ntreev.Crema.Services.Domains
             var domainInfo = domain.DomainInfo;
             this.Dispatcher.InvokeAsync(() =>
             {
-                this.CremaHost.Debug(comment);
+                this.CremaHost.Debug(eventLog);
                 this.CremaHost.Info(comment);
                 this.OnDomainCreated(args);
                 this.Context.InvokeItemsCreatedEvent(authentication, new IDomainItem[] { domain }, new object[] { domainInfo });
@@ -62,7 +62,7 @@ namespace Ntreev.Crema.Services.Domains
             var comment = isCanceled == false ? EventMessageBuilder.EndDomain(authentication, domain) : EventMessageBuilder.CancelDomain(authentication, domain);
             this.Dispatcher.InvokeAsync(() =>
             {
-                this.CremaHost.Debug(comment);
+                this.CremaHost.Debug(eventLog);
                 this.CremaHost.Info(comment);
                 this.OnDomainDeleted(args);
                 this.Context.InvokeItemsDeleteEvent(authentication, new IDomainItem[] { domain }, new string[] { domain.Path });
@@ -112,7 +112,7 @@ namespace Ntreev.Crema.Services.Domains
             var comment = EventMessageBuilder.EnterDomainUser(authentication, domain);
             this.Dispatcher.InvokeAsync(() =>
             {
-                this.CremaHost.Debug(comment);
+                this.CremaHost.Debug(eventLog);
                 this.CremaHost.Info(comment);
                 this.OnDomainUserAdded(args);
             });
@@ -127,7 +127,7 @@ namespace Ntreev.Crema.Services.Domains
                 : EventMessageBuilder.LeaveDomainUser(authentication, domain);
             this.Dispatcher.InvokeAsync(() =>
             {
-                this.CremaHost.Debug(comment);
+                this.CremaHost.Debug(eventLog);
                 this.CremaHost.Info(comment);
                 this.OnDomainUserRemoved(args);
             });

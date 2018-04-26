@@ -158,6 +158,12 @@
   <wsdl:message name="IDataBaseCollectionService_OnDataBasesUnloaded_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:OnDataBasesUnloaded" />
   </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_OnDataBasesResetting_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnDataBasesResetting" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_OnDataBasesReset_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnDataBasesReset" />
+  </wsdl:message>
   <wsdl:message name="IDataBaseCollectionService_OnDataBasesAuthenticationEntered_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:OnDataBasesAuthenticationEntered" />
   </wsdl:message>
@@ -282,6 +288,12 @@
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnDataBasesUnloaded">
       <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/OnDataBasesUnloaded" message="tns:IDataBaseCollectionService_OnDataBasesUnloaded_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnDataBasesResetting">
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/OnDataBasesResetting" message="tns:IDataBaseCollectionService_OnDataBasesResetting_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnDataBasesReset">
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/OnDataBasesReset" message="tns:IDataBaseCollectionService_OnDataBasesReset_OutputCallbackMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnDataBasesAuthenticationEntered">
       <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/OnDataBasesAuthenticationEntered" message="tns:IDataBaseCollectionService_OnDataBasesAuthenticationEntered_OutputCallbackMessage" />

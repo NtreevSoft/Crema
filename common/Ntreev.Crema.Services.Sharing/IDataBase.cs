@@ -77,6 +77,10 @@ namespace Ntreev.Crema.Services
 
         event EventHandler Unloaded;
 
+        event EventHandler Resetting;
+
+        event EventHandler Reset;
+
         event EventHandler<AuthenticationEventArgs> AuthenticationEntered;
 
         event EventHandler<AuthenticationEventArgs> AuthenticationLeft;

@@ -52,6 +52,8 @@ namespace Ntreev.Crema.Client.Tables.Documents.ViewModels
         {
             this.cremaAppHost = cremaAppHost;
             this.cremaAppHost.Unloaded += CremaAppHost_Unloaded;
+            this.cremaAppHost.Resetting += CremaAppHost_Resetting;
+            this.cremaAppHost.Reset += CremaAppHost_Reset;
             this.DisplayName = Resources.Title_Tables;
         }
 
@@ -224,6 +226,16 @@ namespace Ntreev.Crema.Client.Tables.Documents.ViewModels
         private void CremaAppHost_Unloaded(object sender, EventArgs e)
         {
             this.Dispatcher.InvokeAsync(() => this.Items.Clear());
+        }
+
+        private void CremaAppHost_Resetting(object sender, EventArgs e)
+        {
+            this.Items.Clear();
+        }
+
+        private void CremaAppHost_Reset(object sender, EventArgs e)
+        {
+            
         }
 
         private TableEditorViewModel OpenTable(Authentication authentication, TableDescriptor descriptor, string tableName)

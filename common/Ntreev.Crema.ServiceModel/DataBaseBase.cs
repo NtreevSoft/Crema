@@ -185,7 +185,9 @@ namespace Ntreev.Crema.ServiceModel
 
         public event EventHandler Unloaded;
 
-        public event EventHandler Reseted;
+        public event EventHandler Resetting;
+
+        public event EventHandler Reset;
 
         public event EventHandler LockChanged;
 
@@ -287,7 +289,12 @@ namespace Ntreev.Crema.ServiceModel
             this.OnUnloaded(EventArgs.Empty);
         }
 
-        protected void Reset(IAuthentication authentication)
+        protected void ResettingDataBase(IAuthentication authentication)
+        {
+            this.OnResetting(EventArgs.Empty);
+        }
+
+        protected void ResetDataBase(IAuthentication authentication)
         {
             this.OnReset(EventArgs.Empty);
         }
@@ -312,9 +319,14 @@ namespace Ntreev.Crema.ServiceModel
             this.Unloaded?.Invoke(this, e);
         }
 
+        protected virtual void OnResetting(EventArgs e)
+        {
+            this.Resetting?.Invoke(this, e);
+        }
+
         protected virtual void OnReset(EventArgs e)
         {
-            this.Reseted?.Invoke(this, e);
+            this.Reset?.Invoke(this, e);
         }
 
         protected virtual void OnLockChanged(EventArgs e)

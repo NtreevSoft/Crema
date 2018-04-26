@@ -44,6 +44,9 @@ namespace Ntreev.Crema.ServiceHosts.Data
         ResultBase Unsubscribe();
 
         [OperationContract]
+        ResultBase<DataBaseMetaData> GetMetaData();
+
+        [OperationContract]
         ResultBase<CremaDataSet> GetDataSet(long revision);
 
         [OperationContract]

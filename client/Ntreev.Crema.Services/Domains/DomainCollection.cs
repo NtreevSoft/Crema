@@ -26,7 +26,7 @@ using System.Linq;
 
 namespace Ntreev.Crema.Services.Domains
 {
-    class DomainCollection : ItemContainer<Domain, DomainCategory, DomainCollection, DomainCategoryCollection, DomainContext>, 
+    class DomainCollection : ItemContainer<Domain, DomainCategory, DomainCollection, DomainCategoryCollection, DomainContext>,
         IDomainCollection
     {
         private EventHandler<DomainEventArgs> domainCreated;
@@ -49,7 +49,7 @@ namespace Ntreev.Crema.Services.Domains
             var domainInfo = domain.DomainInfo;
             await this.Dispatcher.InvokeAsync(() =>
             {
-                this.CremaHost.Debug(comment);
+                this.CremaHost.Debug(eventLog);
                 this.CremaHost.Info(comment);
                 this.OnDomainCreated(args);
                 this.Context.InvokeItemsCreatedEvent(authentication, new IDomainItem[] { domain }, new object[] { domainInfo });
@@ -63,7 +63,7 @@ namespace Ntreev.Crema.Services.Domains
             var comment = isCanceled == false ? EventMessageBuilder.EndDomain(authentication, domain) : EventMessageBuilder.CancelDomain(authentication, domain);
             await this.Dispatcher.InvokeAsync(() =>
             {
-                this.CremaHost.Debug(comment);
+                this.CremaHost.Debug(eventLog);
                 this.CremaHost.Info(comment);
                 this.OnDomainDeleted(args);
                 this.Context.InvokeItemsDeleteEvent(authentication, new IDomainItem[] { domain }, new string[] { domain.Path });
@@ -113,7 +113,7 @@ namespace Ntreev.Crema.Services.Domains
             var comment = EventMessageBuilder.EnterDomainUser(authentication, domain);
             await this.Dispatcher.InvokeAsync(() =>
             {
-                this.CremaHost.Debug(comment);
+                this.CremaHost.Debug(eventLog);
                 this.CremaHost.Info(comment);
                 this.OnDomainUserAdded(args);
             });
@@ -128,7 +128,7 @@ namespace Ntreev.Crema.Services.Domains
                 : EventMessageBuilder.LeaveDomainUser(authentication, domain);
             await this.Dispatcher.InvokeAsync(() =>
             {
-                this.CremaHost.Debug(comment);
+                this.CremaHost.Debug(eventLog);
                 this.CremaHost.Info(comment);
                 this.OnDomainUserRemoved(args);
             });
@@ -161,30 +161,6 @@ namespace Ntreev.Crema.Services.Domains
             });
         }
 
-        //public void InvokeDomainsCreatedEvent(Authentication authentication, Domain[] domains)
-        //{
-        //    var args = domains.Select(item => (object)item.DomainInfo).ToArray();
-        //    this.OnDomainsCreated(new ItemsCreatedEventArgs<IDomain>(authentication, domains, args));
-        //    this.Context.InvokeItemsCreatedEvent(authentication, domains, args);
-        //}
-
-        //public void InvokeDomainsRenamedEvent(Authentication authentication, Domain[] domains, string[] oldNames, string[] oldPaths)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public void InvokeDomainsMovedEvent(Authentication authentication, Domain[] domains, string[] oldPaths, string[] oldCategoryPaths)
-        //{
-        //    this.OnDomainsMoved(new ItemsMovedEventArgs<IDomain>(authentication, domains, oldPaths, oldCategoryPaths));
-        //    this.Context.InvokeItemsMovedEvent(authentication, domains, oldPaths, oldCategoryPaths);
-        //}
-
-        //public void InvokeDomainsDeletedEvent(Authentication authentication, Domain[] domains, string[] itemPaths)
-        //{
-        //    this.OnDomainsDeleted(new ItemsDeletedEventArgs<IDomain>(authentication, domains, itemPaths));
-        //    this.Context.InvokeItemsDeleteEvent(authentication, domains, itemPaths);
-        //}
-
         public Domain Create(Authentication authentication, DomainMetaData metaData)
         {
             var domain = this[metaData.DomainID];
@@ -203,7 +179,6 @@ namespace Ntreev.Crema.Services.Domains
                 {
                     domain = new TypeDomain(metaData.DomainInfo, this.Context.CremaHost.Dispatcher);
                 }
-                //this.AttachEventHandlers(domain);
                 this.Add(domain);
                 domain.Category = this.Context.Categories.Prepare(metaData.DomainInfo.CategoryPath);
                 domain.Initialize(authentication, metaData);
@@ -248,11 +223,11 @@ namespace Ntreev.Crema.Services.Domains
             if (domain != null)
             {
                 domain.Category = this.Context.Categories.Prepare(domainInfo.CategoryPath);
-                
+
                 foreach (var item in this.CremaHost.DataBases)
                 {
                     var isLoaded = item.Service != null;
-                    if (domain.DataBaseID == item.ID && isLoaded == true)
+                    if (domain.DataBaseID == item.ID && isLoaded == true && item.IsResetting == false)
                     {
                         var target = item.FindDomainHost(domain);
                         if (target != null)
@@ -315,62 +290,6 @@ namespace Ntreev.Crema.Services.Domains
                 return base.Count;
             }
         }
-
-        //public event ItemsCreatedEventHandler<IDomain> DomainsCreated
-        //{
-        //    add
-        //    {
-        //        this.Dispatcher.VerifyAccess();
-        //        this.domainsCreated += value;
-        //    }
-        //    remove
-        //    {
-        //        this.Dispatcher.VerifyAccess();
-        //        this.domainsCreated -= value;
-        //    }
-        //}
-
-        //public event ItemsRenamedEventHandler<IDomain> DomainsRenamed
-        //{
-        //    add
-        //    {
-        //        this.Dispatcher.VerifyAccess();
-        //        this.domainsRenamed += value;
-        //    }
-        //    remove
-        //    {
-        //        this.Dispatcher.VerifyAccess();
-        //        this.domainsRenamed -= value;
-        //    }
-        //}
-
-        //public event ItemsMovedEventHandler<IDomain> DomainsMoved
-        //{
-        //    add
-        //    {
-        //        this.Dispatcher.VerifyAccess();
-        //        this.domainsMoved += value;
-        //    }
-        //    remove
-        //    {
-        //        this.Dispatcher.VerifyAccess();
-        //        this.domainsMoved -= value;
-        //    }
-        //}
-
-        //public event ItemsDeletedEventHandler<IDomain> DomainsDeleted
-        //{
-        //    add
-        //    {
-        //        this.Dispatcher.VerifyAccess();
-        //        this.domainsDeleted += value;
-        //    }
-        //    remove
-        //    {
-        //        this.Dispatcher.VerifyAccess();
-        //        this.domainsDeleted -= value;
-        //    }
-        //}
 
         public event EventHandler<DomainEventArgs> DomainCreated
         {
@@ -540,26 +459,6 @@ namespace Ntreev.Crema.Services.Domains
             }
         }
 
-        //protected virtual void OnDomainsCreated(ItemsCreatedEventArgs<IDomain> e)
-        //{
-        //    this.domainsCreated?.Invoke(this, e);
-        //}
-
-        //protected virtual void OnDomainsRenamed(ItemsRenamedEventArgs<IDomain> e)
-        //{
-        //    this.domainsRenamed?.Invoke(this, e);
-        //}
-
-        //protected virtual void OnDomainsMoved(ItemsMovedEventArgs<IDomain> e)
-        //{
-        //    this.domainsMoved?.Invoke(this, e);
-        //}
-
-        //protected virtual void OnDomainsDeleted(ItemsDeletedEventArgs<IDomain> e)
-        //{
-        //    this.domainsDeleted?.Invoke(this, e);
-        //}
-
         protected virtual void OnDomainCreated(DomainEventArgs e)
         {
             this.domainCreated?.Invoke(this, e);
@@ -614,78 +513,6 @@ namespace Ntreev.Crema.Services.Domains
         {
             this.domainPropertyChanged?.Invoke(this, e);
         }
-
-        //private void AttachEventHandlers(Domain domain)
-        //{
-        //    domain.UserAdded += Domain_UserAdded;
-        //    domain.UserChanged += Domain_UserChanged;
-        //    domain.UserRemoved += Domain_UserRemoved;
-        //    domain.RowAdded += Domain_RowAdded;
-        //    domain.RowRemoved += Domain_RowRemoved;
-        //    domain.RowChanged += Domain_RowChanged;
-        //    domain.PropertyChanged += Domain_PropertyChanged;
-        //    domain.Deleted += Domain_Deleted;
-        //    domain.DomainStateChanged += Domain_DomainStateChanged;
-        //}
-
-        //private void DetachEventHandlers(Domain domain)
-        //{
-        //    domain.UserAdded -= Domain_UserAdded;
-        //    domain.UserChanged -= Domain_UserChanged;
-        //    domain.UserRemoved -= Domain_UserRemoved;
-        //    domain.RowAdded -= Domain_RowAdded;
-        //    domain.RowRemoved -= Domain_RowRemoved;
-        //    domain.RowChanged -= Domain_RowChanged;
-        //    domain.PropertyChanged -= Domain_PropertyChanged;
-        //    domain.Deleted -= Domain_Deleted;
-        //    domain.DomainStateChanged -= Domain_DomainStateChanged;
-        //}
-
-        //private async void Domain_Deleted(object sender, DomainDeletedEventArgs e)
-        //{
-        //    this.DetachEventHandlers(sender as Domain);
-        //    await this.Dispatcher.InvokeAsync(() => this.OnDomainDeleted(e));
-        //}
-
-        //private async void Domain_UserAdded(object sender, DomainUserEventArgs e)
-        //{
-        //    await this.Dispatcher.InvokeAsync(() => this.OnDomainUserAdded(e));
-        //}
-
-        //private async void Domain_UserChanged(object sender, DomainUserEventArgs e)
-        //{
-        //    await this.Dispatcher.InvokeAsync(() => this.OnDomainUserChanged(e));
-        //}
-
-        //private async void Domain_UserRemoved(object sender, DomainUserRemovedEventArgs e)
-        //{
-        //    await this.Dispatcher.InvokeAsync(() => this.OnDomainUserRemoved(e));
-        //}
-
-        //private async void Domain_RowAdded(object sender, DomainRowEventArgs e)
-        //{
-        //    await this.Dispatcher.InvokeAsync(() => this.OnDomainRowAdded(e));
-        //}
-
-        //private async void Domain_RowChanged(object sender, DomainRowEventArgs e)
-        //{
-        //    await this.Dispatcher.InvokeAsync(() => this.OnDomainRowChanged(e));
-        //}
-
-        //private async void Domain_RowRemoved(object sender, DomainRowEventArgs e)
-        //{
-        //    await this.Dispatcher.InvokeAsync(() => this.OnDomainRowRemoved(e));
-        //}
-
-        //private async void Domain_PropertyChanged(object sender, DomainPropertyEventArgs e)
-        //{
-        //    await this.Dispatcher.InvokeAsync(() => this.OnDomainPropertyChanged(e));
-        //}
-
-        //private async void Domain_DomainStateChanged(object sender, DomainEventArgs e)
-        //{
-        //    await this.Dispatcher.InvokeAsync(() => this.OnDomainStateChanged(e));
-        //}
 
         #region IDomainCollection
 

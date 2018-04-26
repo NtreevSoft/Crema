@@ -1,4 +1,5 @@
-﻿//Released under the MIT License.
+﻿
+//Released under the MIT License.
 //
 //Copyright (c) 2018 Ntreev Soft co., Ltd.
 //
@@ -15,17 +16,41 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.Services;
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Text;
+using System.ComponentModel;
+using Ntreev.Crema.Data.Xml.Schema;
+using Ntreev.Crema.Data;
+using Ntreev.Library.ObjectModel;
+using Ntreev.Library;
 
-namespace Ntreev.Crema.Services
+namespace Ntreev.Crema.Javascript.Methods.DataBase
 {
-    public interface ITransaction : IDispatcherObject
+    [Export(typeof(IScriptMethod))]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
+    [Category(nameof(DataBase))]
+    class ContainsDataBaseMethod : ScriptMethodBase
     {
-        void Commit(Authentication authentication);
+        private readonly ICremaHost cremaHost;
 
-        void Rollback(Authentication authentication);
+        [ImportingConstructor]
+        public ContainsDataBaseMethod(ICremaHost cremaHost)
+        {
+            this.cremaHost = cremaHost;
+        }
+
+        protected override Delegate CreateDelegate()
+        {
+            return new Func<string, bool>(ContainsDataBase);
+        }
+
+        private bool ContainsDataBase(string dataBaseName)
+        {
+            return this.cremaHost.Dispatcher.Invoke(() => this.cremaHost.DataBases.Contains(dataBaseName));
+        }
     }
 }

@@ -84,6 +84,16 @@ namespace Ntreev.Crema.Services.Data
             throw new NotImplementedException();
         }
 
+        void IDataBaseCollectionServiceCallback.OnDataBasesResetting(SignatureDate signatureDate, string[] dataBaseNames)
+        {
+            throw new NotImplementedException();
+        }
+
+        void IDataBaseCollectionServiceCallback.OnDataBasesReset(SignatureDate signatureDate, string[] dataBaseNames, DomainMetaData[] metaDatas)
+        {
+            throw new NotImplementedException();
+        }
+
         public void OnDataBasesAuthenticationEntered(SignatureDate signatureDate, string[] dataBaseNames, AuthenticationInfo authenticationInfo)
         {
             throw new NotImplementedException();

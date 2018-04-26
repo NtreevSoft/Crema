@@ -33,6 +33,7 @@ using Ntreev.Library.Serialization;
 using Ntreev.Library;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading;
 
 namespace Ntreev.Crema.Services.Domains
 {
@@ -238,6 +239,8 @@ namespace Ntreev.Crema.Services.Domains
                     finally
                     {
                         this.domain.DateTimeProvider = null;
+                        // 데이터 베이스 Reset에 의해서 복구가 되었을때 클라이언트에 이벤트 전달 순서가 꼬이는 경우가 생김
+                        Thread.Sleep(1);
                     }
                 }
 

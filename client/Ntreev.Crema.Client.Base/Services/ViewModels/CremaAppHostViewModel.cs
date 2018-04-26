@@ -597,6 +597,10 @@ namespace Ntreev.Crema.Client.Base.Services.ViewModels
 
         public event EventHandler Unloaded;
 
+        public event EventHandler Resetting;
+
+        public event EventHandler Reset;
+
         public event EventHandler Opened;
 
         public event EventHandler Closed;
@@ -619,6 +623,16 @@ namespace Ntreev.Crema.Client.Base.Services.ViewModels
         protected virtual void OnUnloaded(EventArgs e)
         {
             this.Unloaded?.Invoke(this, e);
+        }
+
+        protected virtual void OnResetting(EventArgs e)
+        {
+            this.Resetting?.Invoke(this, e);
+        }
+
+        protected virtual void OnReset(EventArgs e)
+        {
+            this.Reset?.Invoke(this, e);
         }
 
         protected virtual void OnOpened(EventArgs e)
@@ -705,6 +719,22 @@ namespace Ntreev.Crema.Client.Base.Services.ViewModels
             });
         }
 
+        private void DataBase_Resetting(object sender, EventArgs e)
+        {
+            this.Dispatcher.InvokeAsync(() =>
+            {
+                this.OnResetting(EventArgs.Empty);
+            });
+        }
+
+        private void DataBase_Reset(object sender, EventArgs e)
+        {
+            this.Dispatcher.InvokeAsync(() => 
+            {
+                this.OnReset(EventArgs.Empty);
+            });
+        }
+
         private async Task OpenAsync(string address, string userID, SecureString password)
         {
             await this.cremaHost.Dispatcher.InvokeAsync(() =>
@@ -747,6 +777,8 @@ namespace Ntreev.Crema.Client.Base.Services.ViewModels
                 }
                 dataBase.Enter(this.authenticator);
                 dataBase.Unloaded += DataBase_Unloaded;
+                dataBase.Resetting += DataBase_Resetting;
+                dataBase.Reset += DataBase_Reset;
                 this.dataBase = dataBase;
             });
         }
@@ -756,6 +788,8 @@ namespace Ntreev.Crema.Client.Base.Services.ViewModels
             return this.cremaHost.Dispatcher.InvokeAsync(() =>
             {
                 this.dataBase.Unloaded -= DataBase_Unloaded;
+                dataBase.Resetting -= DataBase_Resetting;
+                this.dataBase.Reset -= DataBase_Reset;
                 this.dataBase.Leave(this.authenticator);
                 this.dataBase = null;
             });

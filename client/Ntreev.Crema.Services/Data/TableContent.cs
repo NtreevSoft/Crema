@@ -328,7 +328,7 @@ namespace Ntreev.Crema.Services.Data
         private void Domain_Deleted(object sender, DomainDeletedEventArgs e)
         {
             var isCanceled = e.IsCanceled;
-            this.Dispatcher.InvokeAsync(() =>
+            this.Dispatcher?.InvokeAsync(() =>
             {
                 if (isCanceled == false)
                 {

@@ -28,6 +28,7 @@ using Ntreev.Library;
 using Ntreev.Crema.Services;
 using Ntreev.Crema.ServiceModel;
 using System.Windows.Threading;
+using System.Diagnostics;
 
 namespace Ntreev.Crema.ServiceHosts
 {
@@ -52,32 +53,24 @@ namespace Ntreev.Crema.ServiceHosts
 
         public event EventHandler Disposed;
 
-        protected async void InvokeEvent(string userID, string exceptionUserID, Action action)
+        protected void InvokeEvent(string userID, string exceptionUserID, Action action)
         {
-            if (this.channel == null)
-                return;
-
-            if (this.sessionID == null || (userID != null && userID == exceptionUserID))
-                return;
-
-            try
+            CremaService.Dispatcher?.InvokeAsync(() =>
             {
-                await CremaService.Dispatcher.InvokeAsync(() =>
+                if (this.sessionID == null || (userID != null && userID == exceptionUserID))
+                    return;
+                if (this.channel != null)
                 {
-                    if (this.channel != null)
+                    try
                     {
                         action();
                     }
-                });
-            }
-            catch (Exception e)
-            {
-                this.logService.Error(e);
-            }
-            finally
-            {
-
-            }
+                    catch (Exception e)
+                    {
+                        this.logService.Error(e);
+                    }
+                }
+            });
         }
 
         protected virtual void OnDisposed(EventArgs e)

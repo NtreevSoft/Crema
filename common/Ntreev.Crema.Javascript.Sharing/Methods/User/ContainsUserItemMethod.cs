@@ -15,17 +15,36 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.Services;
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Text;
+using System.ComponentModel;
 
-namespace Ntreev.Crema.Services
+namespace Ntreev.Crema.Javascript.Methods.User
 {
-    public interface ITransaction : IDispatcherObject
+    [Export(typeof(IScriptMethod))]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
+    [Category(nameof(User))]
+    class ContainsUserItemMethod : ScriptMethodBase
     {
-        void Commit(Authentication authentication);
+        [Import]
+        private ICremaHost cremaHost = null;
 
-        void Rollback(Authentication authentication);
+        protected override Delegate CreateDelegate()
+        {
+            return new Func<string, bool>(this.ContainsUserItem);
+        }
+
+        private bool ContainsUserItem(string userItemPath)
+        {
+            if (this.cremaHost.GetService(typeof(IUserContext)) is IUserContext userContext)
+            {
+                return userContext.Dispatcher.Invoke(() => userContext.Contains(userItemPath));
+            }
+            throw new NotImplementedException();
+        }
     }
 }

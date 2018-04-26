@@ -28,10 +28,14 @@ namespace Ntreev.Crema.Javascript.Methods.User
     [Export(typeof(IScriptMethod))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
     [Category(nameof(User))]
-    class IsUserBannedMethod : ScriptMethodBase
+    class IsUserBannedMethod : UserScriptMethodBase
     {
-        [Import]
-        private Lazy<ICremaHost> cremaHost = null;
+        [ImportingConstructor]
+        public IsUserBannedMethod(ICremaHost cremaHost)
+            : base(cremaHost)
+        {
+
+        }
 
         protected override Delegate CreateDelegate()
         {
@@ -40,14 +44,8 @@ namespace Ntreev.Crema.Javascript.Methods.User
 
         private bool IsUserBanned(string userID)
         {
-            var userContext = this.CremaHost.GetService(typeof(IUserContext)) as IUserContext;
-            return userContext.Dispatcher.Invoke(() =>
-            {
-                var user = userContext.Users[userID];
-                return user.BanInfo.Path != string.Empty;
-            });
+            var user = this.GetUser(userID);
+            return user.Dispatcher.Invoke(() => user.BanInfo.Path != string.Empty);
         }
-
-        private ICremaHost CremaHost => this.cremaHost.Value;
     }
 }

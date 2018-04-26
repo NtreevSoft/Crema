@@ -53,6 +53,7 @@ namespace Ntreev.Crema.Services.Data
         private UserContext userContext;
         private CremaDataSet dataSetCache;
         private DataBaseMetaData? metaData;
+        private bool isResetting;
 
         private EventHandler<AuthenticationEventArgs> authenticationEntered;
         private EventHandler<AuthenticationEventArgs> authenticationLeft;
@@ -301,11 +302,20 @@ namespace Ntreev.Crema.Services.Data
             this.Sign(authentication);
             if (this.IsLocked == false)
             {
-                var transactionID = Guid.NewGuid();
-                this.Lock(authentication, $"{transactionID}");
-                return new DataBaseTransaction(authentication, this, this.repositoryHost, transactionID);
+                this.Lock(authentication, $"{this.ID}");
             }
-            return new DataBaseTransaction(authentication, this, this.repositoryHost);
+            var transaction = new DataBaseTransaction(authentication, this, this.repositoryHost);
+            transaction.Disposed += (s, e) =>
+            {
+                this.dispatcher.InvokeAsync(() =>
+                {
+                    if (this.LockInfo.Comment == $"{this.ID}" && this.IsLocked == true)
+                    {
+                        this.Unlock(authentication);
+                    }
+                });
+            };
+            return transaction;
         }
 
         public void ValidateBeginInDataBase(Authentication authentication)
@@ -418,34 +428,70 @@ namespace Ntreev.Crema.Services.Data
             this.Delete(authentication);
         }
 
-        public void ClearDomains(Authentication authentication)
+        public void RollbackDomains(Authentication authentication)
         {
-            var domainContext = this.CremaHost.DomainContext;
-            var domains = domainContext.Domains.Where<Domain>(item => item.DataBaseID == this.ID).ToArray();
-            foreach (var item in domains)
+            if (this.GetService(typeof(DomainContext)) is DomainContext domainContext)
             {
-                item.Dispatcher.Invoke(() => item.Delete(authentication, true));
+                if (this.IsLoaded == true)
+                    this.DetachDomainHost();
+
+                var domains = domainContext.Domains.Where<Domain>(item => item.DataBaseID == this.ID).ToArray();
+                foreach (var item in domains)
+                {
+                    item.Dispatcher.Invoke(() => item.Delete(authentication, true));
+                }
+            }
+            else
+            {
+                throw new NotImplementedException();
             }
         }
 
-        public void Reset(IAuthentication authentication, IEnumerable<TypeInfo> typeInfos, IEnumerable<TableInfo> tableInfos)
+        public void ResettingDataBase(Authentication authentication)
         {
+            this.isResetting = true;
             this.typeContext?.Dispose();
             this.tableContext?.Dispose();
+            this.DataBases.InvokeDataBaseResetting(authentication, this);
+            base.ResettingDataBase(authentication);
+            this.DataBases.InvokeItemsResettingEvent(authentication, new IDataBase[] { this });
+        }
+
+        public void ResetDataBase(Authentication authentication, IEnumerable<TypeInfo> typeInfos, IEnumerable<TableInfo> tableInfos)
+        {
+            this.DataBases.InvokeDataBaseReset(authentication, this);
+            
             this.typeContext = new TypeContext(this, typeInfos);
             this.typeContext.ItemsLockChanged += (s, e) => this.metaData = null;
             this.typeContext.ItemsAccessChanged += (s, e) => this.metaData = null;
             this.tableContext = new TableContext(this, tableInfos);
             this.tableContext.ItemsLockChanged += (s, e) => this.metaData = null;
             this.tableContext.ItemsAccessChanged += (s, e) => this.metaData = null;
-            base.Reset(authentication);
+            base.ResetDataBase(authentication);
             base.UpdateLockParent();
             base.UpdateAccessParent();
-        }
-
-        public void Reset()
-        {
-
+            if (this.IsLoaded == true)
+            {
+                this.AttachDomainHost();
+                foreach (var item in this.authentications)
+                {
+                    this.AttachUsers(authentication);
+                }
+            }
+            this.isResetting = false;
+            this.Dispatcher.InvokeAsync(() =>
+            {
+                var metaDataList = new List<DomainMetaData>();
+                foreach (var item in this.cremaHost.DomainContext.Domains)
+                {
+                    if (item.DomainInfo.DataBaseID == this.ID)
+                    {
+                        var metaData = item.Dispatcher.Invoke(() => item.GetMetaData(authentication));
+                        metaDataList.Add(metaData);
+                    }
+                }
+                this.DataBases.InvokeItemsResetEvent(authentication, new IDataBase[] { this }, metaDataList.ToArray());
+            });
         }
 
         public IDomainHost FindDomainHost(Domain domain)
@@ -774,17 +820,31 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public new event EventHandler Reseted
+        public new event EventHandler Resetting
         {
             add
             {
                 this.Dispatcher?.VerifyAccess();
-                base.Reseted += value;
+                base.Resetting += value;
             }
             remove
             {
                 this.Dispatcher?.VerifyAccess();
-                base.Reseted -= value;
+                base.Resetting -= value;
+            }
+        }
+
+        public new event EventHandler Reset
+        {
+            add
+            {
+                this.Dispatcher?.VerifyAccess();
+                base.Reset += value;
+            }
+            remove
+            {
+                this.Dispatcher?.VerifyAccess();
+                base.Reset -= value;
             }
         }
 
@@ -1042,7 +1102,7 @@ namespace Ntreev.Crema.Services.Data
                     var dataInfo = JsonSerializerUtility.Read<DataBaseDataSerializationInfo>(filename);
                     if (this.repositoryHost.Revision == dataInfo.Revision)
                     {
-                        this.Reset(Authentication.System, dataInfo.TypeInfos, dataInfo.TableInfos);
+                        this.ResetDataBase(Authentication.System, dataInfo.TypeInfos, dataInfo.TableInfos);
                         return;
                     }
                 }
@@ -1060,7 +1120,7 @@ namespace Ntreev.Crema.Services.Data
 
                 var typeInfos = dataSet.Types.Select(item => item.TypeInfo);
                 var tableInfos = dataSet.Tables.Select(item => item.TableInfo);
-                this.Reset(Authentication.System, typeInfos, tableInfos);
+                this.ResetDataBase(Authentication.System, typeInfos, tableInfos);
                 this.dataSetCache = dataSet;
             }
         }
@@ -1181,9 +1241,6 @@ namespace Ntreev.Crema.Services.Data
                 throw new PermissionDeniedException();
             if (this.VerifyAccessType(authentication, AccessType.Owner) == false)
                 throw new PermissionDeniedException();
-            var domainContext = this.CremaHost.DomainContext;
-            if (domainContext.Domains.Any<Domain>(item => item.DataBaseID == this.ID) == true)
-                throw new InvalidOperationException("편집중인 내용이 있을때는 사용할 수 없습니다.");
         }
 
         private void OnEnter(Authentication authentication)

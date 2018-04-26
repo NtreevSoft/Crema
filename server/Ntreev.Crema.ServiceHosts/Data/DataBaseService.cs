@@ -44,8 +44,6 @@ namespace Ntreev.Crema.ServiceHosts.Data
         private readonly IUserContext userContext;
 
         private IDataBase dataBase;
-        private ITableContext tableContext;
-        private ITypeContext typeContext;
         private Authentication authentication;
         private string dataBaseName;
 
@@ -82,8 +80,6 @@ namespace Ntreev.Crema.ServiceHosts.Data
                     this.dataBase = this.cremaHost.DataBases[dataBaseName];
                     this.dataBaseName = dataBaseName;
                     this.dataBase.Enter(this.authentication);
-                    this.tableContext = this.dataBase.TableContext;
-                    this.typeContext = this.dataBase.TypeContext;
                     this.AttachEventHandlers();
                     this.logService.Debug($"[{this.OwnerID}] {nameof(DataBaseService)} {nameof(Subscribe)} : {dataBaseName}");
                     return this.dataBase.GetMetaData(this.authentication);
@@ -126,6 +122,14 @@ namespace Ntreev.Crema.ServiceHosts.Data
             return result;
         }
 
+        public ResultBase<DataBaseMetaData> GetMetaData()
+        {
+            return this.Invoke(() =>
+            {
+                return this.dataBase.GetMetaData(this.authentication);
+            });
+        }
+
         public ResultBase<CremaDataSet> GetDataSet(long revision)
         {
             return this.InvokeImmediately(() =>
@@ -157,7 +161,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
         {
             return this.Invoke(() =>
             {
-                this.tableContext.Import(this.authentication, dataSet, comment);
+                this.TableContext.Import(this.authentication, dataSet, comment);
             });
         }
 
@@ -439,7 +443,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
         {
             return this.Invoke(() =>
             {
-                this.typeContext.Import(this.authentication, dataSet, comment);
+                this.TypeContext.Import(this.authentication, dataSet, comment);
             });
         }
 
@@ -893,23 +897,23 @@ namespace Ntreev.Crema.ServiceHosts.Data
         {
             this.cremaHost.Dispatcher.VerifyAccess();
 
-            this.tableContext.Tables.TablesStateChanged += Tables_TablesStateChanged;
-            this.tableContext.Tables.TablesChanged += Tables_TablesChanged;
-            this.tableContext.ItemsCreated += TableContext_ItemCreated;
-            this.tableContext.ItemsRenamed += TableContext_ItemRenamed;
-            this.tableContext.ItemsMoved += TableContext_ItemMoved;
-            this.tableContext.ItemsDeleted += TableContext_ItemDeleted;
-            this.tableContext.ItemsAccessChanged += TableContext_ItemsAccessChanged;
-            this.tableContext.ItemsLockChanged += TableContext_ItemsLockChanged;
+            this.TableContext.Tables.TablesStateChanged += Tables_TablesStateChanged;
+            this.TableContext.Tables.TablesChanged += Tables_TablesChanged;
+            this.TableContext.ItemsCreated += TableContext_ItemCreated;
+            this.TableContext.ItemsRenamed += TableContext_ItemRenamed;
+            this.TableContext.ItemsMoved += TableContext_ItemMoved;
+            this.TableContext.ItemsDeleted += TableContext_ItemDeleted;
+            this.TableContext.ItemsAccessChanged += TableContext_ItemsAccessChanged;
+            this.TableContext.ItemsLockChanged += TableContext_ItemsLockChanged;
 
-            this.typeContext.Types.TypesStateChanged += Types_TypesStateChanged;
-            this.typeContext.Types.TypesChanged += Types_TypesChanged;
-            this.typeContext.ItemsCreated += TypeContext_ItemCreated;
-            this.typeContext.ItemsRenamed += TypeContext_ItemRenamed;
-            this.typeContext.ItemsMoved += TypeContext_ItemMoved;
-            this.typeContext.ItemsDeleted += TypeContext_ItemDeleted;
-            this.typeContext.ItemsAccessChanged += TypeContext_ItemsAccessChanged;
-            this.typeContext.ItemsLockChanged += TypeContext_ItemsLockChanged;
+            this.TypeContext.Types.TypesStateChanged += Types_TypesStateChanged;
+            this.TypeContext.Types.TypesChanged += Types_TypesChanged;
+            this.TypeContext.ItemsCreated += TypeContext_ItemCreated;
+            this.TypeContext.ItemsRenamed += TypeContext_ItemRenamed;
+            this.TypeContext.ItemsMoved += TypeContext_ItemMoved;
+            this.TypeContext.ItemsDeleted += TypeContext_ItemDeleted;
+            this.TypeContext.ItemsAccessChanged += TypeContext_ItemsAccessChanged;
+            this.TypeContext.ItemsLockChanged += TypeContext_ItemsLockChanged;
 
             this.dataBase.Unloaded += DataBase_Unloaded;
 
@@ -923,23 +927,23 @@ namespace Ntreev.Crema.ServiceHosts.Data
             if (this.dataBase == null || this.dataBase.IsLoaded == false)
                 return;
 
-            this.tableContext.Tables.TablesStateChanged -= Tables_TablesStateChanged;
-            this.tableContext.Tables.TablesChanged -= Tables_TablesChanged;
-            this.tableContext.ItemsCreated -= TableContext_ItemCreated;
-            this.tableContext.ItemsRenamed -= TableContext_ItemRenamed;
-            this.tableContext.ItemsMoved -= TableContext_ItemMoved;
-            this.tableContext.ItemsDeleted -= TableContext_ItemDeleted;
-            this.tableContext.ItemsAccessChanged -= TableContext_ItemsAccessChanged;
-            this.tableContext.ItemsLockChanged -= TableContext_ItemsLockChanged;
+            this.TableContext.Tables.TablesStateChanged -= Tables_TablesStateChanged;
+            this.TableContext.Tables.TablesChanged -= Tables_TablesChanged;
+            this.TableContext.ItemsCreated -= TableContext_ItemCreated;
+            this.TableContext.ItemsRenamed -= TableContext_ItemRenamed;
+            this.TableContext.ItemsMoved -= TableContext_ItemMoved;
+            this.TableContext.ItemsDeleted -= TableContext_ItemDeleted;
+            this.TableContext.ItemsAccessChanged -= TableContext_ItemsAccessChanged;
+            this.TableContext.ItemsLockChanged -= TableContext_ItemsLockChanged;
 
-            this.typeContext.Types.TypesStateChanged -= Types_TypesStateChanged;
-            this.typeContext.Types.TypesChanged -= Types_TypesChanged;
-            this.typeContext.ItemsCreated -= TypeContext_ItemCreated;
-            this.typeContext.ItemsRenamed -= TypeContext_ItemRenamed;
-            this.typeContext.ItemsMoved -= TypeContext_ItemMoved;
-            this.typeContext.ItemsDeleted -= TypeContext_ItemDeleted;
-            this.typeContext.ItemsAccessChanged -= TypeContext_ItemsAccessChanged;
-            this.typeContext.ItemsLockChanged -= TypeContext_ItemsLockChanged;
+            this.TypeContext.Types.TypesStateChanged -= Types_TypesStateChanged;
+            this.TypeContext.Types.TypesChanged -= Types_TypesChanged;
+            this.TypeContext.ItemsCreated -= TypeContext_ItemCreated;
+            this.TypeContext.ItemsRenamed -= TypeContext_ItemRenamed;
+            this.TypeContext.ItemsMoved -= TypeContext_ItemMoved;
+            this.TypeContext.ItemsDeleted -= TypeContext_ItemDeleted;
+            this.TypeContext.ItemsAccessChanged -= TypeContext_ItemsAccessChanged;
+            this.TypeContext.ItemsLockChanged -= TypeContext_ItemsLockChanged;
 
             this.dataBase.Unloaded -= DataBase_Unloaded;
 
@@ -993,7 +997,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
 
         private ITypeItem GetTypeItem(string itemPath)
         {
-            var item = this.typeContext[itemPath];
+            var item = this.TypeContext[itemPath];
             if (item == null)
                 throw new ItemNotFoundException(itemPath);
             return item;
@@ -1001,7 +1005,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
 
         private IType GetType(string typeName)
         {
-            var type = this.typeContext.Types[typeName];
+            var type = this.TypeContext.Types[typeName];
             if (type == null)
                 throw new TypeNotFoundException(typeName);
             return type;
@@ -1009,7 +1013,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
 
         private ITypeCategory GetTypeCategory(string categoryPath)
         {
-            var category = this.typeContext.Categories[categoryPath];
+            var category = this.TypeContext.Categories[categoryPath];
             if (category == null)
                 throw new CategoryNotFoundException(categoryPath);
             return category;
@@ -1017,7 +1021,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
 
         private ITableItem GetTableItem(string itemPath)
         {
-            var item = this.tableContext[itemPath];
+            var item = this.TableContext[itemPath];
             if (item == null)
                 throw new ItemNotFoundException(itemPath);
             return item;
@@ -1025,7 +1029,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
 
         private ITable GetTable(string tableName)
         {
-            var table = this.tableContext.Tables[tableName];
+            var table = this.TableContext.Tables[tableName];
             if (table == null)
                 throw new TableNotFoundException(tableName);
             return table;
@@ -1033,11 +1037,15 @@ namespace Ntreev.Crema.ServiceHosts.Data
 
         private ITableCategory GetTableCategory(string categoryPath)
         {
-            var category = this.tableContext.Categories[categoryPath];
+            var category = this.TableContext.Categories[categoryPath];
             if (category == null)
                 throw new CategoryNotFoundException(categoryPath);
             return category;
         }
+
+        private ITableContext TableContext => this.dataBase.TableContext;
+
+        private ITypeContext TypeContext => this.dataBase.TypeContext;
 
         #region ICremaServiceItem
 

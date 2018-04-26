@@ -335,4 +335,10 @@
   <data name="SetAccessMemberOfTypeItem" xml:space="preserve">
     <value>{0}({1})'이(가) 타입 항목 '{2}'의 사용자 '{3}'의 타입을 {4}로 설정했습니다.</value>
   </data>
+  <data name="ResetDataBase" xml:space="preserve">
+    <value>데이터 베이스 '{2}'가 '{0}({1})'에 의해 재시작 되었습니다.</value>
+  </data>
+  <data name="ResettingDataBase" xml:space="preserve">
+    <value>데이터 베이스 '{2}'가 '{0}({1})'에 의해 재시작 되는중입니다.</value>
+  </data>
 </root>

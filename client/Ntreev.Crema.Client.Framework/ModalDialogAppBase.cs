@@ -52,6 +52,7 @@ namespace Ntreev.Crema.Client.Framework
                 {
                     this.cremaAppHost.Closed -= CremaAppHost_Closed;
                     this.cremaAppHost.Unloaded -= CremaAppHost_Unloaded;
+                    this.cremaAppHost.Resetting -= CremaAppHost_Resetting;
                 }
                 this.cremaAppHost = null;
             }
@@ -83,6 +84,14 @@ namespace Ntreev.Crema.Client.Framework
             }
         }
 
+        private void CremaAppHost_Resetting(object sender, EventArgs e)
+        {
+            if (this.cremaAppHost != null)
+            {
+                this.Dispatcher.InvokeAsync(this.OnCancel);
+            }
+        }
+
         #region IPartImportsSatisfiedNotification
 
         void IPartImportsSatisfiedNotification.OnImportsSatisfied()
@@ -91,6 +100,7 @@ namespace Ntreev.Crema.Client.Framework
             {
                 this.cremaAppHost.Closed += CremaAppHost_Closed;
                 this.cremaAppHost.Unloaded += CremaAppHost_Unloaded;
+                this.cremaAppHost.Resetting += CremaAppHost_Resetting;
             }
         }
 

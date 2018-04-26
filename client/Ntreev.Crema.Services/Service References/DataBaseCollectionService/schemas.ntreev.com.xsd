@@ -177,21 +177,6 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ResultBaseOfArrayOfLogInfoq8erDhHE" nillable="true" type="tns:ResultBaseOfArrayOfLogInfoq8erDhHE" />
-  <xs:complexType name="ResultBaseOfstring">
-    <xs:annotation>
-      <xs:appinfo>
-        <GenericType Name="ResultBaseOf{0}{#}" Namespace="http://schemas.ntreev.com" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
-          <GenericParameter Name="string" Namespace="http://www.w3.org/2001/XMLSchema">
-          </GenericParameter>
-        </GenericType>
-        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
-      </xs:appinfo>
-    </xs:annotation>
-    <xs:sequence>
-      <xs:element minOccurs="0" name="Xml" nillable="true" type="xs:string" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="ResultBaseOfstring" nillable="true" type="tns:ResultBaseOfstring" />
   <xs:complexType name="SignatureDate">
     <xs:annotation>
       <xs:appinfo>
@@ -246,6 +231,23 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="DataBaseInfo" nillable="true" type="tns:DataBaseInfo" />
+  <xs:complexType name="ArrayOfDomainMetaData">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="DomainMetaData" type="tns:DomainMetaData" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfDomainMetaData" nillable="true" type="tns:ArrayOfDomainMetaData" />
+  <xs:complexType name="DomainMetaData">
+    <xs:annotation>
+      <xs:appinfo>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Xml" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DomainMetaData" nillable="true" type="tns:DomainMetaData" />
   <xs:complexType name="AuthenticationInfo">
     <xs:annotation>
       <xs:appinfo>

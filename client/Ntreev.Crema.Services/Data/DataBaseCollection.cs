@@ -45,6 +45,8 @@ namespace Ntreev.Crema.Services.Data
         private ItemsDeletedEventHandler<IDataBase> itemsDeleted;
         private ItemsEventHandler<IDataBase> itemsLoaded;
         private ItemsEventHandler<IDataBase> itemsUnloaded;
+        private ItemsEventHandler<IDataBase> itemsResetting;
+        private ItemsEventHandler<IDataBase> itemsReset;
         private ItemsEventHandler<IDataBase> itemsAuthenticationEntered;
         private ItemsEventHandler<IDataBase> itemsAuthenticationLeft;
         private ItemsEventHandler<IDataBase> itemsInfoChanged;
@@ -293,6 +295,20 @@ namespace Ntreev.Crema.Services.Data
             this.OnItemsUnloaded(new ItemsEventArgs<IDataBase>(authentication, items));
         }
 
+        public void InvokeItemsResettingEvent(Authentication authentication, IDataBase[] items)
+        {
+            this.CremaHost.DebugMethodMany(authentication, this, nameof(InvokeItemsResettingEvent), items);
+            this.CremaHost.Info(EventMessageBuilder.ResettingDataBase(authentication, items));
+            this.OnItemsResetting(new ItemsEventArgs<IDataBase>(authentication, items));
+        }
+
+        public void InvokeItemsResetEvent(Authentication authentication, IDataBase[] items)
+        {
+            this.CremaHost.DebugMethodMany(authentication, this, nameof(InvokeItemsResetEvent), items);
+            this.CremaHost.Info(EventMessageBuilder.ResetDataBase(authentication, items));
+            this.OnItemsReset(new ItemsEventArgs<IDataBase>(authentication, items));
+        }
+
         public void InvokeItemsInfoChangedEvent(Authentication authentication, IDataBase[] items)
         {
             this.CremaHost.DebugMethodMany(authentication, this, nameof(InvokeItemsInfoChangedEvent), items);
@@ -535,6 +551,34 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
+        public event ItemsEventHandler<IDataBase> ItemsResetting
+        {
+            add
+            {
+                this.Dispatcher.VerifyAccess();
+                this.itemsResetting += value;
+            }
+            remove
+            {
+                this.Dispatcher.VerifyAccess();
+                this.itemsResetting -= value;
+            }
+        }
+
+        public event ItemsEventHandler<IDataBase> ItemsReset
+        {
+            add
+            {
+                this.Dispatcher.VerifyAccess();
+                this.itemsReset += value;
+            }
+            remove
+            {
+                this.Dispatcher.VerifyAccess();
+                this.itemsReset -= value;
+            }
+        }
+
         public event ItemsEventHandler<IDataBase> ItemsAuthenticationEntered
         {
             add
@@ -642,6 +686,16 @@ namespace Ntreev.Crema.Services.Data
         protected virtual void OnItemsUnloaded(ItemsEventArgs<IDataBase> e)
         {
             this.itemsUnloaded?.Invoke(this, e);
+        }
+
+        protected virtual void OnItemsResetting(ItemsEventArgs<IDataBase> e)
+        {
+            this.itemsResetting?.Invoke(this, e);
+        }
+
+        protected virtual void OnItemsReset(ItemsEventArgs<IDataBase> e)
+        {
+            this.itemsReset?.Invoke(this, e);
         }
 
         protected virtual void OnItemsEntered(ItemsEventArgs<IDataBase> e)
@@ -838,6 +892,40 @@ namespace Ntreev.Crema.Services.Data
                 }
                 this.InvokeItemsUnloadedEvent(authentication, dataBases);
             }, nameof(IDataBaseCollectionServiceCallback.OnDataBasesUnloaded));
+        }
+
+        void IDataBaseCollectionServiceCallback.OnDataBasesResetting(SignatureDate signatureDate, string[] dataBaseNames)
+        {
+            this.InvokeAsync(() =>
+            {
+                var authentication = this.userContext.Authenticate(signatureDate);
+                var dataBases = new DataBase[dataBaseNames.Length];
+                for (var i = 0; i < dataBaseNames.Length; i++)
+                {
+                    var dataBaseName = dataBaseNames[i];
+                    var dataBase = this[dataBaseName];
+                    dataBase.SetResetting(authentication);
+                    dataBases[i] = dataBase;
+                }
+                this.InvokeItemsResettingEvent(authentication, dataBases);
+            }, nameof(IDataBaseCollectionServiceCallback.OnDataBasesResetting));
+        }
+
+        void IDataBaseCollectionServiceCallback.OnDataBasesReset(SignatureDate signatureDate, string[] dataBaseNames, DomainMetaData[] metaDatas)
+        {
+            this.InvokeAsync(() =>
+            {
+                var authentication = this.userContext.Authenticate(signatureDate);
+                var dataBases = new DataBase[dataBaseNames.Length];
+                for (var i = 0; i < dataBaseNames.Length; i++)
+                {
+                    var dataBaseName = dataBaseNames[i];
+                    var dataBase = this[dataBaseName];
+                    dataBase.SetReset(authentication, metaDatas);
+                    dataBases[i] = dataBase;
+                }
+                this.InvokeItemsResetEvent(authentication, dataBases);
+            }, nameof(IDataBaseCollectionServiceCallback.OnDataBasesReset));
         }
 
         void IDataBaseCollectionServiceCallback.OnDataBasesAuthenticationEntered(SignatureDate signatureDate, string[] dataBaseNames, AuthenticationInfo authenticationInfo)

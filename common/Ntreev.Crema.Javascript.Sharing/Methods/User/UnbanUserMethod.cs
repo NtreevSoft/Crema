@@ -28,10 +28,14 @@ namespace Ntreev.Crema.Javascript.Methods.User
     [Export(typeof(IScriptMethod))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
     [Category(nameof(User))]
-    class UnbanUserMethod : ScriptMethodBase
+    class UnbanUserMethod : UserScriptMethodBase
     {
-        [Import]
-        private Lazy<ICremaHost> cremaHost = null;
+        [ImportingConstructor]
+        public UnbanUserMethod(ICremaHost cremaHost)
+            : base(cremaHost)
+        {
+
+        }
 
         protected override Delegate CreateDelegate()
         {
@@ -40,15 +44,9 @@ namespace Ntreev.Crema.Javascript.Methods.User
 
         private void UnbanUser(string userID)
         {
-            var userContext = this.CremaHost.GetService(typeof(IUserContext)) as IUserContext;
-            userContext.Dispatcher.Invoke(() =>
-            {
-                var user = userContext.Users[userID];
-                var authentication = this.Context.GetAuthentication(this);
-                user.Unban(authentication);
-            });
+            var user = this.GetUser(userID);
+            var authentication = this.Context.GetAuthentication(this);
+            user.Dispatcher.Invoke(() => user.Unban(authentication));
         }
-
-        private ICremaHost CremaHost => this.cremaHost.Value;
     }
 }

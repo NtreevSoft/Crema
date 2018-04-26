@@ -29,10 +29,14 @@ namespace Ntreev.Crema.Javascript.Methods.User
     [Export(typeof(IScriptMethod))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
     [Category(nameof(User))]
-    class GetUserInfoMethod : ScriptMethodBase
+    class GetUserInfoMethod : UserScriptMethodBase
     {
-        [Import]
-        private Lazy<ICremaHost> cremaHost = null;
+        [ImportingConstructor]
+        public GetUserInfoMethod(ICremaHost cremaHost)
+            : base(cremaHost)
+        {
+
+        }
 
         protected override Delegate CreateDelegate()
         {
@@ -41,10 +45,9 @@ namespace Ntreev.Crema.Javascript.Methods.User
 
         private IDictionary<string, object> GetUserInfo(string userID)
         {
-            var userContext = this.CremaHost.GetService(typeof(IUserContext)) as IUserContext;
-            return userContext.Dispatcher.Invoke(() =>
+            var user = this.GetUser(userID);
+            return user.Dispatcher.Invoke(() =>
             {
-                var user = userContext.Users[userID];
                 var userInfo = user.UserInfo;
                 var props = new Dictionary<string, object>
                 {
@@ -60,7 +63,5 @@ namespace Ntreev.Crema.Javascript.Methods.User
                 return props;
             });
         }
-
-        private ICremaHost CremaHost => this.cremaHost.Value;
     }
 }

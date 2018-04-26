@@ -78,6 +78,7 @@ namespace Ntreev.Crema.Client.Tables
             this.cremaAppHost.Closed += CremaAppHost_Closed;
             this.cremaAppHost.Loaded += CremaAppHost_Loaded;
             this.cremaAppHost.Unloaded += CremaAppHost_Unloaded;
+            this.cremaAppHost.Reset += CremaAppHost_Reset;
             this.DisplayName = Resources.Title_Tables;
         }
 
@@ -190,6 +191,18 @@ namespace Ntreev.Crema.Client.Tables
         private void CremaAppHost_Unloaded(object sender, EventArgs e)
         {
             this.IsVisible = false;
+        }
+
+        private async void CremaAppHost_Reset(object sender, EventArgs e)
+        {
+            if (this.Shell.SelectedService == this)
+            {
+                this.isFirst = false;
+                if (this.cremaAppHost.GetService(typeof(IDataBase)) is IDataBase dataBase)
+                {
+                    await this.Dispatcher.InvokeAsync(() => this.Restore(dataBase), DispatcherPriority.ApplicationIdle);
+                }
+            }
         }
 
         private async void Shell_ServiceChanged(object sender, EventArgs e)
