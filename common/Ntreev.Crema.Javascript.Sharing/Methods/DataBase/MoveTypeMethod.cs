@@ -45,15 +45,9 @@ namespace Ntreev.Crema.Javascript.Methods.DataBase
 
         private void MoveType(string dataBaseName, string typeName, string categoryPath)
         {
-            var dataBase = this.GetDataBase(dataBaseName);
-            dataBase.Dispatcher.Invoke(() =>
-            {
-                var type = dataBase.TypeContext.Types[typeName];
-                if (type == null)
-                    throw new TypeNotFoundException(typeName);
-                var authentication = this.Context.GetAuthentication(this);
-                type.Move(authentication, categoryPath);
-            });
+            var type = this.GetType(dataBaseName, typeName);
+            var authentication = this.Context.GetAuthentication(this);
+            type.Dispatcher.Invoke(() => type.Move(authentication, categoryPath));
         }
     }
 }

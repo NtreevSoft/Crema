@@ -411,7 +411,7 @@ namespace Ntreev.Crema.Javascript
                         }
                     }
 
-                    sb.Append($"declare function {item.Name} ");
+                    sb.Append($"declare function {item.Name}");
                     sb.Append("(");
 
                     var argsString = string.Join(", ", methodInfo.GetParameters().Select(i => this.GetParameterString(i)));

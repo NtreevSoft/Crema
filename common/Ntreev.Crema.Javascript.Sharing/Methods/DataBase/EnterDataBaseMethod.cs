@@ -45,11 +45,8 @@ namespace Ntreev.Crema.Javascript.Methods.DataBase
         private void EnterDataBase(string dataBaseName)
         {
             var dataBase = this.GetDataBase(dataBaseName);
-            dataBase.Dispatcher.Invoke(() =>
-            {
-                var authentication = this.Context.GetAuthentication(this);
-                dataBase.Enter(authentication);
-            });
+            var authentication = this.Context.GetAuthentication(this);
+            dataBase.Dispatcher.Invoke(() => dataBase.Enter(authentication));
         }
     }
 }

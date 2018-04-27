@@ -46,13 +46,12 @@ namespace Ntreev.Crema.Javascript.Methods.DataBase
 
         private IDictionary<int, object> GetTypeData(string dataBaseName, string typeName, long? revision)
         {
-            var dataBase = this.GetDataBase(dataBaseName);
+            var type = this.GetType(dataBaseName, typeName);
             var revisionValue = revision ?? -1;
+            var authentication = this.Context.GetAuthentication(this);
 
-            return dataBase.Dispatcher.Invoke(() =>
+            return type.Dispatcher.Invoke(() =>
             {
-                var type = dataBase.TypeContext.Types[typeName];
-                var authentication = this.Context.GetAuthentication(this);
                 var dataSet = type.GetDataSet(authentication, revisionValue);
                 var dataType = dataSet.Types[typeName];
                 return this.GetTypeMembers(dataType);

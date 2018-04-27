@@ -1,5 +1,4 @@
-﻿
-//Released under the MIT License.
+﻿//Released under the MIT License.
 //
 //Copyright (c) 2018 Ntreev Soft co., Ltd.
 //
@@ -33,24 +32,18 @@ namespace Ntreev.Crema.Javascript.Methods.DataBase
     [Export(typeof(IScriptMethod))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
     [Category(nameof(DataBase))]
-    class ContainsDataBaseMethod : ScriptMethodBase
+    class ContainsDataBaseMethod : DataBaseScriptMethodBase
     {
-        private readonly ICremaHost cremaHost;
-
         [ImportingConstructor]
         public ContainsDataBaseMethod(ICremaHost cremaHost)
+            : base(cremaHost)
         {
-            this.cremaHost = cremaHost;
+            
         }
 
         protected override Delegate CreateDelegate()
         {
             return new Func<string, bool>(ContainsDataBase);
-        }
-
-        private bool ContainsDataBase(string dataBaseName)
-        {
-            return this.cremaHost.Dispatcher.Invoke(() => this.cremaHost.DataBases.Contains(dataBaseName));
         }
     }
 }

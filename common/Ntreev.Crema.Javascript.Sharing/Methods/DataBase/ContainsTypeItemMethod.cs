@@ -32,10 +32,10 @@ namespace Ntreev.Crema.Javascript.Methods.DataBase
     [Export(typeof(IScriptMethod))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
     [Category(nameof(DataBase))]
-    class ContainsTypeItemItemMethod : DataBaseScriptMethodBase
+    class ContainsTypeItemMethod : DataBaseScriptMethodBase
     {
         [ImportingConstructor]
-        public ContainsTypeItemItemMethod(ICremaHost cremaHost)
+        public ContainsTypeItemMethod(ICremaHost cremaHost)
             : base(cremaHost)
         {
 
@@ -43,13 +43,7 @@ namespace Ntreev.Crema.Javascript.Methods.DataBase
 
         protected override Delegate CreateDelegate()
         {
-            return new Func<string, string, bool>(ContainsTypeItemItem);
-        }
-
-        private bool ContainsTypeItemItem(string dataBaseName, string typeItemPath)
-        {
-            var dataBase = this.GetDataBase(dataBaseName);
-            return dataBase.Dispatcher.Invoke(() => dataBase.TypeContext.Contains(typeItemPath));
+            return new Func<string, string, bool>(ContainsTypeItem);
         }
     }
 }

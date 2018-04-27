@@ -45,11 +45,8 @@ namespace Ntreev.Crema.Javascript.Methods.DataBase
         private void UnloadDataBase(string dataBaseName)
         {
             var dataBase = this.GetDataBase(dataBaseName);
-            dataBase.Dispatcher.Invoke(() =>
-            {
-                var authentication = this.Context.GetAuthentication(this);
-                dataBase.Unload(authentication);
-            });
+            var authentication = this.Context.GetAuthentication(this);
+            dataBase.Dispatcher.Invoke(() => dataBase.Unload(authentication));
         }
     }
 }

@@ -45,10 +45,7 @@ namespace Ntreev.Crema.Javascript.Methods.DataBase
         private string[] GetTableList(string dataBaseName)
         {
             var dataBase = this.GetDataBase(dataBaseName);
-            return dataBase.Dispatcher.Invoke(() =>
-            {
-                return dataBase.TableContext.Tables.Select(item => item.Name).ToArray();
-            });
+            return dataBase.Dispatcher.Invoke(() => dataBase.TableContext.Tables.Select(item => item.Name).ToArray());
         }
     }
 }

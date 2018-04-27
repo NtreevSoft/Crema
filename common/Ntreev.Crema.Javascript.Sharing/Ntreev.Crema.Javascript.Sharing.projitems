@@ -9,7 +9,31 @@
     <Import_RootNamespace>Ntreev.Crema.Javascript</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Consoles\GenerateDeclarationCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\CopyTypeMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\InheritTableMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\CopyTableMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\CreateDataBaseListMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\MoveTableItemMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\MoveTableMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\DeleteDataBaseMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\CopyDataBaseMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\RenameTableMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\RenameTableItemMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\RenameDataBaseMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\Permission\IsDataBaseLockedMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\Permission\IsDataBasePrivateMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\Permission\LockDataBaseMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\Permission\LockTypeItemMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\Permission\UnlockDataBaseMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\Permission\UnlockTypeItemMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\TableContent\ContainsTableContentRowMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\TableContent\GetTableContentDomainMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\TableTemplate\GetTableTemplateDomainMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\TypeTemplate\GetTypeTemplateDomainMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\User\DeleteUserItemMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\User\MoveUserItemMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\User\RenameUserItemMethod.cs" />
+    <None Include="$(MSBuildThisFileDirectory)Consoles\GenerateDeclarationCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\IO\CreateDirectoryMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\IO\DirectoryExistsMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\IO\FileExistsMethod.cs" />
@@ -140,8 +164,5 @@
     <Compile Include="$(MSBuildThisFileDirectory)Methods\User\GetUserListMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\GetDataBaseListMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ScriptContextBase.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)Methods\Permission\" />
   </ItemGroup>
 </Project>

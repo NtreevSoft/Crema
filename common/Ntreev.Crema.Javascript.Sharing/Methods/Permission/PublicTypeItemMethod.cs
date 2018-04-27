@@ -44,13 +44,9 @@ namespace Ntreev.Crema.Javascript.Methods.Permission
 
         private void SetTypeItemPublic(string dataBaseName, string typeItemPath)
         {
-            var dataBase = this.GetDataBase(dataBaseName);
-            dataBase.Dispatcher.Invoke(() =>
-            {
-                var typeItem = dataBase.TypeContext[typeItemPath];
-                var authentication = this.Context.GetAuthentication(this);
-                typeItem.SetPublic(authentication);
-            });
+            var typeItem = this.GetTypeItem(dataBaseName, typeItemPath);
+            var authentication = this.Context.GetAuthentication(this);
+            typeItem.Dispatcher.Invoke(() => typeItem.SetPublic(authentication));
         }
     }
 }

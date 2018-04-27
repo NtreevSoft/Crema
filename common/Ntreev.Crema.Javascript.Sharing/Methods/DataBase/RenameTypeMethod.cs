@@ -45,15 +45,9 @@ namespace Ntreev.Crema.Javascript.Methods.DataBase
 
         private void RenameType(string dataBaseName, string typeName, string newTypeName)
         {
-            var dataBase = this.GetDataBase(dataBaseName);
-            dataBase.Dispatcher.Invoke(() =>
-            {
-                var type = dataBase.TypeContext.Types[typeName];
-                if (type == null)
-                    throw new TypeNotFoundException(typeName);
-                var authentication = this.Context.GetAuthentication(this);
-                type.Rename(authentication, newTypeName);
-            });
+            var type = this.GetType(dataBaseName, typeName);
+            var authentication = this.Context.GetAuthentication(this);
+            type.Dispatcher.Invoke(() => type.Rename(authentication, newTypeName));
         }
     }
 }

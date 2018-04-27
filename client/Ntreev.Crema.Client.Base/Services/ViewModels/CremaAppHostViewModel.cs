@@ -723,6 +723,7 @@ namespace Ntreev.Crema.Client.Base.Services.ViewModels
         {
             this.Dispatcher.InvokeAsync(() =>
             {
+                this.BeginProgress();
                 this.OnResetting(EventArgs.Empty);
             });
         }
@@ -732,6 +733,7 @@ namespace Ntreev.Crema.Client.Base.Services.ViewModels
             this.Dispatcher.InvokeAsync(() => 
             {
                 this.OnReset(EventArgs.Empty);
+                this.EndProgress();
             });
         }
 
@@ -788,7 +790,7 @@ namespace Ntreev.Crema.Client.Base.Services.ViewModels
             return this.cremaHost.Dispatcher.InvokeAsync(() =>
             {
                 this.dataBase.Unloaded -= DataBase_Unloaded;
-                dataBase.Resetting -= DataBase_Resetting;
+                this.dataBase.Resetting -= DataBase_Resetting;
                 this.dataBase.Reset -= DataBase_Reset;
                 this.dataBase.Leave(this.authenticator);
                 this.dataBase = null;

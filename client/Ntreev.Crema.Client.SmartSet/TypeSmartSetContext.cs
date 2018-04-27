@@ -57,6 +57,8 @@ namespace Ntreev.Crema.Client.SmartSet
             this.rules = rules.Where(item => item.SupportType == typeof(ITypeDescriptor)).ToArray();
             this.cremaAppHost.Loaded += CremaAppHost_Loaded;
             this.cremaAppHost.Unloaded += CremaAppHost_Unloaded;
+            this.cremaAppHost.Resetting += CremaAppHost_Resetting;
+            this.cremaAppHost.Reset += CremaAppHost_Reset;
         }
 
         public object GetService(Type serviceType)
@@ -164,6 +166,41 @@ namespace Ntreev.Crema.Client.SmartSet
         private void CremaAppHost_Unloaded(object sender, EventArgs e)
         {
             this.cremaAppHost.UserConfigs?.Commit(this);
+        }
+
+        private void CremaAppHost_Resetting(object sender, EventArgs e)
+        {
+            this.cremaAppHost.UserConfigs?.Commit(this);
+        }
+
+        private async void CremaAppHost_Reset(object sender, EventArgs e)
+        {
+            try
+            {
+                this.cremaAppHost.UserConfigs.Update(this);
+            }
+            catch
+            {
+
+            }
+
+            if (this.cremaAppHost.GetService(typeof(IDataBase)) is IDataBase dataBase)
+            {
+                await dataBase.Dispatcher.InvokeAsync(() =>
+                {
+                    var typeContext = dataBase.TypeContext;
+                    typeContext.Types.TypesChanged += Types_TypesChanged;
+                    typeContext.Types.TypesStateChanged += Types_TypesStateChanged;
+                    typeContext.ItemsCreated += TypeContext_ItemCreated;
+                    typeContext.ItemsRenamed += TypeContext_ItemRenamed;
+                    typeContext.ItemsMoved += TypeContext_ItemMoved;
+                    typeContext.ItemsDeleted += TypeContext_ItemDeleted;
+                    typeContext.ItemsAccessChanged += TypeContext_ItemsAccessChanged;
+                    typeContext.ItemsLockChanged += TypeContext_ItemsLockChanged;
+                });
+            }
+
+            await this.Dispatcher.InvokeAsync(() => this.Refresh(), DispatcherPriority.ApplicationIdle);
         }
 
         private void Types_TypesChanged(object sender, ItemsEventArgs<IType> e)
