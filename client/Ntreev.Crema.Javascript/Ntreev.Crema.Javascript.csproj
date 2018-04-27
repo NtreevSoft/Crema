@@ -49,7 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Authenticator.cs" />
-    <Compile Include="Consoles\RunFileCommand.cs" />
+    <None Include="Consoles\RunFileCommand.cs" />
     <Compile Include="Consoles\RunCommand.cs" />
     <Compile Include="Methods\LoginMethod.cs" />
     <Compile Include="Methods\LogoutMethod.cs" />

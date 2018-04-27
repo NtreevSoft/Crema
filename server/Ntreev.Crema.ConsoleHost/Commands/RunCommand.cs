@@ -30,6 +30,7 @@ using System.Reflection;
 using Ntreev.Crema.Commands.Consoles;
 using Ntreev.Crema.ConsoleHost.Commands.Consoles;
 using System.Collections.Generic;
+using Ntreev.Crema.Javascript;
 
 namespace Ntreev.Crema.ConsoleHost.Commands
 {
@@ -40,6 +41,8 @@ namespace Ntreev.Crema.ConsoleHost.Commands
     {
         private readonly CremaApplication application;
         private string repositoryModule;
+        [Import]
+        private Lazy<ScriptContext> scriptContext = null;
 
         [ImportingConstructor]
         public RunCommand(CremaApplication application)
@@ -87,7 +90,17 @@ namespace Ntreev.Crema.ConsoleHost.Commands
         }
 
         [CommandProperty("prompt", 'p')]
+        [CommandPropertyTrigger(nameof(ScriptPath), "")]
         public bool IsPromptMode
+        {
+            get;
+            set;
+        }
+
+        [CommandProperty]
+        [DefaultValue("")]
+        [CommandPropertyTrigger(nameof(IsPromptMode), false)]
+        public string ScriptPath
         {
             get;
             set;
@@ -192,6 +205,11 @@ namespace Ntreev.Crema.ConsoleHost.Commands
                 terminal.Start();
 #endif
             }
+            else if (this.ScriptPath != string.Empty)
+            {
+                var script = File.ReadAllText(this.ScriptPath);
+                this.ScriptContext.RunInternal(script, null);
+            }
             else
             {
                 Console.WriteLine(Resources.ConnectionMessage);
@@ -205,5 +223,7 @@ namespace Ntreev.Crema.ConsoleHost.Commands
                 }
             }
         }
+
+        private ScriptContext ScriptContext => this.scriptContext.Value;
     }
 }

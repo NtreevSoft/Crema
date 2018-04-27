@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 namespace Ntreev.Crema.Javascript
 {
     [Export]
-    class ScriptContext : ScriptContextBase
+    public class ScriptContext : ScriptContextBase
     {
         private readonly ICremaHost cremaHost;
 

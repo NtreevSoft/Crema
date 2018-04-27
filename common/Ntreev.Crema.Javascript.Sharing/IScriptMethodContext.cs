@@ -36,7 +36,7 @@ namespace Ntreev.Crema.Javascript
 {
     public interface IScriptMethodContext
     {
-        IDictionary<string, object> Properties { get; }
+        IDictionary<object, object> Properties { get; }
 
         Authentication GetAuthentication(IScriptMethod scriptMethod);
 

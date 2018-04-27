@@ -300,10 +300,10 @@ namespace Ntreev.Crema.ServiceHosts.Users
 
             this.userContext.Users.UsersStateChanged += Users_UsersStateChanged;
             this.userContext.Users.UsersChanged += Users_UsersChanged;
-            this.userContext.ItemsCreated += UserContext_ItemCreated;
-            this.userContext.ItemsRenamed += UserContext_ItemRenamed;
-            this.userContext.ItemsMoved += UserContext_ItemMoved;
-            this.userContext.ItemsDeleted += UserContext_ItemDeleted;
+            this.userContext.ItemsCreated += UserContext_ItemsCreated;
+            this.userContext.ItemsRenamed += UserContext_ItemsRenamed;
+            this.userContext.ItemsMoved += UserContext_ItemsMoved;
+            this.userContext.ItemsDeleted += UserContext_ItemsDeleted;
             this.userContext.UsersLoggedIn += UserContext_UsersLoggedIn;
             this.userContext.UsersLoggedOut += UserContext_UsersLoggedOut;
             this.userContext.UsersKicked += UserContext_UsersKicked;
@@ -319,10 +319,10 @@ namespace Ntreev.Crema.ServiceHosts.Users
 
             this.userContext.Users.UsersStateChanged -= Users_UsersStateChanged;
             this.userContext.Users.UsersChanged -= Users_UsersChanged;
-            this.userContext.ItemsCreated -= UserContext_ItemCreated;
-            this.userContext.ItemsRenamed -= UserContext_ItemRenamed;
-            this.userContext.ItemsMoved -= UserContext_ItemMoved;
-            this.userContext.ItemsDeleted -= UserContext_ItemDeleted;
+            this.userContext.ItemsCreated -= UserContext_ItemsCreated;
+            this.userContext.ItemsRenamed -= UserContext_ItemsRenamed;
+            this.userContext.ItemsMoved -= UserContext_ItemsMoved;
+            this.userContext.ItemsDeleted -= UserContext_ItemsDeleted;
             this.userContext.UsersLoggedIn -= UserContext_UsersLoggedIn;
             this.userContext.UsersLoggedOut -= UserContext_UsersLoggedOut;
             this.userContext.UsersKicked -= UserContext_UsersKicked;
@@ -351,7 +351,7 @@ namespace Ntreev.Crema.ServiceHosts.Users
             this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnUsersChanged(signatureDate, values));
         }
 
-        private void UserContext_ItemCreated(object sender, Services.ItemsCreatedEventArgs<IUserItem> e)
+        private void UserContext_ItemsCreated(object sender, Services.ItemsCreatedEventArgs<IUserItem> e)
         {
             var userID = this.authentication.ID;
             var exceptionUserID = e.UserID;
@@ -361,7 +361,7 @@ namespace Ntreev.Crema.ServiceHosts.Users
             this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnUserItemsCreated(signatureDate, itemPaths, arguments));
         }
 
-        private void UserContext_ItemRenamed(object sender, Services.ItemsRenamedEventArgs<IUserItem> e)
+        private void UserContext_ItemsRenamed(object sender, Services.ItemsRenamedEventArgs<IUserItem> e)
         {
             var userID = this.authentication.ID;
             var exceptionUserID = e.UserID;
@@ -371,7 +371,7 @@ namespace Ntreev.Crema.ServiceHosts.Users
             this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnUserItemsRenamed(signatureDate, oldPaths, itemNames));
         }
 
-        private void UserContext_ItemMoved(object sender, Services.ItemsMovedEventArgs<IUserItem> e)
+        private void UserContext_ItemsMoved(object sender, Services.ItemsMovedEventArgs<IUserItem> e)
         {
             var userID = this.authentication.ID;
             var exceptionUserID = e.UserID;
@@ -381,7 +381,7 @@ namespace Ntreev.Crema.ServiceHosts.Users
             this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnUserItemsMoved(signatureDate, oldPaths, parentPaths));
         }
 
-        private void UserContext_ItemDeleted(object sender, Services.ItemsDeletedEventArgs<IUserItem> e)
+        private void UserContext_ItemsDeleted(object sender, Services.ItemsDeletedEventArgs<IUserItem> e)
         {
             var userID = this.authentication.ID;
             var exceptionUserID = e.UserID;

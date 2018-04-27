@@ -67,6 +67,11 @@ namespace Ntreev.Crema.Javascript
 
         }
 
+        protected virtual void OnInitialized()
+        {
+
+        }
+
         private static string ToCamelCase(string text)
         {
             var name = Regex.Replace(text, @"^([A-Z])", MatchEvaluator);
@@ -84,13 +89,9 @@ namespace Ntreev.Crema.Javascript
             this.OnDisposed();
         }
 
-        #region IDisposable
-
-        void IDisposable.Dispose()
+        internal void Initialize()
         {
-            this.Dispose();
+            this.OnInitialized();
         }
-
-        #endregion
     }
 }
