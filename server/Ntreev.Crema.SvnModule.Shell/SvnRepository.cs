@@ -115,9 +115,12 @@ namespace Ntreev.Crema.SvnModule
             var message = this.transactionMessages[path];
             this.transactions.Remove(path);
             this.transactionMessages.Remove(path);
-            this.Run("patch", patchPath.WrapQuot(), path.WrapQuot());
-            this.Commit(path, "Transaction" + Environment.NewLine + message, new LogPropertyInfo[] { });
-            FileUtility.Delete(patchPath);
+            if (File.Exists(patchPath) == true)
+            {
+                this.Run("patch", patchPath.WrapQuot(), path.WrapQuot());
+                this.Commit(path, "Transaction" + Environment.NewLine + message, new LogPropertyInfo[] { });
+                FileUtility.Delete(patchPath);
+            }
         }
 
         public void CancelTransaction(string path)

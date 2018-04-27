@@ -44,12 +44,8 @@ namespace Ntreev.Crema.Javascript.Methods.Permission
 
         private bool IsTableItemLocked(string dataBaseName, string tableItemPath)
         {
-            var dataBase = this.GetDataBase(dataBaseName);
-            return dataBase.Dispatcher.Invoke(() =>
-            {
-                var tableItem = dataBase.TableContext[tableItemPath];
-                return tableItem.IsLocked;
-            });
+            var tableItem = this.GetTableItem(dataBaseName, tableItemPath);
+            return tableItem.Dispatcher.Invoke(() => tableItem.IsLocked);
         }
     }
 }

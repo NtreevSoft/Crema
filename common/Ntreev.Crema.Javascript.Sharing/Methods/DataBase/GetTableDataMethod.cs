@@ -46,13 +46,12 @@ namespace Ntreev.Crema.Javascript.Methods.DataBase
 
         private IDictionary<int, object> GetTableData(string dataBaseName, string tableName, long? revision)
         {
-            var dataBase = this.GetDataBase(dataBaseName);
+            var table = this.GetTable(dataBaseName, tableName);
             var revisionValue = revision ?? -1;
+            var authentication = this.Context.GetAuthentication(this);
 
-            return dataBase.Dispatcher.Invoke(() =>
+            return table.Dispatcher.Invoke(() =>
             {
-                var table = dataBase.TableContext.Tables[tableName];
-                var authentication = this.Context.GetAuthentication(this);
                 var dataSet = table.GetDataSet(authentication, revisionValue);
                 var dataTable = dataSet.Tables[tableName];
                 return this.GetDataRows(dataTable);

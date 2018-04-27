@@ -48,11 +48,10 @@ namespace Ntreev.Crema.Javascript.Methods.DataBase
 
         private IDictionary<string, object> GetTableInfoByTags(string dataBaseName, string tableName, string tags)
         {
-            var dataBase = this.GetDataBase(dataBaseName);
+            var table = this.GetTable(dataBaseName, tableName);
 
-            return dataBase.Dispatcher.Invoke(() =>
+            return table.Dispatcher.Invoke(() =>
             {
-                var table = dataBase.TableContext.Tables[tableName];
                 var tableInfo = table.TableInfo.Filter((TagInfo)tags);
                 var props = new Dictionary<string, object>
                 {

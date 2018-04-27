@@ -47,11 +47,10 @@ namespace Ntreev.Crema.Javascript.Methods.DataBase
 
         private IDictionary<string, object> GetTypeInfo(string dataBaseName, string typeName, string tags)
         {
-            var dataBase = this.GetDataBase(dataBaseName);
+            var type = this.GetType(dataBaseName, typeName);
 
-            return dataBase.Dispatcher.Invoke(() =>
+            return type.Dispatcher.Invoke(() =>
             {
-                var type = dataBase.TypeContext.Types[typeName];
                 var typeInfo = type.TypeInfo;
                 var props = new Dictionary<string, object>
                 {

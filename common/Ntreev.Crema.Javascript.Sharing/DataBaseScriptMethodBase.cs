@@ -39,13 +39,132 @@ namespace Ntreev.Crema.Javascript
             this.cremaHost = cremaHost;
         }
 
+        protected bool ContainsDataBase(string dataBaseName)
+        {
+            return this.cremaHost.Dispatcher.Invoke(() => this.cremaHost.DataBases.Contains(dataBaseName));
+        }
+
+        protected bool ContainsTable(string dataBaseName, string tableName)
+        {
+            var dataBase = this.GetDataBase(dataBaseName);
+            return dataBase.Dispatcher.Invoke(() => dataBase.TableContext.Tables.Contains(tableName));
+        }
+
+        protected bool ContainsTableItem(string dataBaseName, string tableItemPath)
+        {
+            var dataBase = this.GetDataBase(dataBaseName);
+            return dataBase.Dispatcher.Invoke(() => dataBase.TableContext.Contains(tableItemPath));
+        }
+
+        protected bool ContainsType(string dataBaseName, string typeName)
+        {
+            var dataBase = this.GetDataBase(dataBaseName);
+            return dataBase.Dispatcher.Invoke(() => dataBase.TypeContext.Types.Contains(typeName));
+        }
+
+        protected bool ContainsTypeItem(string dataBaseName, string typeItemPath)
+        {
+            var dataBase = this.GetDataBase(dataBaseName);
+            return dataBase.Dispatcher.Invoke(() => dataBase.TypeContext.Contains(typeItemPath));
+        }
+
         protected IDataBase GetDataBase(string dataBaseName)
         {
+            if (dataBaseName == null)
+                throw new ArgumentNullException(nameof(dataBaseName));
             return this.cremaHost.Dispatcher.Invoke(() =>
             {
                 if (this.cremaHost.DataBases.Contains(dataBaseName) == false)
                     throw new DataBaseNotFoundException(dataBaseName);
                 return this.cremaHost.DataBases[dataBaseName];
+            });
+        }
+
+        protected ITable GetTable(string dataBaseName, string tableName)
+        {
+            if (dataBaseName == null)
+                throw new ArgumentNullException(nameof(dataBaseName));
+            if (tableName == null)
+                throw new ArgumentNullException(nameof(tableName));
+            var dataBase = this.cremaHost.Dispatcher.Invoke(() =>
+            {
+                if (this.cremaHost.DataBases.Contains(dataBaseName) == false)
+                    throw new DataBaseNotFoundException(dataBaseName);
+                return this.cremaHost.DataBases[dataBaseName];
+            });
+
+            return dataBase.Dispatcher.Invoke(() =>
+            {
+                var table = dataBase.TableContext.Tables[tableName];
+                if (table == null)
+                    throw new TableNotFoundException(tableName);
+                return table;
+            });
+        }
+
+        protected ITableItem GetTableItem(string dataBaseName, string tableItemPath)
+        {
+            if (dataBaseName == null)
+                throw new ArgumentNullException(nameof(dataBaseName));
+            if (tableItemPath == null)
+                throw new ArgumentNullException(nameof(tableItemPath));
+            var dataBase = this.cremaHost.Dispatcher.Invoke(() =>
+            {
+                if (this.cremaHost.DataBases.Contains(dataBaseName) == false)
+                    throw new DataBaseNotFoundException(dataBaseName);
+                return this.cremaHost.DataBases[dataBaseName];
+            });
+
+            return dataBase.Dispatcher.Invoke(() =>
+            {
+                var tableItem = dataBase.TableContext[tableItemPath];
+                if (tableItem == null)
+                    throw new ItemNotFoundException(tableItemPath);
+                return tableItem;
+            });
+        }
+
+        protected IType GetType(string dataBaseName, string typeName)
+        {
+            if (dataBaseName == null)
+                throw new ArgumentNullException(nameof(dataBaseName));
+            if (typeName == null)
+                throw new ArgumentNullException(nameof(typeName));
+            var dataBase = this.cremaHost.Dispatcher.Invoke(() =>
+            {
+                if (this.cremaHost.DataBases.Contains(dataBaseName) == false)
+                    throw new DataBaseNotFoundException(dataBaseName);
+                return this.cremaHost.DataBases[dataBaseName];
+            });
+
+            return dataBase.Dispatcher.Invoke(() =>
+            {
+                var type = dataBase.TypeContext.Types[typeName];
+                if (type == null)
+                    throw new TypeNotFoundException(typeName);
+                return type;
+            });
+        }
+
+        protected ITypeItem GetTypeItem(string dataBaseName, string typeItemPath)
+        {
+            if (dataBaseName == null)
+                throw new ArgumentNullException(nameof(dataBaseName));
+            if (typeItemPath == null)
+                throw new ArgumentNullException(nameof(typeItemPath));
+            var dataBase = this.cremaHost.Dispatcher.Invoke(() =>
+            {
+                if (this.cremaHost.DataBases.Contains(dataBaseName) == false)
+                    throw new DataBaseNotFoundException(dataBaseName);
+                return this.cremaHost.DataBases[dataBaseName];
+            });
+
+            return dataBase.Dispatcher.Invoke(() =>
+            {
+                var typeItem = dataBase.TypeContext[typeItemPath];
+                if (typeItem == null)
+                    throw new ItemNotFoundException(typeItemPath);
+                return typeItem;
             });
         }
 

@@ -45,15 +45,9 @@ namespace Ntreev.Crema.Javascript.Methods.DataBase
 
         private void MoveTypeItem(string dataBaseName, string typeItemPath, string parentPath)
         {
-            var dataBase = this.GetDataBase(dataBaseName);
-            dataBase.Dispatcher.Invoke(() =>
-            {
-                var typeItem = dataBase.TypeContext[typeItemPath];
-                if (typeItem == null)
-                    throw new ItemNotFoundException(typeItemPath);
-                var authentication = this.Context.GetAuthentication(this);
-                typeItem.Move(authentication, parentPath);
-            });
+            var typeItem = this.GetTypeItem(dataBaseName, typeItemPath);
+            var authentication = this.Context.GetAuthentication(this);
+            typeItem.Dispatcher.Invoke(() => typeItem.Move(authentication, parentPath));
         }
     }
 }

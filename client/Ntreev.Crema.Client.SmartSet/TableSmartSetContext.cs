@@ -52,15 +52,14 @@ namespace Ntreev.Crema.Client.SmartSet
         private readonly HashSet<string> bookmarks = new HashSet<string>();
         private bool isModified;
 
-        //[Import]
-        //private Lazy<TableSmartSetBrowserViewModel> browser = null;
-
         [ImportingConstructor]
         public TableSmartSetContext(ICremaAppHost cremaAppHost, ITableBrowser tableBrowser, [ImportMany]IEnumerable<IRule> rules)
         {
             this.cremaAppHost = cremaAppHost;
             this.cremaAppHost.Loaded += CremaAppHost_Loaded;
             this.cremaAppHost.Unloaded += CremaAppHost_Unloaded;
+            this.cremaAppHost.Resetting += CremaAppHost_Resetting;
+            this.cremaAppHost.Reset += CremaAppHost_Reset;
             this.tableBrowser = tableBrowser;
             this.rules = rules.Where(item => item.SupportType == typeof(ITableDescriptor)).ToArray();
         }
@@ -86,49 +85,17 @@ namespace Ntreev.Crema.Client.SmartSet
             {
                 this.bookmarks.Add(item);
             }
-            //this.bookmarks.ToArray();
-            //var category = this.browser.Value.BookmartCategory;
-            //this.bookmarks.Clear();
-            //var items = EnumerableUtility.Descendants<TreeViewItemViewModel>(category, item => item.ItemsSource);
-
-            //foreach (var item in items)
-            //{
-            //    if (item is BookmarkCategoryTreeViewItemViewModel categoryViewModel)
-            //    {
-            //        this.bookmarks.Add(categoryViewModel.Path);
-            //    }
-            //    else if (item is TableTreeViewItemViewModel tableVieWModel)
-            //    {
-            //        string szPath = PathUtility.Separator + tableVieWModel.TableName;
-            //        if (tableVieWModel.Parent is BookmarkCategoryTreeViewItemViewModel bookmarkCategoryTreeViewModel)
-            //        {
-            //            szPath = bookmarkCategoryTreeViewModel.Path + tableVieWModel.TableName;
-            //        }
-
-            //        this.bookmarks.Add(szPath);
-            //    }
-            //    else if (item is InvalidTreeViewItemViewModel invalidViewModel)
-            //    {
-            //        this.bookmarks.Add(invalidViewModel.Path);
-            //    }
-            //}
         }
 
         public void AddBookmarkItem(string itemPath)
         {
             this.bookmarks.Add(itemPath);
-
-
-
             this.OnBookmarkChanged(EventArgs.Empty);
         }
 
         public void RemoveBookmarkItem(string itemPath)
         {
             this.bookmarks.Add(itemPath);
-
-
-
             this.OnBookmarkChanged(EventArgs.Empty);
         }
 
@@ -209,7 +176,6 @@ namespace Ntreev.Crema.Client.SmartSet
                 });
             }
 
-            
             await this.Dispatcher.InvokeAsync(() => this.Refresh(), DispatcherPriority.ApplicationIdle);
         }
 
@@ -223,6 +189,39 @@ namespace Ntreev.Crema.Client.SmartSet
             {
                 CremaLog.Error(ex);
             }
+        }
+
+        private void CremaAppHost_Resetting(object sender, EventArgs e)
+        {
+            try
+            {
+                this.cremaAppHost.UserConfigs?.Commit(this);
+            }
+            catch (Exception ex)
+            {
+                CremaLog.Error(ex);
+            }
+        }
+
+        private async void CremaAppHost_Reset(object sender, EventArgs e)
+        {
+            if (this.cremaAppHost.GetService(typeof(IDataBase)) is IDataBase dataBase)
+            {
+                await dataBase.Dispatcher.InvokeAsync(() =>
+                {
+                    var tableContext = dataBase.TableContext;
+                    tableContext.Tables.TablesChanged += Tables_TablesChanged;
+                    tableContext.Tables.TablesStateChanged += Tables_TablesStateChanged;
+                    tableContext.ItemsCreated += TableContext_ItemCreated;
+                    tableContext.ItemsRenamed += TableContext_ItemRenamed;
+                    tableContext.ItemsMoved += TableContext_ItemMoved;
+                    tableContext.ItemsDeleted += TableContext_ItemDeleted;
+                    tableContext.ItemsAccessChanged += TableContext_ItemsAccessChanged;
+                    tableContext.ItemsLockChanged += TableContext_ItemsLockChanged;
+                });
+            }
+
+            await this.Dispatcher.InvokeAsync(() => this.Refresh(), DispatcherPriority.ApplicationIdle);
         }
 
         private void Tables_TablesChanged(object sender, ItemsEventArgs<ITable> e)

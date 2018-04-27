@@ -45,11 +45,5 @@ namespace Ntreev.Crema.Javascript.Methods.DataBase
         {
             return new Func<string, string, bool>(ContainsType);
         }
-
-        private bool ContainsType(string dataBaseName, string typeName)
-        {
-            var dataBase = this.GetDataBase(dataBaseName);
-            return dataBase.Dispatcher.Invoke(() => dataBase.TypeContext.Types.Contains(typeName));
-        }
     }
 }

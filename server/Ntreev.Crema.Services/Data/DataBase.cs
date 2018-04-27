@@ -428,10 +428,11 @@ namespace Ntreev.Crema.Services.Data
             this.Delete(authentication);
         }
 
-        public void RollbackDomains(Authentication authentication)
+        public void ResettingDataBase(Authentication authentication)
         {
             if (this.GetService(typeof(DomainContext)) is DomainContext domainContext)
             {
+                Trace.WriteLine("resetting");
                 if (this.IsLoaded == true)
                     this.DetachDomainHost();
 
@@ -440,21 +441,17 @@ namespace Ntreev.Crema.Services.Data
                 {
                     item.Dispatcher.Invoke(() => item.Delete(authentication, true));
                 }
+                
+                this.typeContext?.Dispose();
+                this.tableContext?.Dispose();
+                this.DataBases.InvokeDataBaseResetting(authentication, this);
+                base.ResettingDataBase(authentication);
+                this.DataBases.InvokeItemsResettingEvent(authentication, new IDataBase[] { this });
             }
             else
             {
                 throw new NotImplementedException();
             }
-        }
-
-        public void ResettingDataBase(Authentication authentication)
-        {
-            Trace.WriteLine("resetting");
-            this.typeContext?.Dispose();
-            this.tableContext?.Dispose();
-            this.DataBases.InvokeDataBaseResetting(authentication, this);
-            base.ResettingDataBase(authentication);
-            this.DataBases.InvokeItemsResettingEvent(authentication, new IDataBase[] { this });
         }
 
         public void ResetDataBase(Authentication authentication, IEnumerable<TypeInfo> typeInfos, IEnumerable<TableInfo> tableInfos)
@@ -478,20 +475,17 @@ namespace Ntreev.Crema.Services.Data
                     this.AttachUsers(authentication);
                 }
             }
-            //this.Dispatcher.InvokeAsync(() =>
-            //{
-                var metaDataList = new List<DomainMetaData>();
-                foreach (var item in this.cremaHost.DomainContext.Domains)
+            var metaDataList = new List<DomainMetaData>();
+            foreach (var item in this.cremaHost.DomainContext.Domains)
+            {
+                if (item.DomainInfo.DataBaseID == this.ID)
                 {
-                    if (item.DomainInfo.DataBaseID == this.ID)
-                    {
-                        var metaData = item.Dispatcher.Invoke(() => item.GetMetaData(authentication));
-                        metaDataList.Add(metaData);
-                    }
+                    var metaData = item.Dispatcher.Invoke(() => item.GetMetaData(authentication));
+                    metaDataList.Add(metaData);
                 }
+            }
             Trace.WriteLine("reset");
-                this.DataBases.InvokeItemsResetEvent(authentication, new IDataBase[] { this }, metaDataList.ToArray());
-            //});
+            this.DataBases.InvokeItemsResetEvent(authentication, new IDataBase[] { this }, metaDataList.ToArray());
         }
 
         public IDomainHost FindDomainHost(Domain domain)
@@ -1102,6 +1096,7 @@ namespace Ntreev.Crema.Services.Data
                     var dataInfo = JsonSerializerUtility.Read<DataBaseDataSerializationInfo>(filename);
                     if (this.repositoryHost.Revision == dataInfo.Revision)
                     {
+                        //this.ResettingDataBase(Authentication.System);
                         this.ResetDataBase(Authentication.System, dataInfo.TypeInfos, dataInfo.TableInfos);
                         return;
                     }
@@ -1120,6 +1115,7 @@ namespace Ntreev.Crema.Services.Data
 
                 var typeInfos = dataSet.Types.Select(item => item.TypeInfo);
                 var tableInfos = dataSet.Tables.Select(item => item.TableInfo);
+                //this.ResettingDataBase(Authentication.System);
                 this.ResetDataBase(Authentication.System, typeInfos, tableInfos);
                 this.dataSetCache = dataSet;
             }

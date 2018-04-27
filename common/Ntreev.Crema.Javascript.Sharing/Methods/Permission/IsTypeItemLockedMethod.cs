@@ -42,14 +42,10 @@ namespace Ntreev.Crema.Javascript.Methods.Permission
             return new Func<string, string, bool>(this.IsTypeItemLocked);
         }
 
-        private bool IsTypeItemLocked(string dataBaseName, string tableItemPath)
+        private bool IsTypeItemLocked(string dataBaseName, string typeItemPath)
         {
-            var dataBase = this.GetDataBase(dataBaseName);
-            return dataBase.Dispatcher.Invoke(() =>
-            {
-                var tableItem = dataBase.TypeContext[tableItemPath];
-                return tableItem.IsLocked;
-            });
+            var typeItem = this.GetTypeItem(dataBaseName, typeItemPath);
+            return typeItem.Dispatcher.Invoke(() => typeItem.IsLocked);
         }
     }
 }

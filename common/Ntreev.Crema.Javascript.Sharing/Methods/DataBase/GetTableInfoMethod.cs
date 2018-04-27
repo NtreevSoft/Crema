@@ -47,11 +47,10 @@ namespace Ntreev.Crema.Javascript.Methods.DataBase
 
         private IDictionary<string, object> GetTableInfo(string dataBaseName, string tableName)
         {
-            var dataBase = this.GetDataBase(dataBaseName);
+            var table = this.GetTable(dataBaseName, tableName);
 
-            return dataBase.Dispatcher.Invoke(() =>
+            return table.Dispatcher.Invoke(() =>
             {
-                var table = dataBase.TableContext.Tables[tableName];
                 var tableInfo = table.TableInfo;
                 var props = new Dictionary<string, object>
                 {

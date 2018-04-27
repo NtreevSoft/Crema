@@ -71,8 +71,6 @@ namespace Ntreev.Crema.Services.Data
             this.dataBase.VerifyAccess(authentication);
             this.Sign(authentication);
             this.dataBase.ResettingDataBase(authentication);
-            this.repository.CancelTransaction();
-            this.dataBase.RollbackDomains(authentication);
             this.RollbackDomains(authentication);
             this.dataBase.ResetDataBase(authentication, this.typeInfos, this.tableInfos);
             this.authentication.Expired -= Authentication_Expired;
@@ -104,6 +102,8 @@ namespace Ntreev.Crema.Services.Data
 
         private void RollbackDomains(Authentication authentication)
         {
+            this.repository.CancelTransaction();
+
             if (this.dataBase.GetService(typeof(DomainContext)) is DomainContext domainContext)
             {
                 DirectoryUtility.Copy(this.transactionPath, this.domainPath);

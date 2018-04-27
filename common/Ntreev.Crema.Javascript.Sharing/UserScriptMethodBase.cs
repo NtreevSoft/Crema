@@ -54,6 +54,21 @@ namespace Ntreev.Crema.Javascript
             throw new NotImplementedException();
         }
 
+        protected IUserItem GetUserItem(string userItemPath)
+        {
+            if (userItemPath == null)
+                throw new ArgumentNullException(nameof(userItemPath));
+
+            if (this.CremaHost.GetService(typeof(IUserContext)) is IUserContext userContext)
+            {
+                var userItem = userContext.Dispatcher.Invoke(() => userContext[userItemPath]);
+                if (userItem == null)
+                    throw new ItemNotFoundException(userItemPath);
+                return userItem;
+            }
+            throw new NotImplementedException();
+        }
+
         protected ICremaHost CremaHost => this.cremaHost;
     }
 }

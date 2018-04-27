@@ -45,15 +45,9 @@ namespace Ntreev.Crema.Javascript.Methods.DataBase
 
         private void DeleteTable(string dataBaseName, string tableName)
         {
-            var dataBase = this.GetDataBase(dataBaseName);
-            dataBase.Dispatcher.Invoke(() =>
-            {
-                var table = dataBase.TableContext.Tables[tableName];
-                if (table == null)
-                    throw new TableNotFoundException(tableName);
-                var authentication = this.Context.GetAuthentication(this);
-                table.Delete(authentication);
-            });
+            var table = this.GetTable(dataBaseName, tableName);
+            var authentication = this.Context.GetAuthentication(this);
+            table.Dispatcher.Invoke(() => table.Delete(authentication));
         }
     }
 }

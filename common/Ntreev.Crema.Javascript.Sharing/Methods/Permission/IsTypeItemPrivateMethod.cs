@@ -44,12 +44,8 @@ namespace Ntreev.Crema.Javascript.Methods.Permission
 
         private bool IsTypeItemPrivate(string dataBaseName, string typeItemPath)
         {
-            var dataBase = this.GetDataBase(dataBaseName);
-            return dataBase.Dispatcher.Invoke(() =>
-            {
-                var typeItem = dataBase.TypeContext[typeItemPath];
-                return typeItem.IsPrivate;
-            });
+            var typeItem = this.GetTypeItem(dataBaseName, typeItemPath);
+            return typeItem.Dispatcher.Invoke(() => typeItem.IsPrivate);
         }
     }
 }

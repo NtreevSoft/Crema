@@ -44,13 +44,9 @@ namespace Ntreev.Crema.Javascript.Methods.Permission
 
         private void SetTableItemPrivate(string dataBaseName, string tableItemPath)
         {
-            var dataBase = this.GetDataBase(dataBaseName);
-            dataBase.Dispatcher.Invoke(() =>
-            {
-                var tableItem = dataBase.TableContext[tableItemPath];
-                var authentication = this.Context.GetAuthentication(this);
-                tableItem.SetPrivate(authentication);
-            });
+            var tableItem = this.GetTableItem(dataBaseName, tableItemPath);
+            var authentication = this.Context.GetAuthentication(this);
+            tableItem.Dispatcher.Invoke(() => tableItem.SetPrivate(authentication));
         }
     }
 }

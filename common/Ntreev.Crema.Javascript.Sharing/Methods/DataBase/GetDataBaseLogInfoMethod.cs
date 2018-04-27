@@ -48,11 +48,10 @@ namespace Ntreev.Crema.Javascript.Methods.DataBase
         private IDictionary<string, object>[] GetDataBaseLogInfo(string dataBaseName)
         {
             var dataBase = this.GetDataBase(dataBaseName);
+            var authentication = this.Context.GetAuthentication(this);
             return dataBase.Dispatcher.Invoke(() =>
             {
-                var authentication = this.Context.GetAuthentication(this);
                 var logInfos = dataBase.GetLog(authentication);
-
                 return this.GetLogInfo(logInfos);
             });
         }

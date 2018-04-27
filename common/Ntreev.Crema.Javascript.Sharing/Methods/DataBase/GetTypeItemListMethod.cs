@@ -45,10 +45,7 @@ namespace Ntreev.Crema.Javascript.Methods.DataBase
         private string[] GetTypeItemList(string dataBaseName)
         {
             var dataBase = this.GetDataBase(dataBaseName);
-            return dataBase.Dispatcher.Invoke(() =>
-            {
-                return dataBase.TypeContext.Select(item => item.Path).ToArray();
-            });
+            return dataBase.Dispatcher.Invoke(() => dataBase.TypeContext.Select(item => item.Path).ToArray());
         }
     }
 }
