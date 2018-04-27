@@ -27,23 +27,144 @@ using Jint.Native;
 
 namespace Ntreev.Crema.Javascript.Methods
 {
-    [Export(typeof(IScriptMethod))]
+    //[Export(typeof(IScriptMethod))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
     class AddEventListenerMethod : ScriptMethodBase
     {
-        public AddEventListenerMethod()
-        {
+        private readonly ICremaHost cremaHost;
 
+        [ImportingConstructor]
+        public AddEventListenerMethod(ICremaHost cremaHost)
+        {
+            this.cremaHost = cremaHost;
         }
 
         protected override Delegate CreateDelegate()
         {
-            return new Action<string, Action<IDictionary<string, object>>>(this.AddEventListener);
+            return new Action<CremaEvents, Action<IDictionary<string, object>>>(this.AddEventListener);
         }
 
-        private void AddEventListener(string value, Action<IDictionary<string, object>> action)
+        protected override void OnInitialized()
         {
+            base.OnInitialized();
+        }
 
+        protected override void OnDisposed()
+        {
+            base.OnDisposed();
+        }
+
+        private void AddEventListener(CremaEvents eventName, Action<IDictionary<string, object>> action)
+        {
+            switch (eventName)
+            {
+                case CremaEvents.UserStateChanged:
+                case CremaEvents.UserChanged:
+                case CremaEvents.UserItemCreated:
+                case CremaEvents.UserItemRenamed:
+                case CremaEvents.UserItemMoved:
+                case CremaEvents.UserItemDeleted:
+                case CremaEvents.UserLoggedIn:
+                case CremaEvents.UserLoggedOut:
+                case CremaEvents.UserKicked:
+                case CremaEvents.UserBanChanged:
+                case CremaEvents.MessageReceived:
+                    this.RegisterUserEventHandler(eventName, action);
+                    return;
+
+                case CremaEvents.DomainCreated:
+                    return;
+                case CremaEvents.DomainDeleted:
+                    return;
+                case CremaEvents.DomainInfoChanged:
+                    return;
+                case CremaEvents.DomainStateChanged:
+                    return;
+                case CremaEvents.DomainUserAdded:
+                    return;
+                case CremaEvents.DomainUserRemoved:
+                    return;
+                case CremaEvents.DomainUserChanged:
+                    return;
+                case CremaEvents.DomainRowAdded:
+                    return;
+                case CremaEvents.DomainRowChanged:
+                    return;
+                case CremaEvents.DomainRowRemoved:
+                    return;
+                case CremaEvents.DomainPropertyChanged:
+                    return;
+
+                case CremaEvents.DataBaseCreated:
+                    return;
+                case CremaEvents.DataBaseRenamed:
+                    return;
+                case CremaEvents.DataBaseDeleted:
+                    return;
+                case CremaEvents.DataBaseLoaded:
+                    return;
+                case CremaEvents.DataBaseUnloaded:
+                    return;
+                case CremaEvents.DataBaseResetting:
+                    return;
+                case CremaEvents.DataBaseReset:
+                    return;
+                case CremaEvents.DataBaseAuthenticationEntered:
+                    return;
+                case CremaEvents.DataBaseAuthenticationLeft:
+                    return;
+                case CremaEvents.DataBaseInfoChanged:
+                    return;
+                case CremaEvents.DataBaseStateChanged:
+                    return;
+                case CremaEvents.DataBaseAccessChanged:
+                    return;
+                case CremaEvents.DataBaseLockChanged:
+                    return;
+            }
+
+            throw new NotImplementedException();
+        }
+
+        private void RegisterUserEventHandler(CremaEvents eventName, Action<IDictionary<string, object>> action)
+        {
+            if (this.cremaHost.GetService(typeof(IUserContext)) is IUserContext userContext)
+            {
+                userContext.Dispatcher.Invoke(() =>
+                {
+                    switch (eventName)
+                    {
+                        case CremaEvents.UserStateChanged:
+                            userContext.Users.UsersStateChanged += Users_UsersStateChanged;
+                            break;
+                        case CremaEvents.UserChanged:
+                            break;
+                        case CremaEvents.UserItemCreated:
+                            break;
+                        case CremaEvents.UserItemRenamed:
+                            break;
+                        case CremaEvents.UserItemMoved:
+                            break;
+                        case CremaEvents.UserItemDeleted:
+                            break;
+                        case CremaEvents.UserLoggedIn:
+                            break;
+                        case CremaEvents.UserLoggedOut:
+                            break;
+                        case CremaEvents.UserKicked:
+                            break;
+                        case CremaEvents.UserBanChanged:
+                            break;
+                        case CremaEvents.MessageReceived:
+                            break;
+                    }
+                });
+            }
+        }
+
+        private void Users_UsersStateChanged(object sender, ItemsEventArgs<IUser> e)
+        {
+            throw new NotImplementedException();
         }
     }
 }

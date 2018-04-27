@@ -9,6 +9,7 @@
     <Import_RootNamespace>Ntreev.Crema.Javascript</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\CremaEvents.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\CopyTypeMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\InheritTableMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\CopyTableMethod.cs" />
@@ -20,6 +21,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\RenameTableMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\RenameTableItemMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\RenameDataBaseMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\EventHandlers\EventHandlerBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\EventHandlers\UsersStateChangedEventHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\Permission\IsDataBaseLockedMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\Permission\IsDataBasePrivateMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\Permission\LockDataBaseMethod.cs" />

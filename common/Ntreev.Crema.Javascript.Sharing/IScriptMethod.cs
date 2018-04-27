@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Javascript
 {
-    public interface IScriptMethod : IDisposable
+    public interface IScriptMethod
     {
         string Name { get; }
 

@@ -37,11 +37,22 @@ namespace Ntreev.Crema.Javascript.Methods
             return new Action<string>(this.Logout);
         }
 
+        protected override void OnDisposed()
+        {
+            base.OnDisposed();
+            if (this.Context is ScriptMethodContext context && context.Properties.ContainsKey(ScriptMethodContext.LoginKey) == true)
+            {
+                context.Logout();
+                context.Properties.Remove(ScriptMethodContext.LoginKey);
+            }
+        }
+
         private void Logout(string token)
         {
             if (this.Context is ScriptMethodContext context)
             {
                 context.Logout(token);
+                context.Properties.Remove(ScriptMethodContext.LoginKey);
                 return;
             }
             throw new NotImplementedException();

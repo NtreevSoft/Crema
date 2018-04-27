@@ -96,7 +96,10 @@ namespace Ntreev.Crema.Javascript
             if (properties == null)
                 throw new ArgumentNullException(nameof(properties));
 
+            
             var context = this.CreateContext(state);
+            //var dispatcher = new CremaDispatcher(context);
+
             var engine = new Engine(cfg => cfg.CatchClrExceptions());
             foreach (var item in properties)
             {
@@ -108,7 +111,15 @@ namespace Ntreev.Crema.Javascript
             foreach (var item in methodItems)
             {
                 item.Context = context;
+                context.Properties[item.GetType()] = item;
                 engine.SetValue(item.Name, item.Delegate);
+            }
+            foreach (var item in methodItems)
+            {
+                if (item is ScriptMethodBase methodBase)
+                {
+                    methodBase.Initialize();
+                }
             }
 
             var enumTypes = this.GetEnums(methodItems);
@@ -135,7 +146,10 @@ namespace Ntreev.Crema.Javascript
             {
                 foreach (var item in methodItems)
                 {
-                    item.Dispose();
+                    if (item is ScriptMethodBase methodBase)
+                    {
+                        methodBase.Dispose();
+                    }
                 }
             }
         }
@@ -162,6 +176,13 @@ namespace Ntreev.Crema.Javascript
             sb.AppendLine();
 
             var methodItems = this.CreateMethods().OrderBy(item => item.Name);
+            foreach (var item in methodItems)
+            {
+                if (item is ScriptMethodBase methodBase)
+                {
+                    methodBase.Initialize();
+                }
+            }
             try
             {
                 this.WriteProperties(sb, properties);
@@ -174,7 +195,10 @@ namespace Ntreev.Crema.Javascript
             {
                 foreach (var item in methodItems)
                 {
-                    item.Dispose();
+                    if (item is ScriptMethodBase methodBase)
+                    {
+                        methodBase.Dispose();
+                    }
                 }
             }
         }

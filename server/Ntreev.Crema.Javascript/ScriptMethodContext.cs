@@ -35,8 +35,9 @@ using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Javascript
 {
-    sealed class ScriptMethodContext : Dictionary<string, object>, IScriptMethodContext
+    sealed class ScriptMethodContext : Dictionary<object, object>, IScriptMethodContext
     {
+        public readonly static Guid LoginKey = Guid.Parse("7DBFE96F-0AB0-48F9-A8A5-5E70426F4C0E");
         private readonly ScriptContext scriptContext;
         private readonly ICremaHost cremaHost;
         private Authentication authentication;
@@ -74,12 +75,20 @@ namespace Ntreev.Crema.Javascript
             if (token == null)
                 throw new ArgumentNullException(nameof(token));
             if (this.token != token)
-                throw new ArgumentException("잘못된 토큰입니다.", nameof(token));
+                throw new ArgumentException("token is not valid.", nameof(token));
+            if (this.Properties.ContainsKey(LoginKey) == false)
+                throw new InvalidOperationException("this method is invalid operation");
+            this.cremaHost.Dispatcher.Invoke(() => this.cremaHost.Logout(this.authentication));
             this.authentication = null;
             this.token = null;
         }
 
-        public IDictionary<string, object> Properties => this;
+        public void Logout()
+        {
+            this.Logout(this.token);
+        }
+
+        public IDictionary<object, object> Properties => this;
 
         public TextWriter Out => this.scriptContext.Out;
     }

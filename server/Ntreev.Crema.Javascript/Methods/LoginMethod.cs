@@ -41,7 +41,9 @@ namespace Ntreev.Crema.Javascript.Methods
         {
             if (this.Context is ScriptMethodContext context)
             {
-                return context.Login(userID, password);
+                var token = context.Login(userID, password);
+                context.Properties[ScriptMethodContext.LoginKey] = true;
+                return token;
             }
             throw new NotImplementedException();
         }

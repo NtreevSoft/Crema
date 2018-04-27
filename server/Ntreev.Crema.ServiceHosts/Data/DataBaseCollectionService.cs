@@ -329,7 +329,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
             }
         }
 
-        private void DataBases_ItemCreated(object sender, ItemsCreatedEventArgs<IDataBase> e)
+        private void DataBases_ItemsCreated(object sender, ItemsCreatedEventArgs<IDataBase> e)
         {
             var userID = this.authentication.ID;
             var exceptionUserID = e.UserID;
@@ -340,7 +340,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
             this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnDataBasesCreated(signatureDate, dataBaseNames, dataBaseInfos, comment));
         }
 
-        private void DataBases_ItemRenamed(object sender, ItemsRenamedEventArgs<IDataBase> e)
+        private void DataBases_ItemsRenamed(object sender, ItemsRenamedEventArgs<IDataBase> e)
         {
             var userID = this.authentication.ID;
             var exceptionUserID = e.UserID;
@@ -350,7 +350,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
             this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnDataBasesRenamed(signatureDate, oldNames, itemNames));
         }
 
-        private void DataBases_ItemDeleted(object sender, ItemsDeletedEventArgs<IDataBase> e)
+        private void DataBases_ItemsDeleted(object sender, ItemsDeletedEventArgs<IDataBase> e)
         {
             var userID = this.authentication.ID;
             var exceptionUserID = e.UserID;
@@ -489,9 +489,9 @@ namespace Ntreev.Crema.ServiceHosts.Data
         {
             this.cremaHost.Dispatcher.VerifyAccess();
 
-            this.cremaHost.DataBases.ItemsCreated += DataBases_ItemCreated;
-            this.cremaHost.DataBases.ItemsRenamed += DataBases_ItemRenamed;
-            this.cremaHost.DataBases.ItemsDeleted += DataBases_ItemDeleted;
+            this.cremaHost.DataBases.ItemsCreated += DataBases_ItemsCreated;
+            this.cremaHost.DataBases.ItemsRenamed += DataBases_ItemsRenamed;
+            this.cremaHost.DataBases.ItemsDeleted += DataBases_ItemsDeleted;
             this.cremaHost.DataBases.ItemsLoaded += DataBases_ItemsLoaded;
             this.cremaHost.DataBases.ItemsUnloaded += DataBases_ItemsUnloaded;
             this.cremaHost.DataBases.ItemsResetting += DataBases_ItemsResetting;
@@ -509,9 +509,9 @@ namespace Ntreev.Crema.ServiceHosts.Data
         {
             this.cremaHost.Dispatcher.VerifyAccess();
 
-            this.cremaHost.DataBases.ItemsCreated -= DataBases_ItemCreated;
-            this.cremaHost.DataBases.ItemsRenamed -= DataBases_ItemRenamed;
-            this.cremaHost.DataBases.ItemsDeleted -= DataBases_ItemDeleted;
+            this.cremaHost.DataBases.ItemsCreated -= DataBases_ItemsCreated;
+            this.cremaHost.DataBases.ItemsRenamed -= DataBases_ItemsRenamed;
+            this.cremaHost.DataBases.ItemsDeleted -= DataBases_ItemsDeleted;
             this.cremaHost.DataBases.ItemsLoaded -= DataBases_ItemsLoaded;
             this.cremaHost.DataBases.ItemsUnloaded -= DataBases_ItemsUnloaded;
             this.cremaHost.DataBases.ItemsResetting -= DataBases_ItemsResetting;
