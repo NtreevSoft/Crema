@@ -91,13 +91,13 @@
     <None Include="Reader\node.d.ts" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\..\vscode\typescript\reader\crema-base.ts">
+    <EmbeddedResource Include="..\..\code\typescript\reader\crema-base.ts">
       <Link>Reader\crema-base.ts</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\..\vscode\typescript\reader\crema-reader.d.ts">
+    <EmbeddedResource Include="..\..\code\typescript\reader\crema-reader.d.ts">
       <Link>Reader\crema-reader.d.ts</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\..\vscode\typescript\reader\crema-reader.ts">
+    <EmbeddedResource Include="..\..\code\typescript\reader\crema-reader.ts">
       <Link>Reader\crema-reader.ts</Link>
     </EmbeddedResource>
   </ItemGroup>
