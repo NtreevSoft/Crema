@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Javascript
 {
-    class ScriptMethodContext : Dictionary<string, object>, IScriptMethodContext
+    class ScriptMethodContext : Dictionary<object, object>, IScriptMethodContext
     {
         private readonly ScriptContext scriptContext;
         private readonly ICremaHost cremaHost;
@@ -70,7 +70,7 @@ namespace Ntreev.Crema.Javascript
             return this.authentication;
         }
 
-        public IDictionary<string, object> Properties => this;
+        public IDictionary<object, object> Properties => this;
 
         public TextWriter Out => this.scriptContext.Out;
 
