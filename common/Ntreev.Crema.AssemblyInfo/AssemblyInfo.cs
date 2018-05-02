@@ -22,7 +22,7 @@ using System.Reflection;
 [assembly: AssemblyConfiguration("Release")]
 #endif
 [assembly: AssemblyCompany("NtreevSoft")]
-[assembly: AssemblyCopyright("Copyright © NTREEV SOFT 2012")]
+[assembly: AssemblyCopyright("Copyright © Ntreev Soft 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyVersion("3.6.0.0")]

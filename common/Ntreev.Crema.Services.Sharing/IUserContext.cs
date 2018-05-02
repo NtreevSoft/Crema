@@ -61,8 +61,6 @@ namespace Ntreev.Crema.Services
         event EventHandler<MessageEventArgs> MessageReceived;
 
 #if SERVER
-        //Authentication Login(string userID, string password);
-
         Authentication Login(string userID, SecureString password);
 
         void Logout(Authentication authentication);

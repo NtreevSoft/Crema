@@ -29,56 +29,23 @@ namespace Ntreev.Crema.Javascript.Methods
 {
     [Export(typeof(IScriptMethod))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
-    class AddEventListenerMethod : ScriptMethodBase
+    class RemoveEventListenerMethod : ScriptMethodBase
     {
-        private readonly ICremaHost cremaHost;
-        private readonly IDictionary<CremaEvents, EventHandlerBase> eventHandlers;
-
         [ImportingConstructor]
-        public AddEventListenerMethod(ICremaHost cremaHost, [ImportMany]IEnumerable<EventHandlerBase> eventHandlers)
+        public RemoveEventListenerMethod(ICremaHost cremaHost)
         {
-            this.cremaHost = cremaHost;
-            this.eventHandlers = eventHandlers.ToDictionary(item => item.EventName);
         }
 
         protected override Delegate CreateDelegate()
         {
-            return new Func<CremaEvents, Action<IDictionary<string, object>>, int>(this.AddEventListener);
+            return new Action<CremaEvents, int>(this.RemoveEventListener);
         }
 
-        protected override void OnInitialized()
+        private void RemoveEventListener(CremaEvents eventName, int handlerID)
         {
-            base.OnInitialized();
-        }
-
-        protected override void OnDisposed()
-        {
-            base.OnDisposed();
-            foreach (var item in this.eventHandlers)
+            if (this.Context.Properties[typeof(AddEventListenerMethod)] is AddEventListenerMethod script)
             {
-                item.Value.Dispose();
-            }
-        }
-
-        public int AddEventListener(CremaEvents eventName, Action<IDictionary<string, object>> action)
-        {
-            if (this.eventHandlers.ContainsKey(eventName) == true)
-            {
-                var eventHandler = this.eventHandlers[eventName];
-                return eventHandler.Subscribe(action);
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public void RemoveEventListener(CremaEvents eventName, int hashCode)
-        {
-            if (this.eventHandlers.ContainsKey(eventName) == true)
-            {
-                var eventHandler = this.eventHandlers[eventName];
-                eventHandler.Unsubscribe(hashCode);
+                script.RemoveEventListener(eventName, handlerID);
             }
             else
             {
