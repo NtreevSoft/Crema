@@ -40,6 +40,7 @@ namespace Ntreev.Crema.Javascript
     {
         private readonly string name;
         private readonly ICremaHost cremaHost;
+        private readonly List<Engine> engineList = new List<Engine>();
         private Authentication authentication;
         private TextWriter writer;
 
@@ -96,10 +97,7 @@ namespace Ntreev.Crema.Javascript
             if (properties == null)
                 throw new ArgumentNullException(nameof(properties));
 
-            
             var context = this.CreateContext(state);
-            //var dispatcher = new CremaDispatcher(context);
-
             var engine = new Engine(cfg => cfg.CatchClrExceptions());
             foreach (var item in properties)
             {
@@ -136,6 +134,10 @@ namespace Ntreev.Crema.Javascript
 
             try
             {
+                lock (this.engineList)
+                {
+                    this.engineList.Add(engine);
+                }
                 engine.Execute(script);
                 if (functionName != string.Empty)
                 {
@@ -144,6 +146,10 @@ namespace Ntreev.Crema.Javascript
             }
             finally
             {
+                lock (this.engineList)
+                {
+                    this.engineList.Remove(engine);
+                }
                 foreach (var item in methodItems)
                 {
                     if (item is ScriptMethodBase methodBase)
@@ -187,6 +193,7 @@ namespace Ntreev.Crema.Javascript
             {
                 this.WriteProperties(sb, properties);
                 this.WriteEnums(sb, methodItems);
+                this.WriteDelegates(sb, methodItems);
                 this.WriteMethods(sb, methodItems);
 
                 return sb.ToString();
@@ -294,7 +301,11 @@ namespace Ntreev.Crema.Javascript
 
         private void CremaHost_Closed(object sender, ClosedEventArgs e)
         {
-
+            var items = this.engineList.ToArray();
+            foreach (var item in items)
+            {
+                item.LeaveExecutionContext();
+            }
         }
 
         private string GetParameterString(ParameterInfo p)
@@ -349,6 +360,18 @@ namespace Ntreev.Crema.Javascript
                 return "number";
             else if (type == typeof(decimal))
                 return "number";
+            else if (IsDelegateType(type))
+            {
+                return type.Name;
+                //var methodInfo = type.GetMethod("Invoke");
+                //var parameters = methodInfo.GetParameters();
+                //var argList = new List<string>();
+                //for (var i = 0; i < parameters.Length; i++)
+                //{
+                //    argList.Add(this.GetNameTypeString(parameters[i].Name, parameters[i].ParameterType));
+                //}
+                //return $"type {type.Name} = ({string.Join(", ", argList)}) => {this.GetTypeString(methodInfo.ReturnType)}";
+            }
             else if (IsActionType(type))
             {
                 var sb = new StringBuilder();
@@ -401,6 +424,26 @@ namespace Ntreev.Crema.Javascript
             }
 
             if (enumTypes.Any())
+                sb.AppendLine();
+        }
+
+        private void WriteDelegates(StringBuilder sb, IEnumerable<IScriptMethod> methodItems)
+        {
+            var delegateTypes = this.GetDelegates(methodItems).ToArray();
+
+            foreach (var item in delegateTypes)
+            {
+                var methodInfo = item.GetMethod("Invoke");
+                var parameters = methodInfo.GetParameters();
+                var argList = new List<string>();
+                for (var i = 0; i < parameters.Length; i++)
+                {
+                    argList.Add(this.GetNameTypeString(parameters[i].Name, parameters[i].ParameterType));
+                }
+                sb.AppendLine($"type {item.Name} = ({string.Join(", ", argList)}) => {this.GetTypeString(methodInfo.ReturnType)};");
+            }
+
+            if (delegateTypes.Any())
                 sb.AppendLine();
         }
 
@@ -469,6 +512,16 @@ namespace Ntreev.Crema.Javascript
             return query.Distinct();
         }
 
+        private IEnumerable<Type> GetDelegates(IEnumerable<IScriptMethod> methodItems)
+        {
+            var query = from methodItem in methodItems
+                        let methodInfo = methodItem.Delegate.Method
+                        from parameterInfo in methodInfo.GetParameters()
+                        where IsDelegateType(parameterInfo.ParameterType)
+                        select parameterInfo.ParameterType;
+            return query.Distinct();
+        }
+
         internal static bool IsDictionaryType(Type type)
         {
             return type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(IDictionary<,>) || type.GetGenericTypeDefinition() == typeof(Dictionary<,>));
@@ -482,6 +535,18 @@ namespace Ntreev.Crema.Javascript
         internal static bool IsNullableType(Type type)
         {
             return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+        }
+
+        internal static bool IsDelegateType(Type type)
+        {
+            if (IsActionType(type) == true)
+                return false;
+            if (type.BaseType != typeof(MulticastDelegate))
+                return false;
+            var methodInfo = type.GetMethod("Invoke");
+            if (methodInfo == null)
+                return false;
+            return true;
         }
 
         #region classes

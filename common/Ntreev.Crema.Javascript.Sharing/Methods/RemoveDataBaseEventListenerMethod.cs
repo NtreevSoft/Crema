@@ -29,21 +29,20 @@ namespace Ntreev.Crema.Javascript.Methods
 {
     [Export(typeof(IScriptMethod))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
-    class RemoveEventListenerMethod : ScriptMethodBase
+    class RemoveDataBaseEventListenerMethod : ScriptMethodBase
     {
-        [ImportingConstructor]
-        public RemoveEventListenerMethod(ICremaHost cremaHost)
+        public RemoveDataBaseEventListenerMethod()
         {
         }
 
         protected override Delegate CreateDelegate()
         {
-            return new Action<CremaEvents, CremaEventListener>(this.RemoveEventListener);
+            return new Action<CremaDataBaseEvents, CremaDataBaseEventListener>(this.RemoveDataBaseEventListener);
         }
 
-        private void RemoveEventListener(CremaEvents eventName, CremaEventListener listener)
+        private void RemoveDataBaseEventListener(CremaDataBaseEvents eventName, CremaDataBaseEventListener listener)
         {
-            if (this.Context.Properties[typeof(CremaEventListenerContext)] is CremaEventListenerContext context)
+            if (this.Context.Properties[typeof(CremaDataBaseEventListenerContext)] is CremaDataBaseEventListenerContext context)
             {
                 context.RemoveEventListener(eventName, listener);
             }

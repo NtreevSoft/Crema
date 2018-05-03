@@ -4,17 +4,17 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Text;
 
-namespace Ntreev.Crema.Javascript.Methods.EventHandlers.Users
+namespace Ntreev.Crema.Javascript.Methods.Listeners.Users
 {
-    [Export(typeof(EventHandlerBase))]
+    [Export(typeof(CremaEventListenerBase))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
-    class UserItemCreatedEventHandler : EventHandlerBase
+    class UserBanChangedEventListener : CremaEventListenerBase
     {
         private readonly ICremaHost cremaHost;
 
         [ImportingConstructor]
-        public UserItemCreatedEventHandler(ICremaHost cremaHost)
-            : base(CremaEvents.UserChanged)
+        public UserBanChangedEventListener(ICremaHost cremaHost)
+            : base(CremaEvents.UserBanChanged)
         {
             this.cremaHost = cremaHost;
         }
@@ -23,7 +23,7 @@ namespace Ntreev.Crema.Javascript.Methods.EventHandlers.Users
         {
             if (this.cremaHost.GetService(typeof(IUserContext)) is IUserContext userContext)
             {
-                userContext.Dispatcher.Invoke(() => userContext.ItemsCreated += UserContext_ItemsCreated);
+                userContext.Dispatcher.Invoke(() => userContext.UsersBanChanged += UserContext_UsersBanChanged);
             }
         }
 
@@ -31,11 +31,11 @@ namespace Ntreev.Crema.Javascript.Methods.EventHandlers.Users
         {
             if (this.cremaHost.GetService(typeof(IUserContext)) is IUserContext userContext)
             {
-                userContext.Dispatcher.Invoke(() => userContext.ItemsCreated -= UserContext_ItemsCreated);
+                userContext.Dispatcher.Invoke(() => userContext.UsersBanChanged -= UserContext_UsersBanChanged);
             }
         }
 
-        private void UserContext_ItemsCreated(object sender, ItemsCreatedEventArgs<IUserItem> e)
+        private void UserContext_UsersBanChanged(object sender, ItemsEventArgs<IUser> e)
         {
             this.Invoke(null);
         }

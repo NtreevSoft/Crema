@@ -65,7 +65,7 @@ namespace Ntreev.Crema.Services
                 throw new InvalidOperationException(Resources.Exception_Expired);
             if (this.child != null)
                 throw new InvalidOperationException(Resources.Exception_Commissioned);
-            var authentication = new Authentication(new UserAuthenticationProvider(this.provider.ID, this.provider.Name, this.provider.AuthenticationTypes), this.token)
+            var authentication = new Authentication(new UserAuthenticationProvider(this.provider.ID, this.provider.Name, this.provider.Authority, this.provider.AuthenticationTypes), this.token)
             {
                 signatureDate = this.signatureDate,
                 parent = this,
