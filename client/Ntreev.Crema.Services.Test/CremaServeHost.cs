@@ -26,8 +26,7 @@ namespace Ntreev.Crema.Services.Test
 {
     class CremaServeHost
     {
-        private const string filename = @"..\..\..\..\bin\Debug\cremaserve\cremaserve.exe";
-        //private const string filename = @"D:\Projects\Git\Crema\bin\Debug\cremaserve\cremaserve.exe";
+        private const string filename = @"..\..\..\..\bin\Debug\cremaserver\cremaserver.exe";
         private static readonly StringBuilder sb = new StringBuilder();
 
         public static int ExitCode
