@@ -47,10 +47,11 @@ namespace Ntreev.Crema.Services.Users
             user.UserInfoChanged += User_UserInfoChanged;
         }
 
-        public UserAuthenticationProvider(string userID, string userName, AuthenticationType authenticationTypes)
+        public UserAuthenticationProvider(string userID, string userName, Authority authority, AuthenticationType authenticationTypes)
         {
             this.userID = userID;
             this.userName = userName;
+            this.authority = authority;
             this.authenticationTypes = authenticationTypes;
             this.dummy = true;
         }

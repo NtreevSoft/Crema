@@ -29,23 +29,46 @@ namespace Ntreev.Crema.Javascript.Methods
 {
     [Export(typeof(IScriptMethod))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
-    class RemoveEventListenerMethod : ScriptMethodBase
+    class AddDataBaseEventListenerMethod : ScriptMethodBase
     {
+        private readonly ICremaHost cremaHost;
+        private readonly CremaDataBaseEventListenerBase[] eventListeners;
+        private CremaDataBaseEventListenerContext eventListenerContext;
+
         [ImportingConstructor]
-        public RemoveEventListenerMethod(ICremaHost cremaHost)
+        public AddDataBaseEventListenerMethod(ICremaHost cremaHost, [ImportMany]IEnumerable<CremaDataBaseEventListenerBase> eventListeners)
         {
+            this.cremaHost = cremaHost;
+            this.eventListeners = eventListeners.ToArray();
         }
 
         protected override Delegate CreateDelegate()
         {
-            return new Action<CremaEvents, CremaEventListener>(this.RemoveEventListener);
+            return new Action<CremaDataBaseEvents, CremaDataBaseEventListener>(this.AddDataBaseEventListener);
         }
 
-        private void RemoveEventListener(CremaEvents eventName, CremaEventListener listener)
+        protected override void OnInitialized()
         {
-            if (this.Context.Properties[typeof(CremaEventListenerContext)] is CremaEventListenerContext context)
+            base.OnInitialized();
+        }
+
+        protected override void OnDisposed()
+        {
+            base.OnDisposed();
+            this.eventListenerContext?.Dispose();
+        }
+
+        private void AddDataBaseEventListener(CremaDataBaseEvents eventName, CremaDataBaseEventListener listener)
+        {
+            if (this.Context.Properties.ContainsKey(typeof(CremaDataBaseEventListenerContext)) == false)
             {
-                context.RemoveEventListener(eventName, listener);
+                this.eventListenerContext = new CremaDataBaseEventListenerContext(this.cremaHost, this.eventListeners);
+                this.Context.Properties[typeof(CremaDataBaseEventListenerContext)] = this.eventListenerContext;
+            }
+
+            if (this.eventListenerContext != null)
+            {
+                this.eventListenerContext.AddEventListener(eventName, listener);
             }
             else
             {

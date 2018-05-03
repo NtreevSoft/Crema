@@ -32,18 +32,19 @@ namespace Ntreev.Crema.Javascript.Methods
     class AddEventListenerMethod : ScriptMethodBase
     {
         private readonly ICremaHost cremaHost;
-        private readonly IDictionary<CremaEvents, EventHandlerBase> eventHandlers;
+        private readonly CremaEventListenerBase[] eventListeners;
+        private CremaEventListenerContext eventListenerContext;
 
         [ImportingConstructor]
-        public AddEventListenerMethod(ICremaHost cremaHost, [ImportMany]IEnumerable<EventHandlerBase> eventHandlers)
+        public AddEventListenerMethod(ICremaHost cremaHost, [ImportMany]IEnumerable<CremaEventListenerBase> eventListeners)
         {
             this.cremaHost = cremaHost;
-            this.eventHandlers = eventHandlers.ToDictionary(item => item.EventName);
+            this.eventListeners = eventListeners.ToArray();
         }
 
         protected override Delegate CreateDelegate()
         {
-            return new Func<CremaEvents, Action<IDictionary<string, object>>, int>(this.AddEventListener);
+            return new Action<CremaEvents, CremaEventListener>(this.AddEventListener);
         }
 
         protected override void OnInitialized()
@@ -54,31 +55,20 @@ namespace Ntreev.Crema.Javascript.Methods
         protected override void OnDisposed()
         {
             base.OnDisposed();
-            foreach (var item in this.eventHandlers)
-            {
-                item.Value.Dispose();
-            }
+            this.eventListenerContext?.Dispose();
         }
 
-        public int AddEventListener(CremaEvents eventName, Action<IDictionary<string, object>> action)
+        private void AddEventListener(CremaEvents eventName, CremaEventListener listener)
         {
-            if (this.eventHandlers.ContainsKey(eventName) == true)
+            if (this.Context.Properties.ContainsKey(typeof(CremaEventListenerContext)) == false)
             {
-                var eventHandler = this.eventHandlers[eventName];
-                return eventHandler.Subscribe(action);
+                this.eventListenerContext = new CremaEventListenerContext(this.eventListeners);
+                this.Context.Properties[typeof(CremaEventListenerContext)] = this.eventListenerContext;
             }
-            else
-            {
-                throw new NotImplementedException();
-            }
-        }
 
-        public void RemoveEventListener(CremaEvents eventName, int hashCode)
-        {
-            if (this.eventHandlers.ContainsKey(eventName) == true)
+            if (this.eventListenerContext != null)
             {
-                var eventHandler = this.eventHandlers[eventName];
-                eventHandler.Unsubscribe(hashCode);
+                this.eventListenerContext.AddEventListener(eventName, listener);
             }
             else
             {

@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Services
 {
-    public interface IDataBaseCollection : IReadOnlyCollection<IDataBase>, IEnumerable<IDataBase>
+    public interface IDataBaseCollection : IReadOnlyCollection<IDataBase>, IEnumerable<IDataBase>, IDispatcherObject
     {
         IDataBase AddNewDataBase(Authentication authentication, string dataBaseName, string comment);
 

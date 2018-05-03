@@ -24,28 +24,53 @@ using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Jint.Native;
+using Ntreev.Crema.ServiceModel;
 
 namespace Ntreev.Crema.Javascript.Methods
 {
-    [Export(typeof(IScriptMethod))]
-    [PartCreationPolicy(CreationPolicy.NonShared)]
-    class RemoveEventListenerMethod : ScriptMethodBase
+    class CremaEventListenerContext
     {
-        [ImportingConstructor]
-        public RemoveEventListenerMethod(ICremaHost cremaHost)
-        {
-        }
+        private readonly IDictionary<CremaEvents, CremaEventListenerBase> eventListeners;
+        private readonly CremaDispatcher dispatcher;
 
-        protected override Delegate CreateDelegate()
+        public CremaEventListenerContext(CremaEventListenerBase[] eventListener)
         {
-            return new Action<CremaEvents, CremaEventListener>(this.RemoveEventListener);
-        }
-
-        private void RemoveEventListener(CremaEvents eventName, CremaEventListener listener)
-        {
-            if (this.Context.Properties[typeof(CremaEventListenerContext)] is CremaEventListenerContext context)
+            this.eventListeners = eventListener.ToDictionary(item => item.EventName);
+            this.dispatcher = new CremaDispatcher(this);
+            foreach (var item in eventListener)
             {
-                context.RemoveEventListener(eventName, listener);
+                item.Dispatcher = this.dispatcher;
+            }
+        }
+
+        public void Dispose()
+        {
+            this.dispatcher.Dispose();
+            foreach (var item in this.eventListeners)
+            {
+                item.Value.Dispose();
+            }
+        }
+
+        public void AddEventListener(CremaEvents eventName, CremaEventListener listener)
+        {
+            if (this.eventListeners.ContainsKey(eventName) == true)
+            {
+                var eventHandler = this.eventListeners[eventName];
+                eventHandler.Subscribe(listener);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public void RemoveEventListener(CremaEvents eventName, CremaEventListener listener)
+        {
+            if (this.eventListeners.ContainsKey(eventName) == true)
+            {
+                var eventHandler = this.eventListeners[eventName];
+                eventHandler.Unsubscribe(listener);
             }
             else
             {
