@@ -37,12 +37,12 @@ namespace Ntreev.Crema.Javascript.Methods
 
         protected override Delegate CreateDelegate()
         {
-            return new Action<CremaDataBaseEvents, CremaDataBaseEventListener>(this.RemoveDataBaseEventListener);
+            return new Action<DataBaseEvents, DataBaseEventListener>(this.RemoveDataBaseEventListener);
         }
 
-        private void RemoveDataBaseEventListener(CremaDataBaseEvents eventName, CremaDataBaseEventListener listener)
+        private void RemoveDataBaseEventListener(DataBaseEvents eventName, DataBaseEventListener listener)
         {
-            if (this.Context.Properties[typeof(CremaDataBaseEventListenerContext)] is CremaDataBaseEventListenerContext context)
+            if (this.Context.Properties[typeof(DataBaseEventListenerContext)] is DataBaseEventListenerContext context)
             {
                 context.RemoveEventListener(eventName, listener);
             }
