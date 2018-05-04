@@ -30,10 +30,10 @@ namespace Ntreev.Crema.Javascript.Methods
 {
     class CremaEventListenerContext
     {
-        private readonly IDictionary<CremaEvents, CremaEventListenerBase> eventListeners;
+        private readonly IDictionary<CremaEvents, CremaEventListenerHost> eventListeners;
         private readonly CremaDispatcher dispatcher;
 
-        public CremaEventListenerContext(CremaEventListenerBase[] eventListener)
+        public CremaEventListenerContext(CremaEventListenerHost[] eventListener)
         {
             this.eventListeners = eventListener.ToDictionary(item => item.EventName);
             this.dispatcher = new CremaDispatcher(this);
