@@ -18,6 +18,7 @@
 using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services.Domains;
+using Ntreev.Crema.Services.Properties;
 using Ntreev.Library.IO;
 using Ntreev.Library.ObjectModel;
 using Ntreev.Library.Serialization;
@@ -886,14 +887,14 @@ namespace Ntreev.Crema.Services.Data
 
             var dataBasePath1 = Path.Combine(this.cremaHost.TagsPath, newDataBaseName);
             if (DirectoryUtility.Exists(dataBasePath1) == true)
-                throw new CremaException("'{0}' 경로가 이미 존재합니다.", newDataBaseName);
+                throw new ArgumentException(string.Format(Resources.Exception_ExistsPath_Format, newDataBaseName), nameof(newDataBaseName));
 
             var dataBasePath2 = Path.Combine(this.cremaHost.BranchesPath, newDataBaseName);
             if (DirectoryUtility.Exists(dataBasePath2) == true)
-                throw new CremaException("'{0}' 경로가 이미 존재합니다.", newDataBaseName);
+                throw new ArgumentException(string.Format(Resources.Exception_ExistsPath_Format, newDataBaseName), nameof(newDataBaseName));
 
             if (this.ContainsKey(newDataBaseName) == true)
-                throw new CremaException("'{0}'은(는) 이미 존재하는 데이터베이스입니다.", newDataBaseName);
+                throw new ArgumentException(string.Format(Resources.Exception_DataBaseIsAlreadyExisted_Format, newDataBaseName), nameof(newDataBaseName));
 
             if (force == true)
                 return;
@@ -922,14 +923,14 @@ namespace Ntreev.Crema.Services.Data
 
             var dataBasePath1 = Path.Combine(this.cremaHost.TagsPath, dataBaseName);
             if (DirectoryUtility.Exists(dataBasePath1) == true)
-                throw new CremaException("'{0}' 경로가 이미 존재합니다.", dataBaseName);
+                throw new ArgumentException(string.Format(Resources.Exception_ExistsPath_Format, dataBaseName), nameof(dataBaseName));
 
             var dataBasePath2 = Path.Combine(this.cremaHost.BranchesPath, dataBaseName);
             if (DirectoryUtility.Exists(dataBasePath2) == true)
-                throw new CremaException("'{0}' 경로가 이미 존재합니다.", dataBaseName);
+                throw new ArgumentException(string.Format(Resources.Exception_ExistsPath_Format, dataBaseName), nameof(dataBaseName));
 
             if (this.ContainsKey(dataBaseName) == true)
-                throw new CremaException("'{0}'은(는) 이미 존재하는 데이터베이스입니다.", dataBaseName);
+                throw new ArgumentException(string.Format(Resources.Exception_DataBaseIsAlreadyExisted_Format, dataBaseName), nameof(dataBaseName));
         }
 
         private void ValidateRenameDataBase(Authentication authentication, DataBase dataBase, string newDataBaseName)
@@ -941,14 +942,14 @@ namespace Ntreev.Crema.Services.Data
                 throw new PermissionDeniedException("default 데이터 베이스는 이름을 변경할 수 없습니다.");
 
             if (dataBase.IsLoaded == true)
-                throw new CremaException("데이터 베이스가 사용중입니다.");
+                throw new InvalidOperationException(Resources.Exception_DataBaseHasBeenLoaded);
 
             var dataBasePath = Path.Combine(Path.GetDirectoryName(dataBase.BasePath), newDataBaseName);
             if (DirectoryUtility.Exists(dataBasePath) == true)
-                throw new CremaException("'{0}' 경로가 이미 존재합니다.", newDataBaseName);
+                throw new ArgumentException(string.Format(Resources.Exception_ExistsPath_Format, newDataBaseName), nameof(newDataBaseName));
 
             if (this.ContainsKey(newDataBaseName) == true)
-                throw new CremaException("'{0}'은(는) 이미 존재하는 데이터베이스입니다.", newDataBaseName);
+                throw new ArgumentException(string.Format(Resources.Exception_DataBaseIsAlreadyExisted_Format, newDataBaseName), nameof(newDataBaseName));
         }
 
         private void ValidateDeleteDataBase(Authentication authentication, DataBase dataBase)
@@ -960,7 +961,7 @@ namespace Ntreev.Crema.Services.Data
                 throw new PermissionDeniedException("default 데이터 베이스는 삭제할 수 없습니다.");
 
             if (dataBase.IsLoaded == true)
-                throw new CremaException("데이터 베이스가 사용중입니다.");
+                throw new ArgumentException(Resources.Exception_DataBaseHasBeenLoaded, nameof(dataBase));
         }
 
         private Dictionary<string, DataBaseSerializationInfo> ReadCaches()
@@ -1002,11 +1003,6 @@ namespace Ntreev.Crema.Services.Data
 
             return caches;
         }
-
-        //private void WriteAccessInfo(string accessInfoPath, AccessInfo accessInfo)
-        //{
-        //    JsonSerializerUtility.Write(accessInfoPath, (AccessSerializationInfo)accessInfo, true);
-        //}
 
         #region IDataBaseCollection
 

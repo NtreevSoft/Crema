@@ -78,9 +78,11 @@ namespace Ntreev.Crema.ServiceHosts
             {
                 if (authentications.Any() == false && timer == null)
                 {
+#if !DEBUG
                     timer = new Timer(30000);
                     timer.Elapsed += Timer_Elapsed;
                     timer.Start();
+#endif
                 }
 
                 if (authentications.ContainsKey(authentication) == false)
@@ -134,7 +136,7 @@ namespace Ntreev.Crema.ServiceHosts
             }
         }
 
-        #region classes
+#region classes
 
         class Description
         {
@@ -198,6 +200,6 @@ namespace Ntreev.Crema.ServiceHosts
             }
         }
 
-        #endregion
+#endregion
     }
 }

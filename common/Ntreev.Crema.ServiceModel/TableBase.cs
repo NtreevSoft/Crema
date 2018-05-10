@@ -178,7 +178,7 @@ namespace Ntreev.Crema.ServiceModel
                 this.TemplatedParent.OnValidateRename(authentication, null, oldPath, newPath);
 
                 if (this == target && this.Parent != null)
-                    throw new CremaException(Resources.Exception_InheritedChildCannotRename);
+                    throw new InvalidOperationException(Resources.Exception_InheritedChildCannotRename);
             }
 
             foreach (var item in this.DerivedTables)
@@ -191,7 +191,7 @@ namespace Ntreev.Crema.ServiceModel
         public override void OnValidateMove(IAuthentication authentication, object target, string oldPath, string newPath)
         {
             if (target == this && this.Parent != null)
-                throw new CremaException();
+                throw new NotImplementedException();
             base.OnValidateMove(authentication, target, oldPath, newPath);
 
             foreach (var item in this.Childs)
@@ -207,7 +207,7 @@ namespace Ntreev.Crema.ServiceModel
                 this.TemplatedParent.OnValidateMove(authentication, null, oldPath, newPath);
 
                 if (this == target && this.Parent != null)
-                    throw new CremaException(Resources.Exception_InheritedChildCannotMove);
+                    throw new InvalidOperationException(Resources.Exception_InheritedChildCannotMove);
             }
 
             foreach (var item in this.DerivedTables)
@@ -234,7 +234,7 @@ namespace Ntreev.Crema.ServiceModel
                 this.TemplatedParent.OnValidateDelete(authentication, null);
 
                 if (this == target && this.Parent != null)
-                    throw new CremaException(Resources.Exception_InheritedChildCannotDelete);
+                    throw new InvalidOperationException(Resources.Exception_InheritedChildCannotDelete);
             }
 
             foreach (var item in this.DerivedTables)
@@ -369,7 +369,7 @@ namespace Ntreev.Crema.ServiceModel
             {
 #if DEBUG
                 if (this.tableInfo == TableInfo.Default)
-                    throw new CremaException();
+                    throw new NotImplementedException();
 #endif
                 if (this.tableInfo.Name != this.Name)
                     throw new InvalidOperationException();
@@ -448,10 +448,10 @@ namespace Ntreev.Crema.ServiceModel
                     return;
 
                 if (value == this)
-                    throw new CremaException(Resources.Exception_CannotSetTemplateItself);
+                    throw new ArgumentException(Resources.Exception_CannotSetTemplateItself, nameof(value));
 
                 if (value != null && value.TemplatedParent != null)
-                    throw new CremaException(Resources.Exception_CannotSetTemplateToInherited);
+                    throw new ArgumentException(Resources.Exception_CannotSetTemplateToInherited, nameof(value));
 
 
                 if (this.templatedParent != null)
@@ -509,7 +509,7 @@ namespace Ntreev.Crema.ServiceModel
         protected void Move(IAuthentication authentication, string categoryPath)
         {
             if (this.Parent != null)
-                throw new CremaException();
+                throw new InvalidOperationException("child table cannot move");
             this.Category = this.Context.Categories[categoryPath];
         }
 

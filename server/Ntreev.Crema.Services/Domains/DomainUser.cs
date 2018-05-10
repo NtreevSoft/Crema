@@ -129,9 +129,9 @@ namespace Ntreev.Crema.Services.Domains
             set
             {
                 if (this.authentication != null && value != null)
-                    throw new CremaException();
+                    throw new NotImplementedException();
                 if (this.authentication == null && value == null)
-                    throw new CremaException();
+                    throw new NotImplementedException();
                 this.authentication = value;
             }
         }

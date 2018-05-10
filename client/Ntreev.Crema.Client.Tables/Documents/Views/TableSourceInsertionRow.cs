@@ -32,7 +32,7 @@ namespace Ntreev.Crema.Client.Tables.Documents.Views
             base.PrepareContainer(dataGridContext, item);
 
             var gridControl = dataGridContext.DataGridControl as TableSourceDataGridControl;
-            if(gridControl.CanInsert == false || gridControl.ReadOnly == true)
+            if (gridControl.CanInsert == false || gridControl.ReadOnly == true)
                 this.Visibility = System.Windows.Visibility.Collapsed;
         }
     }

@@ -145,8 +145,8 @@
     <value>도메인 복구 실패 : {0}</value>
   </data>
   <data name="Message_DomainRestorationMessage" xml:space="preserve">
-    <value>A crash was detected. The previous session did not exit normally.
-The server will automatically attempt to recover (repair) from a damaged data.</value>
+    <value>충돌이 감지되었습니다. 이전 세션이 정상적으로 종료되지 않았습니다.
+서버가 아직 저장되지 않은 데이터에서 자동으로 복구을 시도합니다.</value>
   </data>
   <data name="Exception_InheritedTableCannotEditTemplate" xml:space="preserve">
     <value>상속받은 테이블은 테이블의 형태를 변경할 수 없습니다.</value>
@@ -163,11 +163,8 @@ The server will automatically attempt to recover (repair) from a damaged data.</
   <data name="Message_LoadTables" xml:space="preserve">
     <value>테이블 로드</value>
   </data>
-  <data name="Exception_LoggedInUserCannotDelete" mimetype="application/x-microsoft.net.object.binary.base64">
-    <value>
-        AAEAAAD/////AQAAAAAAAAAEAQAAAB9TeXN0ZW0uVW5pdHlTZXJpYWxpemF0aW9uSG9sZGVyAwAAAARE
-        YXRhCVVuaXR5VHlwZQxBc3NlbWJseU5hbWUBAAEICgIAAAAGAgAAAAAL
-</value>
+  <data name="Exception_LoggedInUserCannotDelete" xml:space="preserve">
+    <value>로그인 되어 있는 아이디는 삭제할 수 없습니다.</value>
   </data>
   <data name="Message_NotFoundDomainsToRestore" xml:space="preserve">
     <value>복구할 도메인이 없습니다.</value>
@@ -176,7 +173,7 @@ The server will automatically attempt to recover (repair) from a damaged data.</
     <value>{0} [Version {1}]</value>
   </data>
   <data name="Message_RestoreResult_Format" xml:space="preserve">
-    <value>========== Restoration: Suceess {0}, Fail {1} ==========</value>
+    <value>============= 복구: 성공 {0}, 실패 {1} ==============</value>
   </data>
   <data name="Exception_SameName" xml:space="preserve">
     <value>같은 이름으로 변경할 수 없습니다.</value>
@@ -185,7 +182,7 @@ The server will automatically attempt to recover (repair) from a damaged data.</
     <value>같은 이름의 테이블이 이미 존재합니다.</value>
   </data>
   <data name="Message_ServiceStart" xml:space="preserve">
-    <value>===================  Service Start  ===================</value>
+    <value>===================  서비스 시작  ===================</value>
   </data>
   <data name="Message_TableContextInitialize" xml:space="preserve">
     <value>테이블 관리자 초기화</value>
@@ -244,10 +241,50 @@ The server will automatically attempt to recover (repair) from a damaged data.</
   <data name="Exception_InvalidPassword" xml:space="preserve">
     <value>유효한 암호가 아닙니다.</value>
   </data>
-  <data name="Exception_NotExistsUser" xml:space="preserve">
-    <value>존재하지 않은 사용자입니다.</value>
-  </data>
   <data name="Exception_EmptyStringCannotSend" xml:space="preserve">
     <value>빈 문자열은 보낼 수 없습니다.</value>
+  </data>
+  <data name="Exception_DataBaseHasBeenLoaded" xml:space="preserve">
+    <value>데이터 베이스가 활성화되어 있습니다.</value>
+  </data>
+  <data name="Exception_DataBaseHasNotBeenLoaded" xml:space="preserve">
+    <value>데이터 베이스가 활성화되어 있지 않습니다.</value>
+  </data>
+  <data name="Exception_AlreadyInDataBase" xml:space="preserve">
+    <value>이미 데이터베이스에 참여하고 있습니다.</value>
+  </data>
+  <data name="Exception_LoadedDataBaseCannotRevert" xml:space="preserve">
+    <value>활성화된 데이터베이스에서는 되돌릴수 없습니다.</value>
+  </data>
+  <data name="Exception_NotFoundRevision_Format" xml:space="preserve">
+    <value>'{0}' 리비전을 찾을 수 없습니다.</value>
+    <comment>revision</comment>
+  </data>
+  <data name="Exception_ExistsPath_Format" xml:space="preserve">
+    <value>'{0}' 경로가 이미 존재합니다.</value>
+  </data>
+  <data name="Exception_DataBaseIsAlreadyExisted_Format" xml:space="preserve">
+    <value>'{0}'은(는) 이미 존재하는 데이터베이스입니다.</value>
+  </data>
+  <data name="Exception_ItIsAlreadyBeingEdited" xml:space="preserve">
+    <value>이미 편집중입니다.</value>
+  </data>
+  <data name="Exception_ItemIsAlreadyLocked_Format" xml:space="preserve">
+    <value>'{0}'은(는) 이미 잠겨있습니다.</value>
+  </data>
+  <data name="Exception_IncorrectPassword" xml:space="preserve">
+    <value>암호가 틀렸습니다.</value>
+  </data>
+  <data name="Exception_CannotChangeToOldPassword" xml:space="preserve">
+    <value>이전 암호로 변경할 수 없습니다.</value>
+  </data>
+  <data name="Exception_EmptyStringIsNotAllowed" xml:space="preserve">
+    <value>빈 문자열은 허용되지 않습니다.</value>
+  </data>
+  <data name="Exception_CannotSendMessageToOfflineUser" xml:space="preserve">
+    <value>연결되지 않은 사용자에게는 문자열을 보낼 수 없습니다.</value>
+  </data>
+  <data name="Exception_ChildTableCannotReadIndependently" xml:space="preserve">
+    <value>자식테이블은 독립적으로 데이터를 읽어들일 수 없습니다.</value>
   </data>
 </root>

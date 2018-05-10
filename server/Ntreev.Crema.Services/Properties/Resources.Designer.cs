@@ -61,6 +61,24 @@ namespace Ntreev.Crema.Services.Properties {
         }
         
         /// <summary>
+        ///   It is already in database과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_AlreadyInDataBase {
+            get {
+                return ResourceManager.GetString("Exception_AlreadyInDataBase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Can not change to old password.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_CannotChangeToOldPassword {
+            get {
+                return ResourceManager.GetString("Exception_CannotChangeToOldPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   You can not delete a table that is the default template.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Exception_CannotDeleteBaseTemplateTable {
@@ -88,11 +106,56 @@ namespace Ntreev.Crema.Services.Properties {
         }
         
         /// <summary>
+        ///   Can not send message to offline user.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_CannotSendMessageToOfflineUser {
+            get {
+                return ResourceManager.GetString("Exception_CannotSendMessageToOfflineUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Child tables can not read data independently.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_ChildTableCannotReadIndependently {
+            get {
+                return ResourceManager.GetString("Exception_ChildTableCannotReadIndependently", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   It&apos;s already been commissioned.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Exception_Commissioned {
             get {
                 return ResourceManager.GetString("Exception_Commissioned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   DataBase has been loaded.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_DataBaseHasBeenLoaded {
+            get {
+                return ResourceManager.GetString("Exception_DataBaseHasBeenLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   DataBase has not been loaded.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_DataBaseHasNotBeenLoaded {
+            get {
+                return ResourceManager.GetString("Exception_DataBaseHasNotBeenLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   DataBase &apos;{0}&apos; is already existed.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_DataBaseIsAlreadyExisted_Format {
+            get {
+                return ResourceManager.GetString("Exception_DataBaseIsAlreadyExisted_Format", resourceCulture);
             }
         }
         
@@ -106,11 +169,38 @@ namespace Ntreev.Crema.Services.Properties {
         }
         
         /// <summary>
+        ///   Empty string is not allowed.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_EmptyStringIsNotAllowed {
+            get {
+                return ResourceManager.GetString("Exception_EmptyStringIsNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   &apos;{0}&apos; path is already existed.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_ExistsPath_Format {
+            get {
+                return ResourceManager.GetString("Exception_ExistsPath_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   It has been expired.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Exception_Expired {
             get {
                 return ResourceManager.GetString("Exception_Expired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Incorrect password.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_IncorrectPassword {
+            get {
+                return ResourceManager.GetString("Exception_IncorrectPassword", resourceCulture);
             }
         }
         
@@ -169,11 +259,38 @@ namespace Ntreev.Crema.Services.Properties {
         }
         
         /// <summary>
-        ///   잘못된 형식의 아이디입니다.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   It is not valid UserID과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Exception_InvalidUserID {
             get {
                 return ResourceManager.GetString("Exception_InvalidUserID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   &apos;{0}&apos; is already locked.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_ItemIsAlreadyLocked_Format {
+            get {
+                return ResourceManager.GetString("Exception_ItemIsAlreadyLocked_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   It is already being edited.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_ItIsAlreadyBeingEdited {
+            get {
+                return ResourceManager.GetString("Exception_ItIsAlreadyBeingEdited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   It can not revert from loaded database.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_LoadedDataBaseCannotRevert {
+            get {
+                return ResourceManager.GetString("Exception_LoadedDataBaseCannotRevert", resourceCulture);
             }
         }
         
@@ -196,11 +313,11 @@ namespace Ntreev.Crema.Services.Properties {
         }
         
         /// <summary>
-        ///   User does not exists.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Revision &apos;{0}&apos; can not found.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
-        public static string Exception_NotExistsUser {
+        public static string Exception_NotFoundRevision_Format {
             get {
-                return ResourceManager.GetString("Exception_NotExistsUser", resourceCulture);
+                return ResourceManager.GetString("Exception_NotFoundRevision_Format", resourceCulture);
             }
         }
         
@@ -223,7 +340,7 @@ namespace Ntreev.Crema.Services.Properties {
         }
         
         /// <summary>
-        ///   같은 이름으로 변경할 수 없습니다.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Can not change to the same name.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Exception_SameName {
             get {
@@ -232,7 +349,7 @@ namespace Ntreev.Crema.Services.Properties {
         }
         
         /// <summary>
-        ///   같은 이름의 테이블이 이미 존재합니다.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Table with same name already exists.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Exception_SameTableNameExist {
             get {
@@ -241,7 +358,8 @@ namespace Ntreev.Crema.Services.Properties {
         }
         
         /// <summary>
-        ///   같은 이름의 타입이 이미 존재합니다.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Type with same name already exists.
+        ///과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Exception_SameTypeNameExist {
             get {
@@ -295,7 +413,7 @@ namespace Ntreev.Crema.Services.Properties {
         }
         
         /// <summary>
-        ///   아이디/패스워드가 틀렸습니다.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Incorrect UserID or password과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Exception_WrongIDOrPassword {
             get {
@@ -322,7 +440,7 @@ namespace Ntreev.Crema.Services.Properties {
         }
         
         /// <summary>
-        ///   도메인 복구 완료 : {0}과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Domain restoration completed : {0}과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Message_DomainIsRestored_Format {
             get {
@@ -331,7 +449,7 @@ namespace Ntreev.Crema.Services.Properties {
         }
         
         /// <summary>
-        ///   도메인 복구 실패 : {0}과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Domain restoration failed : {0}과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Message_DomainRestorationIsFailed_Format {
             get {
@@ -341,7 +459,7 @@ namespace Ntreev.Crema.Services.Properties {
         
         /// <summary>
         ///   A crash was detected. The previous session did not exit normally.
-        ///The server will automatically attempt to recover (repair) from a damaged data.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///The server will automatically attempt to restore from a data not yet saved.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Message_DomainRestorationMessage {
             get {
@@ -359,7 +477,7 @@ namespace Ntreev.Crema.Services.Properties {
         }
         
         /// <summary>
-        ///   테이블 로드과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Load Tables과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Message_LoadTables {
             get {
@@ -368,7 +486,7 @@ namespace Ntreev.Crema.Services.Properties {
         }
         
         /// <summary>
-        ///   복구할 도메인이 없습니다.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   There are no domains to restore.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Message_NotFoundDomainsToRestore {
             get {
@@ -386,7 +504,7 @@ namespace Ntreev.Crema.Services.Properties {
         }
         
         /// <summary>
-        ///   ========== Restoration: Suceess {0}, Fail {1} ==========과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   ========= Restoration: Suceess {0}, Fail {1} ==========과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Message_RestoreResult_Format {
             get {
@@ -404,7 +522,7 @@ namespace Ntreev.Crema.Services.Properties {
         }
         
         /// <summary>
-        ///   테이블 관리자 초기화과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Table Context initialized.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Message_TableContextInitialize {
             get {
@@ -413,7 +531,7 @@ namespace Ntreev.Crema.Services.Properties {
         }
         
         /// <summary>
-        ///   테이블 관리자 생성 완료과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Table Context created.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Message_TableContextIsCreated {
             get {
@@ -422,7 +540,7 @@ namespace Ntreev.Crema.Services.Properties {
         }
         
         /// <summary>
-        ///   테이블 로딩 완료과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Table Loading completed.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Message_TableLoadingIsCompleted {
             get {

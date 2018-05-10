@@ -680,7 +680,7 @@ namespace Ntreev.Crema.Services.Domains
         private void ValidateAdd(Authentication authentication)
         {
             if (this.users.Contains(authentication.ID) == true)
-                throw new CremaException();
+                throw new NotImplementedException();
         }
 
         private void ValidateRemove(Authentication authentication)
@@ -756,13 +756,13 @@ namespace Ntreev.Crema.Services.Domains
         private void ValidateSetOwner(Authentication authentication, string userID)
         {
             if (this.users.ContainsKey(userID) == false)
-                throw new CremaException();
+                throw new NotImplementedException();
         }
 
         private void ValidateDomainUser(Authentication authentication)
         {
             if (this.dispatcher == null)
-                throw new CremaException();
+                throw new NotImplementedException();
 
             if (this.Users.Contains(authentication.ID) == false)
                 throw new UserNotFoundException(authentication.ID);
@@ -877,7 +877,7 @@ namespace Ntreev.Crema.Services.Domains
         private DomainUser GetDomainUser(Authentication authentication)
         {
             if (this.dispatcher == null)
-                throw new CremaException();
+                throw new NotImplementedException();
 
             if (this.Users.Contains(authentication.ID) == false)
                 throw new UserNotFoundException(authentication.ID);

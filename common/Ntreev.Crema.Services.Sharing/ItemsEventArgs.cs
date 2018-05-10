@@ -39,8 +39,12 @@ namespace Ntreev.Crema.Services
 
         public ItemsEventArgs(Authentication authentication, IEnumerable<T> items, object metaData)
         {
+            if (authentication == null)
+                throw new ArgumentNullException(nameof(authentication));
             if (authentication.SignatureDate.ID == string.Empty)
-                throw new CremaException();
+                throw new ArgumentException("authentication does not signed", nameof(authentication));
+            if (items == null)
+                throw new ArgumentNullException(nameof(items));
             this.signatureDate = authentication.SignatureDate;
             this.items = items.ToArray();
             this.metaData = metaData;

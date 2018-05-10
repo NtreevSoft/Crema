@@ -942,9 +942,11 @@ namespace Ntreev.Crema.Services.Data
                     }
                     var result = this.service.Subscribe(this.cremaHost.AuthenticationToken, base.Name);
                     result.Validate(authentication);
+#if !DEBUG
                     this.timer = new Timer(30000);
                     this.timer.Elapsed += Timer_Elapsed;
                     this.timer.Start();
+#endif
                     return result.Value;
                 });
                 this.typeContext = new TypeContext(this, metaData);
@@ -986,7 +988,7 @@ namespace Ntreev.Crema.Services.Data
             result.Validate(authentication);
         }
 
-        #region IDataBase
+#region IDataBase
 
         IDataBase IDataBase.Copy(Authentication authentication, string newDataBaseName, string comment, bool force)
         {
@@ -1021,9 +1023,9 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        #endregion
+#endregion
 
-        #region IServiceProvider
+#region IServiceProvider
 
         object IServiceProvider.GetService(System.Type serviceType)
         {
@@ -1049,9 +1051,9 @@ namespace Ntreev.Crema.Services.Data
             return this.CremaHost.GetService(serviceType);
         }
 
-        #endregion
+#endregion
 
-        #region IDataBaseServiceCallback
+#region IDataBaseServiceCallback
 
         void IDataBaseServiceCallback.OnServiceClosed(SignatureDate signatureDate, CloseInfo closeInfo)
         {
@@ -1794,18 +1796,18 @@ namespace Ntreev.Crema.Services.Data
             }, nameof(IDataBaseServiceCallback.OnTypeItemsLockChanged));
         }
 
-        #endregion
+#endregion
 
-        #region IInfoProvider
+#region IInfoProvider
 
         IDictionary<string, object> IInfoProvider.Info => this.DataBaseInfo.ToDictionary();
 
-        #endregion
+#endregion
 
-        #region IStateProvider
+#region IStateProvider
 
         object IStateProvider.State => this.DataBaseState;
 
-        #endregion
+#endregion
     }
 }

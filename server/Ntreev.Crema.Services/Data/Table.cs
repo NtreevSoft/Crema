@@ -381,7 +381,7 @@ namespace Ntreev.Crema.Services.Data
         public CremaDataTable ReadData(Authentication authentication, CremaDataSet dataSet)
         {
             if (this.Parent != null)
-                throw new CremaException("자식테이블은 독립적으로 데이터를 읽어들일 수 없습니다.");
+                throw new InvalidOperationException(Resources.Exception_ChildTableCannotReadIndependently);
             var itemName = new ItemName(this.Category.Path, base.Name);
             if (this.TemplatedParent != null)
             {
@@ -400,7 +400,7 @@ namespace Ntreev.Crema.Services.Data
         public CremaDataTable ReadSchema(Authentication authentication, CremaDataSet dataSet)
         {
             if (this.Parent != null)
-                throw new CremaException("자식테이블은 독립적으로 데이터를 읽어들일 수 없습니다.");
+                throw new InvalidOperationException(Resources.Exception_ChildTableCannotReadIndependently);
             var itemName = new ItemName(this.Category.Path, base.Name);
             if (this.TemplatedParent != null)
             {

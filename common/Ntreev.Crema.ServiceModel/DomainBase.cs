@@ -146,7 +146,7 @@ namespace Ntreev.Crema.ServiceModel
         protected void ValidateMove(IAuthentication authentication, string categoryPath)
         {
             if (this.Category.Path == categoryPath)
-                throw new CremaException(Resources.Exception_CannotMoveToSameFolder);
+                throw new ArgumentException(Resources.Exception_CannotMoveToSameFolder, nameof(categoryPath));
             var category = this.Context.Categories[categoryPath];
             if (category == null)
                 throw new CategoryNotFoundException(categoryPath);

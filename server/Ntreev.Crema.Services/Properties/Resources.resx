@@ -139,14 +139,14 @@
     <value>&lt;{0} detection. {1} restored. {2} failed.&gt;</value>
   </data>
   <data name="Message_DomainIsRestored_Format" xml:space="preserve">
-    <value>도메인 복구 완료 : {0}</value>
+    <value>Domain restoration completed : {0}</value>
   </data>
   <data name="Message_DomainRestorationIsFailed_Format" xml:space="preserve">
-    <value>도메인 복구 실패 : {0}</value>
+    <value>Domain restoration failed : {0}</value>
   </data>
   <data name="Message_DomainRestorationMessage" xml:space="preserve">
     <value>A crash was detected. The previous session did not exit normally.
-The server will automatically attempt to recover (repair) from a damaged data.</value>
+The server will automatically attempt to restore from a data not yet saved.</value>
   </data>
   <data name="Exception_InheritedTableCannotEditTemplate" xml:space="preserve">
     <value>상속받은 테이블은 테이블의 형태를 변경할 수 없습니다.</value>
@@ -158,37 +158,37 @@ The server will automatically attempt to recover (repair) from a damaged data.</
     <value>{0}은(는) 잘못된 이름입니다.</value>
   </data>
   <data name="Exception_InvalidUserID" xml:space="preserve">
-    <value>잘못된 형식의 아이디입니다.</value>
+    <value>It is not valid UserID</value>
   </data>
   <data name="Message_LoadTables" xml:space="preserve">
-    <value>테이블 로드</value>
+    <value>Load Tables</value>
   </data>
   <data name="Exception_LoggedInUserCannotDelete" xml:space="preserve">
     <value>로그인 되어 있는 아이디는 삭제할 수 없습니다.</value>
   </data>
   <data name="Message_NotFoundDomainsToRestore" xml:space="preserve">
-    <value>복구할 도메인이 없습니다.</value>
+    <value>There are no domains to restore.</value>
   </data>
   <data name="Message_ProgramInfo" xml:space="preserve">
     <value>{0} [Version {1}]</value>
   </data>
   <data name="Message_RestoreResult_Format" xml:space="preserve">
-    <value>========== Restoration: Suceess {0}, Fail {1} ==========</value>
+    <value>========= Restoration: Suceess {0}, Fail {1} ==========</value>
   </data>
   <data name="Exception_SameName" xml:space="preserve">
-    <value>같은 이름으로 변경할 수 없습니다.</value>
+    <value>Can not change to the same name.</value>
   </data>
   <data name="Exception_SameTableNameExist" xml:space="preserve">
-    <value>같은 이름의 테이블이 이미 존재합니다.</value>
+    <value>Table with same name already exists.</value>
   </data>
   <data name="Message_ServiceStart" xml:space="preserve">
     <value>===================  Service Start  ===================</value>
   </data>
   <data name="Message_TableContextInitialize" xml:space="preserve">
-    <value>테이블 관리자 초기화</value>
+    <value>Table Context initialized.</value>
   </data>
   <data name="Message_TableContextIsCreated" xml:space="preserve">
-    <value>테이블 관리자 생성 완료</value>
+    <value>Table Context created.</value>
   </data>
   <data name="Exception_TableIsBeingEdited_Format" xml:space="preserve">
     <value>{0} 테이블이 편집중입니다.</value>
@@ -197,7 +197,7 @@ The server will automatically attempt to recover (repair) from a damaged data.</
     <value>'{0}' 테이블은 형태 변경중입니다.</value>
   </data>
   <data name="Message_TableLoadingIsCompleted" xml:space="preserve">
-    <value>테이블 로딩 완료</value>
+    <value>Table Loading completed.</value>
   </data>
   <data name="Exception_TypeIsBeingEdited_Format" xml:space="preserve">
     <value>{0} 타입이 편집중입니다.</value>
@@ -215,10 +215,11 @@ The server will automatically attempt to recover (repair) from a damaged data.</
     <value>현재 접속중인 아이디입니다.</value>
   </data>
   <data name="Exception_WrongIDOrPassword" xml:space="preserve">
-    <value>아이디/패스워드가 틀렸습니다.</value>
+    <value>Incorrect UserID or password</value>
   </data>
   <data name="Exception_SameTypeNameExist" xml:space="preserve">
-    <value>같은 이름의 타입이 이미 존재합니다.</value>
+    <value>Type with same name already exists.
+</value>
   </data>
   <data name="Exception_Expired" xml:space="preserve">
     <value>It has been expired.</value>
@@ -241,10 +242,50 @@ The server will automatically attempt to recover (repair) from a damaged data.</
   <data name="Exception_InvalidPassword" xml:space="preserve">
     <value>It is not valid password</value>
   </data>
-  <data name="Exception_NotExistsUser" xml:space="preserve">
-    <value>User does not exists.</value>
-  </data>
   <data name="Exception_EmptyStringCannotSend" xml:space="preserve">
     <value>Empty string cannot send.</value>
+  </data>
+  <data name="Exception_DataBaseHasBeenLoaded" xml:space="preserve">
+    <value>DataBase has been loaded.</value>
+  </data>
+  <data name="Exception_DataBaseHasNotBeenLoaded" xml:space="preserve">
+    <value>DataBase has not been loaded.</value>
+  </data>
+  <data name="Exception_AlreadyInDataBase" xml:space="preserve">
+    <value>It is already in database</value>
+  </data>
+  <data name="Exception_LoadedDataBaseCannotRevert" xml:space="preserve">
+    <value>It can not revert from loaded database.</value>
+  </data>
+  <data name="Exception_NotFoundRevision_Format" xml:space="preserve">
+    <value>Revision '{0}' can not found.</value>
+    <comment>revision</comment>
+  </data>
+  <data name="Exception_ExistsPath_Format" xml:space="preserve">
+    <value>'{0}' path is already existed.</value>
+  </data>
+  <data name="Exception_DataBaseIsAlreadyExisted_Format" xml:space="preserve">
+    <value>DataBase '{0}' is already existed.</value>
+  </data>
+  <data name="Exception_ItIsAlreadyBeingEdited" xml:space="preserve">
+    <value>It is already being edited.</value>
+  </data>
+  <data name="Exception_ItemIsAlreadyLocked_Format" xml:space="preserve">
+    <value>'{0}' is already locked.</value>
+  </data>
+  <data name="Exception_IncorrectPassword" xml:space="preserve">
+    <value>Incorrect password.</value>
+  </data>
+  <data name="Exception_CannotChangeToOldPassword" xml:space="preserve">
+    <value>Can not change to old password.</value>
+  </data>
+  <data name="Exception_EmptyStringIsNotAllowed" xml:space="preserve">
+    <value>Empty string is not allowed.</value>
+  </data>
+  <data name="Exception_CannotSendMessageToOfflineUser" xml:space="preserve">
+    <value>Can not send message to offline user.</value>
+  </data>
+  <data name="Exception_ChildTableCannotReadIndependently" xml:space="preserve">
+    <value>Child tables can not read data independently.</value>
   </data>
 </root>

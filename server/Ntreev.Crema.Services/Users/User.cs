@@ -424,14 +424,14 @@ namespace Ntreev.Crema.Services.Users
                     if (isAdmin == false)
                     {
                         if (this.VerifyPassword(password) == false)
-                            throw new CremaException("암호가 다릅니다.");
+                            throw new ArgumentException(Resources.Exception_IncorrectPassword, nameof(password));
                         if (this.VerifyPassword(newPassword) == true)
-                            throw new CremaException("이전 암호와 같은 암호로 변경할 수 없습니다.");
+                            throw new ArgumentException(Resources.Exception_CannotChangeToOldPassword, nameof(newPassword));
                     }
                     else
                     {
                         if (this.VerifyPassword(newPassword) == true)
-                            throw new CremaException("이전 암호와 같은 암호로 변경할 수 없습니다.");
+                            throw new ArgumentException(Resources.Exception_CannotChangeToOldPassword, nameof(newPassword));
                     }
                 }
             }
@@ -440,9 +440,9 @@ namespace Ntreev.Crema.Services.Users
                 if (newPassword != null)
                 {
                     if (newPassword == null || this.VerifyPassword(password) == false)
-                        throw new CremaException("암호가 다릅니다.");
+                        throw new ArgumentException(Resources.Exception_IncorrectPassword, nameof(password));
                     if (this.VerifyPassword(newPassword) == true)
-                        throw new CremaException("이전 암호와 같은 암호로 변경할 수 없습니다.");
+                        throw new ArgumentException(Resources.Exception_CannotChangeToOldPassword, nameof(newPassword));
                 }
                 if (authority.HasValue == true)
                     throw new CremaException("자신의 권한을 변경할 수 없습니다.");
@@ -452,11 +452,11 @@ namespace Ntreev.Crema.Services.Users
         private void ValidateSendMessage(Authentication authentication, string message)
         {
             if (message == null)
-                throw new ArgumentNullException(nameof(message), "null 문자열은 보낼수 없습니다.");
+                throw new ArgumentNullException(nameof(message));
             if (message == string.Empty)
-                throw new ArgumentException(nameof(message), "빈 문자열은 보낼 수 없습니다.");
+                throw new ArgumentException(Resources.Exception_EmptyStringCannotSend, nameof(message));
             if (this.IsOnline == false)
-                throw new CremaException("연결되지 않은 사용자에게는 문자열을 보낼 수 없습니다.");
+                throw new InvalidOperationException(Resources.Exception_CannotSendMessageToOfflineUser);
         }
 
         private void ValidateMove(Authentication authentication, string categoryPath)
@@ -533,9 +533,9 @@ namespace Ntreev.Crema.Services.Users
         private void ValidateKick(Authentication authentication, string comment)
         {
             if (comment == null)
-                throw new ArgumentNullException(nameof(comment), "null 문자열은 사용할 수 없습니다.");
+                throw new ArgumentNullException(nameof(comment));
             if (comment == string.Empty)
-                throw new ArgumentNullException(nameof(comment), "빈 문자열은 사용할 수 없습니다.");
+                throw new ArgumentNullException(nameof(comment), Resources.Exception_EmptyStringIsNotAllowed);
             if (authentication.Types.HasFlag(AuthenticationType.Administrator) == false)
                 throw new PermissionDeniedException();
             if (this.IsOnline == false)

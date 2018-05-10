@@ -424,7 +424,7 @@ namespace Ntreev.Crema.Services.Data
         public void ValidateBeginEdit(Authentication authentication)
         {
             if (this.domain != null)
-                throw new CremaException("이미 편집중입니다.");
+                throw new InvalidOperationException(Resources.Exception_ItIsAlreadyBeingEdited);
             this.OnValidateBeginEdit(authentication, this);
         }
 

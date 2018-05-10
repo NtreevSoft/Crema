@@ -693,7 +693,7 @@ namespace Ntreev.Crema.Services.Data
 
                     var tableItem = item as ITableItem;
                     if (tableItem.IsLocked == true && tableItem.LockInfo.Path == tableItem.Path)
-                        throw new CremaException("이미 잠겨 있습니다.");
+                        throw new PermissionException(string.Format(Resources.Exception_ItemIsAlreadyLocked_Format, item.Path));
                 }
             }
         }

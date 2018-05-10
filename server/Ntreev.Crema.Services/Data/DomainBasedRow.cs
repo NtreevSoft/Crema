@@ -73,7 +73,7 @@ namespace Ntreev.Crema.Services.Data
         public void EndNew(Authentication authentication)
         {
             if (this.row != null)
-                throw new CremaException();
+                throw new NotImplementedException();
 
             var fields = this.fields.Values.ToArray();
             var keys = this.domain.Dispatcher.Invoke(() => this.domain.NewRow(authentication, this.table.TableName, fields));

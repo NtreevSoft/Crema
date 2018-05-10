@@ -72,9 +72,11 @@ namespace Ntreev.Crema.Services.Users
                 {
                     var result = this.service.Subscribe(userID, UserContext.Encrypt(userID, password), $"{version}", $"{Environment.OSVersion.Platform}", $"{CultureInfo.CurrentCulture}");
                     result.Validate();
+#if !DEBUG
                     this.timer = new Timer(30000);
                     this.timer.Elapsed += Timer_Elapsed;
                     this.timer.Start();
+#endif
                     return result.Value;
                 }
                 catch

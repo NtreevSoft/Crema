@@ -55,7 +55,7 @@ namespace Ntreev.Crema.Client.Framework.Controls
         protected override void StartDataItem(DataGridContext dataGridContext, object dataItem)
         {
             if (this.gridContext != null && this.gridContext != dataGridContext)
-                throw new CremaException(Resources.Exception_CannotSelectComplexRanges);
+                throw new InvalidOperationException(Resources.Exception_CannotSelectComplexRanges);
             this.isFistColumn = true;
             this.gridContext = dataGridContext;
         }

@@ -294,7 +294,7 @@ namespace Ntreev.Crema.Client.Base.Services.ViewModels
             try
             {
                 if (this.isOpened == false)
-                    throw new CremaException(Resources.Exception_CannotSelectWithoutLoggingIn);
+                    throw new InvalidOperationException(Resources.Exception_CannotSelectWithoutLoggingIn);
 
                 this.BeginProgress();
                 if (this.DataBaseName != string.Empty)
@@ -350,7 +350,7 @@ namespace Ntreev.Crema.Client.Base.Services.ViewModels
         public async Task UnloadAsync()
         {
             if (this.DataBaseName == string.Empty)
-                throw new CremaException();
+                throw new InvalidOperationException();
 
             await this.CloseDocumentsAsync(false);
             this.OnUnloading(EventArgs.Empty);
@@ -772,7 +772,7 @@ namespace Ntreev.Crema.Client.Base.Services.ViewModels
             {
                 var dataBase = this.cremaHost.DataBases[dataBaseName];
                 if (dataBase == null)
-                    throw new CremaException(Resources.Exception_NonExistentDataBase, dataBaseName);
+                    throw new ArgumentException(string.Format(Resources.Exception_NonExistentDataBase, dataBaseName), nameof(dataBaseName));
                 if (dataBase.IsLoaded == false && autoLoad == true)
                 {
                     dataBase.Load(this.authenticator);
