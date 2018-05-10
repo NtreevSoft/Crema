@@ -60,6 +60,23 @@ namespace Ntreev.Crema.Client.Framework.Controls
 
         }
 
+        public void PasteFromClipboard()
+        {
+            if (Clipboard.ContainsText() == false)
+                return;
+
+            var gridContext = DataGridControl.GetDataGridContext(this);
+            var gridControl = gridContext.DataGridControl as DomainDataGridControl;
+
+            var parser = new DomainTextClipboardPaster(gridContext);
+            parser.Parse(ClipboardUtility.GetData());
+            var rowInfos = parser.DomainRows;
+            var domain = this.Domain;
+            var authenticator = domain.GetService(typeof(Authenticator)) as Authenticator;
+            domain.Dispatcher.Invoke(() => domain.SetRow(authenticator, rowInfos));
+            parser.SelectRange();
+        }
+
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
@@ -121,6 +138,25 @@ namespace Ntreev.Crema.Client.Framework.Controls
                         return true;
                 }
                 return false;
+            }
+        }
+
+        public bool CanPaste
+        {
+            get
+            {
+                if (this.IsBeingEdited == true)
+                    return false;
+                if (this.currentColumn == null)
+                    return false;
+                if (this.currentColumn.ReadOnly == true)
+                    return false;
+                if (this.ReadOnly == true)
+                    return false;
+                if (Clipboard.ContainsText() == false)
+                    return false;
+
+                return true;
             }
         }
 
@@ -372,41 +408,7 @@ namespace Ntreev.Crema.Client.Framework.Controls
             this.RequestPasteFromClipboard();
         }
 
-        public bool CanPaste
-        {
-            get
-            {
-                if (this.IsBeingEdited == true)
-                    return false;
-                if (this.currentColumn == null)
-                    return false;
-                if (this.currentColumn.ReadOnly == true)
-                    return false;
-                if (this.ReadOnly == true)
-                    return false;
-                if (Clipboard.ContainsText() == false)
-                    return false;
-
-                return true;
-            }
-        }
-
-        public void PasteFromClipboard()
-        {
-            if (Clipboard.ContainsText() == false)
-                return;
-
-            var gridContext = DataGridControl.GetDataGridContext(this);
-            var gridControl = gridContext.DataGridControl as DomainDataGridControl;
-
-            var parser = new DomainTextClipboardPaster(gridContext);
-            parser.Parse(ClipboardUtility.GetData());
-            var rowInfos = parser.DomainRows;
-            var domain = this.Domain;
-            var authenticator = domain.GetService(typeof(Authenticator)) as Authenticator;
-            domain.Dispatcher.Invoke(() => domain.SetRow(authenticator, rowInfos));
-            parser.SelectRange();
-        }
+        
 
         private void RequestPasteFromClipboard()
         {

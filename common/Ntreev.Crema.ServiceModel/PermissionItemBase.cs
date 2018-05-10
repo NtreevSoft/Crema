@@ -383,14 +383,14 @@ namespace Ntreev.Crema.ServiceModel
         protected void ValidateRename(IAuthentication authentication, string name)
         {
             if (this.Name == name)
-                throw new CremaException(Resources.Exception_CannotRename);
+                throw new ArgumentException(Resources.Exception_CannotRename, nameof(name));
             this.OnValidateRename(authentication, this, this.Path, new ItemName(this.Category.Path, name));
         }
 
         protected void ValidateMove(IAuthentication authentication, string categoryPath)
         {
             if (this.Category.Path == categoryPath)
-                throw new CremaException(Resources.Exception_CannotMoveToSameFolder);
+                throw new ArgumentException(Resources.Exception_CannotMoveToSameFolder, nameof(categoryPath));
             var category = this.Context.Categories[categoryPath];
             if (category == null)
                 throw new CategoryNotFoundException(categoryPath);

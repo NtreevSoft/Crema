@@ -49,7 +49,7 @@ namespace Ntreev.Crema.Services.Data
             if (this.category == null)
                 throw new InvalidOperationException(Resources.Exception_Expired);
             if (this.Domain != null)
-                throw new CremaException("이미 편집중입니다.");
+                throw new InvalidOperationException(Resources.Exception_ItIsAlreadyBeingEdited);
             this.category.ValidateAccessType(authentication, AccessType.Master);
         }
 

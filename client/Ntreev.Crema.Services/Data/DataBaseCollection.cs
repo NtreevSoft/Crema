@@ -70,9 +70,11 @@ namespace Ntreev.Crema.Services.Data
                 }
                 var result = this.service.Subscribe(cremaHost.AuthenticationToken);
                 result.Validate();
+#if !DEBUG
                 this.timer = new Timer(30000);
                 this.timer.Elapsed += Timer_Elapsed;
                 this.timer.Start();
+#endif
                 return result.Value;
             });
 
@@ -789,7 +791,7 @@ namespace Ntreev.Crema.Services.Data
             }, nameof(Service_Faulted));
         }
 
-        #region IDataBaseCollectionServiceCallback
+#region IDataBaseCollectionServiceCallback
 
         void IDataBaseCollectionServiceCallback.OnServiceClosed(SignatureDate signatureDate, CloseInfo closeInfo)
         {
@@ -1056,9 +1058,9 @@ namespace Ntreev.Crema.Services.Data
             }, nameof(IDataBaseCollectionServiceCallback.OnDataBasesLockChanged));
         }
 
-        #endregion
+#endregion
 
-        #region IDataBaseCollection
+#region IDataBaseCollection
 
         IDataBase IDataBaseCollection.AddNewDataBase(Authentication authentication, string dataBaseName, string comment)
         {
@@ -1089,9 +1091,9 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        #endregion
+#endregion
 
-        #region IEnumerable
+#region IEnumerable
 
         IEnumerator<IDataBase> IEnumerable<IDataBase>.GetEnumerator()
         {
@@ -1105,6 +1107,6 @@ namespace Ntreev.Crema.Services.Data
             return this.GetEnumerator();
         }
 
-        #endregion
+#endregion
     }
 }

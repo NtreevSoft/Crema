@@ -176,15 +176,15 @@ namespace Ntreev.Crema.Services.Data
         public void ValidateEndEdit(Authentication authentication)
         {
             if (this.table.Parent != null)
-                throw new CremaException();
+                throw new NotImplementedException();
             var isAdmin = authentication.Types.HasFlag(AuthenticationType.Administrator);
             if (this.domain == null)
-                throw new CremaException();
+                throw new NotImplementedException();
             this.domain.Dispatcher?.Invoke(() =>
             {
                 var isOwner = this.domain.Users.OwnerUserID == authentication.ID;
                 if (isAdmin == false && isOwner == false)
-                    throw new CremaException();
+                    throw new NotImplementedException();
             });
         }
 
@@ -192,7 +192,7 @@ namespace Ntreev.Crema.Services.Data
         public void ValidateEnter(Authentication authentication)
         {
             if (this.table.Parent != null)
-                throw new CremaException();
+                throw new NotImplementedException();
 
             var items = EnumerableUtility.Friends(this, this.Childs);
             foreach (var item in items)
@@ -205,7 +205,7 @@ namespace Ntreev.Crema.Services.Data
         public void ValidateLeave(Authentication authentication)
         {
             if (this.table.Parent != null)
-                throw new CremaException();
+                throw new NotImplementedException();
 
             var items = EnumerableUtility.Friends(this, this.Childs);
             foreach (var item in items)
@@ -218,15 +218,15 @@ namespace Ntreev.Crema.Services.Data
         public void ValidateCancelEdit(Authentication authentication)
         {
             if (this.table.Parent != null)
-                throw new CremaException();
+                throw new NotImplementedException();
 
             var isAdmin = authentication.Types.HasFlag(AuthenticationType.Administrator);
             if (this.domain == null)
-                throw new CremaException();
+                throw new NotImplementedException();
             this.domain.Dispatcher.Invoke(() =>
             {
                 if (isAdmin == false && this.domain.Users.Owner.ID != authentication.ID)
-                    throw new CremaException();
+                    throw new NotImplementedException();
             });
 
             var items = EnumerableUtility.Friends(this, this.Childs);
@@ -242,7 +242,7 @@ namespace Ntreev.Crema.Services.Data
             this.table.ValidateAccessType(authentication, AccessType.Guest);
 
             if (this.domain != null)
-                throw new CremaException();
+                throw new NotImplementedException();
 
             this.table.ValidateHasNotBeingEditedType();
 
@@ -256,7 +256,7 @@ namespace Ntreev.Crema.Services.Data
             this.table.ValidateAccessType(authentication, AccessType.Guest);
 
             if (this.domain == null)
-                throw new CremaException();
+                throw new NotImplementedException();
 
             this.table.ValidateHasNotBeingEditedType();
 
@@ -270,14 +270,14 @@ namespace Ntreev.Crema.Services.Data
             this.table.ValidateAccessType(authentication, AccessType.Guest);
 
             if (this.domain == null)
-                throw new CremaException();
+                throw new NotImplementedException();
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public void OnValidateCancelEdit(Authentication authentication, object target)
         {
             if (this.domain == null)
-                throw new CremaException();
+                throw new NotImplementedException();
         }
 
         public override Domain Domain
@@ -701,7 +701,7 @@ namespace Ntreev.Crema.Services.Data
                 this.Dispatcher.Invoke(() =>
                 {
                     if (this.table.Parent != null)
-                        throw new CremaException();
+                        throw new NotImplementedException();
                 });
             }
         }

@@ -57,41 +57,5 @@ namespace Ntreev.Crema.Client.Framework
                 throw new ArgumentNullException(nameof(descriptor));
             return descriptor.TypeInfo.IsFlag;
         }
-
-        //public static bool IsBeingSetup(Authentication authentication, ITypeDescriptor descriptor)
-        //{
-        //    if (authentication == null)
-        //        throw new ArgumentNullException(nameof(authentication));
-        //    if (descriptor == null)
-        //        throw new ArgumentNullException(nameof(descriptor));
-        //    return descriptor.TypeState.HasFlag(TypeState.IsBeingSetup);
-        //}
-
-        //public static bool IsBeingSetupClient(Authentication authentication, ITypeDescriptor descriptor)
-        //{
-        //    if (authentication == null)
-        //        throw new ArgumentNullException(nameof(authentication));
-        //    if (descriptor == null)
-        //        throw new ArgumentNullException(nameof(descriptor));
-        //    return descriptor.TypeState.HasFlag(TypeState.IsBeingSetup | TypeState.IsMember);
-        //}
-
-        //public static bool IsInherited(Authentication authentication, ITypeDescriptor descriptor)
-        //{
-        //    if (authentication == null)
-        //        throw new ArgumentNullException(nameof(authentication));
-        //    if (descriptor == null)
-        //        throw new ArgumentNullException(nameof(descriptor));
-        //    return descriptor.TypeInfo.TemplatedParent != string.Empty;
-        //}
-
-        //public static bool IsBaseTemplate(Authentication authentication, ITypeDescriptor descriptor)
-        //{
-        //    if (authentication == null)
-        //        throw new ArgumentNullException(nameof(authentication));
-        //    if (descriptor == null)
-        //        throw new ArgumentNullException(nameof(descriptor));
-        //    return descriptor.TypeAttribute.HasFlag(TypeAttribute.BaseType);
-        //}
     }
 }

@@ -71,7 +71,7 @@ namespace Ntreev.Crema.ServiceHosts.Users
                     var clientVersion = new Version(version);
 
                     if (clientVersion < serverVersion)
-                        throw new CremaException(Resources.Exception_LowerVersion);
+                        throw new ArgumentException(Resources.Exception_LowerVersion, nameof(version));
 
                     this.authentication = this.userContext.Login(userID, ToSecureString(userID, password));
                     this.authentication.AddRef(this, (a) =>

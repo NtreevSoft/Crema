@@ -51,7 +51,7 @@ namespace Ntreev.Crema.Client.Tables.Documents.Views
                     {
                         try
                         {
-                            listView.ApplySort(indexProp, ListSortDirection.Ascending);
+                            this.Dispatcher.InvokeAsync(() => listView.ApplySort(indexProp, ListSortDirection.Ascending));
                         }
                         catch
                         {

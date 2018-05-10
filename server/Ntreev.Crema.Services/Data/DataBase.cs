@@ -925,7 +925,7 @@ namespace Ntreev.Crema.Services.Data
                 throw new PermissionDeniedException("default 데이터 베이스는 삭제할 수 없습니다.");
 
             if (this.IsLoaded == true)
-                throw new CremaException("데이터 베이스가 사용중입니다.");
+                throw new InvalidOperationException("데이터 베이스가 사용중입니다.");
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -1183,9 +1183,9 @@ namespace Ntreev.Crema.Services.Data
         private void ValidateEnter(Authentication authentication)
         {
             if (this.IsLoaded == false)
-                throw new CremaException();
+                throw new InvalidOperationException(Resources.Exception_DataBaseHasNotBeenLoaded);
             if (this.authentications.Contains(authentication) == true)
-                throw new CremaException("이미 데이터 베이스에 참여하고 있습니다.");
+                throw new ArgumentException(Resources.Exception_AlreadyInDataBase, nameof(authentication));
             if (this.VerifyAccessType(authentication, AccessType.Guest) == false)
                 throw new PermissionDeniedException();
         }
@@ -1193,15 +1193,15 @@ namespace Ntreev.Crema.Services.Data
         private void ValidateLeave(Authentication authentication)
         {
             if (this.IsLoaded == false)
-                throw new CremaException("크레마가 로드되어 있는 상태가 아닙니다.");
+                throw new InvalidOperationException(Resources.Exception_DataBaseHasNotBeenLoaded);
             //if (this.authentications.Contains(authentication) == false)
-            //    throw new CremaException();
+            //    throw new NotImplementedException();
         }
 
         private void ValidateLoad(Authentication authentication)
         {
             if (this.IsLoaded == true)
-                throw new CremaException("이미 로드되었습니다.");
+                throw new InvalidOperationException(Resources.Exception_DataBaseHasBeenLoaded);
             if (authentication.IsSystem == false && authentication.IsAdmin == false)
                 throw new PermissionDeniedException();
             if (this.VerifyAccessType(authentication, AccessType.Master) == false)
@@ -1211,7 +1211,7 @@ namespace Ntreev.Crema.Services.Data
         private void ValidateUnload(Authentication authentication)
         {
             if (this.IsLoaded == false)
-                throw new CremaException("데이터 베이스는 로드상태가 아닙니다.");
+                throw new InvalidOperationException(Resources.Exception_DataBaseHasNotBeenLoaded);
             if (authentication.IsSystem == false && authentication.IsAdmin == false)
                 throw new PermissionDeniedException();
             if (this.VerifyAccessType(authentication, AccessType.Master) == false)
@@ -1223,16 +1223,16 @@ namespace Ntreev.Crema.Services.Data
             if (authentication.IsSystem == false && authentication.IsAdmin == false)
                 throw new PermissionDeniedException();
             if (this.IsLoaded == true)
-                throw new CremaException("로드된 데이터베이스에서는 되돌리기를 실행할 수 없습니다.");
+                throw new InvalidOperationException(Resources.Exception_LoadedDataBaseCannotRevert);
             var logs = this.repositoryHost.GetLog(this.BasePath, this.repositoryHost.Revision, 100);
             if (logs.Any(item => item.Revision == revision) == false)
-                throw new CremaException($"{revision} 으로 되돌릴수 없습니다.");
+                throw new ArgumentException(string.Format(Resources.Exception_NotFoundRevision_Format, revision), nameof(revision));
         }
 
         private void ValidateBeginTransaction(Authentication authentication)
         {
             if (this.IsLoaded == false)
-                throw new NotImplementedException();
+                throw new InvalidOperationException(Resources.Exception_DataBaseHasNotBeenLoaded);
             if (authentication.IsSystem == false && authentication.IsAdmin == false)
                 throw new PermissionDeniedException();
             if (this.VerifyAccessType(authentication, AccessType.Owner) == false)

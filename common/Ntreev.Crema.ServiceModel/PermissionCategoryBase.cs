@@ -390,9 +390,9 @@ namespace Ntreev.Crema.ServiceModel
         protected void ValidateRename(IAuthentication authentication, string name)
         {
             if (this.Parent == null)
-                throw new CremaException(Resources.Exception_RootFolderCannotRename);
+                throw new InvalidOperationException(Resources.Exception_RootFolderCannotRename);
             if (this.Name == name)
-                throw new CremaException(Resources.Exception_CannotRename);
+                throw new ArgumentException(Resources.Exception_CannotRename, nameof(name));
             base.ValidateRename(name);
             this.OnValidateRename(authentication, this, this.Path, new CategoryName(this.Parent.Path, name));
         }
@@ -400,9 +400,9 @@ namespace Ntreev.Crema.ServiceModel
         protected void ValidateMove(IAuthentication authentication, string parentPath)
         {
             if (this.Parent == null)
-                throw new CremaException(Resources.Exception_RootFolderCannotMove);
+                throw new InvalidOperationException(Resources.Exception_RootFolderCannotMove);
             if (this.Parent.Path == parentPath)
-                throw new CremaException(Resources.Exception_CannotMoveToSameFolder);
+                throw new ArgumentException(Resources.Exception_CannotMoveToSameFolder, nameof(parentPath));
             var parent = this.Container[parentPath];
             if (parent == null)
                 throw new CategoryNotFoundException(parentPath);

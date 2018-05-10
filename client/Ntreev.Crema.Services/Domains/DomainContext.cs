@@ -72,9 +72,11 @@ namespace Ntreev.Crema.Services.Domains
                 }
                 var result = this.service.Subscribe(this.cremaHost.AuthenticationToken);
                 result.Validate();
+#if !DEBUG
                 this.timer = new Timer(30000);
                 this.timer.Elapsed += Timer_Elapsed;
                 this.timer.Start();
+#endif
                 return result.Value;
             });
 
@@ -469,7 +471,7 @@ _Invoke:
             }
         }
 
-        #region IDomainServiceCallback
+#region IDomainServiceCallback
 
         void IDomainServiceCallback.OnDomainCreated(SignatureDate signatureDate, DomainInfo domainInfo, DomainState domainState)
         {
@@ -597,9 +599,9 @@ _Invoke:
             }, nameof(IDomainServiceCallback.OnServiceClosed));
         }
 
-        #endregion
+#endregion
 
-        #region IDomainContext
+#region IDomainContext
 
         IDomainCollection IDomainContext.Domains
         {
@@ -637,7 +639,7 @@ _Invoke:
             }
         }
 
-        #region IEnumerable
+#region IEnumerable
 
         IEnumerator<IDomainItem> IEnumerable<IDomainItem>.GetEnumerator()
         {
@@ -657,17 +659,17 @@ _Invoke:
             }
         }
 
-        #endregion
+#endregion
 
-        #endregion
+#endregion
 
-        #region IServiceProvider 
+#region IServiceProvider 
 
         object IServiceProvider.GetService(System.Type serviceType)
         {
             return (this.cremaHost as ICremaHost).GetService(serviceType);
         }
 
-        #endregion
+#endregion
     }
 }

@@ -476,7 +476,7 @@ namespace Ntreev.Crema.ServiceModel
         protected void ValidateRename(IAuthentication authentication, string name)
         {
             if (this.Name == name)
-                throw new CremaException(Resources.Exception_CannotRename);
+                throw new ArgumentException(Resources.Exception_CannotRename, nameof(name));
             this.OnValidateRename(authentication, this, this.Name, name);
         }
 
