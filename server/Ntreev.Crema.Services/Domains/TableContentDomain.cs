@@ -63,7 +63,7 @@ namespace Ntreev.Crema.Services.Domains
             : base(authentication.ID, dataBase.ID, itemPath, itemType)
         {
             if (dataSet.HasChanges() == true)
-                throw new ArgumentException("저장되지 않은 데이터는 편집할 수 없습니다.");
+                throw new ArgumentException(Resources.Exception_UnsavedDataCannotEdit, nameof(dataSet));
             this.dataSet = dataSet;
 
             foreach (var item in this.dataSet.Tables)

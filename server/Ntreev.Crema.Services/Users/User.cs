@@ -414,10 +414,10 @@ namespace Ntreev.Crema.Services.Users
                 var isAdmin = authentication.Types.HasFlag(AuthenticationType.Administrator);
 
                 if (base.UserInfo.ID == Authentication.AdminID)
-                    throw new CremaException("관리자의 계정 정보는 관리자만 변경할 수 있습니다.");
+                    throw new InvalidOperationException(Resources.Exception_AdminCanChangeAdminInfo);
 
                 if (authority.HasValue == true && this.IsOnline == true)
-                    throw new CremaException("로그인된 사용자의 권한을 변경할 수 없습니다..");
+                    throw new InvalidOperationException(Resources.Exception_OnlineUserAuthorityCannotChanged);
 
                 if (newPassword != null)
                 {
@@ -445,7 +445,7 @@ namespace Ntreev.Crema.Services.Users
                         throw new ArgumentException(Resources.Exception_CannotChangeToOldPassword, nameof(newPassword));
                 }
                 if (authority.HasValue == true)
-                    throw new CremaException("자신의 권한을 변경할 수 없습니다.");
+                    throw new ArgumentException(Resources.Exception_CannotChangeYourAuthority);
             }
         }
 
@@ -484,10 +484,10 @@ namespace Ntreev.Crema.Services.Users
                 throw new InvalidOperationException(Resources.Exception_LoggedInUserCannotDelete);
 
             if (this.ID == authentication.ID)
-                throw new InvalidOperationException("자기 자신을 삭제할 수 없습니다.");
+                throw new InvalidOperationException(Resources.Exception_CannotDeleteYourself);
 
             if (base.UserInfo.ID == Authentication.AdminID)
-                throw new InvalidOperationException("관리자 계정은 삭제할 수 없습니다..");
+                throw new InvalidOperationException(Resources.Exception_AdminCannotDeleted);
 
             base.ValidateDelete();
         }
@@ -495,13 +495,13 @@ namespace Ntreev.Crema.Services.Users
         private void ValidateLogin(SecureString password)
         {
             if (this.IsBanned == true)
-                throw new CremaException("해당 사용자는 차단되어 있어 접속할 수 없습니다.");
+                throw new InvalidOperationException(Resources.Exception_BannedUserCannotLogin);
         }
 
         private void ValidateLogout(Authentication authentication)
         {
             if (this.IsOnline == false)
-                throw new CremaException("로그인 되어 있지 않은 사용자입니다.");
+                throw new InvalidOperationException(Resources.Exception_UserIsNotLoggedIn);
             if (authentication.ID != this.ID)
                 throw new PermissionDeniedException();
         }
@@ -511,15 +511,15 @@ namespace Ntreev.Crema.Services.Users
             if (comment == null)
                 throw new ArgumentNullException(nameof(comment));
             if (comment == string.Empty)
-                throw new ArgumentNullException(nameof(comment), "빈 문자열은 사용할 수 없습니다.");
+                throw new ArgumentNullException(nameof(comment), Resources.Exception_EmptyStringIsNotAllowed);
             if (authentication.Types.HasFlag(AuthenticationType.Administrator) == false)
                 throw new PermissionDeniedException();
             if (this.IsBanned == true)
-                throw new CremaException("이미 차단되어 있는 사용자입니다.");
+                throw new InvalidOperationException(Resources.Exception_UserIsAlreadyBanned);
             if (this.Authority == Authority.Admin)
-                throw new PermissionDeniedException("관리자는 차단할 수 없습니다.");
+                throw new PermissionDeniedException(Resources.Exception_AdminCannotBanned);
             if (authentication.ID == this.ID)
-                throw new PermissionDeniedException("자기 자신을 차단할 수 없습니다.");
+                throw new PermissionDeniedException(Resources.Exception_CannotBanYourself);
         }
 
         private void ValidateUnban(Authentication authentication)
@@ -527,7 +527,7 @@ namespace Ntreev.Crema.Services.Users
             if (authentication.Types.HasFlag(AuthenticationType.Administrator) == false)
                 throw new PermissionDeniedException();
             if (this.IsBanned == false)
-                throw new CremaException("차단되어 있지 않은 사용자입니다.");
+                throw new InvalidOperationException(Resources.Exception_UserIsNotBanned);
         }
 
         private void ValidateKick(Authentication authentication, string comment)
@@ -539,9 +539,9 @@ namespace Ntreev.Crema.Services.Users
             if (authentication.Types.HasFlag(AuthenticationType.Administrator) == false)
                 throw new PermissionDeniedException();
             if (this.IsOnline == false)
-                throw new CremaException("접속 되지 않은 사용자는 추방할 수 없습니다.");
+                throw new InvalidOperationException(Resources.Exception_OfflineUserCannotKicked);
             if (authentication.ID == this.ID)
-                throw new PermissionDeniedException("자기 자신을 추방할 수 없습니다.");
+                throw new PermissionDeniedException(Resources.Exception_CannotKickYourself);
         }
 
         private void Sign(Authentication authentication)

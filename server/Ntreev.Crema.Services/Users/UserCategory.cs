@@ -100,7 +100,7 @@ namespace Ntreev.Crema.Services.Users
             if (authentication.Types.HasFlag(AuthenticationType.Administrator) == false)
                 throw new PermissionDeniedException();
             if (this.Parent.Path == parentPath)
-                throw new CremaException("같은 폴더로 이동할 수 없습니다.");
+                throw new ArgumentException(Resources.Exception_CannotMoveToSamePath, nameof(parentPath));
             var parent = this.Container[parentPath];
             if (parent == null)
                 throw new CategoryNotFoundException(parentPath);
@@ -119,7 +119,7 @@ namespace Ntreev.Crema.Services.Users
             base.ValidateDelete();
 
             if (EnumerableUtility.Descendants<IItem, IUser>(this as IItem, item => item.Childs).Any() == true)
-                throw new CremaException("폴더 또는 하위 폴더내에 사용자 항목이 존재하므로 삭제할 수 없습니다.");
+                throw new InvalidOperationException(Resources.Exception_CannotDeletePathWithItems);
         }
 
         public CremaDispatcher Dispatcher

@@ -17,6 +17,7 @@
 
 using Ntreev.Crema.Data;
 using Ntreev.Crema.ServiceModel;
+using Ntreev.Crema.Services.Properties;
 using Ntreev.Library;
 using Ntreev.Library.Linq;
 using Ntreev.Library.ObjectModel;
@@ -336,7 +337,7 @@ namespace Ntreev.Crema.Services.Data
         {
             base.OnValidateRename(authentication, target, oldPath, newPath);
             if (this.templateList.Any() == true)
-                throw new CremaException("새로운 타입을 생성중일때는 삭제할 수 없습니다.");
+                throw new InvalidOperationException(Resources.Exception_CannotRenameOnCreateType);
             this.ValidateUsingTables(authentication);
             var categoryName = new CategoryName(Regex.Replace(this.Path, $"^{oldPath}", newPath));
             this.Context.ValidateCategoryPath(categoryName);
@@ -347,7 +348,7 @@ namespace Ntreev.Crema.Services.Data
         {
             base.OnValidateMove(authentication, target, oldPath, newPath);
             if (this.templateList.Any() == true)
-                throw new CremaException("새로운 타입을 생성중일때는 이동할 수 없습니다.");
+                throw new InvalidOperationException(Resources.Exception_CannotMoveOnCreateType);
             this.ValidateUsingTables(authentication);
             var categoryName = new CategoryName(Regex.Replace(this.Path, $"^{oldPath}", newPath));
             this.Context.ValidateCategoryPath(categoryName);
@@ -358,10 +359,10 @@ namespace Ntreev.Crema.Services.Data
         {
             base.OnValidateDelete(authentication, target);
             if (this.templateList.Any() == true)
-                throw new CremaException("새로운 타입을 생성중일때는 삭제할 수 없습니다.");
+                throw new InvalidOperationException(Resources.Exception_CannotDeleteOnCreateType);
             var types = EnumerableUtility.Descendants<IItem, Type>(this as IItem, item => item.Childs).ToArray();
             if (types.Any() == true)
-                throw new CremaException("타입이 있는 폴더는 삭제할 수 없습니다.");
+                throw new InvalidOperationException(Resources.Exception_CannotDeletePathWithItems);
 
             this.ValidateUsingTables(authentication);
         }
@@ -504,8 +505,6 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        
-
         private void ValidateUsingTables(IAuthentication authentication)
         {
             var tables = this.GetService(typeof(TableCollection)) as TableCollection;
@@ -517,17 +516,17 @@ namespace Ntreev.Crema.Services.Data
                             select item;
 
                 if (query.Any() == true)
-                    throw new PermissionDeniedException("사용되고 있는 테이블의 접근권한이 없습니다.");
+                    throw new PermissionDeniedException(string.Format(Resources.Exception_ItemsPermissionDenined_Format, string.Format(", ", query)));
             }
 
             {
                 var query = from Table item in tables
                             from type in types
                             where item.IsTypeUsed(type.Path) && item.TableState != TableState.None
-                            select item;
+                            select item.Name;
 
                 if (query.Any() == true)
-                    throw new CremaException("사용되고 있는 테이블이 편집중입니다.");
+                    throw new InvalidOperationException(string.Format(Resources.Exception_TableIsBeingEdited_Format, string.Join(", ", query)));
             }
         }
 

@@ -266,7 +266,7 @@ namespace Ntreev.Crema.Services.Data
         {
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeTableEndTemplateEdit), table);
             if (table.TemplatedParent != null)
-                throw new CremaException("템플릿을 사용하는 테이블을 직접 변경할 수 없습니다.");
+                throw new InvalidOperationException(Resources.Exception_InheritedTableTemplateCannotEdit);
 
             var dataTable = template.TargetTable;
             var dataSet = dataTable.DataSet;
@@ -617,11 +617,11 @@ namespace Ntreev.Crema.Services.Data
             table.ValidateAccessType(authentication, AccessType.Master);
 
             if (this.Contains(newTableName) == true)
-                throw new CremaException("이미 있는 테이블입니다.");
+                throw new ArgumentException(Resources.Exception_SameTableNameExist, nameof(newTableName));
             if (table.Parent != null)
-                throw new CremaException("자식 테이블은 상속할 수 없습니다.");
+                throw new InvalidOperationException(Resources.Exception_ChildTableCannotInherit);
             if (table.TemplatedParent != null)
-                throw new CremaException("상속된 테이블을 상속할 수 없습니다.");
+                throw new InvalidOperationException(Resources.Exception_InheritedTableCannotInherit);
 
             NameValidator.ValidateCategoryPath(categoryPath);
 
@@ -642,9 +642,9 @@ namespace Ntreev.Crema.Services.Data
             table.ValidateAccessType(authentication, AccessType.Master);
 
             if (this.Contains(newTableName) == true)
-                throw new CremaException("이미 있는 테이블입니다.");
+                throw new ArgumentException(Resources.Exception_SameTableNameExist, nameof(newTableName));
             if (table.Parent != null)
-                throw new CremaException("자식 테이블은 복사할 수 없습니다.");
+                throw new InvalidOperationException(Resources.Exception_ChildTableCannotCopy);
 
             NameValidator.ValidateCategoryPath(categoryPath);
 

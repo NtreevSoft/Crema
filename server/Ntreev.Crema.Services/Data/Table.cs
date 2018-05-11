@@ -439,21 +439,21 @@ namespace Ntreev.Crema.Services.Data
         public void ValidateSetTags(Authentication authentication, TagInfo tags)
         {
             if (this.TemplatedParent != null)
-                throw new CremaException("템플릿을 사용하고 있는 테이블은 태그를 달 수 없습니다.");
+                throw new InvalidOperationException(Resources.Exception_InheritedTableCannotSetTags);
             this.Template.ValidateBeginEdit(authentication);
         }
 
         public void ValidateSetComment(Authentication authentication, string comment)
         {
             if (this.TemplatedParent != null)
-                throw new CremaException("템플릿을 사용하고 있는 테이블은 주석을 변경할 수 없습니다..");
+                throw new InvalidOperationException(Resources.Exception_InheritedTableCannotSetComment);
             this.Template.ValidateBeginEdit(authentication);
         }
 
         public void ValidateNewChild(Authentication authentication)
         {
             if (this.Parent != null)
-                throw new InvalidOperationException("자식 테이블에 자식을 생성할 수 없습니다.");
+                throw new InvalidOperationException(Resources.Exception_ChildTableCannotCreateChildTable);
             if (this.TemplatedParent != null)
                 throw new InvalidOperationException(Resources.Exception_InheritedTableCannotNewChild);
             this.ValidateAccessType(authentication, AccessType.Master);
@@ -763,7 +763,7 @@ namespace Ntreev.Crema.Services.Data
                     throw new ArgumentException(Resources.Exception_SameName, nameof(newPath));
             }
             if (this.templateList.Any() == true)
-                throw new CremaException("새로운 자식테이블을 생성중일 때는 이름을 변경할 수 없습니다.");
+                throw new InvalidOperationException(Resources.Exception_CannotRenameOnCreateChildTable);
             this.ValidateNotBeingEdited();
             this.ValidateHasNotBeingEditedType();
 
@@ -781,7 +781,7 @@ namespace Ntreev.Crema.Services.Data
         {
             base.OnValidateMove(authentication, target, oldPath, newPath);
             if (this.templateList.Any() == true)
-                throw new CremaException("새로운 자식테이블을 생성중일 때는 이동할 수 없습니다.");
+                throw new InvalidOperationException(Resources.Exception_CannotMoveOnCreateChildTable);
             this.ValidateNotBeingEdited();
             this.ValidateHasNotBeingEditedType();
 
@@ -799,7 +799,7 @@ namespace Ntreev.Crema.Services.Data
         {
             base.OnValidateDelete(authentication, target);
             if (this.templateList.Any() == true)
-                throw new CremaException("새로운 자식테이블을 생성중일 때는 삭제할 수 없습니다.");
+                throw new InvalidOperationException(Resources.Exception_CannotDeleteOnCreateChildTable);
             this.ValidateNotBeingEdited();
             this.ValidateHasNotBeingEditedType();
 

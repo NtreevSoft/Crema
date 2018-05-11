@@ -903,16 +903,16 @@ namespace Ntreev.Crema.Services.Data
             {
                 var types = dataBase.TypeContext.Types.Where<Type>(item => item.TypeState != TypeState.None).ToArray();
                 if (types.Any() == true)
-                    throw new CremaException("타입이 편집중입니다. : '{0}'", string.Join(", ", types.Select(item => item.Name)));
+                    throw new InvalidOperationException(string.Format(Resources.Exception_TypeIsBeingEdited_Format, string.Join(", ", types.Select(item => item.Name))));
 
                 var tables = dataBase.TableContext.Tables.Where<Table>(item => item.TableState != TableState.None).ToArray();
                 if (tables.Any() == true)
-                    throw new CremaException("테이블이 설정중이거나 편집중입니다. : '{0}'", string.Join(", ", tables.Select(item => item.Name)));
+                    throw new InvalidOperationException(string.Format(Resources.Exception_TableIsBeingEdited_Format, string.Join(", ", tables.Select(item => item.Name))));
 
                 var domainContext = dataBase.GetService(typeof(DomainContext)) as DomainContext;
                 var domains = domainContext.Domains.Where<Domain>(item => item.DataBaseID == dataBase.ID).ToArray();
                 if (domains.Any() == true)
-                    throw new CremaException("아직 저장되지 않은 작업이 남아 있습니다. : '{0}'", string.Join(", ", domains.Select(item => item.Host)));
+                    throw new InvalidOperationException(string.Format(Resources.Exception_UnsavedDomainsExists_Format, string.Join(", ", domains.Select(item => item.Host))));
             }
         }
 
@@ -939,7 +939,7 @@ namespace Ntreev.Crema.Services.Data
                 throw new PermissionDeniedException();
 
             if (dataBase.ID == DataBase.defaultID)
-                throw new PermissionDeniedException("default 데이터 베이스는 이름을 변경할 수 없습니다.");
+                throw new PermissionDeniedException(Resources.Exception_DefaultDataBaseCannotRename);
 
             if (dataBase.IsLoaded == true)
                 throw new InvalidOperationException(Resources.Exception_DataBaseHasBeenLoaded);
@@ -958,10 +958,10 @@ namespace Ntreev.Crema.Services.Data
                 throw new PermissionDeniedException();
 
             if (dataBase.ID == DataBase.defaultID)
-                throw new PermissionDeniedException("default 데이터 베이스는 삭제할 수 없습니다.");
+                throw new PermissionDeniedException(Resources.Exception_DefaultDataBaseCannotDelete);
 
             if (dataBase.IsLoaded == true)
-                throw new ArgumentException(Resources.Exception_DataBaseHasBeenLoaded, nameof(dataBase));
+                throw new InvalidOperationException(Resources.Exception_DataBaseHasBeenLoaded);
         }
 
         private Dictionary<string, DataBaseSerializationInfo> ReadCaches()

@@ -364,6 +364,11 @@ namespace Ntreev.Crema.Client.Framework.Controls
 
         private void Items_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (e.Action == NotifyCollectionChangedAction.Reset && sender is INotifyCollectionChanged items)
+            {
+                items.CollectionChanged -= Items_CollectionChanged;
+            }
+
             this.Dispatcher.InvokeAsync(() =>
             {
                 if (e.Action == NotifyCollectionChangedAction.Add)
@@ -372,11 +377,9 @@ namespace Ntreev.Crema.Client.Framework.Controls
                 }
                 else if (e.Action == NotifyCollectionChangedAction.Reset)
                 {
-                    var gridContext = DataGridControl.GetDataGridContext(this);
                     this.Select(this.results);
                     this.results = null;
                     this.hasField = false;
-                    (gridContext.Items as INotifyCollectionChanged).CollectionChanged -= Items_CollectionChanged;
                     this.OnInserted(EventArgs.Empty);
                 }
             });

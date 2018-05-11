@@ -18,6 +18,7 @@
 using Ntreev.Crema.Data;
 using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Crema.ServiceModel;
+using Ntreev.Crema.Services.Properties;
 using Ntreev.Library;
 using Ntreev.Library.IO;
 using Ntreev.Library.ObjectModel;
@@ -409,7 +410,7 @@ namespace Ntreev.Crema.Services.Data
             get
             {
                 if (this.dataBase == null)
-                    throw new InvalidOperationException("유효하지 않은 객체입니다.");
+                    throw new InvalidOperationException(Resources.Exception_InvalidObject);
                 return this.dataBase;
             }
         }

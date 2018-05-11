@@ -155,7 +155,7 @@
     <value>상속받은 테이블은 자식 테이블을 생성할 수 없습니다.</value>
   </data>
   <data name="Exception_InvalidName_Format" xml:space="preserve">
-    <value>{0}은(는) 잘못된 이름입니다.</value>
+    <value>'{0}' 은(는) 잘못된 이름입니다.</value>
   </data>
   <data name="Exception_InvalidUserID" xml:space="preserve">
     <value>잘못된 형식의 아이디입니다.</value>
@@ -191,7 +191,7 @@
     <value>테이블 관리자 생성 완료</value>
   </data>
   <data name="Exception_TableIsBeingEdited_Format" xml:space="preserve">
-    <value>{0} 테이블이 편집중입니다.</value>
+    <value>'{0}' 테이블이 편집중입니다.</value>
   </data>
   <data name="Exception_TableIsBeingSetup_Format" xml:space="preserve">
     <value>'{0}' 테이블은 형태 변경중입니다.</value>
@@ -200,7 +200,7 @@
     <value>테이블 로딩 완료</value>
   </data>
   <data name="Exception_TypeIsBeingEdited_Format" xml:space="preserve">
-    <value>{0} 타입이 편집중입니다.</value>
+    <value>'{0}' 타입이 편집중입니다.</value>
   </data>
   <data name="Message_UserContextInitialize" xml:space="preserve">
     <value>UserContext initialize.</value>
@@ -286,5 +286,162 @@
   </data>
   <data name="Exception_ChildTableCannotReadIndependently" xml:space="preserve">
     <value>자식테이블은 독립적으로 데이터를 읽어들일 수 없습니다.</value>
+  </data>
+  <data name="Exception_InheritedTableCannotSetTags" xml:space="preserve">
+    <value>상속받은 테이블은 태그를 설정할 수 없습니다.</value>
+  </data>
+  <data name="Exception_InheritedTableCannotSetComment" xml:space="preserve">
+    <value>상속받은 테이블은 설명을 설정할 수 없습니다.</value>
+  </data>
+  <data name="Exception_ChildTableCannotCreateChildTable" xml:space="preserve">
+    <value>자식 테이블은 자식 테이블을 생성할 수 없습니다.</value>
+  </data>
+  <data name="Exception_CannotRenameOnCreateChildTable" xml:space="preserve">
+    <value>자식테이블을 생성중일 때는 이름을 변경할 수 없습니다.</value>
+  </data>
+  <data name="Exception_CannotMoveOnCreateChildTable" xml:space="preserve">
+    <value>자식테이블을 생성중일 때는 이동할 수 없습니다.</value>
+  </data>
+  <data name="Exception_CannotDeleteOnCreateChildTable" xml:space="preserve">
+    <value>자식테이블을 생성중일 때는 삭제할 수 없습니다.</value>
+  </data>
+  <data name="Exception_CannotRenameOnCreateTable" xml:space="preserve">
+    <value>테이블을 생성중일 때는 이름을 변경할 수 없습니다.</value>
+  </data>
+  <data name="Exception_CannotMoveOnCreateTable" xml:space="preserve">
+    <value>테이블을 생성중일 때는 이동할 수 없습니다.</value>
+  </data>
+  <data name="Exception_CannotDeleteOnCreateTable" xml:space="preserve">
+    <value>테이블을 생성중일 때는 삭제할 수 없습니다.</value>
+  </data>
+  <data name="Exception_InheritedTableCannotInherit" xml:space="preserve">
+    <value>상속받은 테이블은 상속할 수 없습니다.</value>
+  </data>
+  <data name="Exception_ChildTableCannotInherit" xml:space="preserve">
+    <value>자식테이블은 상속할 수 없습니다.</value>
+  </data>
+  <data name="Exception_ChildTableCannotCopy" xml:space="preserve">
+    <value>자식테이블은 복사할 수 없습니다.</value>
+  </data>
+  <data name="Exception_SameNamePathExists" xml:space="preserve">
+    <value>같은 이름의 경로가 이미 존재합니다.</value>
+  </data>
+  <data name="Exception_CannotDeletePathWithItems" xml:space="preserve">
+    <value>항목이 있는 경로는 삭제할 수 없습니다.</value>
+  </data>
+  <data name="Exception_UnsavedDomainsExists_Format" xml:space="preserve">
+    <value>아직 저장되지 않은 도메인이 있습니다: '{0}'</value>
+  </data>
+  <data name="Exception_TableIsNotBeingEdited" xml:space="preserve">
+    <value>테이블이 편집중이 아닙니다.</value>
+  </data>
+  <data name="Exception_TableTemplateIsNotBeingEdited" xml:space="preserve">
+    <value>테이블 형태가 편집중이 아닙니다.</value>
+  </data>
+  <data name="Exception_TypeIsNotBeingEdited" xml:space="preserve">
+    <value>타입이 편집중이 아닙니다.</value>
+  </data>
+  <data name="Exception_CannotRenameOnCreateType" xml:space="preserve">
+    <value>타입을 생성중일 때는 이름을 변경할 수 없습니다.</value>
+  </data>
+  <data name="Exception_CannotMoveOnCreateType" xml:space="preserve">
+    <value>타입을 생성중일 때는 이동할 수 없습니다.</value>
+  </data>
+  <data name="Exception_CannotDeleteOnCreateType" xml:space="preserve">
+    <value>타입을 생성중일 때는 삭제할 수 없습니다.</value>
+  </data>
+  <data name="Exception_CannotDeleteTypeWithUsedTables" xml:space="preserve">
+    <value>사용중인 테이블이 있는 타입은 삭제할 수 없습니다.</value>
+  </data>
+  <data name="Exception_InheritedTableTemplateCannotEdit" xml:space="preserve">
+    <value>상속받은 테이블의 형태는 편집할 수 없습니다.</value>
+  </data>
+  <data name="Exception_ChildTableCannotEdit" xml:space="preserve">
+    <value>자식 테이블은 편집할 수 없습니다.</value>
+  </data>
+  <data name="Exception_PathIsNotEmptyDirectory" xml:space="preserve">
+    <value>비어있는 경로가 아닙니다.</value>
+  </data>
+  <data name="Exception_NoRepositoryModule" xml:space="preserve">
+    <value>저장소를 생성할 수 있는 모듈이 존재하지 않습니다.</value>
+  </data>
+  <data name="Exception_DefaultDataBaseCannotRename" xml:space="preserve">
+    <value>'default' 데이터 베이스는 이름을 변경할 수 없습니다.</value>
+  </data>
+  <data name="Exception_DefaultDataBaseCannotDelete" xml:space="preserve">
+    <value>'default' 데이터 베이스는 삭제할 수 없습니다.</value>
+  </data>
+  <data name="Exception_EmptyDataSetCannotImport" xml:space="preserve">
+    <value>빈 데이터셋은 가져오기를 할 수 없습니다.</value>
+  </data>
+  <data name="Exception_ItemPathChanged_Format" xml:space="preserve">
+    <value>'{0}' has been changed : '{1}' to '{2}'.</value>
+  </data>
+  <data name="Exception_AtLeastOneColumnInTable" xml:space="preserve">
+    <value>테이블에는 적어도 한개 이상의 Column이(가) 존재해야 합니다.</value>
+  </data>
+  <data name="Exception_AtLeastOneKeyInTable" xml:space="preserve">
+    <value>테이블에는 적어도 한개 이상의 키가 존재해야 합니다.</value>
+  </data>
+  <data name="Exception_AtLeastOneMemberInType" xml:space="preserve">
+    <value>타입에는 적어도 한개 이상의 Member이(가) 존재해야 합니다.</value>
+  </data>
+  <data name="Exception_CannotRename" xml:space="preserve">
+    <value>이름을 변경할 수 없습니다.</value>
+  </data>
+  <data name="Exception_OwnerCannotKicked" xml:space="preserve">
+    <value>소유자는 추방할 수 없습니다.</value>
+  </data>
+  <data name="Exception_CannotKickYourself" xml:space="preserve">
+    <value>자기 자신을 추방할 수 없습니다.</value>
+  </data>
+  <data name="Exception_UserIsNotInDomain_Format" xml:space="preserve">
+    <value>'{0}' 은(는) 도메인 사용자가 아닙니다.</value>
+    <comment>userID</comment>
+  </data>
+  <data name="Exception_OfflineUserCannotKicked" xml:space="preserve">
+    <value>접속중이지 않은 사용자는 추방할 수 없습니다.</value>
+  </data>
+  <data name="Exception_CannotBanYourself" xml:space="preserve">
+    <value>자기 자신을 차단할 수 없습니다.</value>
+  </data>
+  <data name="Exception_UserIsNotBanned" xml:space="preserve">
+    <value>차단되어 있지 않은 사용자입니다.</value>
+  </data>
+  <data name="Exception_UserIsAlreadyBanned" xml:space="preserve">
+    <value>이미 차단되어 있는 사용자입니다.</value>
+  </data>
+  <data name="Exception_AdminCannotBanned" xml:space="preserve">
+    <value>관리자는 차단할 수 없습니다.</value>
+  </data>
+  <data name="Exception_CannotDeleteYourself" xml:space="preserve">
+    <value>자기 자신을 삭제할 수 없습니다.</value>
+  </data>
+  <data name="Exception_AdminCannotDeleted" xml:space="preserve">
+    <value>관리자계정은 삭제할 수 없습니다.</value>
+  </data>
+  <data name="Exception_BannedUserCannotLogin" xml:space="preserve">
+    <value>차단되어 있는 사용자는 접속할 수 없습니다.</value>
+  </data>
+  <data name="Exception_UserIsNotLoggedIn" xml:space="preserve">
+    <value>접속되어 있는 사용자가 아닙니다.</value>
+  </data>
+  <data name="Exception_UnsavedDataCannotEdit" xml:space="preserve">
+    <value>저장되지 않은 데이터는 편집할 수 없습니다.</value>
+  </data>
+  <data name="Exception_AdminCanChangeAdminInfo" xml:space="preserve">
+    <value>Admin 정보는 Admin 계정만 변경할 수 있습니다.</value>
+  </data>
+  <data name="Exception_OnlineUserAuthorityCannotChanged" xml:space="preserve">
+    <value>접속된 사용자의 권한은 변경할 수 없습니다.</value>
+  </data>
+  <data name="Exception_CannotChangeYourAuthority" xml:space="preserve">
+    <value>자신의 권한을 변경할 수 없습니다.</value>
+  </data>
+  <data name="Exception_CannotMoveToSamePath" xml:space="preserve">
+    <value>같은 경로로 이동할 수 없습니다.</value>
+  </data>
+  <data name="Exception_ItemsPermissionDenined_Format" xml:space="preserve">
+    <value>사용되고 있는 항목에 대한 접근권한이 없습니다: '{0}'</value>
   </data>
 </root>

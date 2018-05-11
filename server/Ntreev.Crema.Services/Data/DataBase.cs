@@ -922,10 +922,10 @@ namespace Ntreev.Crema.Services.Data
             base.OnValidateDelete(authentication, target);
 
             if (this.ID == DataBase.defaultID)
-                throw new PermissionDeniedException("default 데이터 베이스는 삭제할 수 없습니다.");
+                throw new PermissionDeniedException(Resources.Exception_DefaultDataBaseCannotDelete);
 
             if (this.IsLoaded == true)
-                throw new InvalidOperationException("데이터 베이스가 사용중입니다.");
+                throw new InvalidOperationException(Resources.Exception_DataBaseHasBeenLoaded);
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]

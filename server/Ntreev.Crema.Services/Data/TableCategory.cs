@@ -17,6 +17,7 @@
 
 using Ntreev.Crema.Data;
 using Ntreev.Crema.ServiceModel;
+using Ntreev.Crema.Services.Properties;
 using Ntreev.Library;
 using Ntreev.Library.Linq;
 using Ntreev.Library.ObjectModel;
@@ -267,7 +268,7 @@ namespace Ntreev.Crema.Services.Data
         {
             base.OnValidateRename(authentication, target, oldPath, newPath);
             if (this.templateList.Any() == true)
-                throw new CremaException("새로운 테이블을 생성중일때는 이름을 변경할 수 없습니다.");
+                throw new InvalidOperationException(Resources.Exception_CannotRenameOnCreateTable);
 
             var categoryName = new CategoryName(Regex.Replace(this.Path, $"^{oldPath}", newPath));
             this.Context.ValidateCategoryPath(categoryName);
@@ -278,10 +279,10 @@ namespace Ntreev.Crema.Services.Data
         {
             base.OnValidateMove(authentication, target, oldPath, newPath);
             if (this.templateList.Any() == true)
-                throw new CremaException("새로운 테이블을 생성중일때는 이동할 수 없습니다.");
+                throw new InvalidOperationException(Resources.Exception_CannotMoveOnCreateTable);
             var tables = EnumerableUtility.Descendants<IItem, Table>(this as IItem, item => item.Childs);
             if (tables.Where(item => item.TableState != TableState.None).Any() == true)
-                throw new CremaException("편집 또는 설정중인 테이블이 있기 때문에 이동할 수 없습니다.");
+                throw new InvalidOperationException(string.Format(Resources.Exception_TableIsBeingEdited_Format, string.Join(", ", tables.Select(item => item.Name))));
             var categoryName = new CategoryName(Regex.Replace(this.Path, $"^{oldPath}", newPath));
             this.Context.ValidateCategoryPath(categoryName);
         }
@@ -291,10 +292,10 @@ namespace Ntreev.Crema.Services.Data
         {
             base.OnValidateDelete(authentication, target);
             if (this.templateList.Any() == true)
-                throw new CremaException("새로운 테이블을 생성중일때는 삭제할 수 없습니다.");
+                throw new InvalidOperationException(Resources.Exception_CannotDeleteOnCreateTable);
             var tables = EnumerableUtility.Descendants<IItem, Table>(this as IItem, item => item.Childs).ToArray();
             if (tables.Any() == true)
-                throw new CremaException("테이블이 있는 폴더는 삭제할 수 없습니다.");
+                throw new InvalidOperationException(Resources.Exception_CannotDeletePathWithItems);
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]

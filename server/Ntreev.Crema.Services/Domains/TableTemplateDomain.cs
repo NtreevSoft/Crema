@@ -28,6 +28,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Ntreev.Library;
+using Ntreev.Crema.Services.Properties;
 
 namespace Ntreev.Crema.Services.Domains
 {
@@ -119,7 +120,7 @@ namespace Ntreev.Crema.Services.Domains
             if (propertyName == "TableName")
             {
                 if (this.IsNew == false)
-                    throw new CremaException("테이블 이름은 변경할 수 없습니다.");
+                    throw new InvalidOperationException(Resources.Exception_CannotRename);
                 this.template.TableName = (string)value;
             }
             else if (propertyName == "Comment")

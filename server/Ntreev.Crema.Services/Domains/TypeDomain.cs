@@ -29,6 +29,7 @@ using System.Runtime.Serialization;
 using Ntreev.Library.ObjectModel;
 using Ntreev.Library;
 using Ntreev.Crema.Data.Xml.Schema;
+using Ntreev.Crema.Services.Properties;
 
 namespace Ntreev.Crema.Services.Domains
 {
@@ -154,7 +155,7 @@ namespace Ntreev.Crema.Services.Domains
             if (propertyName == "TypeName")
             {
                 if (this.IsNew == false)
-                    throw new CremaException("타입 이름은 변경할 수 없습니다.");
+                    throw new InvalidOperationException(Resources.Exception_CannotRename);
                 this.dataType.TypeName = (string)value;
             }
             else if (propertyName == "IsFlag")

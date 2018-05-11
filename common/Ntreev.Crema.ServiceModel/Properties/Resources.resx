@@ -121,16 +121,16 @@
     <value>Could not rename to same name.</value>
   </data>
   <data name="Exception_CategoryNotFound_Format" xml:space="preserve">
-    <value>Could not find category path "{0}".</value>
+    <value>Could not find category path '{0}'.</value>
   </data>
   <data name="Exception_DataBaseNotFound_Format" xml:space="preserve">
-    <value>Could not find database "{0}".</value>
+    <value>Could not find database '{0}'.</value>
   </data>
   <data name="Exception_DomainNotFound_Format" xml:space="preserve">
     <value>Could not find domain ID "{0}".</value>
   </data>
   <data name="Exception_ItemNotFound_Format" xml:space="preserve">
-    <value>Could not find item "{0}".</value>
+    <value>Could not find item '{0}'.</value>
   </data>
   <data name="Exception_TableNotFound_Format" xml:space="preserve">
     <value>Could not find table "{0}".</value>
@@ -194,5 +194,8 @@
   </data>
   <data name="Exception_InheritedPrivateItemCannotRemove" xml:space="preserve">
     <value>Inherited private item cannot remove user</value>
+  </data>
+  <data name="Exception_AuthenticationDoesNotSigned" xml:space="preserve">
+    <value>authentication does not signed.</value>
   </data>
 </root>
