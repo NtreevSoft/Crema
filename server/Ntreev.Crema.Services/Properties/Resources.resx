@@ -155,7 +155,7 @@ The server will automatically attempt to restore from a data not yet saved.</val
     <value>상속받은 테이블은 자식 테이블을 생성할 수 없습니다.</value>
   </data>
   <data name="Exception_InvalidName_Format" xml:space="preserve">
-    <value>{0}은(는) 잘못된 이름입니다.</value>
+    <value>'{0}' is incorrect name.</value>
   </data>
   <data name="Exception_InvalidUserID" xml:space="preserve">
     <value>It is not valid UserID</value>
@@ -191,7 +191,7 @@ The server will automatically attempt to restore from a data not yet saved.</val
     <value>Table Context created.</value>
   </data>
   <data name="Exception_TableIsBeingEdited_Format" xml:space="preserve">
-    <value>{0} 테이블이 편집중입니다.</value>
+    <value>'{0}' 테이블이 편집중입니다.</value>
   </data>
   <data name="Exception_TableIsBeingSetup_Format" xml:space="preserve">
     <value>'{0}' 테이블은 형태 변경중입니다.</value>
@@ -200,7 +200,7 @@ The server will automatically attempt to restore from a data not yet saved.</val
     <value>Table Loading completed.</value>
   </data>
   <data name="Exception_TypeIsBeingEdited_Format" xml:space="preserve">
-    <value>{0} 타입이 편집중입니다.</value>
+    <value>'{0}' 타입이 편집중입니다.</value>
   </data>
   <data name="Message_UserContextInitialize" xml:space="preserve">
     <value>UserContext initialize.</value>
@@ -287,5 +287,163 @@ The server will automatically attempt to restore from a data not yet saved.</val
   </data>
   <data name="Exception_ChildTableCannotReadIndependently" xml:space="preserve">
     <value>Child tables can not read data independently.</value>
+  </data>
+  <data name="Exception_InheritedTableCannotSetTags" xml:space="preserve">
+    <value>Inherited table can not set tags</value>
+  </data>
+  <data name="Exception_InheritedTableCannotSetComment" xml:space="preserve">
+    <value>Inherited table can not set comment.</value>
+  </data>
+  <data name="Exception_ChildTableCannotCreateChildTable" xml:space="preserve">
+    <value>Child table can not create child table.</value>
+  </data>
+  <data name="Exception_CannotRenameOnCreateChildTable" xml:space="preserve">
+    <value>Can not rename on create child table</value>
+  </data>
+  <data name="Exception_CannotMoveOnCreateChildTable" xml:space="preserve">
+    <value>Can not move on create child table.</value>
+  </data>
+  <data name="Exception_CannotDeleteOnCreateChildTable" xml:space="preserve">
+    <value>Can not delete on create child table.</value>
+  </data>
+  <data name="Exception_CannotRenameOnCreateTable" xml:space="preserve">
+    <value>Can not rename on create table.</value>
+  </data>
+  <data name="Exception_CannotMoveOnCreateTable" xml:space="preserve">
+    <value>Can not move on create table.</value>
+  </data>
+  <data name="Exception_CannotDeleteOnCreateTable" xml:space="preserve">
+    <value>Can not delete on create table.</value>
+  </data>
+  <data name="Exception_InheritedTableCannotInherit" xml:space="preserve">
+    <value>Inherited table can not inherit.</value>
+  </data>
+  <data name="Exception_ChildTableCannotInherit" xml:space="preserve">
+    <value>Child table can not inherit.</value>
+  </data>
+  <data name="Exception_ChildTableCannotCopy" xml:space="preserve">
+    <value>Child table can not copy.</value>
+  </data>
+  <data name="Exception_SameNamePathExists" xml:space="preserve">
+    <value>A path with the same name already exists.</value>
+  </data>
+  <data name="Exception_CannotDeletePathWithItems" xml:space="preserve">
+    <value>Can not delete path with items.</value>
+  </data>
+  <data name="Exception_UnsavedDomainsExists_Format" xml:space="preserve">
+    <value>There are domains that have not yet been saved: '{0}'</value>
+  </data>
+  <data name="Exception_TableIsNotBeingEdited" xml:space="preserve">
+    <value>Table is not being edited.</value>
+  </data>
+  <data name="Exception_TableTemplateIsNotBeingEdited" xml:space="preserve">
+    <value>Table template is not being edited.</value>
+  </data>
+  <data name="Exception_TypeIsNotBeingEdited" xml:space="preserve">
+    <value>Type is not being edited.</value>
+  </data>
+  <data name="Exception_CannotRenameOnCreateType" xml:space="preserve">
+    <value>Can not rename on create Type</value>
+  </data>
+  <data name="Exception_CannotMoveOnCreateType" xml:space="preserve">
+    <value>Can not move on create Type</value>
+  </data>
+  <data name="Exception_CannotDeleteOnCreateType" xml:space="preserve">
+    <value>Can not delete on create Type</value>
+  </data>
+  <data name="Exception_CannotDeleteTypeWithUsedTables" xml:space="preserve">
+    <value>Can not delete type with used tables.</value>
+  </data>
+  <data name="Exception_InheritedTableTemplateCannotEdit" xml:space="preserve">
+    <value>Inherited table template can not edit.</value>
+  </data>
+  <data name="Exception_ChildTableCannotEdit" xml:space="preserve">
+    <value>Child table can not edit.</value>
+  </data>
+  <data name="Exception_PathIsNotEmptyDirectory" xml:space="preserve">
+    <value>Path is not an empty directory.
+</value>
+  </data>
+  <data name="Exception_NoRepositoryModule" xml:space="preserve">
+    <value>There is no repository module to create</value>
+  </data>
+  <data name="Exception_DefaultDataBaseCannotRename" xml:space="preserve">
+    <value>'default' database can not rename.</value>
+  </data>
+  <data name="Exception_DefaultDataBaseCannotDelete" xml:space="preserve">
+    <value>'default' database can not delete.</value>
+  </data>
+  <data name="Exception_EmptyDataSetCannotImport" xml:space="preserve">
+    <value>Empty dataset can not import.</value>
+  </data>
+  <data name="Exception_ItemPathChanged_Format" xml:space="preserve">
+    <value>'{0}' has been changed : '{1}' to '{2}'.</value>
+  </data>
+  <data name="Exception_AtLeastOneColumnInTable" xml:space="preserve">
+    <value>At least one column must exist in the table.</value>
+  </data>
+  <data name="Exception_AtLeastOneKeyInTable" xml:space="preserve">
+    <value>At least one key must exist in the table.</value>
+  </data>
+  <data name="Exception_AtLeastOneMemberInType" xml:space="preserve">
+    <value>At least one member must exist in the type.</value>
+  </data>
+  <data name="Exception_CannotRename" xml:space="preserve">
+    <value>Can not rename.</value>
+  </data>
+  <data name="Exception_OwnerCannotKicked" xml:space="preserve">
+    <value>Owner can not kicked</value>
+  </data>
+  <data name="Exception_CannotKickYourself" xml:space="preserve">
+    <value>You can not kick yourself.</value>
+  </data>
+  <data name="Exception_UserIsNotInDomain_Format" xml:space="preserve">
+    <value>'{0}' is not in domain.</value>
+    <comment>userID</comment>
+  </data>
+  <data name="Exception_OfflineUserCannotKicked" xml:space="preserve">
+    <value>Offline user can not kicked.</value>
+  </data>
+  <data name="Exception_CannotBanYourself" xml:space="preserve">
+    <value>You can not ban yourself.</value>
+  </data>
+  <data name="Exception_UserIsNotBanned" xml:space="preserve">
+    <value>User is not banned.</value>
+  </data>
+  <data name="Exception_UserIsAlreadyBanned" xml:space="preserve">
+    <value>User is already banned.</value>
+  </data>
+  <data name="Exception_AdminCannotBanned" xml:space="preserve">
+    <value>Admin can not banned.</value>
+  </data>
+  <data name="Exception_CannotDeleteYourself" xml:space="preserve">
+    <value>You can not delete yourself.</value>
+  </data>
+  <data name="Exception_AdminCannotDeleted" xml:space="preserve">
+    <value>Admin can not deleted.</value>
+  </data>
+  <data name="Exception_BannedUserCannotLogin" xml:space="preserve">
+    <value>Banned user can not log in.</value>
+  </data>
+  <data name="Exception_UserIsNotLoggedIn" xml:space="preserve">
+    <value>User is not logged in.</value>
+  </data>
+  <data name="Exception_UnsavedDataCannotEdit" xml:space="preserve">
+    <value>Unsaved data can not edit.</value>
+  </data>
+  <data name="Exception_AdminCanChangeAdminInfo" xml:space="preserve">
+    <value>"admin" only can change "admin" info</value>
+  </data>
+  <data name="Exception_OnlineUserAuthorityCannotChanged" xml:space="preserve">
+    <value>Online user's authority can not changed.</value>
+  </data>
+  <data name="Exception_CannotChangeYourAuthority" xml:space="preserve">
+    <value>You can not change your authority.</value>
+  </data>
+  <data name="Exception_CannotMoveToSamePath" xml:space="preserve">
+    <value>Can not move to same path.</value>
+  </data>
+  <data name="Exception_ItemsPermissionDenined_Format" xml:space="preserve">
+    <value>You do not have access to items in use: '{0}'</value>
   </data>
 </root>

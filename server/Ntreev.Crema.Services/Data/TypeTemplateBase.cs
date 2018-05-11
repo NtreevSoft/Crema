@@ -105,14 +105,14 @@ namespace Ntreev.Crema.Services.Data
         public void ValidateEndEdit(Authentication authentication)
         {
             if (this.domain == null)
-                throw new CremaException("편집중이 아니기 때문에 편집을 종료할 수 없습니다.");
+                throw new InvalidOperationException(Resources.Exception_TypeIsNotBeingEdited);
             this.OnValidateEndEdit(authentication, this);
         }
 
         public void ValidateCancelEdit(Authentication authentication)
         {
             if (this.domain == null)
-                throw new CremaException("편집중이 아니기 때문에 편집을 취소할 수 없습니다.");
+                throw new InvalidOperationException(Resources.Exception_TypeIsNotBeingEdited);
             this.OnValidateCancelEdit(authentication, this);
         }
 
@@ -421,7 +421,7 @@ namespace Ntreev.Crema.Services.Data
         public virtual void OnValidateEndEdit(Authentication authentication, object target)
         {
             if (this.dataType.Members.Any() == false)
-                throw new InvalidOperationException("타입에는 적어도 한개 이상의 Member이(가) 존재해야 합니다.");
+                throw new InvalidOperationException(Resources.Exception_AtLeastOneMemberInType);
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]

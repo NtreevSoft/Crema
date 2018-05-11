@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ntreev.Crema.Services.Properties;
 
 namespace Ntreev.Crema.Services.Data
 {
@@ -48,11 +49,11 @@ namespace Ntreev.Crema.Services.Data
             {
                 var type = dataBase.TypeContext.Types[item.Name];
                 if (type == null)
-                    throw new CremaException("'{0}' does not existed.", item.Name);
+                    throw new ItemNotFoundException(item.Name);
                 if (type.Name == item.Name)
                 {
                     if (type.Category.Path != item.CategoryPath)
-                        throw new CremaException("'{0}' has been changed : {1} to {2}", item.Name, type.Category.Path, item.CategoryPath);
+                        throw new InvalidOperationException(string.Format(Resources.Exception_ItemPathChanged_Format, item.Name, type.Category.Path, item.CategoryPath));
                 }
             }
         }

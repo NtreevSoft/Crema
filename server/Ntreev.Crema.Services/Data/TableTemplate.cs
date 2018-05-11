@@ -152,7 +152,7 @@ namespace Ntreev.Crema.Services.Data
             if (target == this)
             {
                 if (this.IsBeingEdited == false)
-                    throw new CremaException("템플릿이 편집중이 아닙니다.");
+                    throw new InvalidOperationException(Resources.Exception_TableTemplateIsNotBeingEdited);
                 this.TemplateSource.Validate();
             }
 
@@ -173,7 +173,7 @@ namespace Ntreev.Crema.Services.Data
             if (target == this)
             {
                 if (this.IsBeingEdited == false)
-                    throw new CremaException("템플릿이 편집중이 아닙니다.");
+                    throw new InvalidOperationException(Resources.Exception_TableTemplateIsNotBeingEdited);
             }
 
             this.table.ValidateAccessType(authentication, AccessType.Master);

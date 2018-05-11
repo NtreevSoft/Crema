@@ -195,4 +195,7 @@
   <data name="Exception_InheritedPrivateItemCannotRemove" xml:space="preserve">
     <value>개인 사용 설정이 상속된 객체이기 때문에 사용자를 삭제할 수 없습니다.</value>
   </data>
+  <data name="Exception_AuthenticationDoesNotSigned" xml:space="preserve">
+    <value>서명되지 않은 인증입니다.</value>
+  </data>
 </root>

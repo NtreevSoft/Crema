@@ -88,6 +88,15 @@ namespace Ntreev.Crema.ServiceModel.Properties {
         }
         
         /// <summary>
+        ///   authentication does not signed.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string Exception_AuthenticationDoesNotSigned {
+            get {
+                return ResourceManager.GetString("Exception_AuthenticationDoesNotSigned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Unable to add user because it is set to public.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string Exception_CannotAddToPublic {
@@ -142,7 +151,7 @@ namespace Ntreev.Crema.ServiceModel.Properties {
         }
         
         /// <summary>
-        ///   Could not find category path &quot;{0}&quot;.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Could not find category path &apos;{0}&apos;.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string Exception_CategoryNotFound_Format {
             get {
@@ -151,7 +160,7 @@ namespace Ntreev.Crema.ServiceModel.Properties {
         }
         
         /// <summary>
-        ///   Could not find database &quot;{0}&quot;.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Could not find database &apos;{0}&apos;.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string Exception_DataBaseNotFound_Format {
             get {
@@ -232,7 +241,7 @@ namespace Ntreev.Crema.ServiceModel.Properties {
         }
         
         /// <summary>
-        ///   Could not find item &quot;{0}&quot;.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Could not find item &apos;{0}&apos;.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string Exception_ItemNotFound_Format {
             get {

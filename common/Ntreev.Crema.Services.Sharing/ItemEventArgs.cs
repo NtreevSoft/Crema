@@ -43,7 +43,7 @@ namespace Ntreev.Crema.Services
             if (authentication == null)
                 throw new ArgumentNullException(nameof(authentication));
             if (authentication.SignatureDate.ID == string.Empty)
-                throw new ArgumentException("authentication does not signed", nameof(authentication));
+                throw new ArgumentException(ServiceModel.Properties.Resources.Exception_AuthenticationDoesNotSigned, nameof(authentication));
             if (item == null)
                 throw new ArgumentNullException(nameof(item));
             this.signatureDate = authentication.SignatureDate;

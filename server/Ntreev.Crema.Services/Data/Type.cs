@@ -591,7 +591,7 @@ namespace Ntreev.Crema.Services.Data
                         where item.IsTypeUsed(base.Path)
                         select item;
             if (query.Any() == true)
-                throw new CremaException("사용중인 테이블이 있는 타입은 삭제할 수 없습니다.");
+                throw new InvalidOperationException(Resources.Exception_CannotDeleteTypeWithUsedTables);
         }
 
         public void ValidateUsingTables(IAuthentication authentication)

@@ -432,7 +432,7 @@ namespace Ntreev.Crema.Services.Data
         public void ValidateEndEdit(Authentication authentication)
         {
             if (this.domain == null)
-                throw new CremaException("편집중이 아니기 때문에 편집을 종료할 수 없습니다.");
+                throw new InvalidOperationException(Resources.Exception_TableTemplateIsNotBeingEdited);
             this.OnValidateEndEdit(authentication, this);
         }
 
@@ -440,7 +440,7 @@ namespace Ntreev.Crema.Services.Data
         public void ValidateCancelEdit(Authentication authentication)
         {
             if (this.domain == null)
-                throw new CremaException("편집중이 아니기 때문에 편집을 취소할 수 없습니다.");
+                throw new InvalidOperationException(Resources.Exception_TableTemplateIsNotBeingEdited);
             this.OnValidateCancelEdit(authentication, this);
         }
 
@@ -456,9 +456,9 @@ namespace Ntreev.Crema.Services.Data
             if (target == this)
             {
                 if (this.templateSource.Columns.Any() == false)
-                    throw new InvalidOperationException("테이블에는 적어도 한개 이상의 Column이(가) 존재해야 합니다.");
+                    throw new InvalidOperationException(Resources.Exception_AtLeastOneColumnInTable);
                 if (this.templateSource.TargetTable.PrimaryKey.Any() == false)
-                    throw new InvalidOperationException("테이블에는 적어도 한개 이상의 키가 존재해야 합니다.");
+                    throw new InvalidOperationException(Resources.Exception_AtLeastOneKeyInTable);
             }
         }
 

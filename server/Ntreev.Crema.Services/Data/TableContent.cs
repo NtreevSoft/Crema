@@ -145,7 +145,7 @@ namespace Ntreev.Crema.Services.Data
         {
             this.DataBase.ValidateBeginInDataBase(authentication);
             if (this.domain == null)
-                throw new CremaException("테이블이 편집중이 아닙니다.");
+                throw new InvalidOperationException(Resources.Exception_TableIsNotBeingEdited);
             var view = this.dataTable.DefaultView;
             return new TableRow(this, view.Table, relationID);
         }
@@ -154,7 +154,7 @@ namespace Ntreev.Crema.Services.Data
         {
             this.DataBase.ValidateBeginInDataBase(authentication);
             if (this.domain == null)
-                throw new CremaException("테이블이 편집중이 아닙니다.");
+                throw new InvalidOperationException(Resources.Exception_TableIsNotBeingEdited);
             row.EndNew(authentication);
             this.Add(row);
         }
@@ -163,7 +163,7 @@ namespace Ntreev.Crema.Services.Data
         public void ValidateBeginEdit(Authentication authentication)
         {
             if (this.table.Parent != null)
-                throw new CremaException("자식 테이블은 편집을 시작할 수 없습니다.");
+                throw new InvalidOperationException(Resources.Exception_ChildTableCannotEdit);
             var isAdmin = authentication.Types.HasFlag(AuthenticationType.Administrator);
             var items = EnumerableUtility.Friends(this, this.Childs);
             foreach (var item in items)

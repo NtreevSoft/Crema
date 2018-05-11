@@ -19,6 +19,7 @@ using Ntreev.Crema.Data;
 using Ntreev.Crema.Data.Xml;
 using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Crema.ServiceModel;
+using Ntreev.Crema.Services.Properties;
 using Ntreev.Library;
 using Ntreev.Library.IO;
 using Ntreev.Library.Linq;
@@ -70,9 +71,9 @@ namespace Ntreev.Crema.Services.Data
             var parent = this[parentPath];
             parent.ValidateAccessType(authentication, AccessType.Master);
 
-            string path = this.Context.GenerateCategoryPath(parentPath, name);
+            var path = this.Context.GenerateCategoryPath(parentPath, name);
             if (Directory.Exists(path) == true)
-                throw new CremaException("저장소에 같은 이름의 폴더가 이미 존재합니다.");
+                throw new InvalidOperationException(Resources.Exception_SameNamePathExists);
 
             try
             {

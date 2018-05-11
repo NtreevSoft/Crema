@@ -36,6 +36,7 @@ using Ntreev.Library.IO;
 using Ntreev.Library.Linq;
 using System.ComponentModel.Composition.Primitives;
 using Ntreev.Crema.Data;
+using Ntreev.Crema.Services.Properties;
 
 namespace Ntreev.Crema.Services
 {
@@ -68,7 +69,7 @@ namespace Ntreev.Crema.Services
 
             if (DirectoryUtility.IsEmpty(directoryInfo.FullName) == false && force == false)
             {
-                throw new Exception("폴더는 비어있어야 합니다.");
+                throw new ArgumentException(Resources.Exception_PathIsNotEmptyDirectory, nameof(path));
             }
 
             try
@@ -77,7 +78,7 @@ namespace Ntreev.Crema.Services
                 var repoProviders = this.GetInstances(typeof(IRepositoryProvider)).OfType<IRepositoryProvider>();
                 var repoProvider = repoProviders.FirstOrDefault(item => item.Name == this.RepositoryModule);
                 if (repoProvider == null)
-                    throw new InvalidOperationException("저장소를 생성할 수 있는 모듈이 존재하지 않습니다.");
+                    throw new InvalidOperationException(Resources.Exception_NoRepositoryModule);
                 var repositoryPath = Path.Combine(basePath, repositoryName);
 
                 DirectoryUtility.Create(repositoryPath);

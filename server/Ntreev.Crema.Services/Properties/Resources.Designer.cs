@@ -61,11 +61,83 @@ namespace Ntreev.Crema.Services.Properties {
         }
         
         /// <summary>
+        ///   &quot;admin&quot; only can change &quot;admin&quot; info과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_AdminCanChangeAdminInfo {
+            get {
+                return ResourceManager.GetString("Exception_AdminCanChangeAdminInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Admin can not banned.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_AdminCannotBanned {
+            get {
+                return ResourceManager.GetString("Exception_AdminCannotBanned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Admin can not deleted.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_AdminCannotDeleted {
+            get {
+                return ResourceManager.GetString("Exception_AdminCannotDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   It is already in database과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Exception_AlreadyInDataBase {
             get {
                 return ResourceManager.GetString("Exception_AlreadyInDataBase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   At least one column must exist in the table.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_AtLeastOneColumnInTable {
+            get {
+                return ResourceManager.GetString("Exception_AtLeastOneColumnInTable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   At least one key must exist in the table.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_AtLeastOneKeyInTable {
+            get {
+                return ResourceManager.GetString("Exception_AtLeastOneKeyInTable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   At least one member must exist in the type.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_AtLeastOneMemberInType {
+            get {
+                return ResourceManager.GetString("Exception_AtLeastOneMemberInType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Banned user can not log in.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_BannedUserCannotLogin {
+            get {
+                return ResourceManager.GetString("Exception_BannedUserCannotLogin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   You can not ban yourself.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_CannotBanYourself {
+            get {
+                return ResourceManager.GetString("Exception_CannotBanYourself", resourceCulture);
             }
         }
         
@@ -79,11 +151,65 @@ namespace Ntreev.Crema.Services.Properties {
         }
         
         /// <summary>
+        ///   You can not change your authority.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_CannotChangeYourAuthority {
+            get {
+                return ResourceManager.GetString("Exception_CannotChangeYourAuthority", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   You can not delete a table that is the default template.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Exception_CannotDeleteBaseTemplateTable {
             get {
                 return ResourceManager.GetString("Exception_CannotDeleteBaseTemplateTable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Can not delete on create child table.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_CannotDeleteOnCreateChildTable {
+            get {
+                return ResourceManager.GetString("Exception_CannotDeleteOnCreateChildTable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Can not delete on create table.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_CannotDeleteOnCreateTable {
+            get {
+                return ResourceManager.GetString("Exception_CannotDeleteOnCreateTable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Can not delete on create Type과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_CannotDeleteOnCreateType {
+            get {
+                return ResourceManager.GetString("Exception_CannotDeleteOnCreateType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Can not delete path with items.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_CannotDeletePathWithItems {
+            get {
+                return ResourceManager.GetString("Exception_CannotDeletePathWithItems", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Can not delete type with used tables.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_CannotDeleteTypeWithUsedTables {
+            get {
+                return ResourceManager.GetString("Exception_CannotDeleteTypeWithUsedTables", resourceCulture);
             }
         }
         
@@ -97,6 +223,15 @@ namespace Ntreev.Crema.Services.Properties {
         }
         
         /// <summary>
+        ///   You can not delete yourself.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_CannotDeleteYourself {
+            get {
+                return ResourceManager.GetString("Exception_CannotDeleteYourself", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Unable to end editing.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Exception_CannotEndEdit {
@@ -106,11 +241,128 @@ namespace Ntreev.Crema.Services.Properties {
         }
         
         /// <summary>
+        ///   You can not kick yourself.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_CannotKickYourself {
+            get {
+                return ResourceManager.GetString("Exception_CannotKickYourself", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Can not move on create child table.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_CannotMoveOnCreateChildTable {
+            get {
+                return ResourceManager.GetString("Exception_CannotMoveOnCreateChildTable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Can not move on create table.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_CannotMoveOnCreateTable {
+            get {
+                return ResourceManager.GetString("Exception_CannotMoveOnCreateTable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Can not move on create Type과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_CannotMoveOnCreateType {
+            get {
+                return ResourceManager.GetString("Exception_CannotMoveOnCreateType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Can not move to same path.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_CannotMoveToSamePath {
+            get {
+                return ResourceManager.GetString("Exception_CannotMoveToSamePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Can not rename.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_CannotRename {
+            get {
+                return ResourceManager.GetString("Exception_CannotRename", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Can not rename on create child table과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_CannotRenameOnCreateChildTable {
+            get {
+                return ResourceManager.GetString("Exception_CannotRenameOnCreateChildTable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Can not rename on create table.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_CannotRenameOnCreateTable {
+            get {
+                return ResourceManager.GetString("Exception_CannotRenameOnCreateTable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Can not rename on create Type과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_CannotRenameOnCreateType {
+            get {
+                return ResourceManager.GetString("Exception_CannotRenameOnCreateType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Can not send message to offline user.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Exception_CannotSendMessageToOfflineUser {
             get {
                 return ResourceManager.GetString("Exception_CannotSendMessageToOfflineUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Child table can not copy.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_ChildTableCannotCopy {
+            get {
+                return ResourceManager.GetString("Exception_ChildTableCannotCopy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Child table can not create child table.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_ChildTableCannotCreateChildTable {
+            get {
+                return ResourceManager.GetString("Exception_ChildTableCannotCreateChildTable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Child table can not edit.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_ChildTableCannotEdit {
+            get {
+                return ResourceManager.GetString("Exception_ChildTableCannotEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Child table can not inherit.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_ChildTableCannotInherit {
+            get {
+                return ResourceManager.GetString("Exception_ChildTableCannotInherit", resourceCulture);
             }
         }
         
@@ -156,6 +408,33 @@ namespace Ntreev.Crema.Services.Properties {
         public static string Exception_DataBaseIsAlreadyExisted_Format {
             get {
                 return ResourceManager.GetString("Exception_DataBaseIsAlreadyExisted_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   &apos;default&apos; database can not delete.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_DefaultDataBaseCannotDelete {
+            get {
+                return ResourceManager.GetString("Exception_DefaultDataBaseCannotDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   &apos;default&apos; database can not rename.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_DefaultDataBaseCannotRename {
+            get {
+                return ResourceManager.GetString("Exception_DefaultDataBaseCannotRename", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Empty dataset can not import.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_EmptyDataSetCannotImport {
+            get {
+                return ResourceManager.GetString("Exception_EmptyDataSetCannotImport", resourceCulture);
             }
         }
         
@@ -214,6 +493,15 @@ namespace Ntreev.Crema.Services.Properties {
         }
         
         /// <summary>
+        ///   Inherited table can not inherit.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_InheritedTableCannotInherit {
+            get {
+                return ResourceManager.GetString("Exception_InheritedTableCannotInherit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   상속받은 테이블은 자식 테이블을 생성할 수 없습니다.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Exception_InheritedTableCannotNewChild {
@@ -223,7 +511,34 @@ namespace Ntreev.Crema.Services.Properties {
         }
         
         /// <summary>
-        ///   {0}은(는) 잘못된 이름입니다.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Inherited table can not set comment.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_InheritedTableCannotSetComment {
+            get {
+                return ResourceManager.GetString("Exception_InheritedTableCannotSetComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Inherited table can not set tags과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_InheritedTableCannotSetTags {
+            get {
+                return ResourceManager.GetString("Exception_InheritedTableCannotSetTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Inherited table template can not edit.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_InheritedTableTemplateCannotEdit {
+            get {
+                return ResourceManager.GetString("Exception_InheritedTableTemplateCannotEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   &apos;{0}&apos; is incorrect name.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Exception_InvalidName_Format {
             get {
@@ -277,6 +592,24 @@ namespace Ntreev.Crema.Services.Properties {
         }
         
         /// <summary>
+        ///   &apos;{0}&apos; has been changed : &apos;{1}&apos; to &apos;{2}&apos;.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_ItemPathChanged_Format {
+            get {
+                return ResourceManager.GetString("Exception_ItemPathChanged_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   You do not have access to items in use: &apos;{0}&apos;과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_ItemsPermissionDenined_Format {
+            get {
+                return ResourceManager.GetString("Exception_ItemsPermissionDenined_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   It is already being edited.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Exception_ItIsAlreadyBeingEdited {
@@ -300,6 +633,15 @@ namespace Ntreev.Crema.Services.Properties {
         public static string Exception_LoggedInUserCannotDelete {
             get {
                 return ResourceManager.GetString("Exception_LoggedInUserCannotDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   There is no repository module to create과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_NoRepositoryModule {
+            get {
+                return ResourceManager.GetString("Exception_NoRepositoryModule", resourceCulture);
             }
         }
         
@@ -331,6 +673,43 @@ namespace Ntreev.Crema.Services.Properties {
         }
         
         /// <summary>
+        ///   Offline user can not kicked.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_OfflineUserCannotKicked {
+            get {
+                return ResourceManager.GetString("Exception_OfflineUserCannotKicked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Online user&apos;s authority can not changed.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_OnlineUserAuthorityCannotChanged {
+            get {
+                return ResourceManager.GetString("Exception_OnlineUserAuthorityCannotChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Owner can not kicked과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_OwnerCannotKicked {
+            get {
+                return ResourceManager.GetString("Exception_OwnerCannotKicked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Path is not an empty directory.
+        ///과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_PathIsNotEmptyDirectory {
+            get {
+                return ResourceManager.GetString("Exception_PathIsNotEmptyDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   You do not have permission to perform the operation.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Exception_PermissionDenied {
@@ -345,6 +724,15 @@ namespace Ntreev.Crema.Services.Properties {
         public static string Exception_SameName {
             get {
                 return ResourceManager.GetString("Exception_SameName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   A path with the same name already exists.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_SameNamePathExists {
+            get {
+                return ResourceManager.GetString("Exception_SameNamePathExists", resourceCulture);
             }
         }
         
@@ -368,7 +756,7 @@ namespace Ntreev.Crema.Services.Properties {
         }
         
         /// <summary>
-        ///   {0} 테이블이 편집중입니다.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   &apos;{0}&apos; 테이블이 편집중입니다.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Exception_TableIsBeingEdited_Format {
             get {
@@ -386,11 +774,56 @@ namespace Ntreev.Crema.Services.Properties {
         }
         
         /// <summary>
-        ///   {0} 타입이 편집중입니다.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Table is not being edited.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_TableIsNotBeingEdited {
+            get {
+                return ResourceManager.GetString("Exception_TableIsNotBeingEdited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Table template is not being edited.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_TableTemplateIsNotBeingEdited {
+            get {
+                return ResourceManager.GetString("Exception_TableTemplateIsNotBeingEdited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   &apos;{0}&apos; 타입이 편집중입니다.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Exception_TypeIsBeingEdited_Format {
             get {
                 return ResourceManager.GetString("Exception_TypeIsBeingEdited_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Type is not being edited.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_TypeIsNotBeingEdited {
+            get {
+                return ResourceManager.GetString("Exception_TypeIsNotBeingEdited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Unsaved data can not edit.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_UnsavedDataCannotEdit {
+            get {
+                return ResourceManager.GetString("Exception_UnsavedDataCannotEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   There are domains that have not yet been saved: &apos;{0}&apos;과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_UnsavedDomainsExists_Format {
+            get {
+                return ResourceManager.GetString("Exception_UnsavedDomainsExists_Format", resourceCulture);
             }
         }
         
@@ -409,6 +842,42 @@ namespace Ntreev.Crema.Services.Properties {
         public static string Exception_UserIDIsConnecting {
             get {
                 return ResourceManager.GetString("Exception_UserIDIsConnecting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   User is already banned.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_UserIsAlreadyBanned {
+            get {
+                return ResourceManager.GetString("Exception_UserIsAlreadyBanned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   User is not banned.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_UserIsNotBanned {
+            get {
+                return ResourceManager.GetString("Exception_UserIsNotBanned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   &apos;{0}&apos; is not in domain.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_UserIsNotInDomain_Format {
+            get {
+                return ResourceManager.GetString("Exception_UserIsNotInDomain_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   User is not logged in.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Exception_UserIsNotLoggedIn {
+            get {
+                return ResourceManager.GetString("Exception_UserIsNotLoggedIn", resourceCulture);
             }
         }
         
