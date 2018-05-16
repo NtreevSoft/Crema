@@ -41,18 +41,27 @@ namespace Ntreev.Crema.Client.Console
 
         private void TerminalColor_ForegroundColorChanged(object sender, EventArgs e)
         {
-            if (TerminalColor.ForegroundColor == null)
-                this.control.OutputForeground = null;
-            else
-                this.control.OutputForeground = (Brush)this.control.FindResource(TerminalColors.FindForegroundKey(TerminalColor.ForegroundColor));
+            var foregroundColor = TerminalColor.ForegroundColor;
+
+            this.control.Dispatcher.InvokeAsync(() =>
+            {
+                if (foregroundColor == null)
+                    this.control.OutputForeground = null;
+                else
+                    this.control.OutputForeground = (Brush)this.control.FindResource(TerminalColors.FindForegroundKey(foregroundColor));
+            });
         }
 
         private void TerminalColor_BackgroundColorChanged(object sender, EventArgs e)
         {
-            if (TerminalColor.BackgroundColor == null)
-                this.control.OutputBackground = null;
-            else
-                this.control.OutputBackground = (Brush)this.control.FindResource(TerminalColors.FindBackgroundKey(TerminalColor.BackgroundColor));
+            var backgroundColor = TerminalColor.BackgroundColor;
+            this.control.Dispatcher.InvokeAsync(() =>
+            {
+                if (backgroundColor == null)
+                    this.control.OutputBackground = null;
+                else
+                    this.control.OutputBackground = (Brush)this.control.FindResource(TerminalColors.FindBackgroundKey(backgroundColor));
+            });
         }
 
         public override void Write(char value)
