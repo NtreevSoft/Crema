@@ -83,7 +83,7 @@ namespace Ntreev.Crema.Client.Console
         {
             try
             {
-                await this.Dispatcher.InvokeAsync(() => this.commandContext.Execute(this.commandContext.Name + " " + commandLine));
+                await Task.Run(() => this.commandContext.Execute(this.commandContext.Name + " " + commandLine));
             }
             catch (System.Reflection.TargetInvocationException e)
             {
@@ -95,6 +95,10 @@ namespace Ntreev.Crema.Client.Console
             catch (Exception e)
             {
                 this.terminal.AppendLine(e.Message);
+            }
+            finally
+            {
+                this.terminal.InsertPrompt();
             }
         }
 
@@ -176,6 +180,7 @@ namespace Ntreev.Crema.Client.Console
 
         private void TerminalControl_Executed(object sender, RoutedEventArgs e)
         {
+            e.Handled = true;
             this.Run(this.terminal.Text);
         }
     }
