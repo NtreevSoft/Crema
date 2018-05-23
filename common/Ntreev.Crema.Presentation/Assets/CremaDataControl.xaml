@@ -22,7 +22,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
                     xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid"
                     xmlns:nmfm="clr-namespace:Ntreev.ModernUI.Framework.Markup;assembly=Ntreev.ModernUI.Framework"
                     xmlns:nmfv="clr-namespace:Ntreev.ModernUI.Framework.Converters;assembly=Ntreev.ModernUI.Framework"
-                    xmlns:nmgm="clr-namespace:Ntreev.ModernUI.Framework.Markup;assembly=Ntreev.ModernUI.Framework.DataGrid"
+                    xmlns:nmgm="clr-namespace:Ntreev.ModernUI.Framework.DataGrid.Markup;assembly=Ntreev.ModernUI.Framework.DataGrid"
                     xmlns:ncpc="clr-namespace:Ntreev.Crema.Presentation.Controls"
                     xmlns:ncpv="clr-namespace:Ntreev.Crema.Presentation.Converters"
                     xmlns:p="clr-namespace:Ntreev.Crema.Presentation.Properties">

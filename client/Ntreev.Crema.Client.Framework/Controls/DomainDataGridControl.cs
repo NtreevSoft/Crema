@@ -21,7 +21,7 @@ using Ntreev.Crema.Data;
 using Ntreev.Crema.Data.Xml;
 using Ntreev.Library;
 using Ntreev.ModernUI.Framework;
-using Ntreev.ModernUI.Framework.Controls;
+using Ntreev.ModernUI.Framework.DataGrid.Controls;
 using System;
 using System.Collections;
 using System.Collections.Generic;

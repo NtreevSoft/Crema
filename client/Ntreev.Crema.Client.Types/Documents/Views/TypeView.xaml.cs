@@ -18,6 +18,7 @@
 using Ntreev.Crema.Client.Framework;
 using Ntreev.Crema.Services;
 using Ntreev.ModernUI.Framework.Controls;
+using Ntreev.ModernUI.Framework.DataGrid.Controls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
