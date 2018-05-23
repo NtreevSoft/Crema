@@ -34,7 +34,7 @@ using Xceed.Wpf.DataGrid;
 using Xceed.Wpf.DataGrid.Views;
 using Ntreev.ModernUI.Framework;
 using Ntreev.Crema.Presentation.Controls.Actions;
-using Ntreev.ModernUI.Framework.Controls;
+using Ntreev.ModernUI.Framework.DataGrid.Controls;
 using System.Windows.Threading;
 
 namespace Ntreev.Crema.Presentation.Controls

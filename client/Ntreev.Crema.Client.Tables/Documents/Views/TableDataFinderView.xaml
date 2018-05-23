@@ -26,7 +26,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
              xmlns:xctc="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:nmfc="clr-namespace:Ntreev.ModernUI.Framework.Controls;assembly=Ntreev.ModernUI.Framework"
              xmlns:nmfm="clr-namespace:Ntreev.ModernUI.Framework.Markup;assembly=Ntreev.ModernUI.Framework"
-             xmlns:nmgc="clr-namespace:Ntreev.ModernUI.Framework.Controls;assembly=Ntreev.ModernUI.Framework.DataGrid"
+             xmlns:nmgc="clr-namespace:Ntreev.ModernUI.Framework.DataGrid.Controls;assembly=Ntreev.ModernUI.Framework.DataGrid"
              xmlns:p="clr-namespace:Ntreev.Crema.Client.Tables.Properties"
              mc:Ignorable="d" BorderThickness="1" BorderBrush="{DynamicResource ItemBorder}"
              d:DesignHeight="470" d:DesignWidth="585"

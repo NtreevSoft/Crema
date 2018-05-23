@@ -20,7 +20,7 @@ using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Data;
 using Ntreev.Library;
 using Ntreev.ModernUI.Framework;
-using Ntreev.ModernUI.Framework.Controls;
+using Ntreev.ModernUI.Framework.DataGrid.Controls;
 using Ntreev.ModernUI.Framework.Converters;
 using System;
 using System.Collections.Generic;

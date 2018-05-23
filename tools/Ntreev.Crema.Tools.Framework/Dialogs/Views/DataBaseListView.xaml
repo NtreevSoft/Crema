@@ -24,7 +24,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
              xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid"
              xmlns:nmfc="clr-namespace:Ntreev.ModernUI.Framework.Controls;assembly=Ntreev.ModernUI.Framework"
              xmlns:nmfv="clr-namespace:Ntreev.ModernUI.Framework.Converters;assembly=Ntreev.ModernUI.Framework"
-             xmlns:nmgc="clr-namespace:Ntreev.ModernUI.Framework.Controls;assembly=Ntreev.ModernUI.Framework.DataGrid"
+             xmlns:nmgc="clr-namespace:Ntreev.ModernUI.Framework.DataGrid.Controls;assembly=Ntreev.ModernUI.Framework.DataGrid"
              mc:Ignorable="d" nmfc:DialogWindow.DesiredWidth="975" nmfc:DialogWindow.DesiredHeight="250"  nmfc:DialogWindow.DesiredResizeMode="CanResizeWithGrip"
              d:DesignWidth="975" d:DesignHeight="250">
     
