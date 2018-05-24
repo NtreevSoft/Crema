@@ -23,7 +23,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.RuntimeService
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.ServiceModel", "common\Ntreev.Crema.ServiceModel\Ntreev.Crema.ServiceModel.csproj", "{6478450A-DFA5-445D-890F-BC5F57C9A148}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Library", "sub-modules\Ntreev.Library\Ntreev.Library\Ntreev.Library.csproj", "{1918437F-4FBF-4731-AC5B-981A4A4CB1F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ntreev.Library", "sub-modules\Ntreev.Library\Ntreev.Library\Ntreev.Library.csproj", "{1918437F-4FBF-4731-AC5B-981A4A4CB1F1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Repositories", "Repositories", "{C23811F0-895C-4355-ACAE-A36FD3F9E974}"
 EndProject
@@ -33,7 +33,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{7ABD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.SvnModule.Shell", "server\Ntreev.Crema.SvnModule.Shell\Ntreev.Crema.SvnModule.Shell.csproj", "{E0F76B09-4FE3-4A58-B16D-D136441DC1AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Library.Commands", "sub-modules\Ntreev.Library.Commands\Ntreev.Library.Commands\Ntreev.Library.Commands.csproj", "{CEB280C0-463F-4E09-A00C-CE3A8326F6FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ntreev.Library.Commands", "sub-modules\Ntreev.Library.Commands\Ntreev.Library.Commands\Ntreev.Library.Commands.csproj", "{CEB280C0-463F-4E09-A00C-CE3A8326F6FF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.Runtime.Serialization", "common\Ntreev.Crema.Runtime.Serialization\Ntreev.Crema.Runtime.Serialization.csproj", "{279D3BBF-10A3-449F-AA73-545BC0B7BAAF}"
 EndProject
@@ -79,6 +79,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.Javascript", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{F24B626E-02A8-431A-9319-C71D978C7328}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.Repository.Git", "server\Ntreev.Crema.Repository.Git\Ntreev.Crema.Repository.Git.csproj", "{65CA35F5-A1C3-4F0C-8A02-08157E3F5E21}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems*{04aeb614-3510-4064-99af-0aa807c7f957}*SharedItemsImports = 4
@@ -99,6 +101,7 @@ Global
 		common\Ntreev.Crema.Commands.Spreadsheet.Sharing\Ntreev.Crema.Commands.Spreadsheet.Sharing.projitems*{490f7e03-79f6-461c-9d90-80f24ace659a}*SharedItemsImports = 4
 		common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems*{520e5310-f4c2-4369-8a98-d6c74fd7e90d}*SharedItemsImports = 4
 		common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems*{6478450a-dfa5-445d-890f-bc5f57c9a148}*SharedItemsImports = 4
+		common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems*{65ca35f5-a1c3-4f0c-8a02-08157e3f5e21}*SharedItemsImports = 4
 		common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems*{79aef7d1-93d1-4eeb-b09c-1595c82e7492}*SharedItemsImports = 4
 		sub-modules\Ntreev.Library\Ntreev.Library.AssemblyInfo\Ntreev.Library.AssemblyInfo.projitems*{83f1180f-f170-48cf-be1e-ca60d6851800}*SharedItemsImports = 4
 		common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems*{9ed00a26-bf13-4b1f-af6e-3009c666ae15}*SharedItemsImports = 4
@@ -206,6 +209,10 @@ Global
 		{9ED00A26-BF13-4B1F-AF6E-3009C666AE15}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9ED00A26-BF13-4B1F-AF6E-3009C666AE15}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9ED00A26-BF13-4B1F-AF6E-3009C666AE15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65CA35F5-A1C3-4F0C-8A02-08157E3F5E21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65CA35F5-A1C3-4F0C-8A02-08157E3F5E21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65CA35F5-A1C3-4F0C-8A02-08157E3F5E21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65CA35F5-A1C3-4F0C-8A02-08157E3F5E21}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -238,6 +245,7 @@ Global
 		{490F7E03-79F6-461C-9D90-80F24ACE659A} = {416293F6-EC8E-479F-9E38-55A1E79EE7E3}
 		{A4955825-195F-4677-9695-5FC67362A449} = {F24B626E-02A8-431A-9319-C71D978C7328}
 		{9ED00A26-BF13-4B1F-AF6E-3009C666AE15} = {7ABD645F-F487-4A3D-8DC2-F6DD7E887BFA}
+		{65CA35F5-A1C3-4F0C-8A02-08157E3F5E21} = {C23811F0-895C-4355-ACAE-A36FD3F9E974}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {081892D7-815F-41E8-91E5-C26BA161204B}

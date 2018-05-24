@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 namespace Ntreev.Crema.Services.Users
 {
     [DataContract(Namespace = SchemaUtility.Namespace)]
-    struct UserContextSerializationInfo
+    public struct UserContextSerializationInfo
     {
         [DataMember]
         public string Version { get; set; }

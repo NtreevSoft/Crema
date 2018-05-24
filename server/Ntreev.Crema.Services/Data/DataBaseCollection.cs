@@ -38,6 +38,7 @@ namespace Ntreev.Crema.Services.Data
         private readonly CremaHost cremaHost;
         private readonly IRepository repository;
         private readonly string cachePath;
+        private readonly string basePath;
         private string commitPath;
         private ItemsCreatedEventHandler<IDataBase> itemsCreated;
         private ItemsRenamedEventHandler<IDataBase> itemsRenamed;
@@ -53,14 +54,21 @@ namespace Ntreev.Crema.Services.Data
         private ItemsEventHandler<IDataBase> itemsAccessChanged;
         private ItemsEventHandler<IDataBase> itemsLockChanged;
 
-        public DataBaseCollection(CremaHost cremaHost)
+        public DataBaseCollection(CremaHost cremaHost, IRepositoryProvider repositoryProvider)
         {
             this.cremaHost = cremaHost;
             this.cachePath = DirectoryUtility.Prepare(this.cremaHost.WorkingPath, DataBaseString);
-            this.repository = cremaHost.Repository;
-
-            var revision = this.repository.Revision;
+            //this.repository = cremaHost.Repository;
+            this.basePath = Path.Combine(cremaHost.RepositoryPath, "databases");
+            var revision = repositoryProvider.GetRevision(this.basePath);
             var caches = this.cremaHost.NoCache == true ? new Dictionary<string, DataBaseSerializationInfo>() : this.ReadCaches();
+
+            var dataBases = repositoryProvider.GetRepositories(this.basePath);
+            var ddd = dataBases.ToArray();
+            foreach(var item in dataBases)
+            {
+
+            }
 
             foreach (var item in GetDataBases())
             {
@@ -80,6 +88,7 @@ namespace Ntreev.Crema.Services.Data
 
             IEnumerable<KeyValuePair<string, string>> GetDataBases()
             {
+                
                 yield return new KeyValuePair<string, string>(DataBase.defaultName, this.cremaHost.TrunkPath);
 
                 if (Directory.Exists(this.cremaHost.TagsPath) == true)

@@ -30,7 +30,7 @@ using System.Xml.Serialization;
 namespace Ntreev.Crema.Services.Users
 {
     [DataContract(Name = "User", Namespace = SchemaUtility.Namespace)]
-    struct UserSerializationInfo
+    public struct UserSerializationInfo
     {
         [DataMember(IsRequired = true)]
         public string ID { get; set; }

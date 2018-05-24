@@ -41,6 +41,7 @@ namespace Ntreev.Crema.Services.Users
         private readonly CremaDispatcher dispatcher;
         private readonly RepositoryHost repository;
         private readonly string userFilePath;
+        private readonly string basePath;
 
         private ItemsCreatedEventHandler<IUserItem> itemsCreated;
         private ItemsRenamedEventHandler<IUserItem> itemsRenamed;
@@ -57,8 +58,11 @@ namespace Ntreev.Crema.Services.Users
         {
             this.cremaHost = cremaHost;
             this.cremaHost.Debug(Resources.Message_UserContextInitialize);
-            this.userFilePath = GenerateUsersFilePath(cremaHost.RepositoryPath);
-            this.repository = new RepositoryHost(cremaHost.Repository, cremaHost.RepositoryDispatcher, this.userFilePath);
+            
+            this.basePath = Path.Combine(cremaHost.WorkingPath, "users");
+            this.userFilePath = GenerateUsersFilePath(this.basePath);
+            var re = cremaHost.RepositoryProvider.CreateInstance(cremaHost.UsersRepositoryPath, "default", this.basePath);
+            this.repository = new RepositoryHost(re, cremaHost.RepositoryDispatcher, this.userFilePath);
             this.dispatcher = new CremaDispatcher(this);
             this.dispatcher.Invoke(() =>
             {
@@ -202,6 +206,87 @@ namespace Ntreev.Crema.Services.Users
         public static string GenerateUsersFilePath(string basePath)
         {
             return Path.Combine(basePath, usersFileName);
+        }
+
+        public static UserContextSerializationInfo GenerateDefaultUserInfos()
+        {
+            var designedInfo = new SignatureDate(Authentication.SystemID, DateTime.UtcNow);
+            var administrator = new UserSerializationInfo()
+            {
+                ID = Authentication.AdminID,
+                Name = Authentication.AdminName,
+                CategoryName = string.Empty,
+                Authority = Authority.Admin,
+                Password = Authentication.AdminID.Encrypt(),
+                CreationInfo = designedInfo,
+                ModificationInfo = designedInfo,
+                BanInfo = (BanSerializationInfo)BanInfo.Empty,
+            };
+
+#if DEBUG
+            var users = new List<UserSerializationInfo>
+            {
+                administrator
+            };
+            for (var i = 0; i < 0; i++)
+            {
+                var admin = new UserSerializationInfo()
+                {
+                    ID = "admin" + i,
+                    Name = "관리자" + i,
+                    CategoryName = "Administrators",
+                    Authority = Authority.Admin,
+                    Password = "admin".Encrypt(),
+                    CreationInfo = designedInfo,
+                    ModificationInfo = designedInfo,
+                    BanInfo = (BanSerializationInfo)BanInfo.Empty,
+                };
+
+                var member = new UserSerializationInfo()
+                {
+                    ID = "member" + i,
+                    Name = "구성원" + i,
+                    CategoryName = "Members",
+                    Authority = Authority.Member,
+                    Password = "member".Encrypt(),
+                    CreationInfo = designedInfo,
+                    ModificationInfo = designedInfo,
+                    BanInfo = (BanSerializationInfo)BanInfo.Empty,
+                };
+
+                var guest = new UserSerializationInfo()
+                {
+                    ID = "guest" + i,
+                    Name = "손님" + i,
+                    CategoryName = "Guests",
+                    Authority = Authority.Guest,
+                    Password = "guest".Encrypt(),
+                    CreationInfo = designedInfo,
+                    ModificationInfo = designedInfo,
+                    BanInfo = (BanSerializationInfo)BanInfo.Empty,
+                };
+
+                users.Add(admin);
+                users.Add(member);
+                users.Add(guest);
+            }
+
+            var serializationInfo = new UserContextSerializationInfo()
+            {
+                Version = CremaSchema.VersionValue,
+                Categories = new string[] { "/Administrators/", "/Members/", "/Guests/" },
+                Users = users.ToArray(),
+            };
+#else
+            var serializationInfo = new UserContextSerializationInfo()
+            {
+                Version = CremaSchema.VersionValue,
+                Categories = new string[] { },
+                Users = new UserSerializationInfo[] { administrator},
+            };
+#endif
+
+            return serializationInfo;
         }
 
         public static void GenerateDefaultUserInfos(string repositoryPath)

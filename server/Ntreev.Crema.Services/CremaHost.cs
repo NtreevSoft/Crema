@@ -92,7 +92,7 @@ namespace Ntreev.Crema.Services
             this.branchesPath = Path.Combine(this.repositoryPath, branchesString);
             this.workingPath = Path.Combine(this.basePath, workingString);
             this.repositoryProvider = repoProviders.First(item => item.Name == this.settings.RepositoryModule);
-            this.repositoryProvider.ValidateRepository(this.basePath, this.repositoryPath);
+            //this.repositoryProvider.ValidateRepository(this.basePath, this.repositoryPath);
 
             this.log = new LogService(this.GetType().FullName, this.WorkingPath)
             {
@@ -155,7 +155,7 @@ namespace Ntreev.Crema.Services
             {
                 this.Info(Resources.Message_ProgramInfo, AppUtility.ProductName, AppUtility.ProductVersion);
 
-                this.repository = this.repositoryProvider.CreateInstance(this.repositoryPath, this.workingPath);
+                //this.repository = this.repositoryProvider.CreateInstance(this.repositoryPath, this.workingPath);
                 this.Info("Repository module : {0}", this.settings.RepositoryModule);
                 this.Info(Resources.Message_ServiceStart);
 
@@ -163,7 +163,7 @@ namespace Ntreev.Crema.Services
 
                 this.userContext = new UserContext(this);
                 this.userContext.Dispatcher.Invoke(() => this.userContext.Initialize());
-                this.dataBases = new DataBaseCollection(this);
+                this.dataBases = new DataBaseCollection(this, this.repositoryProvider);
                 this.domainContext = new DomainContext(this, this.userContext);
 
                 if (this.settings.NoCache == false)
@@ -316,10 +316,14 @@ namespace Ntreev.Crema.Services
             get { return this.repository; }
         }
 
+        public IRepositoryProvider RepositoryProvider => this.repositoryProvider;
+
         public string BasePath
         {
             get { return this.basePath; }
         }
+
+        public string UsersRepositoryPath => Path.Combine(this.repositoryPath, "users");
 
         public string RepositoryPath
         {

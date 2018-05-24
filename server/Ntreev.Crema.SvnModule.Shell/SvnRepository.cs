@@ -45,16 +45,16 @@ namespace Ntreev.Crema.SvnModule
         private Uri repositoryRoot;
         private long revision;
 
-        public SvnRepository(string repositoryPath, string workingPath)
-            : this(null, repositoryPath, workingPath)
-        {
+        //public SvnRepository(string repositoryPath, string workingPath)
+        //    : this(null, repositoryPath, workingPath)
+        //{
 
-        }
+        //}
 
-        public SvnRepository(ILogService logService, string repositoryPath, string workingPath)
+        public SvnRepository(ILogService logService, string repositoryPath, string transactionPath)
         {
             this.repositoryPath = repositoryPath;
-            this.transactionPath = Path.Combine(workingPath, "transaction");
+            this.transactionPath = transactionPath;
             this.logService = logService;
 
             var items = this.Run("stat", this.repositoryPath.WrapQuot(), "-q").Trim();
@@ -345,6 +345,11 @@ namespace Ntreev.Crema.SvnModule
                     return;
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
         }
     }
 }

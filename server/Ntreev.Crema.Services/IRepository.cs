@@ -24,7 +24,7 @@ using Ntreev.Crema.Data;
 
 namespace Ntreev.Crema.Services
 {
-    public interface IRepository
+    public interface IRepository : IDisposable
     {
         void Add(string path);
 

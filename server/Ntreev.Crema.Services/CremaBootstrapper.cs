@@ -79,18 +79,27 @@ namespace Ntreev.Crema.Services
                 var repoProvider = repoProviders.FirstOrDefault(item => item.Name == this.RepositoryModule);
                 if (repoProvider == null)
                     throw new InvalidOperationException(Resources.Exception_NoRepositoryModule);
-                var repositoryPath = Path.Combine(basePath, repositoryName);
+                //var repositoryPath = Path.Combine(basePath, repositoryName);
+                var tempPath = PathUtility.GetTempPath(true);
+                ////DirectoryUtility.Create(repositoryPath);
+                ////DirectoryUtility.Prepare(repositoryPath, tagsString);
+                ////DirectoryUtility.Prepare(repositoryPath, branchesString);
+                ////DirectoryUtility.Prepare(repositoryPath, trunkString);
+                ////DirectoryUtility.Prepare(repositoryPath, trunkString, CremaSchema.TypeDirectory);
+                ////DirectoryUtility.Prepare(repositoryPath, trunkString, CremaSchema.TableDirectory);
 
-                DirectoryUtility.Create(repositoryPath);
-                DirectoryUtility.Prepare(repositoryPath, tagsString);
-                DirectoryUtility.Prepare(repositoryPath, branchesString);
-                DirectoryUtility.Prepare(repositoryPath, trunkString);
-                DirectoryUtility.Prepare(repositoryPath, trunkString, CremaSchema.TypeDirectory);
-                DirectoryUtility.Prepare(repositoryPath, trunkString, CremaSchema.TableDirectory);
+                ////var dataBasesPath = DirectoryUtility.Prepare(tempPath, "databases");
+                ////var defaultPath = DirectoryUtility.Prepare(dataBasesPath, "default");
+                var usersRepo = DirectoryUtility.Prepare(basePath, "users");
+                var usersPath = DirectoryUtility.Prepare(tempPath, "users");
+                 UserContext.GenerateDefaultUserInfos(usersPath);
+                repoProvider.Initialize(usersRepo, usersPath);
 
-                UserContext.GenerateDefaultUserInfos(repositoryPath);
 
-                repoProvider.CreateRepository(basePath, repositoryPath);
+                var dataBasesRepo = DirectoryUtility.Prepare(basePath, "databases");
+                var dataBasesPath = DirectoryUtility.Prepare(tempPath, "databases");
+                new CremaDataSet().WriteToDirectory(dataBasesPath);
+                repoProvider.Initialize(dataBasesRepo, dataBasesPath);
             }
             catch
             {

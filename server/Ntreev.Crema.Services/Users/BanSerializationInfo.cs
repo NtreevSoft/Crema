@@ -30,7 +30,7 @@ using System.Xml.Serialization;
 namespace Ntreev.Crema.Services.Users
 {
     [DataContract(Name = "BanInfo", Namespace = SchemaUtility.Namespace)]
-    struct BanSerializationInfo
+    public struct BanSerializationInfo
     {
         [DataMember(EmitDefaultValue = false)]
         public string Path { get; set; }

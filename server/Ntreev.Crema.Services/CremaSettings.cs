@@ -25,12 +25,12 @@ namespace Ntreev.Crema.Services
 {
     class CremaSettings
     {
-        public const string DefaultRepositoryName = "crema";
+        //public const string DefaultRepositoryName = "crema";
         private string repositoryName;
 
         public CremaSettings()
         {
-            this.RepositoryName = DefaultRepositoryName;
+            //this.RepositoryName = DefaultRepositoryName;
         }
 
         public string BasePath
@@ -41,7 +41,7 @@ namespace Ntreev.Crema.Services
 
         public string RepositoryName
         {
-            get { return this.repositoryName ?? DefaultRepositoryName; }
+            get { return this.repositoryName ?? string.Empty; }
             set { this.repositoryName = value; }
         }
 

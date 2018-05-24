@@ -19,18 +19,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Ntreev.Crema.Data;
 using Ntreev.Crema.ServiceModel;
+using Ntreev.Crema.Services.Users;
 
 namespace Ntreev.Crema.Services
 {
     public interface IRepositoryProvider
     {
-        void CreateRepository(string basePath, string repositoryPath);
+        void Initialize(string basePath, string repositoryPath);
 
-        void ValidateRepository(string basePath, string repositoryPath);
+        void CreateRepository(string basePath, params string[] repositoryNames);
+
+        //void ValidateRepository(string basePath, string repositoryPath);
 
         string Name { get; }
 
-        IRepository CreateInstance(string repositoryPath, string workingPath);
+        IRepository CreateInstance(string basePath, string repositoryName, string workingPath);
+
+        IEnumerable<string> GetRepositories(string basePath);
+
+        string GetRevision(string basePath);
     }
 }

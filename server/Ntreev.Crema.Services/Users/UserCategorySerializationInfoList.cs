@@ -30,7 +30,7 @@ using System.Xml.Serialization;
 namespace Ntreev.Crema.Services.Users
 {
     [CollectionDataContract(Name = "Category", Namespace = SchemaUtility.Namespace, ItemName = "Path")]
-    class UserCategorySerializationInfoList : List<string>
+    public class UserCategorySerializationInfoList : List<string>
     {
         
     }
