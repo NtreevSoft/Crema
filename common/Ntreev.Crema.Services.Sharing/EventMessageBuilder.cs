@@ -112,7 +112,7 @@ namespace Ntreev.Crema.Services
             return sb.ToString();
         }
 
-        public static string CreateDataBase(Authentication authentication, IDataBase[] dataBases)
+        public static string CreateDataBase(Authentication authentication, string[] dataBases)
         {
             var sb = new StringBuilder();
             for (var i = 0; i < dataBases.Length; i++)
@@ -124,7 +124,7 @@ namespace Ntreev.Crema.Services
             return sb.ToString();
         }
 
-        public static string RenameDataBase(Authentication authentication, IDataBase[] dataBases, string[] oldNames)
+        public static string RenameDataBase(Authentication authentication, string[] dataBases, string[] oldNames)
         {
             var sb = new StringBuilder();
             for (var i = 0; i < dataBases.Length; i++)
@@ -220,7 +220,7 @@ namespace Ntreev.Crema.Services
             return sb.ToString();
         }
 
-        public static string RevertDataBase(Authentication authentication, DataBase dataBase, long revision)
+        public static string RevertDataBase(Authentication authentication, DataBase dataBase, string revision)
         {
             return string.Format(EventResources.RevertDataBase, authentication.ID, authentication.Name, dataBase, revision);
         }

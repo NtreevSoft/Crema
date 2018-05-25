@@ -55,14 +55,14 @@ namespace Ntreev.Crema.RuntimeService
             this.logService = dataBase.GetService(typeof(ILogService)) as ILogService;
         }
 
-        public GenerationSet Gerneration(TagInfo tags, string filterExpression, bool isDevmode, long revision)
+        public GenerationSet Gerneration(TagInfo tags, string filterExpression, bool isDevmode, string revision)
         {
             this.Dispatcher.VerifyAccess();
 
             if (filterExpression == null)
                 throw new ArgumentNullException(nameof(filterExpression));
 
-            if (revision == -1)
+            if (revision == null)
             {
                 var tables = this.GetTables().Select(item => this.GetTableInfo(item))
                                              .ToArray();
@@ -97,14 +97,14 @@ namespace Ntreev.Crema.RuntimeService
             }
         }
 
-        public SerializationSet Serialize(TagInfo tags, string filterExpression, bool isDevmode, long revision)
+        public SerializationSet Serialize(TagInfo tags, string filterExpression, bool isDevmode, string revision)
         {
             this.Dispatcher.VerifyAccess();
 
             if (filterExpression == null)
                 throw new ArgumentNullException(nameof(filterExpression));
 
-            if (revision == -1)
+            if (revision == null)
             {
                 var cacheKey = tags.ToString() + filterExpression;
 

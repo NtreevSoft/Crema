@@ -41,13 +41,13 @@ namespace Ntreev.Crema.Javascript.Methods.DataBase
 
         protected override Delegate CreateDelegate()
         {
-            return new Func<string, string, long?, IDictionary<int, object>>(GetTableData);
+            return new Func<string, string, string, IDictionary<int, object>>(GetTableData);
         }
 
-        private IDictionary<int, object> GetTableData(string dataBaseName, string tableName, long? revision)
+        private IDictionary<int, object> GetTableData(string dataBaseName, string tableName, string revision)
         {
             var table = this.GetTable(dataBaseName, tableName);
-            var revisionValue = revision ?? -1;
+            var revisionValue = revision;
             var authentication = this.Context.GetAuthentication(this);
 
             return table.Dispatcher.Invoke(() =>

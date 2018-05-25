@@ -37,7 +37,7 @@ namespace Ntreev.Crema.Runtime.Serialization
             this.Types = dataSet.Types.Select(item => new SerializationType(item)).ToArray();
             this.Tables = dataSet.Tables.Select(item => new SerializationTable(item)).ToArray();
             this.Name = dataSet.DataSetName;
-            this.Revision = 0;
+            this.Revision = null;
             this.TypesHashValue = GetTypesHashValue(this);
             this.TablesHashValue = GetTablesHashValue(this);
             this.Tags = string.Empty;
@@ -56,7 +56,7 @@ namespace Ntreev.Crema.Runtime.Serialization
         public string Tags { get; set; }
 
         [DataMember]
-        public long Revision { get; set; }
+        public string Revision { get; set; }
 
         [DataMember]
         public string TypesHashValue { get; set; }

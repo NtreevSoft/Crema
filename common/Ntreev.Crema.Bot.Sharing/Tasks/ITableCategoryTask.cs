@@ -310,7 +310,7 @@ namespace Ntreev.Crema.Bot.Tasks
         {
             category.Dispatcher.Invoke(() =>
             {
-                category.GetDataSet(context.Authentication, -1);
+                category.GetDataSet(context.Authentication, null);
             });
         }
 

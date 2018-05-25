@@ -130,7 +130,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
             });
         }
 
-        public ResultBase<CremaDataSet> GetDataSet(long revision)
+        public ResultBase<CremaDataSet> GetDataSet(string revision)
         {
             return this.InvokeImmediately(() =>
             {
@@ -148,7 +148,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
             });
         }
 
-        public ResultBase<CremaDataSet> GetTableItemDataSet(string itemPath, long revision)
+        public ResultBase<CremaDataSet> GetTableItemDataSet(string itemPath, string revision)
         {
             return this.InvokeImmediately(() =>
             {
@@ -430,7 +430,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
             });
         }
 
-        public ResultBase<CremaDataSet> GetTypeItemDataSet(string itemPath, long revision)
+        public ResultBase<CremaDataSet> GetTypeItemDataSet(string itemPath, string revision)
         {
             return this.InvokeImmediately(() =>
             {

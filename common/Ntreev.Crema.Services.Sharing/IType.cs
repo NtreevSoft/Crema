@@ -36,7 +36,7 @@ namespace Ntreev.Crema.Services
 
         IType Copy(Authentication authentication, string newTypeName, string categoryPath);
 
-        CremaDataSet GetDataSet(Authentication authentication, long revision);
+        CremaDataSet GetDataSet(Authentication authentication, string revision);
 
         LogInfo[] GetLog(Authentication authentication);
 

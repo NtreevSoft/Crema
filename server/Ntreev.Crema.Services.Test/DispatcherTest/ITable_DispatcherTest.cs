@@ -114,7 +114,7 @@ namespace Ntreev.Crema.Services.Test.DispatcherTest
         [TestMethod]
         public void Preview()
         {
-            table.GetDataSet(authentication, -1);
+            table.GetDataSet(authentication, null);
         }
 
         [TestMethod]

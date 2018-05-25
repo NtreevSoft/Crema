@@ -32,7 +32,7 @@ namespace Ntreev.Crema.Services.Data
     struct DataBaseDataSerializationInfo
     {
         [DataMember]
-        public long Revision { get; set; }
+        public string Revision { get; set; }
 
         [DataMember]
         public TypeInfo[] TypeInfos { get; set; }

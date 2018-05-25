@@ -279,7 +279,7 @@ namespace Ntreev.Crema.Bot.Tasks
         {
             type.Dispatcher.Invoke(() =>
             {
-                type.GetDataSet(context.Authentication, -1);
+                type.GetDataSet(context.Authentication, null);
             });
         }
 

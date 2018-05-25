@@ -32,7 +32,7 @@ namespace Ntreev.Crema.Services.Data
         public string[] ItemList { get; set; }
 
         [DataMember]
-        public long Revision { get; set; }
+        public string Revision { get; set; }
 
         [DataMember]
         public Version Version { get; set; }

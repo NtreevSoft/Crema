@@ -215,7 +215,7 @@ namespace Ntreev.Crema.Commands.Consoles
         }
 
         [CommandMethod]
-        public void View(string typeName, long revision = -1)
+        public void View(string typeName, string revision = null)
         {
             var type = this.GetType(typeName);
             var tableData = type.Dispatcher.Invoke(() =>
@@ -235,7 +235,7 @@ namespace Ntreev.Crema.Commands.Consoles
         }
 
         [CommandMethod]
-        public void ViewCategory(string categoryPath, long revision = -1)
+        public void ViewCategory(string categoryPath, string revision = null)
         {
             var category = this.GetCategory(categoryPath);
             var builderList = new List<TableDataBuilder>();

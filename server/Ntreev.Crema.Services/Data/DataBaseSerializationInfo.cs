@@ -40,10 +40,10 @@ namespace Ntreev.Crema.Services.Data
         public string Comment { get; set; }
 
         [DataMember]
-        public long Revision { get; set; }
+        public string Revision { get; set; }
 
         [DataMember]
-        public long BranchRevision { get; set; }
+        public string BranchRevision { get; set; }
 
         [DataMember]
         public string[] Paths { get; set; }
@@ -51,8 +51,8 @@ namespace Ntreev.Crema.Services.Data
         [DataMember]
         public string BranchSource { get; set; }
 
-        [XmlElement]
-        public long BranchSourceRevision { get; set; }
+        [DataMember]
+        public string BranchSourceRevision { get; set; }
 
         [DataMember]
         public SignatureDate CreationInfo { get; set; }

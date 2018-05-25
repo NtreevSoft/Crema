@@ -144,7 +144,7 @@ namespace Ntreev.Crema.Services.Data
                     this.dataBase.Enter(this.Authentication);
                 try
                 {
-                    return this.dataBase.GetDataSet(this.Authentication, -1);
+                    return this.dataBase.GetDataSet(this.Authentication, null);
                 }
                 finally
                 {
@@ -185,8 +185,14 @@ namespace Ntreev.Crema.Services.Data
             {
                 if (this.workingPath == null)
                 {
-                    var cremaHost = this.dataBase.GetService(typeof(ICremaHost)) as ICremaHost;
-                    this.workingPath = Path.Combine(cremaHost.WorkingPath, this.Name, this.dataBase.ID.ToString());
+                    if (this.dataBase.GetService(typeof(ICremaHost)) is CremaHost cremaHost)
+                    {
+                        this.workingPath = cremaHost.GetPath(CremaPath.Caches, this.Name, $"{this.dataBase.ID}");
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
                 }
                 return this.workingPath;
             }
@@ -197,7 +203,7 @@ namespace Ntreev.Crema.Services.Data
             get { return this.dataBaseName; }
         }
 
-        public long Revision
+        public string Revision
         {
             get { return this.info.Revision; }
         }
@@ -306,7 +312,7 @@ namespace Ntreev.Crema.Services.Data
 
             if (this.noCache == true)
             {
-                this.info.Revision = 0;
+                this.info.Revision = null;
             }
 
             var domainContext = this.dataBase.GetService(typeof(IDomainContext)) as IDomainContext;
@@ -552,7 +558,7 @@ namespace Ntreev.Crema.Services.Data
             var error = false;
             try
             {
-                if (this.info.Revision != 0)
+                if (this.info.Revision != null)
                 {
                     foreach (var item in this.info.ItemList)
                     {
@@ -600,17 +606,17 @@ namespace Ntreev.Crema.Services.Data
                     var contains = this.dataBase.Contains(this.Authentication);
                     if (contains == false)
                         this.dataBase.Enter(this.Authentication);
-                    var dataSet = this.dataBase.GetDataSet(this.Authentication, -1);
+                    var dataSet = this.dataBase.GetDataSet(this.Authentication, null);
                     if (contains == false)
                         this.dataBase.Leave(this.Authentication);
-                    return new Tuple<long, CremaDataSet>(revision, dataSet);
+                    return new Tuple<string, CremaDataSet>(revision, dataSet);
                 });
                 this.Serialize(result.Item2, result.Item1);
             }
             this.initialized = true;
         }
 
-        private void Serialize(CremaDataSet dataSet, long revision)
+        private void Serialize(CremaDataSet dataSet, string revision)
         {
             if (dataSet == null)
                 return;

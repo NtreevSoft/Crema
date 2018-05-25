@@ -101,12 +101,12 @@ namespace Ntreev.Crema.Runtime.Generation.CSharp
             }
         }
 
-        public long Revision
+        public string Revision
         {
             get { return this.metaData.Revision; }
         }
 
-        public long RequestedRevision
+        public string RequestedRevision
         {
             get { return this.settings.Revision; }
         }

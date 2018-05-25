@@ -41,6 +41,7 @@ namespace Ntreev.Crema.Services.Users
         private readonly CremaDispatcher dispatcher;
         private readonly RepositoryHost repository;
         private readonly string userFilePath;
+        private readonly string remotePath;
         private readonly string basePath;
 
         private ItemsCreatedEventHandler<IUserItem> itemsCreated;
@@ -58,10 +59,11 @@ namespace Ntreev.Crema.Services.Users
         {
             this.cremaHost = cremaHost;
             this.cremaHost.Debug(Resources.Message_UserContextInitialize);
-            
-            this.basePath = Path.Combine(cremaHost.WorkingPath, "users");
+
+            this.remotePath = cremaHost.GetPath(CremaPath.RemoteUsers);
+            this.basePath = cremaHost.GetPath(CremaPath.Working, "users");
             this.userFilePath = GenerateUsersFilePath(this.basePath);
-            var re = cremaHost.RepositoryProvider.CreateInstance(cremaHost.UsersRepositoryPath, "default", this.basePath);
+            var re = cremaHost.RepositoryProvider.CreateInstance(this.remotePath, "default", this.basePath);
             this.repository = new RepositoryHost(re, cremaHost.RepositoryDispatcher, this.userFilePath);
             this.dispatcher = new CremaDispatcher(this);
             this.dispatcher.Invoke(() =>

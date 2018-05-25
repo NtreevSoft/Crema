@@ -95,7 +95,7 @@ namespace Ntreev.Crema.RuntimeService
             return this.serializers.FirstOrDefault(item => item.Name == type);
         }
 
-        public ResultBase<GenerationSet> GetCodeGenerationData(string dataBaseName, string tags, string filterExpression, long revision)
+        public ResultBase<GenerationSet> GetCodeGenerationData(string dataBaseName, string tags, string filterExpression, string revision)
         {
             var result = new ResultBase<GenerationSet>();
             try
@@ -121,7 +121,7 @@ namespace Ntreev.Crema.RuntimeService
             return result;
         }
 
-        public ResultBase<SerializationSet> GetDataGenerationData(string dataBaseName, string tags, string filterExpression, bool isDevmode, long revision)
+        public ResultBase<SerializationSet> GetDataGenerationData(string dataBaseName, string tags, string filterExpression, bool isDevmode, string revision)
         {
             var result = new ResultBase<SerializationSet>();
             try
@@ -147,7 +147,7 @@ namespace Ntreev.Crema.RuntimeService
             return result;
         }
 
-        public ResultBase<GenerationSet, SerializationSet> GetMetaData(string dataBaseName, string tags, string filterExpression, bool isDevmode, long revision)
+        public ResultBase<GenerationSet, SerializationSet> GetMetaData(string dataBaseName, string tags, string filterExpression, bool isDevmode, string revision)
         {
             var result = new ResultBase<GenerationSet, SerializationSet>();
             try
@@ -200,9 +200,9 @@ namespace Ntreev.Crema.RuntimeService
             return result;
         }
 
-        public ResultBase<long> GetRevision(string dataBaseName)
+        public ResultBase<string> GetRevision(string dataBaseName)
         {
-            var result = new ResultBase<long>();
+            var result = new ResultBase<string>();
 
             try
             {

@@ -34,7 +34,7 @@ namespace Ntreev.Crema.SvnModule
     {
         public string Author { get; private set; }
 
-        public long Revision { get; internal set; }
+        public string Revision { get; internal set; }
 
         public SvnChangeItem[] ChangedPaths { get; internal set; }
 
@@ -61,22 +61,19 @@ namespace Ntreev.Crema.SvnModule
             return logItemList.ToArray();
         }
 
-        public static SvnLogEventArgs[] Run(string path, long revision)
+        public static SvnLogEventArgs[] Run(string path, string revision)
         {
             var text = SvnClientHost.Run("log", path.WrapQuot(), "-r", $"head:{revision}", "--xml", "-v");
             return SvnLogEventArgs.Read(text);
         }
 
-        public static SvnLogEventArgs[] Run(string path, long revision, int count)
+        public static SvnLogEventArgs[] Run(string path, string revision, int count)
         {
-            var revisionText = revision.ToString();
-            if (revision == long.MaxValue)
-                revisionText = "head";
-            var text = SvnClientHost.Run("log", path.WrapQuot(), "-r", $"{revisionText}:1", "--xml", "-v", "-l", count, "--with-all-revprops");
+            var text = SvnClientHost.Run("log", path.WrapQuot(), "-r", $"{revision??"head"}:1", "--xml", "-v", "-l", count, "--with-all-revprops");
             return SvnLogEventArgs.Read(text);
         }
 
-        public static SvnLogEventArgs[] Run(string path, string arguments)
+        public static SvnLogEventArgs[] Runa(string path, string arguments)
         {
             if (arguments.IndexOf("--xml") < 0)
                 arguments += " --xml";
@@ -107,12 +104,25 @@ namespace Ntreev.Crema.SvnModule
             return obj;
         }
 
+        internal string GetPropertyString(string key)
+        {
+            if (this.Properties == null)
+                return null;
+
+            var query = from item in this.Properties
+                        where item.Key == key
+                        select item;
+            if (query.Any() == true)
+                return query.First().Value;
+            return null;
+        }
+
         private static SvnLogEventArgs Parse(XElement element)
         {
             var obj = new SvnLogEventArgs()
             {
                 Author = element.XPathSelectElement("author").Value,
-                Revision = long.Parse(element.Attribute("revision").Value),
+                Revision = element.Attribute("revision").Value,
                 Comment = element.XPathSelectElement("msg").Value,
                 DateTime = XmlConvert.ToDateTime(element.XPathSelectElement("date").Value, XmlDateTimeSerializationMode.Utc)
             };

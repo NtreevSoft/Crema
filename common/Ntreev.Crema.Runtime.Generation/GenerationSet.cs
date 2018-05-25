@@ -44,7 +44,7 @@ namespace Ntreev.Crema.Runtime.Generation
         public string Tags { get; set; }
 
         [DataMember]
-        public long Revision { get; set; }
+        public string Revision { get; set; }
 
         [DataMember]
         public string TablesHashValue { get; set; }
@@ -60,7 +60,7 @@ namespace Ntreev.Crema.Runtime.Generation
         {
             this.Types = types;
             this.Tables = tables;
-            this.Revision = 0;
+            this.Revision = null;
             this.TypesHashValue = GetTypesHashValue(this);
             this.TablesHashValue = GetTablesHashValue(this);
             this.Tags = string.Empty;

@@ -208,7 +208,7 @@ namespace Ntreev.Crema.Commands.Consoles
         }
 
         [CommandMethod]
-        public void Revert(string dataBaseName, long revision)
+        public void Revert(string dataBaseName, string revision)
         {
             var dataBase = this.GetDataBase(dataBaseName);
             this.CremaHost.Dispatcher.Invoke(() =>

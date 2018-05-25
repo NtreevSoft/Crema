@@ -40,7 +40,7 @@ namespace Ntreev.Crema.Services
 
         FindResultInfo[] Find(Authentication authentication, string text, FindOptions options);
 
-        CremaDataSet GetDataSet(Authentication authentication, long revision);
+        CremaDataSet GetDataSet(Authentication authentication, string revision);
 
         string Name { get; }
 

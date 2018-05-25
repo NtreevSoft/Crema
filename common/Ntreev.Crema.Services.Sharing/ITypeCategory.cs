@@ -38,7 +38,7 @@ namespace Ntreev.Crema.Services
 
         ITypeTemplate NewType(Authentication authentication);
 
-        CremaDataSet GetDataSet(Authentication authentication, long revision);
+        CremaDataSet GetDataSet(Authentication authentication, string revision);
 
         LogInfo[] GetLog(Authentication authentication);
 

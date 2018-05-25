@@ -47,13 +47,13 @@ namespace Ntreev.Crema.ServiceHosts.Data
         ResultBase<DataBaseMetaData> GetMetaData();
 
         [OperationContract]
-        ResultBase<CremaDataSet> GetDataSet(long revision);
+        ResultBase<CremaDataSet> GetDataSet(string revision);
 
         [OperationContract]
         ResultBase NewTableCategory(string categoryPath);
 
         [OperationContract]
-        ResultBase<CremaDataSet> GetTableItemDataSet(string itemPath, long revision);
+        ResultBase<CremaDataSet> GetTableItemDataSet(string itemPath, string revision);
 
         [OperationContract]
         ResultBase ImportTables(CremaDataSet dataSet, string comment);
@@ -134,7 +134,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
         ResultBase NewTypeCategory(string categoryPath);
 
         [OperationContract]
-        ResultBase<CremaDataSet> GetTypeItemDataSet(string itemPath, long revision);
+        ResultBase<CremaDataSet> GetTypeItemDataSet(string itemPath, string revision);
 
         [OperationContract]
         ResultBase ImportTypes(CremaDataSet dataSet, string comment);

@@ -41,9 +41,9 @@ namespace Ntreev.Crema.Services
 
         LogInfo[] GetLog(Authentication authentication);
 
-        void Revert(Authentication authentication, long revision);
+        void Revert(Authentication authentication, string revision);
 
-        CremaDataSet GetDataSet(Authentication authentication, long revision);
+        CremaDataSet GetDataSet(Authentication authentication, string revision);
 
         ITransaction BeginTransaction(Authentication authentication);
 

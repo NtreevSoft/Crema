@@ -15,6 +15,7 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.Data;
 using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services.Domains;
@@ -36,8 +37,10 @@ namespace Ntreev.Crema.Services.Data
         private const string databaseExtension = ".database";
         private const string stateExtension = ".state";
         private readonly CremaHost cremaHost;
-        private readonly IRepository repository;
+        //private readonly IRepository repository;
+        private readonly IRepositoryProvider repositoryProvider;
         private readonly string cachePath;
+        private readonly string remotePath;
         private readonly string basePath;
         private string commitPath;
         private ItemsCreatedEventHandler<IDataBase> itemsCreated;
@@ -57,38 +60,39 @@ namespace Ntreev.Crema.Services.Data
         public DataBaseCollection(CremaHost cremaHost, IRepositoryProvider repositoryProvider)
         {
             this.cremaHost = cremaHost;
-            this.cachePath = DirectoryUtility.Prepare(this.cremaHost.WorkingPath, DataBaseString);
+            this.cachePath = cremaHost.GetPath(CremaPath.Caches, "databases");
             //this.repository = cremaHost.Repository;
-            this.basePath = Path.Combine(cremaHost.RepositoryPath, "databases");
-            var revision = repositoryProvider.GetRevision(this.basePath);
+            this.repositoryProvider = cremaHost.RepositoryProvider;
+            this.remotePath = cremaHost.GetPath(CremaPath.RemoteDataBases);
+            this.basePath = cremaHost.GetPath(CremaPath.Working, "databases");
+            //var revision = repositoryProvider.GetRevision(this.basePath);
             var caches = this.cremaHost.NoCache == true ? new Dictionary<string, DataBaseSerializationInfo>() : this.ReadCaches();
 
-            var dataBases = repositoryProvider.GetRepositories(this.basePath);
-            var ddd = dataBases.ToArray();
-            foreach(var item in dataBases)
-            {
+            var dataBases = repositoryProvider.GetRepositories(this.remotePath);
+            //var ddd = dataBases.ToArray();
+            //foreach(var item in dataBases)
+            //{
 
-            }
+            //}
 
-            foreach (var item in GetDataBases())
+            foreach (var item in dataBases)
             {
-                var dataBasePath = item.Value;
-                var dataBaseName = item.Key;
                 var dataBase = CreateDataBase();
                 dataBase.Initialize();
-                this.AddBase(dataBaseName, dataBase);
+                this.AddBase(item, dataBase);
 
                 DataBase CreateDataBase()
                 {
-                    if (caches.ContainsKey(dataBaseName) == false)
-                        return new DataBase(this.cremaHost, dataBasePath, dataBaseName);
-                    return new DataBase(this.cremaHost, dataBasePath, dataBaseName, caches[dataBaseName]);
+                    //var basePath = Path.Combine(this.cremaHost.WorkingPath, "databases", item);
+                    if (caches.ContainsKey(item) == false)
+                        return new DataBase(this.cremaHost, item);
+                    return new DataBase(this.cremaHost, item, caches[item]);
                 }
             }
 
             IEnumerable<KeyValuePair<string, string>> GetDataBases()
             {
-                
+
                 yield return new KeyValuePair<string, string>(DataBase.defaultName, this.cremaHost.TrunkPath);
 
                 if (Directory.Exists(this.cremaHost.TagsPath) == true)
@@ -156,17 +160,19 @@ namespace Ntreev.Crema.Services.Data
         public void InvokeDataBaseSetPrivate(Authentication authentication, DataBase dataBase, AccessInfo accessInfo)
         {
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeDataBaseSetPrivate), dataBase);
+            this.ValidateSetPrivateDataBase(authentication, dataBase, accessInfo);
             var accessInfoPath = dataBase.GetAccessInfoPath();
+            var repository = dataBase.Repository;
             try
             {
                 accessInfo.SetPrivate(dataBase.GetType().Name, authentication.SignatureDate);
                 dataBase.WriteAccessInfo(accessInfoPath, accessInfo);
-                this.repository.Add(accessInfoPath);
+                repository.Add(accessInfoPath);
             }
             catch (Exception e)
             {
                 this.CremaHost.Error(e);
-                this.repository.Revert(dataBase.BasePath);
+                repository.Revert(dataBase.BasePath);
                 throw e;
             }
         }
@@ -174,16 +180,18 @@ namespace Ntreev.Crema.Services.Data
         public void InvokeDataBaseSetPublic(Authentication authentication, DataBase dataBase, AccessInfo accessInfo)
         {
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeDataBaseSetPrivate), dataBase);
+            this.ValidateSetPublicDataBase(authentication, dataBase, accessInfo);
             var accessInfoPath = dataBase.GetAccessInfoPath();
+            var repository = dataBase.Repository;
             try
             {
                 accessInfo.SetPublic();
-                this.repository.Delete(accessInfoPath);
+                repository.Delete(accessInfoPath);
             }
             catch (Exception e)
             {
                 this.CremaHost.Error(e);
-                this.repository.Revert(dataBase.BasePath);
+                repository.Revert(dataBase.BasePath);
                 throw e;
             }
         }
@@ -191,7 +199,9 @@ namespace Ntreev.Crema.Services.Data
         public void InvokeDataBaseAddAccessMember(Authentication authentication, DataBase dataBase, AccessInfo accessInfo, string memberID, AccessType accessType)
         {
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeDataBaseAddAccessMember), dataBase, memberID, accessType);
+            this.ValidateAddAccessMemberDataBase(authentication, dataBase, accessInfo, memberID, accessType);
             var accessInfoPath = dataBase.GetAccessInfoPath();
+            var repository = dataBase.Repository;
             try
             {
                 accessInfo.Add(authentication.SignatureDate, memberID, accessType);
@@ -200,7 +210,7 @@ namespace Ntreev.Crema.Services.Data
             catch (Exception e)
             {
                 this.CremaHost.Error(e);
-                this.repository.Revert(dataBase.BasePath);
+                repository.Revert(dataBase.BasePath);
                 throw e;
             }
         }
@@ -208,7 +218,9 @@ namespace Ntreev.Crema.Services.Data
         public void InvokeDataBaseSetAccessMember(Authentication authentication, DataBase dataBase, AccessInfo accessInfo, string memberID, AccessType accessType)
         {
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeDataBaseSetAccessMember), dataBase, memberID, accessType);
+            this.ValidateSetAccessMemberDataBase(authentication, dataBase, accessInfo, memberID, accessType);
             var accessInfoPath = dataBase.GetAccessInfoPath();
+            var repository = dataBase.Repository;
             try
             {
                 accessInfo.Set(authentication.SignatureDate, memberID, accessType);
@@ -217,7 +229,7 @@ namespace Ntreev.Crema.Services.Data
             catch (Exception e)
             {
                 this.CremaHost.Error(e);
-                this.repository.Revert(dataBase.BasePath);
+                repository.Revert(dataBase.BasePath);
                 throw e;
             }
         }
@@ -225,7 +237,9 @@ namespace Ntreev.Crema.Services.Data
         public void InvokeDataBaseRemoveAccessMember(Authentication authentication, DataBase dataBase, AccessInfo accessInfo, string memberID)
         {
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeDataBaseRemoveAccessMember), dataBase, memberID);
+            this.ValidateRemoveAccessMemberDataBase(authentication, dataBase, accessInfo, memberID);
             var accessInfoPath = dataBase.GetAccessInfoPath();
+            var repository = dataBase.Repository;
             try
             {
                 accessInfo.Remove(authentication.SignatureDate, memberID);
@@ -234,7 +248,7 @@ namespace Ntreev.Crema.Services.Data
             catch (Exception e)
             {
                 this.CremaHost.Error(e);
-                this.repository.Revert(dataBase.BasePath);
+                repository.Revert(dataBase.BasePath);
                 throw e;
             }
         }
@@ -265,36 +279,37 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.DebugMethod(authentication, this, nameof(CreateDataBase), dataBaseName, comment);
             this.ValidateCreateDataBase(authentication, dataBaseName);
 
-            var exists = Directory.Exists(this.cremaHost.BranchesPath);
-            var dataBasePath = DirectoryUtility.Prepare(this.cremaHost.BranchesPath, dataBaseName);
-            var typePath = DirectoryUtility.Prepare(dataBasePath, CremaSchema.TypeDirectory);
-            var tablePath = DirectoryUtility.Prepare(dataBasePath, CremaSchema.TableDirectory);
+            var dataSet = new CremaDataSet();
+            var tempPath = PathUtility.GetTempPath(true);
+            var dataBasePath = Path.Combine(tempPath, dataBaseName);
+            dataSet.WriteToDirectory(dataBasePath);
+
+            var dataBaseNames = new string[] { dataBaseName };
+            var commentMessage = EventMessageBuilder.CreateDataBase(authentication, dataBaseNames) + ": " + comment;
 
             try
             {
                 this.cremaHost.RepositoryDispatcher.Invoke(() =>
                 {
-                    if (exists == false)
-                        this.repository.Add(this.cremaHost.BranchesPath);
-                    this.repository.Add(dataBasePath);
-                    this.repository.Add(typePath);
-                    this.repository.Add(tablePath);
+                    this.repositoryProvider.CreateRepository(authentication, this.remotePath, tempPath, commentMessage);
                 });
-                this.commitPath = this.cremaHost.BranchesPath;
             }
             catch (Exception e)
             {
-                this.commitPath = null;
                 this.cremaHost.Error(e);
-                DirectoryUtility.Delete(typePath);
-                DirectoryUtility.Delete(tablePath);
-                DirectoryUtility.Delete(dataBasePath);
                 throw e;
             }
-
-            var dataBase = this.AddFromPath(dataBasePath);
+            finally
+            {
+                DirectoryUtility.Delete(tempPath);
+            }
+            this.CremaHost.Info(commentMessage);
+            var dataBase = new DataBase(this.cremaHost, dataBaseName);
+            this.AddBase(dataBase.Name, dataBase);
+            dataBase.Initialize();
             authentication.Sign();
-            this.InvokeItemsCreateEvent(authentication, new DataBase[] { dataBase, }, comment);
+
+            this.InvokeItemsCreateEvent(authentication, new DataBase[] { dataBase, });
             return dataBase;
         }
 
@@ -304,35 +319,32 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.DebugMethod(authentication, this, nameof(CopyDataBase), dataBase, newDataBaseName, comment);
             this.ValidateCopyDataBase(authentication, dataBase, newDataBaseName, force);
 
-            var exists = Directory.Exists(this.cremaHost.BranchesPath);
-            DirectoryUtility.Prepare(this.cremaHost.BranchesPath);
-            var dataBasePath = Path.Combine(this.cremaHost.BranchesPath, newDataBaseName);
+            //var exists = Directory.Exists(this.cremaHost.BranchesPath);
+            //DirectoryUtility.Prepare(this.cremaHost.BranchesPath);
+            //var dataBasePath = Path.Combine(this.cremaHost.BranchesPath, newDataBaseName);
 
+            var dataBaseName = dataBase.Name;
+            var dataBaseNames = new string[] { newDataBaseName };
+            var commentMessage = EventMessageBuilder.CreateDataBase(authentication, dataBaseNames) + ": " + comment;
             try
             {
                 this.cremaHost.RepositoryDispatcher.Invoke(() =>
                 {
-                    if (exists == false)
-                        this.repository.Add(this.cremaHost.BranchesPath);
-                    this.repository.Copy(dataBase.BasePath, dataBasePath);
+                    this.repositoryProvider.CopyRepository(authentication, this.remotePath, dataBaseName, newDataBaseName, commentMessage);
                 });
-                this.commitPath = this.cremaHost.BranchesPath;
             }
             catch (Exception e)
             {
-                this.commitPath = null;
                 this.cremaHost.Error(e);
-                this.cremaHost.RepositoryDispatcher.Invoke(() =>
-                {
-                    this.repository.Revert(this.cremaHost.BranchesPath);
-                });
                 throw e;
             }
 
-            var newDataBase = new DataBase(this.cremaHost, dataBasePath, Path.GetFileName(dataBasePath));
+            this.CremaHost.Info(commentMessage);
+            var newDataBase = new DataBase(this.cremaHost, newDataBaseName);
             this.AddBase(newDataBase.Name, newDataBase);
+            dataBase.Initialize();
             authentication.Sign();
-            this.InvokeItemsCreateEvent(authentication, new DataBase[] { newDataBase, }, comment);
+            this.InvokeItemsCreateEvent(authentication, new DataBase[] { newDataBase, });
             return newDataBase;
         }
 
@@ -342,27 +354,33 @@ namespace Ntreev.Crema.Services.Data
             this.ValidateRenameDataBase(authentication, dataBase, newDataBaseName);
 
             var dataBaseName = dataBase.Name;
-            var dataBasePath = dataBase.BasePath;
-            var newDataBasePath = Path.Combine(Path.GetDirectoryName(dataBasePath), newDataBaseName);
+            //var dataBasePath = dataBase.BasePath;
+            //var newDataBasePath = Path.Combine(Path.GetDirectoryName(dataBasePath), newDataBaseName);
+            var names = new string[] { newDataBaseName };
+            var oldNames = new string[] { dataBase.Name };
+            var commentMessage = EventMessageBuilder.RenameDataBase(authentication, names, oldNames);
+
 
             try
             {
-                this.cremaHost.RepositoryDispatcher.Invoke(() =>
-                {
-                    this.repository.Move(dataBasePath, newDataBasePath);
-                });
-                this.commitPath = Path.GetDirectoryName(dataBasePath);
+                this.repositoryProvider.RenameRepository(authentication, this.remotePath, dataBase.Name, newDataBaseName, commentMessage);
+                //this.cremaHost.RepositoryDispatcher.Invoke(() =>
+                //{
+                //    this.repository.Move(dataBasePath, newDataBasePath);
+                //});
+                //this.commitPath = Path.GetDirectoryName(dataBasePath);
             }
             catch (Exception e)
             {
-                this.commitPath = Path.GetDirectoryName(dataBasePath);
+                //this.commitPath = Path.GetDirectoryName(dataBasePath);
                 this.cremaHost.Error(e);
-                this.cremaHost.RepositoryDispatcher.Invoke(() =>
-                {
-                    this.repository.Revert(this.cremaHost.BranchesPath);
-                });
+                //this.cremaHost.RepositoryDispatcher.Invoke(() =>
+                //{
+                //    this.repository.Revert(this.cremaHost.BranchesPath);
+                //});
                 throw e;
             }
+            this.CremaHost.Info(commentMessage);
             this.ReplaceKeyBase(dataBaseName, newDataBaseName);
         }
 
@@ -372,26 +390,26 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeDataBaseDelete), dataBase);
             this.ValidateDeleteDataBase(authentication, dataBase);
 
-            var dataBasePath = dataBase.BasePath;
+            //var dataBasePath = dataBase.BasePath;
 
-            try
-            {
-                this.cremaHost.RepositoryDispatcher.Invoke(() =>
-                {
-                    this.repository.Delete(dataBasePath);
-                });
-                this.commitPath = Path.GetDirectoryName(dataBasePath);
-            }
-            catch (Exception e)
-            {
-                this.commitPath = null;
-                this.cremaHost.Error(e);
-                this.cremaHost.RepositoryDispatcher.Invoke(() =>
-                {
-                    this.repository.Revert(Path.GetDirectoryName(dataBasePath));
-                });
-                throw e;
-            }
+            //try
+            //{
+            //    this.cremaHost.RepositoryDispatcher.Invoke(() =>
+            //    {
+            //        this.repository.Delete(dataBasePath);
+            //    });
+            //    this.commitPath = Path.GetDirectoryName(dataBasePath);
+            //}
+            //catch (Exception e)
+            //{
+            //    this.commitPath = null;
+            //    this.cremaHost.Error(e);
+            //    this.cremaHost.RepositoryDispatcher.Invoke(() =>
+            //    {
+            //        this.repository.Revert(Path.GetDirectoryName(dataBasePath));
+            //    });
+            //    throw e;
+            //}
 
             this.RemoveBase(dataBase.Name);
         }
@@ -407,34 +425,18 @@ namespace Ntreev.Crema.Services.Data
             };
         }
 
-        public void InvokeItemsCreateEvent(Authentication authentication, DataBase[] items, string comment)
+        public void InvokeItemsCreateEvent(Authentication authentication, DataBase[] items)
         {
             var args = items.Select(item => (object)item.DataBaseInfo).ToArray();
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsCreateEvent), items);
-            var commentMessage = EventMessageBuilder.CreateDataBase(authentication, items) + Environment.NewLine + comment;
             this.CremaHost.Debug(eventLog);
-            this.cremaHost.RepositoryDispatcher.Invoke(() =>
-            {
-                this.repository.Commit(this.commitPath, commentMessage, authentication, eventLog);
-            });
-            foreach (var item in items)
-            {
-                item.Initialize();
-            }
-            this.CremaHost.Info(commentMessage);
             this.OnItemsCreated(new ItemsCreatedEventArgs<IDataBase>(authentication, items, args, null));
         }
 
         public void InvokeItemsRenamedEvent(Authentication authentication, DataBase[] items, string[] oldNames)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsRenamedEvent), items, oldNames);
-            var comment = EventMessageBuilder.RenameDataBase(authentication, items, oldNames);
             this.CremaHost.Debug(eventLog);
-            this.cremaHost.RepositoryDispatcher.Invoke(() =>
-            {
-                this.repository.Commit(this.commitPath, comment, authentication, eventLog);
-            });
-            this.CremaHost.Info(comment);
             this.OnItemsRenamed(new ItemsRenamedEventArgs<IDataBase>(authentication, items, oldNames, oldNames));
         }
 
@@ -442,10 +444,11 @@ namespace Ntreev.Crema.Services.Data
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsDeletedEvent), paths);
             var comment = EventMessageBuilder.DeleteDataBase(authentication, paths);
+            var repositoryNames = items.Select(item => item.Name).ToArray();
             this.CremaHost.Debug(eventLog);
             this.cremaHost.RepositoryDispatcher.Invoke(() =>
             {
-                this.repository.Commit(this.commitPath, comment, authentication, eventLog);
+                this.repositoryProvider.DeleteRepository(this.remotePath, repositoryNames, comment, authentication, eventLog);
             });
             this.CremaHost.Info(comment);
             this.OnItemsDeleted(new ItemsDeletedEventArgs<IDataBase>(authentication, items, paths));
@@ -511,7 +514,7 @@ namespace Ntreev.Crema.Services.Data
             var comment = EventMessageBuilder.SetPublicDataBase(authentication, items);
             var metaData = EventMetaDataBuilder.Build(items, AccessChangeType.Public);
             this.CremaHost.Debug(eventLog);
-            this.repository.Commit(basePath, comment, authentication, eventLog);
+            //this.repository.Commit(basePath, comment, authentication, eventLog);
             this.CremaHost.Info(comment);
             this.OnItemsAccessChanged(new ItemsEventArgs<IDataBase>(authentication, items, metaData));
         }
@@ -522,7 +525,7 @@ namespace Ntreev.Crema.Services.Data
             var comment = EventMessageBuilder.SetPrivateDataBase(authentication, items);
             var metaData = EventMetaDataBuilder.Build(items, AccessChangeType.Private);
             this.CremaHost.Debug(eventLog);
-            this.repository.Commit(basePath, comment, authentication, eventLog);
+            //this.repository.Commit(basePath, comment, authentication, eventLog);
             this.CremaHost.Info(comment);
             this.OnItemsAccessChanged(new ItemsEventArgs<IDataBase>(authentication, items, metaData));
         }
@@ -533,7 +536,7 @@ namespace Ntreev.Crema.Services.Data
             var comment = EventMessageBuilder.AddAccessMemberToDataBase(authentication, items, memberIDs, accessTypes);
             var metaData = EventMetaDataBuilder.Build(items, AccessChangeType.Add, memberIDs, accessTypes);
             this.CremaHost.Debug(eventLog);
-            this.repository.Commit(basePath, comment, authentication, eventLog);
+            //this.repository.Commit(basePath, comment, authentication, eventLog);
             this.CremaHost.Info(comment);
             this.OnItemsAccessChanged(new ItemsEventArgs<IDataBase>(authentication, items, metaData));
         }
@@ -544,7 +547,7 @@ namespace Ntreev.Crema.Services.Data
             var comment = EventMessageBuilder.SetAccessMemberOfDataBase(authentication, items, memberIDs, accessTypes);
             var metaData = EventMetaDataBuilder.Build(items, AccessChangeType.Set, memberIDs, accessTypes);
             this.CremaHost.Debug(eventLog);
-            this.repository.Commit(basePath, comment, authentication, eventLog);
+            //this.repository.Commit(basePath, comment, authentication, eventLog);
             this.CremaHost.Info(comment);
             this.OnItemsAccessChanged(new ItemsEventArgs<IDataBase>(authentication, items, metaData));
         }
@@ -555,7 +558,7 @@ namespace Ntreev.Crema.Services.Data
             var comment = EventMessageBuilder.RemoveAccessMemberFromDataBase(authentication, items, memberIDs);
             var metaData = EventMetaDataBuilder.Build(items, AccessChangeType.Remove, memberIDs);
             this.CremaHost.Debug(eventLog);
-            this.repository.Commit(basePath, comment, authentication, eventLog);
+            //this.repository.Commit(basePath, comment, authentication, eventLog);
             this.CremaHost.Info(comment);
             this.OnItemsAccessChanged(new ItemsEventArgs<IDataBase>(authentication, items, new object[] { AccessChangeType.Remove, memberIDs, }));
         }
@@ -618,7 +621,7 @@ namespace Ntreev.Crema.Services.Data
 
         public DataBase AddFromPath(string path)
         {
-            var dataBase = new DataBase(this.cremaHost, path, Path.GetFileName(path));
+            var dataBase = new DataBase(this.cremaHost, Path.GetFileName(path));
             this.AddBase(dataBase.Name, dataBase);
             return dataBase;
         }
@@ -632,6 +635,8 @@ namespace Ntreev.Crema.Services.Data
         {
             get { return this.cremaHost; }
         }
+
+        public string RemotePath => this.remotePath;
 
         public new int Count
         {
@@ -973,43 +978,77 @@ namespace Ntreev.Crema.Services.Data
                 throw new InvalidOperationException(Resources.Exception_DataBaseHasBeenLoaded);
         }
 
+        private void ValidateSetPrivateDataBase(Authentication authentication, DataBase dataBase, AccessInfo accessInfo)
+        {
+            if (dataBase.IsLoaded == false)
+                throw new InvalidOperationException(Resources.Exception_DataBaseHasNotBeenLoaded);
+        }
+
+        private void ValidateSetPublicDataBase(Authentication authentication, DataBase dataBase, AccessInfo accessInfo)
+        {
+            if (dataBase.IsLoaded == false)
+                throw new InvalidOperationException(Resources.Exception_DataBaseHasNotBeenLoaded);
+        }
+
+        private void ValidateAddAccessMemberDataBase(Authentication authentication, DataBase dataBase, AccessInfo accessInfo, string memberID, AccessType accessType)
+        {
+            if (dataBase.IsLoaded == false)
+                throw new InvalidOperationException(Resources.Exception_DataBaseHasNotBeenLoaded);
+        }
+
+        private void ValidateSetAccessMemberDataBase(Authentication authentication, DataBase dataBase, AccessInfo accessInfo, string memberID, AccessType accessType)
+        {
+            if (dataBase.IsLoaded == false)
+                throw new InvalidOperationException(Resources.Exception_DataBaseHasNotBeenLoaded);
+        }
+
+        private void ValidateRemoveAccessMemberDataBase(Authentication authentication, DataBase dataBase, AccessInfo accessInfo, string memberID)
+        {
+            if (dataBase.IsLoaded == false)
+                throw new InvalidOperationException(Resources.Exception_DataBaseHasNotBeenLoaded);
+        }
+
         private Dictionary<string, DataBaseSerializationInfo> ReadCaches()
         {
             var caches = new Dictionary<string, DataBaseSerializationInfo>();
-            var files = Directory.GetFiles(cachePath, $"*{databaseExtension}");
-            foreach (var item in files)
+            if (Directory.Exists(this.cachePath) == true)
             {
-                try
+                var files = Directory.GetFiles(cachePath, $"*{databaseExtension}");
+                foreach (var item in files)
                 {
-                    var dataBaseInfo = JsonSerializerUtility.Read<DataBaseSerializationInfo>(item);
-                    caches.Add(dataBaseInfo.Name, dataBaseInfo);
-                }
-                catch (Exception e)
-                {
-                    this.cremaHost.Error(e);
+                    try
+                    {
+                        var dataBaseInfo = JsonSerializerUtility.Read<DataBaseSerializationInfo>(item);
+                        caches.Add(dataBaseInfo.Name, dataBaseInfo);
+                    }
+                    catch (Exception e)
+                    {
+                        this.cremaHost.Error(e);
+                    }
                 }
             }
-
             return caches;
         }
 
         private Dictionary<string, DataBaseState> ReadStateCaches()
         {
             var caches = new Dictionary<string, DataBaseState>();
-            var files = Directory.GetFiles(cachePath, $"*{stateExtension}");
-            foreach (var item in files)
+            if (Directory.Exists(this.cachePath) == true)
             {
-                try
+                var files = Directory.GetFiles(cachePath, $"*{stateExtension}");
+                foreach (var item in files)
                 {
-                    var dataBaseState = JsonSerializerUtility.Read<DataBaseState>(item);
-                    caches.Add(Path.GetFileNameWithoutExtension(item), dataBaseState);
-                }
-                catch (Exception e)
-                {
-                    this.cremaHost.Error(e);
+                    try
+                    {
+                        var dataBaseState = JsonSerializerUtility.Read<DataBaseState>(item);
+                        caches.Add(Path.GetFileNameWithoutExtension(item), dataBaseState);
+                    }
+                    catch (Exception e)
+                    {
+                        this.cremaHost.Error(e);
+                    }
                 }
             }
-
             return caches;
         }
 

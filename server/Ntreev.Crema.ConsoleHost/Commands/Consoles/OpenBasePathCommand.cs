@@ -49,7 +49,7 @@ namespace Ntreev.Crema.ConsoleHost.Commands.Consoles
         {
             if (Environment.OSVersion.Platform == PlatformID.Win32NT)
             {
-                Process.Start("explorer", this.CremaHost.BasePath.WrapQuot());
+                Process.Start("explorer", this.CremaHost.GetPath(CremaPath.Documents).WrapQuot());
             }
         }
 

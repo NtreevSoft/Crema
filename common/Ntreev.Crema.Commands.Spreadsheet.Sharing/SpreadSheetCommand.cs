@@ -261,7 +261,7 @@ namespace Ntreev.Crema.Commands.Spreadsheet
             {
                 dataBase.Dispatcher.Invoke(() =>
                 {
-                    var previewSet = item.GetDataSet(authentication, -1);
+                    var previewSet = item.GetDataSet(authentication, null);
                     var previewType = previewSet.Types[item.Name];
                     CreateTable(previewType);
                     step.Next("reading {0}/{1} : {2}", step.Step + 1, types.Length, item.Name);
@@ -312,7 +312,7 @@ namespace Ntreev.Crema.Commands.Spreadsheet
             {
                 dataBase.Dispatcher.Invoke(() =>
                 {
-                    var previewSet = item.GetDataSet(authentication, -1);
+                    var previewSet = item.GetDataSet(authentication, null);
                     var previewTable = previewSet.Tables[item.Name];
                     previewTable.CopyTo(dataSet);
                     var name = item.Name;

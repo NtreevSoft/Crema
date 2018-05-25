@@ -94,7 +94,7 @@ namespace Ntreev.Crema.Services
             this.repositoryProvider = repoProviders.First(item => item.Name == this.settings.RepositoryModule);
             //this.repositoryProvider.ValidateRepository(this.basePath, this.repositoryPath);
 
-            this.log = new LogService(this.GetType().FullName, this.WorkingPath)
+            this.log = new LogService(this.GetType().FullName, this.GetPath(CremaPath.Logs))
             {
                 Name = "repository",
                 Verbose = settings.Verbose
@@ -311,6 +311,27 @@ namespace Ntreev.Crema.Services
             CremaLog.Release();
         }
 
+        public string GetPath(CremaPath pathType, params string[] paths)
+        {
+            switch (pathType)
+            {
+                case CremaPath.RemoteUsers:
+                    return new Uri(Path.Combine(Path.Combine(this.basePath, "remotes", "users"), Path.Combine(paths))).ToString();
+                case CremaPath.RemoteDataBases:
+                    return new Uri(Path.Combine(Path.Combine(this.basePath, "remotes", "databases"), Path.Combine(paths))).ToString();
+                case CremaPath.Caches:
+                    return Path.Combine(Path.Combine(this.basePath, "caches"), Path.Combine(paths));
+                case CremaPath.Logs:
+                    return Path.Combine(Path.Combine(this.basePath, "logs"), Path.Combine(paths));
+                case CremaPath.Working:
+                    return Path.Combine(Path.Combine(this.basePath, "working"), Path.Combine(paths));
+                case CremaPath.Documents:
+                    return Path.Combine(Path.Combine(this.basePath, "documents"), Path.Combine(paths));
+            }
+
+            throw new NotImplementedException();
+        }
+
         public IRepository Repository
         {
             get { return this.repository; }
@@ -323,7 +344,9 @@ namespace Ntreev.Crema.Services
             get { return this.basePath; }
         }
 
-        public string UsersRepositoryPath => Path.Combine(this.repositoryPath, "users");
+        //public string UsersRepositoryPath => Path.Combine(this.repositoryPath, "users");
+
+        //public string DataBasesPath => Path.Combine(this.repositoryPath, "databases");
 
         public string RepositoryPath
         {

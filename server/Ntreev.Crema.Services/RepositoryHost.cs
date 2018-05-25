@@ -32,7 +32,7 @@ namespace Ntreev.Crema.Services
         private readonly IRepository repository;
         private readonly CremaDispatcher dispatcher;
         private readonly string path;
-        private long revision;
+        private string revision;
         private SignatureDate signatureDate;
 
         public RepositoryHost(IRepository repository, CremaDispatcher dispatcher, string path)
@@ -99,7 +99,7 @@ namespace Ntreev.Crema.Services
             });
         }
 
-        public void Revert(long revision)
+        public void Revert(string revision)
         {
             this.dispatcher.Invoke(() =>
             {
@@ -131,12 +131,12 @@ namespace Ntreev.Crema.Services
             });
         }
 
-        public long GetRevision(string path)
+        public string GetRevision(string path)
         {
             return this.dispatcher.Invoke(() => this.repository.GetRevision(path));
         }
 
-        public Uri GetUri(string path, long revision)
+        public Uri GetUri(string path, string revision)
         {
             return this.dispatcher.Invoke(() => this.repository.GetUri(path, revision));
         }
@@ -169,7 +169,7 @@ namespace Ntreev.Crema.Services
             this.OnChanged(EventArgs.Empty);
         }
 
-        public LogInfo[] GetLog(string path, long revision, int count)
+        public LogInfo[] GetLog(string path, string revision, int count)
         {
             return this.dispatcher.Invoke(() => this.repository.GetLog(path, revision, count));
         }
@@ -193,7 +193,12 @@ namespace Ntreev.Crema.Services
             return pureRepoUri;
         }
 
-        public long Revision
+        public void Dispose()
+        {
+            this.repository.Dispose();
+        }
+
+        public string Revision
         {
             get { return this.revision; }
         }

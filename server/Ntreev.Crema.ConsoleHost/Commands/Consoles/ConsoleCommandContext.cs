@@ -53,7 +53,7 @@ namespace Ntreev.Crema.ConsoleHost.Commands.Consoles
             [ImportMany]IEnumerable<IConsoleCommandProvider> commandProviders)
             : base(rootItems, commands, commandProviders)
         {
-            this.BaseDirectory = DirectoryUtility.Prepare(cremaHost.WorkingPath, "console");
+            this.BaseDirectory = cremaHost.GetPath(CremaPath.Documents);
         }
 
         public void Login(string userID, SecureString password)

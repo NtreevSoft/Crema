@@ -31,7 +31,7 @@ namespace Ntreev.Crema.SvnModule
 
         public string CopyFromPath { get; internal set; }
 
-        public long CopyFromRevision { get; private set; }
+        public string CopyFromRevision { get; private set; }
 
         public string Action { get; private set; }
 
@@ -54,7 +54,7 @@ namespace Ntreev.Crema.SvnModule
                 var attr = element.Attribute("copyfrom-rev");
                 if (attr != null)
                 {
-                    obj.CopyFromRevision = long.Parse(attr.Value);
+                    obj.CopyFromRevision = attr.Value;
                 }
             }
 

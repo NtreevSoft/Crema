@@ -27,18 +27,28 @@ namespace Ntreev.Crema.Services
 {
     public interface IRepositoryProvider
     {
-        void Initialize(string basePath, string repositoryPath);
+        void InitializeRepository(string basePath, string repositoryPath);
 
-        void CreateRepository(string basePath, params string[] repositoryNames);
+        void CreateRepository(string basePath, string initPath, string comment, params LogPropertyInfo[] properties);
 
-        //void ValidateRepository(string basePath, string repositoryPath);
+        void CopyRepository(string basePath, string repositoryName, string newRepositoryName, string comment, params LogPropertyInfo[] properties);
 
-        string Name { get; }
+        void RenameRepository(string basePath, string repositoryName, string newRepositoryName, string comment, params LogPropertyInfo[] properties);
+
+        void DeleteRepository(string basePath, string[] repositoryNames, string comment, params LogPropertyInfo[] properties);
 
         IRepository CreateInstance(string basePath, string repositoryName, string workingPath);
 
         IEnumerable<string> GetRepositories(string basePath);
 
-        string GetRevision(string basePath);
+        string GetRevision(string basePath, string repositoryName);
+
+        RepositoryInfo GetRepositoryInfo(string basePath, string repositoryName);
+
+        string[] GetRepositoryItemList(string basePath, string repositoryName);
+
+        LogInfo[] GetLog(string basePath, string repositoryName, string revision, int count);
+
+        string Name { get; }
     }
 }

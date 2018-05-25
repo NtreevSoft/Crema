@@ -35,21 +35,21 @@ namespace Ntreev.Crema.RuntimeService
     {
         [OperationContract]
         [ServiceKnownType(typeof(DBNull))]
-        ResultBase<GenerationSet> GetCodeGenerationData(string dataBaseName, string tags, string filterExpression, long revision);
+        ResultBase<GenerationSet> GetCodeGenerationData(string dataBaseName, string tags, string filterExpression, string revision);
 
         [OperationContract]
         [ServiceKnownType(typeof(DBNull))]
-        ResultBase<SerializationSet> GetDataGenerationData(string dataBaseName, string tags, string filterExpression, bool isDevmode, long revision);
+        ResultBase<SerializationSet> GetDataGenerationData(string dataBaseName, string tags, string filterExpression, bool isDevmode, string revision);
 
         [OperationContract]
         [ServiceKnownType(typeof(DBNull))]
-        ResultBase<GenerationSet, SerializationSet> GetMetaData(string dataBaseName, string tags, string filterExpression, bool isDevmode, long revision);
+        ResultBase<GenerationSet, SerializationSet> GetMetaData(string dataBaseName, string tags, string filterExpression, bool isDevmode, string revision);
 
         [OperationContract]
         ResultBase ResetData(string dataBaseName);
 
         [OperationContract]
-        ResultBase<long> GetRevision(string dataBaseName);
+        ResultBase<string> GetRevision(string dataBaseName);
 
         CremaDispatcher Dispatcher { get; }
     }

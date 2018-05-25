@@ -177,7 +177,7 @@ namespace Ntreev.Crema.Commands.Consoles
 
         [CommandMethod]
         [CommandMethodStaticProperty(typeof(ViewProperties))]
-        public void View(string tableName, long revision = -1)
+        public void View(string tableName, string revision = null)
         {
             var table = this.GetTable(tableName);
             var authentication = this.CommandContext.GetAuthentication(this);
@@ -192,7 +192,7 @@ namespace Ntreev.Crema.Commands.Consoles
 
         [CommandMethod]
         [CommandMethodStaticProperty(typeof(ViewProperties))]
-        public void ViewCategory(string categoryPath, long revision = -1)
+        public void ViewCategory(string categoryPath, string revision = null)
         {
             var category = this.GetCategory(categoryPath);
             var authentication = this.CommandContext.GetAuthentication(this);

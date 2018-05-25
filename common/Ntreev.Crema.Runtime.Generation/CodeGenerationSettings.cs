@@ -33,7 +33,7 @@ namespace Ntreev.Crema.Runtime.Generation
         private string postfix;
         private string basePath;
         private TagInfo tags;
-        private long revision;
+        private string revision;
         private readonly Dictionary<string, object> arguments = new Dictionary<string, object>();
 
         public string ClassName
@@ -78,7 +78,7 @@ namespace Ntreev.Crema.Runtime.Generation
             set { this.tags = value; }
         }
 
-        public long Revision
+        public string Revision
         {
             get { return this.revision; }
             set { this.revision = value; }
@@ -100,7 +100,7 @@ namespace Ntreev.Crema.Runtime.Generation
             postfix = string.Empty,
             BasePath = string.Empty,
             Options = CodeGenerationOptions.None,
-            Revision = -1,
+            Revision = null,
         };
     }
 }

@@ -285,7 +285,7 @@ namespace Ntreev.Crema.Bot.Tasks
         {
             table.Dispatcher.Invoke(() =>
             {
-                table.GetDataSet(context.Authentication, -1);
+                table.GetDataSet(context.Authentication, null);
             });
         }
 

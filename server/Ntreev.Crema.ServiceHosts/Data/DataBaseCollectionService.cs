@@ -241,7 +241,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
             });
         }
 
-        public ResultBase Revert(string dataBaseName, long revision)
+        public ResultBase Revert(string dataBaseName, string revision)
         {
             return this.Invoke(() =>
             {

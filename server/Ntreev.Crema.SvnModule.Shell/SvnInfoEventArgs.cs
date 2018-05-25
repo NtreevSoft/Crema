@@ -36,11 +36,11 @@ namespace Ntreev.Crema.SvnModule
 
         public string Path { get; private set; }
 
-        public long Revision { get; private set; }
+        public string Revision { get; private set; }
 
-        public long LastChangeRevision { get; private set; }
+        public string LastChangeRevision { get; private set; }
 
-        public static SvnInfoEventArgs Run(string path, long revision)
+        public static SvnInfoEventArgs Run(string path, string revision)
         {
             var text = SvnClientHost.Run("info", path.WrapQuot(), "-r", revision, "--xml");
             return Parse(text);
@@ -62,9 +62,9 @@ namespace Ntreev.Crema.SvnModule
 
                     Path = doc.XPathSelectElement("/info/entry").Attribute("path").Value,
                     RepositoryRoot = new Uri(doc.XPathSelectElement("/info/entry/repository/root").Value + "/"),
-                    Revision = long.Parse(doc.XPathSelectElement("/info/entry").Attribute("revision").Value),
+                    Revision = doc.XPathSelectElement("/info/entry").Attribute("revision").Value,
                     Uri = new Uri(doc.XPathSelectElement("/info/entry/url").Value, UriKind.RelativeOrAbsolute),
-                    LastChangeRevision = long.Parse(doc.XPathSelectElement("/info/entry/commit").Attribute("revision").Value)
+                    LastChangeRevision = doc.XPathSelectElement("/info/entry/commit").Attribute("revision").Value
                 };
 
                 return obj;

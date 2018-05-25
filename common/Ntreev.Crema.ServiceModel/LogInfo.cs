@@ -36,7 +36,7 @@ namespace Ntreev.Crema.ServiceModel
         public string UserID { get; set; }
 
         [XmlElement]
-        public long Revision { get; set; }
+        public string Revision { get; set; }
 
         [XmlElement]
         public string Comment { get; set; }

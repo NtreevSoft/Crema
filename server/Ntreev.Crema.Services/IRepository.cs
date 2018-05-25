@@ -42,7 +42,7 @@ namespace Ntreev.Crema.Services
 
         void Revert(string path);
 
-        void Revert(string path, long revision);
+        void Revert(string path, string revision);
 
         void BeginTransaction(string path, string name);
 
@@ -50,18 +50,18 @@ namespace Ntreev.Crema.Services
 
         void CancelTransaction(string path);
 
-        void GetBranchInfo(string path, out long revision, out string source, out long sourceRevision);
+        //void GetBranchInfo(string path, out string revision, out string source, out string sourceRevision);
 
-        long GetRevision(string path);
+        string GetRevision(string path);
 
-        LogInfo[] GetLog(string path, long revision, int count);
+        LogInfo[] GetLog(string path, string revision, int count);
 
-        Uri GetUri(string path, long revision);
+        Uri GetUri(string path, string revision);
 
         IDictionary<string, string> Status(string path);
 
         string Export(Uri uri, string exportPath);
 
-        long Revision { get; }
+        string Revision { get; }
     }
 }

@@ -15,7 +15,12 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.Data.Xml.Schema;
+using Ntreev.Crema.ServiceModel;
 using Ntreev.Library;
+using Ntreev.Library.IO;
+using Ntreev.Library.ObjectModel;
+using Ntreev.Library.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,15 +28,11 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
-using System.Xml;
-using System.Xml.Schema;
-using Ntreev.Library.Serialization;
-using Ntreev.Crema.Data.Xml.Schema;
 
-namespace Ntreev.Crema.ServiceModel
+namespace Ntreev.Crema.Services.Users
 {
-    [DataContract(Namespace = SchemaUtility.Namespace)]
-    public struct DataBaseInfo
+    [DataContract(Name = "RepositoryInfo", Namespace = SchemaUtility.Namespace)]
+    public struct RepositoryInfo
     {
         [XmlElement]
         public Guid ID { get; set; }
@@ -46,9 +47,6 @@ namespace Ntreev.Crema.ServiceModel
         public string Revision { get; set; }
 
         [XmlElement]
-        public TagInfo Tags { get; set; }
-
-        [XmlElement]
         public string BranchRevision { get; set; }
 
         [XmlElement]
@@ -56,15 +54,6 @@ namespace Ntreev.Crema.ServiceModel
 
         [XmlElement]
         public string BranchSourceRevision { get; set; }
-
-        [XmlElement]
-        public string TypesHashValue { get; set; }
-
-        [XmlElement]
-        public string TablesHashValue { get; set; }
-
-        [XmlArray]
-        public string[] Paths { get; set; }
 
         [XmlElement]
         public SignatureDate CreationInfo { get; set; }
@@ -83,7 +72,6 @@ namespace Ntreev.Crema.ServiceModel
                 { nameof(this.BranchRevision), this.BranchRevision},
                 { nameof(this.BranchSource), this.BranchSource },
                 { nameof(this.BranchSourceRevision), this.BranchSourceRevision},
-                { nameof(this.Paths), this.Paths },
                 { nameof(CremaSchema.Creator), this.CreationInfo.ID },
                 { nameof(CremaSchema.CreatedDateTime), this.CreationInfo.DateTime },
                 { nameof(CremaSchema.Modifier), this.ModificationInfo.ID },
@@ -92,12 +80,11 @@ namespace Ntreev.Crema.ServiceModel
             return props;
         }
 
-        public readonly static DataBaseInfo Empty = new DataBaseInfo()
+        public readonly static RepositoryInfo Empty = new RepositoryInfo()
         {
             Name = string.Empty,
             Comment = string.Empty,
             BranchSource = string.Empty,
-            Paths = new string[] { },
             CreationInfo = SignatureDate.Empty,
             ModificationInfo = SignatureDate.Empty,
         };
