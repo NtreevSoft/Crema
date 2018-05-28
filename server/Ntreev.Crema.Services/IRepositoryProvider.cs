@@ -35,7 +35,7 @@ namespace Ntreev.Crema.Services
 
         void RenameRepository(string basePath, string repositoryName, string newRepositoryName, string comment, params LogPropertyInfo[] properties);
 
-        void DeleteRepository(string basePath, string[] repositoryNames, string comment, params LogPropertyInfo[] properties);
+        void DeleteRepository(string basePath, string repositoryName, string comment, params LogPropertyInfo[] properties);
 
         IRepository CreateInstance(string basePath, string repositoryName, string workingPath);
 

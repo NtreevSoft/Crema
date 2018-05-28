@@ -90,14 +90,14 @@ namespace Ntreev.Crema.Services
 
                 ////var dataBasesPath = DirectoryUtility.Prepare(tempPath, "databases");
                 ////var defaultPath = DirectoryUtility.Prepare(dataBasesPath, "default");
-                var usersRepo = DirectoryUtility.Prepare(basePath, "users");
-                var usersPath = DirectoryUtility.Prepare(tempPath, "users");
-                 UserContext.GenerateDefaultUserInfos(usersPath);
+                var usersRepo = DirectoryUtility.Prepare(basePath, "remotes", "users");
+                var usersPath = DirectoryUtility.Prepare(tempPath, "remotes", "users");
+                UserContext.GenerateDefaultUserInfos(usersPath);
                 repoProvider.InitializeRepository(usersRepo, usersPath);
 
 
-                var dataBasesRepo = DirectoryUtility.Prepare(basePath, "databases");
-                var dataBasesPath = DirectoryUtility.Prepare(tempPath, "databases");
+                var dataBasesRepo = DirectoryUtility.Prepare(basePath, "remotes", "databases");
+                var dataBasesPath = DirectoryUtility.Prepare(tempPath, "remotes", "databases");
                 new CremaDataSet().WriteToDirectory(dataBasesPath);
                 repoProvider.InitializeRepository(dataBasesRepo, dataBasesPath);
             }

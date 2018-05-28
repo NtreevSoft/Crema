@@ -119,11 +119,16 @@ namespace Ntreev.Crema.SvnModule
 
         private static SvnLogEventArgs Parse(XElement element)
         {
+            var commentValue = element.XPathSelectElement("msg").Value;
+            var comment = null as string;
+            var props = null as LogPropertyInfo[];
+            SvnRepositoryProvider.ParseComment(commentValue, out comment, out props);
+
             var obj = new SvnLogEventArgs()
             {
                 Author = element.XPathSelectElement("author").Value,
                 Revision = element.Attribute("revision").Value,
-                Comment = element.XPathSelectElement("msg").Value,
+                Comment = comment ?? commentValue,
                 DateTime = XmlConvert.ToDateTime(element.XPathSelectElement("date").Value, XmlDateTimeSerializationMode.Utc)
             };
             var pathItems = element.XPathSelectElements("paths/path").ToArray();
@@ -135,14 +140,26 @@ namespace Ntreev.Crema.SvnModule
             }
             obj.ChangedPaths = changedItemList.ToArray();
 
-            var propItems = element.XPathSelectElements("revprops/property").ToArray();
-            var propItemList = new List<SvnPropertyValue>();
-            foreach (var item in propItems)
+            if (props == null)
             {
-                var propItem = SvnPropertyValue.Parse(item);
-                propItemList.Add(propItem);
+                var propItems = element.XPathSelectElements("revprops/property").ToArray();
+                var propItemList = new List<SvnPropertyValue>();
+                foreach (var item in propItems)
+                {
+                    var propItem = SvnPropertyValue.Parse(item);
+                    propItemList.Add(propItem);
+                }
+                obj.Properties = propItemList.ToArray();
             }
-            obj.Properties = propItemList.ToArray();
+            else
+            {
+                var propList = new List<SvnPropertyValue>();
+                foreach (var item in props)
+                {
+                    propList.Add((SvnPropertyValue)item);
+                }
+                obj.Properties = propList.ToArray();
+            }
 
             return obj;
         }

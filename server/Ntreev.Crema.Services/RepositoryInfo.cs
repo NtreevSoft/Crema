@@ -29,7 +29,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace Ntreev.Crema.Services.Users
+namespace Ntreev.Crema.Services
 {
     [DataContract(Name = "RepositoryInfo", Namespace = SchemaUtility.Namespace)]
     public struct RepositoryInfo
@@ -88,7 +88,6 @@ namespace Ntreev.Crema.Services.Users
             CreationInfo = SignatureDate.Empty,
             ModificationInfo = SignatureDate.Empty,
         };
-
 
         #region DataMember
 

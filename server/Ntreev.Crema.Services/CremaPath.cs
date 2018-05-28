@@ -37,8 +37,7 @@ namespace Ntreev.Crema.Services
 
         Documents,
         
-
-        //Transaction,
+        Transactions,
 
         //Console,
 

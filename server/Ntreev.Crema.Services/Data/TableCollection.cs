@@ -353,7 +353,7 @@ namespace Ntreev.Crema.Services.Data
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeTablesCreatedEvent), tables);
             var comment = EventMessageBuilder.CreateTable(authentication, tables);
             this.CremaHost.Debug(eventLog);
-            this.Repository.Commit(authentication, comment, eventLog);
+            this.Repository.Commit(authentication, comment);
             this.CremaHost.Info(comment);
             this.OnTablesCreated(new ItemsCreatedEventArgs<ITable>(authentication, tables, args, dataSet));
             this.Context.InvokeItemsCreatedEvent(authentication, tables, args, dataSet);
@@ -364,7 +364,7 @@ namespace Ntreev.Crema.Services.Data
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeTablesRenamedEvent), tables, oldNames, oldPaths);
             var comment = EventMessageBuilder.RenameTable(authentication, tables, oldNames);
             this.CremaHost.Debug(eventLog);
-            this.Repository.Commit(authentication, comment, eventLog);
+            this.Repository.Commit(authentication, comment);
             this.CremaHost.Info(comment);
             this.OnTablesRenamed(new ItemsRenamedEventArgs<ITable>(authentication, tables, oldNames, oldPaths, dataSet));
             this.Context.InvokeItemsRenamedEvent(authentication, tables, oldNames, oldPaths, dataSet);
@@ -375,7 +375,7 @@ namespace Ntreev.Crema.Services.Data
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeTablesMovedEvent), tables, oldPaths, oldCategoryPaths);
             var comment = EventMessageBuilder.MoveTable(authentication, tables, oldCategoryPaths);
             this.CremaHost.Debug(eventLog);
-            this.Repository.Commit(authentication, comment, eventLog);
+            this.Repository.Commit(authentication, comment);
             this.CremaHost.Info(comment);
             this.OnTablesMoved(new ItemsMovedEventArgs<ITable>(authentication, tables, oldPaths, oldCategoryPaths, dataSet));
             this.Context.InvokeItemsMovedEvent(authentication, tables, oldPaths, oldCategoryPaths, dataSet);
@@ -387,7 +387,7 @@ namespace Ntreev.Crema.Services.Data
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeTablesDeletedEvent), oldPaths);
             var comment = EventMessageBuilder.DeleteTable(authentication, tables);
             this.CremaHost.Debug(eventLog);
-            this.Repository.Commit(authentication, comment, eventLog);
+            this.Repository.Commit(authentication, comment);
             this.CremaHost.Info(comment);
             this.OnTablesDeleted(new ItemsDeletedEventArgs<ITable>(authentication, tables, oldPaths, dataSet));
             this.Context.InvokeItemsDeletedEvent(authentication, tables, oldPaths, dataSet);
@@ -404,7 +404,7 @@ namespace Ntreev.Crema.Services.Data
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeTablesTemplateChangedEvent), tables);
             var comment = EventMessageBuilder.ChangeTableTemplate(authentication, tables);
             this.CremaHost.Debug(eventLog);
-            this.Repository.Commit(authentication, comment, eventLog);
+            this.Repository.Commit(authentication, comment);
             this.CremaHost.Info(comment);
             this.OnTablesChanged(new ItemsEventArgs<ITable>(authentication, tables, dataSet));
             this.Context.InvokeItemsChangedEvent(authentication, tables, dataSet);
@@ -415,7 +415,7 @@ namespace Ntreev.Crema.Services.Data
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeTablesContentChangedEvent), tables);
             var comment = EventMessageBuilder.ChangeTableContent(authentication, tables);
             this.CremaHost.Debug(eventLog);
-            this.Repository.Commit(authentication, comment, eventLog);
+            this.Repository.Commit(authentication, comment);
             this.CremaHost.Info(comment);
             this.OnTablesChanged(new ItemsEventArgs<ITable>(authentication, tables));
             this.Context.InvokeItemsChangedEvent(authentication, tables, dataSet);

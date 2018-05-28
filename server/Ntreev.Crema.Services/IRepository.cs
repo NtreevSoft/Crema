@@ -38,7 +38,7 @@ namespace Ntreev.Crema.Services
 
         void Copy(string srcPath, string toPath);
 
-        DateTime Commit(string path, string message, IEnumerable<LogPropertyInfo> properties);
+        void Commit(string path, string message, params LogPropertyInfo[] properties);
 
         void Revert(string path);
 
@@ -50,8 +50,6 @@ namespace Ntreev.Crema.Services
 
         void CancelTransaction(string path);
 
-        //void GetBranchInfo(string path, out string revision, out string source, out string sourceRevision);
-
         string GetRevision(string path);
 
         LogInfo[] GetLog(string path, string revision, int count);
@@ -62,6 +60,8 @@ namespace Ntreev.Crema.Services
 
         string Export(Uri uri, string exportPath);
 
-        string Revision { get; }
+        //string Revision { get; }
+
+        RepositoryInfo RepositoryInfo { get; }
     }
 }

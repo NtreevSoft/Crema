@@ -37,35 +37,34 @@ namespace Ntreev.Crema.Services.Data
     {
         private readonly DataBase dataBase;
         private readonly CremaSettings settings;
-        private string branchRevision;
-        private string branchSource;
-        private string branchSourceRevision;
+        //private string branchRevision;
+        //private string branchSource;
+        //private string branchSourceRevision;
 
         public DataBaseRepositoryHost(DataBase dataBase, IRepository repository)
             : base(repository, dataBase.CremaHost.RepositoryDispatcher, dataBase.BasePath)
         {
             this.dataBase = dataBase;
             this.settings = this.dataBase.GetService(typeof(CremaSettings)) as CremaSettings;
-            //this.Dispatcher.Invoke(this.InitializeBranchInfo);
         }
 
-        public DataBaseRepositoryHost(DataBase dataBase, IRepository repository, DataBaseSerializationInfo dataBaseInfo)
-            : base(repository, dataBase.CremaHost.RepositoryDispatcher, dataBase.BasePath)
-        {
-            this.dataBase = dataBase;
-            this.settings = this.dataBase.GetService(typeof(CremaSettings)) as CremaSettings;
-            this.branchRevision = dataBaseInfo.BranchRevision;
-            this.branchSource = dataBaseInfo.BranchSource;
-            this.branchSourceRevision = dataBaseInfo.BranchSourceRevision;
-        }
+        //public DataBaseRepositoryHost(DataBase dataBase, IRepository repository, DataBaseSerializationInfo dataBaseInfo)
+        //    : base(repository, dataBase.CremaHost.RepositoryDispatcher, dataBase.BasePath)
+        //{
+        //    this.dataBase = dataBase;
+        //    this.settings = this.dataBase.GetService(typeof(CremaSettings)) as CremaSettings;
+        //    this.branchRevision = dataBaseInfo.BranchRevision;
+        //    this.branchSource = dataBaseInfo.BranchSource;
+        //    this.branchSourceRevision = dataBaseInfo.BranchSourceRevision;
+        //}
                 
-        public new void Commit(Authentication authentication, string comment, string eventLog)
+        public new void Commit(Authentication authentication, string comment)
         {
             var props = new List<LogPropertyInfo>
             {
-                new LogPropertyInfo() { Key = LogPropertyInfo.BranchRevisionKey, Value = $"{this.BranchRevision}"},
-                new LogPropertyInfo() { Key = LogPropertyInfo.BranchSourceKey, Value = $"{this.BranchSource}"},
-                new LogPropertyInfo() { Key = LogPropertyInfo.BranchSourceRevisionKey, Value = $"{this.BranchSourceRevision}"},
+                new LogPropertyInfo() { Key = LogPropertyInfo.BranchRevisionKey, Value = $"{this.RepositoryInfo.BranchRevision}"},
+                new LogPropertyInfo() { Key = LogPropertyInfo.BranchSourceKey, Value = $"{this.RepositoryInfo.BranchSource}"},
+                new LogPropertyInfo() { Key = LogPropertyInfo.BranchSourceRevisionKey, Value = $"{this.RepositoryInfo.BranchSourceRevision}"},
             };
 
 #if DEBUG
@@ -82,7 +81,7 @@ namespace Ntreev.Crema.Services.Data
                 }
             }
 #endif
-            base.Commit(authentication, props, comment, eventLog);
+            base.Commit(authentication, comment, props.ToArray());
         }
 
         public CremaDataSet GetTypeData(string repositoryPath, string typeSchemaPath, string revision)
@@ -91,7 +90,7 @@ namespace Ntreev.Crema.Services.Data
 
             try
             {
-                var revisionValue = revision == null ? this.Revision : revision;
+                var revisionValue = revision ?? this.RepositoryInfo.Revision;
                 var repoUri = this.GetUri(repositoryPath, revisionValue);
                 var schemaUri = this.GetUri(typeSchemaPath, revisionValue);
                 var baseUri = this.GetDataBaseUri($"{repoUri}", $"{schemaUri}");
@@ -116,7 +115,7 @@ namespace Ntreev.Crema.Services.Data
 
             try
             {
-                var revisionValue = revision == null ? this.Revision : revision;
+                var revisionValue = revision ?? this.RepositoryInfo.Revision;
                 var repoUri = this.GetUri(repositoryPath, revisionValue);
                 var categoryUri = this.GetUri(localPath, revisionValue);
                 var baseUri = this.GetDataBaseUri($"{repoUri}", $"{categoryUri}");
@@ -139,7 +138,7 @@ namespace Ntreev.Crema.Services.Data
 
             try
             {
-                var revisionValue = revision == null ? this.Revision : revision;
+                var revisionValue = revision ?? this.RepositoryInfo.Revision;
                 var repoUri = this.GetUri(repositoryPath, revisionValue);
                 var xmlUri = this.GetUri(tableXmlPath, revisionValue);
                 var baseUri = this.GetDataBaseUri($"{repoUri}", $"{xmlUri}");
@@ -177,7 +176,7 @@ namespace Ntreev.Crema.Services.Data
 
             try
             {
-                var revisionValue = revision == null ? this.Revision : revision;
+                var revisionValue = revision ?? this.RepositoryInfo.Revision;
                 var repoUri = this.GetUri(repositoryPath, revisionValue);
                 var categoryUri = this.GetUri(localPath, revisionValue);
                 var categoryPath = this.Export(categoryUri, tempPath);
@@ -224,70 +223,19 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public string BranchRevision
-        {
-            get { return this.branchRevision; }
-        }
-
-        public string BranchSource
-        {
-            get { return this.branchSource; }
-        }
-
-        public string BranchSourceRevision
-        {
-            get { return this.branchSourceRevision; }
-        }
-
-        //private void InitializeBranchInfo()
+        //public string BranchRevision
         //{
-        //    var log = this.Repository.GetLog(this.dataBase.BasePath, this.Revision, 1)[0];
-        //    var properties = log.Properties;
-        //    //if (properties.Any(item => item.Key == LogPropertyInfo.FirstRevisionKey) == true)
-        //    //{
-        //    //    var revisionProp = properties.First(item => item.Key == LogPropertyInfo.FirstRevisionKey);
-        //    //    if (long.TryParse(revisionProp.Value, out long branchRevision) == true)
-        //    //    {
-        //    //        var sourceLog = this.repository.GetLog(this.dataBase.BasePath, branchRevision, 1)[0];
-        //    //        if (sourceLog.Properties.Any(item => item.Key == LogPropertyInfo.SourceKey) == true)
-        //    //        {
-        //    //            var sourceProp = sourceLog.Properties.First(item => item.Key == LogPropertyInfo.SourceKey);
-        //    //            this.branchRevision = branchRevision;
-        //    //            this.branchSource = sourceProp.Value;
-        //    //            return;
-        //    //        }
-        //    //    }
-        //    //}
+        //    get { return this.branchRevision; }
+        //}
 
-        //    if (properties.Any(item => item.Key == LogPropertyInfo.BranchRevisionKey) == true)
-        //    {
-        //        var revisionProp = properties.First(item => item.Key == LogPropertyInfo.BranchRevisionKey);
-        //        var branchRevision = revisionProp.Value;
-        //        //if (long.TryParse(revisionProp.Value, out long branchRevision) == true)
-        //        {
-        //            if (properties.Any(item => item.Key == LogPropertyInfo.BranchSourceKey) == true)
-        //            {
-        //                var sourceProp = properties.First(item => item.Key == LogPropertyInfo.BranchSourceKey);
-        //                if (properties.Any(item => item.Key == LogPropertyInfo.BranchSourceRevisionKey) == true)
-        //                {
-        //                    var sourceRevisionProp = properties.First(item => item.Key == LogPropertyInfo.BranchSourceRevisionKey);
-        //                    var branchSourceRevision = sourceRevisionProp.Value;
-        //                    //if (long.TryParse(sourceRevisionProp.Value, out long branchSourceRevision) == true)
-        //                    {
-        //                        this.branchRevision = branchRevision;
-        //                        this.branchSource = sourceProp.Value;
-        //                        this.branchSourceRevision = branchSourceRevision;
-        //                        return;
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
+        //public string BranchSource
+        //{
+        //    get { return this.branchSource; }
+        //}
 
-        //    this.Repository.GetBranchInfo(this.dataBase.BasePath, out var l, out var s, out var sl);
-        //    this.branchRevision = l;
-        //    this.branchSource = s == "trunk" ? DataBase.defaultName : s;
-        //    this.branchSourceRevision = sl;
+        //public string BranchSourceRevision
+        //{
+        //    get { return this.branchSourceRevision; }
         //}
     }
 }

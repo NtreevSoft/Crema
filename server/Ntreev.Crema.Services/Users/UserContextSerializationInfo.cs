@@ -16,8 +16,11 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Ntreev.Library;
+using Ntreev.Library.IO;
+using Ntreev.Library.Serialization;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -47,7 +50,7 @@ namespace Ntreev.Crema.Services.Users
                 {
                     this.CategoriesList = null;
                 }
-                else 
+                else
                 {
                     if (this.CategoriesList == null)
                         this.CategoriesList = new UserCategorySerializationInfoList();
@@ -56,6 +59,65 @@ namespace Ntreev.Crema.Services.Users
                     this.CategoriesList.AddRange(value);
                 }
             }
+        }
+
+        public void WriteToDirectory(string path)
+        {
+            var uri = new Uri(path);
+            foreach (var item in this.Categories)
+            {
+                var pathList = new List<string>() { path };
+                var segments = StringUtility.Split(item, PathUtility.SeparatorChar, true);
+                pathList.AddRange(segments);
+                DirectoryUtility.Prepare(pathList.ToArray());
+            }
+
+            foreach (var item in this.Users)
+            {
+                var pathList = new List<string>() { path };
+                var segments = StringUtility.Split(item.CategoryPath, PathUtility.SeparatorChar, true);
+                pathList.AddRange(segments);
+                pathList.Add(item.ID + ".xml");
+                var filename = FileUtility.Prepare(pathList.ToArray());
+                DataContractSerializerUtility.Write(filename, item, true);
+            }
+        }
+
+        public static UserContextSerializationInfo ReadFromDirectory(string path)
+        {
+            var instance = new UserContextSerializationInfo()
+            {
+                CategoriesList = new UserCategorySerializationInfoList(),
+            };
+
+            var directories = DirectoryUtility.GetAllDirectories(path, "*", true);
+            foreach (var item in directories)
+            {
+                var relativePath = UriUtility.MakeRelativeOfDirectory(path, item);
+                var categoryPath = relativePath.WrapSeparator();
+                instance.CategoriesList.Add(categoryPath);
+            }
+
+            var files = DirectoryUtility.GetAllFiles(path, "*.xml");
+            var userList = new List<UserSerializationInfo>(files.Length);
+            foreach (var item in files)
+            {
+                var fileInfo = new FileInfo(item);
+                if (fileInfo.Attributes.HasFlag(FileAttributes.Hidden) == true)
+                    continue;
+                try
+                {
+                    var user = DataContractSerializerUtility.Read<UserSerializationInfo>(item);
+                    userList.Add(user);
+                }
+                catch
+                {
+
+                }
+            }
+            instance.Users = userList.ToArray();
+
+            return instance;
         }
     }
 }

@@ -68,5 +68,15 @@ namespace Ntreev.Crema.SvnModule
                 Value = value.Value,
             };
         }
+
+        public static explicit operator SvnPropertyValue(LogPropertyInfo value)
+        {
+            return new SvnPropertyValue()
+            {
+                Prefix = "prop",
+                Key = value.Key,
+                Value = value.Value,
+            };
+        }
     }
 }

@@ -246,7 +246,7 @@ namespace Ntreev.Crema.Services.Data
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeCategoriesCreatedEvent), categories);
             var comment = EventMessageBuilder.CreateTypeCategory(authentication, categories);
             this.CremaHost.Debug(eventLog);
-            this.Repository.Commit(authentication, comment, eventLog);
+            this.Repository.Commit(authentication, comment);
             this.CremaHost.Info(comment);
             this.OnCategoriesCreated(new ItemsCreatedEventArgs<ITypeCategory>(authentication, categories, args, dataSet));
             this.Context.InvokeItemsCreatedEvent(authentication, categories, args, dataSet);
@@ -257,7 +257,7 @@ namespace Ntreev.Crema.Services.Data
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeCategoriesRenamedEvent), categories, oldNames, oldPaths);
             var comment = EventMessageBuilder.RenameTypeCategory(authentication, categories, oldNames);
             this.CremaHost.Debug(eventLog);
-            this.Repository.Commit(authentication, comment, eventLog);
+            this.Repository.Commit(authentication, comment);
             this.CremaHost.Info(comment);
             this.OnCategoriesRenamed(new ItemsRenamedEventArgs<ITypeCategory>(authentication, categories, oldNames, oldPaths, dataSet));
             this.Context.InvokeItemsRenamedEvent(authentication, categories, oldNames, oldPaths, dataSet);
@@ -268,7 +268,7 @@ namespace Ntreev.Crema.Services.Data
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeCategoriesMovedEvent), categories, oldPaths, oldParentPaths);
             var comment = EventMessageBuilder.MoveTypeCategory(authentication, categories, oldParentPaths);
             this.CremaHost.Debug(eventLog);
-            this.Repository.Commit(authentication, comment, eventLog);
+            this.Repository.Commit(authentication, comment);
             this.CremaHost.Info(comment);
             this.OnCategoriesMoved(new ItemsMovedEventArgs<ITypeCategory>(authentication, categories, oldPaths, oldParentPaths, dataSet));
             this.Context.InvokeItemsMovedEvent(authentication, categories, oldPaths, oldParentPaths, dataSet);
@@ -279,7 +279,7 @@ namespace Ntreev.Crema.Services.Data
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeCategoriesDeletedEvent), categories, categoryPaths);
             var comment = EventMessageBuilder.DeleteTypeCategory(authentication, categories);
             this.CremaHost.Debug(eventLog);
-            this.Repository.Commit(authentication, comment, eventLog);
+            this.Repository.Commit(authentication, comment);
             this.CremaHost.Info(comment);
             this.OnCategoriesDeleted(new ItemsDeletedEventArgs<ITypeCategory>(authentication, categories, categoryPaths, dataSet));
             this.Context.InvokeItemsDeleteEvent(authentication, categories, categoryPaths, dataSet);

@@ -31,7 +31,7 @@ namespace Ntreev.Crema.Services
             Commit(repository, path, comment, null, authentication, eventLog);
         }
 
-        public static DateTime Commit(this IRepository repository, string path, string comment, IEnumerable<LogPropertyInfo> properties, Authentication authentication, string eventLog)
+        public static void Commit(this IRepository repository, string path, string comment, IEnumerable<LogPropertyInfo> properties, Authentication authentication, string eventLog)
         {
             var props = new List<LogPropertyInfo>
             {
@@ -40,7 +40,7 @@ namespace Ntreev.Crema.Services
             };
             props.AddRange(properties ?? Enumerable.Empty<LogPropertyInfo>());
 
-            return repository.Commit(path, comment, props);
+            repository.Commit(path, comment, props.ToArray());
         }
     }
 }

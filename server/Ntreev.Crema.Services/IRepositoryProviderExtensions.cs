@@ -54,16 +54,13 @@ namespace Ntreev.Crema.Services
             repositoryProvider.CopyRepository(basePath, repositoryName, newRepositoryName, comment, props.ToArray());
         }
 
-        public static void DeleteRepository(this IRepositoryProvider repositoryProvider, string basePath, string[] repositoryNames, string comment, Authentication authentication, string eventLog)
+        public static void DeleteRepository(this IRepositoryProvider repositoryProvider, Authentication authentication, string basePath, string repositoryName, string comment)
         {
             var props = new List<LogPropertyInfo>
             {
-                new LogPropertyInfo() { Key = LogPropertyInfo.EventLogKey, Value = eventLog, },
                 new LogPropertyInfo() { Key = LogPropertyInfo.UserIDKey, Value = authentication.ID, }
             };
-            repositoryProvider.DeleteRepository(basePath, repositoryNames, comment, props.ToArray());
+            repositoryProvider.DeleteRepository(basePath, repositoryName, comment, props.ToArray());
         }
-
-
     }
 }

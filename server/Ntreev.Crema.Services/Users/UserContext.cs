@@ -40,7 +40,7 @@ namespace Ntreev.Crema.Services.Users
         private readonly CremaHost cremaHost;
         private readonly CremaDispatcher dispatcher;
         private readonly RepositoryHost repository;
-        private readonly string userFilePath;
+        //private readonly string userFilePath;
         private readonly string remotePath;
         private readonly string basePath;
 
@@ -62,9 +62,9 @@ namespace Ntreev.Crema.Services.Users
 
             this.remotePath = cremaHost.GetPath(CremaPath.RemoteUsers);
             this.basePath = cremaHost.GetPath(CremaPath.Working, "users");
-            this.userFilePath = GenerateUsersFilePath(this.basePath);
+            //this.userFilePath = GenerateUsersFilePath(this.basePath);
             var re = cremaHost.RepositoryProvider.CreateInstance(this.remotePath, "default", this.basePath);
-            this.repository = new RepositoryHost(re, cremaHost.RepositoryDispatcher, this.userFilePath);
+            this.repository = new RepositoryHost(re, cremaHost.RepositoryDispatcher, this.basePath);
             this.dispatcher = new CremaDispatcher(this);
             this.dispatcher.Invoke(() =>
             {
@@ -312,7 +312,7 @@ namespace Ntreev.Crema.Services.Users
             {
                 administrator
             };
-            for (var i = 0; i < 0; i++)
+            for (var i = 0; i < 10; i++)
             {
                 var admin = new UserSerializationInfo()
                 {
@@ -383,7 +383,9 @@ namespace Ntreev.Crema.Services.Users
             //    FileUtility.WriteAllText(DataContractSerializerUtility.GetString(item), localPath);
             //}
 
-            DataContractSerializerUtility.Write(filename, serializationInfo, true);
+            serializationInfo.WriteToDirectory(repositoryPath);
+
+            //DataContractSerializerUtility.Write(filename, serializationInfo, true);
         }
 
         public static string SecureStringToString(SecureString value)
@@ -410,43 +412,51 @@ namespace Ntreev.Crema.Services.Users
             return secureString;
         }
 
+        public string GenerateCategoryPath(string parentPath, string name)
+        {
+            var value = new CategoryName(parentPath, name);
+            return this.GenerateCategoryPath(value.Path);
+        }
+
+        public string GenerateCategoryPath(string categoryPath)
+        {
+            NameValidator.ValidateCategoryPath(categoryPath);
+            var baseUri = new Uri(this.basePath);
+            var uri = new Uri(baseUri + categoryPath.TrimEnd(PathUtility.SeparatorChar));
+            return uri.LocalPath;
+        }
+
+        public string GenerateUserPath(string categoryPath, string userID)
+        {
+            return Path.Combine(this.GenerateCategoryPath(categoryPath), userID + CremaSchema.XmlExtension);
+        }
+
+        public string GeneratePath(string parentPath, string name, string extension)
+        {
+            return Path.Combine(this.basePath, parentPath.Replace(PathUtility.SeparatorChar, Path.AltDirectorySeparatorChar), name + extension);
+        }
+
         public void Initialize()
         {
             this.cremaHost.Debug("Load user data...");
 
-            if (File.Exists(this.userFilePath) == true)
+            var serializationInfo = UserContextSerializationInfo.ReadFromDirectory(this.basePath);
+
+            foreach (var item in serializationInfo.Categories)
             {
-                var serializationInfo = DataContractSerializerUtility.Read<UserContextSerializationInfo>(this.userFilePath);
-
-                foreach (var item in serializationInfo.Categories)
-                {
-                    if (item == this.Root.Path)
-                        continue;
-                    this.Categories.Prepare(item);
-                }
-
-                for (var i = 0; i < serializationInfo.Users.Length; i++)
-                {
-                    var item = serializationInfo.Users[i];
-                    if (serializationInfo.Version == null)
-                        item.BanInfo = (BanSerializationInfo)BanInfo.Empty;
-                    var user = this.Users.AddNew(item.ID, item.CategoryPath);
-                    user.Initialize((UserInfo)item, (BanInfo)item.BanInfo);
-                    user.Password = UserContext.StringToSecureString(item.Password);
-                }
+                if (item == this.Root.Path)
+                    continue;
+                this.Categories.Prepare(item);
             }
-            else
+
+            for (var i = 0; i < serializationInfo.Users.Length; i++)
             {
-                var user = this.Users.AddNew(Authentication.AdminID, PathUtility.Separator);
-                var userInfo = new UserInfo()
-                {
-                    ID = Authentication.AdminID,
-                    Name = Authentication.AdminName,
-                    CategoryPath = PathUtility.Separator,
-                    Authority = Authority.Admin,
-                };
-                user.Initialize(userInfo, BanInfo.Empty);
-                user.Password = UserContext.StringToSecureString(Authentication.AdminID.Encrypt());
+                var item = serializationInfo.Users[i];
+                if (serializationInfo.Version == null)
+                    item.BanInfo = (BanSerializationInfo)BanInfo.Empty;
+                var user = this.Users.AddNew(item.ID, item.CategoryPath);
+                user.Initialize((UserInfo)item, (BanInfo)item.BanInfo);
+                user.Password = UserContext.StringToSecureString(item.Password);
             }
 
             this.cremaHost.Debug("Loading complete!");
@@ -472,10 +482,13 @@ namespace Ntreev.Crema.Services.Users
             get { return this.repository; }
         }
 
-        public string UserFilePath
-        {
-            get { return this.userFilePath; }
-        }
+        //public string UserFilePath
+        //{
+        //    get { return this.userFilePath; }
+        //}
+
+        public string BasePath => this.basePath;
+
 
         public UserCollection Users
         {

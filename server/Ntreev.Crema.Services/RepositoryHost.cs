@@ -29,133 +29,122 @@ namespace Ntreev.Crema.Services
 {
     class RepositoryHost
     {
-        private readonly IRepository repository;
-        private readonly CremaDispatcher dispatcher;
         private readonly string path;
-        private string revision;
-        private SignatureDate signatureDate;
 
         public RepositoryHost(IRepository repository, CremaDispatcher dispatcher, string path)
         {
-            this.repository = repository;
-            this.dispatcher = dispatcher;
+            this.Repository = repository;
+            this.Dispatcher = dispatcher;
             this.path = path;
-            this.revision = this.repository.GetRevision(path);
         }
 
         public void Add(string path)
         {
-            this.dispatcher.Invoke(() =>
+            this.Dispatcher.Invoke(() =>
             {
-                this.repository.Add(path);
+                this.Repository.Add(path);
             });
         }
 
         public void Add(string path, string contents)
         {
-            this.dispatcher.Invoke(() =>
+            this.Dispatcher.Invoke(() =>
             {
-                this.repository.Add(path, contents);
+                this.Repository.Add(path, contents);
             });
         }
 
         public void Modify(string path, string contents)
         {
-            this.dispatcher.Invoke(() =>
+            this.Dispatcher.Invoke(() =>
             {
-                this.repository.Modify(path, contents);
+                this.Repository.Modify(path, contents);
             });
         }
 
         public void Move(string srcPath, string toPath)
         {
-            this.dispatcher.Invoke(() =>
+            this.Dispatcher.Invoke(() =>
             {
-                this.repository.Move(srcPath, toPath);
+                this.Repository.Move(srcPath, toPath);
             });
         }
 
         public void Delete(params string[] paths)
         {
-            this.dispatcher.Invoke(() =>
+            this.Dispatcher.Invoke(() =>
             {
-                this.repository.Delete(paths);
+                this.Repository.Delete(paths);
             });
         }
 
         public void Copy(string srcPath, string toPath)
         {
-            this.dispatcher.Invoke(() =>
+            this.Dispatcher.Invoke(() =>
             {
-                this.repository.Copy(srcPath, toPath);
+                this.Repository.Copy(srcPath, toPath);
             });
         }
 
         public void Revert()
         {
-            this.dispatcher.Invoke(() =>
+            this.Dispatcher.Invoke(() =>
             {
-                this.repository.Revert(this.path);
+                this.Repository.Revert(this.path);
             });
         }
 
         public void Revert(string revision)
         {
-            this.dispatcher.Invoke(() =>
+            this.Dispatcher.Invoke(() =>
             {
-                this.repository.Revert(this.path, revision);
+                this.Repository.Revert(this.path, revision);
             });
         }
 
         public void BeginTransaction(string name)
         {
-            this.dispatcher.Invoke(() =>
+            this.Dispatcher.Invoke(() =>
             {
-                this.repository.BeginTransaction(this.path, name);
+                this.Repository.BeginTransaction(this.path, name);
             });
         }
 
         public void EndTransaction()
         {
-            this.dispatcher.Invoke(() =>
+            this.Dispatcher.Invoke(() =>
             {
-                this.repository.EndTransaction(this.path);
+                this.Repository.EndTransaction(this.path);
             });
         }
 
         public void CancelTransaction()
         {
-            this.dispatcher.Invoke(() =>
+            this.Dispatcher.Invoke(() =>
             {
-                this.repository.CancelTransaction(this.path);
+                this.Repository.CancelTransaction(this.path);
             });
         }
 
         public string GetRevision(string path)
         {
-            return this.dispatcher.Invoke(() => this.repository.GetRevision(path));
+            return this.Dispatcher.Invoke(() => this.Repository.GetRevision(path));
         }
 
         public Uri GetUri(string path, string revision)
         {
-            return this.dispatcher.Invoke(() => this.repository.GetUri(path, revision));
+            return this.Dispatcher.Invoke(() => this.Repository.GetUri(path, revision));
         }
 
         public string Export(Uri uri, string exportPath)
         {
-            return this.dispatcher.Invoke(() => this.repository.Export(uri, exportPath));
+            return this.Dispatcher.Invoke(() => this.Repository.Export(uri, exportPath));
         }
 
-        public void Commit(Authentication authentication, string comment, string eventLog)
-        {
-            this.Commit(authentication, null, comment, eventLog);
-        }
-
-        public void Commit(Authentication authentication, IEnumerable<LogPropertyInfo> properties, string comment, string eventLog)
+        public void Commit(Authentication authentication, string comment, params LogPropertyInfo[] properties)
         {
             var propList = new List<LogPropertyInfo>
             {
-                new LogPropertyInfo() { Key = LogPropertyInfo.EventLogKey, Value = eventLog},
                 new LogPropertyInfo() { Key = LogPropertyInfo.VersionKey, Value = AppUtility.ProductVersion},
                 new LogPropertyInfo() { Key = LogPropertyInfo.UserIDKey, Value = authentication.ID}
             };
@@ -163,15 +152,14 @@ namespace Ntreev.Crema.Services
             if (properties != null)
                 propList.AddRange(properties);
 
-            var dateTime = this.dispatcher.Invoke(() => this.repository.Commit(this.path, comment, propList));
-            this.revision = this.repository.Revision;
-            this.signatureDate = new SignatureDate(authentication.ID, dateTime);
+            this.Dispatcher.Invoke(() => this.Repository.Commit(this.path, comment, propList.ToArray()));
+
             this.OnChanged(EventArgs.Empty);
         }
 
         public LogInfo[] GetLog(string path, string revision, int count)
         {
-            return this.dispatcher.Invoke(() => this.repository.GetLog(path, revision, count));
+            return this.Dispatcher.Invoke(() => this.Repository.GetLog(path, revision, count));
         }
 
         public string GetDataBaseUri(string repoUri, string itemUri)
@@ -195,30 +183,16 @@ namespace Ntreev.Crema.Services
 
         public void Dispose()
         {
-            this.repository.Dispose();
+            this.Repository.Dispose();
         }
 
-        public string Revision
-        {
-            get { return this.revision; }
-        }
-
-        public SignatureDate SignatureDate
-        {
-            get { return this.signatureDate; }
-        }
+        public RepositoryInfo RepositoryInfo => this.Repository.RepositoryInfo;
 
         public event EventHandler Changed;
 
-        protected CremaDispatcher Dispatcher
-        {
-            get { return this.dispatcher; }
-        }
+        protected CremaDispatcher Dispatcher { get; }
 
-        protected IRepository Repository
-        {
-            get { return this.repository; }
-        }
+        protected IRepository Repository { get; }
 
         protected void OnChanged(EventArgs e)
         {

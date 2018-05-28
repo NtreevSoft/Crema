@@ -226,7 +226,7 @@ namespace Ntreev.Crema.Services.Data
             var comment = EventMessageBuilder.SetPublicTypeItem(authentication, items);
             var metaData = EventMetaDataBuilder.Build(items, AccessChangeType.Public);
             this.CremaHost.Debug(eventLog);
-            this.repository.Commit(authentication, comment, eventLog);
+            this.repository.Commit(authentication, comment);
             this.CremaHost.Info(comment);
             this.OnItemsAccessChanged(new ItemsEventArgs<ITypeItem>(authentication, items, metaData));
         }
@@ -237,7 +237,7 @@ namespace Ntreev.Crema.Services.Data
             var comment = EventMessageBuilder.SetPrivateTypeItem(authentication, items);
             var metaData = EventMetaDataBuilder.Build(items, AccessChangeType.Private);
             this.CremaHost.Debug(eventLog);
-            this.repository.Commit(authentication, comment, eventLog);
+            this.repository.Commit(authentication, comment);
             this.CremaHost.Info(comment);
             this.OnItemsAccessChanged(new ItemsEventArgs<ITypeItem>(authentication, items, metaData));
         }
@@ -248,7 +248,7 @@ namespace Ntreev.Crema.Services.Data
             var comment = EventMessageBuilder.AddAccessMemberToTypeItem(authentication, items, memberIDs, accessTypes);
             var metaData = EventMetaDataBuilder.Build(items, AccessChangeType.Add, memberIDs, accessTypes);
             this.CremaHost.Debug(eventLog);
-            this.repository.Commit(authentication, comment, eventLog);
+            this.repository.Commit(authentication, comment);
             this.CremaHost.Info(comment);
             this.OnItemsAccessChanged(new ItemsEventArgs<ITypeItem>(authentication, items, metaData));
         }
@@ -259,7 +259,7 @@ namespace Ntreev.Crema.Services.Data
             var comment = EventMessageBuilder.SetAccessMemberOfTypeItem(authentication, items, memberIDs, accessTypes);
             var metaData = EventMetaDataBuilder.Build(items, AccessChangeType.Set, memberIDs, accessTypes);
             this.CremaHost.Debug(eventLog);
-            this.repository.Commit(authentication, comment, eventLog);
+            this.repository.Commit(authentication, comment);
             this.CremaHost.Info(comment);
             this.OnItemsAccessChanged(new ItemsEventArgs<ITypeItem>(authentication, items, metaData));
         }
@@ -270,7 +270,7 @@ namespace Ntreev.Crema.Services.Data
             var comment = EventMessageBuilder.RemoveAccessMemberFromTypeItem(authentication, items, memberIDs);
             var metaData = EventMetaDataBuilder.Build(items, AccessChangeType.Remove, memberIDs);
             this.CremaHost.Debug(eventLog);
-            this.repository.Commit(authentication, comment, eventLog);
+            this.repository.Commit(authentication, comment);
             this.CremaHost.Info(comment);
             this.OnItemsAccessChanged(new ItemsEventArgs<ITypeItem>(authentication, items, new object[] { AccessChangeType.Remove, memberIDs, }));
         }

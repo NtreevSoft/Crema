@@ -67,7 +67,7 @@ namespace Ntreev.Crema.Services
         private IServiceProvider container = null;
         private CremaSettings settings;
         private IRepositoryProvider repositoryProvider;
-        private IRepository repository;
+        //private IRepository repository;
         private readonly LogService log;
         private DomainContext domainContext;
         private UserContext userContext;
@@ -327,15 +327,17 @@ namespace Ntreev.Crema.Services
                     return Path.Combine(Path.Combine(this.basePath, "working"), Path.Combine(paths));
                 case CremaPath.Documents:
                     return Path.Combine(Path.Combine(this.basePath, "documents"), Path.Combine(paths));
+                case CremaPath.Transactions:
+                    return Path.Combine(Path.Combine(this.basePath, "transactions"), Path.Combine(paths));
             }
 
             throw new NotImplementedException();
         }
 
-        public IRepository Repository
-        {
-            get { return this.repository; }
-        }
+        //public IRepository Repository
+        //{
+        //    get { return this.repository; }
+        //}
 
         public IRepositoryProvider RepositoryProvider => this.repositoryProvider;
 

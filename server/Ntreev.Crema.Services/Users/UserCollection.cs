@@ -88,23 +88,25 @@ namespace Ntreev.Crema.Services.Users
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeUserCreate), userInfo.ID, userInfo.Authority, userInfo.CategoryPath);
             try
             {
-                var categories = from UserCategory item in this.Context.Categories
-                                 select item.Path;
+                var filename = this.Context.GenerateUserPath(userInfo.CategoryPath, userInfo.ID);
+                //var categories = from UserCategory item in this.Context.Categories
+                //                 select item.Path;
 
-                var users = from User item in this.Context.Users select item.SerializationInfo;
-                var userList = users.ToList();
-                userList.Add(userInfo);
+                //var users = from User item in this.Context.Users select item.SerializationInfo;
+                //var userList = users.ToList();
+                //userList.Add(userInfo);
 
-                var serializationInfo = new UserContextSerializationInfo()
-                {
-                    Version = CremaSchema.VersionValue,
-                    Categories = categories.ToArray(),
-                    Users = userList.ToArray(),
-                };
+                //var serializationInfo = new UserContextSerializationInfo()
+                //{
+                //    Version = CremaSchema.VersionValue,
+                //    Categories = categories.ToArray(),
+                //    Users = userList.ToArray(),
+                //};
 
-                var xml = DataContractSerializerUtility.GetString(serializationInfo, true);
+                var content = DataContractSerializerUtility.GetString(userInfo, true);
+                this.Repository.Add(filename, content);
 
-                this.Repository.Modify(this.Context.UserFilePath, xml);
+                //this.Repository.Modify(this.Context.UserFilePath, xml);
             }
             catch (Exception e)
             {
@@ -125,25 +127,33 @@ namespace Ntreev.Crema.Services.Users
 
             try
             {
+                //var categoryPath = this.Context.GenerateCategoryPath(category.Path);
+                //var newCategoryPath = this.Context.GenerateCategoryPath(parentPath, category.Name);
+                var path = this.Context.GenerateUserPath(user.Category.Path, user.ID);
+                var newPath = this.Context.GenerateUserPath(categoryPath, user.ID);
+
                 var userInfo = user.SerializationInfo;
                 userInfo.CategoryPath = categoryPath;
                 userInfo.ModificationInfo = new SignatureDate(authentication.ID, DateTime.UtcNow);
 
-                var categories = from UserCategory item in this.Context.Categories
-                                 select item.Path;
+                //var categories = from UserCategory item in this.Context.Categories
+                //                 select item.Path;
 
-                var users = from User item in this.Context.Users
-                            select userInfo.ID == item.ID ? userInfo : item.SerializationInfo;
+                //var users = from User item in this.Context.Users
+                //            select userInfo.ID == item.ID ? userInfo : item.SerializationInfo;
 
-                var serializationInfo = new UserContextSerializationInfo()
-                {
-                    Version = CremaSchema.VersionValue,
-                    Categories = categories.ToArray(),
-                    Users = users.ToArray(),
-                };
+                //var serializationInfo = new UserContextSerializationInfo()
+                //{
+                //    Version = CremaSchema.VersionValue,
+                //    Categories = categories.ToArray(),
+                //    Users = users.ToArray(),
+                //};
 
-                var xml = DataContractSerializerUtility.GetString(serializationInfo, true);
-                this.Repository.Modify(this.Context.UserFilePath, xml);
+                //var xml = DataContractSerializerUtility.GetString(serializationInfo, true);
+                //this.Repository.Modify(this.Context.UserFilePath, xml);
+                var content = DataContractSerializerUtility.GetString(userInfo, true);
+                this.Repository.Modify(path, content);
+                this.Repository.Move(path, newPath);
             }
             catch (Exception e)
             {
@@ -159,22 +169,8 @@ namespace Ntreev.Crema.Services.Users
 
             try
             {
-                var categories = from UserCategory item in this.Context.Categories
-                                 select item.Path;
-
-                var users = from User item in this.Context.Users
-                            where item.ID != user.ID
-                            select item.SerializationInfo;
-
-                var serializationInfo = new UserContextSerializationInfo()
-                {
-                    Version = CremaSchema.VersionValue,
-                    Categories = categories.ToArray(),
-                    Users = users.ToArray(),
-                };
-
-                var xml = DataContractSerializerUtility.GetString(serializationInfo, true);
-                this.Repository.Modify(this.Context.UserFilePath, xml);
+                var filename = this.Context.GenerateUserPath(user.Category.Path, user.ID);
+                this.Repository.Delete(filename);
             }
             catch (Exception e)
             {
@@ -190,21 +186,9 @@ namespace Ntreev.Crema.Services.Users
 
             try
             {
-                var categories = from UserCategory item in this.Context.Categories
-                                 select item.Path;
-
-                var users = from User item in this.Context.Users
-                            select item.ID == userInfo.ID ? userInfo : item.SerializationInfo;
-
-                var serializationInfo = new UserContextSerializationInfo()
-                {
-                    Version = CremaSchema.VersionValue,
-                    Categories = categories.ToArray(),
-                    Users = users.ToArray(),
-                };
-
-                var xml = DataContractSerializerUtility.GetString(serializationInfo, true);
-                this.Repository.Modify(this.Context.UserFilePath, xml);
+                var filename = this.Context.GenerateUserPath(user.Category.Path, user.ID);
+                var content = DataContractSerializerUtility.GetString(userInfo, true);
+                this.Repository.Modify(filename, content);
             }
             catch (Exception e)
             {
@@ -220,24 +204,11 @@ namespace Ntreev.Crema.Services.Users
 
             try
             {
+                var filename = this.Context.GenerateUserPath(user.Category.Path, user.ID);
                 var userInfo = user.SerializationInfo;
                 userInfo.BanInfo = (BanSerializationInfo)banInfo;
-
-                var categories = from UserCategory item in this.Context.Categories
-                                 select item.Path;
-
-                var users = from User item in this.Context.Users
-                            select userInfo.ID == item.ID ? userInfo : item.SerializationInfo;
-
-                var serializationInfo = new UserContextSerializationInfo()
-                {
-                    Version = CremaSchema.VersionValue,
-                    Categories = categories.ToArray(),
-                    Users = users.ToArray(),
-                };
-
-                var xml = DataContractSerializerUtility.GetString(serializationInfo, true);
-                this.Repository.Modify(this.Context.UserFilePath, xml);
+                var content = DataContractSerializerUtility.GetString(userInfo, true);
+                this.Repository.Modify(filename, content);
             }
             catch (Exception e)
             {
@@ -253,24 +224,11 @@ namespace Ntreev.Crema.Services.Users
 
             try
             {
+                var filename = this.Context.GenerateUserPath(user.Category.Path, user.ID);
                 var userInfo = user.SerializationInfo;
                 userInfo.BanInfo = (BanSerializationInfo)BanInfo.Empty;
-
-                var categories = from UserCategory item in this.Context.Categories
-                                 select item.Path;
-
-                var users = from User item in this.Context.Users
-                            select userInfo.ID == item.ID ? userInfo : item.SerializationInfo;
-
-                var serializationInfo = new UserContextSerializationInfo()
-                {
-                    Version = CremaSchema.VersionValue,
-                    Categories = categories.ToArray(),
-                    Users = users.ToArray(),
-                };
-
-                var xml = DataContractSerializerUtility.GetString(serializationInfo, true);
-                this.Repository.Modify(this.Context.UserFilePath, xml);
+                var content = DataContractSerializerUtility.GetString(userInfo, true);
+                this.Repository.Modify(filename, content);
             }
             catch (Exception e)
             {
@@ -291,7 +249,7 @@ namespace Ntreev.Crema.Services.Users
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeUsersCreatedEvent), users);
             var comment = EventMessageBuilder.CreateUser(authentication, users);
             this.CremaHost.Debug(eventLog);
-            this.Repository.Commit(authentication, comment, eventLog);
+            this.Repository.Commit(authentication, comment);
             this.CremaHost.Info(comment);
             this.OnUsersCreated(new ItemsCreatedEventArgs<IUser>(authentication, users, args));
             this.Context.InvokeItemsCreatedEvent(authentication, users, args);
@@ -307,7 +265,7 @@ namespace Ntreev.Crema.Services.Users
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeUsersMovedEvent), users, oldPaths, oldCategoryPaths);
             var comment = EventMessageBuilder.MoveUser(authentication, users, oldCategoryPaths);
             this.CremaHost.Debug(eventLog);
-            this.Repository.Commit(authentication, comment, eventLog);
+            this.Repository.Commit(authentication, comment);
             this.CremaHost.Info(comment);
             this.OnUsersMoved(new ItemsMovedEventArgs<IUser>(authentication, users, oldPaths, oldCategoryPaths));
             this.Context.InvokeItemsMovedEvent(authentication, users, oldPaths, oldCategoryPaths);
@@ -318,7 +276,7 @@ namespace Ntreev.Crema.Services.Users
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeUsersDeletedEvent), itemPaths);
             var comment = EventMessageBuilder.DeleteUser(authentication, users);
             this.CremaHost.Debug(eventLog);
-            this.Repository.Commit(authentication, comment, eventLog);
+            this.Repository.Commit(authentication, comment);
             this.CremaHost.Info(comment);
             this.OnUsersDeleted(new ItemsDeletedEventArgs<IUser>(authentication, users, itemPaths));
             this.Context.InvokeItemsDeleteEvent(authentication, users, itemPaths);
@@ -329,7 +287,7 @@ namespace Ntreev.Crema.Services.Users
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeUsersChangedEvent), users);
             var comment = EventMessageBuilder.ChangeUserInfo(authentication, users);
             this.CremaHost.Debug(eventLog);
-            this.Repository.Commit(authentication, comment, eventLog);
+            this.Repository.Commit(authentication, comment);
             this.CremaHost.Info(comment);
             this.OnUsersChanged(new ItemsEventArgs<IUser>(authentication, users));
             this.Context.InvokeItemsChangedEvent(authentication, users);
@@ -372,7 +330,7 @@ namespace Ntreev.Crema.Services.Users
             var comment = EventMessageBuilder.BanUser(authentication, users, comments);
             var metaData = EventMetaDataBuilder.Build(users, BanChangeType.Ban, comments);
             this.CremaHost.Debug(eventLog);
-            this.Repository.Commit(authentication, comment, eventLog);
+            this.Repository.Commit(authentication, comment);
             this.CremaHost.Info(comment);
             this.OnUsersBanChanged(new ItemsEventArgs<IUser>(authentication, users, metaData));
             this.Context.InvokeItemsChangedEvent(authentication, users);
@@ -384,7 +342,7 @@ namespace Ntreev.Crema.Services.Users
             var comment = EventMessageBuilder.UnbanUser(authentication, users);
             var metaData = EventMetaDataBuilder.Build(users, BanChangeType.Unban);
             this.CremaHost.Debug(eventLog);
-            this.Repository.Commit(authentication, comment, eventLog);
+            this.Repository.Commit(authentication, comment);
             this.CremaHost.Info(comment);
             this.OnUsersBanChanged(new ItemsEventArgs<IUser>(authentication, users, metaData));
             this.Context.InvokeItemsChangedEvent(authentication, users);

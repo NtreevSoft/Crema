@@ -31,31 +31,28 @@ using Ntreev.Library.IO;
 
 namespace Ntreev.Crema.SvnModule
 {
-    public class SvnRepository : IRepository
+    class SvnRepository : IRepository
     {
         public const string propertyPrefix = "prop:";
         private const string patchExtension = ".patch";
 
         private readonly string repositoryPath;
         private readonly string transactionPath;
+        private readonly SvnRepositoryProvider repositoryProvider;
         private readonly ILogService logService;
         private readonly Dictionary<string, string> transactions = new Dictionary<string, string>();
         private readonly Dictionary<string, string> transactionMessages = new Dictionary<string, string>();
         private bool needToUpdate;
         private Uri repositoryRoot;
-        private string revision;
+        private RepositoryInfo repositoryInfo;
 
-        //public SvnRepository(string repositoryPath, string workingPath)
-        //    : this(null, repositoryPath, workingPath)
-        //{
-
-        //}
-
-        public SvnRepository(ILogService logService, string repositoryPath, string transactionPath)
+        public SvnRepository(SvnRepositoryProvider repositoryProvider, ILogService logService, string repositoryPath, string transactionPath, RepositoryInfo repositoryInfo)
         {
+            this.repositoryProvider = repositoryProvider;
+            this.logService = logService;
             this.repositoryPath = repositoryPath;
             this.transactionPath = transactionPath;
-            this.logService = logService;
+            this.repositoryInfo = repositoryInfo;
 
             var items = this.Run("stat", this.repositoryPath.WrapQuot(), "-q").Trim();
 
@@ -72,8 +69,8 @@ namespace Ntreev.Crema.SvnModule
 
             var info = SvnInfoEventArgs.Run(this.repositoryPath);
             this.repositoryRoot = info.RepositoryRoot;
-            var repositoryInfo = SvnInfoEventArgs.Run($"{info.Uri}");
-            this.revision = repositoryInfo.Revision;
+            //var repositoryInfo = SvnInfoEventArgs.Run($"{info.Uri}");
+            //this.revision = repositoryInfo.Revision;
         }
 
         public string Name
@@ -81,10 +78,7 @@ namespace Ntreev.Crema.SvnModule
             get { return "svn"; }
         }
 
-        public string Revision
-        {
-            get { return this.revision; }
-        }
+        public RepositoryInfo RepositoryInfo => this.repositoryInfo;
 
         public void Add(string path)
         {
@@ -134,50 +128,56 @@ namespace Ntreev.Crema.SvnModule
             FileUtility.Delete(patchPath);
         }
 
-        public DateTime Commit(string path, string message, IEnumerable<Crema.ServiceModel.LogPropertyInfo> properties)
+        public void Commit(string path, string comment, params LogPropertyInfo[] properties)
         {
+            var commentMessage = this.repositoryProvider.GenerateComment(comment, properties);
             if (this.transactions.ContainsKey(path) == true)
             {
                 var patchPath = Path.Combine(this.transactionPath, this.transactions[path] + ".patch");
                 var text = this.Run("diff", path.WrapQuot(), "--patch-compatible");
                 FileUtility.WriteAllText(text, patchPath);
-                this.transactionMessages[path] = this.transactionMessages[path] + message + Environment.NewLine;
-                return DateTime.UtcNow;
+                this.transactionMessages[path] = this.transactionMessages[path] + comment + Environment.NewLine;
+                //return DateTime.UtcNow;
             }
 
-            var propText = string.Join(" ", properties.Select(item => $"--with-revprop \"{propertyPrefix}{item.Key}={item.Value}\""));
+            //var propText = string.Join(" ", properties.Select(item => $"--with-revprop \"{propertyPrefix}{item.Key}={item.Value}\""));
 
             this.logService?.Debug($"repository committing {path.WrapQuot()}");
             var result = string.Empty;
+            var commentPath = PathUtility.GetTempFileName();
             try
             {
                 if (this.needToUpdate == true)
                     this.Run("update", path.WrapQuot());
-                result = this.Run("commit", path.WrapQuot(), "-m", message.WrapQuot(), propText);
+
+                File.WriteAllText(commentPath, commentMessage);
+                result = this.Run("commit", path.WrapQuot(), "--file", $"\"{commentPath}\"");
             }
             catch (Exception e)
             {
                 this.logService?.Warn(e);
                 this.Run("update", path.WrapQuot());
-                result = this.Run("commit", path.WrapQuot(), "-m", message.WrapQuot(), propText);
+                result = this.Run("commit", path.WrapQuot(), "--file", $"\"{commentPath}\"");
             }
             finally
             {
                 this.needToUpdate = false;
+                FileUtility.Delete(commentPath);
             }
 
             if (result.Trim() != string.Empty)
             {
                 this.logService?.Debug($"repository committed {path.WrapQuot()}");
                 var match = Regex.Match(result, @"Committed revision (?<revision>\d+)[.]", RegexOptions.ExplicitCapture | RegexOptions.Multiline);
-                this.revision = match.Groups["revision"].Value;
-                var log = SvnLogEventArgs.Run(path, this.revision).First();
-                return log.DateTime;
+                var revision = match.Groups["revision"].Value;
+                this.repositoryInfo.Revision = revision;
+                var log = SvnLogEventArgs.Run(path, revision).First();
+                var userID = properties.FirstOrDefault(item => item.Key == LogPropertyInfo.UserIDKey).Value;
+                this.repositoryInfo.ModificationInfo = new SignatureDate(userID, log.DateTime);
             }
             else
             {
                 this.logService?.Debug("repository no changes. \"{0}\"", path);
-                return DateTime.MinValue;
             }
         }
 
@@ -237,7 +237,7 @@ namespace Ntreev.Crema.SvnModule
 
         public Uri GetUri(string path, string revision)
         {
-            var revisionValue = revision == null ? this.revision : revision;
+            var revisionValue = revision ?? this.repositoryInfo.Revision;
             var info = SvnInfoEventArgs.Run(path, revisionValue);
             return new Uri($"{info.Uri}@{revisionValue}");
         }

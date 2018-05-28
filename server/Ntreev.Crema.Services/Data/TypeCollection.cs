@@ -231,7 +231,7 @@ namespace Ntreev.Crema.Services.Data
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeTypesCreatedEvent), types);
             var comment = EventMessageBuilder.CreateType(authentication, types);
             this.CremaHost.Debug(eventLog);
-            this.Repository.Commit(authentication, comment, eventLog);
+            this.Repository.Commit(authentication, comment);
             this.CremaHost.Info(comment);
             this.OnTypesCreated(new ItemsCreatedEventArgs<IType>(authentication, types, args, dataSet));
             this.Context.InvokeItemsCreatedEvent(authentication, types, args, dataSet);
@@ -242,7 +242,7 @@ namespace Ntreev.Crema.Services.Data
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeTypesRenamedEvent), types, oldNames, oldPaths);
             var comment = EventMessageBuilder.RenameType(authentication, types, oldNames);
             this.CremaHost.Debug(eventLog);
-            this.Repository.Commit(authentication, comment, eventLog);
+            this.Repository.Commit(authentication, comment);
             this.CremaHost.Info(comment);
             this.OnTypesRenamed(new ItemsRenamedEventArgs<IType>(authentication, types, oldNames, oldPaths));
             this.Context.InvokeItemsRenamedEvent(authentication, types, oldNames, oldPaths, dataSet);
@@ -253,7 +253,7 @@ namespace Ntreev.Crema.Services.Data
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeTypesMovedEvent), types, oldPaths, oldCategoryPaths);
             var comment = EventMessageBuilder.MoveType(authentication, types, oldCategoryPaths);
             this.CremaHost.Debug(eventLog);
-            this.Repository.Commit(authentication, comment, eventLog);
+            this.Repository.Commit(authentication, comment);
             this.CremaHost.Info(comment);
             this.OnTypesMoved(new ItemsMovedEventArgs<IType>(authentication, types, oldPaths, oldCategoryPaths));
             this.Context.InvokeItemsMovedEvent(authentication, types, oldPaths, oldCategoryPaths, dataSet);
@@ -264,7 +264,7 @@ namespace Ntreev.Crema.Services.Data
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeTypesDeletedEvent), oldPaths);
             var comment = EventMessageBuilder.DeleteType(authentication, types);
             this.CremaHost.Debug(eventLog);
-            this.Repository.Commit(authentication, comment, eventLog);
+            this.Repository.Commit(authentication, comment);
             this.CremaHost.Info(comment);
             this.OnTypesDeleted(new ItemsDeletedEventArgs<IType>(authentication, types, oldPaths));
             this.Context.InvokeItemsDeleteEvent(authentication, types, oldPaths, dataSet);
@@ -275,7 +275,7 @@ namespace Ntreev.Crema.Services.Data
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeTypesChangedEvent), types);
             var comment = EventMessageBuilder.ChangeTypeTemplate(authentication, types);
             this.CremaHost.Debug(eventLog);
-            this.Repository.Commit(authentication, comment, eventLog);
+            this.Repository.Commit(authentication, comment);
             this.CremaHost.Info(comment);
             this.OnTypesChanged(new ItemsEventArgs<IType>(authentication, types));
             this.Context.InvokeItemsChangedEvent(authentication, types, dataSet);

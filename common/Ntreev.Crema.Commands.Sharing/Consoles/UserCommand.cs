@@ -95,18 +95,31 @@ namespace Ntreev.Crema.Commands.Consoles
                         }
                     }
                     break;
-                //case nameof(Move):
-                //    {
-                //        if (memberDescriptor.DescriptorName == "userID")
-                //        {
-                //            return this.GetUserIDs();
-                //        }
-                //        else if (memberDescriptor.DescriptorName == "categoryPath")
-                //        {
-                //            return this.GetCategoryPaths();
-                //        }
-                //    }
-                //    break;
+                case nameof(Move):
+                    {
+                        if (memberDescriptor is CommandParameterDescriptor && memberDescriptor.DescriptorName == "userID")
+                        {
+                            if (memberDescriptor.DescriptorName == "userID")
+                            {
+                                return this.UserContext.Dispatcher.Invoke(() =>
+                                {
+                                    var query = from item in this.UserContext.Users
+                                                select item.ID;
+                                    return query.ToArray();
+                                });
+                            }
+                            else if (memberDescriptor.DescriptorName == "categoryPath")
+                            {
+                                return this.UserContext.Dispatcher.Invoke(() =>
+                                {
+                                    var query = from item in this.UserContext.Categories
+                                                select item.Path;
+                                    return query.ToArray();
+                                });
+                            }
+                        }
+                    }
+                    break;
                 case nameof(Create):
                     {
                         if (memberDescriptor.DescriptorName == "categoryPath")
@@ -277,16 +290,30 @@ namespace Ntreev.Crema.Commands.Consoles
         }
 
         [CommandMethod]
-        public void Rename(string userID)
+        public void Rename(string userID, string newName = null)
         {
             var user = this.UserContext.Dispatcher.Invoke(() => this.GetUser(userID));
-            var terminal = new Terminal();
-            var newName = terminal.ReadString("NewName:");
+            var authentication = this.CommandContext.GetAuthentication(this);
+
+            if (newName == null)
+                newName = this.CommandContext.ReadString("NewName:");
 
             this.UserContext.Dispatcher.Invoke(() =>
             {
-                var authentication = this.CommandContext.GetAuthentication(this);
+                
                 user.ChangeUserInfo(authentication, null, null, newName, null);
+            });
+        }
+
+        [CommandMethod]
+        public void Move(string userID, string categoryPath)
+        {
+            var user = this.UserContext.Dispatcher.Invoke(() => this.GetUser(userID));
+            var authentication = this.CommandContext.GetAuthentication(this);
+
+            this.UserContext.Dispatcher.Invoke(() =>
+            {
+                user.Move(authentication, categoryPath);
             });
         }
 

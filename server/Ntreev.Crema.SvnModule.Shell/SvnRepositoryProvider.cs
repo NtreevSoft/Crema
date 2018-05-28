@@ -43,10 +43,15 @@ namespace Ntreev.Crema.SvnModule
         public const string remoteName = "svn";
         public const string trunkName = "trunk";
         public const string tagsName = "tags";
-        private readonly Serializer propertySerializer = new SerializerBuilder().Build();
+        private const string commentHeader = "# revision properties";
+        private static readonly Serializer propertySerializer = new SerializerBuilder().Build();
+        private static readonly Deserializer propertyDeserializer = new Deserializer();
 
         [ImportMany]
         private IEnumerable<Lazy<ILogService>> logServices = null;
+
+        [Import]
+        private Lazy<ICremaHost> cremaHost = null;
 
         [ImportingConstructor]
         public SvnRepositoryProvider()
@@ -63,7 +68,6 @@ namespace Ntreev.Crema.SvnModule
         {
             var baseUri = new Uri(basePath);
             var url = repositoryName == "default" ? UriUtility.Combine(baseUri, "trunk") : UriUtility.Combine(baseUri, "branches", repositoryName);
-            //throw new NotImplementedException();
             var logService = this.logServices.FirstOrDefault(item => item.Value.Name == "repository");
 
             if (Directory.Exists(workingPath) == false)
@@ -74,8 +78,9 @@ namespace Ntreev.Crema.SvnModule
             {
                 SvnClientHost.Run("update", workingPath.WrapQuot());
             }
-
-            return new SvnRepository(logService.Value, workingPath, null);
+            var transactionPath = Path.Combine(this.CremaHost.GetPath(CremaPath.Transactions), Path.GetFileName(workingPath));
+            var repositoryInfo = this.GetRepositoryInfo(basePath, repositoryName);
+            return new SvnRepository(this, logService.Value, workingPath, transactionPath, repositoryInfo);
         }
 
         public void InitializeRepository(string basePath, string initPath)
@@ -138,21 +143,18 @@ namespace Ntreev.Crema.SvnModule
             }
         }
 
-        public void DeleteRepository(string basePath, string[] repositoryNames, string comment, params LogPropertyInfo[] properties)
+        public void DeleteRepository(string basePath, string repositoryName, string comment, params LogPropertyInfo[] properties)
         {
-            var query = from item in repositoryNames
-                        let uri = this.GetUrl(basePath, item)
-                        select $"\"{uri}\"";
-
             var commentPath = PathUtility.GetTempFileName();
+            var uri = this.GetUrl(basePath, repositoryName);
+
             try
             {
                 File.WriteAllText(commentPath, this.GenerateComment(comment, properties));
                 var argList = new List<object>()
                 {
-                    "delete", "--file", $"\"{commentPath}\"",
+                    "delete", "--file", $"\"{commentPath}\"", $"\"{uri}\""
                 };
-                argList.AddRange(query);
 
                 SvnClientHost.Run(argList.ToArray());
             }
@@ -212,51 +214,27 @@ namespace Ntreev.Crema.SvnModule
         public RepositoryInfo GetRepositoryInfo(string basePath, string repositoryName)
         {
             var uri = this.GetUrl(basePath, repositoryName);
-
             var latestLog = SvnLogEventArgs.Run(uri.ToString(), null, 1).First();
-            int qwr = 0;
 
-            this.GetBranchInfo(uri.ToString(), out var l, out var s, out var sl);
+            this.GetBranchInfo(uri.ToString(), out var branchRevision, out var branchSource, out var branchSourceRevision);
 
-            var branchLog = SvnLogEventArgs.Run(uri.ToString(), l, 1).First();
+            var branchLog = SvnLogEventArgs.Run(uri.ToString(), branchRevision, 1).First();
             var branchUserID = branchLog.GetPropertyString(LogPropertyInfo.UserIDKey) ?? string.Empty;
             var latestUserID = latestLog.GetPropertyString(LogPropertyInfo.UserIDKey) ?? string.Empty;
 
             var repositoryInfo = new RepositoryInfo()
             {
-                ID = GuidUtility.FromName(repositoryName + l),
+                ID = GuidUtility.FromName(repositoryName + branchRevision),
                 Name = repositoryName,
                 Comment = latestLog.Comment,
                 Revision = latestLog.Revision,
-                BranchRevision = l,
-                BranchSource = s,
-                BranchSourceRevision = sl,
+                BranchRevision = branchRevision,
+                BranchSource = branchSource,
+                BranchSourceRevision = branchSourceRevision,
                 CreationInfo = new SignatureDate(branchUserID, branchLog.DateTime),
                 ModificationInfo = new SignatureDate(latestUserID, latestLog.DateTime),
             };
             return repositoryInfo;
-
-            //var branchRevision = this.Repository.BranchRevision;
-            //var branchLog = this.Repository.GetLog(this.basePath, branchRevision, 1).First();
-            //var latestLog = this.Repository.GetLog(this.basePath, this.repositoryHost.Revision, 1).First();
-            //var branchUserID = branchLog.GetPropertyString(LogPropertyInfo.UserIDKey) ?? string.Empty;
-            //var latestUserID = latestLog.GetPropertyString(LogPropertyInfo.UserIDKey) ?? string.Empty;
-            //var uri = this.Repository.GetUri(this.basePath, branchRevision);
-            //var branchName = uri.Segments.Last();
-            //base.DataBaseInfo = new DataBaseInfo()
-            //{
-            //    Name = base.Name,
-            //    Revision = latestLog.Revision,
-            //    Comment = branchLog.Comment.Decompress(),
-            //    BranchRevision = this.Repository.BranchRevision,
-            //    BranchSource = this.Repository.BranchSource,
-            //    BranchSourceRevision = this.Repository.BranchSourceRevision,
-            //    CreationInfo = new SignatureDate(branchUserID, branchLog.DateTime),
-            //    ModificationInfo = new SignatureDate(latestUserID, latestLog.DateTime),
-            //    ID = base.Name == DataBase.defaultName ? DataBase.defaultID : GuidUtility.FromName(branchName + branchLog.Revision.ToString())
-            //};
-
-            throw new NotImplementedException();
         }
 
         public string[] GetRepositoryItemList(string basePath, string repositoryName)
@@ -288,7 +266,7 @@ namespace Ntreev.Crema.SvnModule
             return UriUtility.Combine(baseUri, "branches", repositoryName);
         }
 
-        public void GetBranchInfo(string path, out string revision, out string source, out string sourceRevision)
+        private void GetBranchInfo(string path, out string revision, out string source, out string sourceRevision)
         {
             var info = SvnInfoEventArgs.Run(path);
             this.GetBranchRevision(info.RepositoryRoot, info.Uri, out revision, out source, out sourceRevision);
@@ -363,18 +341,52 @@ namespace Ntreev.Crema.SvnModule
             }
         }
 
-        private string GenerateComment(string comment, params LogPropertyInfo[] properties)
+        public string GenerateComment(string comment, params LogPropertyInfo[] properties)
         {
-            var commentInfo = new SvnCommentInfo()
-            {
-                Comment = comment,
-                Properties = properties,
-            };
-
-            
-
-
-            return this.propertySerializer.Serialize(commentInfo);
+            var propText = propertySerializer.Serialize(properties);
+            var sb = new StringBuilder();
+            sb.AppendLine(comment);
+            sb.AppendLine();
+            sb.AppendLine(commentHeader);
+            sb.Append(propText);
+            return sb.ToString();
         }
+
+        public static void ParseComment(string message, out string comment, out LogPropertyInfo[] properties)
+        {
+            comment = string.Empty;
+            properties = new LogPropertyInfo[] { };
+
+            try
+            {
+                var index = message.IndexOf(commentHeader);
+                if (index >= 0)
+                {
+                    var propText = message.Substring(index);
+                    comment = message.Remove(index);
+
+                    var sr = new StringReader(comment);
+                    var lineList = new List<string>();
+                    var line = null as string;
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        lineList.Add(line);
+                    }
+
+                    if (lineList.Last() == string.Empty)
+                        lineList.RemoveAt(lineList.Count - 1);
+                    comment = string.Join(Environment.NewLine, lineList);
+
+                    properties = propertyDeserializer.Deserialize<LogPropertyInfo[]>(propText);
+                }
+            }
+            catch
+            {
+                comment = null;
+                properties = null;
+            }
+        }
+
+        private ICremaHost CremaHost => this.cremaHost.Value;
     }
 }
