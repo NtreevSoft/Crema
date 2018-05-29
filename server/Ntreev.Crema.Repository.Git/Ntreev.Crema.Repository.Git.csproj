@@ -16,7 +16,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\bin\Debug\cremaserver\repo-modules\git\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -31,6 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -40,21 +41,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="GitRepository.cs" />
+    <Compile Include="GitServerHost.cs" />
+    <Compile Include="GitRepositoryProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="GitHost.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\common\Ntreev.Crema.ServiceModel\Ntreev.Crema.ServiceModel.csproj">
       <Project>{6478450a-dfa5-445d-890f-bc5f57c9a148}</Project>
       <Name>Ntreev.Crema.ServiceModel</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\sub-modules\Ntreev.Library\Ntreev.Library\Ntreev.Library.csproj">
       <Project>{1918437f-4fbf-4731-ac5b-981a4a4cb1f1}</Project>
       <Name>Ntreev.Library</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Ntreev.Crema.Services\Ntreev.Crema.Services.csproj">
       <Project>{b7b4c207-7729-4147-96c4-b55e85647a66}</Project>
       <Name>Ntreev.Crema.Services</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="..\..\common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems" Label="Shared" />
