@@ -54,7 +54,7 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.DebugMethod(authentication, this, nameof(SetPublic), this);
             base.ValidateSetPublic(authentication);
             this.Sign(authentication);
-            this.Context.InvokeTypeItemSetPublic(authentication, this, this.AccessInfo);
+            this.Context.InvokeTypeItemSetPublic(authentication, this);
             base.SetPublic(authentication);
             this.Context.InvokeItemsSetPublicEvent(authentication, new ITypeItem[] { this });
         }

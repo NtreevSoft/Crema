@@ -126,105 +126,6 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeDataBaseUnlock), dataBase);
         }
 
-        //public void InvokeDataBaseSetPrivate(Authentication authentication, DataBase dataBase, AccessInfo accessInfo)
-        //{
-        //    this.CremaHost.DebugMethod(authentication, this, nameof(InvokeDataBaseSetPrivate), dataBase);
-        //    var accessInfoPath = dataBase.GetAccessInfoPath();
-        //    var repository = dataBase.Repository;
-        //    var comment = EventMessageBuilder.SetPrivateDataBase(authentication, new IDataBase[] { dataBase, });
-
-        //    try
-        //    {
-        //        accessInfo.SetPrivate(dataBase.GetType().Name, authentication.SignatureDate);
-        //        dataBase.WriteAccessInfo(accessInfoPath, accessInfo);
-        //        repository.Add(accessInfoPath);
-        //        repository.Commit(authentication, comment);
-        //        this.CremaHost.Info(comment);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        this.CremaHost.Error(e);
-        //        repository.Revert();
-        //        throw e;
-        //    }
-        //}
-
-        //public void InvokeDataBaseSetPublic(Authentication authentication, DataBase dataBase, AccessInfo accessInfo)
-        //{
-        //    this.CremaHost.DebugMethod(authentication, this, nameof(InvokeDataBaseSetPublic), dataBase);
-        //    this.ValidateSetPublicDataBase(authentication, dataBase, accessInfo);
-        //    var accessInfoPath = dataBase.GetAccessInfoPath();
-        //    var repository = dataBase.Repository;
-        //    try
-        //    {
-        //        accessInfo.SetPublic();
-        //        repository.Delete(accessInfoPath);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        this.CremaHost.Error(e);
-        //        repository.Revert(dataBase.BasePath);
-        //        throw e;
-        //    }
-        //}
-
-        //public void InvokeDataBaseAddAccessMember(Authentication authentication, DataBase dataBase, AccessInfo accessInfo, string memberID, AccessType accessType)
-        //{
-        //    this.CremaHost.DebugMethod(authentication, this, nameof(InvokeDataBaseAddAccessMember), dataBase, memberID, accessType);
-        //    this.ValidateAddAccessMemberDataBase(authentication, dataBase, accessInfo, memberID, accessType);
-        //    var accessInfoPath = dataBase.GetAccessInfoPath();
-        //    var repository = dataBase.Repository;
-        //    try
-        //    {
-        //        accessInfo.Add(authentication.SignatureDate, memberID, accessType);
-        //        dataBase.WriteAccessInfo(accessInfoPath, accessInfo);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        this.CremaHost.Error(e);
-        //        repository.Revert(dataBase.BasePath);
-        //        throw e;
-        //    }
-        //}
-
-        public void InvokeDataBaseSetAccessMember(Authentication authentication, DataBase dataBase, AccessInfo accessInfo, string memberID, AccessType accessType)
-        {
-            this.CremaHost.DebugMethod(authentication, this, nameof(InvokeDataBaseSetAccessMember), dataBase, memberID, accessType);
-            this.ValidateSetAccessMemberDataBase(authentication, dataBase, accessInfo, memberID, accessType);
-            var accessInfoPath = dataBase.GetAccessInfoPath();
-            var repository = dataBase.Repository;
-            try
-            {
-                accessInfo.Set(authentication.SignatureDate, memberID, accessType);
-                dataBase.WriteAccessInfo(accessInfoPath, accessInfo);
-            }
-            catch (Exception e)
-            {
-                this.CremaHost.Error(e);
-                repository.Revert(dataBase.BasePath);
-                throw e;
-            }
-        }
-
-        public void InvokeDataBaseRemoveAccessMember(Authentication authentication, DataBase dataBase, AccessInfo accessInfo, string memberID)
-        {
-            this.CremaHost.DebugMethod(authentication, this, nameof(InvokeDataBaseRemoveAccessMember), dataBase, memberID);
-            this.ValidateRemoveAccessMemberDataBase(authentication, dataBase, accessInfo, memberID);
-            var accessInfoPath = dataBase.GetAccessInfoPath();
-            var repository = dataBase.Repository;
-            try
-            {
-                accessInfo.Remove(authentication.SignatureDate, memberID);
-                dataBase.WriteAccessInfo(accessInfoPath, accessInfo);
-            }
-            catch (Exception e)
-            {
-                this.CremaHost.Error(e);
-                repository.Revert(dataBase.BasePath);
-                throw e;
-            }
-        }
-
         public void InvokeDataBaseLoad(Authentication authentication, DataBase dataBase)
         {
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeDataBaseLoad), dataBase);
@@ -310,7 +211,7 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.Info(commentMessage);
             var newDataBase = new DataBase(this.cremaHost, newDataBaseName);
             this.AddBase(newDataBase.Name, newDataBase);
-            dataBase.Initialize();
+            newDataBase.Initialize();
             authentication.Sign();
             this.InvokeItemsCreateEvent(authentication, new DataBase[] { newDataBase, });
             return newDataBase;
@@ -481,20 +382,16 @@ namespace Ntreev.Crema.Services.Data
         public void InvokeItemsSetAccessMemberEvent(Authentication authentication, string basePath, IDataBase[] items, string[] memberIDs, AccessType[] accessTypes)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsSetAccessMemberEvent), items, memberIDs, accessTypes);
-            var comment = EventMessageBuilder.SetAccessMemberOfDataBase(authentication, items, memberIDs, accessTypes);
             var metaData = EventMetaDataBuilder.Build(items, AccessChangeType.Set, memberIDs, accessTypes);
             this.CremaHost.Debug(eventLog);
-            this.CremaHost.Info(comment);
             this.OnItemsAccessChanged(new ItemsEventArgs<IDataBase>(authentication, items, metaData));
         }
 
         public void InvokeItemsRemoveAccessMemberEvent(Authentication authentication, string basePath, IDataBase[] items, string[] memberIDs)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsRemoveAccessMemberEvent), items, memberIDs);
-            var comment = EventMessageBuilder.RemoveAccessMemberFromDataBase(authentication, items, memberIDs);
             var metaData = EventMetaDataBuilder.Build(items, AccessChangeType.Remove, memberIDs);
             this.CremaHost.Debug(eventLog);
-            this.CremaHost.Info(comment);
             this.OnItemsAccessChanged(new ItemsEventArgs<IDataBase>(authentication, items, new object[] { AccessChangeType.Remove, memberIDs, }));
         }
 
@@ -911,30 +808,6 @@ namespace Ntreev.Crema.Services.Data
 
             if (dataBase.IsLoaded == true)
                 throw new InvalidOperationException(Resources.Exception_DataBaseHasBeenLoaded);
-        }
-
-        //private void ValidateSetPublicDataBase(Authentication authentication, DataBase dataBase, AccessInfo accessInfo)
-        //{
-        //    if (dataBase.IsLoaded == false)
-        //        throw new InvalidOperationException(Resources.Exception_DataBaseHasNotBeenLoaded);
-        //}
-
-        //private void ValidateAddAccessMemberDataBase(Authentication authentication, DataBase dataBase, AccessInfo accessInfo, string memberID, AccessType accessType)
-        //{
-        //    if (dataBase.IsLoaded == false)
-        //        throw new InvalidOperationException(Resources.Exception_DataBaseHasNotBeenLoaded);
-        //}
-
-        private void ValidateSetAccessMemberDataBase(Authentication authentication, DataBase dataBase, AccessInfo accessInfo, string memberID, AccessType accessType)
-        {
-            if (dataBase.IsLoaded == false)
-                throw new InvalidOperationException(Resources.Exception_DataBaseHasNotBeenLoaded);
-        }
-
-        private void ValidateRemoveAccessMemberDataBase(Authentication authentication, DataBase dataBase, AccessInfo accessInfo, string memberID)
-        {
-            if (dataBase.IsLoaded == false)
-                throw new InvalidOperationException(Resources.Exception_DataBaseHasNotBeenLoaded);
         }
 
         private Dictionary<string, DataBaseSerializationInfo> ReadCaches()

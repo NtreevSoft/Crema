@@ -37,9 +37,6 @@ namespace Ntreev.Crema.Services.Data
     {
         private readonly DataBase dataBase;
         private readonly CremaSettings settings;
-        //private string branchRevision;
-        //private string branchSource;
-        //private string branchSourceRevision;
 
         public DataBaseRepositoryHost(DataBase dataBase, IRepository repository)
             : base(repository, dataBase.CremaHost.RepositoryDispatcher, dataBase.BasePath)
@@ -47,18 +44,8 @@ namespace Ntreev.Crema.Services.Data
             this.dataBase = dataBase;
             this.settings = this.dataBase.GetService(typeof(CremaSettings)) as CremaSettings;
         }
-
-        //public DataBaseRepositoryHost(DataBase dataBase, IRepository repository, DataBaseSerializationInfo dataBaseInfo)
-        //    : base(repository, dataBase.CremaHost.RepositoryDispatcher, dataBase.BasePath)
-        //{
-        //    this.dataBase = dataBase;
-        //    this.settings = this.dataBase.GetService(typeof(CremaSettings)) as CremaSettings;
-        //    this.branchRevision = dataBaseInfo.BranchRevision;
-        //    this.branchSource = dataBaseInfo.BranchSource;
-        //    this.branchSourceRevision = dataBaseInfo.BranchSourceRevision;
-        //}
                 
-        public new void Commit(Authentication authentication, string comment)
+        public void Commit(Authentication authentication, string comment)
         {
             var props = new List<LogPropertyInfo>
             {
@@ -222,20 +209,5 @@ namespace Ntreev.Crema.Services.Data
                 DirectoryUtility.Delete(tempPath);
             }
         }
-
-        //public string BranchRevision
-        //{
-        //    get { return this.branchRevision; }
-        //}
-
-        //public string BranchSource
-        //{
-        //    get { return this.branchSource; }
-        //}
-
-        //public string BranchSourceRevision
-        //{
-        //    get { return this.branchSourceRevision; }
-        //}
     }
 }

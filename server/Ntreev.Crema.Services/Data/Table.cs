@@ -38,7 +38,6 @@ namespace Ntreev.Crema.Services.Data
     {
         private readonly TableTemplate template;
         private readonly TableContent content;
-        //private TableMetaData metaData = TableMetaData.Empty;
         private readonly List<NewChildTableTemplate> templateList = new List<NewChildTableTemplate>();
 
         public Table()
@@ -52,9 +51,10 @@ namespace Ntreev.Crema.Services.Data
             this.DataBase.ValidateBeginInDataBase(authentication);
 
             var dataSet = template.TargetTable.DataSet.Copy();
-            this.Container.InvokeChildTableCreate(authentication, this, dataSet);
             var tableName = template.TableName;
-            var childTable = this.Container.AddNew(authentication, CremaDataTable.GenerateName(base.Name, tableName), template.CategoryPath);
+            var childName = CremaDataTable.GenerateName(base.Name, tableName);
+            this.Container.InvokeChildTableCreate(authentication, this, childName, dataSet);
+            var childTable = this.Container.AddNew(authentication, childName, template.CategoryPath);
             childTable.Initialize(dataSet.Tables[childTable.Name, childTable.Category.Path].TableInfo);
             foreach (var item in this.DerivedTables)
             {
@@ -81,7 +81,7 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.DebugMethod(authentication, this, nameof(SetPublic), this);
             base.ValidateSetPublic(authentication);
             this.Sign(authentication);
-            this.Context.InvokeTableItemSetPublic(authentication, this, this.AccessInfo);
+            this.Context.InvokeTableItemSetPublic(authentication, this);
             base.SetPublic(authentication);
             this.Context.InvokeItemsSetPublicEvent(authentication, new ITableItem[] { this });
         }
@@ -842,7 +842,7 @@ namespace Ntreev.Crema.Services.Data
         public void SetTableState(TableState tableState)
         {
             base.TableState = tableState;
-        } 
+        }
 
         #endregion
 

@@ -547,7 +547,7 @@ namespace Ntreev.Crema.Services.Data
         private void EndContent(Authentication authentication, bool isUpdate)
         {
             if (isUpdate == true)
-                this.Container.InvokeEndContentEdit(authentication, this.table, this.dataSet);
+                this.Container.InvokeTableEndContentEdit(authentication, this.table, this.dataSet);
             var isModified = this.domain.IsModified;
             var dataSet = this.dataSet;
             var items = EnumerableUtility.Friends(this, this.Childs);

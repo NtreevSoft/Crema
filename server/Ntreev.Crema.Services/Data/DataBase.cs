@@ -102,25 +102,6 @@ namespace Ntreev.Crema.Services.Data
             this.DataBases.InvokeItemsSetPublicEvent(authentication, this.BasePath, new IDataBase[] { this });
         }
 
-        private void InvokeDataBaseSetPublic(Authentication authentication)
-        {
-            //this.CremaHost.DebugMethod(authentication, this, nameof(InvokeDataBaseSetPublic));
-            var accessInfoPath = this.GetAccessInfoPath();
-            var comment = EventMessageBuilder.SetPublicDataBase(authentication, new IDataBase[] { this, });
-            try
-            {
-                this.Repository.Delete(accessInfoPath);
-                this.Repository.Commit(authentication, comment);
-                this.CremaHost.Info(comment);
-            }
-            catch (Exception e)
-            {
-                this.CremaHost.Error(e);
-                this.Repository.Revert();
-                throw e;
-            }
-        }
-
         public void SetPrivate(Authentication authentication)
         {
             this.ValidateDispatcher();
@@ -131,28 +112,6 @@ namespace Ntreev.Crema.Services.Data
             base.SetPrivate(authentication);
             this.metaData = null;
             this.DataBases.InvokeItemsSetPrivateEvent(authentication, this.BasePath, new IDataBase[] { this });
-        }
-
-        private void InvokeDataBaseSetPrivate(Authentication authentication)
-        {
-            //this.CremaHost.DebugMethod(authentication, this, nameof(InvokeDataBaseSetPrivate));
-            var accessInfoPath = this.GetAccessInfoPath();
-            var accessInfo = this.AccessInfo;
-            var comment = EventMessageBuilder.SetPrivateDataBase(authentication, new IDataBase[] { this, });
-            try
-            {
-                accessInfo.SetPrivate(this.GetType().Name, authentication.SignatureDate);
-                this.WriteAccessInfo(accessInfoPath, accessInfo);
-                this.Repository.Add(accessInfoPath);
-                this.Repository.Commit(authentication, comment);
-                this.CremaHost.Info(comment);
-            }
-            catch (Exception e)
-            {
-                this.CremaHost.Error(e);
-                this.Repository.Revert();
-                throw e;
-            }
         }
 
         public void AddAccessMember(Authentication authentication, string memberID, AccessType accessType)
@@ -167,32 +126,12 @@ namespace Ntreev.Crema.Services.Data
             this.DataBases.InvokeItemsAddAccessMemberEvent(authentication, this.BasePath, new IDataBase[] { this }, new string[] { memberID, }, new AccessType[] { accessType, });
         }
 
-        private void InvokeDataBaseAddAccessMember(Authentication authentication, string memberID, AccessType accessType)
-        {
-            var accessInfoPath = this.GetAccessInfoPath();
-            var accessInfo = this.AccessInfo;
-            var comment = EventMessageBuilder.AddAccessMemberToDataBase(authentication, new IDataBase[] { this }, new string[] { memberID, }, new AccessType[] { accessType, });
-            try
-            {
-                accessInfo.Add(authentication.SignatureDate, memberID, accessType);
-                this.WriteAccessInfo(accessInfoPath, accessInfo);
-                this.Repository.Commit(authentication, comment);
-                this.CremaHost.Info(comment);
-            }
-            catch (Exception e)
-            {
-                this.CremaHost.Error(e);
-                this.Repository.Revert();
-                throw e;
-            }
-        }
-
         public void SetAccessMember(Authentication authentication, string memberID, AccessType accessType)
         {
             this.ValidateDispatcher();
             this.CremaHost.DebugMethod(authentication, this, nameof(SetAccessMember), this, memberID, accessType);
             base.ValidateSetAccessMember(authentication, memberID, accessType);
-            this.DataBases.InvokeDataBaseSetAccessMember(authentication, this, this.AccessInfo, memberID, accessType);
+            this.InvokeDataBaseSetAccessMember(authentication, memberID, accessType);
             base.SetAccessMember(authentication, memberID, accessType);
             this.Sign(authentication);
             this.metaData = null;
@@ -204,7 +143,7 @@ namespace Ntreev.Crema.Services.Data
             this.ValidateDispatcher();
             this.CremaHost.DebugMethod(authentication, this, nameof(RemoveAccessMember), this, memberID);
             base.ValidateRemoveAccessMember(authentication, memberID);
-            this.DataBases.InvokeDataBaseRemoveAccessMember(authentication, this, this.AccessInfo, memberID);
+            this.InvokeDataBaseRemoveAccessMember(authentication, memberID);
             base.RemoveAccessMember(authentication, memberID);
             this.Sign(authentication);
             this.metaData = null;
@@ -1001,6 +940,20 @@ namespace Ntreev.Crema.Services.Data
                 {
                     throw new PermissionException($"'{memberID}' 은(는) '{Authority.Guest}' 계정이기 때문에 '{accessType}' 권한을 설정할 수 없습니다.");
                 }
+
+                if (this.IsLoaded == false)
+                    throw new InvalidOperationException(Resources.Exception_DataBaseHasNotBeenLoaded);
+            }
+        }
+
+        public override void OnValidateRemoveAccessMember(IAuthentication authentication, object target)
+        {
+            base.OnValidateRemoveAccessMember(authentication, target);
+
+            if (target == this)
+            {
+                if (this.IsLoaded == false)
+                    throw new InvalidOperationException(Resources.Exception_DataBaseHasNotBeenLoaded);
             }
         }
 
@@ -1253,6 +1206,106 @@ namespace Ntreev.Crema.Services.Data
                     this.DataBases.InvokeItemsAuthenticationLeftEvent(authentication, new IDataBase[] { this });
                 }
             });
+        }
+
+        private void InvokeDataBaseSetPublic(Authentication authentication)
+        {
+            var accessInfoPath = this.GetAccessInfoPath();
+            var comment = EventMessageBuilder.SetPublicDataBase(authentication, new IDataBase[] { this, });
+            try
+            {
+                this.Repository.Delete(accessInfoPath);
+                this.Repository.Commit(authentication, comment);
+                this.CremaHost.Info(comment);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                this.Repository.Revert();
+                throw e;
+            }
+        }
+
+        private void InvokeDataBaseSetPrivate(Authentication authentication)
+        {
+            var accessInfoPath = this.GetAccessInfoPath();
+            var accessInfo = this.AccessInfo;
+            var comment = EventMessageBuilder.SetPrivateDataBase(authentication, new IDataBase[] { this, });
+            try
+            {
+                accessInfo.SetPrivate(this.GetType().Name, authentication.SignatureDate);
+                this.WriteAccessInfo(accessInfoPath, accessInfo);
+                this.Repository.Add(accessInfoPath);
+                this.Repository.Commit(authentication, comment);
+                this.CremaHost.Info(comment);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                this.Repository.Revert();
+                throw e;
+            }
+        }
+
+        private void InvokeDataBaseAddAccessMember(Authentication authentication, string memberID, AccessType accessType)
+        {
+            var accessInfoPath = this.GetAccessInfoPath();
+            var accessInfo = this.AccessInfo;
+            var comment = EventMessageBuilder.AddAccessMemberToDataBase(authentication, new IDataBase[] { this }, new string[] { memberID, }, new AccessType[] { accessType, });
+            try
+            {
+                accessInfo.Add(authentication.SignatureDate, memberID, accessType);
+                this.WriteAccessInfo(accessInfoPath, accessInfo);
+                this.Repository.Commit(authentication, comment);
+                this.CremaHost.Info(comment);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                this.Repository.Revert();
+                throw e;
+            }
+        }
+
+        private void InvokeDataBaseSetAccessMember(Authentication authentication, string memberID, AccessType accessType)
+        {
+            var accessInfoPath = this.GetAccessInfoPath();
+            var accessInfo = this.AccessInfo;
+            var comment = EventMessageBuilder.SetAccessMemberOfDataBase(authentication, new IDataBase[] { this }, new string[] { memberID, }, new AccessType[] { accessType, });
+            try
+            {
+                accessInfo.Set(authentication.SignatureDate, memberID, accessType);
+                this.WriteAccessInfo(accessInfoPath, accessInfo);
+                this.Repository.Commit(authentication, comment);
+                this.CremaHost.Info(comment);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                this.Repository.Revert();
+                throw e;
+            }
+        }
+
+        private void InvokeDataBaseRemoveAccessMember(Authentication authentication, string memberID)
+        {
+            var accessInfoPath = this.GetAccessInfoPath();
+            var accessInfo = this.AccessInfo;
+            var comment = EventMessageBuilder.RemoveAccessMemberFromDataBase(authentication, new IDataBase[] { this }, new string[] { memberID, });
+
+            try
+            {
+                accessInfo.Remove(authentication.SignatureDate, memberID);
+                this.WriteAccessInfo(accessInfoPath, accessInfo);
+                this.Repository.Commit(authentication, comment);
+                this.CremaHost.Info(comment);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                this.Repository.Revert();
+                throw e;
+            }
         }
 
         private void ValidateDispatcher()

@@ -417,7 +417,7 @@ namespace Ntreev.Crema.Services
             return sb.ToString();
         }
 
-        public static string CreateTableCategory(Authentication authentication, ITableCategory[] categories)
+        public static string CreateTableCategory(Authentication authentication, string[] categories)
         {
             var sb = new StringBuilder();
             for (var i = 0; i < categories.Length; i++)
@@ -513,31 +513,31 @@ namespace Ntreev.Crema.Services
             return sb.ToString();
         }
 
-        public static string RenameTableCategory(Authentication authentication, ITableCategory[] categories, string[] oldNames)
+        public static string RenameTableCategory(Authentication authentication, string[] categories, string[] oldNames)
         {
             var sb = new StringBuilder();
             for (var i = 0; i < categories.Length; i++)
             {
                 if (i > 0)
                     sb.AppendLine();
-                sb.AppendFormat(EventResources.RenameTableCategory, authentication.ID, authentication.Name, oldNames[i], categories[i].Name);
+                sb.AppendFormat(EventResources.RenameTableCategory, authentication.ID, authentication.Name, oldNames[i], categories[i]);
             }
             return sb.ToString();
         }
 
-        public static string MoveTableCategory(Authentication authentication, ITableCategory[] categories, string[] oldParentPaths)
+        public static string MoveTableCategory(Authentication authentication, string[] categories, string[] parentPaths, string[] oldParentPaths)
         {
             var sb = new StringBuilder();
             for (var i = 0; i < categories.Length; i++)
             {
                 if (i > 0)
                     sb.AppendLine();
-                sb.AppendFormat(EventResources.MoveTableCategory, authentication.ID, authentication.Name, categories[i], oldParentPaths[i], categories[i].Parent);
+                sb.AppendFormat(EventResources.MoveTableCategory, authentication.ID, authentication.Name, categories[i], oldParentPaths[i], parentPaths);
             }
             return sb.ToString();
         }
 
-        public static string DeleteTableCategory(Authentication authentication, ITableCategory[] categories)
+        public static string DeleteTableCategory(Authentication authentication, string[] categories)
         {
             var sb = new StringBuilder();
             for (var i = 0; i < categories.Length; i++)
@@ -549,7 +549,7 @@ namespace Ntreev.Crema.Services
             return sb.ToString();
         }
 
-        public static string CreateTable(Authentication authentication, ITable[] tables)
+        public static string CreateTable(Authentication authentication, string[] tables)
         {
             var sb = new StringBuilder();
             for (var i = 0; i < tables.Length; i++)
@@ -561,7 +561,7 @@ namespace Ntreev.Crema.Services
             return sb.ToString();
         }
 
-        public static string RenameTable(Authentication authentication, ITable[] tables, string[] oldNames)
+        public static string RenameTable(Authentication authentication, string[] tables, string[] oldNames)
         {
             var sb = new StringBuilder();
             for (var i = 0; i < tables.Length; i++)
@@ -573,19 +573,19 @@ namespace Ntreev.Crema.Services
             return sb.ToString();
         }
 
-        public static string MoveTable(Authentication authentication, ITable[] tables, string[] oldCategoryPaths)
+        public static string MoveTable(Authentication authentication, string[] tables, string[] categoryPaths, string[] oldCategoryPaths)
         {
             var sb = new StringBuilder();
             for (var i = 0; i < tables.Length; i++)
             {
                 if (i > 0)
                     sb.AppendLine();
-                sb.AppendFormat(EventResources.MoveTable, authentication.ID, authentication.Name, tables[i], oldCategoryPaths[i], tables[i].Category);
+                sb.AppendFormat(EventResources.MoveTable, authentication.ID, authentication.Name, tables[i], oldCategoryPaths[i], categoryPaths[i]);
             }
             return sb.ToString();
         }
 
-        public static string DeleteTable(Authentication authentication, ITable[] tables)
+        public static string DeleteTable(Authentication authentication, string[] tables)
         {
             var sb = new StringBuilder();
             for (var i = 0; i < tables.Length; i++)
@@ -597,7 +597,7 @@ namespace Ntreev.Crema.Services
             return sb.ToString();
         }
 
-        public static string ChangeTableTemplate(Authentication authentication, ITable[] tables)
+        public static string ChangeTableTemplate(Authentication authentication, string[] tables)
         {
             var sb = new StringBuilder();
             for (var i = 0; i < tables.Length; i++)
@@ -609,7 +609,7 @@ namespace Ntreev.Crema.Services
             return sb.ToString();
         }
 
-        public static string ChangeTableContent(Authentication authentication, ITable[] tables)
+        public static string ChangeTableContent(Authentication authentication, string[] tables)
         {
             var sb = new StringBuilder();
             for (var i = 0; i < tables.Length; i++)

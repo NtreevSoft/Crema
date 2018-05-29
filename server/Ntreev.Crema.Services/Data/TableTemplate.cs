@@ -153,6 +153,8 @@ namespace Ntreev.Crema.Services.Data
             {
                 if (this.IsBeingEdited == false)
                     throw new InvalidOperationException(Resources.Exception_TableTemplateIsNotBeingEdited);
+                if (this.table.TemplatedParent != null)
+                    throw new InvalidOperationException(Resources.Exception_InheritedTableTemplateCannotEdit);
                 this.TemplateSource.Validate();
             }
 
