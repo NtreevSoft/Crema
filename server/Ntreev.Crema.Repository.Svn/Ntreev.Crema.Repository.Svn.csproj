@@ -7,8 +7,8 @@
     <ProjectGuid>{E0F76B09-4FE3-4A58-B16D-D136441DC1AE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Ntreev.Crema.SvnModule</RootNamespace>
-    <AssemblyName>Ntreev.Crema.SvnModule</AssemblyName>
+    <RootNamespace>Ntreev.Crema.Repository.Svn</RootNamespace>
+    <AssemblyName>Ntreev.Crema.Repository.Svn</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

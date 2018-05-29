@@ -33,7 +33,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using YamlDotNet.Serialization;
 
-namespace Ntreev.Crema.SvnModule
+namespace Ntreev.Crema.Repository.Svn
 {
     [Export(typeof(IRepositoryProvider))]
     [Export(typeof(IConfigurationPropertyProvider))]

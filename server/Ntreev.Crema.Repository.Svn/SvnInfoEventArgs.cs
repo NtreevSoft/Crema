@@ -26,7 +26,7 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
 
-namespace Ntreev.Crema.SvnModule
+namespace Ntreev.Crema.Repository.Svn
 {
     struct SvnInfoEventArgs
     {

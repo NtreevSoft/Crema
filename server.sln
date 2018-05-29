@@ -32,7 +32,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common Library", "Common Li
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{7ABD645F-F487-4A3D-8DC2-F6DD7E887BFA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.SvnModule.Shell", "server\Ntreev.Crema.SvnModule.Shell\Ntreev.Crema.SvnModule.Shell.csproj", "{E0F76B09-4FE3-4A58-B16D-D136441DC1AE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.Repository.Svn", "server\Ntreev.Crema.Repository.Svn\Ntreev.Crema.Repository.Svn.csproj", "{E0F76B09-4FE3-4A58-B16D-D136441DC1AE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ntreev.Library.Commands", "sub-modules\Ntreev.Library.Commands\Ntreev.Library.Commands\Ntreev.Library.Commands.csproj", "{CEB280C0-463F-4E09-A00C-CE3A8326F6FF}"
 EndProject

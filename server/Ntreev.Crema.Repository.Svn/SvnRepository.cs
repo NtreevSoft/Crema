@@ -29,7 +29,7 @@ using System.IO;
 using System.Collections.ObjectModel;
 using Ntreev.Library.IO;
 
-namespace Ntreev.Crema.SvnModule
+namespace Ntreev.Crema.Repository.Svn
 {
     class SvnRepository : IRepository
     {

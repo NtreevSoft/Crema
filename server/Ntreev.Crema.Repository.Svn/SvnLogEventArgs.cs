@@ -28,7 +28,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using Ntreev.Crema.ServiceModel;
 
-namespace Ntreev.Crema.SvnModule
+namespace Ntreev.Crema.Repository.Svn
 {
     struct SvnLogEventArgs
     {

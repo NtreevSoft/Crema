@@ -22,7 +22,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ntreev.Crema.SvnModule
+namespace Ntreev.Crema.Repository.Svn
 {
     static class SvnClientHost
     {
