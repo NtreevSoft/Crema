@@ -213,7 +213,7 @@ namespace Ntreev.Crema.Repository.Svn
             var uriTarget = $"{uri}";
             var filename = FileUtility.Prepare(exportPath, $"{relativeUri}");
             this.Run("export", uriTarget, filename.WrapQuot());
-            return new FileInfo(Path.Combine(exportPath, $"{relativeUri}")).FullName;
+            return new FileInfo(Path.Combine(exportPath, $"{relativeUri}")).FullName    ;
         }
 
         public void GetBranchInfo(string path, out string revision, out string source, out string sourceRevision)

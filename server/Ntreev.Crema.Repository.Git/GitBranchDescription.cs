@@ -15,51 +15,23 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Library.Linq;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.RegularExpressions;
+using Ntreev.Library;
+using System.Globalization;
+using System.Xml;
+using System.Xml.Linq;
+using System.Xml.XPath;
 using Ntreev.Crema.ServiceModel;
-using Ntreev.Crema.Data;
 
-namespace Ntreev.Crema.Services
+namespace Ntreev.Crema.Repository.Git
 {
-    public interface IRepository : IDisposable
+    struct GitBranchDescription
     {
-        void Add(string path);
-
-        void Add(string path, string contents);
-
-        void Modify(string path, string contents);
-
-        void Move(string srcPath, string toPath);
-
-        void Delete(params string[] paths);
-
-        void Copy(string srcPath, string toPath);
-
-        void Commit(string path, string message, params LogPropertyInfo[] properties);
-
-        void Revert(string path);
-
-        void Revert(string path, string revision);
-
-        void BeginTransaction(string path, string name);
-
-        void EndTransaction(string path);
-
-        void CancelTransaction(string path);
-
-        //string GetRevision(string path);
-
-        LogInfo[] GetLog(string path, string revision, int count);
-
-        Uri GetUri(string path, string revision);
-
-        IDictionary<string, string> Status(string path);
-
-        string Export(Uri uri, string exportPath);
-
-        RepositoryInfo RepositoryInfo { get; }
+        public Guid ID { get; set; }
     }
 }

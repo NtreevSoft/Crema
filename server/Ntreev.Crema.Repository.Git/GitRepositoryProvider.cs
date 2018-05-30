@@ -8,7 +8,9 @@ using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using YamlDotNet.Serialization;
 
 namespace Ntreev.Crema.Repository.Git
 {
@@ -16,6 +18,10 @@ namespace Ntreev.Crema.Repository.Git
     class GitRepositoryProvider : IRepositoryProvider
     {
         private const string keepExtension = ".keep";
+        private const string emptyBranch = "__empty__";
+
+        private static readonly Serializer propertySerializer = new SerializerBuilder().Build();
+        private static readonly Deserializer propertyDeserializer = new Deserializer();
 
         [ImportMany]
         private IEnumerable<Lazy<ILogService>> logServices = null;
@@ -25,7 +31,7 @@ namespace Ntreev.Crema.Repository.Git
 
         public string Name => "git";
 
-
+        private readonly Dictionary<Uri, string> cacheRepositories = new Dictionary<Uri, string>();
 
         public void CopyRepository(string basePath, string repositoryName, string newRepositoryName, string comment, params LogPropertyInfo[] properties)
         {
@@ -35,12 +41,12 @@ namespace Ntreev.Crema.Repository.Git
         public IRepository CreateInstance(string basePath, string repositoryName, string workingPath)
         {
             var baseUri = new Uri(basePath);
-            var branchName = repositoryName == "default" ? "master" : repositoryName;
+            var branchName = this.GetBranchName(repositoryName);
             var logService = this.logServices.FirstOrDefault(item => item.Value.Name == "repository");
 
             if (Directory.Exists(workingPath) == false)
             {
-                GitServerHost.Run("clone", baseUri.ToString().WrapQuot(), "-b", branchName);
+                GitServerHost.Run("clone", baseUri.ToString().WrapQuot(), "-b", branchName, workingPath.WrapQuot(), "--single-branch");
             }
             else
             {
@@ -66,20 +72,86 @@ namespace Ntreev.Crema.Repository.Git
             throw new NotImplementedException();
         }
 
-        public IEnumerable<string> GetRepositories(string basePath)
+        public string[] GetRepositories(string basePath)
         {
-            throw new NotImplementedException();
+            var baseUri = new Uri(basePath);
+            var repositoryPath = baseUri.LocalPath;
+            var text = GitHost.Run(repositoryPath, "branch", "--list");
+            var matches = Regex.Matches(text, "^[*]*\\s*(\\S+)", RegexOptions.Multiline);
+            var itemList = new List<string>(matches.Count);
+            for (var i = 0; i < matches.Count; i++)
+            {
+                var item = matches[i];
+                var branchName = item.Groups[1].Value;
+                var repositoryName = this.GetRepositoryName(branchName);
+                if (repositoryName != emptyBranch)
+                    itemList.Add(repositoryName);
+            }
+
+            return itemList.ToArray();
         }
 
         public RepositoryInfo GetRepositoryInfo(string basePath, string repositoryName)
         {
-            var branchName = repositoryName == "default" ? "master" : repositoryName;
-            throw new NotImplementedException();
+            var baseUri = new Uri(basePath);
+            var branchName = this.GetBranchName(repositoryName);
+            var repositoryInfo = new RepositoryInfo();
+            var repositoryPath = baseUri.LocalPath;
+            var text = GitHost.Run(repositoryPath, "log", $"{branchName}", "--pretty=fuller", "--max-count=1");
+            var logItems = GitLogInfo.ParseMany(text);
+
+            var firstLog = logItems.Last();
+            var latestLog = logItems.First();
+
+            repositoryInfo.Name = repositoryName;
+            repositoryInfo.Comment = latestLog.Comment;
+            repositoryInfo.Revision = latestLog.CommitID;
+            repositoryInfo.CreationInfo = new SignatureDate(firstLog.Author, firstLog.AuthorDate);
+            repositoryInfo.ModificationInfo = new SignatureDate(latestLog.Author, latestLog.AuthorDate);
+
+            try
+            {
+                var description = GitHost.Run(repositoryPath, "config", $"branch.{branchName}.description");
+                var info = propertyDeserializer.Deserialize<GitBranchDescription>(description);
+                repositoryInfo.ID = info.ID;
+            }
+            catch
+            {
+                var info = new GitBranchDescription()
+                {
+                    ID = Guid.NewGuid(),
+                };
+                var props = propertySerializer.Serialize(info);
+                GitHost.Run(repositoryPath, "config", $"branch.{branchName}.description", props.WrapQuot());
+                repositoryInfo.ID = info.ID;
+            }
+
+            //var reflog = GitHost.Run(tempPath, "reflog show", $"refs/remotes/origin/{branchName}", "--no-abbrev");
+
+            return repositoryInfo;
         }
 
         public string[] GetRepositoryItemList(string basePath, string repositoryName)
         {
-            throw new NotImplementedException();
+            var baseUri = new Uri(basePath);
+            var branchName = this.GetBranchName(repositoryName);
+            var repositoryPath = baseUri.LocalPath;
+            var text = GitHost.Run(repositoryPath, "ls-tree", "-r", "--name-only", $"{branchName}");
+            var lines = text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            var itemList = new List<string>(lines.Length);
+
+            foreach (var item in lines)
+            {
+                if (item.EndsWith(keepExtension) == true)
+                {
+                    itemList.Add(PathUtility.Separator + item.Substring(0, item.Length - keepExtension.Length));
+                }
+                else
+                {
+                    itemList.Add(PathUtility.Separator + item);
+                }
+            }
+            return itemList.ToArray();
         }
 
         public string GetRevision(string basePath, string repositoryName)
@@ -91,7 +163,7 @@ namespace Ntreev.Crema.Repository.Git
         {
             GitServerHost.Run("init", basePath.WrapQuot());
             GitHost.Run(basePath, "commit --allow-empty -m \"root commit\"");
-            GitHost.Run(basePath, "branch __empty__");
+            GitHost.Run(basePath, $"branch {emptyBranch}");
             DirectoryUtility.Copy(repositoryPath, basePath);
 
             foreach (var item in GetEmptyDirectories(basePath))
@@ -130,6 +202,34 @@ namespace Ntreev.Crema.Repository.Git
             return itemList.ToArray();
         }
 
+        private string GetBranchName(string repositoryName)
+        {
+            return repositoryName == "default" ? "master" : repositoryName;
+        }
+
+        private string GetRepositoryName(string branchName)
+        {
+            return branchName == "master" ? "default" : branchName;
+        }
+
         private ICremaHost CremaHost => this.cremaHost.Value;
+
+        //private string Fetch(Uri baseUri)
+        //{
+        //    if (this.cacheRepositories.ContainsKey(baseUri) == false)
+        //    {
+        //        var id = GuidUtility.FromName(baseUri.ToString());
+        //        var repositoryPath = this.CremaHost.GetPath(CremaPath.Caches, "git-cache", $"{id}");
+        //        this.cacheRepositories.Add(baseUri, repositoryPath);
+        //        DirectoryUtility.Delete(repositoryPath);
+        //        GitServerHost.Run("init", repositoryPath.WrapQuot());
+        //        GitHost.Run(repositoryPath, "remote add origin", baseUri);
+        //    }
+        //    {
+        //        var repositoryPath = this.cacheRepositories[baseUri];
+        //        GitHost.Run(repositoryPath, "fetch");
+        //        return repositoryPath;
+        //    }
+        //}
     }
 }

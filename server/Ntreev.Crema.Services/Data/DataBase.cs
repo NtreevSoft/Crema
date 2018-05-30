@@ -24,6 +24,7 @@ using Ntreev.Crema.Services.Users;
 using Ntreev.Library;
 using Ntreev.Library.IO;
 using Ntreev.Library.Linq;
+using Ntreev.Library.ObjectModel;
 using Ntreev.Library.Serialization;
 using System;
 using System.Collections.Generic;
@@ -288,7 +289,7 @@ namespace Ntreev.Crema.Services.Data
                 this.cremaHost.Debug(eventLog);
                 this.repositoryHost.Commit(authentication, comment);
                 this.cremaHost.Info(comment);
-                dataBaseInfo.Revision = this.Repository.GetRevision(this.BasePath);
+                dataBaseInfo.Revision = this.Repository.RepositoryInfo.Revision;
                 base.DataBaseInfo = dataBaseInfo;
             }
             catch (Exception e)
@@ -642,8 +643,10 @@ namespace Ntreev.Crema.Services.Data
                                         .Concat(categories)
                                         .OrderBy(item => item)
                                         .ToArray();
+
                     var dataBaseInfo = base.DataBaseInfo;
-                    dataBaseInfo.Paths = EnumerableUtility.Friends(PathUtility.Separator, allItems).Distinct().ToArray();
+                    //dataBaseInfo.Paths = EnumerableUtility.Friends(PathUtility.Separator, allItems).Distinct().ToArray();
+                    dataBaseInfo.Paths = CategoryName.MakeItemList(allItems);
                     base.DataBaseInfo = dataBaseInfo;
                 }
                 return base.DataBaseInfo;

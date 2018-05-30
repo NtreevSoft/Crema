@@ -164,13 +164,13 @@ namespace Ntreev.Crema.Repository.Svn
             }
         }
 
-        public IEnumerable<string> GetRepositories(string basePath)
+        public string[] GetRepositories(string basePath)
         {
             var uri = new Uri(basePath);
             var list = SvnClientHost.Run("list", $"{uri}".WrapQuot());
             var sr = new StringReader(list);
             var line = string.Empty;
-
+            var itemList = new List<string>();
             while ((line = sr.ReadLine()) != null)
             {
                 if (line.EndsWith(PathUtility.Separator) == true)
@@ -178,22 +178,20 @@ namespace Ntreev.Crema.Repository.Svn
                     var name = line.Substring(0, line.Length - PathUtility.Separator.Length);
                     if (name == "trunk")
                     {
-                        yield return "default";
+                        itemList.Add("default");
                     }
                     else if (name == "tags" || name == "branches")
                     {
                         var subPath = Path.Combine(basePath, name);
-                        foreach (var item in this.GetRepositories(subPath))
-                        {
-                            yield return item;
-                        }
+                        itemList.AddRange(this.GetRepositories(subPath));
                     }
                     else
                     {
-                        yield return name;
+                        itemList.Add(name);
                     }
                 }
             }
+            return itemList.ToArray();
         }
 
         public void ValidateRepository(string basePath, string repositoryPath)

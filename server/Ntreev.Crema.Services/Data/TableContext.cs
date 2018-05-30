@@ -377,9 +377,8 @@ namespace Ntreev.Crema.Services.Data
 
         public LogInfo[] GetLog(string xmlPath, string schemaPath)
         {
-            var revision = this.Repository.GetRevision(xmlPath);
-            var schemaLogs = this.Repository.GetLog(schemaPath, revision, 100);
-            var xmlLogs = this.Repository.GetLog(xmlPath, revision, 100);
+            var schemaLogs = this.Repository.GetLog(schemaPath, null, 100);
+            var xmlLogs = this.Repository.GetLog(xmlPath, null, 100);
 
             var logs = xmlLogs.ToList();
             foreach (var item in schemaLogs)
@@ -394,8 +393,7 @@ namespace Ntreev.Crema.Services.Data
 
         public LogInfo[] GetCategoryLog(string localPath)
         {
-            var revision = this.Repository.GetRevision(localPath);
-            return this.Repository.GetLog(localPath, revision, 100);
+            return this.Repository.GetLog(localPath, null, 100);
         }
 
         public string GenerateCategoryPath(string parentPath, string name)

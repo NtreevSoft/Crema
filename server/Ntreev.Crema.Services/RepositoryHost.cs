@@ -126,10 +126,10 @@ namespace Ntreev.Crema.Services
             });
         }
 
-        public string GetRevision(string path)
-        {
-            return this.Dispatcher.Invoke(() => this.Repository.GetRevision(path));
-        }
+        //public string GetRevision(string path)
+        //{
+        //    return this.Dispatcher.Invoke(() => this.Repository.GetRevision(path));
+        //}
 
         public Uri GetUri(string path, string revision)
         {

@@ -314,14 +314,12 @@ namespace Ntreev.Crema.Services.Data
 
         public LogInfo[] GetLog(string schemaPath)
         {
-            var revision = this.Repository.GetRevision(schemaPath);
-            return this.Repository.GetLog(schemaPath, revision, 100);
+            return this.Repository.GetLog(schemaPath, null, 100);
         }
 
         public LogInfo[] GetCategoryLog(string localPath)
         {
-            var revision = this.Repository.GetRevision(localPath);
-            return this.Repository.GetLog(localPath, revision, 100);
+            return this.Repository.GetLog(localPath, null, 100);
         }
 
         public string GenerateTypePath(string categoryPath, string typeName)

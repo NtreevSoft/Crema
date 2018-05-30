@@ -39,7 +39,7 @@ namespace Ntreev.Crema.Services
 
         IRepository CreateInstance(string basePath, string repositoryName, string workingPath);
 
-        IEnumerable<string> GetRepositories(string basePath);
+        string[] GetRepositories(string basePath);
 
         string GetRevision(string basePath, string repositoryName);
 
