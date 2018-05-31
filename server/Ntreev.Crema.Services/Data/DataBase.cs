@@ -47,6 +47,7 @@ namespace Ntreev.Crema.Services.Data
 
         private readonly CremaHost cremaHost;
         private readonly IRepositoryProvider repositoryProvider;
+        private readonly IObjectSerializer serializer;
         private DataBaseRepositoryHost repositoryHost;
         private readonly string cachePath;
         private CremaDispatcher dispatcher;
@@ -65,6 +66,7 @@ namespace Ntreev.Crema.Services.Data
         {
             this.cremaHost = cremaHost;
             this.repositoryProvider = cremaHost.RepositoryProvider;
+            this.serializer = cremaHost.Serializer;
             this.dispatcher = cremaHost.Dispatcher;
             base.Name = name;
             this.cachePath = cremaHost.GetPath(CremaPath.Caches, "databases");
@@ -615,6 +617,8 @@ namespace Ntreev.Crema.Services.Data
         {
             get { return this.dispatcher; }
         }
+
+        public IObjectSerializer Serializer => this.serializer;
 
         public DataBaseRepositoryHost Repository
         {

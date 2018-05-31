@@ -253,7 +253,7 @@ namespace Ntreev.Crema.Services.Data
                 var dataTables = new DataTableCollection(targetSet, this.DataBase);
                 try
                 {
-                    dataTables.Modify(this.Repository);
+                    dataTables.Modify(this.Serializer);
                 }
                 catch
                 {
@@ -420,6 +420,11 @@ namespace Ntreev.Crema.Services.Data
             return Path.Combine(this.GenerateCategoryPath(categoryPath), name + CremaSchema.SchemaExtension);
         }
 
+        public string GenerateTablePath(string categoryPath, string name)
+        {
+            return Path.Combine(this.GenerateCategoryPath(categoryPath), name);
+        }
+
         public string GeneratePath(string parentPath, string name, string extension)
         {
             return Path.Combine(this.BasePath, parentPath.Replace('/', '\\'), name + extension);
@@ -507,6 +512,8 @@ namespace Ntreev.Crema.Services.Data
         {
             get { return this.dataBase?.Dispatcher; }
         }
+
+        public IObjectSerializer Serializer => this.DataBase.Serializer;
 
         public string BasePath { get; }
 

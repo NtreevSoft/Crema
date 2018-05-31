@@ -32,7 +32,7 @@ namespace Ntreev.Crema.ObjectSerializer.Yaml
             throw new NotImplementedException();
         }
 
-        public string[] Serialize(object obj, string itemPath)
+        public string[] Serialize(object obj, string itemPath, object state)
         {
             var filename = itemPath + extensions;
             var contents = propertySerializer.Serialize(obj);
@@ -40,7 +40,7 @@ namespace Ntreev.Crema.ObjectSerializer.Yaml
             return new string[] { filename };
         }
 
-        public string[] VerifyPath(Type type, string itemPath)
+        public string[] VerifyPath(Type type, string itemPath, object state)
         {
             var filename = itemPath + extensions;
             return new string[] { filename };

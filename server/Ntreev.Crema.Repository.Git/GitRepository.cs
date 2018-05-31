@@ -128,7 +128,15 @@ namespace Ntreev.Crema.Repository.Git
 
         public void Copy(string srcPath, string toPath)
         {
-            throw new NotImplementedException();
+            if (DirectoryUtility.IsDirectory(srcPath) == true)
+            {
+                throw new NotImplementedException();
+            }
+            else
+            {
+                File.Copy(srcPath, toPath);
+                GitHost.Run(this.repositoryPath, "add", toPath.WrapQuot());
+            }
         }
 
         public void Delete(string path)

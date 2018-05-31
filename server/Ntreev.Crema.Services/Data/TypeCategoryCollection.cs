@@ -226,7 +226,7 @@ namespace Ntreev.Crema.Services.Data
 
             try
             {
-                dataTables.Modify(this.Repository);
+                dataTables.Modify(this.Serializer);
                 this.Repository.Delete(category.LocalPath);
                 this.Context.InvokeTypeItemDelete(authentication, category);
             }
@@ -303,6 +303,8 @@ namespace Ntreev.Crema.Services.Data
         {
             get { return this.Context?.Dispatcher; }
         }
+
+        public IObjectSerializer Serializer => this.DataBase.Serializer;
 
         public new int Count
         {

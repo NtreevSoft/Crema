@@ -90,7 +90,7 @@ namespace Ntreev.Crema.Services.Users
             try
             {
                 var itemPath = this.Context.GenerateUserPath(userInfo.CategoryPath, userInfo.ID);
-                var items = this.Serializer.Serialize(userInfo, itemPath);
+                var items = this.Serializer.Serialize(userInfo, itemPath, null);
                 foreach (var item in items)
                 {
                     this.Repository.Add(item);
@@ -122,8 +122,8 @@ namespace Ntreev.Crema.Services.Users
                 userInfo.CategoryPath = categoryPath;
                 userInfo.ModificationInfo = new SignatureDate(authentication.ID, DateTime.UtcNow);
 
-                var pathItems = this.Serializer.Serialize(userInfo, path);
-                var newPathItems = this.Serializer.VerifyPath(userInfo.GetType(), newPath);
+                var pathItems = this.Serializer.Serialize(userInfo, path, null);
+                var newPathItems = this.Serializer.VerifyPath(userInfo.GetType(), newPath, null);
 
                 for (var i = 0; i < pathItems.Length; i++)
                 {
@@ -162,7 +162,7 @@ namespace Ntreev.Crema.Services.Users
             try
             {
                 var itemPath = this.Context.GenerateUserPath(user.Category.Path, user.ID);
-                this.Serializer.Serialize(userInfo, itemPath);
+                this.Serializer.Serialize(userInfo, itemPath, null);
             }
             catch (Exception e)
             {
@@ -181,7 +181,7 @@ namespace Ntreev.Crema.Services.Users
                 var itemPath = this.Context.GenerateUserPath(user.Category.Path, user.ID);
                 var userInfo = user.SerializationInfo;
                 userInfo.BanInfo = (BanSerializationInfo)banInfo;
-                this.Serializer.Serialize(userInfo, itemPath);
+                this.Serializer.Serialize(userInfo, itemPath, null);
             }
             catch (Exception e)
             {
@@ -200,7 +200,7 @@ namespace Ntreev.Crema.Services.Users
                 var itemPath = this.Context.GenerateUserPath(user.Category.Path, user.ID);
                 var userInfo = user.SerializationInfo;
                 userInfo.BanInfo = (BanSerializationInfo)BanInfo.Empty;
-                this.Serializer.Serialize(userInfo, itemPath);
+                this.Serializer.Serialize(userInfo, itemPath, null);
             }
             catch (Exception e)
             {

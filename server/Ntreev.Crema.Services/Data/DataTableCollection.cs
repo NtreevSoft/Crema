@@ -58,7 +58,7 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public void Modify(DataBaseRepositoryHost repository)
+        public void Modify(IObjectSerializer serializer)
         {
             var uri = new Uri(this.dataBase.TableContext.BasePath);
 
@@ -70,16 +70,20 @@ namespace Ntreev.Crema.Services.Data
                 var path1 = table.Path;
                 var path2 = dataTable.CategoryPath + dataTable.TableName;
 
-                var schemaUri = new Uri(uri.ToString() + path1 + CremaSchema.SchemaExtension);
-                var xmlUri = new Uri(uri.ToString() + path1 + CremaSchema.XmlExtension);
+                var itemPath = this.dataBase.TableContext.GenerateTablePath(table.Category.Path, table.Name);
+                //var schemaUri = new Uri(uri.ToString() + path1 + CremaSchema.SchemaExtension);
+                //var xmlUri = new Uri(uri.ToString() + path1 + CremaSchema.XmlExtension);
 
-                if (table.TemplatedParent == null)
-                    repository.Modify(schemaUri.LocalPath, dataTable.GetXmlSchema());
-                repository.Modify(xmlUri.LocalPath, dataTable.GetXml());
+                var templateNamespace = table.TemplatedParent?.Name;
+                serializer.Serialize(dataTable, itemPath, templateNamespace);
+
+                //if (table.TemplatedParent == null)
+                //    repository.Modify(schemaUri.LocalPath, dataTable.GetXmlSchema());
+                //repository.Modify(xmlUri.LocalPath, dataTable.GetXml());
             }
         }
 
-        public void Move(DataBaseRepositoryHost repository)
+        public void Move(DataBaseRepositoryHost repository, IObjectSerializer serializer)
         {
             var uri = new Uri(this.dataBase.TableContext.BasePath);
 
@@ -94,15 +98,27 @@ namespace Ntreev.Crema.Services.Data
                 if (path1 == path2)
                     continue;
 
-                var schemaUri = new Uri(uri.ToString() + path1 + CremaSchema.SchemaExtension);
-                var xmlUri = new Uri(uri.ToString() + path1 + CremaSchema.XmlExtension);
+                var itemPath1 = this.dataBase.TableContext.GenerateTablePath(table.Category.Path, table.Name);
+                var itemPath2 = this.dataBase.TableContext.GenerateTablePath(dataTable.CategoryPath, dataTable.Name);
 
-                var targetSchemaUri = new Uri(uri.ToString() + path2 + CremaSchema.SchemaExtension);
-                var targetXmlUri = new Uri(uri.ToString() + path2 + CremaSchema.XmlExtension);
+                var templateNamespace = table.TemplatedParent?.Name;
+                var items1 = serializer.VerifyPath(typeof(CremaDataTable), itemPath1, templateNamespace);
+                var items2 = serializer.VerifyPath(typeof(CremaDataTable), itemPath2, templateNamespace);
 
-                if (table.TemplatedParent == null)
-                    repository.Move(schemaUri.LocalPath, targetSchemaUri.LocalPath);
-                repository.Move(xmlUri.LocalPath, targetXmlUri.LocalPath);
+                for (var i = 0; i < items1.Length; i++)
+                {
+                    repository.Move(items1[i], items2[i]);
+                }
+
+                //var schemaUri = new Uri(uri.ToString() + path1 + CremaSchema.SchemaExtension);
+                //var xmlUri = new Uri(uri.ToString() + path1 + CremaSchema.XmlExtension);
+
+                //var targetSchemaUri = new Uri(uri.ToString() + path2 + CremaSchema.SchemaExtension);
+                //var targetXmlUri = new Uri(uri.ToString() + path2 + CremaSchema.XmlExtension);
+
+                //if (table.TemplatedParent == null)
+                //    repository.Move(schemaUri.LocalPath, targetSchemaUri.LocalPath);
+                //repository.Move(xmlUri.LocalPath, targetXmlUri.LocalPath);
             }
         }
     }

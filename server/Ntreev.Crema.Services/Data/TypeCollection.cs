@@ -109,7 +109,7 @@ namespace Ntreev.Crema.Services.Data
             try
             {
                 dataTypes.Modify(this.Repository, item => item == type);
-                dataTables.Modify(this.Repository);
+                dataTables.Modify(this.Serializer);
                 this.Context.InvokeTypeItemRename(authentication, type, newName);
             }
             catch (Exception e)
@@ -132,7 +132,7 @@ namespace Ntreev.Crema.Services.Data
             try
             {
                 dataTypes.Modify(this.Repository, item => item == type);
-                dataTables.Modify(this.Repository);
+                dataTables.Modify(this.Serializer);
                 this.Context.InvokeTypeItemMove(authentication, type, newCategoryPath);
             }
             catch (Exception e)
@@ -168,7 +168,7 @@ namespace Ntreev.Crema.Services.Data
             try
             {
                 this.Repository.Delete(type.SchemaPath);
-                dataTables.Modify(this.Repository);
+                dataTables.Modify(this.Serializer);
                 this.Context.InvokeTypeItemDelete(authentication, type);
             }
             catch (Exception e)
@@ -194,7 +194,7 @@ namespace Ntreev.Crema.Services.Data
             try
             {
                 dataTypes.Modify(this.Repository, item => item == type);
-                dataTables.Modify(this.Repository);
+                dataTables.Modify(this.Serializer);
                 this.Context.InvokeTypeItemChange(authentication, type);
             }
             catch (Exception e)
@@ -307,6 +307,8 @@ namespace Ntreev.Crema.Services.Data
         {
             get { return this.Context?.Dispatcher; }
         }
+
+        public IObjectSerializer Serializer => this.DataBase.Serializer;
 
         public new int Count
         {

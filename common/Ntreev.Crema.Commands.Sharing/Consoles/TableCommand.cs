@@ -111,6 +111,20 @@ namespace Ntreev.Crema.Commands.Consoles
                     return this.GetCategoryPaths();
                 }
             }
+            else if (methodDescriptor.DescriptorName == nameof(Copy))
+            {
+                if (memberDescriptor.DescriptorName == "tableName")
+                {
+                    return this.GetTableNames();
+                }
+            }
+            else if (methodDescriptor.DescriptorName == nameof(Inherit))
+            {
+                if (memberDescriptor.DescriptorName == "tableName")
+                {
+                    return this.GetTableNames();
+                }
+            }
 
             return base.GetCompletions(methodDescriptor, memberDescriptor, find);
         }
@@ -170,7 +184,7 @@ namespace Ntreev.Crema.Commands.Consoles
             var authentication = this.CommandContext.GetAuthentication(this);
             table.Dispatcher.Invoke(() =>
             {
-                var categoryPath = this.CategoryPath ?? (this.GetCurrentDirectory() + PathUtility.Separator);
+                var categoryPath = this.CategoryPath ?? this.GetCurrentDirectory();
                 table.Inherit(authentication, newTableName, categoryPath, this.CopyContent);
             });
         }
