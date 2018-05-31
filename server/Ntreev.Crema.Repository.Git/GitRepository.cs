@@ -1,5 +1,6 @@
 ﻿using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services;
+using Ntreev.Library;
 using Ntreev.Library.IO;
 using System;
 using System.Collections.Generic;
@@ -33,12 +34,19 @@ namespace Ntreev.Crema.Repository.Git
 
         public void Add(string path)
         {
-            throw new NotImplementedException();
-        }
-
-        public void Add(string path, string contents)
-        {
-            throw new NotImplementedException();
+            if (DirectoryUtility.IsDirectory(path) == true)
+            {
+                var keepPath = Path.Combine(path, GitRepositoryProvider.keepExtension);
+                if (File.Exists(keepPath) == false)
+                {
+                    File.WriteAllText(keepPath, string.Empty);
+                    GitHost.Run(this.repositoryPath, "add", keepPath.WrapQuot());
+                }
+            }
+            else
+            {
+                GitHost.Run(this.repositoryPath, "add", path.WrapQuot());
+            }
         }
 
         public void BeginTransaction(string path, string name)
@@ -61,7 +69,7 @@ namespace Ntreev.Crema.Repository.Git
             throw new NotImplementedException();
         }
 
-        public void Delete(params string[] paths)
+        public void Delete(string path)
         {
             throw new NotImplementedException();
         }

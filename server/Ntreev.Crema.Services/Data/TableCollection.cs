@@ -28,6 +28,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 
 #pragma warning disable 0612
@@ -153,8 +154,10 @@ namespace Ntreev.Crema.Services.Data
                 }
                 else
                 {
-                    this.Repository.Add(schemaPath, dataTable.GetXmlSchema());
-                    this.Repository.Add(xmlPath, dataTable.GetXml());
+                    File.WriteAllText(schemaPath, dataTable.GetXmlSchema());
+                    File.WriteAllText(xmlPath, dataTable.GetXml());
+                    this.Repository.Add(schemaPath);
+                    this.Repository.Add(xmlPath);
                 }
                 this.Context.InvokeTableItemCreate(authentication, categoryPath + tableName);
 

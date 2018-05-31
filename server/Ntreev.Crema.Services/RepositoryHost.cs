@@ -46,14 +46,6 @@ namespace Ntreev.Crema.Services
             });
         }
 
-        public void Add(string path, string contents)
-        {
-            this.Dispatcher.Invoke(() =>
-            {
-                this.Repository.Add(path, contents);
-            });
-        }
-
         public void Modify(string path, string contents)
         {
             this.Dispatcher.Invoke(() =>
@@ -70,11 +62,11 @@ namespace Ntreev.Crema.Services
             });
         }
 
-        public void Delete(params string[] paths)
+        public void Delete(string path)
         {
             this.Dispatcher.Invoke(() =>
             {
-                this.Repository.Delete(paths);
+                this.Repository.Delete(path);
             });
         }
 

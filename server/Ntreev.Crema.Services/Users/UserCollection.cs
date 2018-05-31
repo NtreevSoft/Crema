@@ -30,6 +30,7 @@ using Ntreev.Library.Serialization;
 using System.Collections.Specialized;
 using System.Security;
 using Ntreev.Crema.Data.Xml.Schema;
+using System.IO;
 
 namespace Ntreev.Crema.Services.Users
 {
@@ -104,7 +105,8 @@ namespace Ntreev.Crema.Services.Users
                 //};
 
                 var content = DataContractSerializerUtility.GetString(userInfo, true);
-                this.Repository.Add(filename, content);
+                File.WriteAllText(filename, content);
+                this.Repository.Add(filename);
 
                 //this.Repository.Modify(this.Context.UserFilePath, xml);
             }

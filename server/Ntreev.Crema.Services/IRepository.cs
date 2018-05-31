@@ -28,13 +28,11 @@ namespace Ntreev.Crema.Services
     {
         void Add(string path);
 
-        void Add(string path, string contents);
-
         void Modify(string path, string contents);
 
         void Move(string srcPath, string toPath);
 
-        void Delete(params string[] paths);
+        void Delete(string path);
 
         void Copy(string srcPath, string toPath);
 

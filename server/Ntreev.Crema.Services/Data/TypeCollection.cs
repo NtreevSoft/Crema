@@ -25,6 +25,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 
 namespace Ntreev.Crema.Services.Data
@@ -86,7 +87,8 @@ namespace Ntreev.Crema.Services.Data
 
             try
             {
-                this.Repository.Add(schemaPath, dataType.GetXmlSchema());
+                File.WriteAllText(schemaPath, dataType.GetXmlSchema());
+                this.Repository.Add(schemaPath);
                 this.Context.InvokeTypeItemCreate(authentication, categoryPath + typeName);
             }
             catch (Exception e)

@@ -89,12 +89,6 @@ namespace Ntreev.Crema.Repository.Svn
             this.Run("add", "--depth files", path.WrapQuot());
         }
 
-        public void Add(string path, string contents)
-        {
-            File.WriteAllText(path, contents, Encoding.UTF8);
-            this.Run("add", "--depth files", path.WrapQuot());
-        }
-
         public void BeginTransaction(string path, string name)
         {
             this.logService?.Debug("repository begin transaction \"{0}\" \"{1}\"", path, name);
@@ -186,16 +180,13 @@ namespace Ntreev.Crema.Repository.Svn
             this.Run("copy", srcPath.WrapQuot(), toPath.WrapQuot());
         }
 
-        public void Delete(params string[] paths)
+        public void Delete(string path)
         {
             var items = new List<object>() { "delete", "--force" };
-            items.AddRange(paths.Select(item => item.WrapQuot()));
+            items.Add(path.WrapQuot());
 
-            foreach (var item in paths)
-            {
-                if (DirectoryUtility.IsDirectory(item) == true)
-                    this.Run("update", item.WrapQuot());
-            }
+            if (DirectoryUtility.IsDirectory(path) == true)
+                this.Run("update", path.WrapQuot());
 
             this.Run(items.ToArray());
         }

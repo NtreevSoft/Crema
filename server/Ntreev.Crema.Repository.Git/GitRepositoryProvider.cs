@@ -17,7 +17,7 @@ namespace Ntreev.Crema.Repository.Git
     [Export(typeof(IRepositoryProvider))]
     class GitRepositoryProvider : IRepositoryProvider
     {
-        private const string keepExtension = ".keep";
+        public const string keepExtension = ".keep";
         private const string emptyBranch = "__empty__";
 
         private static readonly Serializer propertySerializer = new SerializerBuilder().Build();
