@@ -28,9 +28,20 @@ namespace Ntreev.Crema.Repository.Git
             this.repositoryPath = repositoryPath;
             this.transactionPath = transactionPath;
             this.repositoryInfo = repositoryInfo;
+
+            var items = GitHost.Run(this.repositoryPath, "status", "-s").Trim();
+
+            if (items != string.Empty)
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine($"Repository is dirty. Please fix the problem before running the service.");
+                sb.AppendLine();
+                sb.AppendLine(items);
+                throw new Exception($"{sb}");
+            }
         }
 
-        public RepositoryInfo RepositoryInfo => throw new NotImplementedException();
+        public RepositoryInfo RepositoryInfo => this.repositoryInfo;
 
         public void Add(string path)
         {
@@ -49,19 +60,70 @@ namespace Ntreev.Crema.Repository.Git
             }
         }
 
-        public void BeginTransaction(string path, string name)
+        public void BeginTransaction(string name)
         {
             throw new NotImplementedException();
         }
 
-        public void CancelTransaction(string path)
+        public void CancelTransaction()
         {
             throw new NotImplementedException();
         }
 
-        public void Commit(string path, string message, params LogPropertyInfo[] properties)
+        public void Commit(string comment, params LogPropertyInfo[] properties)
         {
-            throw new NotImplementedException();
+            var commentMessage = this.repositoryProvider.GenerateComment(comment, properties);
+            //if (this.transactions.ContainsKey(path) == true)
+            //{
+            //    var patchPath = Path.Combine(this.transactionPath, this.transactions[path] + ".patch");
+            //    var text = this.Run("diff", path.WrapQuot(), "--patch-compatible");
+            //    FileUtility.WriteAllText(text, patchPath);
+            //    this.transactionMessages[path] = this.transactionMessages[path] + comment + Environment.NewLine;
+            //    //return DateTime.UtcNow;
+            //}
+
+            //var propText = string.Join(" ", properties.Select(item => $"--with-revprop \"{propertyPrefix}{item.Key}={item.Value}\""));
+
+            this.logService?.Debug($"repository committing {this.repositoryPath.WrapQuot()}");
+            var result = string.Empty;
+            var commentPath = PathUtility.GetTempFileName();
+            try
+            {
+                File.WriteAllText(commentPath, commentMessage);
+                result = GitHost.Run(this.repositoryPath, "commit", "-a", "--file", $"\"{commentPath}\"");
+                GitHost.Run(this.repositoryPath, "pull");
+                GitHost.Run(this.repositoryPath, "push");
+            }
+            catch (Exception e)
+            {
+                this.logService?.Warn(e);
+                //this.Run("update", this.repositoryPath.WrapQuot());
+                //result = this.Run("commit", this.repositoryPath.WrapQuot(), "--file", $"\"{commentPath}\"");
+            }
+            finally
+            {
+                //this.needToUpdate = false;
+                FileUtility.Delete(commentPath);
+            }
+
+            if (result.Trim() != string.Empty)
+            {
+                this.logService?.Debug($"repository committed {this.repositoryPath.WrapQuot()}");
+                this.logService?.Debug(result);
+                //var match = Regex.Match(result, @"Committed revision (?<revision>\d+)[.]", RegexOptions.ExplicitCapture | RegexOptions.Multiline);
+                //var revision = match.Groups["revision"].Value;
+                //this.repositoryInfo.Revision = revision;
+                //var log = SvnLogEventArgs.Run(path, revision).First();
+                var userID = properties.FirstOrDefault(item => item.Key == LogPropertyInfo.UserIDKey).Value;
+                //this.repositoryInfo.ModificationInfo = new SignatureDate(userID, log.DateTime);
+                var log = GitLogInfo.Run(this.repositoryPath, "--max-count=1").First();
+                this.repositoryInfo.Revision = log.CommitID;
+                this.repositoryInfo.ModificationInfo = new SignatureDate(userID, log.CommitDate);
+            }
+            else
+            {
+                this.logService?.Debug("repository no changes. \"{0}\"", this.repositoryPath);
+            }
         }
 
         public void Copy(string srcPath, string toPath)
@@ -76,10 +138,10 @@ namespace Ntreev.Crema.Repository.Git
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            DirectoryUtility.Delete(this.repositoryPath);
         }
 
-        public void EndTransaction(string path)
+        public void EndTransaction()
         {
             throw new NotImplementedException();
         }
@@ -102,9 +164,6 @@ namespace Ntreev.Crema.Repository.Git
             {
                 throw new NotImplementedException();
             }
-            // git.exe archive --output="C:\Users\s2quake\Desktop\새 폴더 (6)\3f3b71ec45d869e282e6d3d000a30cc3a2b8bc4f.zip" --format=zip --verbose 3f3b71ec45d869e282e6d3d000a30cc3a2b8bc4f --
-
-
         }
 
         public LogInfo[] GetLog(string path, string revision, int count)
@@ -124,27 +183,22 @@ namespace Ntreev.Crema.Repository.Git
             return new Uri($"{path}@{revision ?? this.repositoryInfo.Revision}");
         }
 
-        public void Modify(string path, string contents)
-        {
-            throw new NotImplementedException();
-        }
-
         public void Move(string srcPath, string toPath)
         {
-            throw new NotImplementedException();
+            GitHost.Run(this.repositoryPath, "mv", srcPath.WrapQuot(), toPath.WrapQuot());
         }
 
-        public void Revert(string path)
+        public void Revert()
         {
             throw new NotImplementedException();
         }
 
-        public void Revert(string path, string revision)
+        public void Revert(string revision)
         {
             throw new NotImplementedException();
         }
 
-        public IDictionary<string, string> Status(string path)
+        public IDictionary<string, string> Status()
         {
             throw new NotImplementedException();
         }

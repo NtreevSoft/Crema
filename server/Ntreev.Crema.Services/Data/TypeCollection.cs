@@ -87,8 +87,7 @@ namespace Ntreev.Crema.Services.Data
 
             try
             {
-                File.WriteAllText(schemaPath, dataType.GetXmlSchema());
-                this.Repository.Add(schemaPath);
+                this.Repository.Add(schemaPath, dataType.GetXmlSchema());
                 this.Context.InvokeTypeItemCreate(authentication, categoryPath + typeName);
             }
             catch (Exception e)

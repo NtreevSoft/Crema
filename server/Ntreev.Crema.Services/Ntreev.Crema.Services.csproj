@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthenticationToken.cs" />
+    <Compile Include="IObjectSerializer.cs" />
     <Compile Include="IRepositoryProviderExtensions.cs" />
     <Compile Include="RepositoryInfo.cs" />
     <Compile Include="CremaConfiguration.cs" />
@@ -150,6 +151,7 @@
     <Compile Include="Users\UserCategorySerializationInfoList.cs" />
     <Compile Include="Users\BanSerializationInfo.cs" />
     <Compile Include="Users\UserSerializationInfo.cs" />
+    <Compile Include="XmlObjectSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.ko-KR.resx" />

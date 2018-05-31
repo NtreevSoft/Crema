@@ -20,6 +20,7 @@ using Ntreev.Library;
 using Ntreev.Library.IO;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -29,13 +30,13 @@ namespace Ntreev.Crema.Services
 {
     class RepositoryHost
     {
-        private readonly string path;
+        //private readonly string path;
 
         public RepositoryHost(IRepository repository, CremaDispatcher dispatcher, string path)
         {
             this.Repository = repository;
             this.Dispatcher = dispatcher;
-            this.path = path;
+            //this.path = path;
         }
 
         public void Add(string path)
@@ -46,12 +47,18 @@ namespace Ntreev.Crema.Services
             });
         }
 
-        public void Modify(string path, string contents)
+        public void Add(string path, string contents)
         {
+            File.WriteAllText(path, contents, Encoding.UTF8);
             this.Dispatcher.Invoke(() =>
             {
-                this.Repository.Modify(path, contents);
+                this.Repository.Add(path);
             });
+        }
+
+        public void Modify(string path, string contents)
+        {
+            File.WriteAllText(path, contents, Encoding.UTF8);
         }
 
         public void Move(string srcPath, string toPath)
@@ -82,7 +89,7 @@ namespace Ntreev.Crema.Services
         {
             this.Dispatcher.Invoke(() =>
             {
-                this.Repository.Revert(this.path);
+                this.Repository.Revert();
             });
         }
 
@@ -90,7 +97,7 @@ namespace Ntreev.Crema.Services
         {
             this.Dispatcher.Invoke(() =>
             {
-                this.Repository.Revert(this.path, revision);
+                this.Repository.Revert(revision);
             });
         }
 
@@ -98,7 +105,7 @@ namespace Ntreev.Crema.Services
         {
             this.Dispatcher.Invoke(() =>
             {
-                this.Repository.BeginTransaction(this.path, name);
+                this.Repository.BeginTransaction(name);
             });
         }
 
@@ -106,7 +113,7 @@ namespace Ntreev.Crema.Services
         {
             this.Dispatcher.Invoke(() =>
             {
-                this.Repository.EndTransaction(this.path);
+                this.Repository.EndTransaction();
             });
         }
 
@@ -114,7 +121,7 @@ namespace Ntreev.Crema.Services
         {
             this.Dispatcher.Invoke(() =>
             {
-                this.Repository.CancelTransaction(this.path);
+                this.Repository.CancelTransaction();
             });
         }
 
@@ -144,7 +151,7 @@ namespace Ntreev.Crema.Services
             if (properties != null)
                 propList.AddRange(properties);
 
-            this.Dispatcher.Invoke(() => this.Repository.Commit(this.path, comment, propList.ToArray()));
+            this.Dispatcher.Invoke(() => this.Repository.Commit(comment, propList.ToArray()));
 
             this.OnChanged(EventArgs.Empty);
         }

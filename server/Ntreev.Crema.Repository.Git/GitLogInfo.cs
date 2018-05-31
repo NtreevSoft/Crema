@@ -62,6 +62,22 @@ namespace Ntreev.Crema.Repository.Git
 
         public string Comment { get; set; }
 
+        public static GitLogInfo[] Run(string repositoryPath, params object[] args)
+        {
+            var argList = new List<object>() { "log", "--pretty=fuller", };
+            argList.AddRange(args);
+            var text = GitHost.Run(repositoryPath, argList.ToArray());
+            return ParseMany(text);
+        }
+
+        public static GitLogInfo[] RunOnBranch(string repositoryPath, string branchName, params object[] args)
+        {
+            var argList = new List<object>() { "log", $"{branchName}", "--pretty=fuller", };
+            argList.AddRange(args);
+            var text = GitHost.Run(repositoryPath, argList.ToArray());
+            return ParseMany(text);
+        }
+
         public static GitLogInfo Parse(string text)
         {
             var logInfo = new GitLogInfo();

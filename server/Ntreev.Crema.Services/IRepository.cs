@@ -28,33 +28,29 @@ namespace Ntreev.Crema.Services
     {
         void Add(string path);
 
-        void Modify(string path, string contents);
-
         void Move(string srcPath, string toPath);
 
         void Delete(string path);
 
         void Copy(string srcPath, string toPath);
 
-        void Commit(string path, string message, params LogPropertyInfo[] properties);
+        void Commit(string comment, params LogPropertyInfo[] properties);
 
-        void Revert(string path);
+        void Revert();
 
-        void Revert(string path, string revision);
+        void Revert(string revision);
 
-        void BeginTransaction(string path, string name);
+        void BeginTransaction(string name);
 
-        void EndTransaction(string path);
+        void EndTransaction();
 
-        void CancelTransaction(string path);
-
-        //string GetRevision(string path);
+        void CancelTransaction();
 
         LogInfo[] GetLog(string path, string revision, int count);
 
         Uri GetUri(string path, string revision);
 
-        IDictionary<string, string> Status(string path);
+        //IDictionary<string, string> Status();
 
         string Export(Uri uri, string exportPath);
 

@@ -26,12 +26,12 @@ namespace Ntreev.Crema.Services
 {
     static class IRepositoryExtensions
     {
-        public static void Commit(this IRepository repository, string path, string comment, Authentication authentication, string eventLog)
+        public static void Commit(this IRepository repository, string comment, Authentication authentication, string eventLog)
         {
-            Commit(repository, path, comment, null, authentication, eventLog);
+            Commit(repository, comment, null, authentication, eventLog);
         }
 
-        public static void Commit(this IRepository repository, string path, string comment, IEnumerable<LogPropertyInfo> properties, Authentication authentication, string eventLog)
+        public static void Commit(this IRepository repository, string comment, IEnumerable<LogPropertyInfo> properties, Authentication authentication, string eventLog)
         {
             var props = new List<LogPropertyInfo>
             {
@@ -40,7 +40,7 @@ namespace Ntreev.Crema.Services
             };
             props.AddRange(properties ?? Enumerable.Empty<LogPropertyInfo>());
 
-            repository.Commit(path, comment, props.ToArray());
+            repository.Commit(comment, props.ToArray());
         }
     }
 }

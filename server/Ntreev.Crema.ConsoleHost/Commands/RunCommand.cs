@@ -72,21 +72,25 @@ namespace Ntreev.Crema.ConsoleHost.Commands
             set;
         }
 
-        [CommandProperty("repo-name")]
-        public string RepositoryName
-        {
-            get;
-            set;
-        }
+        //[CommandProperty("repo-name")]
+        //public string RepositoryName
+        //{
+        //    get;
+        //    set;
+        //}
 
         [CommandProperty("repo-module")]
         public string RepositoryModule
         {
-            get { return this.repositoryModule ?? CremaBootstrapper.DefaultRepositoryModule; }
-            set
-            {
-                this.repositoryModule = value;
-            }
+            get => this.repositoryModule;
+            set => this.repositoryModule = value;
+        }
+
+        [CommandProperty("file-type")]
+        public string FileType
+        {
+            get;
+            set;
         }
 
         [CommandProperty("prompt", 'p')]
@@ -166,8 +170,9 @@ namespace Ntreev.Crema.ConsoleHost.Commands
         {
             CremaLog.Verbose = this.Verbose ? LogVerbose.Debug : LogVerbose.Info;
             this.application.BasePath = this.Path;
-            this.application.RepositoryName = this.RepositoryName;
+            //this.application.RepositoryName = this.RepositoryName;
             this.application.RepositoryModule = this.RepositoryModule;
+            this.application.FileType = this.FileType;
             this.application.Verbose = this.Verbose ? LogVerbose.Debug : LogVerbose.Info;
             this.application.NoCache = this.NoCache;
             this.application.Culture = this.Culture;

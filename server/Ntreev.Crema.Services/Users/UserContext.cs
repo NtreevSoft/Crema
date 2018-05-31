@@ -35,7 +35,7 @@ namespace Ntreev.Crema.Services.Users
     class UserContext : ItemContext<User, UserCategory, UserCollection, UserCategoryCollection, UserContext>,
         IUserContext, IServiceProvider, IDisposable
     {
-        public const string usersFileName = "users.xml";
+        //public const string usersFileName = "users.xml";
 
         private readonly CremaHost cremaHost;
         private readonly CremaDispatcher dispatcher;
@@ -43,6 +43,7 @@ namespace Ntreev.Crema.Services.Users
         //private readonly string userFilePath;
         private readonly string remotePath;
         private readonly string basePath;
+        private readonly IObjectSerializer serializer;
 
         private ItemsCreatedEventHandler<IUserItem> itemsCreated;
         private ItemsRenamedEventHandler<IUserItem> itemsRenamed;
@@ -62,6 +63,7 @@ namespace Ntreev.Crema.Services.Users
 
             this.remotePath = cremaHost.GetPath(CremaPath.RemoteUsers);
             this.basePath = cremaHost.GetPath(CremaPath.Working, "users");
+            this.serializer = cremaHost.Serializer;
             //this.userFilePath = GenerateUsersFilePath(this.basePath);
             var re = cremaHost.RepositoryProvider.CreateInstance(this.remotePath, "default", this.basePath);
             this.repository = new RepositoryHost(re, cremaHost.RepositoryDispatcher, this.basePath);
@@ -205,10 +207,10 @@ namespace Ntreev.Crema.Services.Users
             return metaData;
         }
 
-        public static string GenerateUsersFilePath(string basePath)
-        {
-            return Path.Combine(basePath, usersFileName);
-        }
+        //public static string GenerateUsersFilePath(string basePath)
+        //{
+        //    return Path.Combine(basePath, usersFileName);
+        //}
 
         public static UserContextSerializationInfo GenerateDefaultUserInfos()
         {
@@ -291,9 +293,9 @@ namespace Ntreev.Crema.Services.Users
             return serializationInfo;
         }
 
-        public static void GenerateDefaultUserInfos(string repositoryPath)
+        public static void GenerateDefaultUserInfos(string repositoryPath, IObjectSerializer serializer)
         {
-            var filename = UserContext.GenerateUsersFilePath(repositoryPath);
+            //var filename = UserContext.GenerateUsersFilePath(repositoryPath);
             var designedInfo = new SignatureDate(Authentication.SystemID, DateTime.UtcNow);
             var administrator = new UserSerializationInfo()
             {
@@ -383,7 +385,7 @@ namespace Ntreev.Crema.Services.Users
             //    FileUtility.WriteAllText(DataContractSerializerUtility.GetString(item), localPath);
             //}
 
-            serializationInfo.WriteToDirectory(repositoryPath);
+            serializationInfo.WriteToDirectory(repositoryPath, serializer);
 
             //DataContractSerializerUtility.Write(filename, serializationInfo, true);
         }
@@ -428,7 +430,7 @@ namespace Ntreev.Crema.Services.Users
 
         public string GenerateUserPath(string categoryPath, string userID)
         {
-            return Path.Combine(this.GenerateCategoryPath(categoryPath), userID + CremaSchema.XmlExtension);
+            return Path.Combine(this.GenerateCategoryPath(categoryPath), userID);
         }
 
         public string GeneratePath(string parentPath, string name, string extension)
@@ -482,13 +484,7 @@ namespace Ntreev.Crema.Services.Users
             get { return this.repository; }
         }
 
-        //public string UserFilePath
-        //{
-        //    get { return this.userFilePath; }
-        //}
-
         public string BasePath => this.basePath;
-
 
         public UserCollection Users
         {
@@ -504,6 +500,8 @@ namespace Ntreev.Crema.Services.Users
         {
             get { return this.dispatcher; }
         }
+
+        public IObjectSerializer Serializer => this.serializer;
 
         public event ItemsCreatedEventHandler<IUserItem> ItemsCreated
         {

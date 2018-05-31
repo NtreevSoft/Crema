@@ -63,6 +63,11 @@ namespace Ntreev.Crema.Services.Users
 
         public void WriteToDirectory(string path)
         {
+            this.WriteToDirectory(path, XmlObjectSerializer.Default);
+        }
+
+        public void WriteToDirectory(string path, IObjectSerializer serializer)
+        {
             var uri = new Uri(path);
             foreach (var item in this.Categories)
             {
@@ -77,9 +82,9 @@ namespace Ntreev.Crema.Services.Users
                 var pathList = new List<string>() { path };
                 var segments = StringUtility.Split(item.CategoryPath, PathUtility.SeparatorChar, true);
                 pathList.AddRange(segments);
-                pathList.Add(item.ID + ".xml");
-                var filename = FileUtility.Prepare(pathList.ToArray());
-                DataContractSerializerUtility.Write(filename, item, true);
+                pathList.Add(item.ID);
+                var itemPath = FileUtility.Prepare(pathList.ToArray());
+                serializer.Serialize(item, itemPath);
             }
         }
 

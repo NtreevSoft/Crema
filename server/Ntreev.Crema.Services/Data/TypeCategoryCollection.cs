@@ -77,7 +77,6 @@ namespace Ntreev.Crema.Services.Data
             try
             {
                 Directory.CreateDirectory(path);
-                //this.Storage.Add(new string[] { path, });
                 this.Repository.Add(path);
                 this.Context.InvokeTypeItemCreate(authentication, parentPath + name);
             }

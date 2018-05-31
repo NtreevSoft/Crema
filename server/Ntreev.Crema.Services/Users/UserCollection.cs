@@ -89,26 +89,12 @@ namespace Ntreev.Crema.Services.Users
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeUserCreate), userInfo.ID, userInfo.Authority, userInfo.CategoryPath);
             try
             {
-                var filename = this.Context.GenerateUserPath(userInfo.CategoryPath, userInfo.ID);
-                //var categories = from UserCategory item in this.Context.Categories
-                //                 select item.Path;
-
-                //var users = from User item in this.Context.Users select item.SerializationInfo;
-                //var userList = users.ToList();
-                //userList.Add(userInfo);
-
-                //var serializationInfo = new UserContextSerializationInfo()
-                //{
-                //    Version = CremaSchema.VersionValue,
-                //    Categories = categories.ToArray(),
-                //    Users = userList.ToArray(),
-                //};
-
-                var content = DataContractSerializerUtility.GetString(userInfo, true);
-                File.WriteAllText(filename, content);
-                this.Repository.Add(filename);
-
-                //this.Repository.Modify(this.Context.UserFilePath, xml);
+                var itemPath = this.Context.GenerateUserPath(userInfo.CategoryPath, userInfo.ID);
+                var items = this.Serializer.Serialize(userInfo, itemPath);
+                foreach (var item in items)
+                {
+                    this.Repository.Add(item);
+                }
             }
             catch (Exception e)
             {
@@ -129,8 +115,6 @@ namespace Ntreev.Crema.Services.Users
 
             try
             {
-                //var categoryPath = this.Context.GenerateCategoryPath(category.Path);
-                //var newCategoryPath = this.Context.GenerateCategoryPath(parentPath, category.Name);
                 var path = this.Context.GenerateUserPath(user.Category.Path, user.ID);
                 var newPath = this.Context.GenerateUserPath(categoryPath, user.ID);
 
@@ -138,24 +122,13 @@ namespace Ntreev.Crema.Services.Users
                 userInfo.CategoryPath = categoryPath;
                 userInfo.ModificationInfo = new SignatureDate(authentication.ID, DateTime.UtcNow);
 
-                //var categories = from UserCategory item in this.Context.Categories
-                //                 select item.Path;
+                var pathItems = this.Serializer.Serialize(userInfo, path);
+                var newPathItems = this.Serializer.VerifyPath(userInfo.GetType(), newPath);
 
-                //var users = from User item in this.Context.Users
-                //            select userInfo.ID == item.ID ? userInfo : item.SerializationInfo;
-
-                //var serializationInfo = new UserContextSerializationInfo()
-                //{
-                //    Version = CremaSchema.VersionValue,
-                //    Categories = categories.ToArray(),
-                //    Users = users.ToArray(),
-                //};
-
-                //var xml = DataContractSerializerUtility.GetString(serializationInfo, true);
-                //this.Repository.Modify(this.Context.UserFilePath, xml);
-                var content = DataContractSerializerUtility.GetString(userInfo, true);
-                this.Repository.Modify(path, content);
-                this.Repository.Move(path, newPath);
+                for (var i = 0; i < pathItems.Length; i++)
+                {
+                    this.Repository.Move(pathItems[i], newPathItems[i]);
+                }
             }
             catch (Exception e)
             {
@@ -188,9 +161,8 @@ namespace Ntreev.Crema.Services.Users
 
             try
             {
-                var filename = this.Context.GenerateUserPath(user.Category.Path, user.ID);
-                var content = DataContractSerializerUtility.GetString(userInfo, true);
-                this.Repository.Modify(filename, content);
+                var itemPath = this.Context.GenerateUserPath(user.Category.Path, user.ID);
+                this.Serializer.Serialize(userInfo, itemPath);
             }
             catch (Exception e)
             {
@@ -206,11 +178,10 @@ namespace Ntreev.Crema.Services.Users
 
             try
             {
-                var filename = this.Context.GenerateUserPath(user.Category.Path, user.ID);
+                var itemPath = this.Context.GenerateUserPath(user.Category.Path, user.ID);
                 var userInfo = user.SerializationInfo;
                 userInfo.BanInfo = (BanSerializationInfo)banInfo;
-                var content = DataContractSerializerUtility.GetString(userInfo, true);
-                this.Repository.Modify(filename, content);
+                this.Serializer.Serialize(userInfo, itemPath);
             }
             catch (Exception e)
             {
@@ -226,11 +197,10 @@ namespace Ntreev.Crema.Services.Users
 
             try
             {
-                var filename = this.Context.GenerateUserPath(user.Category.Path, user.ID);
+                var itemPath = this.Context.GenerateUserPath(user.Category.Path, user.ID);
                 var userInfo = user.SerializationInfo;
                 userInfo.BanInfo = (BanSerializationInfo)BanInfo.Empty;
-                var content = DataContractSerializerUtility.GetString(userInfo, true);
-                this.Repository.Modify(filename, content);
+                this.Serializer.Serialize(userInfo, itemPath);
             }
             catch (Exception e)
             {
@@ -383,6 +353,8 @@ namespace Ntreev.Crema.Services.Users
         {
             get { return this.Context.Dispatcher; }
         }
+
+        public IObjectSerializer Serializer => this.Context.Serializer;
 
         public new int Count
         {

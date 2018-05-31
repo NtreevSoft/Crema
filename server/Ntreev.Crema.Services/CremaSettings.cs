@@ -25,24 +25,16 @@ namespace Ntreev.Crema.Services
 {
     class CremaSettings
     {
-        //public const string DefaultRepositoryName = "crema";
-        private string repositoryName;
-
+        private string fileType;
         public CremaSettings()
         {
-            //this.RepositoryName = DefaultRepositoryName;
+
         }
 
         public string BasePath
         {
             get;
             set;
-        }
-
-        public string RepositoryName
-        {
-            get { return this.repositoryName ?? string.Empty; }
-            set { this.repositoryName = value; }
         }
 
         public bool MultiThreading
@@ -55,6 +47,12 @@ namespace Ntreev.Crema.Services
         {
             get;
             set;
+        }
+
+        public string FileType
+        {
+            get => this.fileType ?? "xml";
+            set => this.fileType = value;
         }
 
         public LogVerbose Verbose

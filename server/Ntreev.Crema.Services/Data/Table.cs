@@ -269,7 +269,7 @@ namespace Ntreev.Crema.Services.Data
             {
                 this.ValidateAccessType(authentication, AccessType.Guest);
                 this.Sign(authentication);
-                return new Tuple<string, string, string>(this.CremaHost.RepositoryPath, this.XmlPath, this.TemplatedParent == null ? this.SchemaPath : this.TemplatedParent.SchemaPath);
+                return new Tuple<string, string, string>(this.DataBase.BasePath, this.XmlPath, this.TemplatedParent == null ? this.SchemaPath : this.TemplatedParent.SchemaPath);
             });
             var dataSet = this.Container.Repository.GetTableData(info.Item1, info.Item2, info.Item3, revision);
             return dataSet;

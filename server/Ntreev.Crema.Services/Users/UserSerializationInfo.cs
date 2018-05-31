@@ -57,6 +57,7 @@ namespace Ntreev.Crema.Services.Users
         public BanSerializationInfo BanInfo { get; set; }
 
         [XmlIgnore]
+        [IgnoreDataMember]
         public string CategoryPath
         {
             get

@@ -43,6 +43,7 @@ namespace Ntreev.Crema.Services
     public class CremaBootstrapper : IServiceProvider, IDisposable
     {
         private const string pluginsString = "plugins";
+        private const string serializersString = "serializers";
         private const string repoModulesString = "repo-modules";
         private const string defaultString = "default";
         private const string trunkString = "trunk";
@@ -54,11 +55,11 @@ namespace Ntreev.Crema.Services
         public CremaBootstrapper()
         {
             this.Initialize();
-            this.settings.RepositoryModule = DefaultRepositoryModule;
+            //this.settings.RepositoryModule = DefaultRepositoryModule;
             CremaLog.Debug("default repository module : {0}", this.settings.RepositoryModule);
         }
 
-        public void CreateRepository(string path, string repositoryName, bool force)
+        public void CreateRepository(string path, bool force)
         {
             var directoryInfo = new DirectoryInfo(path);
 
@@ -79,20 +80,13 @@ namespace Ntreev.Crema.Services
                 var repoProvider = repoProviders.FirstOrDefault(item => item.Name == this.RepositoryModule);
                 if (repoProvider == null)
                     throw new InvalidOperationException(Resources.Exception_NoRepositoryModule);
-                //var repositoryPath = Path.Combine(basePath, repositoryName);
-                var tempPath = PathUtility.GetTempPath(true);
-                ////DirectoryUtility.Create(repositoryPath);
-                ////DirectoryUtility.Prepare(repositoryPath, tagsString);
-                ////DirectoryUtility.Prepare(repositoryPath, branchesString);
-                ////DirectoryUtility.Prepare(repositoryPath, trunkString);
-                ////DirectoryUtility.Prepare(repositoryPath, trunkString, CremaSchema.TypeDirectory);
-                ////DirectoryUtility.Prepare(repositoryPath, trunkString, CremaSchema.TableDirectory);
 
-                ////var dataBasesPath = DirectoryUtility.Prepare(tempPath, "databases");
-                ////var defaultPath = DirectoryUtility.Prepare(dataBasesPath, "default");
+                var tempPath = PathUtility.GetTempPath(true);
                 var usersRepo = DirectoryUtility.Prepare(basePath, "remotes", "users");
                 var usersPath = DirectoryUtility.Prepare(tempPath, "remotes", "users");
-                UserContext.GenerateDefaultUserInfos(usersPath);
+                var serializers = this.GetService(typeof(IEnumerable<IObjectSerializer>)) as IEnumerable<IObjectSerializer>;
+                var serializer = serializers.First(item => item.Name == this.FileType);
+                UserContext.GenerateDefaultUserInfos(usersPath, serializer);
                 repoProvider.InitializeRepository(usersRepo, usersPath);
 
 
@@ -224,6 +218,15 @@ namespace Ntreev.Crema.Services
                     yield return item;
                 }
             }
+
+            var serializersPath = Path.Combine(rootPath, serializersString);
+            if (Directory.Exists(serializersPath) == true)
+            {
+                foreach (var item in Directory.GetDirectories(serializersPath))
+                {
+                    yield return item;
+                }
+            }
         }
 
         public string BasePath
@@ -236,10 +239,10 @@ namespace Ntreev.Crema.Services
             }
         }
 
-        public string RepositoryName
+        public string FileType
         {
-            get { return this.settings.RepositoryName; }
-            set { this.settings.RepositoryName = value; }
+            get { return this.settings.FileType; }
+            set { this.settings.FileType = value; }
         }
 
         public bool MultiThreading
@@ -257,7 +260,7 @@ namespace Ntreev.Crema.Services
         public string RepositoryModule
         {
             get { return this.settings.RepositoryModule; }
-            set { this.settings.RepositoryModule = value ?? DefaultRepositoryModule; }
+            set { this.settings.RepositoryModule = value; }
         }
 
         public bool NoCache
@@ -300,10 +303,10 @@ namespace Ntreev.Crema.Services
 
 #endif
 
-        public static string DefaultRepositoryModule
-        {
-            get { return "svn"; }
-        }
+        //public static string DefaultRepositoryModule
+        //{
+        //    get { return "svn"; }
+        //}
 
         public static string RepositoryModulesPath
         {

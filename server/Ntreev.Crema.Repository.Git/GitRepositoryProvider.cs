@@ -19,6 +19,7 @@ namespace Ntreev.Crema.Repository.Git
     {
         public const string keepExtension = ".keep";
         private const string emptyBranch = "__empty__";
+        private const string commentHeader = "# revision properties";
 
         private static readonly Serializer propertySerializer = new SerializerBuilder().Build();
         private static readonly Deserializer propertyDeserializer = new Deserializer();
@@ -162,6 +163,7 @@ namespace Ntreev.Crema.Repository.Git
         public void InitializeRepository(string basePath, string repositoryPath)
         {
             GitServerHost.Run("init", basePath.WrapQuot());
+            GitHost.Run(basePath, "config receive.denyCurrentBranch ignore");
             GitHost.Run(basePath, "commit --allow-empty -m \"root commit\"");
             GitHost.Run(basePath, $"branch {emptyBranch}");
             DirectoryUtility.Copy(repositoryPath, basePath);
@@ -181,6 +183,7 @@ namespace Ntreev.Crema.Repository.Git
             argList.AddRange(query);
             GitHost.Run(basePath, argList.ToArray());
             GitHost.Run(basePath, "commit -m \"first commit\"");
+            
         }
 
         public void RenameRepository(string basePath, string repositoryName, string newRepositoryName, string comment, params LogPropertyInfo[] properties)
@@ -231,5 +234,16 @@ namespace Ntreev.Crema.Repository.Git
         //        return repositoryPath;
         //    }
         //}
+
+        public string GenerateComment(string comment, params LogPropertyInfo[] properties)
+        {
+            var propText = propertySerializer.Serialize(properties);
+            var sb = new StringBuilder();
+            sb.AppendLine(comment);
+            sb.AppendLine();
+            sb.AppendLine(commentHeader);
+            sb.Append(propText);
+            return sb.ToString();
+        }
     }
 }

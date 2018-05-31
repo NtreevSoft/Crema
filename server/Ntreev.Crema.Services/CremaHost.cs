@@ -54,11 +54,11 @@ namespace Ntreev.Crema.Services
         private const string branchesString = "branches";
 
         private readonly string basePath;
-        private readonly string repositoryPath;
-        private readonly string trunkPath;
-        private readonly string tagsPath;
-        private readonly string branchesPath;
-        private readonly string workingPath;
+        //private readonly string repositoryPath;
+        //private readonly string trunkPath;
+        //private readonly string tagsPath;
+        //private readonly string branchesPath;
+        //private readonly string workingPath;
 
         private CremaConfiguration configs;
         private IEnumerable<IPlugin> plugins;
@@ -67,6 +67,7 @@ namespace Ntreev.Crema.Services
         private IServiceProvider container = null;
         private CremaSettings settings;
         private IRepositoryProvider repositoryProvider;
+        private IObjectSerializer serializer;
         //private IRepository repository;
         private readonly LogService log;
         private DomainContext domainContext;
@@ -81,17 +82,18 @@ namespace Ntreev.Crema.Services
         private IEnumerable<IConfigurationPropertyProvider> propertiesProvider = null;
 
         [ImportingConstructor]
-        public CremaHost(CremaSettings settings, [ImportMany]IEnumerable<IRepositoryProvider> repoProviders)
+        public CremaHost(CremaSettings settings, [ImportMany]IEnumerable<IRepositoryProvider> repoProviders, [ImportMany]IEnumerable<IObjectSerializer> serializers)
         {
             CremaLog.Debug("crema instance created.");
             this.settings = settings;
             this.basePath = settings.BasePath;
-            this.repositoryPath = Path.Combine(settings.BasePath, settings.RepositoryName);
-            this.trunkPath = Path.Combine(this.repositoryPath, trunkString);
-            this.tagsPath = Path.Combine(this.repositoryPath, tagsString);
-            this.branchesPath = Path.Combine(this.repositoryPath, branchesString);
-            this.workingPath = Path.Combine(this.basePath, workingString);
+            //this.repositoryPath = Path.Combine(settings.BasePath, settings.RepositoryName);
+            //this.trunkPath = Path.Combine(this.repositoryPath, trunkString);
+            //this.tagsPath = Path.Combine(this.repositoryPath, tagsString);
+            //this.branchesPath = Path.Combine(this.repositoryPath, branchesString);
+            //this.workingPath = Path.Combine(this.basePath, workingString);
             this.repositoryProvider = repoProviders.First(item => item.Name == this.settings.RepositoryModule);
+            this.serializer = serializers.First(item => item.Name == this.settings.FileType);
             //this.repositoryProvider.ValidateRepository(this.basePath, this.repositoryPath);
 
             this.log = new LogService(this.GetType().FullName, this.GetPath(CremaPath.Logs))
@@ -350,30 +352,28 @@ namespace Ntreev.Crema.Services
 
         //public string DataBasesPath => Path.Combine(this.repositoryPath, "databases");
 
-        public string RepositoryPath
-        {
-            get { return this.repositoryPath; }
-        }
+        //public string RepositoryPath
+        //{
+        //    get { return this.repositoryPath; }
+        //}
 
-        public string WorkingPath
-        {
-            get { return this.workingPath; }
-        }
+        [Obsolete]
+        public string WorkingPath => this.GetPath(CremaPath.Working);
 
-        public string TrunkPath
-        {
-            get { return this.trunkPath; }
-        }
+        //public string TrunkPath
+        //{
+        //    get { return this.trunkPath; }
+        //}
 
-        public string TagsPath
-        {
-            get { return this.tagsPath; }
-        }
+        //public string TagsPath
+        //{
+        //    get { return this.tagsPath; }
+        //}
 
-        public string BranchesPath
-        {
-            get { return this.branchesPath; }
-        }
+        //public string BranchesPath
+        //{
+        //    get { return this.branchesPath; }
+        //}
 
         public bool IsOpened
         {
@@ -415,6 +415,8 @@ namespace Ntreev.Crema.Services
         {
             get { return this.repositoryDispatcher; }
         }
+
+        public IObjectSerializer Serializer { get => this.serializer; }
 
         public event EventHandler Opening;
 
@@ -595,6 +597,8 @@ namespace Ntreev.Crema.Services
         {
             get { return this.configs; }
         }
+
+        
 
         #endregion
     }

@@ -38,7 +38,6 @@ namespace Ntreev.Crema.Commands
         public ValidateCommand(CremaBootstrapper boot)
             : base("validate")
         {
-            this.RepositoryModule = CremaBootstrapper.DefaultRepositoryModule;
             this.boot = boot;
         }
 

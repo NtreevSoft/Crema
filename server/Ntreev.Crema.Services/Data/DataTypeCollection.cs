@@ -19,6 +19,7 @@ using Ntreev.Crema.Data;
 using Ntreev.Crema.Data.Xml.Schema;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -68,7 +69,7 @@ namespace Ntreev.Crema.Services.Data
                 }
                 else
                 {
-                    repository.Modify(schemaUri.LocalPath, dataType.GetXmlSchema());
+                    File.WriteAllText(schemaUri.LocalPath, dataType.GetXmlSchema(), Encoding.UTF8);
 
                     if (path1 != path2)
                     {

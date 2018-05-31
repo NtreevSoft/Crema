@@ -121,6 +121,10 @@
       <Project>{1918437f-4fbf-4731-ac5b-981a4a4cb1f1}</Project>
       <Name>Ntreev.Library</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Ntreev.Crema.Repository.Svn\Ntreev.Crema.Repository.Svn.csproj">
+      <Project>{e0f76b09-4fe3-4a58-b16d-d136441dc1ae}</Project>
+      <Name>Ntreev.Crema.Repository.Svn</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Ntreev.Crema.Services.Random\Ntreev.Crema.Services.Random.csproj">
       <Project>{138c9b99-d30b-4e3b-89f0-381a03515431}</Project>
       <Name>Ntreev.Crema.Services.Random</Name>
@@ -128,10 +132,6 @@
     <ProjectReference Include="..\Ntreev.Crema.Services\Ntreev.Crema.Services.csproj">
       <Project>{b7b4c207-7729-4147-96c4-b55e85647a66}</Project>
       <Name>Ntreev.Crema.Services</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Ntreev.Crema.SvnModule.Shell\Ntreev.Crema.SvnModule.Shell.csproj">
-      <Project>{e0f76b09-4fe3-4a58-b16d-d136441dc1ae}</Project>
-      <Name>Ntreev.Crema.SvnModule.Shell</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

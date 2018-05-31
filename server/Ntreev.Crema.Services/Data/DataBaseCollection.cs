@@ -731,13 +731,13 @@ namespace Ntreev.Crema.Services.Data
             if (authentication.Types.HasFlag(AuthenticationType.Administrator) == false)
                 throw new PermissionDeniedException();
 
-            var dataBasePath1 = Path.Combine(this.CremaHost.TagsPath, newDataBaseName);
-            if (DirectoryUtility.Exists(dataBasePath1) == true)
-                throw new ArgumentException(string.Format(Resources.Exception_ExistsPath_Format, newDataBaseName), nameof(newDataBaseName));
+            //var dataBasePath1 = Path.Combine(this.CremaHost.TagsPath, newDataBaseName);
+            //if (DirectoryUtility.Exists(dataBasePath1) == true)
+            //    throw new ArgumentException(string.Format(Resources.Exception_ExistsPath_Format, newDataBaseName), nameof(newDataBaseName));
 
-            var dataBasePath2 = Path.Combine(this.CremaHost.BranchesPath, newDataBaseName);
-            if (DirectoryUtility.Exists(dataBasePath2) == true)
-                throw new ArgumentException(string.Format(Resources.Exception_ExistsPath_Format, newDataBaseName), nameof(newDataBaseName));
+            //var dataBasePath2 = Path.Combine(this.CremaHost.BranchesPath, newDataBaseName);
+            //if (DirectoryUtility.Exists(dataBasePath2) == true)
+            //    throw new ArgumentException(string.Format(Resources.Exception_ExistsPath_Format, newDataBaseName), nameof(newDataBaseName));
 
             if (this.ContainsKey(newDataBaseName) == true)
                 throw new ArgumentException(string.Format(Resources.Exception_DataBaseIsAlreadyExisted_Format, newDataBaseName), nameof(newDataBaseName));
@@ -767,13 +767,13 @@ namespace Ntreev.Crema.Services.Data
             if (authentication.Types.HasFlag(AuthenticationType.Administrator) == false)
                 throw new PermissionDeniedException();
 
-            var dataBasePath1 = Path.Combine(this.CremaHost.TagsPath, dataBaseName);
-            if (DirectoryUtility.Exists(dataBasePath1) == true)
-                throw new ArgumentException(string.Format(Resources.Exception_ExistsPath_Format, dataBaseName), nameof(dataBaseName));
+            //var dataBasePath1 = Path.Combine(this.CremaHost.TagsPath, dataBaseName);
+            //if (DirectoryUtility.Exists(dataBasePath1) == true)
+            //    throw new ArgumentException(string.Format(Resources.Exception_ExistsPath_Format, dataBaseName), nameof(dataBaseName));
 
-            var dataBasePath2 = Path.Combine(this.CremaHost.BranchesPath, dataBaseName);
-            if (DirectoryUtility.Exists(dataBasePath2) == true)
-                throw new ArgumentException(string.Format(Resources.Exception_ExistsPath_Format, dataBaseName), nameof(dataBaseName));
+            //var dataBasePath2 = Path.Combine(this.CremaHost.BranchesPath, dataBaseName);
+            //if (DirectoryUtility.Exists(dataBasePath2) == true)
+            //    throw new ArgumentException(string.Format(Resources.Exception_ExistsPath_Format, dataBaseName), nameof(dataBaseName));
 
             if (this.ContainsKey(dataBaseName) == true)
                 throw new ArgumentException(string.Format(Resources.Exception_DataBaseIsAlreadyExisted_Format, dataBaseName), nameof(dataBaseName));

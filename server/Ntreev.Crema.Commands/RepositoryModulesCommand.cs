@@ -47,15 +47,15 @@ namespace Ntreev.Crema.Commands
         {
             Console.WriteLine("repository modules");
 
-            var defaultModule = CremaBootstrapper.DefaultRepositoryModule;
+            //var defaultModule = CremaBootstrapper.DefaultRepositoryModule;
 
             foreach (var item in this.repoProviders)
             {
                 Console.Write("    ");
 
-                if (item.Name == defaultModule)
-                    Console.WriteLine("* {0}", item.Name);
-                else
+                //if (item.Name == defaultModule)
+                //    Console.WriteLine("* {0}", item.Name);
+                //else
                     Console.WriteLine("  {0}", item.Name);
             }
         }
