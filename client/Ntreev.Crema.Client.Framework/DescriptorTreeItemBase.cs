@@ -39,7 +39,7 @@ namespace Ntreev.Crema.Client.Framework
             this.descriptor = descriptor;
             this.descriptor.PropertyChanged += Descriptor_PropertyChanged;
             this.descriptor.Disposed += Descriptor_Disposed;
-            this.notifier = new DescriptorPropertyNotifier(this);
+            this.notifier = new DescriptorPropertyNotifier(this, item => this.NotifyOfPropertyChange(item));
             this.Dispatcher.InvokeAsync(this.notifier.Save);
             this.Target = descriptor.Target;
             this.Owner = owner;
@@ -55,12 +55,15 @@ namespace Ntreev.Crema.Client.Framework
                 this.descriptor.Disposed -= Descriptor_Disposed;
                 this.descriptor.Dispose();
             }
+            this.notifier?.Dispose();
             this.isDescriptorDisposed = true;
             base.OnDisposed(e);
         }
 
         private async void Descriptor_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            if (this.isDescriptorDisposed == true)
+                throw new NotImplementedException("this object was disposed.");
             if (e.PropertyName == nameof(this.DisplayName) && this.Parent != null)
             {
                 this.Parent.Items.Reposition(this);

@@ -34,17 +34,12 @@ namespace Ntreev.Crema.Client.Framework
         private readonly List<string> notifyList = new List<string>();
         private Dictionary<string, object> properties;
         private Task refreshTask;
+        private bool isDisposed;
 
         public DescriptorPropertyNotifier(object target, Action<string> notifyAction)
         {
             this.target = target;
             this.notifyAction = notifyAction;
-        }
-
-        public DescriptorPropertyNotifier(PropertyChangedBase target)
-        {
-            this.target = target;
-            this.notifyAction = new Action<string>((item) => target.NotifyOfPropertyChange(item));
         }
 
         public Task RefreshAsync()
@@ -108,6 +103,11 @@ namespace Ntreev.Crema.Client.Framework
             this.refreshTask = null;
         }
 
+        public void Dispose()
+        {
+            this.isDisposed = true;
+        }
+
         public async void UpdateProperty(object source, string propertyName)
         {
             var targetProp = this.target.GetType().GetProperty(propertyName);
@@ -134,7 +134,8 @@ namespace Ntreev.Crema.Client.Framework
             {
                 foreach (var item in this.notifyList)
                 {
-                    this.notifyAction(item);
+                    if (this.isDisposed == false)
+                        this.notifyAction(item);
                 }
                 this.notifyList.Clear();
             }
