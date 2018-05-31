@@ -60,8 +60,8 @@ namespace Ntreev.Crema.Client.Base
         {
             if (DataBaseDescriptorUtility.IsLoaded(authentication, descriptor) == true)
                 return false;
-            if (descriptor is IAccessibleDescriptor accessibleDescriptor)
-                return AccessibleDescriptorUtility.IsPrivate(authentication, accessibleDescriptor) == false && authentication.Authority == Authority.Admin;
+            if (descriptor is IPermissionDescriptor permissionDescriptor)
+                return permissionDescriptor.AccessType >= AccessType.Owner;
             return authentication.Authority == Authority.Admin;
         }
 
@@ -69,6 +69,8 @@ namespace Ntreev.Crema.Client.Base
         {
             if (DataBaseDescriptorUtility.IsLoaded(authentication, descriptor) == false)
                 return false;
+            if (descriptor is IPermissionDescriptor permissionDescriptor)
+                return permissionDescriptor.AccessType >= AccessType.Owner;
             return authentication.Authority == Authority.Admin;
         }
 
