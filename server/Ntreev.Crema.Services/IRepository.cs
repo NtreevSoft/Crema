@@ -46,7 +46,7 @@ namespace Ntreev.Crema.Services
 
         void CancelTransaction();
 
-        LogInfo[] GetLog(string path, string revision, int count);
+        LogInfo[] GetLog(string[] paths, string revision, int count);
 
         Uri GetUri(string path, string revision);
 

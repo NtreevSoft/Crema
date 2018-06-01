@@ -27,7 +27,7 @@ namespace Ntreev.Crema.ObjectSerializer.Yaml
 
         public string Name => "yaml";
 
-        public object Deserialize(Type type, string itemPath)
+        public object Deserialize(Type type, string itemPath, object state)
         {
             throw new NotImplementedException();
         }
@@ -44,6 +44,21 @@ namespace Ntreev.Crema.ObjectSerializer.Yaml
         {
             var filename = itemPath + extensions;
             return new string[] { filename };
+        }
+
+        public string[] GetItemPaths(string path, Type type, object state)
+        {
+            //if (type == typeof(CremaDataTable))
+            //{
+            //    throw new NotImplementedException();
+            //}
+            //else
+            //{
+            //    var directories = DirectoryUtility.GetAllDirectories(path, "*", true);
+            //    var files = DirectoryUtility.GetAllFiles(path, "*.xml");
+            //    return directories.Concat(files).OrderBy(item => item).ToArray();
+            //}
+            throw new NotImplementedException();
         }
     }
 }

@@ -83,12 +83,18 @@ namespace Ntreev.Crema.Services.Data
         public void InvokeTypeCreate(Authentication authentication, string typeName, string categoryPath, CremaDataType dataType)
         {
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeTypeCreate), typeName, categoryPath);
-            var schemaPath = this.Context.GenerateTypePath(categoryPath, typeName);
-
+            var itemPath = this.Context.GenerateTypePath(categoryPath, typeName);
+            var comment = EventMessageBuilder.CreateType(authentication, new string[] { typeName });
             try
             {
-                this.Repository.Add(schemaPath, dataType.GetXmlSchema());
+                var itemPaths = this.Serializer.Serialize(dataType, itemPath, null);
+                foreach (var item in itemPaths)
+                {
+                    this.Repository.Add(item);
+                }
                 this.Context.InvokeTypeItemCreate(authentication, categoryPath + typeName);
+                this.Repository.Commit(authentication, comment);
+                this.CremaHost.Info(comment);
             }
             catch (Exception e)
             {
@@ -104,13 +110,16 @@ namespace Ntreev.Crema.Services.Data
             var dataTypes = new DataTypeCollection(dataSet, this.DataBase);
             var dataTables = new DataTableCollection(dataSet, this.DataBase);
             var dataType = dataSet.Types[type.Name, type.Category.Path];
-            dataType.TypeName = newName;
-
+            var comment = EventMessageBuilder.RenameType(authentication, new string[] { newName }, new string[] { type.Name });
             try
             {
-                dataTypes.Modify(this.Repository, item => item == type);
+                dataType.TypeName = newName;
+                dataTypes.Modify(this.Serializer);
                 dataTables.Modify(this.Serializer);
+                dataTypes.Move(this.Repository, this.Serializer);
                 this.Context.InvokeTypeItemRename(authentication, type, newName);
+                this.Repository.Commit(authentication, comment);
+                this.CremaHost.Info(comment);
             }
             catch (Exception e)
             {
@@ -123,17 +132,19 @@ namespace Ntreev.Crema.Services.Data
         public void InvokeTypeMove(Authentication authentication, Type type, string newCategoryPath, CremaDataSet dataSet)
         {
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeTypeMove), type, newCategoryPath);
-
             var dataTypes = new DataTypeCollection(dataSet, this.DataBase);
             var dataTables = new DataTableCollection(dataSet, this.DataBase);
             var dataType = dataSet.Types[type.Name, type.Category.Path];
-            dataType.CategoryPath = newCategoryPath;
-
+            var comment = EventMessageBuilder.MoveType(authentication, new string[] { type.Name }, new string[] { newCategoryPath }, new string[] { type.Category.Path });
             try
             {
-                dataTypes.Modify(this.Repository, item => item == type);
+                dataType.CategoryPath = newCategoryPath;
+                dataTypes.Modify(this.Serializer);
                 dataTables.Modify(this.Serializer);
+                dataTypes.Move(this.Repository, this.Serializer);
                 this.Context.InvokeTypeItemMove(authentication, type, newCategoryPath);
+                this.Repository.Commit(authentication, comment);
+                this.CremaHost.Info(comment);
             }
             catch (Exception e)
             {
@@ -143,33 +154,21 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public void InvokeTypeDelete(Authentication authentication, Type type, CremaDataSet dataSet)
+        public void InvokeTypeDelete(Authentication authentication, Type type)
         {
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeTypeDelete), type);
-
-            var dataTypes = new DataTypeCollection(dataSet, this.DataBase);
-            var dataTables = new DataTableCollection(dataSet, this.DataBase);
-            var dataType = dataSet.Types[type.Name, type.Category.Path];
-
-            var query = from table in dataSet.Tables
-                        from column in table.Columns
-                        where column.CremaType == dataType
-                        select column;
-
-            var columns = query.ToArray();
-
-            foreach (var item in columns)
-            {
-                item.CremaType = null;
-            }
-
-            dataSet.Types.Remove(dataType);
-
+            var itemPath = this.Context.GenerateTypePath(type.Category.Path, type.Name);
+            var comment = EventMessageBuilder.DeleteType(authentication, new string[] { type.Name });
             try
             {
-                this.Repository.Delete(type.SchemaPath);
-                dataTables.Modify(this.Serializer);
+                var itemPaths = this.Serializer.VerifyPath(typeof(CremaDataType), itemPath, null);
+                foreach (var item in itemPaths)
+                {
+                    this.Repository.Delete(item);
+                }
                 this.Context.InvokeTypeItemDelete(authentication, type);
+                this.Repository.Commit(authentication, comment);
+                this.CremaHost.Info(comment);
             }
             catch (Exception e)
             {
@@ -187,15 +186,16 @@ namespace Ntreev.Crema.Services.Data
         public void InvokeTypeEndTemplateEdit(Authentication authentication, Type type, CremaDataType dataType)
         {
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeTypeEndTemplateEdit), type);
-
             var dataTypes = new DataTypeCollection(dataType.DataSet, this.DataBase);
             var dataTables = new DataTableCollection(dataType.DataSet, this.DataBase);
-
+            var comment = EventMessageBuilder.ChangeTypeTemplate(authentication, new string[] { type.Name });
             try
             {
                 dataTypes.Modify(this.Repository, item => item == type);
                 dataTables.Modify(this.Serializer);
                 this.Context.InvokeTypeItemChange(authentication, type);
+                this.Repository.Commit(authentication, comment);
+                this.CremaHost.Info(comment);
             }
             catch (Exception e)
             {
@@ -208,15 +208,16 @@ namespace Ntreev.Crema.Services.Data
         public void InvokeTypeSetTags(Authentication authentication, Type type, TagInfo tags, CremaDataSet dataSet)
         {
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeTypeSetTags), type, tags);
-
             var dataTypes = new DataTypeCollection(dataSet, this.DataBase);
             var dataType = dataSet.Types[type.Name, type.Category.Path];
-            dataType.Tags = tags;
-
+            var comment = EventMessageBuilder.ChangeTypeTemplate(authentication, new string[] { type.Name });
             try
             {
+                dataType.Tags = tags;
                 dataTypes.Modify(this.Repository, item => item == type);
                 this.Context.InvokeTypeItemChange(authentication, type);
+                this.Repository.Commit(authentication, comment);
+                this.CremaHost.Info(comment);
             }
             catch (Exception e)
             {
@@ -230,10 +231,7 @@ namespace Ntreev.Crema.Services.Data
         {
             var args = types.Select(item => (object)item.TypeInfo).ToArray();
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeTypesCreatedEvent), types);
-            var comment = EventMessageBuilder.CreateType(authentication, types);
             this.CremaHost.Debug(eventLog);
-            this.Repository.Commit(authentication, comment);
-            this.CremaHost.Info(comment);
             this.OnTypesCreated(new ItemsCreatedEventArgs<IType>(authentication, types, args, dataSet));
             this.Context.InvokeItemsCreatedEvent(authentication, types, args, dataSet);
         }
@@ -241,10 +239,7 @@ namespace Ntreev.Crema.Services.Data
         public void InvokeTypesRenamedEvent(Authentication authentication, Type[] types, string[] oldNames, string[] oldPaths, CremaDataSet dataSet)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeTypesRenamedEvent), types, oldNames, oldPaths);
-            var comment = EventMessageBuilder.RenameType(authentication, types, oldNames);
             this.CremaHost.Debug(eventLog);
-            this.Repository.Commit(authentication, comment);
-            this.CremaHost.Info(comment);
             this.OnTypesRenamed(new ItemsRenamedEventArgs<IType>(authentication, types, oldNames, oldPaths));
             this.Context.InvokeItemsRenamedEvent(authentication, types, oldNames, oldPaths, dataSet);
         }
@@ -252,21 +247,16 @@ namespace Ntreev.Crema.Services.Data
         public void InvokeTypesMovedEvent(Authentication authentication, Type[] types, string[] oldPaths, string[] oldCategoryPaths, CremaDataSet dataSet)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeTypesMovedEvent), types, oldPaths, oldCategoryPaths);
-            var comment = EventMessageBuilder.MoveType(authentication, types, oldCategoryPaths);
             this.CremaHost.Debug(eventLog);
-            this.Repository.Commit(authentication, comment);
-            this.CremaHost.Info(comment);
             this.OnTypesMoved(new ItemsMovedEventArgs<IType>(authentication, types, oldPaths, oldCategoryPaths));
             this.Context.InvokeItemsMovedEvent(authentication, types, oldPaths, oldCategoryPaths, dataSet);
         }
         
-        public void InvokeTypesDeletedEvent(Authentication authentication, Type[] types, string[] oldPaths, CremaDataSet dataSet)
+        public void InvokeTypesDeletedEvent(Authentication authentication, Type[] types, string[] oldPaths)
         {
+            var dataSet = CremaDataSet.Create(new SignatureDateProvider(authentication.ID));
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeTypesDeletedEvent), oldPaths);
-            var comment = EventMessageBuilder.DeleteType(authentication, types);
             this.CremaHost.Debug(eventLog);
-            this.Repository.Commit(authentication, comment);
-            this.CremaHost.Info(comment);
             this.OnTypesDeleted(new ItemsDeletedEventArgs<IType>(authentication, types, oldPaths));
             this.Context.InvokeItemsDeleteEvent(authentication, types, oldPaths, dataSet);
         }
@@ -274,10 +264,7 @@ namespace Ntreev.Crema.Services.Data
         public void InvokeTypesChangedEvent(Authentication authentication, Type[] types, CremaDataSet dataSet)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeTypesChangedEvent), types);
-            var comment = EventMessageBuilder.ChangeTypeTemplate(authentication, types);
             this.CremaHost.Debug(eventLog);
-            this.Repository.Commit(authentication, comment);
-            this.CremaHost.Info(comment);
             this.OnTypesChanged(new ItemsEventArgs<IType>(authentication, types));
             this.Context.InvokeItemsChangedEvent(authentication, types, dataSet);
         }

@@ -141,7 +141,14 @@ namespace Ntreev.Crema.Repository.Git
 
         public void Delete(string path)
         {
-            throw new NotImplementedException();
+            if (Directory.Exists(path) == true)
+            {
+                GitHost.Run(this.repositoryPath, "rm", path.WrapQuot(), "-r");
+            }
+            else
+            {
+                GitHost.Run(this.repositoryPath, "rm", path.WrapQuot());
+            }
         }
 
         public void Dispose()
@@ -174,15 +181,16 @@ namespace Ntreev.Crema.Repository.Git
             }
         }
 
-        public LogInfo[] GetLog(string path, string revision, int count)
+        public LogInfo[] GetLog(string[] paths, string revision, int count)
         {
-            throw new NotImplementedException();
+            var logs = GitLogInfo.RunWithPaths(this.repositoryPath, revision, paths, $"--max-count={count}");
+            return logs.Select(item => (LogInfo)item).ToArray();
         }
 
-        public string GetRevision(string path)
-        {
-            throw new NotImplementedException();
-        }
+        //public string GetRevision(string path)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public Uri GetUri(string path, string revision)
         {

@@ -309,7 +309,7 @@ namespace Ntreev.Crema.Services
             return sb.ToString();
         }
 
-        public static string CreateTypeCategory(Authentication authentication, ITypeCategory[] categories)
+        public static string CreateTypeCategory(Authentication authentication, string[] categories)
         {
             var sb = new StringBuilder();
             for (var i = 0; i < categories.Length; i++)
@@ -321,31 +321,31 @@ namespace Ntreev.Crema.Services
             return sb.ToString();
         }
 
-        public static string RenameTypeCategory(Authentication authentication, ITypeCategory[] categories, string[] oldNames)
+        public static string RenameTypeCategory(Authentication authentication, string[] categories, string[] oldNames)
         {
             var sb = new StringBuilder();
             for (var i = 0; i < categories.Length; i++)
             {
                 if (i > 0)
                     sb.AppendLine();
-                sb.AppendFormat(EventResources.RenameTypeCategory, authentication.ID, authentication.Name, oldNames[i], categories[i].Name);
+                sb.AppendFormat(EventResources.RenameTypeCategory, authentication.ID, authentication.Name, oldNames[i], categories[i]);
             }
             return sb.ToString();
         }
 
-        public static string MoveTypeCategory(Authentication authentication, ITypeCategory[] categories, string[] oldParentPaths)
+        public static string MoveTypeCategory(Authentication authentication, string[] categories, string[] parentPaths, string[] oldParentPaths)
         {
             var sb = new StringBuilder();
             for (var i = 0; i < categories.Length; i++)
             {
                 if (i > 0)
                     sb.AppendLine();
-                sb.AppendFormat(EventResources.MoveTypeCategory, authentication.ID, authentication.Name, categories[i], oldParentPaths[i], categories[i].Parent);
+                sb.AppendFormat(EventResources.MoveTypeCategory, authentication.ID, authentication.Name, categories[i], oldParentPaths[i], parentPaths);
             }
             return sb.ToString();
         }
 
-        public static string DeleteTypeCategory(Authentication authentication, ITypeCategory[] categories)
+        public static string DeleteTypeCategory(Authentication authentication, string[] categories)
         {
             var sb = new StringBuilder();
             for (var i = 0; i < categories.Length; i++)
@@ -357,7 +357,7 @@ namespace Ntreev.Crema.Services
             return sb.ToString();
         }
 
-        public static string CreateType(Authentication authentication, IType[] types)
+        public static string CreateType(Authentication authentication, string[] types)
         {
             var sb = new StringBuilder();
             for (var i = 0; i < types.Length; i++)
@@ -369,7 +369,7 @@ namespace Ntreev.Crema.Services
             return sb.ToString();
         }
 
-        public static string RenameType(Authentication authentication, IType[] types, string[] oldNames)
+        public static string RenameType(Authentication authentication, string[] types, string[] oldNames)
         {
             var sb = new StringBuilder();
             for (var i = 0; i < types.Length; i++)
@@ -381,19 +381,19 @@ namespace Ntreev.Crema.Services
             return sb.ToString();
         }
 
-        public static string MoveType(Authentication authentication, IType[] types, string[] oldCategoryPaths)
+        public static string MoveType(Authentication authentication, string[] types, string[] categoryPaths, string[] oldCategoryPaths)
         {
             var sb = new StringBuilder();
             for (var i = 0; i < types.Length; i++)
             {
                 if (i > 0)
                     sb.AppendLine();
-                sb.AppendFormat(EventResources.MoveType, authentication.ID, authentication.Name, types[i], oldCategoryPaths[i], types[i].Category);
+                sb.AppendFormat(EventResources.MoveType, authentication.ID, authentication.Name, types[i], oldCategoryPaths[i], categoryPaths[i]);
             }
             return sb.ToString();
         }
 
-        public static string DeleteType(Authentication authentication, IType[] types)
+        public static string DeleteType(Authentication authentication, string[] types)
         {
             var sb = new StringBuilder();
             for (var i = 0; i < types.Length; i++)
@@ -405,7 +405,7 @@ namespace Ntreev.Crema.Services
             return sb.ToString();
         }
 
-        public static string ChangeTypeTemplate(Authentication authentication, IType[] types)
+        public static string ChangeTypeTemplate(Authentication authentication, string[] types)
         {
             var sb = new StringBuilder();
             for (var i = 0; i < types.Length; i++)

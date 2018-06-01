@@ -62,6 +62,8 @@ namespace Ntreev.Crema.Repository.Git
 
         public string Comment { get; set; }
 
+        public GitPropertyValue[] Properties { get; internal set; }
+
         public static GitLogInfo[] Run(string repositoryPath, params object[] args)
         {
             var argList = new List<object>() { "log", "--pretty=fuller", };
@@ -74,6 +76,19 @@ namespace Ntreev.Crema.Repository.Git
         {
             var argList = new List<object>() { "log", $"{branchName}", "--pretty=fuller", };
             argList.AddRange(args);
+            var text = GitHost.Run(repositoryPath, argList.ToArray());
+            return ParseMany(text);
+        }
+
+        public static GitLogInfo[] RunWithPaths(string repositoryPath, string revision, string[] paths, params object[] args)
+        {
+            var argList = new List<object>() { "log", revision ?? "head", "--pretty=fuller", "--follow" };
+            argList.AddRange(args);
+            argList.Add("--");
+            foreach (var item in paths)
+            {
+                argList.Add(item.WrapQuot());
+            }
             var text = GitHost.Run(repositoryPath, argList.ToArray());
             return ParseMany(text);
         }
@@ -104,7 +119,7 @@ namespace Ntreev.Crema.Repository.Git
                     var logItem = text.Substring(index, item.Index - index);
                     var logInfo = GitLogInfo.Parse(logItem);
                     itemList.Add(logInfo);
-                    currentText = text.Substring(logItem.Length);
+                    currentText = currentText.Substring(logItem.Length);
                 }
                 index = item.Index;
             }
@@ -114,6 +129,29 @@ namespace Ntreev.Crema.Repository.Git
             }
 
             return itemList.ToArray();
+        }
+
+        public static explicit operator LogInfo(GitLogInfo value)
+        {
+            var userID = value.Author;
+            foreach (var item in value.Properties)
+            {
+                if (item.Key == LogPropertyInfo.UserIDKey)
+                {
+                    userID = item.Value;
+                }
+            }
+
+            var obj = new LogInfo()
+            {
+                UserID = userID,
+                Revision = value.CommitID,
+                Comment = value.Comment,
+                DateTime = value.CommitDate,
+                Properties = value.Properties.Select(item => (LogPropertyInfo)item).ToArray(),
+            };
+
+            return obj;
         }
 
         private static void ParseCommitID(ref string text, ref GitLogInfo logInfo)
@@ -205,7 +243,34 @@ namespace Ntreev.Crema.Repository.Git
             text = text.Remove(0, Environment.NewLine.Length);
             text = text.Remove(0, "    ".Length);
             text = text.Remove(text.Length - Environment.NewLine.Length);
+
             logInfo.Comment = text;
+
+            var comment = null as string;
+            var props = null as LogPropertyInfo[];
+            GitRepositoryProvider.ParseComment(text, out comment, out props);
+            logInfo.Comment = comment;
+            if (props == null)
+            {
+                //var propItems = element.XPathSelectElements("revprops/property").ToArray();
+                //var propItemList = new List<SvnPropertyValue>();
+                //foreach (var item in propItems)
+                //{
+                //    var propItem = SvnPropertyValue.Parse(item);
+                //    propItemList.Add(propItem);
+                //}
+                //obj.Properties = propItemList.ToArray();
+            }
+            else
+            {
+                var propList = new List<GitPropertyValue>();
+                foreach (var item in props)
+                {
+                    propList.Add((GitPropertyValue)item);
+                }
+                logInfo.Properties = propList.ToArray();
+            }
+
             return text;
         }
 

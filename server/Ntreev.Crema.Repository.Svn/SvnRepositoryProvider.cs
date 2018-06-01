@@ -243,10 +243,10 @@ namespace Ntreev.Crema.Repository.Svn
             return lines.Select(item => PathUtility.Separator + item).ToArray();
         }
 
-        public LogInfo[] GetLog(string basePath, string repositoryName, string revision, int count)
+        public LogInfo[] GetLog(string basePath, string repositoryName, int count)
         {
             var uri = $"\"{this.GetUrl(basePath, repositoryName)}\"";
-            var logs = SvnLogEventArgs.Run(uri, revision, count);
+            var logs = SvnLogEventArgs.Run(uri, null, count);
             return logs.Select(item => (LogInfo)item).ToArray();
         }
 

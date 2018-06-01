@@ -95,28 +95,8 @@ namespace Ntreev.Crema.Services.Data
             var comment = EventMessageBuilder.RenameTableCategory(authentication, new string[] { categoryName }, new string[] { category.Name });
             try
             {
-                foreach (var item in dataTables)
-                {
-                    var dataTable = item.Key;
-                    var table = item.Value;
-                    if (table.Path.StartsWith(category.Path) == false)
-                        continue;
-
-                    dataTable.CategoryPath = Regex.Replace(dataTable.CategoryPath, "^" + category.Path, categoryName.Path);
-                }
-
-                foreach (var item in dataTables)
-                {
-                    var dataTable = item.Key;
-                    var table = item.Value;
-
-                    if (table.TemplatedParent == null)
-                    {
-                        this.Repository.Modify(table.SchemaPath, dataTable.GetXmlSchema());
-                    }
-                    this.Repository.Modify(table.XmlPath, dataTable.GetXml());
-                }
-
+                dataTables.SetCategoryPath(category.Path, categoryName);
+                dataTables.Modify(this.Serializer);
                 this.Repository.Move(category.LocalPath, this.Context.GenerateCategoryPath(categoryName.Path));
                 this.Context.InvokeTableItemRename(authentication, category, name);
                 this.Repository.Commit(authentication, comment);
@@ -138,28 +118,8 @@ namespace Ntreev.Crema.Services.Data
             var comment = EventMessageBuilder.MoveTableCategory(authentication, new string[] { categoryName }, new string[] { parentPath }, new string[] { category.Parent.Path });
             try
             {
-                foreach (var item in dataTables)
-                {
-                    var dataTable = item.Key;
-                    var table = item.Value;
-                    if (table.Path.StartsWith(category.Path) == false)
-                        continue;
-
-                    dataTable.CategoryPath = Regex.Replace(dataTable.CategoryPath, "^" + category.Path, categoryName.Path);
-                }
-
-                foreach (var item in dataTables)
-                {
-                    var dataTable = item.Key;
-                    var table = item.Value;
-
-                    if (table.TemplatedParent == null)
-                    {
-                        this.Repository.Modify(table.SchemaPath, dataTable.GetXmlSchema());
-                    }
-                    this.Repository.Modify(table.XmlPath, dataTable.GetXml());
-                }
-
+                dataTables.SetCategoryPath(category.Path, categoryName);
+                dataTables.Modify(this.Serializer);
                 this.Repository.Move(category.LocalPath, this.Context.GenerateCategoryPath(categoryName));
                 this.Context.InvokeTableItemMove(authentication, category, parentPath);
                 this.Repository.Commit(authentication, comment);
@@ -246,6 +206,8 @@ namespace Ntreev.Crema.Services.Data
         {
             get { return this.Context?.Dispatcher; }
         }
+
+        public IObjectSerializer Serializer => this.DataBase.Serializer;
 
         public new int Count
         {

@@ -69,7 +69,21 @@ namespace Ntreev.Crema.Repository.Svn
 
         public static SvnLogEventArgs[] Run(string path, string revision, int count)
         {
-            var text = SvnClientHost.Run("log", path.WrapQuot(), "-r", $"{revision??"head"}:1", "--xml", "-v", "-l", count, "--with-all-revprops");
+            var text = SvnClientHost.Run("log", path.WrapQuot(), "-r", $"{revision ?? "head"}:1", "--xml", "-v", "-l", count, "--with-all-revprops");
+            return SvnLogEventArgs.Read(text);
+        }
+
+        public static SvnLogEventArgs[] Run(string[] paths, string revision, int count)
+        {
+            var argList = new List<object>()
+            {
+                "log", "-r", $"{revision ?? "head"}:1", "--xml", "-v", "-l", count, "--with-all-revprops"
+            };
+            foreach (var item in paths)
+            {
+                argList.Add(item.WrapQuot());
+            }
+            var text = SvnClientHost.Run(argList.ToArray());
             return SvnLogEventArgs.Read(text);
         }
 

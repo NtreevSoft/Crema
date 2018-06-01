@@ -10,9 +10,11 @@ namespace Ntreev.Crema.Services
     {
         string[] Serialize(object obj, string itemPath, object state);
 
-        object Deserialize(Type type, string itemPath);
+        object Deserialize(Type type, string itemPath, object state);
 
         string[] VerifyPath(Type type, string itemPath, object state);
+
+        string[] GetItemPaths(string path, Type type, object state);
 
         string Name { get; }
     }

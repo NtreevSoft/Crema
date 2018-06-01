@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Services.Data
@@ -38,6 +39,33 @@ namespace Ntreev.Crema.Services.Data
             {
                 var table = dataBase.TypeContext.Types[item.Name, item.CategoryPath];
                 this.Add(item, table);
+            }
+        }
+
+        public void SetCategoryPath(string categoryPath, string newCategoryPath)
+        {
+            foreach (var item in this)
+            {
+                var dataType = item.Key;
+                var type = item.Value;
+                if (type.Path.StartsWith(categoryPath) == false)
+                    continue;
+
+                dataType.CategoryPath = Regex.Replace(dataType.CategoryPath, "^" + categoryPath, newCategoryPath);
+            }
+        }
+
+        public void Modify(IObjectSerializer serializer)
+        {
+            foreach (var item in this)
+            {
+                var dataType = item.Key;
+                var type = item.Value;
+
+                //var path1 = type.Path;
+                //var path2 = dataType.CategoryPath + dataType.Name;
+
+                serializer.Serialize(dataType, type.ItemPath, null);
             }
         }
 
@@ -77,6 +105,32 @@ namespace Ntreev.Crema.Services.Data
 
                         repository.Move(schemaUri.LocalPath, targetSchemaUri.LocalPath);
                     }
+                }
+            }
+        }
+
+        public void Move(DataBaseRepositoryHost repository, IObjectSerializer serializer)
+        {
+            foreach (var item in this)
+            {
+                var dataType = item.Key;
+                var type = item.Value;
+
+                var path1 = type.Path;
+                var path2 = dataType.CategoryPath + dataType.Name;
+
+                if (path1 == path2)
+                    continue;
+
+                var itemPath1 = this.dataBase.TypeContext.GenerateTypePath(type.Category.Path, type.Name);
+                var itemPath2 = this.dataBase.TypeContext.GenerateTypePath(dataType.CategoryPath, dataType.Name);
+
+                var items1 = serializer.VerifyPath(typeof(CremaDataType), itemPath1, null);
+                var items2 = serializer.VerifyPath(typeof(CremaDataType), itemPath2, null);
+
+                for (var i = 0; i < items1.Length; i++)
+                {
+                    repository.Move(items1[i], items2[i]);
                 }
             }
         }

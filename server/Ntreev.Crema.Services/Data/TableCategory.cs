@@ -239,19 +239,23 @@ namespace Ntreev.Crema.Services.Data
         /// </summary>
         public CremaDataSet ReadAllData(Authentication authentication)
         {
-            var dataSet = CremaDataSet.Create(new SignatureDateProvider(authentication.ID));
             var tables = EnumerableUtility.Descendants<IItem, Table>(this as IItem, item => item.Childs).ToArray();
-            var typeFiles = tables.SelectMany(item => item.GetTypes())
-                                  .Select(item => item.SchemaPath)
+            var typePaths = tables.SelectMany(item => item.GetTypes())
+                                  .Select(item => item.ItemPath)
                                   .Distinct()
                                   .ToArray();
-            var tableFiles = tables.SelectMany(item => EnumerableUtility.Friends(item, item.DerivedTables))
-                                  .Select(item => item.XmlPath)
+            var tablePaths = tables.SelectMany(item => EnumerableUtility.Friends(item, item.DerivedTables))
+                                  .Select(item => item.ItemPath)
                                   .Distinct()
                                   .ToArray();
 
-            dataSet.ReadMany(typeFiles, tableFiles);
-            dataSet.AcceptChanges();
+            var info = new DataSetDeserializationInfo()
+            {
+                SignatureDateProvider = new SignatureDateProvider(authentication.ID),
+                TypePaths = typePaths,
+                TablePaths = tablePaths,
+            };
+            var dataSet = this.Serializer.Deserialize(typeof(CremaDataSet), this.LocalPath, info) as CremaDataSet;
             return dataSet;
         }
 
@@ -331,7 +335,9 @@ namespace Ntreev.Crema.Services.Data
         {
             get { return this.Context?.Dispatcher; }
         }
-        
+
+        public IObjectSerializer Serializer => this.DataBase.Serializer;
+
         public new string Name
         {
             get
@@ -458,14 +464,18 @@ namespace Ntreev.Crema.Services.Data
 
         private CremaDataSet ReadData(Authentication authentication, IEnumerable<Table> tables)
         {
-            var dataSet = CremaDataSet.Create(new SignatureDateProvider(authentication.ID));
-            var typeFiles = tables.SelectMany(item => item.GetTypes())
-                                  .Select(item => item.SchemaPath)
+            var typePaths = tables.SelectMany(item => item.GetTypes())
+                                  .Select(item => item.ItemPath)
                                   .Distinct()
                                   .ToArray();
-            var tableFiles = tables.Select(item => item.XmlPath).Distinct().ToArray();
-            dataSet.ReadMany(typeFiles, tableFiles);
-            dataSet.AcceptChanges();
+            var tablePaths = tables.Select(item => item.ItemPath).Distinct().ToArray();
+            var info = new DataSetDeserializationInfo()
+            {
+                SignatureDateProvider = new SignatureDateProvider(authentication.ID),
+                TypePaths = typePaths,
+                TablePaths = tablePaths,
+            };
+            var dataSet = this.Serializer.Deserialize(typeof(CremaDataSet), this.LocalPath, info) as CremaDataSet;
             return dataSet;
         }
 

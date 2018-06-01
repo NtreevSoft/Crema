@@ -245,16 +245,21 @@ namespace Ntreev.Crema.Services.Data
         /// </summary>
         public CremaDataSet ReadAllData(Authentication authentication, bool recursive)
         {
-            var dataSet = CremaDataSet.Create(new SignatureDateProvider(authentication.ID));
             var types = CollectTypes();
             var tables = CollectTables();
-            var typeFiles = types.Select(item => item.SchemaPath).ToArray();
-            var tableFiles = tables.Select(item => item.Parent ?? item)
-                                   .Select(item => item.XmlPath)
+            var typePaths = types.Select(item => item.ItemPath).ToArray();
+            var tablePaths = tables.Select(item => item.Parent ?? item)
+                                   .Select(item => item.ItemPath)
                                    .Distinct()
                                    .ToArray();
-            dataSet.ReadMany(typeFiles, tableFiles);
-            dataSet.AcceptChanges();
+
+            var info = new DataSetDeserializationInfo()
+            {
+                SignatureDateProvider = new SignatureDateProvider(authentication.ID),
+                TypePaths = typePaths,
+                TablePaths = tablePaths,
+            };
+            var dataSet = this.Serializer.Deserialize(typeof(CremaDataSet), this.LocalPath, info) as CremaDataSet;
             return dataSet;
 
             Type[] CollectTypes()
@@ -288,12 +293,16 @@ namespace Ntreev.Crema.Services.Data
 
         public CremaDataSet ReadData(Authentication authentication, bool recursive)
         {
-            var dataSet = CremaDataSet.Create(new SignatureDateProvider(authentication.ID));
             var types = CollectTypes();
+            var typePaths = types.Select(item => item.ItemPath).ToArray();
+            var info = new DataSetDeserializationInfo()
+            {
+                SignatureDateProvider = new SignatureDateProvider(authentication.ID),
+                TypePaths = typePaths,
+                TablePaths = new string[] { },
+            };
 
-            var typeFiles = types.Select(item => item.SchemaPath).ToArray();
-            dataSet.ReadMany(typeFiles, new string[] { });
-            dataSet.AcceptChanges();
+            var dataSet = this.Serializer.Deserialize(typeof(CremaDataSet), this.LocalPath, info) as CremaDataSet;
             return dataSet;
 
             Type[] CollectTypes()
@@ -331,6 +340,7 @@ namespace Ntreev.Crema.Services.Data
             get { return this.Context?.Dispatcher; }
         }
 
+        public IObjectSerializer Serializer => this.DataBase.Serializer;
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override void OnValidateRename(IAuthentication authentication, object target, string oldPath, string newPath)

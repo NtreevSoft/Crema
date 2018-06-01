@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthenticationToken.cs" />
+    <Compile Include="Data\DataSetDeserializationInfo.cs" />
     <Compile Include="IObjectSerializer.cs" />
     <Compile Include="IRepositoryProviderExtensions.cs" />
     <Compile Include="RepositoryInfo.cs" />

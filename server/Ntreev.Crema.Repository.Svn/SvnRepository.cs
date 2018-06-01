@@ -213,9 +213,9 @@ namespace Ntreev.Crema.Repository.Svn
             this.GetBranchRevision(info.RepositoryRoot, info.Uri, out revision, out source, out sourceRevision);
         }
 
-        public LogInfo[] GetLog(string path, string revision, int count)
+        public LogInfo[] GetLog(string[] paths, string revision, int count)
         {
-            var logs = SvnLogEventArgs.Run(path, revision, count);
+            var logs = SvnLogEventArgs.Run(paths, revision, count);
             return logs.Select(item => (LogInfo)item).ToArray();
         }
 

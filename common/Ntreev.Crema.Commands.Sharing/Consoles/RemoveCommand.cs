@@ -70,7 +70,8 @@ namespace Ntreev.Crema.Commands.Consoles
         {
             var drive = this.CommandContext.GetDrive(path);
             var absolutePath = this.CommandContext.GetAbsolutePath(path);
-            if (drive.GetPaths().Contains(absolutePath) == false)
+            var paths = drive.GetPaths();
+            if (paths.Contains(absolutePath) == false)
                 throw new ItemNotFoundException(path);
             if (this.CommandContext.ConfirmToDelete() == false)
                 return;

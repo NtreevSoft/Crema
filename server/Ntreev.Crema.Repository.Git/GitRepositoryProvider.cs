@@ -68,9 +68,13 @@ namespace Ntreev.Crema.Repository.Git
             throw new NotImplementedException();
         }
 
-        public LogInfo[] GetLog(string basePath, string repositoryName, string revision, int count)
+        public LogInfo[] GetLog(string basePath, string repositoryName, int count)
         {
-            throw new NotImplementedException();
+            var baseUri = new Uri(basePath);
+            var branchName = this.GetBranchName(repositoryName);
+            var repositoryPath = baseUri.LocalPath;
+            var logs = GitLogInfo.RunOnBranch(repositoryPath, branchName, $"--max-count={count}");
+            return logs.Select(item => (LogInfo)item).ToArray();
         }
 
         public string[] GetRepositories(string basePath)
@@ -244,6 +248,41 @@ namespace Ntreev.Crema.Repository.Git
             sb.AppendLine(commentHeader);
             sb.Append(propText);
             return sb.ToString();
+        }
+
+        public static void ParseComment(string message, out string comment, out LogPropertyInfo[] properties)
+        {
+            comment = string.Empty;
+            properties = new LogPropertyInfo[] { };
+
+            try
+            {
+                var index = message.IndexOf(commentHeader);
+                if (index >= 0)
+                {
+                    var propText = message.Substring(index);
+                    comment = message.Remove(index);
+
+                    var sr = new StringReader(comment);
+                    var lineList = new List<string>();
+                    var line = null as string;
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        lineList.Add(line);
+                    }
+
+                    if (lineList.Last() == string.Empty)
+                        lineList.RemoveAt(lineList.Count - 1);
+                    comment = string.Join(Environment.NewLine, lineList);
+
+                    properties = propertyDeserializer.Deserialize<LogPropertyInfo[]>(propText);
+                }
+            }
+            catch
+            {
+                comment = null;
+                properties = null;
+            }
         }
     }
 }

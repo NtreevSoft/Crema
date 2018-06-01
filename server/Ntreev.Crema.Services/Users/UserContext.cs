@@ -442,23 +442,28 @@ namespace Ntreev.Crema.Services.Users
         {
             this.cremaHost.Debug("Load user data...");
 
-            var serializationInfo = UserContextSerializationInfo.ReadFromDirectory(this.basePath);
+            var itemPaths = this.Serializer.GetItemPaths(this.BasePath, typeof(UserSerializationInfo), null);
 
-            foreach (var item in serializationInfo.Categories)
+            foreach (var item in itemPaths)
             {
-                if (item == this.Root.Path)
-                    continue;
-                this.Categories.Prepare(item);
-            }
-
-            for (var i = 0; i < serializationInfo.Users.Length; i++)
-            {
-                var item = serializationInfo.Users[i];
-                if (serializationInfo.Version == null)
-                    item.BanInfo = (BanSerializationInfo)BanInfo.Empty;
-                var user = this.Users.AddNew(item.ID, item.CategoryPath);
-                user.Initialize((UserInfo)item, (BanInfo)item.BanInfo);
-                user.Password = UserContext.StringToSecureString(item.Password);
+                if (Directory.Exists(item))
+                {
+                    var relativeUri = UriUtility.MakeRelativeOfDirectory(this.basePath, item);
+                    var segments = StringUtility.Split(relativeUri, PathUtility.SeparatorChar, true);
+                    var categoryName = CategoryName.Create(relativeUri);
+                    this.Categories.Prepare(categoryName);
+                }
+                else
+                {
+                    var userInfo = (UserSerializationInfo)this.Serializer.Deserialize(typeof(UserSerializationInfo), item, null);
+                    var directory = Path.GetDirectoryName(item);
+                    var relativeUri = UriUtility.MakeRelativeOfDirectory(this.basePath, item);
+                    var segments = StringUtility.Split(relativeUri, PathUtility.SeparatorChar, true);
+                    var itemName = ItemName.Create(segments);
+                    var user = this.Users.AddNew(userInfo.ID, itemName.CategoryPath);
+                    user.Initialize((UserInfo)userInfo, (BanInfo)userInfo.BanInfo);
+                    user.Password = UserContext.StringToSecureString(userInfo.Password);
+                }
             }
 
             this.cremaHost.Debug("Loading complete!");
@@ -708,7 +713,6 @@ namespace Ntreev.Crema.Services.Users
             };
 
             var xml = DataContractSerializerUtility.GetString(serializationInfo, true);
-
         }
 
         private void Users_MessageReceived(object sender, MessageEventArgs e)

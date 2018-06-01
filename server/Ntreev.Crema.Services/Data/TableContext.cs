@@ -375,25 +375,14 @@ namespace Ntreev.Crema.Services.Data
             this.OnItemsChanged(new ItemsEventArgs<ITableItem>(authentication, items, metaData));
         }
 
-        public LogInfo[] GetLog(string xmlPath, string schemaPath)
+        public LogInfo[] GetLog(string[] itemPaths)
         {
-            var schemaLogs = this.Repository.GetLog(schemaPath, null, 100);
-            var xmlLogs = this.Repository.GetLog(xmlPath, null, 100);
-
-            var logs = xmlLogs.ToList();
-            foreach (var item in schemaLogs)
-            {
-                if (logs.Any(i => i.Revision == item.Revision))
-                    continue;
-                logs.Add(item);
-            }
-
-            return logs.OrderByDescending(item => item.Revision).Take(100).ToArray();
+            return this.Repository.GetLog(itemPaths, null, 100);
         }
 
         public LogInfo[] GetCategoryLog(string localPath)
         {
-            return this.Repository.GetLog(localPath, null, 100);
+            return this.Repository.GetLog(new string[] { localPath }, null, 100);
         }
 
         public string GenerateCategoryPath(string parentPath, string name)

@@ -156,9 +156,9 @@ namespace Ntreev.Crema.Services
             this.OnChanged(EventArgs.Empty);
         }
 
-        public LogInfo[] GetLog(string path, string revision, int count)
+        public LogInfo[] GetLog(string[] paths, string revision, int count)
         {
-            return this.Dispatcher.Invoke(() => this.Repository.GetLog(path, revision, count));
+            return this.Dispatcher.Invoke(() => this.Repository.GetLog(paths, revision, count));
         }
 
         public string GetDataBaseUri(string repoUri, string itemUri)

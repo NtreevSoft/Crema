@@ -47,7 +47,7 @@ namespace Ntreev.Crema.Services
 
         string[] GetRepositoryItemList(string basePath, string repositoryName);
 
-        LogInfo[] GetLog(string basePath, string repositoryName, string revision, int count);
+        LogInfo[] GetLog(string basePath, string repositoryName, int count);
 
         string Name { get; }
     }

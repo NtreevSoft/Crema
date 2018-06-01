@@ -206,18 +206,27 @@ namespace Ntreev.Crema.Data
 
         public void Remove(CremaDataType type)
         {
-            Validate();
-            this.tables.Remove(type.InternalObject);
+            this.Remove(type, false);
+        }
 
-            void Validate()
+        public void Remove(CremaDataType type, bool force)
+        {
+            if (type == null)
+                throw new ArgumentNullException(nameof(type));
+            if (type.DataSet != this.dataSet.Target)
+                throw new ArgumentException(Resources.Exception_NotIncludedInDataSet, nameof(type));
+            if (force == false && type.HasReference == true)
+                throw new InvalidOperationException("현재 타입이 사용되고 있는 테이블이 있기때문에 삭제할 수 없습니다");
+
+            if (force == true)
             {
-                if (type == null)
-                    throw new ArgumentNullException(nameof(type));
-                if (type.DataSet != this.dataSet.Target)
-                    throw new ArgumentException(Resources.Exception_NotIncludedInDataSet, nameof(type));
-                if (type.HasReference == true)
-                    throw new InvalidOperationException("현재 타입이 사용되고 있는 테이블이 있기때문에 삭제할 수 없습니다");
+                var columns = type.ReferencedColumns;
+                foreach (var item in columns)
+                {
+                    item.CremaType = null;
+                }
             }
+            this.tables.Remove(type.InternalObject);
         }
 
         public void Remove(string name)

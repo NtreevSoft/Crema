@@ -312,20 +312,20 @@ namespace Ntreev.Crema.Services.Data
             this.OnItemsChanged(new ItemsEventArgs<ITypeItem>(authentication, items, metaData));
         }
 
-        public LogInfo[] GetLog(string schemaPath)
+        public LogInfo[] GetLog(string[] itemPaths)
         {
-            return this.Repository.GetLog(schemaPath, null, 100);
+            return this.Repository.GetLog(itemPaths, null, 100);
         }
 
         public LogInfo[] GetCategoryLog(string localPath)
         {
-            return this.Repository.GetLog(localPath, null, 100);
+            return this.Repository.GetLog(new string[] { localPath }, null, 100);
         }
 
         public string GenerateTypePath(string categoryPath, string typeName)
         {
             NameValidator.ValidateCategoryPath(categoryPath);
-            return PathUtility.ConvertFromUri(this.BasePath + categoryPath + typeName + CremaSchema.SchemaExtension);
+            return PathUtility.ConvertFromUri(this.BasePath + categoryPath + typeName);
         }
 
         public string GenerateCategoryPath(string categoryPath)
@@ -406,6 +406,8 @@ namespace Ntreev.Crema.Services.Data
         }
 
         public string BasePath { get; }
+
+        public IObjectSerializer Serializer => this.DataBase.Serializer;
 
         public event ItemsCreatedEventHandler<ITypeItem> ItemsCreated
         {
