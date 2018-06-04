@@ -189,14 +189,26 @@ namespace Ntreev.Crema.Services.Data
         {
             this.DataBase.ValidateAsyncBeginInDataBase(authentication);
             this.CremaHost.DebugMethod(authentication, this, nameof(GetDataSet), this, revision);
-            var info = this.Dispatcher.Invoke(() =>
+            this.Dispatcher.Invoke(() =>
             {
                 this.ValidateAccessType(authentication, AccessType.Guest);
                 this.Sign(authentication);
-                return new Tuple<string, string>(this.DataBase.BasePath, this.LocalPath);
             });
-            var dataSet = this.Container.Repository.GetTableCategoryData(info.Item1, info.Item2, revision);
-            return dataSet;
+
+            var props = new DataSetDeserializationInfo()
+            {
+                SignatureDateProvider = new SignatureDateProvider(authentication.ID),
+                //TypePaths = typePaths,
+                //TablePaths = tablePaths,
+            };
+            props.Add("Revision", revision);
+            props.Add("Repository", this.Container.Repository);
+            //var dataSet = this.Serializer.Deserialize(typeof(CremaDataSet), this.LocalPath, info) as CremaDataSet;
+
+            return this.Serializer.Deserialize(typeof(CremaDataSet), this.LocalPath, props) as CremaDataSet;
+
+            //var dataSet = this.Container.Repository.GetTableCategoryData(info.Item1, info.Item2, revision);
+            //return dataSet;
         }
 
         public LogInfo[] GetLog(Authentication authentication)
@@ -245,9 +257,10 @@ namespace Ntreev.Crema.Services.Data
                                   .Distinct()
                                   .ToArray();
             var tablePaths = tables.SelectMany(item => EnumerableUtility.Friends(item, item.DerivedTables))
-                                  .Select(item => item.ItemPath)
-                                  .Distinct()
-                                  .ToArray();
+                                   .Select(item => item.Parent ?? item)
+                                   .Select(item => item.ItemPath)
+                                   .Distinct()
+                                   .ToArray();
 
             var info = new DataSetDeserializationInfo()
             {

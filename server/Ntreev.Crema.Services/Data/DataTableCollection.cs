@@ -25,6 +25,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ntreev.Crema.Services.Properties;
 using System.Text.RegularExpressions;
+using System.Data;
 
 namespace Ntreev.Crema.Services.Data
 {
@@ -85,7 +86,11 @@ namespace Ntreev.Crema.Services.Data
                 var itemPath = this.dataBase.TableContext.GenerateTablePath(table.Category.Path, table.Name);
 
                 var templateNamespace = table.TemplatedParent?.Name;
-                serializer.Serialize(dataTable, itemPath, templateNamespace);
+                var props = new PropertyCollection
+                {
+                    { CremaSchema.TemplateNamespace, templateNamespace }
+                };
+                serializer.Serialize(dataTable, itemPath, props);
             }
         }
 
@@ -108,8 +113,12 @@ namespace Ntreev.Crema.Services.Data
                 var itemPath2 = this.dataBase.TableContext.GenerateTablePath(dataTable.CategoryPath, dataTable.Name);
 
                 var templateNamespace = table.TemplatedParent?.Name;
-                var items1 = serializer.VerifyPath(typeof(CremaDataTable), itemPath1, templateNamespace);
-                var items2 = serializer.VerifyPath(typeof(CremaDataTable), itemPath2, templateNamespace);
+                var props = new PropertyCollection
+                {
+                    { CremaSchema.TemplateNamespace, templateNamespace }
+                };
+                var items1 = serializer.VerifyPath(typeof(CremaDataTable), itemPath1, props);
+                var items2 = serializer.VerifyPath(typeof(CremaDataTable), itemPath2, props);
 
                 for (var i = 0; i < items1.Length; i++)
                 {

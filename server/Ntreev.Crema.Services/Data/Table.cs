@@ -284,7 +284,11 @@ namespace Ntreev.Crema.Services.Data
                 this.ValidateAccessType(authentication, AccessType.Guest);
                 this.Sign(authentication);
                 var templateNamespace = this.TemplatedParent == null ? null : CremaSchema.TableNamespace + this.TemplatedParent.Category.Path + this.TemplatedParent.Name;
-                return this.Serializer.VerifyPath(typeof(CremaDataTable), this.ItemPath, templateNamespace);
+                var props = new PropertyCollection
+                {
+                    { CremaSchema.TemplateNamespace, templateNamespace }
+                };
+                return this.Serializer.VerifyPath(typeof(CremaDataTable), this.ItemPath, props);
             });
             var result = this.Context.GetLog(itemPaths);
             return result;

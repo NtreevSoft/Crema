@@ -5,6 +5,7 @@ using Ntreev.Library.Serialization;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,7 @@ namespace Ntreev.Crema.Services
     {
         public string Name => "xml";
 
-        public object Deserialize(Type type, string itemPath, object state)
+        public object Deserialize(Type type, string itemPath, PropertyCollection properties)
         {
             if (type == typeof(CremaDataTable))
             {
@@ -25,7 +26,7 @@ namespace Ntreev.Crema.Services
             }
             else if (type == typeof(CremaDataSet))
             {
-                var info = (Data.DataSetDeserializationInfo)state;
+                var info = (Data.DataSetDeserializationInfo)properties;
                 var dataSet = CremaDataSet.Create(info.SignatureDateProvider);
 
                 var typePaths = info.TypePaths.Select(item => item + CremaSchema.SchemaExtension).ToArray();
@@ -43,15 +44,15 @@ namespace Ntreev.Crema.Services
             }
         }
 
-        public string[] Serialize(object obj, string itemPath, object state)
+        public string[] Serialize(object obj, string itemPath, PropertyCollection properties)
         {
             if (obj is CremaDataTable dataTable)
             {
-                return this.SerializeDataTable(dataTable, itemPath, state);
+                return this.SerializeDataTable(dataTable, itemPath, properties);
             }
             else if(obj is CremaDataType dataType)
             {
-                return this.SerializeDataType(dataType, itemPath, state);
+                return this.SerializeDataType(dataType, itemPath, properties);
             }
             else
             {
@@ -59,14 +60,14 @@ namespace Ntreev.Crema.Services
             }
         }
 
-        public string[] VerifyPath(Type type, string itemPath, object state)
+        public string[] VerifyPath(Type type, string itemPath, PropertyCollection properties)
         {
             if (type == typeof(CremaDataTable))
             {
                 var schemaPath = itemPath + CremaSchema.SchemaExtension;
                 var xmlPath = itemPath + CremaSchema.XmlExtension;
-                var ns = state as string;
-                if (string.IsNullOrEmpty(ns) == true)
+                var templateNamespace = properties[CremaSchema.TemplateNamespace] as string;
+                if (string.IsNullOrEmpty(templateNamespace) == true)
                 {
                     return new string[] { schemaPath, xmlPath, };
                 }
@@ -87,7 +88,7 @@ namespace Ntreev.Crema.Services
             }
         }
 
-        public string[] GetItemPaths(string path, Type type, object state)
+        public string[] GetItemPaths(string path, Type type, PropertyCollection properties)
         {
             if (type == typeof(CremaDataTable))
             {

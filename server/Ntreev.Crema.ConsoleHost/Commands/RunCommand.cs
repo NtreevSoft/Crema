@@ -31,6 +31,7 @@ using Ntreev.Crema.Commands.Consoles;
 using Ntreev.Crema.ConsoleHost.Commands.Consoles;
 using System.Collections.Generic;
 using Ntreev.Crema.Javascript;
+using Ntreev.Library.IO;
 
 namespace Ntreev.Crema.ConsoleHost.Commands
 {
@@ -185,7 +186,7 @@ namespace Ntreev.Crema.ConsoleHost.Commands
 
             var cremaHost = this.application.GetService(typeof(ICremaHost)) as ICremaHost;
             cremaHost.Closed += CremaHost_Closed;
-            this.Wait();
+            this.Wait(cremaHost);
             Console.WriteLine(Resources.StoppingServer);
             this.application.Close();
             Console.WriteLine(Resources.ServerHasBeenStopped);
@@ -199,7 +200,7 @@ namespace Ntreev.Crema.ConsoleHost.Commands
             }
         }
 
-        private void Wait()
+        private void Wait(ICremaHost cremaHost)
         {
             if (this.IsPromptMode == true)
             {
@@ -213,7 +214,18 @@ namespace Ntreev.Crema.ConsoleHost.Commands
             else if (this.ScriptPath != string.Empty)
             {
                 var script = File.ReadAllText(this.ScriptPath);
-                this.ScriptContext.RunInternal(script, null);
+                var basePath = cremaHost.GetPath(CremaPath.Documents);
+                var oldPath = Directory.GetCurrentDirectory();
+                try
+                {
+                    DirectoryUtility.Prepare(basePath);
+                    Directory.SetCurrentDirectory(basePath);
+                    this.ScriptContext.RunInternal(script, null);
+                }
+                finally
+                {
+                    Directory.SetCurrentDirectory(oldPath);
+                }
             }
             else
             {

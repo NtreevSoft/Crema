@@ -44,7 +44,7 @@ namespace Ntreev.Crema.Services.Data
             this.dataBase = dataBase;
             this.settings = this.dataBase.GetService(typeof(CremaSettings)) as CremaSettings;
         }
-                
+
         public void Commit(Authentication authentication, string comment)
         {
             var props = new List<LogPropertyInfo>
@@ -177,6 +177,7 @@ namespace Ntreev.Crema.Services.Data
                     var xmlInfo = new CremaXmlReadInfo(item);
                     var schemaUri = UriUtility.Combine(UriUtility.GetDirectoryName(itemUri), $"{xmlInfo.RelativeSchemaPath}@{revisionValue}");
                     var schemaPath = new Uri(UriUtility.Combine(Path.GetDirectoryName(item), xmlInfo.RelativeSchemaPath)).LocalPath;
+
                     if (File.Exists(schemaPath) == false)
                     {
                         this.Export(schemaUri, tempPath);
@@ -198,10 +199,10 @@ namespace Ntreev.Crema.Services.Data
                     }
                 }
 
-                var pureBaseUri = $"{baseUri}".Replace($"@{revisionValue}", string.Empty);
+                var pureBaseUri = $"{repoUri}".Replace($"@{revisionValue}", string.Empty);
                 var pureCategoryUri = $"{categoryUri}".Replace($"@{revisionValue}", string.Empty);
-                var dataBaseRelativeUri = UriUtility.MakeRelativeOfDirectory(pureCategoryUri, pureBaseUri);
-                var dataBasePath = UriUtility.Combine(new Uri(categoryPath), dataBaseRelativeUri).LocalPath;
+                var dataBaseRelativeUri = UriUtility.MakeRelative(pureCategoryUri, pureBaseUri);
+                var dataBasePath = UriUtility.Combine(new Uri(categoryPath), Path.GetDirectoryName(dataBaseRelativeUri)).LocalPath;
                 return CremaDataSet.ReadFromDirectory(dataBasePath);
             }
             finally

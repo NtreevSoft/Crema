@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -27,12 +28,12 @@ namespace Ntreev.Crema.ObjectSerializer.Yaml
 
         public string Name => "yaml";
 
-        public object Deserialize(Type type, string itemPath, object state)
+        public object Deserialize(Type type, string itemPath, PropertyCollection properties)
         {
             throw new NotImplementedException();
         }
 
-        public string[] Serialize(object obj, string itemPath, object state)
+        public string[] Serialize(object obj, string itemPath, PropertyCollection properties)
         {
             var filename = itemPath + extensions;
             var contents = propertySerializer.Serialize(obj);
@@ -40,13 +41,13 @@ namespace Ntreev.Crema.ObjectSerializer.Yaml
             return new string[] { filename };
         }
 
-        public string[] VerifyPath(Type type, string itemPath, object state)
+        public string[] VerifyPath(Type type, string itemPath, PropertyCollection properties)
         {
             var filename = itemPath + extensions;
             return new string[] { filename };
         }
 
-        public string[] GetItemPaths(string path, Type type, object state)
+        public string[] GetItemPaths(string path, Type type, PropertyCollection properties)
         {
             //if (type == typeof(CremaDataTable))
             //{

@@ -562,7 +562,7 @@ namespace Ntreev.Crema.Services.Data
         {
             this.dispatcher.Invoke(() => this.ValidatePreview(authentication));
 
-            if (revision == base.DataBaseInfo.Revision || revision != null)
+            if (revision == base.DataBaseInfo.Revision || revision == null)
             {
                 if (this.dataSetCache == null)
                 {

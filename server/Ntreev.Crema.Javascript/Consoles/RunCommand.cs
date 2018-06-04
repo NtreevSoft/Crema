@@ -97,6 +97,7 @@ namespace Ntreev.Crema.Javascript.Consoles
                 var oldPath = Directory.GetCurrentDirectory();
                 try
                 {
+                    DirectoryUtility.Prepare(this.CommandContext.BaseDirectory);
                     Directory.SetCurrentDirectory(this.CommandContext.BaseDirectory);
                     if (this.Filename != string.Empty)
                     {

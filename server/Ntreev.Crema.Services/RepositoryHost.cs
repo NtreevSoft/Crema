@@ -30,13 +30,13 @@ namespace Ntreev.Crema.Services
 {
     class RepositoryHost
     {
-        //private readonly string path;
+        private readonly string repositoryPath;
 
-        public RepositoryHost(IRepository repository, CremaDispatcher dispatcher, string path)
+        public RepositoryHost(IRepository repository, CremaDispatcher dispatcher, string repositoryPath)
         {
             this.Repository = repository;
             this.Dispatcher = dispatcher;
-            //this.path = path;
+            this.repositoryPath = repositoryPath;
         }
 
         public void Add(string path)
@@ -167,15 +167,15 @@ namespace Ntreev.Crema.Services
             var pureRepoUri = Regex.Replace(repoUri, pattern, string.Empty);
             var pureItemUri = Regex.Replace(itemUri, pattern, string.Empty);
             var relativeUri = UriUtility.MakeRelativeOfDirectory(pureRepoUri, pureItemUri);
-            var segments = relativeUri.Split(PathUtility.SeparatorChar);
-            if (segments[0] == "trunk")
-            {
-                pureRepoUri = $"{UriUtility.Combine(pureRepoUri, segments.Take(1).ToArray())}";
-            }
-            else if (segments[0] == "tags")
-            {
-                pureRepoUri = $"{UriUtility.Combine(pureRepoUri, segments.Take(2).ToArray())}";
-            }
+            //var segments = relativeUri.Split(PathUtility.SeparatorChar);
+            //if (segments[0] == "trunk")
+            //{
+            //    pureRepoUri = $"{UriUtility.Combine(pureRepoUri, segments.Take(1).ToArray())}";
+            //}
+            //else if (segments[0] == "tags")
+            //{
+            //    pureRepoUri = $"{UriUtility.Combine(pureRepoUri, segments.Take(2).ToArray())}";
+            //}
 
             return pureRepoUri;
         }

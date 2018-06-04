@@ -1,4 +1,5 @@
-﻿using Ntreev.Crema.ServiceModel;
+﻿using Ntreev.Crema.Data;
+using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services;
 using Ntreev.Library;
 using Ntreev.Library.IO;
@@ -163,21 +164,25 @@ namespace Ntreev.Crema.Repository.Git
 
         public string Export(Uri uri, string exportPath)
         {
-            var name = Path.GetFileName(uri.LocalPath);
-            var match = Regex.Match(name, "(?<filename>.+)@(?<revision>[a-f0-9]{40})", RegexOptions.ExplicitCapture);
-            var filename = match.Groups["filename"].Value;
+            var match = Regex.Match(uri.LocalPath, "(?<path>.+)@(?<keep>.*)(?<revision>[a-f0-9]{40})", RegexOptions.ExplicitCapture);
+            var path = match.Groups["path"].Value;
+            var keep = match.Groups["keep"].Value;
             var revision = match.Groups["revision"].Value;
 
-            if (filename == ".keep")
+            var tempPath = PathUtility.GetTempFileName();
+            try
             {
-                var tempPath = PathUtility.GetTempFileName();
-                GitHost.Run(this.repositoryPath, "archive", $"--output=\"{tempPath}\"", "--format=zip", revision, "--");
+                if (DirectoryUtility.IsEmpty(exportPath) == true)
+                    new CremaDataSet().WriteToDirectory(exportPath);
+                var relativePath = UriUtility.MakeRelativeOfDirectory(this.repositoryPath, path);
+                GitHost.Run(this.repositoryPath, "archive", $"--output=\"{tempPath}\"", "--format=zip", revision, "--", path.WrapQuot());
                 ZipFile.ExtractToDirectory(tempPath, exportPath);
-                return exportPath;
+                var exportUri = new Uri(UriUtility.Combine(exportPath, relativePath));
+                return exportUri.LocalPath;
             }
-            else
+            finally
             {
-                throw new NotImplementedException();
+                FileUtility.Delete(tempPath);
             }
         }
 
@@ -187,16 +192,16 @@ namespace Ntreev.Crema.Repository.Git
             return logs.Select(item => (LogInfo)item).ToArray();
         }
 
-        //public string GetRevision(string path)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
         public Uri GetUri(string path, string revision)
         {
             // git log --follow --pretty=oneline --name-status .\tables\Table1.xml
             if (DirectoryUtility.IsDirectory(path) == true)
-                return new Uri($"{path}{PathUtility.Separator}.keep@{revision ?? this.repositoryInfo.Revision}");
+            {
+                var uri = new Uri($"{path}@{revision ?? this.repositoryInfo.Revision}");
+                var uriString = uri.ToString();
+                var text = Regex.Replace(uriString, "file:///", "dir:///");
+                return new Uri(text);
+            }
             return new Uri($"{path}@{revision ?? this.repositoryInfo.Revision}");
         }
 
@@ -207,7 +212,7 @@ namespace Ntreev.Crema.Repository.Git
 
         public void Revert()
         {
-            throw new NotImplementedException();
+            GitHost.Run(this.repositoryPath, "reset", "--hard");
         }
 
         public void Revert(string revision)
@@ -215,9 +220,9 @@ namespace Ntreev.Crema.Repository.Git
             throw new NotImplementedException();
         }
 
-        public IDictionary<string, string> Status()
-        {
-            throw new NotImplementedException();
-        }
+        //public IDictionary<string, string> Status()
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

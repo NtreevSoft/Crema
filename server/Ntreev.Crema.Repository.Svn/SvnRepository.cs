@@ -44,6 +44,7 @@ namespace Ntreev.Crema.Repository.Svn
         private readonly Dictionary<string, string> transactionMessages = new Dictionary<string, string>();
         private bool needToUpdate;
         private Uri repositoryRoot;
+        private Uri repositoryUri;
         private RepositoryInfo repositoryInfo;
 
         public SvnRepository(SvnRepositoryProvider repositoryProvider, ILogService logService, string repositoryPath, string transactionPath, RepositoryInfo repositoryInfo)
@@ -69,6 +70,7 @@ namespace Ntreev.Crema.Repository.Svn
 
             var info = SvnInfoEventArgs.Run(this.repositoryPath);
             this.repositoryRoot = info.RepositoryRoot;
+            this.repositoryUri = info.Uri;
             //var repositoryInfo = SvnInfoEventArgs.Run($"{info.Uri}");
             //this.revision = repositoryInfo.Revision;
         }
@@ -199,12 +201,12 @@ namespace Ntreev.Crema.Repository.Svn
 
         public string Export(Uri uri, string exportPath)
         {
-            var pureUrl = new Uri(Regex.Replace($"{uri}", "@\\d+$", string.Empty));
-            var relativeUri = this.repositoryRoot.MakeRelativeUri(pureUrl);
+            var pureUri = new Uri(Regex.Replace($"{uri}", "@\\d+$", string.Empty));
+            var relativeUri = UriUtility.MakeRelativeOfDirectory(this.repositoryUri, pureUri);
             var uriTarget = $"{uri}";
             var filename = FileUtility.Prepare(exportPath, $"{relativeUri}");
             this.Run("export", uriTarget, filename.WrapQuot());
-            return new FileInfo(Path.Combine(exportPath, $"{relativeUri}")).FullName    ;
+            return new FileInfo(Path.Combine(exportPath, $"{relativeUri}")).FullName;
         }
 
         public void GetBranchInfo(string path, out string revision, out string source, out string sourceRevision)

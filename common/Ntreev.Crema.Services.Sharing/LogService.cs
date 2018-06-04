@@ -115,7 +115,7 @@ namespace Ntreev.Crema.Services
             this.rollingAppender = new RollingFileAppender()
             {
                 AppendToFile = true,
-                File = Path.Combine(path, $"logs", "log"),
+                File = Path.Combine(path, "log"),
                 DatePattern = "_yyyy-MM-dd'.xml'",
                 Layout = xmlLayout,
                 Encoding = Encoding.UTF8,

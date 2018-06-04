@@ -28,6 +28,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -140,13 +141,17 @@ namespace Ntreev.Crema.Services.Data
                 if (sourceTable != null)
                 {
                     var sourceItemPath = this.Context.GenerateTablePath(categoryPath, sourceTable.Name);
-                    var items1 = this.Serializer.VerifyPath(dataTable.GetType(), sourceItemPath, dataTable.TemplateNamespace);
-                    var items2 = this.Serializer.VerifyPath(dataTable.GetType(), itemPath, dataTable.TemplateNamespace);
+                    var props = new PropertyCollection
+                    {
+                        { CremaSchema.TemplateNamespace, dataTable.TemplateNamespace }
+                    };
+                    var items1 = this.Serializer.VerifyPath(dataTable.GetType(), sourceItemPath, props);
+                    var items2 = this.Serializer.VerifyPath(dataTable.GetType(), itemPath, props);
                     for (var i = 0; i < items1.Length; i++)
                     {
                         this.Repository.Copy(items1[i], items2[i]);
                     }
-                    this.Serializer.Serialize(dataTable, itemPath, dataTable.TemplateNamespace);
+                    this.Serializer.Serialize(dataTable, itemPath, props);
                 }
                 else
                 {
