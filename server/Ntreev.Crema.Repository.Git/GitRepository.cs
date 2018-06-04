@@ -194,6 +194,7 @@ namespace Ntreev.Crema.Repository.Git
 
         public Uri GetUri(string path, string revision)
         {
+            // git log --follow --pretty=oneline --name-status .\tables\Table1.xml
             if (DirectoryUtility.IsDirectory(path) == true)
                 return new Uri($"{path}{PathUtility.Separator}.keep@{revision ?? this.repositoryInfo.Revision}");
             return new Uri($"{path}@{revision ?? this.repositoryInfo.Revision}");
