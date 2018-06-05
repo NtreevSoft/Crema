@@ -189,6 +189,10 @@ namespace Ntreev.Crema.Services
             {
                 pureRepoUri = $"{UriUtility.Combine(pureRepoUri, segments.Take(2).ToArray())}";
             }
+            else if (segments[0] == "branches")
+            {
+                pureRepoUri = $"{UriUtility.Combine(pureRepoUri, segments.Take(2).ToArray())}";
+            }
 
             return pureRepoUri;
         }
