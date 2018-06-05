@@ -90,7 +90,7 @@ namespace Ntreev.Crema.Services.Data
                 {
                     { CremaSchema.TemplateNamespace, templateNamespace }
                 };
-                serializer.Serialize(dataTable, itemPath, props);
+                serializer.Serialize(itemPath, dataTable, props);
             }
         }
 
@@ -112,13 +112,12 @@ namespace Ntreev.Crema.Services.Data
                 var itemPath1 = this.dataBase.TableContext.GenerateTablePath(table.Category.Path, table.Name);
                 var itemPath2 = this.dataBase.TableContext.GenerateTablePath(dataTable.CategoryPath, dataTable.Name);
 
-                var templateNamespace = table.TemplatedParent?.Name;
                 var props = new PropertyCollection
                 {
-                    { CremaSchema.TemplateNamespace, templateNamespace }
+                    { nameof(table.TemplatedParent), table.TemplatedParent?.Path }
                 };
-                var items1 = serializer.VerifyPath(typeof(CremaDataTable), itemPath1, props);
-                var items2 = serializer.VerifyPath(typeof(CremaDataTable), itemPath2, props);
+                var items1 = serializer.GetPath(itemPath1, typeof(CremaDataTable), props);
+                var items2 = serializer.GetPath(itemPath2, typeof(CremaDataTable), props);
 
                 for (var i = 0; i < items1.Length; i++)
                 {

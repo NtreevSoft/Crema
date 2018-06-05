@@ -61,11 +61,7 @@ namespace Ntreev.Crema.Services.Data
             {
                 var dataType = item.Key;
                 var type = item.Value;
-
-                //var path1 = type.Path;
-                //var path2 = dataType.CategoryPath + dataType.Name;
-
-                serializer.Serialize(dataType, type.ItemPath, null);
+                serializer.Serialize(type.ItemPath, dataType, null);
             }
         }
 
@@ -125,8 +121,8 @@ namespace Ntreev.Crema.Services.Data
                 var itemPath1 = this.dataBase.TypeContext.GenerateTypePath(type.Category.Path, type.Name);
                 var itemPath2 = this.dataBase.TypeContext.GenerateTypePath(dataType.CategoryPath, dataType.Name);
 
-                var items1 = serializer.VerifyPath(typeof(CremaDataType), itemPath1, null);
-                var items2 = serializer.VerifyPath(typeof(CremaDataType), itemPath2, null);
+                var items1 = serializer.GetPath(itemPath1, typeof(CremaDataType), null);
+                var items2 = serializer.GetPath(itemPath2, typeof(CremaDataType), null);
 
                 for (var i = 0; i < items1.Length; i++)
                 {

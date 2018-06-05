@@ -253,13 +253,8 @@ namespace Ntreev.Crema.Services.Data
                                    .Distinct()
                                    .ToArray();
 
-            var info = new DataSetDeserializationInfo()
-            {
-                SignatureDateProvider = new SignatureDateProvider(authentication.ID),
-                TypePaths = typePaths,
-                TablePaths = tablePaths,
-            };
-            var dataSet = this.Serializer.Deserialize(typeof(CremaDataSet), this.LocalPath, info) as CremaDataSet;
+            var props = new CremaDataSetPropertyCollection(authentication, typePaths, tablePaths);
+            var dataSet = this.Serializer.Deserialize(this.LocalPath, typeof(CremaDataSet), props) as CremaDataSet;
             return dataSet;
 
             Type[] CollectTypes()
@@ -295,14 +290,8 @@ namespace Ntreev.Crema.Services.Data
         {
             var types = CollectTypes();
             var typePaths = types.Select(item => item.ItemPath).ToArray();
-            var info = new DataSetDeserializationInfo()
-            {
-                SignatureDateProvider = new SignatureDateProvider(authentication.ID),
-                TypePaths = typePaths,
-                TablePaths = new string[] { },
-            };
-
-            var dataSet = this.Serializer.Deserialize(typeof(CremaDataSet), this.LocalPath, info) as CremaDataSet;
+            var info = new CremaDataSetPropertyCollection(authentication, typePaths, null);
+            var dataSet = this.Serializer.Deserialize(this.LocalPath, typeof(CremaDataSet), info) as CremaDataSet;
             return dataSet;
 
             Type[] CollectTypes()

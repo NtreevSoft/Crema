@@ -213,7 +213,7 @@ namespace Ntreev.Crema.Services.Data
             {
                 this.ValidateAccessType(authentication, AccessType.Guest);
                 this.Sign(authentication);
-                return this.Serializer.VerifyPath(typeof(CremaDataType), this.ItemPath, null);
+                return this.Serializer.GetPath(this.ItemPath, typeof(CremaDataType), null);
             });
             var result = this.Context.GetLog(itemPaths);
             return result;
@@ -269,13 +269,8 @@ namespace Ntreev.Crema.Services.Data
                                    .Distinct()
                                    .ToArray();
 
-            var info = new DataSetDeserializationInfo()
-            {
-                SignatureDateProvider = new SignatureDateProvider(authentication.ID),
-                TypePaths = typeFiles,
-                TablePaths = tableFiles,
-            };
-            var dataSet = this.Serializer.Deserialize(typeof(CremaDataSet), this.ItemPath, info) as CremaDataSet;
+            var props = new CremaDataSetPropertyCollection(authentication, typeFiles, tableFiles);
+            var dataSet = this.Serializer.Deserialize(this.ItemPath, typeof(CremaDataSet), props) as CremaDataSet;
             return dataSet.Types[base.Name];
         }
 

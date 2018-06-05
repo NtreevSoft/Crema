@@ -18,6 +18,7 @@
 using Ntreev.Library;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -46,7 +47,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
 
             this.relativeTypePaths = query.ToArray();
 
-            this.typePaths = this.relativeTypePaths.Select(item => UriUtility.Combine(schemaPath, item)).ToArray();
+            this.typePaths = this.relativeTypePaths.Select(item => UriUtility.Combine(Path.GetDirectoryName(schemaPath), item)).ToArray();
         }
 
         public string SchemaPath
@@ -57,6 +58,11 @@ namespace Ntreev.Crema.Data.Xml.Schema
         public string[] TypePaths
         {
             get { return this.typePaths; }
+        }
+
+        public string[] LocalTypePaths
+        {
+            get { return this.typePaths.Select(item => new Uri(item).LocalPath).ToArray(); }
         }
 
         public string[] RelativeTypePaths

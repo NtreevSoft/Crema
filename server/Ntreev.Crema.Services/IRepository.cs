@@ -50,8 +50,6 @@ namespace Ntreev.Crema.Services
 
         Uri GetUri(string path, string revision);
 
-        //IDictionary<string, string> Status();
-
         string Export(Uri uri, string exportPath);
 
         RepositoryInfo RepositoryInfo { get; }

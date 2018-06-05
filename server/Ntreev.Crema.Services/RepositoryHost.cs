@@ -30,13 +30,11 @@ namespace Ntreev.Crema.Services
 {
     class RepositoryHost
     {
-        private readonly string repositoryPath;
-
         public RepositoryHost(IRepository repository, CremaDispatcher dispatcher, string repositoryPath)
         {
             this.Repository = repository;
             this.Dispatcher = dispatcher;
-            this.repositoryPath = repositoryPath;
+            this.RepositoryPath = repositoryPath;
         }
 
         public void Add(string path)
@@ -125,11 +123,6 @@ namespace Ntreev.Crema.Services
             });
         }
 
-        //public string GetRevision(string path)
-        //{
-        //    return this.Dispatcher.Invoke(() => this.Repository.GetRevision(path));
-        //}
-
         public Uri GetUri(string path, string revision)
         {
             return this.Dispatcher.Invoke(() => this.Repository.GetUri(path, revision));
@@ -187,11 +180,15 @@ namespace Ntreev.Crema.Services
 
         public RepositoryInfo RepositoryInfo => this.Repository.RepositoryInfo;
 
+        
+
         public event EventHandler Changed;
 
         protected CremaDispatcher Dispatcher { get; }
 
         protected IRepository Repository { get; }
+
+        protected string RepositoryPath { get; }
 
         protected void OnChanged(EventArgs e)
         {

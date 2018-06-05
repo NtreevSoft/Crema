@@ -87,7 +87,7 @@ namespace Ntreev.Crema.Services.Data
             var comment = EventMessageBuilder.CreateType(authentication, new string[] { typeName });
             try
             {
-                var itemPaths = this.Serializer.Serialize(dataType, itemPath, null);
+                var itemPaths = this.Serializer.Serialize(itemPath, dataType, null);
                 foreach (var item in itemPaths)
                 {
                     this.Repository.Add(item);
@@ -161,7 +161,7 @@ namespace Ntreev.Crema.Services.Data
             var comment = EventMessageBuilder.DeleteType(authentication, new string[] { type.Name });
             try
             {
-                var itemPaths = this.Serializer.VerifyPath(typeof(CremaDataType), itemPath, null);
+                var itemPaths = this.Serializer.GetPath(itemPath, typeof(CremaDataType), null);
                 foreach (var item in itemPaths)
                 {
                     this.Repository.Delete(item);

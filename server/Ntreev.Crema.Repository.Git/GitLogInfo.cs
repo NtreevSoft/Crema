@@ -82,7 +82,9 @@ namespace Ntreev.Crema.Repository.Git
 
         public static GitLogInfo[] RunWithPaths(string repositoryPath, string revision, string[] paths, params object[] args)
         {
-            var argList = new List<object>() { "log", revision ?? "head", "--pretty=fuller", "--follow" };
+            var argList = new List<object>() { "log", revision ?? "head", "--pretty=fuller" };
+            if (paths.Length == 1)
+                argList.Add("--follow");
             argList.AddRange(args);
             argList.Add("--");
             foreach (var item in paths)

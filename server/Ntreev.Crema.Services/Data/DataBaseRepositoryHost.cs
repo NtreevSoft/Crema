@@ -119,37 +119,27 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public CremaDataSet GetTableData(string repositoryPath, string tableXmlPath, string tableSchemaPath, string revision)
+        public CremaDataSet GetTableData(IObjectSerializer serializer, Table table, string revision)
         {
             var tempPath = PathUtility.GetTempPath(true);
-
             try
             {
-                var revisionValue = revision ?? this.RepositoryInfo.Revision;
-                var repoUri = this.GetUri(repositoryPath, revisionValue);
-                var xmlUri = this.GetUri(tableXmlPath, revisionValue);
-                var baseUri = this.GetDataBaseUri($"{repoUri}", $"{xmlUri}");
-
-                var xmlPath = this.Export(xmlUri, tempPath);
-                var xmlInfo = new CremaXmlReadInfo(xmlPath);
-
-                var schemaUri = UriUtility.Combine(UriUtility.GetDirectoryName(xmlUri), xmlInfo.RelativeSchemaPath + "@" + revisionValue);
-                var schemaPath = this.Export(schemaUri, tempPath);
-
-                var xsdInfo = new CremaSchemaReadInfo(schemaPath);
-
-                foreach (var item in xsdInfo.RelativeTypePaths)
+                var itemPath = table.ItemPath;
+                var templatedParent = table.TemplatedParent?.Path;
+                var props = new RelativeSchemaPropertyCollection(table.ItemPath, table.TemplatedParent?.ItemPath);
+                var files = serializer.GetPath(itemPath, typeof(CremaDataTable), props);
+                foreach (var item in files)
                 {
-                    var typeUri = UriUtility.Combine(UriUtility.GetDirectoryName(schemaUri), $"{item}@{revisionValue}");
-                    this.Export(typeUri, tempPath);
+                    this.ExportItem(item, tempPath, revision);
                 }
 
-                var pureBaseUri = $"{baseUri}".Replace($"@{revisionValue}", string.Empty);
-                var pureTableXmlUri = $"{xmlUri}".Replace($"@{revisionValue}", string.Empty);
+                var referencedfiles = serializer.GetReferencedPath(itemPath, typeof(CremaDataTable), SerializationPropertyCollection.Empty);
+                foreach (var item in referencedfiles)
+                {
+                    this.ExportItem(item, tempPath, revision);
+                }
 
-                var dataBaseRelativeUri = UriUtility.MakeRelativeOfDirectory(pureTableXmlUri, pureBaseUri);
-                var dataBasePath = UriUtility.Combine(new Uri(xmlPath), dataBaseRelativeUri).LocalPath;
-                return CremaDataSet.ReadFromDirectory(dataBasePath);
+                return serializer.Deserialize(tempPath, typeof(CremaDataSet), SerializationPropertyCollection.Empty) as CremaDataSet;
             }
             finally
             {
@@ -157,53 +147,60 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public CremaDataSet GetTableCategoryData(string repositoryPath, string localPath, string revision)
+        private void ExportItem(string path, string exportPath, string revision)
+        {
+            var revisionValue = revision ?? this.RepositoryInfo.Revision;
+            var relativeItemUri = UriUtility.MakeRelativeOfDirectory(this.RepositoryPath, path);
+            var itemUri = UriUtility.Combine(exportPath, relativeItemUri);
+            var itemTempPath = new Uri(itemUri).LocalPath;
+            if (File.Exists(itemTempPath) == false)
+            {
+                var itemRevisionUri = this.GetUri(path, revisionValue);
+                var exportSchemaUri = this.Export(itemRevisionUri, exportPath);
+            }
+        }
+
+        private void ExportItem2(string path, string exportPath, string revision)
+        {
+            var revisionValue = revision ?? this.RepositoryInfo.Revision;
+            var relativeItemUri = UriUtility.MakeRelativeOfDirectory(exportPath, path);
+            var itemUri = UriUtility.Combine(exportPath, relativeItemUri);
+            var itemTempPath = new Uri(itemUri).LocalPath;
+            if (File.Exists(itemTempPath) == false)
+            {
+                var itemRevisionUri = new Uri(UriUtility.Combine(this.RepositoryPath, relativeItemUri + $"@{revisionValue}"));
+                var exportSchemaUri = this.Export(itemRevisionUri, exportPath);
+            }
+        }
+
+        public CremaDataSet GetTableCategoryData(IObjectSerializer serializer, string localPath, string revision)
         {
             var tempPath = PathUtility.GetTempPath(true);
-
             try
             {
                 var revisionValue = revision ?? this.RepositoryInfo.Revision;
-                var repoUri = this.GetUri(repositoryPath, revisionValue);
+                var repoUri = this.GetUri(this.RepositoryPath, revisionValue);
                 var categoryUri = this.GetUri(localPath, revisionValue);
                 var categoryPath = this.Export(categoryUri, tempPath);
                 var baseUri = this.GetDataBaseUri($"{repoUri}", $"{categoryUri}");
 
-                var files = DirectoryUtility.GetAllFiles(categoryPath, "*" + CremaSchema.XmlExtension);
-                foreach (var item in files)
+                var items = serializer.GetItemPaths(categoryPath, typeof(CremaDataTable), SerializationPropertyCollection.Empty);
+                foreach (var item in items)
                 {
-                    var relativeItemUri = UriUtility.MakeRelative(categoryPath, item);
-                    var itemUri = UriUtility.Combine(UriUtility.GetDirectoryName(categoryUri), $"{relativeItemUri}@{revisionValue}");
-                    var xmlInfo = new CremaXmlReadInfo(item);
-                    var schemaUri = UriUtility.Combine(UriUtility.GetDirectoryName(itemUri), $"{xmlInfo.RelativeSchemaPath}@{revisionValue}");
-                    var schemaPath = new Uri(UriUtility.Combine(Path.GetDirectoryName(item), xmlInfo.RelativeSchemaPath)).LocalPath;
-
-                    if (File.Exists(schemaPath) == false)
+                    var files = serializer.GetPath(item, typeof(CremaDataTable), SerializationPropertyCollection.Empty);
+                    foreach (var f in files)
                     {
-                        this.Export(schemaUri, tempPath);
+                        this.ExportItem2(f, tempPath, revision);
                     }
-                    ExportTypes(schemaUri, schemaPath);
-                }
 
-                void ExportTypes(Uri schemaUri, string schemaPath)
-                {
-                    var xsdInfo = new CremaSchemaReadInfo(schemaPath);
-                    foreach (var item in xsdInfo.RelativeTypePaths)
+                    var referencedfiles = serializer.GetReferencedPath(item, typeof(CremaDataTable), SerializationPropertyCollection.Empty);
+                    foreach (var f in referencedfiles)
                     {
-                        var typeUri = UriUtility.Combine(UriUtility.GetDirectoryName(schemaUri), $"{item}@{revisionValue}");
-                        var typePath = new Uri(UriUtility.Combine(Path.GetDirectoryName(schemaPath), item)).LocalPath;
-                        if (File.Exists(typePath) == false)
-                        {
-                            this.Export(typeUri, tempPath);
-                        }
+                        this.ExportItem2(f, tempPath, revision);
                     }
                 }
 
-                var pureBaseUri = $"{repoUri}".Replace($"@{revisionValue}", string.Empty);
-                var pureCategoryUri = $"{categoryUri}".Replace($"@{revisionValue}", string.Empty);
-                var dataBaseRelativeUri = UriUtility.MakeRelative(pureCategoryUri, pureBaseUri);
-                var dataBasePath = UriUtility.Combine(new Uri(categoryPath), Path.GetDirectoryName(dataBaseRelativeUri)).LocalPath;
-                return CremaDataSet.ReadFromDirectory(dataBasePath);
+                return serializer.Deserialize(tempPath, typeof(CremaDataSet), SerializationPropertyCollection.Empty) as CremaDataSet;
             }
             finally
             {

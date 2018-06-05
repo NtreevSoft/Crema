@@ -143,19 +143,19 @@ namespace Ntreev.Crema.Services.Data
                     var sourceItemPath = this.Context.GenerateTablePath(categoryPath, sourceTable.Name);
                     var props = new PropertyCollection
                     {
-                        { CremaSchema.TemplateNamespace, dataTable.TemplateNamespace }
+                        { nameof(Table.TemplatedParent), dataTable.CategoryPath + dataTable.Name }
                     };
-                    var items1 = this.Serializer.VerifyPath(dataTable.GetType(), sourceItemPath, props);
-                    var items2 = this.Serializer.VerifyPath(dataTable.GetType(), itemPath, props);
+                    var items1 = this.Serializer.GetPath(sourceItemPath, dataTable.GetType(), props);
+                    var items2 = this.Serializer.GetPath(itemPath, dataTable.GetType(), props);
                     for (var i = 0; i < items1.Length; i++)
                     {
                         this.Repository.Copy(items1[i], items2[i]);
                     }
-                    this.Serializer.Serialize(dataTable, itemPath, props);
+                    this.Serializer.Serialize(itemPath, dataTable, props);
                 }
                 else
                 {
-                    var itemPaths = this.Serializer.Serialize(dataTable, itemPath, null);
+                    var itemPaths = this.Serializer.Serialize(itemPath, dataTable, null);
                     foreach (var item in itemPaths)
                     {
                         this.Repository.Add(item);

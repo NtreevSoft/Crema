@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -9,13 +10,15 @@ namespace Ntreev.Crema.Services
 {
     public interface IObjectSerializer
     {
-        string[] Serialize(object obj, string itemPath, PropertyCollection properties);
+        string[] Serialize(string itemPath, object obj, IDictionary properties);
 
-        object Deserialize(Type type, string itemPath, PropertyCollection properties);
+        object Deserialize(string itemPath, Type type, IDictionary properties);
 
-        string[] VerifyPath(Type type, string itemPath, PropertyCollection properties);
+        string[] GetPath(string itemPath, Type type, IDictionary properties);
 
-        string[] GetItemPaths(string path, Type type, PropertyCollection properties);
+        string[] GetReferencedPath(string itemPath, Type type, IDictionary properties);
+
+        string[] GetItemPaths(string path, Type type, IDictionary properties);
 
         string Name { get; }
     }

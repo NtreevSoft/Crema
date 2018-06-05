@@ -455,7 +455,7 @@ namespace Ntreev.Crema.Services.Users
                 }
                 else
                 {
-                    var userInfo = (UserSerializationInfo)this.Serializer.Deserialize(typeof(UserSerializationInfo), item, null);
+                    var userInfo = (UserSerializationInfo)this.Serializer.Deserialize(item, typeof(UserSerializationInfo), null);
                     var directory = Path.GetDirectoryName(item);
                     var relativeUri = UriUtility.MakeRelativeOfDirectory(this.basePath, item);
                     var segments = StringUtility.Split(relativeUri, PathUtility.SeparatorChar, true);

@@ -57,8 +57,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthenticationToken.cs" />
-    <Compile Include="SerializationInfo\GetDataSetInfo.cs" />
-    <Compile Include="Data\DataSetDeserializationInfo.cs" />
+    <Compile Include="RelativeSchemaPropertyCollection.cs" />
+    <Compile Include="CremaDataSetPropertyCollection.cs" />
     <Compile Include="IObjectSerializer.cs" />
     <Compile Include="IRepositoryProviderExtensions.cs" />
     <Compile Include="RepositoryInfo.cs" />
@@ -143,6 +143,7 @@
     </Compile>
     <Compile Include="AuthenticationProvider.cs" />
     <Compile Include="RepositoryHost.cs" />
+    <Compile Include="SerializationPropertyCollection.cs" />
     <Compile Include="Users\User.cs" />
     <Compile Include="Users\UserAuthenticationProvider.cs" />
     <Compile Include="Users\UserCategory.cs" />
