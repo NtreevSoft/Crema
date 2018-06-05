@@ -189,12 +189,13 @@ namespace Ntreev.Crema.Services.Data
         {
             this.DataBase.ValidateAsyncBeginInDataBase(authentication);
             this.CremaHost.DebugMethod(authentication, this, nameof(GetDataSet), this, revision);
-            this.Dispatcher.Invoke(() =>
+            var itemPath = this.Dispatcher.Invoke(() =>
             {
                 this.ValidateAccessType(authentication, AccessType.Guest);
                 this.Sign(authentication);
+                return this.LocalPath;
             });
-            var dataSet = this.Repository.GetTableCategoryData(this.Serializer, this.LocalPath, revision);
+            var dataSet = this.Repository.GetTableCategoryData(this.Serializer, itemPath, revision);
             return dataSet;
         }
 
@@ -240,12 +241,12 @@ namespace Ntreev.Crema.Services.Data
         {
             var tables = EnumerableUtility.Descendants<IItem, Table>(this as IItem, item => item.Childs).ToArray();
             var typePaths = tables.SelectMany(item => item.GetTypes())
-                                  .Select(item => item.ItemPath)
+                                  .Select(item => item.LocalPath)
                                   .Distinct()
                                   .ToArray();
             var tablePaths = tables.SelectMany(item => EnumerableUtility.Friends(item, item.DerivedTables))
                                    .Select(item => item.Parent ?? item)
-                                   .Select(item => item.ItemPath)
+                                   .Select(item => item.LocalPath)
                                    .Distinct()
                                    .ToArray();
 
@@ -462,10 +463,10 @@ namespace Ntreev.Crema.Services.Data
         private CremaDataSet ReadData(Authentication authentication, IEnumerable<Table> tables)
         {
             var typePaths = tables.SelectMany(item => item.GetTypes())
-                                  .Select(item => item.ItemPath)
+                                  .Select(item => item.LocalPath)
                                   .Distinct()
                                   .ToArray();
-            var tablePaths = tables.Select(item => item.ItemPath).Distinct().ToArray();
+            var tablePaths = tables.Select(item => item.LocalPath).Distinct().ToArray();
             var props = new CremaDataSetPropertyCollection(authentication, typePaths, tablePaths);
             var dataSet = this.Serializer.Deserialize(this.LocalPath, typeof(CremaDataSet), props) as CremaDataSet;
             return dataSet;

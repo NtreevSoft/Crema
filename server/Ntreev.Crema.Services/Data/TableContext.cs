@@ -234,20 +234,21 @@ namespace Ntreev.Crema.Services.Data
 
             try
             {
-                var targetSet = new CremaDataSet();
-                foreach (var item in items.Where(i => i.Parent == null))
+                var targetSet = this.DataBase.GetDataSet(authentication, items, true);
+                //var targetSet = new CremaDataSet();
+                foreach (var item in targetSet.Tables.Where(i => i.Parent == null))
                 {
-                    var targetTable = item.ReadSchema(authentication, targetSet);
+                    //var targetTable = item.ReadSchema(authentication, targetSet);
 
-                    var dataTable = dataSet.Tables[targetTable.TableName];
+                    var dataTable = dataSet.Tables[item.Name];
                     if (dataTable == null)
                         continue;
 
                     foreach (var row in dataTable.Rows)
                     {
-                        targetTable.ImportRow(row);
+                        item.ImportRow(row);
                     }
-                    targetTable.ContentsInfo = dataTable.ContentsInfo;
+                    item.ContentsInfo = dataTable.ContentsInfo;
                 }
 
                 var dataTables = new DataTableCollection(targetSet, this.DataBase);

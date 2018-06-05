@@ -494,6 +494,11 @@ namespace Ntreev.Crema.Data
 
         public void ReadMany(string[] typeFiles, string[] tableFiles)
         {
+            this.ReadMany(typeFiles, tableFiles, false);
+        }
+
+        public void ReadMany(string[] typeFiles, string[] tableFiles, bool schemaOnly)
+        {
 #if USE_PARALLEL
             Parallel.ForEach(typeFiles, item =>
             {
@@ -536,42 +541,45 @@ namespace Ntreev.Crema.Data
             }
 #endif
 
-            this.BeginLoad();
+            if (schemaOnly == false)
+            {
+                this.BeginLoad();
 
 #if USE_PARALLEL
-            readInfos.Sort((x, y) => y.XmlSize.CompareTo(x.XmlSize));
+                readInfos.Sort((x, y) => y.XmlSize.CompareTo(x.XmlSize));
 
-            var threadcount = 8;
-            var query = from item in readInfos
-                        let key = readInfos.IndexOf(item) % threadcount
-                        group item by key into g
-                        select g;
+                var threadcount = 8;
+                var query = from item in readInfos
+                            let key = readInfos.IndexOf(item) % threadcount
+                            group item by key into g
+                            select g;
 
-            var parallellist = new List<CremaXmlReadInfo>(readInfos.Count);
+                var parallellist = new List<CremaXmlReadInfo>(readInfos.Count);
 
-            foreach (var item in query)
-            {
-                parallellist.AddRange(item);
-            }
-
-            try
-            {
-                Parallel.ForEach(parallellist, new ParallelOptions { MaxDegreeOfParallelism = threadcount }, item =>
+                foreach (var item in query)
                 {
-                    this.ReadXml(item.XmlPath, item.ItemName);
-                });
-            }
-            catch (AggregateException e)
-            {
-                throw e.InnerException;
-            }
+                    parallellist.AddRange(item);
+                }
+
+                try
+                {
+                    Parallel.ForEach(parallellist, new ParallelOptions { MaxDegreeOfParallelism = threadcount }, item =>
+                    {
+                        this.ReadXml(item.XmlPath, item.ItemName);
+                    });
+                }
+                catch (AggregateException e)
+                {
+                    throw e.InnerException;
+                }
 #else
             foreach (var item in readInfos)
             {
                 this.ReadXml(item.XmlPath, item.ItemName);
             }
 #endif
-            this.EndLoad();
+                this.EndLoad();
+            }
         }
 
         public void ReadType(string filename)

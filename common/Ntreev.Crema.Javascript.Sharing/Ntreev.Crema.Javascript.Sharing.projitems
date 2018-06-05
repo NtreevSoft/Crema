@@ -19,7 +19,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBaseEventListenerContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\CremaEventListenerContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\GetDataBaseDataMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\GetTypeItemDataMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\GetTableItemDataMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\GetTypeItemLogInfoMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\ListenerHosts\DataBases\DataBaseLockChangedEventListenerHost.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\ListenerHosts\DataBases\DataBaseAccessChangedEventListenerHost.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\ListenerHosts\DataBases\DataBaseStateChangedEventListenerHost.cs" />

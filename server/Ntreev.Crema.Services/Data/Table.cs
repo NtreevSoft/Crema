@@ -265,12 +265,13 @@ namespace Ntreev.Crema.Services.Data
         {
             this.DataBase.ValidateAsyncBeginInDataBase(authentication);
             this.CremaHost.DebugMethod(authentication, this, nameof(GetDataSet), this, revision);
-            this.Dispatcher.Invoke(() =>
+            var item = this.Dispatcher.Invoke(() =>
             {
                 this.ValidateAccessType(authentication, AccessType.Guest);
                 this.Sign(authentication);
+                return new Tuple<string, string>(this.LocalPath, this.TemplatedParent?.LocalPath);
             });
-            return this.Repository.GetTableData(this.Serializer, this, revision);
+            return this.Repository.GetTableData(this.Serializer, item.Item1, item.Item2, revision);
         }
 
         public LogInfo[] GetLog(Authentication authentication)
@@ -281,8 +282,8 @@ namespace Ntreev.Crema.Services.Data
             {
                 this.ValidateAccessType(authentication, AccessType.Guest);
                 this.Sign(authentication);
-                var props = new RelativeSchemaPropertyCollection(this.ItemPath, this.TemplatedParent?.ItemPath);
-                return this.Serializer.GetPath(this.ItemPath, typeof(CremaDataTable), props);
+                var props = new RelativeSchemaPropertyCollection(this.LocalPath, this.TemplatedParent?.LocalPath);
+                return this.Serializer.GetPath(this.LocalPath, typeof(CremaDataTable), props);
             });
             var result = this.Context.GetLog(itemPaths);
             return result;
@@ -309,29 +310,7 @@ namespace Ntreev.Crema.Services.Data
             return this.DataBase.GetService(serviceType);
         }
 
-        [Obsolete]
-        public string SchemaPath
-        {
-            get
-            {
-                if (this.Parent != null)
-                    return this.Parent.SchemaPath;
-                return this.Context.GenerateTableSchemaPath(this.Category.Path, base.Name);
-            }
-        }
-
-        [Obsolete]
-        public string XmlPath
-        {
-            get
-            {
-                if (this.Parent != null)
-                    return this.Parent.XmlPath;
-                return this.Context.GenerateTableXmlPath(this.Category.Path, base.Name);
-            }
-        }
-
-        public string ItemPath
+        public string LocalPath
         {
             get { return this.Context.GenerateTablePath(this.Category.Path, base.Name); }
         }
@@ -381,42 +360,14 @@ namespace Ntreev.Crema.Services.Data
 
         public CremaDataTable ReadData(Authentication authentication)
         {
-            return this.ReadData(authentication, CremaDataSet.Create(new SignatureDateProvider(authentication.ID)));
-        }
-
-        public CremaDataTable ReadData(Authentication authentication, CremaDataSet dataSet)
-        {
-            if (this.Parent != null)
-                throw new InvalidOperationException(Resources.Exception_ChildTableCannotReadIndependently);
-            var itemName = new ItemName(this.Category.Path, base.Name);
-            if (this.TemplatedParent != null)
-            {
-                dataSet.ReadXmlSchema(this.TemplatedParent.SchemaPath, itemName);
-            }
-            else
-            {
-                dataSet.ReadXmlSchema(this.SchemaPath, itemName);
-            }
-
-            dataSet.ReadXml(this.XmlPath, itemName);
-            dataSet.AcceptChanges();
+            var types = this.GetService(typeof(TypeCollection)) as TypeCollection;
+            var typePaths = (from Type item in this.GetTypes() select item.LocalPath).ToArray();
+            var tablePaths = new string[] { this.LocalPath };
+            var props = new CremaDataSetPropertyCollection(authentication, typePaths, tablePaths);
+            var dataSet = this.Serializer.Deserialize(this.LocalPath, typeof(CremaDataSet), props) as CremaDataSet;
             return dataSet.Tables[base.TableName, this.Category.Path];
-        }
 
-        public CremaDataTable ReadSchema(Authentication authentication, CremaDataSet dataSet)
-        {
-            if (this.Parent != null)
-                throw new InvalidOperationException(Resources.Exception_ChildTableCannotReadIndependently);
-            var itemName = new ItemName(this.Category.Path, base.Name);
-            if (this.TemplatedParent != null)
-            {
-                dataSet.ReadXmlSchema(this.TemplatedParent.SchemaPath, itemName);
-            }
-            else
-            {
-                dataSet.ReadXmlSchema(this.SchemaPath, itemName);
-            }
-            return dataSet.Tables[base.TableName, this.Category.Path];
+            //return this.ReadData(authentication, CremaDataSet.Create(new SignatureDateProvider(authentication.ID)));
         }
 
         public CremaDataSet ReadAll(Authentication authentication)
@@ -426,12 +377,11 @@ namespace Ntreev.Crema.Services.Data
                 return this.Parent.ReadAll(authentication);
             }
 
-            
             var types = this.GetService(typeof(TypeCollection)) as TypeCollection;
-            var typePaths = (from Type item in types select item.ItemPath).ToArray();
-            var tablePaths = EnumerableUtility.Friends(this, this.DerivedTables).Select(item => item.ItemPath).ToArray();
+            var typePaths = (from Type item in types select item.LocalPath).ToArray();
+            var tablePaths = EnumerableUtility.Friends(this, this.DerivedTables).Select(item => item.LocalPath).ToArray();
             var props = new CremaDataSetPropertyCollection(authentication, typePaths, tablePaths);
-            var dataSet = this.Serializer.Deserialize(this.ItemPath, typeof(CremaDataSet), props) as CremaDataSet;
+            var dataSet = this.Serializer.Deserialize(this.LocalPath, typeof(CremaDataSet), props) as CremaDataSet;
             return dataSet;
         }
 

@@ -193,14 +193,13 @@ namespace Ntreev.Crema.Services.Data
         {
             this.DataBase.ValidateAsyncBeginInDataBase(authentication);
             this.CremaHost.DebugMethod(authentication, this, nameof(GetDataSet), this, revision);
-            var info = this.Dispatcher.Invoke(() =>
+            var itemPath = this.Dispatcher.Invoke(() =>
             {
                 this.ValidateAccessType(authentication, AccessType.Guest);
                 this.Sign(authentication);
-                return new Tuple<string, string>(this.DataBase.BasePath, this.LocalPath);
+                return this.LocalPath;
             });
-            var dataSet = this.Container.Repository.GetTypeCategoryData(info.Item1, info.Item2, revision);
-            return dataSet;
+            return this.Repository.GetTypeCategoryData(this.Serializer, itemPath, revision);
         }
 
         public LogInfo[] GetLog(Authentication authentication)
@@ -247,9 +246,9 @@ namespace Ntreev.Crema.Services.Data
         {
             var types = CollectTypes();
             var tables = CollectTables();
-            var typePaths = types.Select(item => item.ItemPath).ToArray();
+            var typePaths = types.Select(item => item.LocalPath).ToArray();
             var tablePaths = tables.Select(item => item.Parent ?? item)
-                                   .Select(item => item.ItemPath)
+                                   .Select(item => item.LocalPath)
                                    .Distinct()
                                    .ToArray();
 
@@ -289,7 +288,7 @@ namespace Ntreev.Crema.Services.Data
         public CremaDataSet ReadData(Authentication authentication, bool recursive)
         {
             var types = CollectTypes();
-            var typePaths = types.Select(item => item.ItemPath).ToArray();
+            var typePaths = types.Select(item => item.LocalPath).ToArray();
             var info = new CremaDataSetPropertyCollection(authentication, typePaths, null);
             var dataSet = this.Serializer.Deserialize(this.LocalPath, typeof(CremaDataSet), info) as CremaDataSet;
             return dataSet;
@@ -330,6 +329,8 @@ namespace Ntreev.Crema.Services.Data
         }
 
         public IObjectSerializer Serializer => this.DataBase.Serializer;
+
+        public DataBaseRepositoryHost Repository => this.DataBase.Repository;
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override void OnValidateRename(IAuthentication authentication, object target, string oldPath, string newPath)

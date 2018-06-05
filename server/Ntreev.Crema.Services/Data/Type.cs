@@ -35,7 +35,6 @@ namespace Ntreev.Crema.Services.Data
         IType, ITypeItem, IInfoProvider, IStateProvider
     {
         private TypeTemplate template;
-        
 
         public Type()
         {
@@ -213,7 +212,7 @@ namespace Ntreev.Crema.Services.Data
             {
                 this.ValidateAccessType(authentication, AccessType.Guest);
                 this.Sign(authentication);
-                return this.Serializer.GetPath(this.ItemPath, typeof(CremaDataType), null);
+                return this.Serializer.GetPath(this.LocalPath, typeof(CremaDataType), null);
             });
             var result = this.Context.GetLog(itemPaths);
             return result;
@@ -239,20 +238,19 @@ namespace Ntreev.Crema.Services.Data
         {
             this.DataBase.ValidateAsyncBeginInDataBase(authentication);
             this.CremaHost.DebugMethod(authentication, this, nameof(GetDataSet), this, revision);
-            var info = this.Dispatcher.Invoke(() =>
+            var itemPath = this.Dispatcher.Invoke(() =>
             {
                 this.ValidateAccessType(authentication, AccessType.Guest);
                 this.Sign(authentication);
-                return new Tuple<string, string>(this.DataBase.BasePath, this.SchemaPath);
+                return this.LocalPath;
             });
-            var dataSet = this.Container.Repository.GetTypeData(info.Item1, info.Item2, revision);
-            return dataSet;
+            return this.Repository.GetTypeData(this.Serializer, itemPath, revision);
         }
 
         public CremaDataType ReadData(Authentication authentication)
         {
-            var dataSet = CremaDataSet.Create(new SignatureDateProvider(authentication.ID));
-            dataSet.ReadType(this.SchemaPath);
+            var props = new CremaDataSetPropertyCollection(new string[] { this.LocalPath }, null);
+            var dataSet = this.Serializer.Deserialize(this.LocalPath, typeof(CremaDataSet), props) as CremaDataSet;
             return dataSet.Types[base.Name];
         }
 
@@ -261,16 +259,16 @@ namespace Ntreev.Crema.Services.Data
             var tables = this.ReferencedTables.ToArray();
             var typeFiles = tables.SelectMany(item => item.GetTypes())
                                   .Concat(EnumerableUtility.One(this))
-                                  .Select(item => item.ItemPath)
+                                  .Select(item => item.LocalPath)
                                   .Distinct()
                                   .ToArray();
             var tableFiles = tables.Select(item => item.Parent ?? item)
-                                   .Select(item => item.ItemPath)
+                                   .Select(item => item.LocalPath)
                                    .Distinct()
                                    .ToArray();
 
             var props = new CremaDataSetPropertyCollection(authentication, typeFiles, tableFiles);
-            var dataSet = this.Serializer.Deserialize(this.ItemPath, typeof(CremaDataSet), props) as CremaDataSet;
+            var dataSet = this.Serializer.Deserialize(this.LocalPath, typeof(CremaDataSet), props) as CremaDataSet;
             return dataSet.Types[base.Name];
         }
 
@@ -279,13 +277,7 @@ namespace Ntreev.Crema.Services.Data
             return this.DataBase.GetService(serviceType);
         }
 
-        [Obsolete]
-        public string SchemaPath
-        {
-            get { return this.Context.GenerateTypePath(this.Category.Path, base.Name); }
-        }
-
-        public string ItemPath
+        public string LocalPath
         {
             get { return this.Context.GenerateTypePath(this.Category.Path, base.Name); }
         }
@@ -337,6 +329,8 @@ namespace Ntreev.Crema.Services.Data
         }
 
         public IObjectSerializer Serializer => this.DataBase.Serializer;
+
+        public DataBaseRepositoryHost Repository => this.DataBase.Repository;
 
         public CremaHost CremaHost
         {

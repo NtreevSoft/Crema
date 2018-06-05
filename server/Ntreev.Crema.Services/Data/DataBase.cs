@@ -586,6 +586,25 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
+        public CremaDataSet GetDataSet(Authentication authentication, IEnumerable<Table> tables, bool schemaOnly)
+        {
+            var typePaths = tables.SelectMany(item => item.GetTypes())
+                                  .Select(item => item.LocalPath)
+                                  .Distinct()
+                                  .ToArray();
+            var tablePaths = tables.SelectMany(item => EnumerableUtility.Friends(item, item.DerivedTables))
+                                   .Select(item => item.Parent ?? item)
+                                   .Select(item => item.LocalPath)
+                                   .Distinct()
+                                   .ToArray();
+
+            var props = new CremaDataSetPropertyCollection(authentication, typePaths, tablePaths)
+            {
+                SchemaOnly = schemaOnly,
+            };
+            return this.Serializer.Deserialize(this.BasePath, typeof(CremaDataSet), props) as CremaDataSet;
+        }
+
         public CremaHost CremaHost
         {
             get { return this.cremaHost; }

@@ -203,9 +203,9 @@ namespace Ntreev.Crema.Repository.Svn
         {
             var pureUri = new Uri(Regex.Replace($"{uri}", "@\\d+$", string.Empty));
             var relativeUri = UriUtility.MakeRelativeOfDirectory(this.repositoryUri, pureUri);
-            var uriTarget = $"{uri}";
+            var uriTarget = uri.LocalPath;
             var filename = FileUtility.Prepare(exportPath, $"{relativeUri}");
-            this.Run("export", uriTarget, filename.WrapQuot());
+            this.Run("export", uriTarget.WrapQuot(), filename.WrapQuot());
             return new FileInfo(Path.Combine(exportPath, $"{relativeUri}")).FullName;
         }
 

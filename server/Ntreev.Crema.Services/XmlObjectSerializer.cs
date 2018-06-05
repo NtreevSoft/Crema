@@ -27,16 +27,19 @@ namespace Ntreev.Crema.Services
             {
                 throw new NotImplementedException();
             }
+            else if (type == typeof(CremaDataType))
+            {
+                throw new NotImplementedException();
+            }
             else if (type == typeof(CremaDataSet))
             {
                 if (properties is CremaDataSetPropertyCollection props)
                 {
                     var dataSet = CremaDataSet.Create(props.SignatureDateProvider);
-
                     var typePaths = props.TypePaths.Select(item => item + CremaSchema.SchemaExtension).ToArray();
                     var tablePaths = props.TablePaths.Select(item => item + CremaSchema.XmlExtension).ToArray();
 
-                    dataSet.ReadMany(typePaths, tablePaths);
+                    dataSet.ReadMany(typePaths, tablePaths, props.SchemaOnly);
                     dataSet.AcceptChanges();
 
                     return dataSet;
@@ -73,7 +76,6 @@ namespace Ntreev.Crema.Services
         {
             if (type == typeof(CremaDataTable))
             {
-                
                 var xmlPath = itemPath + CremaSchema.XmlExtension;
                 if (properties is RelativeSchemaPropertyCollection prop && prop.RelativePath != string.Empty)
                 {
@@ -119,7 +121,7 @@ namespace Ntreev.Crema.Services
             }
             else if (type == typeof(CremaDataType))
             {
-                throw new NotImplementedException();
+                return new string[] { };
             }
             else
             {
@@ -135,7 +137,7 @@ namespace Ntreev.Crema.Services
             }
             else if (type == typeof(CremaDataType))
             {
-                throw new NotImplementedException();
+                return DirectoryUtility.GetAllFiles(path, "*" + CremaSchema.SchemaExtension).Select(item => FileUtility.RemoveExtension(item)).ToArray();
             }
             else
             {

@@ -61,7 +61,7 @@ namespace Ntreev.Crema.Services.Data
             {
                 var dataType = item.Key;
                 var type = item.Value;
-                serializer.Serialize(type.ItemPath, dataType, null);
+                serializer.Serialize(type.LocalPath, dataType, null);
             }
         }
 

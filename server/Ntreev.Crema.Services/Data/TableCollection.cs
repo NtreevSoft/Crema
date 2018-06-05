@@ -239,10 +239,12 @@ namespace Ntreev.Crema.Services.Data
                 }
                 else
                 {
-                    if (table.TemplatedParent == null)
-                        this.Repository.Delete(table.SchemaPath);
-
-                    this.Repository.Delete(table.XmlPath);
+                    var itemPaths = this.Serializer.GetPath(table.LocalPath, typeof(CremaDataTable), null);
+                    foreach (var item in itemPaths)
+                    {
+                        if (item.StartsWith(table.LocalPath) == true)
+                            this.Repository.Delete(item);
+                    }
                 }
                 this.Context.InvokeTableItemDelete(authentication, table);
                 this.Repository.Commit(authentication, comment);
