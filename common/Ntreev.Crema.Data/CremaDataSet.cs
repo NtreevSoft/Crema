@@ -225,8 +225,9 @@ namespace Ntreev.Crema.Data
 
             var dataSet = new CremaDataSet();
 
-            var tablePath = Path.Combine(path, CremaSchemaObsolete.TableDirectoryObsolete);
-            var typePath = Path.Combine(path, CremaSchemaObsolete.TypeDirectoryObsolete);
+            var fullPath = new DirectoryInfo(path).FullName;
+            var tablePath = Path.Combine(fullPath, CremaSchemaObsolete.TableDirectoryObsolete);
+            var typePath = Path.Combine(fullPath, CremaSchemaObsolete.TypeDirectoryObsolete);
 
             if (Directory.Exists(tablePath) == true || Directory.Exists(typePath) == true)
             {
@@ -234,8 +235,8 @@ namespace Ntreev.Crema.Data
             }
             else
             {
-                tablePath = Path.Combine(path, CremaSchema.TableDirectory);
-                typePath = Path.Combine(path, CremaSchema.TypeDirectory);
+                tablePath = Path.Combine(fullPath, CremaSchema.TableDirectory);
+                typePath = Path.Combine(fullPath, CremaSchema.TypeDirectory);
             }
 
             if (readPattern == null)
@@ -755,26 +756,26 @@ namespace Ntreev.Crema.Data
             foreach (var item in this.Types)
             {
                 var relativePath = UriUtility.MakeRelativeOfDirectory(this.dataSet.Namespace, item.Namespace);
-                string filename = Path.Combine(path, relativePath + CremaSchema.SchemaExtension);
+                var filename = Path.Combine(path, relativePath + CremaSchema.SchemaExtension);
                 FileUtility.Prepare(filename);
                 item.Write(filename);
             }
 
-            foreach (var item in this.Tables.Where(item => item.Parent == null))
+            foreach (var item in this.Tables)
             {
                 if (item.TemplateNamespace != string.Empty)
                     continue;
 
                 var relativePath = UriUtility.MakeRelativeOfDirectory(this.dataSet.Namespace, item.Namespace);
-                string filename = Path.Combine(path, relativePath + CremaSchema.SchemaExtension);
+                var filename = Path.Combine(path, relativePath + CremaSchema.SchemaExtension);
                 FileUtility.Prepare(filename);
                 item.WriteXmlSchema(filename);
             }
 
-            foreach (var item in this.Tables.Where(item => item.Parent == null))
+            foreach (var item in this.Tables)
             {
                 var relativePath = UriUtility.MakeRelativeOfDirectory(this.dataSet.Namespace, item.Namespace);
-                string filename = Path.Combine(path, relativePath + CremaSchema.XmlExtension);
+                var filename = Path.Combine(path, relativePath + CremaSchema.XmlExtension);
                 FileUtility.Prepare(filename);
                 item.WriteXml(filename);
             }

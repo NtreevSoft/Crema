@@ -194,7 +194,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
 
         private void ReadType(XmlSchema schema)
         {
-            if (this.version.Major < CremaSchema.MajorVersion)
+            if (this.version < new Version(3, 0))
             {
                 var query = from item in schema.GetSimpleTypes()
                             where item.Name.EndsWith("_Flags") == false
@@ -341,7 +341,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
 
         private void ReadAttribute(XmlSchemaAttribute schemaAttribute, CremaDataTable dataTable)
         {
-            if (schemaAttribute.Name == CremaSchema.RelationID)
+            if (schemaAttribute.Name == CremaSchema.RelationID || schemaAttribute.Name == CremaSchema.ParentID)
                 return;
 
             var attributeName = schemaAttribute.Name == CremaSchemaObsolete.DataLocation ? CremaSchema.Tags : schemaAttribute.Name;
@@ -380,7 +380,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
                 dataColumn.InternalDefaultValue = CremaXmlConvert.ToValue(element.DefaultValue, dataColumn.DataType);
             }
 
-            if (this.version.Major == CremaSchema.MajorVersion)
+            if (this.version >= new Version(3, 0))
                 this.ReadColumnInfo(element, dataColumn);
             else
                 this.ReadColumnInfoVersion2(element, dataColumn);
@@ -412,14 +412,14 @@ namespace Ntreev.Crema.Data.Xml.Schema
             }
             else
             {
-                if (this.version.Major == 3)
+                if (this.version >= new Version(3, 0))
                 {
                     if (element.QualifiedName.Namespace != CremaSchema.BaseNamespace)
                     {
                         dataTable.InternalName = CremaDataSet.GetTableName(this.dataSet, element.QualifiedName.Namespace);
                         dataTable.InternalCategoryPath = CremaDataSet.GetTableCategoryPath(this.dataSet, element.QualifiedName.Namespace);
                     }
-                    else if (this.version.Minor == 0)
+                    else if (this.version == new Version(3, 0))
                     {
                         var categoryName = complexType.ReadAppInfoAsString(CremaSchema.TableInfo, CremaSchema.Category) ?? string.Empty;
                         var categoryPath = categoryName == string.Empty ? PathUtility.Separator : categoryName.WrapSeparator();
@@ -463,7 +463,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
                         var templatedParentName = content.BaseTypeName.Name.Substring(0, content.BaseTypeName.Name.Length - CremaSchema.ComplexTypeNameExtension.Length);
                         var baseComplexType = content.GetBaseType();
                         var templateCategoryPath = PathUtility.Separator;
-                        if (this.version.Minor == 0)
+                        if (this.version <= new Version(3, 0))
                             templateCategoryPath = (baseComplexType.ReadAppInfoAsString(CremaSchema.TableInfo, CremaSchema.Category) ?? string.Empty).Wrap(PathUtility.SeparatorChar);
                         else
                             templateCategoryPath = baseComplexType.ReadAppInfoAsString(CremaSchema.TableInfo, CremaSchema.CategoryPath) ?? PathUtility.Separator;
@@ -515,6 +515,19 @@ namespace Ntreev.Crema.Data.Xml.Schema
                             item.AttachTemplatedParent(dataTable);
                         }
                     }
+
+                    if (this.dataSet.Tables.Contains(dataTable.ParentName) == true)
+                    {
+                        dataTable.Parent = this.dataSet.Tables[dataTable.ParentName];
+                    }
+
+                    foreach (var item in this.dataSet.Tables)
+                    {
+                        if (item.ParentName == dataTable.Name && item.Parent == null)
+                        {
+                            item.Parent = dataTable;
+                        }
+                    }
                 }
             }
         }
@@ -560,7 +573,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
 
         private void ReadTable(XmlSchemaComplexType complexType, CremaDataTable dataTable)
         {
-            if (this.version.Major == 3)
+            if (this.version >= new Version(3, 0))
                 this.ReadTableInfo(complexType, dataTable);
             else
                 this.ReadTableInfoVersion2(complexType, dataTable);
@@ -615,7 +628,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
 
                 if (simpleType.QualifiedName.Namespace == CremaSchema.BaseNamespace)
                 {
-                    if (this.version.Minor >= CremaSchema.MinorVersion)
+                    if (this.version >= new Version(3, 5))
                     {
                         categoryPath = simpleType.ReadAppInfoAsString(CremaSchema.TypeInfo, CremaSchema.CategoryPath, PathUtility.Separator);
                     }
@@ -635,7 +648,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
                 }
                 else
                 {
-                    if (this.version.Major >= CremaSchema.MajorVersion)
+                    if (this.version >= new Version(3, 0))
                     {
                         categoryPath = this.dataSet.GetTypeCategoryPath(simpleType.QualifiedName.Namespace);
                     }
@@ -705,13 +718,13 @@ namespace Ntreev.Crema.Data.Xml.Schema
                 contentType = (simpleType.Content as XmlSchemaSimpleTypeList).BaseItemType;
             }
 
-            if (this.version.Major < CremaSchema.MajorVersion)
+            if (this.version < new Version(3, 0))
             {
                 dataType.Comment = contentType.ReadDescription();
                 this.ReadTypeInfoVersion2(contentType, dataType);
                 return;
             }
-            else if (this.version.Minor == 0)
+            else if (this.version == new Version(3, 0))
             {
                 simpleType = contentType;
             }
@@ -719,7 +732,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
             dataType.InternalCreationInfo = simpleType.ReadAppInfoAsSigunatureDate(CremaSchema.TypeInfo, CremaSchema.Creator, CremaSchema.CreatedDateTime);
             dataType.InternalModificationInfo = simpleType.ReadAppInfoAsSigunatureDate(CremaSchema.TypeInfo, CremaSchema.Modifier, CremaSchema.ModifiedDateTime);
             dataType.InternalTypeID = simpleType.ReadAppInfoAsGuidVersion2(CremaSchema.TypeInfo, CremaSchema.ID, dataType.TypeName);
-            if (this.version.Minor == 0)
+            if (this.version == new Version(3, 0))
             {
                 var category = simpleType.ReadAppInfoAsString(CremaSchema.TypeInfo, CremaSchema.Category);
                 if (string.IsNullOrEmpty(category) == true)
@@ -733,7 +746,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
             }
             dataType.InternalComment = simpleType.ReadDescription();
 
-            if (this.version.Minor > 0)
+            if (this.version > new Version(3, 0))
             {
                 dataType.InternalTags = simpleType.ReadAppInfoAsTagInfo(CremaSchema.TypeInfo, CremaSchema.Tags);
             }
@@ -769,7 +782,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
 
         private CremaDataTable GetTable(XmlSchemaKey constraint, string extension)
         {
-            if (this.version.Major == CremaSchema.MajorVersion)
+            if (this.version >= new Version(3, 0))
             {
                 var keyName = constraint.Name.Substring(0, constraint.Name.Length - extension.Length);
                 if (this.itemName == null)
@@ -827,10 +840,10 @@ namespace Ntreev.Crema.Data.Xml.Schema
 
         private CremaDataTable GetTable(XmlSchemaUnique constraint, string extension)
         {
-            if (this.version.Major == CremaSchema.MajorVersion)
+            if (this.version >= new Version(3, 0))
             {
                 var keyName = constraint.Name.Substring(0, constraint.Name.Length - extension.Length);
-                if (this.version.Minor >= 5) // 3.5
+                if (this.version >= new Version(3, 5)) // 3.5
                 {
                     var items = StringUtility.Split(keyName, '.');
                     keyName = string.Join(".", items.Take(items.Length - 1));
@@ -891,9 +904,9 @@ namespace Ntreev.Crema.Data.Xml.Schema
 
         private string GetTableNameObsolete(XmlSchemaIdentityConstraint key)
         {
-            string xPath = key.Selector.XPath;
-            string[] strArray = xPath.Split(new char[] { '/', ':' });
-            string name = strArray[strArray.Length - 1];
+            var xPath = key.Selector.XPath;
+            var strArray = xPath.Split(new char[] { '/', ':' });
+            var name = strArray[strArray.Length - 1];
             if ((name == null) || (name.Length == 0))
             {
                 throw new CremaDataException();

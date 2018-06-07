@@ -180,8 +180,6 @@ namespace Ntreev.Crema.Services
 
         public RepositoryInfo RepositoryInfo => this.Repository.RepositoryInfo;
 
-        
-
         public event EventHandler Changed;
 
         protected CremaDispatcher Dispatcher { get; }

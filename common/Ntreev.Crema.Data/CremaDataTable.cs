@@ -696,9 +696,7 @@ namespace Ntreev.Crema.Data
         {
             get
             {
-                if (this.Parent != null)
-                    return this.Parent.Name;
-                return string.Empty;
+                return this.table.ParentName;
             }
         }
 
@@ -1082,6 +1080,11 @@ namespace Ntreev.Crema.Data
         internal InternalRelation RelationColumn
         {
             get { return this.table.ColumnRelation; }
+        }
+
+        internal InternalRelation ParentRelation
+        {
+            get { return this.table.ParentRelation; }
         }
 
         internal string TableTypeName

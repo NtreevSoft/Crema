@@ -37,6 +37,7 @@ namespace Ntreev.Crema.Data.Xml
         private CremaDataSet dataSet;
         private CremaDataTable dataTable;
         private string targetNamespace;
+        private bool isFamily = false;
 
         private static XmlWriterSettings settings = new XmlWriterSettings()
         {
@@ -49,6 +50,7 @@ namespace Ntreev.Crema.Data.Xml
         {
             this.dataSet = dataSet;
             this.targetNamespace = dataSet.Namespace;
+            //this.isFamily = true;
         }
 
         public CremaXmlWriter(CremaDataTable dataTable)
@@ -89,7 +91,7 @@ namespace Ntreev.Crema.Data.Xml
             if (this.dataSet != null)
             {
                 writer.WriteStartElement(this.dataSet.DataSetName, this.targetNamespace);
-                this.WriteTables(writer, this.dataSet.Tables.Where(item => item.Parent == null).OrderBy(item => item.TemplateNamespace));
+                this.WriteTables(writer, this.dataSet.Tables.OrderBy(item => item.Name).OrderBy(item => item.TemplateNamespace));
                 writer.WriteEndElement();
             }
             else if (this.dataTable != null)
@@ -171,12 +173,19 @@ namespace Ntreev.Crema.Data.Xml
                 writer.WriteEndAttribute();
             }
 
+            if (dataTable.ParentRelation != null)
+            {
+                writer.WriteStartAttribute(CremaSchema.ParentID);
+                writer.WriteValue(dataRow.Field<string>(dataTable.ParentRelation));
+                writer.WriteEndAttribute();
+            }
+
             foreach (var item in dataTable.Columns)
             {
                 WriteField(writer, dataRow, item);
             }
 
-            if (dataTable.Childs.Count > 0)
+            if (this.isFamily == true && dataTable.Childs.Count > 0)
             {
                 var relationID = dataRow.Field<string>(dataTable.RelationColumn);
 
@@ -234,7 +243,8 @@ namespace Ntreev.Crema.Data.Xml
 
         private void WriteHeaderInfo(XmlWriter writer, CremaDataTable table)
         {
-            foreach (var item in EnumerableUtility.Friends(table, table.Childs))
+            var items = this.isFamily == true ? EnumerableUtility.Friends(table, table.Childs) : Enumerable.Repeat(table, 1);
+            foreach (var item in items)
             {
                 var name = item.GetXmlPath(this.targetNamespace);
                 var user = name + CremaSchema.ModifierExtension;

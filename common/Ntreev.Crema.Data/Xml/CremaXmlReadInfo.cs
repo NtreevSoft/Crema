@@ -74,7 +74,7 @@ namespace Ntreev.Crema.Data.Xml
                         version = new Version(2, 0);
                     }
 
-                    if (version.Major == CremaSchema.MajorVersion)
+                    if (version.Major >= 3)
                     {
                         FindSchemaLocation(reader, xmlPath, out this.xsdPath, out string tableNamespace);
                         var categoryPath = CremaDataSet.GetTableCategoryPath(CremaSchema.TableNamespace, tableNamespace);

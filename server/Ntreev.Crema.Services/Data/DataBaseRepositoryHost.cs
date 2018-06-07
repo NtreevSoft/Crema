@@ -162,13 +162,13 @@ namespace Ntreev.Crema.Services.Data
                     var files = serializer.GetPath(item, typeof(CremaDataTable), SerializationPropertyCollection.Empty);
                     foreach (var f in files)
                     {
-                        this.ExportItem2(f, tempPath, revision);
+                        this.ExportRevisionItem(f, tempPath, revision);
                     }
 
                     var referencedfiles = serializer.GetReferencedPath(item, typeof(CremaDataTable), SerializationPropertyCollection.Empty);
                     foreach (var f in referencedfiles)
                     {
-                        this.ExportItem2(f, tempPath, revision);
+                        this.ExportRevisionItem(f, tempPath, revision);
                     }
                 }
 
@@ -194,7 +194,7 @@ namespace Ntreev.Crema.Services.Data
             return null;
         }
 
-        private void ExportItem2(string path, string exportPath, string revision)
+        private string ExportRevisionItem(string path, string exportPath, string revision)
         {
             var revisionValue = revision ?? this.RepositoryInfo.Revision;
             var relativeItemUri = UriUtility.MakeRelativeOfDirectory(exportPath, path);
@@ -202,9 +202,10 @@ namespace Ntreev.Crema.Services.Data
             var itemTempPath = new Uri(itemUri).LocalPath;
             if (File.Exists(itemTempPath) == false)
             {
-                var itemRevisionUri = new Uri(UriUtility.Combine(this.RepositoryPath, relativeItemUri + $"@{revisionValue}"));
-                var exportSchemaUri = this.Export(itemRevisionUri, exportPath);
+                var itemRevisionUri = new Uri(UriUtility.Combine(this.RepositoryPath, $"{relativeItemUri}@{revisionValue}"));
+                return this.Export(itemRevisionUri, exportPath);
             }
+            return null;
         }
     }
 }

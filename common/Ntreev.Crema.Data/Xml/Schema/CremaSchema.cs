@@ -47,8 +47,8 @@ namespace Ntreev.Crema.Data.Xml.Schema
         public const string XmlExtension = ".xml";
 
         public const string Version = "Version";
-        public static readonly int MajorVersion = 3;
-        public static readonly int MinorVersion = 6;
+        public static readonly int MajorVersion = 4;
+        public static readonly int MinorVersion = 0;
         public static readonly string VersionValue = $"{MajorVersion}.{MinorVersion}";
         public const string TableInfo = "TableInfo";
         public const string TypeInfo = "TypeInfo";
@@ -68,6 +68,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
         public const string CategoryPath = "CategoryPath";
         public const string TemplateNamespace = "TemplateNamespace";
         public const string RelationID = "RelationID";
+        public const string ParentID = "ParentID";
         [Obsolete]
         public const string Description = "Description";
         public const string Index = "__Index__";

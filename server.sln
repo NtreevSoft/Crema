@@ -90,6 +90,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.ObjectSerializ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.ObjectSerializer.Json", "server\Ntreev.Crema.ObjectSerializer.Json\Ntreev.Crema.ObjectSerializer.Json.csproj", "{740BD1D4-C859-4920-9A8B-DAA3DF92582A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.Data.Json", "common\Ntreev.Crema.Data.Json\Ntreev.Crema.Data.Json.csproj", "{BA258C01-01C2-415D-8D3F-0B1484ECC765}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems*{04aeb614-3510-4064-99af-0aa807c7f957}*SharedItemsImports = 4
@@ -230,6 +232,10 @@ Global
 		{740BD1D4-C859-4920-9A8B-DAA3DF92582A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{740BD1D4-C859-4920-9A8B-DAA3DF92582A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{740BD1D4-C859-4920-9A8B-DAA3DF92582A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA258C01-01C2-415D-8D3F-0B1484ECC765}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA258C01-01C2-415D-8D3F-0B1484ECC765}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA258C01-01C2-415D-8D3F-0B1484ECC765}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA258C01-01C2-415D-8D3F-0B1484ECC765}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -265,6 +271,7 @@ Global
 		{65CA35F5-A1C3-4F0C-8A02-08157E3F5E21} = {C23811F0-895C-4355-ACAE-A36FD3F9E974}
 		{4D71A73A-7EAD-4415-B3CD-086E7EB5C083} = {1835FF30-6D5A-400D-BDA9-EE220B21C0A6}
 		{740BD1D4-C859-4920-9A8B-DAA3DF92582A} = {1835FF30-6D5A-400D-BDA9-EE220B21C0A6}
+		{BA258C01-01C2-415D-8D3F-0B1484ECC765} = {48F9CF3D-2F99-48CF-BB02-CD91C21EF237}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {081892D7-815F-41E8-91E5-C26BA161204B}

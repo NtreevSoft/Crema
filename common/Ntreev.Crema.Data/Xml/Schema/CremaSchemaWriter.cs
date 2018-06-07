@@ -42,6 +42,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
         private CremaDataTable dataTable;
         private CremaDataType dataType;
         private ItemName itemName;
+        private bool isFamily;
 
         private static XmlWriterSettings settings = new XmlWriterSettings()
         {
@@ -52,6 +53,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
         public CremaSchemaWriter(CremaDataSet dataSet)
         {
             this.dataSet = dataSet ?? throw new ArgumentNullException(nameof(dataSet));
+            //this.isFamily = true;
         }
 
         public CremaSchemaWriter(CremaDataTable dataTable)
@@ -115,7 +117,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
                 this.WriteSchemaAttribute(schema, this.dataSet.Namespace);
                 this.WriteGuidType(schema);
                 this.WriteDataTypes(schema, dataSet.Types);
-                this.WriteTables(schema, dataSet.DataSetName, dataSet.Tables.Where(item => item.Parent == null).OrderBy(item => item.TemplateNamespace));
+                this.WriteTables(schema, dataSet.DataSetName, dataSet.Tables.OrderBy(item => item.Name).OrderBy(item => item.TemplateNamespace));
             }
             else if (this.dataTable != null)
             {
@@ -169,18 +171,6 @@ namespace Ntreev.Crema.Data.Xml.Schema
             schema.ElementFormDefault = XmlSchemaForm.Qualified;
         }
 
-        internal static XmlQualifiedName GetSystemQualifiedName(Type type)
-        {
-            return new XmlQualifiedName(type.GetTypeName(), XmlSchema.Namespace);
-        }
-
-        internal static XmlQualifiedName GetSystemQualifiedName(Type type, string targetNamespace)
-        {
-            if (type == typeof(Guid))
-                return new XmlQualifiedName(type.GetTypeName(), targetNamespace);
-            return GetSystemQualifiedName(type);
-        }
-
         private void WriteTables(XmlSchema schema, string contentName, IEnumerable<CremaDataTable> tables)
         {
             var element = new XmlSchemaElement()
@@ -210,11 +200,13 @@ namespace Ntreev.Crema.Data.Xml.Schema
                 this.WriteElement(schema, sequence, item);
                 this.WriteDataTable(schema, item);
 
-
-                foreach (var t in EnumerableUtility.Friends(item, item.Childs))
+                if (this.isFamily == true)
                 {
-                    this.WriteKeys(schema, element, t);
-                    this.WriteUniques(schema, element, t);
+                    foreach (var t in EnumerableUtility.Friends(item, item.Childs))
+                    {
+                        this.WriteKeys(schema, element, t);
+                        this.WriteUniques(schema, element, t);
+                    }
                 }
             }
 
@@ -283,7 +275,8 @@ namespace Ntreev.Crema.Data.Xml.Schema
         private void WriteHeaderAttribute(XmlSchema schema, XmlSchemaComplexType rootType, CremaDataTable dataTable)
         {
             var baseNamespace = dataTable.DataSet != null ? dataTable.DataSet.Namespace : CremaSchema.BaseNamespace;
-            foreach (var item in EnumerableUtility.Friends(dataTable, dataTable.Childs))
+            var items = this.isFamily == true ? EnumerableUtility.Friends(dataTable, dataTable.Childs) : Enumerable.Repeat(dataTable, 1);
+            foreach (var item in items)
             {
                 rootType.Attributes.Add(new XmlSchemaAttribute()
                 {
@@ -404,7 +397,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
                     this.WriteElement(schema, sequence, item);
                 }
 
-                if (dataTable.RelationColumn != null && dataTable.Parent == null)
+                if (dataTable.Childs.Any() == true)
                 {
                     var attribute = new XmlSchemaAttribute()
                     {
@@ -414,10 +407,23 @@ namespace Ntreev.Crema.Data.Xml.Schema
                     complexType.Attributes.Add(attribute);
                 }
 
-                foreach (var item in dataTable.Childs)
+                if (dataTable.Parent != null)
                 {
-                    this.WriteElement(schema, sequence, item);
-                    this.WriteDataTable(schema, item);
+                    var attribute = new XmlSchemaAttribute()
+                    {
+                        Name = CremaSchema.ParentID,
+                        SchemaTypeName = GetSystemQualifiedName(typeof(string))
+                    };
+                    complexType.Attributes.Add(attribute);
+                }
+
+                if (this.isFamily == true)
+                {
+                    foreach (var item in dataTable.Childs)
+                    {
+                        this.WriteElement(schema, sequence, item);
+                        this.WriteDataTable(schema, item);
+                    }
                 }
 
                 complexType.Particle = sequence;
@@ -692,6 +698,18 @@ namespace Ntreev.Crema.Data.Xml.Schema
         private void ValidationCallbackOne(object sender, ValidationEventArgs args)
         {
             Trace.WriteLine(args.Message);
+        }
+
+        internal static XmlQualifiedName GetSystemQualifiedName(Type type)
+        {
+            return new XmlQualifiedName(type.GetTypeName(), XmlSchema.Namespace);
+        }
+
+        internal static XmlQualifiedName GetSystemQualifiedName(Type type, string targetNamespace)
+        {
+            if (type == typeof(Guid))
+                return new XmlQualifiedName(type.GetTypeName(), targetNamespace);
+            return GetSystemQualifiedName(type);
         }
     }
 }
