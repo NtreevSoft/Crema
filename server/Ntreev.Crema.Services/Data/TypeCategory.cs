@@ -247,8 +247,7 @@ namespace Ntreev.Crema.Services.Data
             var types = CollectTypes();
             var tables = CollectTables();
             var typePaths = types.Select(item => item.LocalPath).ToArray();
-            var tablePaths = tables.Select(item => item.Parent ?? item)
-                                   .Select(item => item.LocalPath)
+            var tablePaths = tables.Select(item => item.LocalPath)
                                    .Distinct()
                                    .ToArray();
 

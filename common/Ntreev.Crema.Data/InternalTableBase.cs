@@ -28,6 +28,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Data
@@ -556,6 +557,18 @@ namespace Ntreev.Crema.Data
             get { return this.parentName ?? string.Empty; }
         }
 
+        public string ParentNamespace
+        {
+            get
+            {
+                if (this.ParentName == string.Empty)
+                    return string.Empty;
+                var namePattern = this.Name.Replace(".", "[.]");
+                var parentNamespace = Regex.Replace(this.Namespace, $"(.+){namePattern}$", $"$1{this.ParentName}");
+                return parentNamespace;
+            }
+        }
+
         public IList<InternalAttribute> AttributeList
         {
             get { return this.attributeList; }
@@ -771,11 +784,11 @@ namespace Ntreev.Crema.Data
                 {
                     this.parent.RemoveChild(this);
                     this.InternalName = this.LocalName;
-                    if (this.parentRelation != null)
-                    {
-                        this.Columns.Remove(this.parentRelation);
-                        this.parentRelation = null;
-                    }
+                    //if (this.parentRelation != null)
+                    //{
+                    //    this.Columns.Remove(this.parentRelation);
+                    //    this.parentRelation = null;
+                    //}
 
                     if (this.parent.TemplatedParent != null)
                         this.InternalTemplatedParent = null;
@@ -788,11 +801,7 @@ namespace Ntreev.Crema.Data
                     this.parent.AddChild(this);
                     this.InternalName = $"{this.parent.Name}.{this.LocalName}";
 
-                    if (this.parentRelation == null)
-                    {
-                        this.parentRelation = new InternalRelation(CremaSchema.__ParentID__, typeof(string));
-                        this.Columns.Add(this.parentRelation);
-                    }
+                    this.CreateParentColumn();
 
                     if (this.parent.TemplatedParent != null)
                         this.InternalTemplatedParent = this.parent.TemplatedParent.GetChild(this.LocalName);
@@ -814,14 +823,7 @@ namespace Ntreev.Crema.Data
 
         private void AddChild(InternalTableBase child)
         {
-            if (this.childItems.Any() == false)
-            {
-                this.columnRelation = new InternalRelation(CremaSchema.__RelationID__, typeof(string)) { ReadOnly = true, };
-                this.Columns.Add(this.columnRelation);
-                this.RefreshRelationID();
-                this.columnRelation.InternalUnique = true;
-                this.columnRelation.InternalAllowDBNull = false;
-            }
+            this.CreateRelationColumn();
             this.childItems.Add(child);
         }
 
@@ -835,8 +837,8 @@ namespace Ntreev.Crema.Data
                 {
                     this.Constraints.Remove(constraint);
                 }
-                this.Columns.Remove(this.columnRelation);
-                this.columnRelation = null;
+                //this.Columns.Remove(this.columnRelation);
+                //this.columnRelation = null;
             }
 
             Constraint FindConstraint()
@@ -1176,11 +1178,6 @@ namespace Ntreev.Crema.Data
             get { return this.omitSignatureDate; }
         }
 
-        internal IFieldStack<bool> AcceptChangesStack
-        {
-            get { return this.acceptChangesStack; }
-        }
-
         private void TemplatedParent_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(InternalTableBase.Namespace))
@@ -1274,6 +1271,32 @@ namespace Ntreev.Crema.Data
                     column.SetDiffMode();
                 }
             }
+        }
+
+        internal void CreateRelationColumn()
+        {
+            if (this.columnRelation == null)
+            {
+                this.columnRelation = new InternalRelation(CremaSchema.__RelationID__, typeof(string)) { ReadOnly = true, };
+                this.Columns.Add(this.columnRelation);
+                this.RefreshRelationID();
+                this.columnRelation.InternalUnique = true;
+                this.columnRelation.InternalAllowDBNull = false;
+            }
+        }
+
+        internal void CreateParentColumn()
+        {
+            if (this.parentRelation == null)
+            {
+                this.parentRelation = new InternalRelation(CremaSchema.__ParentID__, typeof(string));
+                this.Columns.Add(this.parentRelation);
+            }
+        }
+
+        internal IFieldStack<bool> AcceptChangesStack
+        {
+            get { return this.acceptChangesStack; }
         }
     }
 

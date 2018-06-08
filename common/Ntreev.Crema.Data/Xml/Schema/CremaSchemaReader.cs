@@ -341,8 +341,17 @@ namespace Ntreev.Crema.Data.Xml.Schema
 
         private void ReadAttribute(XmlSchemaAttribute schemaAttribute, CremaDataTable dataTable)
         {
-            if (schemaAttribute.Name == CremaSchema.RelationID || schemaAttribute.Name == CremaSchema.ParentID)
+            if (schemaAttribute.Name == CremaSchema.RelationID)
+            {
+                dataTable.CreateRelationColumn();
                 return;
+            }
+
+            if (schemaAttribute.Name == CremaSchema.ParentID)
+            {
+                dataTable.CreateParentColumn();
+                return;
+            }
 
             var attributeName = schemaAttribute.Name == CremaSchemaObsolete.DataLocation ? CremaSchema.Tags : schemaAttribute.Name;
             var attribute = dataTable.Attributes[attributeName];
@@ -441,14 +450,10 @@ namespace Ntreev.Crema.Data.Xml.Schema
 
             dataTable.BeginLoadInternal();
             this.ReadTable(element.ElementSchemaType as XmlSchemaComplexType, dataTable);
-            this.ReadChildTables(element.ElementSchemaType as XmlSchemaComplexType, dataTable);
+            //this.ReadChildTables(element.ElementSchemaType as XmlSchemaComplexType, dataTable);
             dataTable.EndLoadInternal();
 
             this.tables.Add(dataTable.Name, dataTable);
-            foreach (var item in dataTable.Childs)
-            {
-                this.tables.Add(item.Name, item);
-            }
 
             if (this.dataSet != null)
             {
@@ -516,18 +521,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
                         }
                     }
 
-                    if (this.dataSet.Tables.Contains(dataTable.ParentName) == true)
-                    {
-                        dataTable.Parent = this.dataSet.Tables[dataTable.ParentName];
-                    }
 
-                    foreach (var item in this.dataSet.Tables)
-                    {
-                        if (item.ParentName == dataTable.Name && item.Parent == null)
-                        {
-                            item.Parent = dataTable;
-                        }
-                    }
                 }
             }
         }

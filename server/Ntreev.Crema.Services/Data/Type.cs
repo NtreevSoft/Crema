@@ -262,8 +262,7 @@ namespace Ntreev.Crema.Services.Data
                                   .Select(item => item.LocalPath)
                                   .Distinct()
                                   .ToArray();
-            var tableFiles = tables.Select(item => item.Parent ?? item)
-                                   .Select(item => item.LocalPath)
+            var tableFiles = tables.Select(item => item.LocalPath)
                                    .Distinct()
                                    .ToArray();
 
@@ -620,18 +619,6 @@ namespace Ntreev.Crema.Services.Data
                 throw new InvalidOperationException(string.Format(Resources.Exception_TableIsBeingSetup_Format, table.Name));
             if (table.VerifyAccessType(authentication, AccessType.Master) == false)
                 throw new PermissionException();
-        }
-
-        private IEnumerable<Table> FailmyTables(Table table)
-        {
-            var parent = table.Parent ?? table;
-
-            yield return parent;
-
-            foreach (var item in parent.Childs)
-            {
-                yield return item;
-            }
         }
 
         private void Sign(Authentication authentication)

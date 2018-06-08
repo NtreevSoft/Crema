@@ -156,22 +156,22 @@ namespace Ntreev.Crema.Services
 
         public static readonly XmlObjectSerializer Default = new XmlObjectSerializer();
 
-        private string[] SerializeDataTable(CremaDataTable dataTable, string itemPath, object state)
+        private string[] SerializeDataTable(CremaDataTable dataTable, string itemPath, IDictionary properties)
         {
-            var schemaPath = itemPath + CremaSchema.SchemaExtension;
             var xmlPath = itemPath + CremaSchema.XmlExtension;
-            var ns = state as string;
-            if (string.IsNullOrEmpty(ns) == true)
-            {
-                File.WriteAllText(schemaPath, dataTable.GetXmlSchema(), Encoding.UTF8);
-                File.WriteAllText(xmlPath, dataTable.GetXml(), Encoding.UTF8);
 
-                return new string[] { schemaPath, xmlPath, };
+            if (properties is RelativeSchemaPropertyCollection prop && prop.RelativePath != string.Empty)
+            {
+                File.WriteAllText(xmlPath, dataTable.GetXml(), Encoding.UTF8);
+                return new string[] { xmlPath };
             }
             else
             {
+                var schemaPath = itemPath + CremaSchema.SchemaExtension;
+                File.WriteAllText(schemaPath, dataTable.GetXmlSchema(), Encoding.UTF8);
                 File.WriteAllText(xmlPath, dataTable.GetXml(), Encoding.UTF8);
-                return new string[] { xmlPath, };
+                
+                return new string[] { xmlPath, schemaPath };
             }
         }
 

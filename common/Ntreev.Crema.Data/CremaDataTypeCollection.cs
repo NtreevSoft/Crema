@@ -347,9 +347,7 @@ namespace Ntreev.Crema.Data
         {
             this.CollectionChanging?.Invoke(this, e);
         }
-
-
-
+        
         private void ValidateAdd(string name, string categoryPath)
         {
             if (string.IsNullOrEmpty(name) == true)

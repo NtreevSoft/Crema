@@ -174,11 +174,8 @@ namespace Ntreev.Crema.Data.Test
             var dataSet = CremaDataSetExtensions.CreateRandomSet();
             foreach (var item in dataSet.Tables)
             {
-                if (item.Parent != null)
-                    continue;
-
-                string schemaPath = PathUtility.GetTempFileName();
-                string xmlPath = PathUtility.GetTempFileName();
+                var schemaPath = PathUtility.GetTempFileName();
+                var xmlPath = PathUtility.GetTempFileName();
 
                 try
                 {
@@ -215,8 +212,11 @@ namespace Ntreev.Crema.Data.Test
                     FileUtility.Delete(schemaPath);
                     FileUtility.Delete(xmlPath);
                 }
+            }
 
-                var newTable = testSet.Tables[item.TableName];
+            foreach (var item in dataSet.Tables)
+            {
+                var newTable = testSet.Tables[item.Name];
                 CremaComparer.CompareTable(item, newTable);
             }
         }
@@ -228,7 +228,7 @@ namespace Ntreev.Crema.Data.Test
             var testSet = new CremaDataSet();
             foreach (var item in dataSet.Tables)
             {
-                if (item.Parent != null || item.TemplateNamespace != string.Empty)
+                if (item.TemplateNamespace != string.Empty)
                     continue;
 
                 MemoryStream schemaStream = new MemoryStream();

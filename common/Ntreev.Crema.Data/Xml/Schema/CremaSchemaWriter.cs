@@ -42,7 +42,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
         private CremaDataTable dataTable;
         private CremaDataType dataType;
         private ItemName itemName;
-        private bool isFamily;
+        //private bool isFamily;
 
         private static XmlWriterSettings settings = new XmlWriterSettings()
         {
@@ -200,12 +200,13 @@ namespace Ntreev.Crema.Data.Xml.Schema
                 this.WriteElement(schema, sequence, item);
                 this.WriteDataTable(schema, item);
 
-                if (this.isFamily == true)
+                //var items = this.isFamily == true ? EnumerableUtility.Friends(dataTable, dataTable.Childs) : Enumerable.Repeat(dataTable, 1);
+                //if (this.isFamily == true)
                 {
-                    foreach (var t in EnumerableUtility.Friends(item, item.Childs))
+                    //foreach (var t in EnumerableUtility.Friends(item, item.Childs))
                     {
-                        this.WriteKeys(schema, element, t);
-                        this.WriteUniques(schema, element, t);
+                        this.WriteKeys(schema, element, item);
+                        this.WriteUniques(schema, element, item);
                     }
                 }
             }
@@ -275,47 +276,47 @@ namespace Ntreev.Crema.Data.Xml.Schema
         private void WriteHeaderAttribute(XmlSchema schema, XmlSchemaComplexType rootType, CremaDataTable dataTable)
         {
             var baseNamespace = dataTable.DataSet != null ? dataTable.DataSet.Namespace : CremaSchema.BaseNamespace;
-            var items = this.isFamily == true ? EnumerableUtility.Friends(dataTable, dataTable.Childs) : Enumerable.Repeat(dataTable, 1);
-            foreach (var item in items)
+            //var items = this.isFamily == true ? EnumerableUtility.Friends(dataTable, dataTable.Childs) : Enumerable.Repeat(dataTable, 1);
+            //foreach (var item in items)
             {
                 rootType.Attributes.Add(new XmlSchemaAttribute()
                 {
-                    Name = item.Name + CremaSchema.CreatedDateTimeExtension,
+                    Name = dataTable.Name + CremaSchema.CreatedDateTimeExtension,
                     SchemaTypeName = GetSystemQualifiedName(typeof(DateTime)),
                     Use = XmlSchemaUse.Optional
                 });
 
                 rootType.Attributes.Add(new XmlSchemaAttribute()
                 {
-                    Name = item.Name + CremaSchema.CreatorExtension,
+                    Name = dataTable.Name + CremaSchema.CreatorExtension,
                     SchemaTypeName = GetSystemQualifiedName(typeof(string)),
                     Use = XmlSchemaUse.Optional
                 });
 
                 rootType.Attributes.Add(new XmlSchemaAttribute()
                 {
-                    Name = item.Name + CremaSchema.ModifiedDateTimeExtension,
+                    Name = dataTable.Name + CremaSchema.ModifiedDateTimeExtension,
                     SchemaTypeName = GetSystemQualifiedName(typeof(DateTime)),
                     Use = XmlSchemaUse.Optional
                 });
 
                 rootType.Attributes.Add(new XmlSchemaAttribute()
                 {
-                    Name = item.Name + CremaSchema.ModifierExtension,
+                    Name = dataTable.Name + CremaSchema.ModifierExtension,
                     SchemaTypeName = GetSystemQualifiedName(typeof(string)),
                     Use = XmlSchemaUse.Optional
                 });
 
                 rootType.Attributes.Add(new XmlSchemaAttribute()
                 {
-                    Name = item.Name + CremaSchema.CountExtension,
+                    Name = dataTable.Name + CremaSchema.CountExtension,
                     SchemaTypeName = GetSystemQualifiedName(typeof(int)),
                     Use = XmlSchemaUse.Optional
                 });
 
                 rootType.Attributes.Add(new XmlSchemaAttribute()
                 {
-                    Name = item.Name + CremaSchema.IDExtension,
+                    Name = dataTable.Name + CremaSchema.IDExtension,
                     SchemaTypeName = GetSystemQualifiedName(typeof(string)),
                     Use = XmlSchemaUse.Optional
                 });
@@ -397,7 +398,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
                     this.WriteElement(schema, sequence, item);
                 }
 
-                if (dataTable.Childs.Any() == true)
+                if (dataTable.ColumnRelation != null)
                 {
                     var attribute = new XmlSchemaAttribute()
                     {
@@ -407,7 +408,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
                     complexType.Attributes.Add(attribute);
                 }
 
-                if (dataTable.Parent != null)
+                if (dataTable.ParentRelation != null)
                 {
                     var attribute = new XmlSchemaAttribute()
                     {
@@ -417,14 +418,14 @@ namespace Ntreev.Crema.Data.Xml.Schema
                     complexType.Attributes.Add(attribute);
                 }
 
-                if (this.isFamily == true)
-                {
-                    foreach (var item in dataTable.Childs)
-                    {
-                        this.WriteElement(schema, sequence, item);
-                        this.WriteDataTable(schema, item);
-                    }
-                }
+                //if (this.isFamily == true)
+                //{
+                //    foreach (var item in dataTable.Childs)
+                //    {
+                //        this.WriteElement(schema, sequence, item);
+                //        this.WriteDataTable(schema, item);
+                //    }
+                //}
 
                 complexType.Particle = sequence;
             }

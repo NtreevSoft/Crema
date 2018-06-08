@@ -1,5 +1,5 @@
-$majorVersion=3
-$minorVersion=6
+$majorVersion=4
+$minorVersion=0
 $sourcePath = Join-Path (Split-Path $myInvocation.MyCommand.Definition) ".\common\Ntreev.Crema.AssemblyInfo\AssemblyInfo.cs" -Resolve
 $version="$majorVersion.$minorVersion"
 $fileVersion="$majorVersion.$minorVersion"+"."+(Get-Date -Format yy)+(Get-Date).DayOfYear+"."+(Get-Date -Format HHmm)

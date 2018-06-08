@@ -245,7 +245,6 @@ namespace Ntreev.Crema.Services.Data
                                   .Distinct()
                                   .ToArray();
             var tablePaths = tables.SelectMany(item => EnumerableUtility.Friends(item, item.DerivedTables))
-                                   .Select(item => item.Parent ?? item)
                                    .Select(item => item.LocalPath)
                                    .Distinct()
                                    .ToArray();

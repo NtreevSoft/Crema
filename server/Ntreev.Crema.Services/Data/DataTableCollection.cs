@@ -39,7 +39,7 @@ namespace Ntreev.Crema.Services.Data
 
             foreach (var item in dataSet.Tables)
             {
-                var table = dataBase.TableContext.Tables[item.TableName, item.CategoryPath];
+                var table = dataBase.TableContext.Tables[item.Name, item.CategoryPath];
                 this.Add(item, table);
             }
             this.Validate(dataSet, dataBase);
@@ -68,6 +68,8 @@ namespace Ntreev.Crema.Services.Data
                 var table = item.Value;
                 if (table.Path.StartsWith(categoryPath) == false)
                     continue;
+                if (table.Parent != null)
+                    continue;
 
                 dataTable.CategoryPath = Regex.Replace(dataTable.CategoryPath, "^" + categoryPath, newCategoryPath);
             }
@@ -81,15 +83,11 @@ namespace Ntreev.Crema.Services.Data
                 var table = item.Value;
 
                 var path1 = table.Path;
-                var path2 = dataTable.CategoryPath + dataTable.TableName;
+                var path2 = dataTable.CategoryPath + dataTable.Name;
 
                 var itemPath = this.dataBase.TableContext.GenerateTablePath(table.Category.Path, table.Name);
 
-                var templateNamespace = table.TemplatedParent?.Name;
-                var props = new PropertyCollection
-                {
-                    { CremaSchema.TemplateNamespace, templateNamespace }
-                };
+                var props = new RelativeSchemaPropertyCollection(itemPath, table.TemplatedParent?.LocalPath);
                 serializer.Serialize(itemPath, dataTable, props);
             }
         }
@@ -104,7 +102,7 @@ namespace Ntreev.Crema.Services.Data
                 var table = item.Value;
 
                 var path1 = table.Path;
-                var path2 = dataTable.CategoryPath + dataTable.TableName;
+                var path2 = dataTable.CategoryPath + dataTable.Name;
 
                 if (path1 == path2)
                     continue;
@@ -112,12 +110,10 @@ namespace Ntreev.Crema.Services.Data
                 var itemPath1 = this.dataBase.TableContext.GenerateTablePath(table.Category.Path, table.Name);
                 var itemPath2 = this.dataBase.TableContext.GenerateTablePath(dataTable.CategoryPath, dataTable.Name);
 
-                var props = new PropertyCollection
-                {
-                    { nameof(table.TemplatedParent), table.TemplatedParent?.Path }
-                };
-                var items1 = serializer.GetPath(itemPath1, typeof(CremaDataTable), props);
-                var items2 = serializer.GetPath(itemPath2, typeof(CremaDataTable), props);
+                var props1 = new RelativeSchemaPropertyCollection(itemPath1, table.TemplatedParent?.LocalPath);
+                var props2 = new RelativeSchemaPropertyCollection(itemPath1, table.TemplatedParent?.LocalPath);
+                var items1 = serializer.GetPath(itemPath1, typeof(CremaDataTable), props1);
+                var items2 = serializer.GetPath(itemPath2, typeof(CremaDataTable), props2);
 
                 for (var i = 0; i < items1.Length; i++)
                 {

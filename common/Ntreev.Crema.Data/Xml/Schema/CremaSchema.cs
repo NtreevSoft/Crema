@@ -212,17 +212,6 @@ namespace Ntreev.Crema.Data.Xml.Schema
             Trace.WriteLine(e.Message);
         }
 
-        [Obsolete]
-        public static XmlSchema GetDefaultStringTypeSchema(string typeName)
-        {
-            //string s = Resources.StringType.Replace("{typename}", typeName);
-            //using (StringReader sr = new StringReader(s))
-            //{
-            //    return XmlSchema.Read(sr, CremaSchema.SchemaValidationEventHandler);
-            //}
-            throw new NotImplementedException();
-        }
-
         public static string[] ReservedNames
         {
             get { return reservedNames; }

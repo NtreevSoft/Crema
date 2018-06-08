@@ -366,18 +366,35 @@ namespace Ntreev.Crema.Services.Data
             var props = new CremaDataSetPropertyCollection(authentication, typePaths, tablePaths);
             var dataSet = this.Serializer.Deserialize(this.LocalPath, typeof(CremaDataSet), props) as CremaDataSet;
             return dataSet.Tables[base.TableName, this.Category.Path];
-
-            //return this.ReadData(authentication, CremaDataSet.Create(new SignatureDateProvider(authentication.ID)));
         }
 
         public CremaDataSet ReadAll(Authentication authentication)
         {
-            var types = this.GetService(typeof(TypeCollection)) as TypeCollection;
-            var typePaths = (from Type item in types select item.LocalPath).ToArray();
-            var tablePaths = EnumerableUtility.Friends(this, this.DerivedTables).Select(item => item.LocalPath).ToArray();
+            var tables = this.Collect().OrderBy(item => item.Name).ToArray();
+            var types = tables.SelectMany(item => item.GetTypes()).Distinct().ToArray();
+            var typePaths = types.Select(item => item.LocalPath).ToArray();
+            var tablePaths = tables.Select(item => item.LocalPath).ToArray();
             var props = new CremaDataSetPropertyCollection(authentication, typePaths, tablePaths);
             var dataSet = this.Serializer.Deserialize(this.LocalPath, typeof(CremaDataSet), props) as CremaDataSet;
             return dataSet;
+        }
+
+        private IEnumerable<Table> Collect()
+        {
+            yield return this;
+
+            foreach (var item in this.Childs)
+            {
+                foreach(var i in item.Collect())
+                {
+                    yield return i;
+                }
+            }
+
+            foreach (var item in this.DerivedTables)
+            {
+                yield return item;
+            }
         }
 
         public void ValidateSetTags(Authentication authentication, TagInfo tags)

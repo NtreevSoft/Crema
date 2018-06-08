@@ -84,6 +84,12 @@ namespace Ntreev.Crema.Data
                     {
                         if (e.Element is InternalTableBase dataTable)
                         {
+                            if (dataTable.ParentName != string.Empty && dataTable.Parent == null)
+                            {
+                                var parentTable = this.Tables[dataTable.ParentName, dataTable.ParentNamespace] as InternalTableBase;
+                                dataTable.InternalParent = parentTable;
+                            }
+
                             if (dataTable.Parent != null)
                             {
                                 var parentTable = dataTable.Parent;

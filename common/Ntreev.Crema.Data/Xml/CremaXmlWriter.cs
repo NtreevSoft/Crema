@@ -166,10 +166,10 @@ namespace Ntreev.Crema.Data.Xml
                 this.WriteAttribute(writer, dataRow.InternalObject, item.InternalAttribute);
             }
 
-            if (dataTable.Childs.Count > 0)
+            if (dataTable.ColumnRelation != null)
             {
                 writer.WriteStartAttribute(CremaSchema.RelationID);
-                writer.WriteValue(dataRow.Field<string>(dataTable.RelationColumn));
+                writer.WriteValue(dataRow.Field<string>(dataTable.ColumnRelation));
                 writer.WriteEndAttribute();
             }
 
@@ -187,7 +187,7 @@ namespace Ntreev.Crema.Data.Xml
 
             if (this.isFamily == true && dataTable.Childs.Count > 0)
             {
-                var relationID = dataRow.Field<string>(dataTable.RelationColumn);
+                var relationID = dataRow.Field<string>(dataTable.ColumnRelation);
 
                 foreach (var child in dataTable.Childs)
                 {
