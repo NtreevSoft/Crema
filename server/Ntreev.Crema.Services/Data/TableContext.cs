@@ -235,11 +235,8 @@ namespace Ntreev.Crema.Services.Data
             try
             {
                 var targetSet = this.DataBase.GetDataSet(authentication, items, true);
-                //var targetSet = new CremaDataSet();
-                foreach (var item in targetSet.Tables.Where(i => i.Parent == null))
+                foreach (var item in targetSet.Tables)
                 {
-                    //var targetTable = item.ReadSchema(authentication, targetSet);
-
                     var dataTable = dataSet.Tables[item.Name];
                     if (dataTable == null)
                         continue;

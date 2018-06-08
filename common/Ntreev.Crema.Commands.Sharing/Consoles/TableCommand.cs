@@ -197,7 +197,7 @@ namespace Ntreev.Crema.Commands.Consoles
             var authentication = this.CommandContext.GetAuthentication(this);
             var dataTable = table.Dispatcher.Invoke(() =>
             {
-                var dataSet = (table.Parent ?? table).GetDataSet(authentication, revision);
+                var dataSet = table.GetDataSet(authentication, revision);
                 return dataSet.Tables[table.Name, table.Category.Path];
             });
 

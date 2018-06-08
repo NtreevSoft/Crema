@@ -82,6 +82,8 @@ namespace Ntreev.Crema.Repository.Svn
 
         public RepositoryInfo RepositoryInfo => this.repositoryInfo;
 
+        public string BasePath => this.repositoryPath;
+
         public void Add(string path)
         {
             if (path.EndsWith(Path.DirectorySeparatorChar.ToString()) == true)
@@ -233,6 +235,11 @@ namespace Ntreev.Crema.Repository.Svn
             var revisionValue = revision ?? this.repositoryInfo.Revision;
             var info = SvnInfoEventArgs.Run(path, revisionValue);
             return new Uri($"{info.Uri}@{revisionValue}");
+        }
+
+        public RepositoryItem[] Status(params string[] paths)
+        {
+            throw new NotImplementedException();
         }
 
         //public void Modify(string path, string contents)

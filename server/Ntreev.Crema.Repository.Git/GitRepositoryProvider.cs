@@ -79,6 +79,9 @@ namespace Ntreev.Crema.Repository.Git
 
         public string[] GetRepositories(string basePath)
         {
+
+            //GitItemStatusInfo.Run(@"C:\Users\s2quake\AppData\Local\Temp\tmp1D24");
+
             var baseUri = new Uri(basePath);
             var repositoryPath = baseUri.LocalPath;
             var text = GitHost.Run(repositoryPath, "branch", "--list");

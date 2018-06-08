@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="CommandContext.cs" />
     <Compile Include="CacheCommand.cs" />
+    <Compile Include="MigrateCommand.cs" />
     <Compile Include="ValidateCommand.cs" />
     <Compile Include="RepositoryModulesCommand.cs" />
     <Compile Include="InitializeCommand.cs" />
@@ -92,6 +93,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="MigrateCommand.ko-KR.resx">
+      <DependentUpon>MigrateCommand.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MigrateCommand.resx">
+      <DependentUpon>MigrateCommand.cs</DependentUpon>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Include="ValidateCommand.resx">
       <DependentUpon>ValidateCommand.cs</DependentUpon>
       <Generator>ResXFileCodeGenerator</Generator>

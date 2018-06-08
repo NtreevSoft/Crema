@@ -66,6 +66,13 @@ namespace Ntreev.Crema.Services
             {
                 return this.SerializeDataType(dataType, itemPath, properties);
             }
+            else if (obj is CremaDataSet dataSet)
+            {
+                dataSet.WriteToDirectory(itemPath);
+                var items1 = DirectoryUtility.GetAllFiles(itemPath, "*.xml");
+                var items2 = DirectoryUtility.GetAllFiles(itemPath, "*.xsd");
+                return items1.Concat(items2).OrderBy(item => item).ToArray();
+            }
             else
             {
                 return this.SerializeObject(obj, itemPath);

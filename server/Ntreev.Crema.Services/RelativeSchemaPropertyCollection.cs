@@ -21,6 +21,6 @@ namespace Ntreev.Crema.Services
             }
         }
 
-        public string RelativePath => this[nameof(RelativePath)] as string;
+        public string RelativePath => this[nameof(RelativePath)] as string ?? string.Empty;
     }
 }

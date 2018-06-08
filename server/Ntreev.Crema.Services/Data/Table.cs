@@ -218,7 +218,7 @@ namespace Ntreev.Crema.Services.Data
             this.ValidateSetTags(authentication, tags);
             this.Sign(authentication);
             var items = EnumerableUtility.Friends(this, this.Childs).SelectMany(item => item.DerivedTables).ToArray();
-            var dataSet = this.Parent == null ? this.ReadAll(authentication) : this.Parent.ReadAll(authentication);
+            var dataSet = this.ReadAll(authentication);
             this.Container.InvokeTableSetTags(authentication, this, tags, dataSet);
             this.UpdateTags(tags);
             this.Container.InvokeTablesTemplateChangedEvent(authentication, items, dataSet);
@@ -231,7 +231,7 @@ namespace Ntreev.Crema.Services.Data
             this.ValidateSetComment(authentication, comment);
             this.Sign(authentication);
             var items = EnumerableUtility.Friends(this, this.Childs).SelectMany(item => item.DerivedTables).ToArray();
-            var dataSet = this.Parent == null ? this.ReadAll(authentication) : this.Parent.ReadAll(authentication);
+            var dataSet = this.ReadAll(authentication);
             this.Container.InvokeTableSetComment(authentication, this, comment, dataSet);
             this.UpdateComment(comment);
             this.Container.InvokeTablesTemplateChangedEvent(authentication, items, dataSet);
@@ -372,11 +372,6 @@ namespace Ntreev.Crema.Services.Data
 
         public CremaDataSet ReadAll(Authentication authentication)
         {
-            if (this.Parent != null)
-            {
-                return this.Parent.ReadAll(authentication);
-            }
-
             var types = this.GetService(typeof(TypeCollection)) as TypeCollection;
             var typePaths = (from Type item in types select item.LocalPath).ToArray();
             var tablePaths = EnumerableUtility.Friends(this, this.DerivedTables).Select(item => item.LocalPath).ToArray();

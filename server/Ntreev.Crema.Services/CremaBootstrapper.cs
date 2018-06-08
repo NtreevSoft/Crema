@@ -46,9 +46,9 @@ namespace Ntreev.Crema.Services
         private const string serializersString = "serializers";
         private const string repoModulesString = "repo-modules";
         private const string defaultString = "default";
-        private const string trunkString = "trunk";
-        private const string tagsString = "tags";
-        private const string branchesString = "branches";
+        //private const string trunkString = "trunk";
+        //private const string tagsString = "tags";
+        //private const string branchesString = "branches";
         private CremaSettings settings = new CremaSettings();
         private CompositionContainer container;
 
@@ -112,18 +112,65 @@ namespace Ntreev.Crema.Services
             var repoProviders = this.GetInstances(typeof(IRepositoryProvider)).OfType<IRepositoryProvider>();
             var repoProvider = repoProviders.FirstOrDefault(item => item.Name == this.RepositoryModule);
             var repositoryPath = Path.Combine(basePath, repositoryName);
-            var trunkPath = Path.Combine(repositoryPath, trunkString);
-            var tagsPath = Path.Combine(repositoryPath, tagsString);
-            var branchesPath = Path.Combine(repositoryPath, branchesString);
+            //var trunkPath = Path.Combine(repositoryPath, trunkString);
+            //var tagsPath = Path.Combine(repositoryPath, tagsString);
+            //var branchesPath = Path.Combine(repositoryPath, branchesString);
 
-            CremaDataSet.ValidateDirectory(trunkPath);
-            foreach (var item in Directory.GetDirectories(tagsPath))
+            //CremaDataSet.ValidateDirectory(trunkPath);
+            //foreach (var item in Directory.GetDirectories(tagsPath))
+            //{
+            //    CremaDataSet.ValidateDirectory(item);
+            //}
+            //foreach (var item in Directory.GetDirectories(branchesPath))
+            //{
+            //    CremaDataSet.ValidateDirectory(item);
+            //}
+        }
+
+        public void MigrateRepository(params string[] dataBaseNames)
+        {
+            var repoProviders = this.GetInstances(typeof(IRepositoryProvider)).OfType<IRepositoryProvider>();
+            var repoProvider = repoProviders.FirstOrDefault(item => item.Name == this.RepositoryModule);
+            if (repoProvider == null)
+                throw new InvalidOperationException(Resources.Exception_NoRepositoryModule);
+
+            var serializers = this.GetInstances(typeof(IObjectSerializer)).OfType<IObjectSerializer>();
+            var serializer = serializers.FirstOrDefault(item => item.Name == this.FileType);
+            if (serializer == null)
+                throw new InvalidOperationException("no serializer");
+
+            var basePath = Path.Combine(this.BasePath, "remotes", "databases");
+            var items = repoProvider.GetRepositories(basePath);
+
+            if (dataBaseNames.Length > 0)
+                items = items.Intersect(dataBaseNames).ToArray();
+
+            foreach (var item in items)
             {
-                CremaDataSet.ValidateDirectory(item);
-            }
-            foreach (var item in Directory.GetDirectories(branchesPath))
-            {
-                CremaDataSet.ValidateDirectory(item);
+                var tempPath = PathUtility.GetTempPath(false);
+                try
+                {
+                    using (var repository = repoProvider.CreateInstance(basePath, item, tempPath))
+                    {
+                        var dataSet = serializer.Deserialize(repository.BasePath, typeof(CremaDataSet), SerializationPropertyCollection.Empty) as CremaDataSet;
+                        var files = serializer.Serialize(repository.BasePath, dataSet, SerializationPropertyCollection.Empty);
+
+                        var statuses = repository.Status();
+                        foreach (var status in statuses)
+                        {
+                            if (status.Status == RepositoryItemStatus.Untracked)
+                            {
+                                repository.Add(status.Path);
+                            }
+                        }
+                        repository.Commit("migration");
+                    }
+                    CremaLog.Info("migtrated : {0}", item);
+                }
+                finally
+                {
+                    DirectoryUtility.Delete(tempPath);
+                }
             }
         }
 

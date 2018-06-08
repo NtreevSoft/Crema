@@ -52,6 +52,10 @@ namespace Ntreev.Crema.Services
 
         string Export(Uri uri, string exportPath);
 
+        RepositoryItem[] Status(params string[] paths);
+
         RepositoryInfo RepositoryInfo { get; }
+
+        string BasePath { get; }
     }
 }

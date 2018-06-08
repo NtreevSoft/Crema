@@ -1028,7 +1028,7 @@ namespace Ntreev.Crema.Data
                 }
             });
 
-            Parallel.ForEach(this.Tables.Where(item => item.Parent == null), item =>
+            Parallel.ForEach(this.Tables, item =>
             {
                 var schema = string.Empty;
                 if (item.TemplateNamespace == string.Empty)
@@ -1041,7 +1041,7 @@ namespace Ntreev.Crema.Data
                 }
             });
 
-            Parallel.ForEach(this.Tables.Where(item => item.Parent == null), item =>
+            Parallel.ForEach(this.Tables, item =>
             {
                 var xml = item.GetXml().Compress();
                 lock (lockobj)

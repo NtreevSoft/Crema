@@ -1,0 +1,179 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="@ctor" xml:space="preserve">
+    <value>크레마 저장소 경로에서 크레마 서비스를 실행합니다.</value>
+  </data>
+  <data name="ctor" xml:space="preserve">
+    <value>설정된 크레마 저장소 경로에서 크레마 서비스를 실행합니다.
+
+일반적으로 실행된적이 없는 크레마 저장소 기본 구조는 아래와 같습니다.
+
+path / crema 
+     / svn (저장소 모듈이 svn일 경우)
+
+svn 폴더는 svn 서버 저장소가 저장되는 경로이며
+crema 폴더는 svn 서버 저장소에서 checkout된 로컬 저장소입니다.
+
+한번이라도 크레마 서비스가 실행된 크레마 저장소의 구조는 아래와 같습니다.
+
+path / crema 
+     / svn
+     / working / cache
+               / domain
+               / find
+               / logs
+               / serialization
+     / configs.xml
+
+working/cache
+    빠른 서비스 구동에 필요한 캐시 데이터입니다.
+
+working/domain
+    작업중인 데이터를 임시 보관하는 곳입니다. 
+    크레마 서비스가 종료후 재시작시 이 경로를 참고하여 저장되지 않은 작업을 복구합니다.
+
+working/find
+    데이터 베이스 내에 데이터를 빠르게 찾기 위한 캐시 데이터가 저장되어 있는 곳입니다.
+
+working/logs
+    로그 정보를 기록하는 곳입니다.
+
+working/serialization
+    응용 프로그램에서 사용할 바이너리 데이터를 생성하기 위한 데이터가 저장되어 있는 곳입니다.
+
+configs.xml
+    크레마 서비스에 필요한 설정이 저장되는 파일입니다.</value>
+  </data>
+  <data name="IsPromptMode" xml:space="preserve">
+    <value>명령을 입력받을 수 있는 형태로 크레마 서비스를 실행합니다.</value>
+  </data>
+  <data name="Path" xml:space="preserve">
+    <value>크레마 저장소 기본 경로를 나타냅니다.</value>
+  </data>
+  <data name="Port" xml:space="preserve">
+    <value>포트를 나타냅니다. 기본값은 '4004' 입니다.</value>
+  </data>
+  <data name="RepositoryModule" xml:space="preserve">
+    <value>저장소 모듈을 나타냅니다. </value>
+  </data>
+  <data name="RepositoryName" xml:space="preserve">
+    <value>크레마 저장소내에 데이터가 저장되는 경로의 이름을 설정합니다. 기본값은 'crema'입니다.</value>
+  </data>
+</root>

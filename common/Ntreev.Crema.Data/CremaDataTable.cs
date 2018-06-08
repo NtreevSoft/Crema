@@ -279,10 +279,6 @@ namespace Ntreev.Crema.Data
 
         public void AcceptChanges()
         {
-            //if (this.Parent == null && this.Rows.Count > 0 && this.PrimaryKey.Any() == false)
-            //{
-            //    this.table.RefreshRelationID();
-            //}
             this.table.AcceptChanges();
         }
 

@@ -37,7 +37,7 @@ namespace Ntreev.Crema.Services.Data
         {
             this.dataBase = dataBase;
 
-            foreach (var item in dataSet.Tables.Where(item => item.Parent == null))
+            foreach (var item in dataSet.Tables)
             {
                 var table = dataBase.TableContext.Tables[item.TableName, item.CategoryPath];
                 this.Add(item, table);

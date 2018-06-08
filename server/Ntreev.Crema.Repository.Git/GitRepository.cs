@@ -44,6 +44,8 @@ namespace Ntreev.Crema.Repository.Git
 
         public RepositoryInfo RepositoryInfo => this.repositoryInfo;
 
+        public string BasePath => this.repositoryPath;
+
         public void Add(string path)
         {
             if (DirectoryUtility.IsDirectory(path) == true)
@@ -90,20 +92,21 @@ namespace Ntreev.Crema.Repository.Git
             var commentPath = PathUtility.GetTempFileName();
             try
             {
-                File.WriteAllText(commentPath, commentMessage);
-                result = GitHost.Run(this.repositoryPath, "commit", "-a", "--file", $"\"{commentPath}\"");
-                GitHost.Run(this.repositoryPath, "pull");
-                GitHost.Run(this.repositoryPath, "push");
+                var status = GitHost.Run(this.repositoryPath, "status", "-s").Trim();
+                if (status != string.Empty)
+                {
+                    File.WriteAllText(commentPath, commentMessage);
+                    result = GitHost.Run(this.repositoryPath, "commit", "-a", "--file", $"\"{commentPath}\"");
+                    GitHost.Run(this.repositoryPath, "pull");
+                    GitHost.Run(this.repositoryPath, "push");
+                }
             }
             catch (Exception e)
             {
                 this.logService?.Warn(e);
-                //this.Run("update", this.repositoryPath.WrapQuot());
-                //result = this.Run("commit", this.repositoryPath.WrapQuot(), "--file", $"\"{commentPath}\"");
             }
             finally
             {
-                //this.needToUpdate = false;
                 FileUtility.Delete(commentPath);
             }
 
@@ -111,15 +114,10 @@ namespace Ntreev.Crema.Repository.Git
             {
                 this.logService?.Debug($"repository committed {this.repositoryPath.WrapQuot()}");
                 this.logService?.Debug(result);
-                //var match = Regex.Match(result, @"Committed revision (?<revision>\d+)[.]", RegexOptions.ExplicitCapture | RegexOptions.Multiline);
-                //var revision = match.Groups["revision"].Value;
-                //this.repositoryInfo.Revision = revision;
-                //var log = SvnLogEventArgs.Run(path, revision).First();
                 var userID = properties.FirstOrDefault(item => item.Key == LogPropertyInfo.UserIDKey).Value;
-                //this.repositoryInfo.ModificationInfo = new SignatureDate(userID, log.DateTime);
                 var log = GitLogInfo.Run(this.repositoryPath, "--max-count=1").First();
                 this.repositoryInfo.Revision = log.CommitID;
-                this.repositoryInfo.ModificationInfo = new SignatureDate(userID, log.CommitDate);
+                this.repositoryInfo.ModificationInfo = new SignatureDate(userID ?? string.Empty, log.CommitDate);
             }
             else
             {
@@ -220,9 +218,22 @@ namespace Ntreev.Crema.Repository.Git
             throw new NotImplementedException();
         }
 
-        //public IDictionary<string, string> Status()
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public RepositoryItem[] Status(params string[] paths)
+        {
+            var items = GitItemStatusInfo.Run(this.repositoryPath, paths);
+            var itemList = new List<RepositoryItem>(items.Length);
+            foreach (var item in items)
+            {
+                var repositoryItem = new RepositoryItem()
+                {
+                    Path = new Uri(UriUtility.Combine(this.repositoryPath, item.Path)).LocalPath,
+                    OldPath = new Uri(UriUtility.Combine(this.repositoryPath, item.OldPath)).LocalPath,
+                    Status = item.Status,
+                };
+
+                itemList.Add(repositoryItem);
+            }
+            return itemList.ToArray();
+        }
     }
 }

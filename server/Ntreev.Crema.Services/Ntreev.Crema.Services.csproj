@@ -143,6 +143,8 @@
     </Compile>
     <Compile Include="AuthenticationProvider.cs" />
     <Compile Include="RepositoryHost.cs" />
+    <Compile Include="RepositoryItemStatus.cs" />
+    <Compile Include="RepositoryItem.cs" />
     <Compile Include="SerializationPropertyCollection.cs" />
     <Compile Include="Users\User.cs" />
     <Compile Include="Users\UserAuthenticationProvider.cs" />
