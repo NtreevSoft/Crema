@@ -147,7 +147,7 @@ namespace Ntreev.Crema.Data
                     if (item.RowState == DataRowState.Deleted)
                         continue;
                     this.RowEventStack.Push(item);
-                    if (this.PrimaryKey.Any() == true || item.RelationID == null)
+                    if (item.RelationID == null)
                         item.RelationID = this.GenerateRelationID(item);
                     this.RowEventStack.Pop();
                 }
@@ -1150,7 +1150,7 @@ namespace Ntreev.Crema.Data
 
         protected virtual void OnValidateClearAttributes()
         {
-            
+
         }
 
         protected void InvokePropertyChangedEvent(string propertyName)

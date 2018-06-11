@@ -425,49 +425,113 @@ namespace Ntreev.Crema.Data
 
         public void WriteXml(Stream stream)
         {
-            var xmlWriter = new CremaXmlWriter(this);
+            this.WriteXml(stream, false);
+        }
+
+        public void WriteXml(Stream stream, bool isRecursive)
+        {
+            var xmlWriter = new CremaXmlWriter(this)
+            {
+                IsRecursive = isRecursive,
+            };
             xmlWriter.Write(stream);
         }
 
-        public void WriteXml(string fileName)
+        public void WriteXml(string filename)
         {
-            var xmlWriter = new CremaXmlWriter(this);
-            xmlWriter.Write(fileName);
+            this.WriteXml(filename, false);
+        }
+
+        public void WriteXml(string filename, bool isRecursive)
+        {
+            var xmlWriter = new CremaXmlWriter(this)
+            {
+                IsRecursive = isRecursive,
+            };
+            xmlWriter.Write(filename);
         }
 
         public void WriteXml(TextWriter writer)
         {
-            var xmlWriter = new CremaXmlWriter(this);
+            this.WriteXml(writer, false);
+        }
+
+        public void WriteXml(TextWriter writer, bool isRecursive)
+        {
+            var xmlWriter = new CremaXmlWriter(this)
+            {
+                IsRecursive = isRecursive,
+            };
             xmlWriter.Write(writer);
         }
 
         public void WriteXml(XmlWriter writer)
         {
-            var xmlWriter = new CremaXmlWriter(this);
+            this.WriteXml(writer, false);
+        }
+
+        public void WriteXml(XmlWriter writer, bool isRecursive)
+        {
+            var xmlWriter = new CremaXmlWriter(this)
+            {
+                IsRecursive = isRecursive,
+            };
             xmlWriter.Write(writer);
         }
 
         public void WriteXmlSchema(Stream stream)
         {
-            var schemaWriter = new CremaSchemaWriter(this);
+            this.WriteXmlSchema(stream, false);
+        }
+
+        public void WriteXmlSchema(Stream stream, bool isRecursive)
+        {
+            var schemaWriter = new CremaSchemaWriter(this)
+            {
+                IsRecursive = isRecursive,
+            };
             schemaWriter.Write(stream);
         }
 
-        public void WriteXmlSchema(string fileName)
+        public void WriteXmlSchema(string filename)
         {
-            var schemaWriter = new CremaSchemaWriter(this);
-            schemaWriter.Write(fileName);
+            this.WriteXmlSchema(filename, false);
+        }
+
+        public void WriteXmlSchema(string filename, bool isRecursive)
+        {
+            var schemaWriter = new CremaSchemaWriter(this)
+            {
+                IsRecursive = isRecursive,
+            };
+            schemaWriter.Write(filename);
         }
 
         public void WriteXmlSchema(TextWriter writer)
         {
-            var schemaWriter = new CremaSchemaWriter(this);
+            this.WriteXmlSchema(writer, false);
+        }
+
+        public void WriteXmlSchema(TextWriter writer, bool isRecursvie)
+        {
+            var schemaWriter = new CremaSchemaWriter(this)
+            {
+                IsRecursive = isRecursvie,
+            };
             schemaWriter.Write(writer);
         }
 
         public void WriteXmlSchema(XmlWriter writer)
         {
-            var schemaWriter = new CremaSchemaWriter(this);
+            this.WriteXmlSchema(writer, false);
+        }
+
+        public void WriteXmlSchema(XmlWriter writer, bool isRecursive)
+        {
+            var schemaWriter = new CremaSchemaWriter(this)
+            {
+                IsRecursive = isRecursive,
+            };
             schemaWriter.Write(writer);
         }
 
@@ -525,18 +589,28 @@ namespace Ntreev.Crema.Data
 
         public string GetXml()
         {
+            return this.GetXml(false);
+        }
+
+        public string GetXml(bool isRecursive)
+        {
             using (var sw = new Utf8StringWriter())
             {
-                this.WriteXml(sw);
+                this.WriteXml(sw, isRecursive);
                 return sw.ToString();
             }
         }
 
         public string GetXmlSchema()
         {
+            return this.GetXmlSchema(false);
+        }
+
+        public string GetXmlSchema(bool isRecursive)
+        {
             using (var sw = new Utf8StringWriter())
             {
-                this.WriteXmlSchema(sw);
+                this.WriteXmlSchema(sw, isRecursive);
                 return sw.ToString();
             }
         }
@@ -919,8 +993,6 @@ namespace Ntreev.Crema.Data
                 }
             }
 
-            
-
             var itemName = new ItemName(this.CategoryPath, this.Name);
             var items = EnumerableUtility.Friends(this, this.Childs);
             foreach (var item in items)
@@ -1156,18 +1228,17 @@ namespace Ntreev.Crema.Data
         {
             if (this.Namespace == targetNamespace)
                 return this.Name;
-            if (this.Parent != null)
-                return this.TableName;
+            //if (this.Parent != null)
+            //    return this.Name;
 
             var baseNamespace = this.DataSet != null ? this.DataSet.Namespace : CremaSchema.BaseNamespace;
             if (targetNamespace == this.Namespace || targetNamespace == baseNamespace)
-                return this.TableName;
+                return this.Name;
 
             if (this.TemplateNamespace != string.Empty)
                 return this.DataSet.GetTableName(this.TemplateNamespace);
 
-
-            return this.TableName;
+            return this.Name;
         }
 
         internal string GetXmlPath(string targetNamespace)

@@ -136,7 +136,9 @@ namespace Ntreev.Crema.Data.Test
         [TestMethod]
         public void SetNullDefaultValue()
         {
-            this.column = this.template.Columns.Random(Predicate);
+            this.column = this.template.Columns.RandomOrDefault(Predicate);
+            if (this.column == null)
+                return;
             var dataType = CremaDataTypeUtility.GetType(this.column.DataTypeName);
             var defaultValue = RandomUtility.Next(dataType);
             this.column.DefaultValue = defaultValue;

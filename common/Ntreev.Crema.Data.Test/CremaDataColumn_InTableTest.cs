@@ -164,8 +164,18 @@ namespace Ntreev.Crema.Data.Test
         public void SetKeyFalse()
         {
             var column = this.RandomOrDefault(item => item.IsKey == true);
-            column.IsKey = false;
-            Assert.AreEqual(false, column.IsKey);
+            try
+            {
+                column.IsKey = false;
+                Assert.AreEqual(false, column.IsKey);
+            }
+            catch (AssertFailedException e)
+            {
+                throw e;
+            }
+            catch
+            {
+            }
         }
 
         [TestMethod]

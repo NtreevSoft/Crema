@@ -865,7 +865,7 @@ namespace Ntreev.Crema.Data.Diff
             }
 
             var attributes = dataTable.Attributes.ToArray();
-            var relationColumn = dataTable.RelationColumn;
+            var relationColumn = dataTable.ColumnRelation;
             var columns = dataTable.Columns.ToArray();
 
             this.Validate(dataTable);

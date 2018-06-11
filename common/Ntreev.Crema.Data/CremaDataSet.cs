@@ -764,12 +764,16 @@ namespace Ntreev.Crema.Data
             foreach (var item in this.Tables)
             {
                 if (item.TemplateNamespace != string.Empty)
-                    continue;
+                {
 
-                var relativePath = UriUtility.MakeRelativeOfDirectory(this.dataSet.Namespace, item.Namespace);
-                var filename = Path.Combine(path, relativePath + CremaSchema.SchemaExtension);
-                FileUtility.Prepare(filename);
-                item.WriteXmlSchema(filename);
+                }
+                else
+                {
+                    var relativePath = UriUtility.MakeRelativeOfDirectory(this.dataSet.Namespace, item.Namespace);
+                    var filename = Path.Combine(path, relativePath + CremaSchema.SchemaExtension);
+                    FileUtility.Prepare(filename);
+                    item.WriteXmlSchema(filename);
+                }
             }
 
             foreach (var item in this.Tables)

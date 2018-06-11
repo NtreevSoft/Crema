@@ -78,6 +78,18 @@ namespace Ntreev.Crema.Data.Xml
             return CremaXmlConvert.ToDateTime(text, mode);
         }
 
+        public static bool TryGetAttributeAsDateTime(this XmlReader reader, string name, XmlDateTimeSerializationMode mode, out DateTime value)
+        {
+            var text = reader.GetAttribute(name);
+            if (string.IsNullOrEmpty(text) == true)
+            {
+                value = new DateTime();
+                return false;
+            }
+            value = CremaXmlConvert.ToDateTime(text, mode);
+            return true;
+        }
+
         public static DateTime GetAttributeAsDateTime(this XElement element, string name, XmlDateTimeSerializationMode mode)
         {
             var text = element.GetAttribute(name);
@@ -102,12 +114,36 @@ namespace Ntreev.Crema.Data.Xml
             return Guid.Parse(text);
         }
 
+        public static bool TryGetAttributeAsGuid(this XmlReader reader, string name, out Guid value)
+        {
+            var text = reader.GetAttribute(name);
+            if (string.IsNullOrEmpty(text) == true)
+            {
+                value = Guid.Empty;
+                return false;
+            }
+            value = Guid.Parse(text);
+            return true;
+        }
+
         public static int GetAttributeAsInt32(this XmlReader reader, string name)
         {
             var text = reader.GetAttribute(name);
             if (string.IsNullOrEmpty(text) == true)
                 return 0;
             return CremaXmlConvert.ToInt32(text);
+        }
+
+        public static bool TryGetAttributeAsInt32(this XmlReader reader, string name, out int value)
+        {
+            var text = reader.GetAttribute(name);
+            if (string.IsNullOrEmpty(text) == true)
+            {
+                value = 0;
+                return false;
+            }
+            value = CremaXmlConvert.ToInt32(text);
+            return true;
         }
 
         public static int GetAttributeAsInt32(this XElement element, string name)
@@ -125,6 +161,23 @@ namespace Ntreev.Crema.Data.Xml
                 ID = reader.GetAttribute(user) ?? string.Empty,
                 DateTime = reader.GetAttributeAsDateTime(dateTime, XmlDateTimeSerializationMode.Utc),
             };
+        }
+
+        public static bool TryGetAttributeAsModificationInfo(this XmlReader reader, string user, string dateTime, out SignatureDate value)
+        {
+            var id = reader.GetAttribute(user);
+            var dateTimeValue = new DateTime();
+            if (id == null && reader.TryGetAttributeAsDateTime(dateTime, XmlDateTimeSerializationMode.Utc, out dateTimeValue) == false)
+            {
+                value = SignatureDate.Empty;
+                return false;
+            }
+            value = new SignatureDate()
+            {
+                ID = id ?? string.Empty,
+                DateTime = dateTimeValue,
+            };
+            return true;
         }
 
         public static SignatureDate GetAttributeAsModificationInfo(this XElement element, string user, string dateTime)

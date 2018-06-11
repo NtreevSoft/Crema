@@ -35,6 +35,7 @@ namespace Ntreev.Crema.Data.Xml
         private readonly CremaDataSet dataSet;
         private readonly CremaDataTable dataTable;
         private readonly ItemName itemName;
+        private readonly Version version40 = new Version(4, 0);
         private Dictionary<string, CremaDataTable> tables;
         private Version version = new Version();
 
@@ -258,16 +259,25 @@ namespace Ntreev.Crema.Data.Xml
                 var categoryPath = CremaDataSet.GetTableCategoryPath(this.dataSet, reader.NamespaceURI);
                 var tableName = CremaDataSet.GetTableName(this.dataSet, reader.NamespaceURI);
                 var dataTable = this.dataTable ?? this.dataSet.Tables[tableName, categoryPath];
-                var items = this.version < new Version(4, 0) ? EnumerableUtility.Friends(dataTable, dataTable.Childs) : Enumerable.Repeat(dataTable, 1);
+                var items = EnumerableUtility.Friends(dataTable, dataTable.Childs);
                 foreach (var item in items)
                 {
                     var user = item.Name + CremaSchema.ModifierExtension;
                     var dateTime = item.Name + CremaSchema.ModifiedDateTimeExtension;
                     var count = item.Name + CremaSchema.CountExtension;
                     var id = item.Name + CremaSchema.IDExtension;
-                    item.MinimumCapacity = reader.GetAttributeAsInt32(count);
-                    item.InternalContentsInfo = reader.GetAttributeAsModificationInfo(user, dateTime);
-                    item.InternalTableID = reader.GetAttributeAsGuid(id);
+                    if (reader.TryGetAttributeAsInt32(count, out var countValue) == true)
+                    {
+                        item.MinimumCapacity = countValue;
+                    }
+                    if (reader.TryGetAttributeAsModificationInfo(user, dateTime, out var dateTimeValue) == true)
+                    {
+                        item.InternalContentsInfo = dateTimeValue;
+                    }
+                    if (reader.TryGetAttributeAsGuid(id, out var idValue))
+                    {
+                        item.InternalTableID = idValue;
+                    }
                 }
             }
             else
@@ -276,8 +286,27 @@ namespace Ntreev.Crema.Data.Xml
                 var dataTable = this.dataTable ?? this.dataSet.Tables[this.itemName.Name, this.itemName.CategoryPath];
                 if (reader.NamespaceURI != tableNamespace)
                 {
-                    var creationInfo = reader.GetAttributeAsModificationInfo(CremaSchema.Creator, CremaSchema.CreatedDateTime);
-                    dataTable.InternalCreationInfo = creationInfo;
+                    //if (this.dataSet != null)
+                    //{
+                    //    var name = dataTable.Name;
+                    //    var user = name + CremaSchema.CreatorExtension;
+                    //    var dateTime = name + CremaSchema.CreatedDateTimeExtension;
+                    //    if (reader.TryGetAttributeAsModificationInfo(user, dateTime, out var dateTimeValue) == true)
+                    //    {
+                    //        dataTable.InternalCreationInfo = dateTimeValue;
+                    //    }
+                    //}
+                    //else
+                    {
+                        var name = dataTable.TemplatedParentName;
+                        var user = name + CremaSchema.CreatorExtension;
+                        var dateTime = name + CremaSchema.CreatedDateTimeExtension;
+                        if (reader.TryGetAttributeAsModificationInfo(user, dateTime, out var dateTimeValue) == true)
+                        {
+                            dataTable.InternalCreationInfo = dateTimeValue;
+                        }
+                    }
+                    
                 }
                 var items = this.version < new Version(4, 0) ? EnumerableUtility.Friends(dataTable, dataTable.Childs) : Enumerable.Repeat(dataTable, 1);
                 foreach (var item in items)
@@ -426,7 +455,7 @@ namespace Ntreev.Crema.Data.Xml
                     {
                         this.ReadValue(reader, dataRow, dataColumn);
                     }
-                    else if (dataTable.Childs.Contains(reader.Name) == true)
+                    else if (this.version < this.version40 && dataTable.Childs.Contains(reader.Name) == true)
                     {
                         if (dataRow.RowState == DataRowState.Detached)
                         {

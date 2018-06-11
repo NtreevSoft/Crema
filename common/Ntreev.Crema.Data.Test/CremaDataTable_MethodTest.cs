@@ -271,8 +271,8 @@ namespace Ntreev.Crema.Data.Test
             this.InitializeRandom(true);
 
             var table2 = new CremaDataTable();
-            table2.ReadXmlSchemaString(this.table.GetXmlSchema());
-            table2.ReadXmlString(this.table.GetXml());
+            table2.ReadXmlSchemaString(this.table.GetXmlSchema(true));
+            table2.ReadXmlString(this.table.GetXml(true));
 
             CremaComparer.CompareTable(this.table, table2);
         }

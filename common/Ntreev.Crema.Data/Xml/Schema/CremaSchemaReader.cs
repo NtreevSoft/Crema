@@ -188,7 +188,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
                     throw new CremaDataException();
 
                 this.ReadType(schema);
-                this.ReadDataSet(element);
+                this.ReadDataTables(element);
             }
         }
 
@@ -425,8 +425,16 @@ namespace Ntreev.Crema.Data.Xml.Schema
                 {
                     if (element.QualifiedName.Namespace != CremaSchema.BaseNamespace)
                     {
-                        dataTable.InternalName = CremaDataSet.GetTableName(this.dataSet, element.QualifiedName.Namespace);
-                        dataTable.InternalCategoryPath = CremaDataSet.GetTableCategoryPath(this.dataSet, element.QualifiedName.Namespace);
+                        if (this.version >= new Version(4, 0))
+                        {
+                            dataTable.InternalName = element.Name;
+                            dataTable.InternalCategoryPath = CremaDataSet.GetTableCategoryPath(this.dataSet, element.QualifiedName.Namespace);
+                        }
+                        else
+                        {
+                            dataTable.InternalName = CremaDataSet.GetTableName(this.dataSet, element.QualifiedName.Namespace);
+                            dataTable.InternalCategoryPath = CremaDataSet.GetTableCategoryPath(this.dataSet, element.QualifiedName.Namespace);
+                        }
                     }
                     else if (this.version == new Version(3, 0))
                     {
@@ -450,10 +458,25 @@ namespace Ntreev.Crema.Data.Xml.Schema
 
             dataTable.BeginLoadInternal();
             this.ReadTable(element.ElementSchemaType as XmlSchemaComplexType, dataTable);
-            //this.ReadChildTables(element.ElementSchemaType as XmlSchemaComplexType, dataTable);
+            if (this.version < new Version(4, 0))
+            {
+                this.ReadChildTables(element.ElementSchemaType as XmlSchemaComplexType, dataTable);
+            }
             dataTable.EndLoadInternal();
 
             this.tables.Add(dataTable.Name, dataTable);
+            if (this.version < new Version(4, 0))
+            {
+                foreach (var item in dataTable.Childs)
+                {
+                    this.tables.Add(item.Name, item);
+                }
+            }
+
+            if (dataTable.ParentName != string.Empty && this.tables.ContainsKey(dataTable.ParentName))
+            {
+                dataTable.Parent = this.tables[dataTable.ParentName];
+            }
 
             if (this.dataSet != null)
             {
@@ -520,13 +543,11 @@ namespace Ntreev.Crema.Data.Xml.Schema
                             item.AttachTemplatedParent(dataTable);
                         }
                     }
-
-
                 }
             }
         }
 
-        private void ReadDataSet(XmlSchemaElement element)
+        private void ReadDataTables(XmlSchemaElement element)
         {
             var complexType = element.ElementSchemaType as XmlSchemaComplexType;
 
@@ -550,9 +571,10 @@ namespace Ntreev.Crema.Data.Xml.Schema
         {
             var complexType = element.ElementSchemaType as XmlSchemaComplexType;
 
-            var tableElement = complexType.GetSequenceElements().Single();
-
-            this.ReadTable(tableElement, this.dataTable);
+            foreach (var item in complexType.GetSequenceElements())
+            {
+                this.ReadTable(item, this.dataTable.Name == string.Empty ? this.dataTable : new CremaDataTable());
+            }
 
             foreach (var item in element.GetKeyConstraints())
             {

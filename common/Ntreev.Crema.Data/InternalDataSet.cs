@@ -450,7 +450,7 @@ namespace Ntreev.Crema.Data
         {
             if (dataTable.DataSet != null)
                 throw new CremaDataException("이미 DataSet에 속해 있는 테이블은 추가할 수 없습니다.");
-            if (dataTable.Parent != null)
+            if (dataTable.Parent != null && dataTable.Parent.DataSet != this)
                 throw new CremaDataException(Resources.Exception_CannotAddChildTable);
         }
 
