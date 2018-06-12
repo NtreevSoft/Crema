@@ -55,7 +55,7 @@ namespace Ntreev.Crema.Services.Domains
             this.cremaHost = cremaHost;
             this.cremaHost.Debug(Resources.Message_DomainContextInitialize);
             this.userContext = userContext;
-            this.basePath = DirectoryUtility.Prepare(cremaHost.WorkingPath, nameof(Domain).ToLower());
+            this.basePath = cremaHost.GetPath(CremaPath.Domains);
             this.cremaHost.Opened += CremaHost_Opened;
             this.cremaHost.Debug(Resources.Message_DomainContextIsCreated);
 

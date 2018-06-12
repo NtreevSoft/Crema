@@ -39,23 +39,6 @@ namespace Ntreev.Crema.Services
         
         Transactions,
 
-        //Console,
-
-        //DataBases,
-
-        //Find,
-
-        //Serialization,
-
-
-        //public const string Working = "working";
-        //public const string Domain = "domain";
-        //public const string Transaction = "transaction";
-        //public const string Console = "console";
-        //public const string Database = "database";
-        //public const string Find = "find";
-        //public const string Logs = "logs";
-        //public const string Serialization = "serialization";
-        //public const string Crema = "crema";
+        Domains,
     }
 }

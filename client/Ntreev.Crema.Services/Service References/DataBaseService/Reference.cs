@@ -28,13 +28,13 @@ namespace Ntreev.Crema.Services.DataBaseService {
         Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.DataBaseMetaData> GetMetaData();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/GetDataSet", ReplyAction="http://www.ntreev.com/IDataBaseService/GetDataSetResponse")]
-        Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.Data.CremaDataSet> GetDataSet(long revision);
+        Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.Data.CremaDataSet> GetDataSet(string revision);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/NewTableCategory", ReplyAction="http://www.ntreev.com/IDataBaseService/NewTableCategoryResponse")]
         Ntreev.Crema.ServiceModel.ResultBase NewTableCategory(string categoryPath);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/GetTableItemDataSet", ReplyAction="http://www.ntreev.com/IDataBaseService/GetTableItemDataSetResponse")]
-        Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.Data.CremaDataSet> GetTableItemDataSet(string itemPath, long revision);
+        Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.Data.CremaDataSet> GetTableItemDataSet(string itemPath, string revision);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/ImportTables", ReplyAction="http://www.ntreev.com/IDataBaseService/ImportTablesResponse")]
         Ntreev.Crema.ServiceModel.ResultBase ImportTables(Ntreev.Crema.Data.CremaDataSet dataSet, string comment);
@@ -115,7 +115,7 @@ namespace Ntreev.Crema.Services.DataBaseService {
         Ntreev.Crema.ServiceModel.ResultBase NewTypeCategory(string categoryPath);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/GetTypeItemDataSet", ReplyAction="http://www.ntreev.com/IDataBaseService/GetTypeItemDataSetResponse")]
-        Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.Data.CremaDataSet> GetTypeItemDataSet(string itemPath, long revision);
+        Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.Data.CremaDataSet> GetTypeItemDataSet(string itemPath, string revision);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/ImportTypes", ReplyAction="http://www.ntreev.com/IDataBaseService/ImportTypesResponse")]
         Ntreev.Crema.ServiceModel.ResultBase ImportTypes(Ntreev.Crema.Data.CremaDataSet dataSet, string comment);
@@ -277,7 +277,7 @@ namespace Ntreev.Crema.Services.DataBaseService {
             return base.Channel.GetMetaData();
         }
         
-        public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.Data.CremaDataSet> GetDataSet(long revision) {
+        public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.Data.CremaDataSet> GetDataSet(string revision) {
             return base.Channel.GetDataSet(revision);
         }
         
@@ -285,7 +285,7 @@ namespace Ntreev.Crema.Services.DataBaseService {
             return base.Channel.NewTableCategory(categoryPath);
         }
         
-        public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.Data.CremaDataSet> GetTableItemDataSet(string itemPath, long revision) {
+        public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.Data.CremaDataSet> GetTableItemDataSet(string itemPath, string revision) {
             return base.Channel.GetTableItemDataSet(itemPath, revision);
         }
         
@@ -393,7 +393,7 @@ namespace Ntreev.Crema.Services.DataBaseService {
             return base.Channel.NewTypeCategory(categoryPath);
         }
         
-        public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.Data.CremaDataSet> GetTypeItemDataSet(string itemPath, long revision) {
+        public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.Data.CremaDataSet> GetTypeItemDataSet(string itemPath, string revision) {
             return base.Channel.GetTypeItemDataSet(itemPath, revision);
         }
         

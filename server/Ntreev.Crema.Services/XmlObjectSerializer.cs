@@ -13,6 +13,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
+using System.Xml.Schema;
 
 namespace Ntreev.Crema.Services
 {
@@ -158,7 +160,26 @@ namespace Ntreev.Crema.Services
         {
             if (type == typeof(CremaDataSet))
             {
-                CremaDataSet.ValidateDirectory(itemPath);
+                var sb = new StringBuilder();
+                CremaDataSet.ValidateDirectory(itemPath, null, DefaultValidationEventHandler);
+                if (sb.ToString() != string.Empty)
+                    throw new XmlSchemaValidationException(sb.ToString());
+
+                void DefaultValidationEventHandler(object sender, ValidationEventArgs item)
+                {
+                    sb.AppendLine(item.Exception.SourceUri);
+
+                    if (item.Severity == XmlSeverityType.Error)
+                    {
+                        sb.Append("error: ");
+                        sb.AppendLine(new XmlException(item.Message, item.Exception, item.Exception.LineNumber, item.Exception.LinePosition).Message);
+                    }
+                    else
+                    {
+                        sb.Append("warning: ");
+                        sb.AppendLine(item.Message);
+                    }
+                }
             }
             else
             {
@@ -200,5 +221,7 @@ namespace Ntreev.Crema.Services
             DataContractSerializerUtility.Write(filename, obj, true);
             return new string[] { filename };
         }
+
+        
     }
 }

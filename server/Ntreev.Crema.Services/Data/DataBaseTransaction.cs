@@ -45,8 +45,8 @@ namespace Ntreev.Crema.Services.Data
             this.repository = repository;
             this.typeInfos = dataBase.TypeContext.Types.Select((Type item) => item.TypeInfo).ToArray();
             this.tableInfos = dataBase.TableContext.Tables.Select((Table item) => item.TableInfo).ToArray();
-            this.transactionPath = Path.Combine(dataBase.CremaHost.WorkingPath, "transaction", $"{dataBase.ID}");
-            this.domainPath = Path.Combine(dataBase.CremaHost.WorkingPath, "domain", $"{dataBase.ID}");
+            this.transactionPath = dataBase.CremaHost.GetPath(CremaPath.Transactions, $"{dataBase.ID}");
+            this.domainPath = dataBase.CremaHost.GetPath(CremaPath.Domains, $"{dataBase.ID}");
             DirectoryUtility.Copy(this.domainPath, this.transactionPath);
             this.repository.BeginTransaction(dataBase.Name);
             this.authentication.Expired += Authentication_Expired;

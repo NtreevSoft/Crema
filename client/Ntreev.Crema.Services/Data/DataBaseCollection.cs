@@ -221,7 +221,7 @@ namespace Ntreev.Crema.Services.Data
             return result.Value ?? new LogInfo[] { };
         }
 
-        public void Revert(Authentication authentication, DataBase dataBase, long revision)
+        public void Revert(Authentication authentication, DataBase dataBase, string revision)
         {
             this.Dispatcher.VerifyAccess();
             this.CremaHost.DebugMethod(authentication, this, nameof(Revert), dataBase);
@@ -329,7 +329,6 @@ namespace Ntreev.Crema.Services.Data
             var comment = EventMessageBuilder.SetPublicDataBase(authentication, items);
             var metaData = new object[] { AccessChangeType.Public, new string[] { string.Empty, }, new AccessType[] { AccessType.None, }, };
             this.CremaHost.Debug(eventLog);
-            //this.repository.Commit(accessInfoPath, comment, authentication, eventLog);
             this.CremaHost.Info(comment);
             this.OnItemsAccessChanged(new ItemsEventArgs<IDataBase>(authentication, items, metaData));
         }
@@ -340,7 +339,6 @@ namespace Ntreev.Crema.Services.Data
             var comment = EventMessageBuilder.SetPrivateDataBase(authentication, items);
             var metaData = new object[] { AccessChangeType.Private, new string[] { string.Empty, }, new AccessType[] { AccessType.None, }, };
             this.CremaHost.Debug(eventLog);
-            //this.repository.Commit(accessInfoPath, comment, authentication, eventLog);
             this.CremaHost.Info(comment);
             this.OnItemsAccessChanged(new ItemsEventArgs<IDataBase>(authentication, items, metaData));
         }
@@ -351,7 +349,6 @@ namespace Ntreev.Crema.Services.Data
             var comment = EventMessageBuilder.AddAccessMemberToDataBase(authentication, items, memberIDs, accessTypes);
             var metaData = new object[] { AccessChangeType.Add, memberIDs, accessTypes, };
             this.CremaHost.Debug(eventLog);
-            //this.repository.Commit(accessInfoPath, comment, authentication, eventLog);
             this.CremaHost.Info(comment);
             this.OnItemsAccessChanged(new ItemsEventArgs<IDataBase>(authentication, items, metaData));
         }
@@ -362,7 +359,6 @@ namespace Ntreev.Crema.Services.Data
             var comment = EventMessageBuilder.SetAccessMemberOfDataBase(authentication, items, memberIDs, accessTypes);
             var metaData = new object[] { AccessChangeType.Set, memberIDs, accessTypes, };
             this.CremaHost.Debug(eventLog);
-            //this.repository.Commit(accessInfoPath, comment, authentication, eventLog);
             this.CremaHost.Info(comment);
             this.OnItemsAccessChanged(new ItemsEventArgs<IDataBase>(authentication, items, metaData));
         }
@@ -373,7 +369,6 @@ namespace Ntreev.Crema.Services.Data
             var comment = EventMessageBuilder.RemoveAccessMemberFromDataBase(authentication, items, memberIDs);
             var metaData = new object[] { AccessChangeType.Remove, memberIDs, new AccessType[] { AccessType.None, }, };
             this.CremaHost.Debug(eventLog);
-            //this.repository.Commit(accessInfoPath, comment, authentication, eventLog);
             this.CremaHost.Info(comment);
             this.OnItemsAccessChanged(new ItemsEventArgs<IDataBase>(authentication, items, new object[] { AccessChangeType.Remove, memberIDs, }));
         }
@@ -391,9 +386,8 @@ namespace Ntreev.Crema.Services.Data
         public void InvokeItemsUnlockedEvent(Authentication authentication, IDataBase[] items)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsUnlockedEvent), items);
-            var comment = EventMessageBuilder.UnlockDataBase(authentication, items);
             var metaData = new object[] { LockChangeType.Unlock, new string[] { string.Empty, }, };
-            this.CremaHost.Info(EventMessageBuilder.UnlockDataBase(authentication, items));
+            this.CremaHost.Debug(eventLog);
             this.OnItemsLockChanged(new ItemsEventArgs<IDataBase>(authentication, items, metaData));
         }
 
@@ -763,7 +757,7 @@ namespace Ntreev.Crema.Services.Data
             }
             catch
             {
-                
+
             }
         }
 
@@ -791,7 +785,7 @@ namespace Ntreev.Crema.Services.Data
             }, nameof(Service_Faulted));
         }
 
-#region IDataBaseCollectionServiceCallback
+        #region IDataBaseCollectionServiceCallback
 
         void IDataBaseCollectionServiceCallback.OnServiceClosed(SignatureDate signatureDate, CloseInfo closeInfo)
         {
@@ -1058,9 +1052,9 @@ namespace Ntreev.Crema.Services.Data
             }, nameof(IDataBaseCollectionServiceCallback.OnDataBasesLockChanged));
         }
 
-#endregion
+        #endregion
 
-#region IDataBaseCollection
+        #region IDataBaseCollection
 
         IDataBase IDataBaseCollection.AddNewDataBase(Authentication authentication, string dataBaseName, string comment)
         {
@@ -1091,9 +1085,9 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-#endregion
+        #endregion
 
-#region IEnumerable
+        #region IEnumerable
 
         IEnumerator<IDataBase> IEnumerable<IDataBase>.GetEnumerator()
         {
@@ -1107,6 +1101,6 @@ namespace Ntreev.Crema.Services.Data
             return this.GetEnumerator();
         }
 
-#endregion
+        #endregion
     }
 }

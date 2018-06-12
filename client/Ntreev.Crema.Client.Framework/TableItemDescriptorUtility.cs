@@ -56,7 +56,7 @@ namespace Ntreev.Crema.Client.Framework
             }
         }
 
-        public static async Task<CremaDataSet> GetDataAsync(Authentication authentication, ITableItemDescriptor descriptor, long revision)
+        public static async Task<CremaDataSet> GetDataAsync(Authentication authentication, ITableItemDescriptor descriptor, string revision)
         {
             if (descriptor.Target is ITableItem tableItem)
             {

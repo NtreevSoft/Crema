@@ -67,12 +67,11 @@ namespace Ntreev.Crema.Services.Data
         {
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeTypeItemSetPublic), typeItem);
             var accessInfoPath = typeItem.GetAccessInfoPath();
-            var comment = EventMessageBuilder.SetPublicTypeItem(authentication, new ITypeItem[] { typeItem });
+            var message = EventMessageBuilder.SetPublicTypeItem(authentication, typeItem.Path);
             try
             {
                 this.Repository.Delete(accessInfoPath);
-                this.Repository.Commit(authentication, comment);
-                this.CremaHost.Info(comment);
+                this.Repository.Commit(authentication, message);
             }
             catch (Exception e)
             {
@@ -86,14 +85,13 @@ namespace Ntreev.Crema.Services.Data
         {
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeTypeItemSetPrivate), typeItem);
             var accessInfoPath = typeItem.GetAccessInfoPath();
-            var comment = EventMessageBuilder.SetPrivateTypeItem(authentication, new ITypeItem[] { typeItem });
+            var message = EventMessageBuilder.SetPrivateTypeItem(authentication, typeItem.Path);
             try
             {
                 accessInfo.SetPrivate(typeItem.GetType().Name, authentication.SignatureDate);
                 typeItem.WriteAccessInfo(accessInfoPath, accessInfo);
                 this.Repository.Add(accessInfoPath);
-                this.Repository.Commit(authentication, comment);
-                this.CremaHost.Info(comment);
+                this.Repository.Commit(authentication, message);
             }
             catch (Exception e)
             {
@@ -107,13 +105,12 @@ namespace Ntreev.Crema.Services.Data
         {
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeTypeItemAddAccessMember), typeItem, memberID, accessType);
             var accessInfoPath = typeItem.GetAccessInfoPath();
-            var comment = EventMessageBuilder.AddAccessMemberToTypeItem(authentication, new ITypeItem[] { typeItem }, new string[] { memberID }, new AccessType[] { accessType });
+            var message = EventMessageBuilder.AddAccessMemberToTypeItem(authentication, typeItem.Path, memberID, accessType);
             try
             {
                 accessInfo.Add(authentication.SignatureDate, memberID, accessType);
                 typeItem.WriteAccessInfo(accessInfoPath, accessInfo);
-                this.Repository.Commit(authentication, comment);
-                this.CremaHost.Info(comment);
+                this.Repository.Commit(authentication, message);
             }
             catch (Exception e)
             {
@@ -127,13 +124,12 @@ namespace Ntreev.Crema.Services.Data
         {
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeTypeItemSetAccessMember), typeItem, memberID, accessType);
             var accessInfoPath = typeItem.GetAccessInfoPath();
-            var comment = EventMessageBuilder.SetAccessMemberOfTypeItem(authentication, new ITypeItem[] { typeItem }, new string[] { memberID }, new AccessType[] { accessType });
+            var message = EventMessageBuilder.SetAccessMemberOfTypeItem(authentication, typeItem.Path, memberID, accessType);
             try
             {
                 accessInfo.Set(authentication.SignatureDate, memberID, accessType);
                 typeItem.WriteAccessInfo(accessInfoPath, accessInfo);
-                this.Repository.Commit(authentication, comment);
-                this.CremaHost.Info(comment);
+                this.Repository.Commit(authentication, message);
             }
             catch (Exception e)
             {
@@ -147,13 +143,12 @@ namespace Ntreev.Crema.Services.Data
         {
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeTypeItemRemoveAccessMember), typeItem, memberID);
             var accessInfoPath = typeItem.GetAccessInfoPath();
-            var comment = EventMessageBuilder.RemoveAccessMemberFromTypeItem(authentication, new ITypeItem[] { typeItem }, new string[] { memberID });
+            var message = EventMessageBuilder.RemoveAccessMemberFromTypeItem(authentication, new ITypeItem[] { typeItem }, new string[] { memberID });
             try
             {
                 accessInfo.Remove(authentication.SignatureDate, memberID);
                 typeItem.WriteAccessInfo(accessInfoPath, accessInfo);
-                this.Repository.Commit(authentication, comment);
-                this.CremaHost.Info(comment);
+                this.Repository.Commit(authentication, message);
             }
             catch (Exception e)
             {
@@ -230,60 +225,70 @@ namespace Ntreev.Crema.Services.Data
         public void InvokeItemsSetPublicEvent(Authentication authentication, ITypeItem[] items)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsSetPublicEvent), items);
+            var message = EventMessageBuilder.SetPublicTypeItem(authentication, items);
             var metaData = EventMetaDataBuilder.Build(items, AccessChangeType.Public);
             this.CremaHost.Debug(eventLog);
+            this.CremaHost.Info(message);
             this.OnItemsAccessChanged(new ItemsEventArgs<ITypeItem>(authentication, items, metaData));
         }
 
         public void InvokeItemsSetPrivateEvent(Authentication authentication, ITypeItem[] items)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsSetPrivateEvent), items);
+            var message = EventMessageBuilder.SetPrivateTypeItem(authentication, items);
             var metaData = EventMetaDataBuilder.Build(items, AccessChangeType.Private);
             this.CremaHost.Debug(eventLog);
+            this.CremaHost.Info(message);
             this.OnItemsAccessChanged(new ItemsEventArgs<ITypeItem>(authentication, items, metaData));
         }
 
         public void InvokeItemsAddAccessMemberEvent(Authentication authentication, ITypeItem[] items, string[] memberIDs, AccessType[] accessTypes)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsAddAccessMemberEvent), items, memberIDs, accessTypes);
+            var message = EventMessageBuilder.AddAccessMemberToTypeItem(authentication, items, memberIDs, accessTypes);
             var metaData = EventMetaDataBuilder.Build(items, AccessChangeType.Add, memberIDs, accessTypes);
             this.CremaHost.Debug(eventLog);
+            this.CremaHost.Info(message);
             this.OnItemsAccessChanged(new ItemsEventArgs<ITypeItem>(authentication, items, metaData));
         }
 
         public void InvokeItemsSetAccessMemberEvent(Authentication authentication, ITypeItem[] items, string[] memberIDs, AccessType[] accessTypes)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsSetAccessMemberEvent), items, memberIDs, accessTypes);
+            var message = EventMessageBuilder.SetAccessMemberOfTypeItem(authentication, items, memberIDs, accessTypes);
             var metaData = EventMetaDataBuilder.Build(items, AccessChangeType.Set, memberIDs, accessTypes);
             this.CremaHost.Debug(eventLog);
+            this.CremaHost.Info(message);
             this.OnItemsAccessChanged(new ItemsEventArgs<ITypeItem>(authentication, items, metaData));
         }
 
         public void InvokeItemsRemoveAccessMemberEvent(Authentication authentication, ITypeItem[] items, string[] memberIDs)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsRemoveAccessMemberEvent), items, memberIDs);
+            var message = EventMessageBuilder.RemoveAccessMemberFromTypeItem(authentication, items, memberIDs);
             var metaData = EventMetaDataBuilder.Build(items, AccessChangeType.Remove, memberIDs);
             this.CremaHost.Debug(eventLog);
+            this.CremaHost.Info(message);
             this.OnItemsAccessChanged(new ItemsEventArgs<ITypeItem>(authentication, items, new object[] { AccessChangeType.Remove, memberIDs, }));
         }
 
         public void InvokeItemsLockedEvent(Authentication authentication, ITypeItem[] items, string[] comments)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsLockedEvent), items, comments);
-            var comment = EventMessageBuilder.LockTypeItem(authentication, items, comments);
+            var message = EventMessageBuilder.LockTypeItem(authentication, items, comments);
             var metaData = EventMetaDataBuilder.Build(items, LockChangeType.Lock, comments);
             this.CremaHost.Debug(eventLog);
-            this.CremaHost.Info(comment);
+            this.CremaHost.Info(message);
             this.OnItemsLockChanged(new ItemsEventArgs<ITypeItem>(authentication, items, metaData));
         }
 
         public void InvokeItemsUnlockedEvent(Authentication authentication, ITypeItem[] items)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsUnlockedEvent), items);
-            var comment = EventMessageBuilder.UnlockTypeItem(authentication, items);
+            var message = EventMessageBuilder.UnlockTypeItem(authentication, items);
             var metaData = EventMetaDataBuilder.Build(items, LockChangeType.Unlock);
             this.CremaHost.Debug(eventLog);
-            this.CremaHost.Info(comment);
+            this.CremaHost.Info(message);
             this.OnItemsLockChanged(new ItemsEventArgs<ITypeItem>(authentication, items, metaData));
         }
 

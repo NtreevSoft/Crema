@@ -32,10 +32,10 @@ namespace Ntreev.Crema.Client.Types.Dialogs.ViewModels
     {
         private readonly Authentication authentication;
         private readonly IType type;
-        private readonly long revision;
+        private readonly string revision;
         private CremaDataType source;
 
-        public PreviewTypeViewModel(Authentication authentication, IType type, long revision)
+        public PreviewTypeViewModel(Authentication authentication, IType type, string revision)
         {
             this.authentication = authentication;
             this.type = type;

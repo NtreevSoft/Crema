@@ -10,9 +10,15 @@ namespace Ntreev.Crema.Services
 {
     public class RepositoryValidationSettings
     {
+        private const string validationString = "validation";
         private string fileType;
         private string repositoryModule;
         private string[] dataBaseNames;
+
+        public RepositoryValidationSettings()
+        {
+            this.Verbose = LogVerbose.Error;
+        }
 
         public string BasePath
         {
@@ -58,7 +64,7 @@ namespace Ntreev.Crema.Services
         {
             if (this.TempPath == null)
             {
-                return Path.Combine(this.BasePath, "validation", repositoryName);
+                return Path.Combine(this.BasePath, validationString, repositoryName);
             }
             return Path.Combine(this.TempPath, repositoryName);
         }
@@ -67,7 +73,7 @@ namespace Ntreev.Crema.Services
         {
             if (this.TempPath == null)
             {
-                return Path.Combine(this.BasePath, "validation");
+                return Path.Combine(this.BasePath, validationString);
             }
             return this.TempPath;
         }

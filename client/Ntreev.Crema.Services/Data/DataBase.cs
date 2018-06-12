@@ -207,13 +207,13 @@ namespace Ntreev.Crema.Services.Data
             return this.DataBases.GetLog(authentication, this);
         }
 
-        public void Revert(Authentication authentication, long revision)
+        public void Revert(Authentication authentication, string revision)
         {
             this.ValidateDispatcher();
             this.DataBases.Revert(authentication, this, revision);
         }
 
-        public CremaDataSet GetDataSet(Authentication authentication, long revision)
+        public CremaDataSet GetDataSet(Authentication authentication, string revision)
         {
             this.ValidateAsyncBeginInDataBase(authentication);
             var result = this.Service.GetDataSet(revision);

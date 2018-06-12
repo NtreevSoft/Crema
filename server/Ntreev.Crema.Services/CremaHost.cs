@@ -48,13 +48,6 @@ namespace Ntreev.Crema.Services
     [InheritedExport(typeof(ICremaHost))]
     class CremaHost : ICremaHost, ILogService, IDisposable
     {
-        private const string workingString = "working";
-        //private const string trunkString = "trunk";
-        //private const string tagsString = "tags";
-        //private const string branchesString = "branches";
-
-        private readonly string basePath;
-
         private CremaConfiguration configs;
         private IEnumerable<IPlugin> plugins;
 
@@ -80,7 +73,7 @@ namespace Ntreev.Crema.Services
         {
             CremaLog.Debug("crema instance created.");
             this.settings = settings;
-            this.basePath = settings.BasePath;
+            this.BasePath = settings.BasePath;
             this.repositoryProvider = repoProviders.First(item => item.Name == this.settings.RepositoryModule);
             this.serializer = serializers.First(item => item.Name == this.settings.FileType);
 
@@ -145,11 +138,10 @@ namespace Ntreev.Crema.Services
             {
                 this.Info(Resources.Message_ProgramInfo, AppUtility.ProductName, AppUtility.ProductVersion);
 
-                //this.repository = this.repositoryProvider.CreateInstance(this.repositoryPath, this.workingPath);
                 this.Info("Repository module : {0}", this.settings.RepositoryModule);
                 this.Info(Resources.Message_ServiceStart);
 
-                this.configs = new CremaConfiguration(Path.Combine(this.basePath, "configs.xml"), this.propertiesProvider);
+                this.configs = new CremaConfiguration(Path.Combine(this.BasePath, "configs.xml"), this.propertiesProvider);
 
                 this.userContext = new UserContext(this);
                 this.userContext.Dispatcher.Invoke(() => this.userContext.Initialize());
@@ -303,7 +295,7 @@ namespace Ntreev.Crema.Services
 
         public string GetPath(CremaPath pathType, params string[] paths)
         {
-            return GetPath(this.basePath, pathType, paths);
+            return GetPath(this.BasePath, pathType, paths);
         }
 
         public static string GetPath(string basePath, CremaPath pathType, params string[] paths)
@@ -324,6 +316,8 @@ namespace Ntreev.Crema.Services
                     return Path.Combine(Path.Combine(basePath, "documents"), Path.Combine(paths));
                 case CremaPath.Transactions:
                     return Path.Combine(Path.Combine(basePath, "transactions"), Path.Combine(paths));
+                case CremaPath.Domains:
+                    return Path.Combine(Path.Combine(basePath, "domains"), Path.Combine(paths));
             }
 
             throw new NotImplementedException();
@@ -331,13 +325,7 @@ namespace Ntreev.Crema.Services
 
         public IRepositoryProvider RepositoryProvider => this.repositoryProvider;
 
-        public string BasePath
-        {
-            get { return this.basePath; }
-        }
-
-        [Obsolete]
-        public string WorkingPath => this.GetPath(CremaPath.Working);
+        public string BasePath { get; }
 
         public bool IsOpened
         {
@@ -562,7 +550,7 @@ namespace Ntreev.Crema.Services
             get { return this.configs; }
         }
 
-        
+
 
         #endregion
     }

@@ -36,14 +36,14 @@ namespace Ntreev.Crema.Client.Tables.Dialogs.ViewModels
     {
         private readonly Authentication authentication;
         private readonly ITableCategory category;
-        private readonly long revision;
+        private readonly string revision;
 
         private CremaDataSet source;
         private ObservableCollection<TreeViewItemViewModel> itemsSource = new ObservableCollection<TreeViewItemViewModel>();
         private PreviewDocumentViewModel documents = new PreviewDocumentViewModel();
         private object selectedItem;
 
-        public PreviewTableCategoryViewModel(Authentication authentication, ITableCategory category, long revision)
+        public PreviewTableCategoryViewModel(Authentication authentication, ITableCategory category, string revision)
         {
             this.authentication = authentication;
             this.category = category;

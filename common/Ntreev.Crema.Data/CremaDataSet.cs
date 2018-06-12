@@ -951,7 +951,7 @@ namespace Ntreev.Crema.Data
 
         public static void ValidateDirectory(string path, string pattern)
         {
-            ValidateDirectory(path, pattern, null);
+            ValidateDirectory(path, pattern, DefaultValidationEventHandler);
         }
 
         public static void ValidateDirectory(string path, ValidationEventHandler validationEventHandler)
@@ -961,6 +961,8 @@ namespace Ntreev.Crema.Data
 
         public static void ValidateDirectory(string path, string pattern, ValidationEventHandler validationEventHandler)
         {
+            if (validationEventHandler == null)
+                throw new ArgumentNullException(nameof(validationEventHandler));
             ValidateReadFromDirectory(path);
 
             var tablePath = Path.Combine(path, CremaSchemaObsolete.TableDirectoryObsolete);
@@ -992,29 +994,27 @@ namespace Ntreev.Crema.Data
                 });
             });
 
-            var sourceUri = string.Empty;
             foreach (var item in errorList.OrderBy(i => i.Exception.SourceUri))
             {
-                if (sourceUri != item.Exception.SourceUri)
-                {
-                    if (sourceUri != string.Empty)
-                        Console.WriteLine();
-                    sourceUri = item.Exception.SourceUri;
-                    Console.WriteLine(sourceUri);
-                }
+                validationEventHandler(null, item);
+            }
+        }
 
-                if (item.Severity == XmlSeverityType.Error)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write("error: ");
-                    Console.WriteLine(new XmlException(item.Message, item.Exception, item.Exception.LineNumber, item.Exception.LinePosition).Message);
-                    Console.ResetColor();
-                }
-                else
-                {
-                    Console.Write("warning: ");
-                    Console.WriteLine(item.Message);
-                }
+        private static void DefaultValidationEventHandler(object sender, ValidationEventArgs item)
+        {
+            Console.WriteLine(item.Exception.SourceUri);
+
+            if (item.Severity == XmlSeverityType.Error)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("error: ");
+                Console.WriteLine(new XmlException(item.Message, item.Exception, item.Exception.LineNumber, item.Exception.LinePosition).Message);
+                Console.ResetColor();
+            }
+            else
+            {
+                Console.Write("warning: ");
+                Console.WriteLine(item.Message);
             }
         }
 

@@ -253,7 +253,7 @@ namespace Ntreev.Crema.Services.Data
             return template;
         }
 
-        public CremaDataSet GetDataSet(Authentication authentication, long revision)
+        public CremaDataSet GetDataSet(Authentication authentication, string revision)
         {
             this.DataBase.ValidateAsyncBeginInDataBase(authentication);
             this.CremaHost.DebugMethod(authentication, this, nameof(GetDataSet), this, revision);

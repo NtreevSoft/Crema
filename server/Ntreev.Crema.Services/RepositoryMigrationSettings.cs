@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ namespace Ntreev.Crema.Services
 {
     public class RepositoryMigrationSettings
     {
+        private const string migrationString = "migration";
         private string fileType;
         private string repositoryModule;
         private string[] dataBaseNames;
@@ -45,6 +47,29 @@ namespace Ntreev.Crema.Services
             set => this.dataBaseNames = value;
         }
 
+        public string TempPath
+        {
+            get; set;
+        }
+
         public readonly static RepositoryMigrationSettings Default = new RepositoryMigrationSettings();
+
+        internal string GetTempPath(string repositoryName)
+        {
+            if (this.TempPath == null)
+            {
+                return Path.Combine(this.BasePath, migrationString, repositoryName);
+            }
+            return Path.Combine(this.TempPath, repositoryName);
+        }
+
+        internal string GetTempPath()
+        {
+            if (this.TempPath == null)
+            {
+                return Path.Combine(this.BasePath, migrationString);
+            }
+            return this.TempPath;
+        }
     }
 }

@@ -73,23 +73,20 @@ namespace Ntreev.Crema.Services
             try
             {
                 var basePath = directoryInfo.FullName;
-                var repoProviders = this.GetInstances(typeof(IRepositoryProvider)).OfType<IRepositoryProvider>();
-                var repoProvider = repoProviders.FirstOrDefault(item => item.Name == settings.RepositoryModule);
-                if (repoProvider == null)
-                    throw new InvalidOperationException(Resources.Exception_NoRepositoryModule);
+                var repositoryProvider = this.GetRepositoryProvider(settings.RepositoryModule);
+                var serializer = this.GetSerializer(settings.FileType);
 
                 var tempPath = PathUtility.GetTempPath(true);
                 var usersRepo = DirectoryUtility.Prepare(basePath, "remotes", "users");
                 var usersPath = DirectoryUtility.Prepare(tempPath, "remotes", "users");
-                var serializers = this.GetService(typeof(IEnumerable<IObjectSerializer>)) as IEnumerable<IObjectSerializer>;
-                var serializer = serializers.First(item => item.Name == settings.FileType);
+
                 UserContext.GenerateDefaultUserInfos(usersPath, serializer);
-                repoProvider.InitializeRepository(usersRepo, usersPath);
+                repositoryProvider.InitializeRepository(usersRepo, usersPath);
 
                 var dataBasesRepo = DirectoryUtility.Prepare(basePath, "remotes", "databases");
                 var dataBasesPath = DirectoryUtility.Prepare(tempPath, "remotes", "databases");
                 new CremaDataSet().WriteToDirectory(dataBasesPath);
-                repoProvider.InitializeRepository(dataBasesRepo, dataBasesPath);
+                repositoryProvider.InitializeRepository(dataBasesRepo, dataBasesPath);
             }
             catch
             {
@@ -99,15 +96,8 @@ namespace Ntreev.Crema.Services
 
         public void ValidateRepository(RepositoryValidationSettings settings)
         {
-            var repoProviders = this.GetInstances(typeof(IRepositoryProvider)).OfType<IRepositoryProvider>();
-            var repoProvider = repoProviders.FirstOrDefault(item => item.Name == settings.RepositoryModule);
-            if (repoProvider == null)
-                throw new InvalidOperationException(Resources.Exception_NoRepositoryModule);
-
-            var serializers = this.GetInstances(typeof(IObjectSerializer)).OfType<IObjectSerializer>();
-            var serializer = serializers.FirstOrDefault(item => item.Name == settings.FileType);
-            if (serializer == null)
-                throw new InvalidOperationException("no serializer");
+            var repositoryProvider = this.GetRepositoryProvider(settings.RepositoryModule);
+            var serializer = this.GetSerializer(settings.FileType);
 
             var logService = new LogServiceHost(this.GetType().FullName, CremaHost.GetPath(settings.GetTempPath(), CremaPath.Logs))
             {
@@ -115,7 +105,7 @@ namespace Ntreev.Crema.Services
             };
 
             var dataBasesPath = Path.Combine(settings.BasePath, "remotes", "databases");
-            var items = repoProvider.GetRepositories(dataBasesPath);
+            var items = repositoryProvider.GetRepositories(dataBasesPath);
 
             if (settings.DataBaseNames.Length > 0)
                 items = items.Intersect(settings.DataBaseNames).ToArray();
@@ -130,10 +120,17 @@ namespace Ntreev.Crema.Services
                     WorkingPath = tempPath,
                     LogService = logService,
                 };
-                using (var repository = repoProvider.CreateInstance(repositorySettings))
+                var repository = repositoryProvider.CreateInstance(repositorySettings);
+                try
                 {
                     serializer.Validate(repository.BasePath, typeof(CremaDataSet), SerializationPropertyCollection.Empty);
                 }
+                catch (Exception e)
+                {
+                    logService.Error(e);
+                    throw e;
+                }
+                repository.Dispose();
                 DirectoryUtility.Delete(tempPath);
             }
             logService.Info("end");
@@ -141,15 +138,8 @@ namespace Ntreev.Crema.Services
 
         public void MigrateRepository(RepositoryMigrationSettings settings)
         {
-            var repoProviders = this.GetInstances(typeof(IRepositoryProvider)).OfType<IRepositoryProvider>();
-            var repoProvider = repoProviders.FirstOrDefault(item => item.Name == settings.RepositoryModule);
-            if (repoProvider == null)
-                throw new InvalidOperationException(Resources.Exception_NoRepositoryModule);
-
-            var serializers = this.GetInstances(typeof(IObjectSerializer)).OfType<IObjectSerializer>();
-            var serializer = serializers.FirstOrDefault(item => item.Name == settings.FileType);
-            if (serializer == null)
-                throw new InvalidOperationException("no serializer");
+            var repositoryProvider = this.GetRepositoryProvider(settings.RepositoryModule);
+            var serializer = this.GetSerializer(settings.FileType);
 
             var logService = new LogServiceHost(this.GetType().FullName, CremaHost.GetPath(settings.BasePath, CremaPath.Logs))
             {
@@ -157,14 +147,14 @@ namespace Ntreev.Crema.Services
             };
 
             var basePath = Path.Combine(settings.BasePath, "remotes", "databases");
-            var items = repoProvider.GetRepositories(basePath);
+            var items = repositoryProvider.GetRepositories(basePath);
 
             if (settings.DataBaseNames.Length > 0)
                 items = items.Intersect(settings.DataBaseNames).ToArray();
 
             foreach (var item in items)
             {
-                var tempPath = PathUtility.GetTempPath(false);
+                var tempPath = settings.GetTempPath(item);
                 try
                 {
                     var repositorySettings = new RepositorySettings()
@@ -172,22 +162,9 @@ namespace Ntreev.Crema.Services
                         BasePath = basePath,
                         RepositoryName = item,
                         WorkingPath = tempPath,
+                        LogService = logService,
                     };
-                    using (var repository = repoProvider.CreateInstance(repositorySettings))
-                    {
-                        var dataSet = serializer.Deserialize(repository.BasePath, typeof(CremaDataSet), SerializationPropertyCollection.Empty) as CremaDataSet;
-                        var files = serializer.Serialize(repository.BasePath, dataSet, SerializationPropertyCollection.Empty);
-
-                        var statuses = repository.Status();
-                        foreach (var status in statuses)
-                        {
-                            if (status.Status == RepositoryItemStatus.Untracked)
-                            {
-                                repository.Add(status.Path);
-                            }
-                        }
-                        repository.Commit("migration");
-                    }
+                    this.MigrateRepository(repositoryProvider, serializer, repositorySettings);
                     CremaLog.Info("migtrated : {0}", item);
                 }
                 finally
@@ -196,6 +173,8 @@ namespace Ntreev.Crema.Services
                 }
             }
         }
+
+        
 
         public object GetService(System.Type serviceType)
         {
@@ -429,6 +408,43 @@ namespace Ntreev.Crema.Services
             CremaLog.Debug("Initialize.");
             this.OnInitialize();
             CremaLog.Debug("Initialized.");
+        }
+
+        private IObjectSerializer GetSerializer(string fileType)
+        {
+            var serializers = this.GetInstances(typeof(IObjectSerializer)).OfType<IObjectSerializer>();
+            var serializer = serializers.FirstOrDefault(item => item.Name == fileType);
+            if (serializer == null)
+                throw new InvalidOperationException("no serializer");
+            return serializer;
+        }
+
+        private IRepositoryProvider GetRepositoryProvider(string repositoryModule)
+        {
+            var repositoryProviders = this.GetInstances(typeof(IRepositoryProvider)).OfType<IRepositoryProvider>();
+            var repositoryProvider = repositoryProviders.FirstOrDefault(item => item.Name == repositoryModule);
+            if (repositoryProvider == null)
+                throw new InvalidOperationException(Resources.Exception_NoRepositoryModule);
+            return repositoryProvider;
+        }
+
+        private void MigrateRepository(IRepositoryProvider repositoryProvider, IObjectSerializer serializer, RepositorySettings settings)
+        {
+            using (var repository = repositoryProvider.CreateInstance(settings))
+            {
+                var dataSet = serializer.Deserialize(repository.BasePath, typeof(CremaDataSet), SerializationPropertyCollection.Empty) as CremaDataSet;
+                var files = serializer.Serialize(repository.BasePath, dataSet, SerializationPropertyCollection.Empty);
+
+                var items = repository.Status();
+                foreach (var item in items)
+                {
+                    if (item.Status == RepositoryItemStatus.Untracked)
+                    {
+                        repository.Add(item.Path);
+                    }
+                }
+                repository.Commit("migration");
+            }
         }
     }
 }
