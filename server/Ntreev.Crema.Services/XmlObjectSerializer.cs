@@ -154,6 +154,18 @@ namespace Ntreev.Crema.Services
             }
         }
 
+        public void Validate(string itemPath, Type type, IDictionary properties)
+        {
+            if (type == typeof(CremaDataSet))
+            {
+                CremaDataSet.ValidateDirectory(itemPath);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public static readonly XmlObjectSerializer Default = new XmlObjectSerializer();
 
         private string[] SerializeDataTable(CremaDataTable dataTable, string itemPath, IDictionary properties)

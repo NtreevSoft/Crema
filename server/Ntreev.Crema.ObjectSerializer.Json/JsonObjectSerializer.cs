@@ -57,5 +57,10 @@ namespace Ntreev.Crema.ObjectSerializer.Json
         {
             throw new NotImplementedException();
         }
+
+        public void Validate(string itemPath, Type type, IDictionary properties)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

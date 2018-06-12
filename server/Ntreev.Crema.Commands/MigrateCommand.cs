@@ -75,23 +75,15 @@ namespace Ntreev.Crema.Commands
             get; set;
         }
 
-        [CommandProperty]
-#if DEBUG
-        [DefaultValue("en-US")]
-#else
-        [DefaultValue("")]
-#endif
-        public string Culture
-        {
-            get; set;
-        }
-
         protected override void OnExecute()
         {
-            this.application.RepositoryModule = this.RepositoryModule;
-            this.application.BasePath = this.Path;
-            this.application.FileType = this.FileType;
-            this.application.MigrateRepository(this.DataBaseList);
+            var settings = new RepositoryMigrationSettings()
+            {
+                RepositoryModule = this.RepositoryModule,
+                BasePath = this.Path,
+                FileType = this.FileType,
+            };
+            this.application.MigrateRepository(settings);
         }
     }
 }

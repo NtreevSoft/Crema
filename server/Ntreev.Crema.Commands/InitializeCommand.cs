@@ -68,19 +68,17 @@ namespace Ntreev.Crema.Commands
             set;
         }
 
-        //[CommandProperty("repo-name")]
-        //[DefaultValue("crema")]
-        //public string RepositoryName
-        //{
-        //    get;
-        //    set;
-        //}
-
         protected override void OnExecute()
         {
-            this.boot.RepositoryModule = this.RepositoryModule;
-            this.boot.FileType = this.FileType;
-            this.boot.CreateRepository(this.Path, this.Force);
+            var settings = new RepositoryCreationSettings()
+            {
+                BasePath = this.Path,
+                RepositoryModule = this.RepositoryModule,
+                FileType = this.FileType,
+                Force = this.Force,
+            };
+
+            this.boot.CreateRepository(settings);
         }
     }
 }

@@ -25,7 +25,11 @@ namespace Ntreev.Crema.Services
 {
     class CremaSettings
     {
+        public const string DefaultRepositoryModule = "svn";
+        public const string DefaultFileType = "xml";
+
         private string fileType;
+
         public CremaSettings()
         {
 
@@ -51,7 +55,7 @@ namespace Ntreev.Crema.Services
 
         public string FileType
         {
-            get => this.fileType ?? "xml";
+            get => this.fileType ?? DefaultFileType;
             set => this.fileType = value;
         }
 

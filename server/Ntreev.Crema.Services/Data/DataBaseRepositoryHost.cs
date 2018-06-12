@@ -39,7 +39,7 @@ namespace Ntreev.Crema.Services.Data
         private readonly CremaSettings settings;
 
         public DataBaseRepositoryHost(DataBase dataBase, IRepository repository)
-            : base(repository, dataBase.CremaHost.RepositoryDispatcher, dataBase.BasePath)
+            : base(repository, dataBase.CremaHost.RepositoryDispatcher)
         {
             this.dataBase = dataBase;
             this.settings = this.dataBase.GetService(typeof(CremaSettings)) as CremaSettings;

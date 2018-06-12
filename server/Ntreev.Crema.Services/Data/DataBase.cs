@@ -183,7 +183,13 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.DebugMethod(authentication, this, nameof(Load), this);
             this.ValidateLoad(authentication);
             this.DataBases.InvokeDataBaseLoad(authentication, this);
-            this.repositoryHost = new DataBaseRepositoryHost(this, this.repositoryProvider.CreateInstance(this.DataBases.RemotePath, this.Name, this.BasePath));
+            this.repositoryHost = new DataBaseRepositoryHost(this, this.repositoryProvider.CreateInstance(new RepositorySettings()
+            {
+                BasePath = this.DataBases.RemotePath,
+                RepositoryName = this.Name,
+                WorkingPath = this.BasePath,
+                LogService = this.cremaHost,
+            }));
             this.repositoryHost.Changed += Repository_Changed;
             this.ReadCache();
             this.AttachDomainHost();

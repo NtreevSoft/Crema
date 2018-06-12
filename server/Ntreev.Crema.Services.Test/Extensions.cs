@@ -43,8 +43,12 @@ namespace Ntreev.Crema.Services.Test
         {
 #if SERVER
             var repositoryPath = DirectoryUtility.Prepare(context.TestRunDirectory + "_repo", name);
-            app.CreateRepository(repositoryPath, false);
-            app.BasePath = repositoryPath;
+            var settings = new RepositoryCreationSettings()
+            {
+                BasePath = repositoryPath,
+            };
+            app.CreateRepository(settings);
+            //app.BasePath = repositoryPath;
             app.MultiThreading = true;
 #endif
 #if CLIENT

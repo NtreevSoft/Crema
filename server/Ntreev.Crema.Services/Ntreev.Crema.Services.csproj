@@ -57,10 +57,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthenticationToken.cs" />
+    <Compile Include="LogServiceHost.cs" />
     <Compile Include="RelativeSchemaPropertyCollection.cs" />
     <Compile Include="CremaDataSetPropertyCollection.cs" />
     <Compile Include="IObjectSerializer.cs" />
     <Compile Include="IRepositoryProviderExtensions.cs" />
+    <Compile Include="RepositorySettings.cs" />
+    <Compile Include="RepositoryValidationSettings.cs" />
+    <Compile Include="RepositoryMigrationSettings.cs" />
+    <Compile Include="RepositoryCreationSettings.cs" />
     <Compile Include="RepositoryInfo.cs" />
     <Compile Include="CremaConfiguration.cs" />
     <Compile Include="CremaPath.cs" />

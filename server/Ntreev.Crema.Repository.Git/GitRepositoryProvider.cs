@@ -39,23 +39,23 @@ namespace Ntreev.Crema.Repository.Git
             throw new NotImplementedException();
         }
 
-        public IRepository CreateInstance(string basePath, string repositoryName, string workingPath)
+        public IRepository CreateInstance(RepositorySettings settings)
         {
-            var baseUri = new Uri(basePath);
-            var branchName = this.GetBranchName(repositoryName);
-            var logService = this.logServices.FirstOrDefault(item => item.Value.Name == "repository");
+            var baseUri = new Uri(settings.BasePath);
+            var branchName = this.GetBranchName(settings.RepositoryName);
+            //var logService = this.logServices.FirstOrDefault(item => item.Value.Name == "repository");
 
-            if (Directory.Exists(workingPath) == false)
+            if (Directory.Exists(settings.WorkingPath) == false)
             {
-                GitServerHost.Run("clone", baseUri.ToString().WrapQuot(), "-b", branchName, workingPath.WrapQuot(), "--single-branch");
+                GitServerHost.Run("clone", baseUri.ToString().WrapQuot(), "-b", branchName, settings.WorkingPath.WrapQuot(), "--single-branch");
             }
             else
             {
                 //GitHost.Run("update", workingPath.WrapQuot());
             }
-            var transactionPath = Path.Combine(this.CremaHost.GetPath(CremaPath.Transactions), Path.GetFileName(workingPath));
-            var repositoryInfo = this.GetRepositoryInfo(basePath, repositoryName);
-            return new GitRepository(this, logService.Value, workingPath, transactionPath, repositoryInfo);
+            //var transactionPath = Path.Combine(this.CremaHost.GetPath(CremaPath.Transactions), Path.GetFileName(workingPath));
+            var repositoryInfo = this.GetRepositoryInfo(settings.BasePath, settings.RepositoryName);
+            return new GitRepository(this, settings.LogService, settings.WorkingPath, settings.TransactionPath, repositoryInfo);
         }
 
         public void CreateRepository(string basePath, string initPath, string comment, params LogPropertyInfo[] properties)

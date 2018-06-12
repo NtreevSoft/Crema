@@ -64,9 +64,16 @@ namespace Ntreev.Crema.Services.Users
             this.remotePath = cremaHost.GetPath(CremaPath.RemoteUsers);
             this.basePath = cremaHost.GetPath(CremaPath.Working, "users");
             this.serializer = cremaHost.Serializer;
-            //this.userFilePath = GenerateUsersFilePath(this.basePath);
-            var re = cremaHost.RepositoryProvider.CreateInstance(this.remotePath, "default", this.basePath);
-            this.repository = new RepositoryHost(re, cremaHost.RepositoryDispatcher, this.basePath);
+
+            var settings = new RepositorySettings()
+            {
+                BasePath = this.remotePath,
+                RepositoryName = "default",
+                WorkingPath = this.basePath,
+                LogService = this.cremaHost
+            };
+
+            this.repository = new RepositoryHost(this.cremaHost.RepositoryProvider.CreateInstance(settings), cremaHost.RepositoryDispatcher);
             this.dispatcher = new CremaDispatcher(this);
             this.dispatcher.Invoke(() =>
             {

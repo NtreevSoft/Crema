@@ -20,6 +20,8 @@ namespace Ntreev.Crema.Services
 
         string[] GetItemPaths(string path, Type type, IDictionary properties);
 
+        void Validate(string itemPath, Type type, IDictionary properties);
+
         string Name { get; }
     }
 }

@@ -64,23 +64,23 @@ namespace Ntreev.Crema.Repository.Svn
             get { return "svn"; }
         }
 
-        public IRepository CreateInstance(string basePath, string repositoryName, string workingPath)
+        public IRepository CreateInstance(RepositorySettings settings)
         {
-            var baseUri = new Uri(basePath);
-            var url = repositoryName == "default" ? UriUtility.Combine(baseUri, "trunk") : UriUtility.Combine(baseUri, "branches", repositoryName);
-            var logService = this.logServices.FirstOrDefault(item => item.Value.Name == "repository");
+            var baseUri = new Uri(settings.BasePath);
+            var url = settings.RepositoryName == "default" ? UriUtility.Combine(baseUri, "trunk") : UriUtility.Combine(baseUri, "branches", repositoryName);
+            //var logService = this.logServices.FirstOrDefault(item => item.Value.Name == "repository");
 
-            if (Directory.Exists(workingPath) == false)
+            if (Directory.Exists(settings.WorkingPath) == false)
             {
-                SvnClientHost.Run("checkout", url.ToString().WrapQuot(), workingPath.WrapQuot());
+                SvnClientHost.Run("checkout", url.ToString().WrapQuot(), settings.WorkingPath.WrapQuot());
             }
             else
             {
-                SvnClientHost.Run("update", workingPath.WrapQuot());
+                SvnClientHost.Run("update", settings.WorkingPath.WrapQuot());
             }
-            var transactionPath = Path.Combine(this.CremaHost.GetPath(CremaPath.Transactions), Path.GetFileName(workingPath));
-            var repositoryInfo = this.GetRepositoryInfo(basePath, repositoryName);
-            return new SvnRepository(this, logService.Value, workingPath, transactionPath, repositoryInfo);
+            //var transactionPath = Path.Combine(this.CremaHost.GetPath(CremaPath.Transactions), Path.GetFileName(settings.WorkingPath));
+            var repositoryInfo = this.GetRepositoryInfo(settings.BasePath, settings.RepositoryName);
+            return new SvnRepository(this, settings.LogService, settings.WorkingPath, settings.TransactionPath, repositoryInfo);
         }
 
         public void InitializeRepository(string basePath, string initPath)

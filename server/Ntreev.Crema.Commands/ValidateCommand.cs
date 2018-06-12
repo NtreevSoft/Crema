@@ -55,18 +55,30 @@ namespace Ntreev.Crema.Commands
             set;
         }
 
-        [CommandProperty("repo-name")]
-        [DefaultValue("crema")]
-        public string RepositoryName
+        [CommandProperty("file-type")]
+        public string FileType
         {
             get;
             set;
         }
 
+        [CommandPropertyArray]
+        [Description("database list to migrate")]
+        public string[] DataBaseList
+        {
+            get; set;
+        }
+
         protected override void OnExecute()
         {
+            var settings = new RepositoryValidationSettings()
+            {
+                BasePath = this.Path,
+                RepositoryModule = this.RepositoryModule,
+                FileType = this.FileType,
+            };
             this.boot.RepositoryModule = this.RepositoryModule;
-            this.boot.ValidateRepository(this.Path, this.RepositoryName);
+            this.boot.ValidateRepository(settings);
         }
     }
 }

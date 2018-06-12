@@ -30,11 +30,11 @@ namespace Ntreev.Crema.Services
 {
     class RepositoryHost
     {
-        public RepositoryHost(IRepository repository, CremaDispatcher dispatcher, string repositoryPath)
+        public RepositoryHost(IRepository repository, CremaDispatcher dispatcher)
         {
             this.Repository = repository;
             this.Dispatcher = dispatcher;
-            this.RepositoryPath = repositoryPath;
+            this.RepositoryPath = repository.BasePath;
         }
 
         public void Add(string path)
