@@ -250,7 +250,6 @@ namespace Ntreev.Crema.Services.Data
             this.DataBases.InvokeDataBaseRename(authentication, this, name);
             var oldName = base.Name;
             base.Name = name;
-            //this.basePath = Path.Combine(Path.GetDirectoryName(this.basePath), name);
             this.Sign(authentication);
             this.DataBases.InvokeItemsRenamedEvent(authentication, new DataBase[] { this }, new string[] { oldName, });
         }

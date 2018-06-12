@@ -62,5 +62,14 @@ namespace Ntreev.Crema.Services
             }
             return Path.Combine(this.TempPath, repositoryName);
         }
+
+        internal string GetTempPath()
+        {
+            if (this.TempPath == null)
+            {
+                return Path.Combine(this.BasePath, "validation");
+            }
+            return this.TempPath;
+        }
     }
 }

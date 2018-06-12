@@ -109,7 +109,7 @@ namespace Ntreev.Crema.Services
             if (serializer == null)
                 throw new InvalidOperationException("no serializer");
 
-            var logService = new LogServiceHost(this.GetType().FullName, CremaHost.GetPath(settings.BasePath, CremaPath.Logs))
+            var logService = new LogServiceHost(this.GetType().FullName, CremaHost.GetPath(settings.GetTempPath(), CremaPath.Logs))
             {
                 Verbose = settings.Verbose
             };
@@ -136,6 +136,7 @@ namespace Ntreev.Crema.Services
                 }
                 DirectoryUtility.Delete(tempPath);
             }
+            logService.Info("end");
         }
 
         public void MigrateRepository(RepositoryMigrationSettings settings)

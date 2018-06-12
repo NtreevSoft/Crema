@@ -35,12 +35,9 @@ namespace Ntreev.Crema.Services.Users
     class UserContext : ItemContext<User, UserCategory, UserCollection, UserCategoryCollection, UserContext>,
         IUserContext, IServiceProvider, IDisposable
     {
-        //public const string usersFileName = "users.xml";
-
         private readonly CremaHost cremaHost;
         private readonly CremaDispatcher dispatcher;
         private readonly RepositoryHost repository;
-        //private readonly string userFilePath;
         private readonly string remotePath;
         private readonly string basePath;
         private readonly IObjectSerializer serializer;
@@ -65,15 +62,14 @@ namespace Ntreev.Crema.Services.Users
             this.basePath = cremaHost.GetPath(CremaPath.Working, "users");
             this.serializer = cremaHost.Serializer;
 
-            var settings = new RepositorySettings()
+            this.repository = new RepositoryHost(this.cremaHost.RepositoryProvider.CreateInstance(new RepositorySettings()
             {
                 BasePath = this.remotePath,
                 RepositoryName = "default",
                 WorkingPath = this.basePath,
                 LogService = this.cremaHost
-            };
+            }), cremaHost.RepositoryDispatcher);
 
-            this.repository = new RepositoryHost(this.cremaHost.RepositoryProvider.CreateInstance(settings), cremaHost.RepositoryDispatcher);
             this.dispatcher = new CremaDispatcher(this);
             this.dispatcher.Invoke(() =>
             {
