@@ -6,13 +6,11 @@ using Ntreev.Library.IO;
 using Ntreev.Library.Serialization;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Schema;
 
@@ -203,7 +201,7 @@ namespace Ntreev.Crema.Services
                 var schemaPath = itemPath + CremaSchema.SchemaExtension;
                 File.WriteAllText(schemaPath, dataTable.GetXmlSchema(), Encoding.UTF8);
                 File.WriteAllText(xmlPath, dataTable.GetXml(), Encoding.UTF8);
-                
+
                 return new string[] { xmlPath, schemaPath };
             }
         }
@@ -221,7 +219,5 @@ namespace Ntreev.Crema.Services
             DataContractSerializerUtility.Write(filename, obj, true);
             return new string[] { filename };
         }
-
-        
     }
 }

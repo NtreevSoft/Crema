@@ -18,10 +18,10 @@
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Library.ObjectModel;
 using System;
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 
 namespace Ntreev.Crema.Services.Domains
 {
@@ -211,15 +211,9 @@ namespace Ntreev.Crema.Services.Domains
             }
         }
 
-        public CremaHost CremaHost
-        {
-            get { return this.Context.CremaHost; }
-        }
+        public CremaHost CremaHost => this.Context.CremaHost;
 
-        public CremaDispatcher Dispatcher
-        {
-            get { return this.Context.Dispatcher; }
-        }
+        public CremaDispatcher Dispatcher => this.Context.Dispatcher;
 
         public new int Count
         {

@@ -15,18 +15,11 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.Services.Users;
 using Ntreev.Crema.ServiceModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Schema;
-using System.Xml.Serialization;
-using Ntreev.Library;
 using Ntreev.Crema.Services.Properties;
+using Ntreev.Crema.Services.Users;
+using Ntreev.Library;
+using System;
 
 namespace Ntreev.Crema.Services
 {
@@ -39,11 +32,8 @@ namespace Ntreev.Crema.Services
         internal static string AdminName = "Administrator";
 
         private IAuthenticationProvider provider;
-        private readonly Guid token;
-        private SignatureDate signatureDate;
         private EventHandler expired;
         private bool isExpired;
-        private Authentication parent;
         private Authentication child;
 
         private Authentication()
@@ -60,7 +50,7 @@ namespace Ntreev.Crema.Services
         internal Authentication(IAuthenticationProvider provider, Guid token)
         {
             this.provider = provider;
-            this.token = token;
+            this.Token = token;
         }
 
         public override string ToString()
@@ -70,14 +60,14 @@ namespace Ntreev.Crema.Services
 
         public Authentication BeginCommission()
         {
-            if (this.parent != null || this.isExpired == true)
+            if (this.Parent != null || this.isExpired == true)
                 throw new InvalidOperationException(Resources.Exception_Expired);
             if (this.child != null)
                 throw new InvalidOperationException(Resources.Exception_Commissioned);
-            var authentication = new Authentication(new UserAuthenticationProvider(this.provider.ID, this.provider.Name, this.provider.Authority, this.provider.AuthenticationTypes), this.token)
+            var authentication = new Authentication(new UserAuthenticationProvider(this.provider.ID, this.provider.Name, this.provider.Authority, this.provider.AuthenticationTypes), this.Token)
             {
-                signatureDate = this.signatureDate,
-                parent = this,
+                SignatureDate = this.SignatureDate,
+                Parent = this,
             };
             this.child = authentication;
             return authentication;
@@ -93,38 +83,20 @@ namespace Ntreev.Crema.Services
             this.child = null;
         }
 
-        public string ID
-        {
-            get { return this.provider.ID; }
-        }
+        public string ID => this.provider.ID;
 
-        public string Name
-        {
-            get { return this.provider.Name; }
-        }
+        public string Name => this.provider.Name;
 
-        public Authority Authority
-        {
-            get { return this.provider.Authority; }
-        }
+        public Authority Authority => this.provider.Authority;
 
-        public SignatureDate SignatureDate
-        {
-            get { return this.signatureDate; }
-        }
+        public SignatureDate SignatureDate { get; private set; }
 
-        public AuthenticationInfo AuthenticationInfo
+        public AuthenticationInfo AuthenticationInfo => new AuthenticationInfo()
         {
-            get
-            {
-                return new AuthenticationInfo()
-                {
-                    ID = this.ID,
-                    Name = this.Name,
-                    Authority = this.Authority,
-                };
-            }
-        }
+            ID = this.ID,
+            Name = this.Name,
+            Authority = this.Authority,
+        };
 
         public event EventHandler Expired
         {
@@ -132,8 +104,8 @@ namespace Ntreev.Crema.Services
             {
                 lock (lockobj)
                 {
-                    if (this.parent != null)
-                        this.parent.expired += value;
+                    if (this.Parent != null)
+                        this.Parent.expired += value;
                     else
                         this.expired += value;
                 }
@@ -143,7 +115,7 @@ namespace Ntreev.Crema.Services
             {
                 lock (lockobj)
                 {
-                    if (this.parent != null)
+                    if (this.Parent != null)
                         this.expired -= value;
                     else
                         this.expired -= value;
@@ -151,10 +123,7 @@ namespace Ntreev.Crema.Services
             }
         }
 
-        internal Guid Token
-        {
-            get { return this.token; }
-        }
+        internal Guid Token { get; }
 
         internal void InvokeExpiredEvent(string userID)
         {
@@ -177,8 +146,8 @@ namespace Ntreev.Crema.Services
 
         internal SignatureDate Sign(DateTime dateTime)
         {
-            this.signatureDate = new SignatureDate(this.ID, DateTime.UtcNow);
-            return this.signatureDate;
+            this.SignatureDate = new SignatureDate(this.ID, DateTime.UtcNow);
+            return this.SignatureDate;
         }
 
         internal SignatureDateProvider GetSignatureDateProvider()
@@ -197,10 +166,7 @@ namespace Ntreev.Crema.Services
             get { return this.provider.AuthenticationTypes; }
         }
 
-        internal Authentication Parent
-        {
-            get { return this.parent; }
-        }
+        internal Authentication Parent { get; private set; }
 
         internal bool IsAdmin
         {
@@ -261,7 +227,7 @@ namespace Ntreev.Crema.Services
         #endregion
 
         #region SignatureDateProvider
-        
+
         class InternalSignatureDateProvider : SignatureDateProvider
         {
             private readonly Authentication authentication;
@@ -274,7 +240,7 @@ namespace Ntreev.Crema.Services
 
             protected override DateTime GetTime()
             {
-                return this.authentication.signatureDate.DateTime;
+                return this.authentication.SignatureDate.DateTime;
             }
         }
 

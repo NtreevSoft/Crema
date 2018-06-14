@@ -41,10 +41,7 @@ namespace Ntreev.Crema.Services.Domains
     class DomainContext : ItemContext<Domain, DomainCategory, DomainCollection, DomainCategoryCollection, DomainContext>,
         IDomainContext, IServiceProvider, IDisposable
     {
-        private readonly CremaHost cremaHost;
         private readonly UserContext userContext;
-        private readonly string basePath;
-
         private ItemsCreatedEventHandler<IDomainItem> itemsCreated;
         private ItemsRenamedEventHandler<IDomainItem> itemsRenamed;
         private ItemsMovedEventHandler<IDomainItem> itemsMoved;
@@ -52,14 +49,14 @@ namespace Ntreev.Crema.Services.Domains
 
         public DomainContext(CremaHost cremaHost, UserContext userContext)
         {
-            this.cremaHost = cremaHost;
-            this.cremaHost.Debug(Resources.Message_DomainContextInitialize);
+            this.CremaHost = cremaHost;
+            this.CremaHost.Debug(Resources.Message_DomainContextInitialize);
             this.userContext = userContext;
-            this.basePath = cremaHost.GetPath(CremaPath.Domains);
-            this.cremaHost.Opened += CremaHost_Opened;
-            this.cremaHost.Debug(Resources.Message_DomainContextIsCreated);
+            this.BasePath = cremaHost.GetPath(CremaPath.Domains);
+            this.CremaHost.Opened += CremaHost_Opened;
+            this.CremaHost.Debug(Resources.Message_DomainContextIsCreated);
 
-            foreach (var item in this.cremaHost.DataBases)
+            foreach (var item in this.CremaHost.DataBases)
             {
                 var categoryName = CategoryName.Create(item.Name);
                 var category = this.Categories.AddNew(categoryName);
@@ -89,7 +86,7 @@ namespace Ntreev.Crema.Services.Domains
 
         public object GetService(System.Type serviceType)
         {
-            return this.cremaHost.GetService(serviceType);
+            return this.CremaHost.GetService(serviceType);
         }
 
         public DomainContextMetaData GetMetaData(Authentication authentication)
@@ -112,20 +109,11 @@ namespace Ntreev.Crema.Services.Domains
             }
         }
 
-        public CremaHost CremaHost
-        {
-            get { return this.cremaHost; }
-        }
+        public CremaHost CremaHost { get; }
 
-        public string BasePath
-        {
-            get { return this.basePath; }
-        }
+        public string BasePath { get; }
 
-        public CremaDispatcher Dispatcher
-        {
-            get { return this.cremaHost.Dispatcher; }
-        }
+        public CremaDispatcher Dispatcher => this.CremaHost.Dispatcher;
 
         public event ItemsCreatedEventHandler<IDomainItem> ItemsCreated
         {
@@ -187,7 +175,7 @@ namespace Ntreev.Crema.Services.Domains
         {
             var succeededCount = 0;
             var failedCount = 0;
-            var path = Path.Combine(this.basePath, dataBase.ID.ToString());
+            var path = Path.Combine(this.BasePath, dataBase.ID.ToString());
             if (Directory.Exists(path) == false)
                 return;
 
@@ -203,31 +191,31 @@ namespace Ntreev.Crema.Services.Domains
                 var restorer = new DomainRestorer(authentication, this, item);
 
                 if (totalCount == 0)
-                    this.cremaHost.Info(Resources.Message_DomainRestorationMessage);
+                    this.CremaHost.Info(Resources.Message_DomainRestorationMessage);
 
                 totalCount++;
 
                 try
                 {
                     restorer.Restore();
-                    this.cremaHost.Debug(Resources.Message_DomainIsRestored_Format, domainID);
+                    this.CremaHost.Debug(Resources.Message_DomainIsRestored_Format, domainID);
                     succeededCount++;
                 }
                 catch (Exception e)
                 {
-                    this.cremaHost.Error(e.Message);
-                    this.cremaHost.Error(Resources.Message_DomainRestorationIsFailed_Format, domainID);
+                    this.CremaHost.Error(e.Message);
+                    this.CremaHost.Error(Resources.Message_DomainRestorationIsFailed_Format, domainID);
                     failedCount++;
                 }
             }
 
             if (succeededCount != 0 || failedCount != 0)
-                this.cremaHost.Debug(string.Format(Resources.Message_RestoreResult_Format, succeededCount, failedCount));
+                this.CremaHost.Debug(string.Format(Resources.Message_RestoreResult_Format, succeededCount, failedCount));
             else
-                this.cremaHost.Debug(Resources.Message_NotFoundDomainsToRestore);
+                this.CremaHost.Debug(Resources.Message_NotFoundDomainsToRestore);
 
             if (totalCount != 0)
-                this.cremaHost.Info(Resources.Message_DomainState_Format, totalCount, succeededCount, failedCount);
+                this.CremaHost.Info(Resources.Message_DomainState_Format, totalCount, succeededCount, failedCount);
         }
 
         public new void Clear()
@@ -266,9 +254,9 @@ namespace Ntreev.Crema.Services.Domains
 
         private void CremaHost_Opened(object sender, EventArgs e)
         {
-            this.cremaHost.DataBases.ItemsCreated += DataBases_ItemsCreated;
-            this.cremaHost.DataBases.ItemsRenamed += DataBases_ItemsRenamed;
-            this.cremaHost.DataBases.ItemsDeleted += DataBases_ItemDeleted;
+            this.CremaHost.DataBases.ItemsCreated += DataBases_ItemsCreated;
+            this.CremaHost.DataBases.ItemsRenamed += DataBases_ItemsRenamed;
+            this.CremaHost.DataBases.ItemsDeleted += DataBases_ItemDeleted;
         }
 
         private void DataBases_ItemsCreated(object sender, ItemsCreatedEventArgs<IDataBase> e)
@@ -343,7 +331,6 @@ namespace Ntreev.Crema.Services.Domains
 
             DirectoryUtility.Delete(this.BasePath, dataBase.ID.ToString());
             Authentication.System.Sign();
-            //this.Domains.InvokeDomainsDeletedEvent(Authentication.System, domainList.ToArray(), domainPathList.ToArray());
         }
 
         #region IDomainContext
@@ -418,7 +405,7 @@ namespace Ntreev.Crema.Services.Domains
 
         object IServiceProvider.GetService(System.Type serviceType)
         {
-            return (this.cremaHost as ICremaHost).GetService(serviceType);
+            return (this.CremaHost as ICremaHost).GetService(serviceType);
         }
 
         #endregion

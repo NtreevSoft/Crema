@@ -15,32 +15,18 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.Data;
+using Ntreev.Crema.ServiceModel;
+using Ntreev.Crema.Services.Data;
+using Ntreev.Crema.Services.Properties;
+using Ntreev.Library;
+using Ntreev.Library.Serialization;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Media;
-using System.Xml;
-using Ntreev.Crema.Services.Properties;
-using Ntreev.Crema.Services;
-using Ntreev.Crema.ServiceModel;
-using Ntreev.Crema.Data;
-using Ntreev.Library.IO;
-using Ntreev.Library.ObjectModel;
-using Ntreev.Crema.Data.Xml;
-using Ntreev.Crema.Data.Xml.Schema;
-using Ntreev.Crema.Services.Users;
-using System.Windows.Threading;
-using Ntreev.Crema.Services.Data;
-using Ntreev.Library.Serialization;
 using System.Runtime.Serialization;
-using Ntreev.Library;
+using System.Text;
 
 namespace Ntreev.Crema.Services.Domains
 {
@@ -73,10 +59,7 @@ namespace Ntreev.Crema.Services.Domains
             }
         }
 
-        public override object Source
-        {
-            get { return this.dataSet; }
-        }
+        public override object Source => this.dataSet;
 
         protected override byte[] SerializeSource()
         {
@@ -114,10 +97,10 @@ namespace Ntreev.Crema.Services.Domains
 
                 return rows;
             }
-            catch (Exception e)
+            catch
             {
                 this.dataSet.RejectChanges();
-                throw e;
+                throw;
             }
         }
 
@@ -136,10 +119,10 @@ namespace Ntreev.Crema.Services.Domains
                 this.dataSet.AcceptChanges();
                 return rows;
             }
-            catch (Exception e)
+            catch
             {
                 this.dataSet.RejectChanges();
-                throw e;
+                throw;
             }
         }
 
@@ -163,10 +146,10 @@ namespace Ntreev.Crema.Services.Domains
                 }
                 this.dataSet.AcceptChanges();
             }
-            catch (Exception e)
+            catch
             {
                 this.dataSet.RejectChanges();
-                throw e;
+                throw;
             }
         }
     }

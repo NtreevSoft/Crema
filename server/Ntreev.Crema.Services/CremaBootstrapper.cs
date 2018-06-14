@@ -15,28 +15,20 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.Data;
+using Ntreev.Crema.Services.Properties;
+using Ntreev.Crema.Services.Users;
+using Ntreev.Library.IO;
+using Ntreev.Library.Linq;
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.ComponentModel.Composition.Primitives;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using Ntreev.Crema.ServiceModel;
-using Ntreev.Crema.Services;
-using Ntreev.Crema.Services.Data;
-using Ntreev.Crema.Services.Users;
-using Ntreev.Crema.Data.Xml.Schema;
-using System.Collections;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
-using Ntreev.Library.IO;
-using Ntreev.Library.Linq;
-using System.ComponentModel.Composition.Primitives;
-using Ntreev.Crema.Data;
-using Ntreev.Crema.Services.Properties;
 
 namespace Ntreev.Crema.Services
 {
@@ -52,7 +44,6 @@ namespace Ntreev.Crema.Services
         public CremaBootstrapper()
         {
             this.Initialize();
-            //this.settings.RepositoryModule = DefaultRepositoryModule;
             CremaLog.Debug("default repository module : {0}", this.settings.RepositoryModule);
         }
 
@@ -128,7 +119,7 @@ namespace Ntreev.Crema.Services
                 catch (Exception e)
                 {
                     logService.Error(e);
-                    throw e;
+                    throw;
                 }
                 repository.Dispose();
                 DirectoryUtility.Delete(tempPath);
@@ -173,8 +164,6 @@ namespace Ntreev.Crema.Services
                 }
             }
         }
-
-        
 
         public object GetService(System.Type serviceType)
         {
@@ -280,7 +269,7 @@ namespace Ntreev.Crema.Services
 
         public string BasePath
         {
-            get { return this.settings.BasePath; }
+            get => this.settings.BasePath;
             set
             {
                 var fullpath = Path.GetFullPath(value);
@@ -290,40 +279,37 @@ namespace Ntreev.Crema.Services
 
         public string FileType
         {
-            get { return this.settings.FileType; }
-            set { this.settings.FileType = value; }
+            get => this.settings.FileType;
+            set => this.settings.FileType = value;
         }
 
         public bool MultiThreading
         {
-            get { return this.settings.MultiThreading; }
-            set { this.settings.MultiThreading = value; }
+            get => this.settings.MultiThreading;
+            set => this.settings.MultiThreading = value;
         }
 
         public LogVerbose Verbose
         {
-            get { return this.settings.Verbose; }
-            set { this.settings.Verbose = value; }
+            get => this.settings.Verbose;
+            set => this.settings.Verbose = value;
         }
 
         public string RepositoryModule
         {
-            get { return this.settings.RepositoryModule; }
-            set { this.settings.RepositoryModule = value; }
+            get => this.settings.RepositoryModule;
+            set => this.settings.RepositoryModule = value;
         }
 
         public bool NoCache
         {
-            get { return this.settings.NoCache; }
-            set { this.settings.NoCache = value; }
+            get => this.settings.NoCache;
+            set => this.settings.NoCache = value;
         }
 
         public string Culture
         {
-            get
-            {
-                return $"{System.Globalization.CultureInfo.CurrentCulture}";
-            }
+            get => $"{System.Globalization.CultureInfo.CurrentCulture}";
             set
             {
                 if (value == null)
@@ -338,22 +324,19 @@ namespace Ntreev.Crema.Services
 
         public string[] DataBaseList
         {
-            get { return this.settings.DataBaseList; }
-            set { this.settings.DataBaseList = value; }
+            get => this.settings.DataBaseList;
+            set => this.settings.DataBaseList = value;
         }
 
 #if DEBUG
         public bool ValidationMode
         {
-            get { return this.settings.ValidationMode; }
-            set { this.settings.ValidationMode = value; }
+            get => this.settings.ValidationMode;
+            set => this.settings.ValidationMode = value;
         }
 #endif
 
-        public static string RepositoryModulesPath
-        {
-            get { return repoModulesString; }
-        }
+        public static string RepositoryModulesPath => repoModulesString;
 
         public event EventHandler Disposed;
 

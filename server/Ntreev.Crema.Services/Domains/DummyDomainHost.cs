@@ -15,30 +15,21 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Ntreev.Crema.ServiceModel;
+using System;
 
 namespace Ntreev.Crema.Services.Domains
 {
     class DummyDomainHost : IDomainHost
     {
-        private readonly Domain domain;
-
         public DummyDomainHost(Domain domain)
         {
-            this.domain = domain;
+            this.Domain = domain;
         }
 
         public DomainAccessType AccessType { get; internal set; }
 
-        public Domain Domain
-        {
-            get { return this.domain; }
-        }
+        public Domain Domain { get; }
 
         public void Restore(Domain domain)
         {

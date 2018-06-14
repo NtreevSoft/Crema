@@ -15,28 +15,21 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.ServiceModel;
+using Ntreev.Crema.Services.Properties;
+using Ntreev.Library;
+using Ntreev.Library.Linq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Ntreev.Library;
-using Ntreev.Crema.ServiceModel;
-using Ntreev.Library.ObjectModel;
-using Ntreev.Crema.Services.Properties;
-using Ntreev.Crema.Services;
-using System.Security;
-using System.Runtime.InteropServices;
-using Ntreev.Library.Linq;
 using System.Data;
+using System.Linq;
+using System.Security;
 
 namespace Ntreev.Crema.Services.Users
 {
     class User : UserBase<User, UserCategory, UserCollection, UserCategoryCollection, UserContext>,
         IUser, IUserItem, IInfoProvider, IStateProvider
     {
-        private Authentication authentication;
-        private SecureString password;
-
         public User()
         {
 
@@ -50,165 +43,233 @@ namespace Ntreev.Crema.Services.Users
 
         public void Move(Authentication authentication, string categoryPath)
         {
-            this.Dispatcher.VerifyAccess();
-            this.CremaHost.DebugMethod(authentication, this, nameof(Move), this, categoryPath);
-            this.ValidateMove(authentication, categoryPath);
-            this.Sign(authentication);
-            var items = EnumerableUtility.One(this).ToArray();
-            var oldPaths = items.Select(item => item.Path).ToArray();
-            var oldCategoryPaths = items.Select(item => item.Category.Path).ToArray();
-            this.Container.InvokeUserMove(authentication, this, categoryPath);
-            base.Move(authentication, categoryPath);
-            this.Container.InvokeUsersMovedEvent(authentication, items, oldPaths, oldCategoryPaths);
+            try
+            {
+                this.Dispatcher.VerifyAccess();
+                this.CremaHost.DebugMethod(authentication, this, nameof(Move), this, categoryPath);
+                this.ValidateMove(authentication, categoryPath);
+                this.Sign(authentication);
+                var items = EnumerableUtility.One(this).ToArray();
+                var oldPaths = items.Select(item => item.Path).ToArray();
+                var oldCategoryPaths = items.Select(item => item.Category.Path).ToArray();
+                this.Container.InvokeUserMove(authentication, this, categoryPath);
+                base.Move(authentication, categoryPath);
+                this.Container.InvokeUsersMovedEvent(authentication, items, oldPaths, oldCategoryPaths);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void Delete(Authentication authentication)
         {
-            this.Dispatcher.VerifyAccess();
-            this.CremaHost.DebugMethod(authentication, this, nameof(Delete), this);
-            this.ValidateDelete(authentication);
-            this.Sign(authentication);
-            var items = EnumerableUtility.One(this).ToArray();
-            var oldPaths = items.Select(item => item.Path).ToArray();
-            var container = this.Container;
-            container.InvokeUserDelete(authentication, this);
-            base.Delete(authentication);
-            container.InvokeUsersDeletedEvent(authentication, items, oldPaths);
+            try
+            {
+                this.Dispatcher.VerifyAccess();
+                this.CremaHost.DebugMethod(authentication, this, nameof(Delete), this);
+                this.ValidateDelete(authentication);
+                this.Sign(authentication);
+                var items = EnumerableUtility.One(this).ToArray();
+                var oldPaths = items.Select(item => item.Path).ToArray();
+                var container = this.Container;
+                container.InvokeUserDelete(authentication, this);
+                base.Delete(authentication);
+                container.InvokeUsersDeletedEvent(authentication, items, oldPaths);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public Authentication Login(SecureString password)
         {
-            this.Dispatcher.VerifyAccess();
-            this.CremaHost.DebugMethod(Authentication.System, this, nameof(Login), this);
-            this.ValidateLogin(password);
-
-            var users = new User[] { this };
-            var authentication = new Authentication(new UserAuthenticationProvider(this), Guid.NewGuid());
-            this.Sign(authentication);
-
-            if (this.Authentication != null)
+            try
             {
-                var message = "다른 기기에서 동일한 아이디로 접속하였습니다.";
-                var closeInfo = new CloseInfo() { Reason = CloseReason.Reconnected, Message = message };
-                this.Authentication.InvokeExpiredEvent(this.ID, message);
-                this.Container.InvokeUsersLoggedOutEvent(this.Authentication, users, closeInfo);
-            }
+                this.Dispatcher.VerifyAccess();
+                this.CremaHost.DebugMethod(Authentication.System, this, nameof(Login), this);
+                this.ValidateLogin(password);
 
-            this.Authentication = authentication;
-            this.IsOnline = true;
-            this.Container.InvokeUsersStateChangedEvent(this.Authentication, users);
-            this.Container.InvokeUsersLoggedInEvent(this.Authentication, users);
-            return this.Authentication;
+                var users = new User[] { this };
+                var authentication = new Authentication(new UserAuthenticationProvider(this), Guid.NewGuid());
+                this.Sign(authentication);
+
+                if (this.Authentication != null)
+                {
+                    var message = "다른 기기에서 동일한 아이디로 접속하였습니다.";
+                    var closeInfo = new CloseInfo() { Reason = CloseReason.Reconnected, Message = message };
+                    this.Authentication.InvokeExpiredEvent(this.ID, message);
+                    this.Container.InvokeUsersLoggedOutEvent(this.Authentication, users, closeInfo);
+                }
+
+                this.Authentication = authentication;
+                this.IsOnline = true;
+                this.Container.InvokeUsersStateChangedEvent(this.Authentication, users);
+                this.Container.InvokeUsersLoggedInEvent(this.Authentication, users);
+                return this.Authentication;
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void Logout(Authentication authentication)
         {
-            this.Dispatcher.VerifyAccess();
-            this.CremaHost.DebugMethod(authentication, this, nameof(Logout), this);
-            this.ValidateLogout(authentication);
-            this.Sign(authentication);
-            var users = new User[] { this };
-            this.Authentication.InvokeExpiredEvent(authentication.ID, string.Empty);
-            this.Authentication = null;
-            this.IsOnline = false;
-            this.Container.InvokeUsersStateChangedEvent(authentication, users);
-            this.Container.InvokeUsersLoggedOutEvent(authentication, users, CloseInfo.Empty);
+            try
+            {
+                this.Dispatcher.VerifyAccess();
+                this.CremaHost.DebugMethod(authentication, this, nameof(Logout), this);
+                this.ValidateLogout(authentication);
+                this.Sign(authentication);
+                var users = new User[] { this };
+                this.Authentication.InvokeExpiredEvent(authentication.ID, string.Empty);
+                this.Authentication = null;
+                this.IsOnline = false;
+                this.Container.InvokeUsersStateChangedEvent(authentication, users);
+                this.Container.InvokeUsersLoggedOutEvent(authentication, users, CloseInfo.Empty);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void Ban(Authentication authentication, string comment)
         {
-            this.Dispatcher.VerifyAccess();
-            this.CremaHost.DebugMethod(authentication, this, nameof(Ban), this, comment);
-            this.ValidateBan(authentication, comment);
-            this.Sign(authentication);
-            var users = new User[] { this };
-            var comments = Enumerable.Repeat(comment, users.Length).ToArray();
-            var banInfo = new BanInfo() { Path = this.Path, Comment = comment, SignatureDate = authentication.SignatureDate };
-            var isOnline = this.IsOnline;
-            this.Container.InvokeUserBan(authentication, this, banInfo);
-            base.Ban(authentication, banInfo);
-            this.IsOnline = false;
-            this.Container.InvokeUsersBannedEvent(authentication, users, comments);
-            if (isOnline == true)
+            try
             {
-                this.Authentication.InvokeExpiredEvent(authentication.ID, comment);
-                this.Authentication = null;
-                this.Container.InvokeUsersStateChangedEvent(authentication, users);
-                this.Container.InvokeUsersLoggedOutEvent(authentication, users, new CloseInfo(CloseReason.Banned, comment));
+                this.Dispatcher.VerifyAccess();
+                this.CremaHost.DebugMethod(authentication, this, nameof(Ban), this, comment);
+                this.ValidateBan(authentication, comment);
+                this.Sign(authentication);
+                var users = new User[] { this };
+                var comments = Enumerable.Repeat(comment, users.Length).ToArray();
+                var banInfo = new BanInfo() { Path = this.Path, Comment = comment, SignatureDate = authentication.SignatureDate };
+                var isOnline = this.IsOnline;
+                this.Container.InvokeUserBan(authentication, this, banInfo);
+                base.Ban(authentication, banInfo);
+                this.IsOnline = false;
+                this.Container.InvokeUsersBannedEvent(authentication, users, comments);
+                if (isOnline == true)
+                {
+                    this.Authentication.InvokeExpiredEvent(authentication.ID, comment);
+                    this.Authentication = null;
+                    this.Container.InvokeUsersStateChangedEvent(authentication, users);
+                    this.Container.InvokeUsersLoggedOutEvent(authentication, users, new CloseInfo(CloseReason.Banned, comment));
+                }
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
             }
         }
 
         public void Unban(Authentication authentication)
         {
-            this.Dispatcher.VerifyAccess();
-            this.CremaHost.DebugMethod(authentication, this, nameof(Unban), this);
-            this.ValidateUnban(authentication);
-            this.Sign(authentication);
-            var banInfo = BanInfo.Empty;
-            this.Container.InvokeUserUnban(authentication, this);
-            base.Unban(authentication);
-            this.Container.InvokeUsersUnbannedEvent(authentication, new User[] { this });
+            try
+            {
+                this.Dispatcher.VerifyAccess();
+                this.CremaHost.DebugMethod(authentication, this, nameof(Unban), this);
+                this.ValidateUnban(authentication);
+                this.Sign(authentication);
+                var banInfo = BanInfo.Empty;
+                this.Container.InvokeUserUnban(authentication, this);
+                base.Unban(authentication);
+                this.Container.InvokeUsersUnbannedEvent(authentication, new User[] { this });
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void Kick(Authentication authentication, string comment)
         {
-            this.Dispatcher.VerifyAccess();
-            this.CremaHost.DebugMethod(authentication, this, nameof(Kick), this, comment);
-            this.ValidateKick(authentication, comment);
-            this.Sign(authentication);
-            var users = new User[] { this };
-            var comments = Enumerable.Repeat(comment, users.Length).ToArray();
-            this.Container.InvokeUserKick(authentication, this, comment);
-            this.IsOnline = false;
-            this.Authentication.InvokeExpiredEvent(authentication.ID, comment);
-            this.Authentication = null;
-            this.Container.InvokeUsersKickedEvent(authentication, users, comments);
-            this.Container.InvokeUsersStateChangedEvent(authentication, users);
-            this.Container.InvokeUsersLoggedOutEvent(authentication, users, new CloseInfo(CloseReason.Kicked, comment));
+            try
+            {
+                this.Dispatcher.VerifyAccess();
+                this.CremaHost.DebugMethod(authentication, this, nameof(Kick), this, comment);
+                this.ValidateKick(authentication, comment);
+                this.Sign(authentication);
+                var users = new User[] { this };
+                var comments = Enumerable.Repeat(comment, users.Length).ToArray();
+                this.Container.InvokeUserKick(authentication, this, comment);
+                this.IsOnline = false;
+                this.Authentication.InvokeExpiredEvent(authentication.ID, comment);
+                this.Authentication = null;
+                this.Container.InvokeUsersKickedEvent(authentication, users, comments);
+                this.Container.InvokeUsersStateChangedEvent(authentication, users);
+                this.Container.InvokeUsersLoggedOutEvent(authentication, users, new CloseInfo(CloseReason.Kicked, comment));
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void ChangeUserInfo(Authentication authentication, SecureString password, SecureString newPassword, string userName, Authority? authority)
         {
-            this.Dispatcher.VerifyAccess();
-            this.CremaHost.DebugMethod(authentication, this, nameof(Delete), this, password, newPassword, userName, authority);
-            this.ValidateUserInfoChange(authentication, password, newPassword, userName, authority);
-            this.Sign(authentication);
-            var serializationInfo = this.SerializationInfo;
-            if (newPassword != null)
-                serializationInfo.Password = UserContext.SecureStringToString(newPassword).Encrypt();
-            if (userName != null)
-                serializationInfo.Name = userName;
-            if (authority.HasValue)
-                serializationInfo.Authority = authority.Value;
-            if (object.Equals(serializationInfo, this.SerializationInfo) == true)
-                return;
-            var items = EnumerableUtility.One(this).ToArray();
-            serializationInfo.ModificationInfo = new SignatureDate(authentication.ID);
-            this.Container.InvokeUserChange(authentication, this, serializationInfo);
-            if (newPassword != null)
-                this.password = UserContext.StringToSecureString(serializationInfo.Password);
-            base.UpdateUserInfo((UserInfo)serializationInfo);
-            this.Container.InvokeUsersChangedEvent(authentication, items);
+            try
+            {
+                this.Dispatcher.VerifyAccess();
+                this.CremaHost.DebugMethod(authentication, this, nameof(Delete), this, password, newPassword, userName, authority);
+                this.ValidateUserInfoChange(authentication, password, newPassword, userName, authority);
+                this.Sign(authentication);
+                var serializationInfo = this.SerializationInfo;
+                if (newPassword != null)
+                    serializationInfo.Password = UserContext.SecureStringToString(newPassword).Encrypt();
+                if (userName != null)
+                    serializationInfo.Name = userName;
+                if (authority.HasValue)
+                    serializationInfo.Authority = authority.Value;
+                if (object.Equals(serializationInfo, this.SerializationInfo) == true)
+                    return;
+                var items = EnumerableUtility.One(this).ToArray();
+                serializationInfo.ModificationInfo = new SignatureDate(authentication.ID);
+                this.Container.InvokeUserChange(authentication, this, serializationInfo);
+                if (newPassword != null)
+                    this.Password = UserContext.StringToSecureString(serializationInfo.Password);
+                base.UpdateUserInfo((UserInfo)serializationInfo);
+                this.Container.InvokeUsersChangedEvent(authentication, items);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void SendMessage(Authentication authentication, string message)
         {
-            this.Dispatcher.VerifyAccess();
-            this.ValidateSendMessage(authentication, message);
-            this.Sign(authentication);
-            this.Container.InvokeSendMessageEvent(authentication, this, message);
+            try
+            {
+                this.Dispatcher.VerifyAccess();
+                this.ValidateSendMessage(authentication, message);
+                this.Sign(authentication);
+                this.Container.InvokeSendMessageEvent(authentication, this, message);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public bool VerifyPassword(SecureString password)
         {
-            return UserContext.SecureStringToString(this.password) == UserContext.SecureStringToString(password).Encrypt();
+            return UserContext.SecureStringToString(this.Password) == UserContext.SecureStringToString(password).Encrypt();
         }
 
-        public Authentication Authentication
-        {
-            get { return authentication; }
-            set { this.authentication = value; }
-        }
+        public Authentication Authentication { get; set; }
 
         public string ID
         {
@@ -273,37 +334,24 @@ namespace Ntreev.Crema.Services.Users
             }
         }
 
-        public bool IsBanned
-        {
-            get { return this.BanInfo.Path != string.Empty; }
-        }
+        public bool IsBanned => this.BanInfo.Path != string.Empty;
 
-        public SecureString Password
-        {
-            get { return this.password; }
-            set { this.password = value; }
-        }
+        public SecureString Password { get; set; }
 
         public UserSerializationInfo SerializationInfo
         {
             get
             {
                 var userInfo = (UserSerializationInfo)base.UserInfo;
-                userInfo.Password = UserContext.SecureStringToString(this.password);
+                userInfo.Password = UserContext.SecureStringToString(this.Password);
                 userInfo.BanInfo = (BanSerializationInfo)base.BanInfo;
                 return userInfo;
             }
         }
 
-        public CremaDispatcher Dispatcher
-        {
-            get { return this.Context?.Dispatcher; }
-        }
+        public CremaDispatcher Dispatcher => this.Context?.Dispatcher;
 
-        public CremaHost CremaHost
-        {
-            get { return this.Context.CremaHost; }
-        }
+        public CremaHost CremaHost => this.Context.CremaHost;
 
         public new event EventHandler Renamed
         {
@@ -551,10 +599,7 @@ namespace Ntreev.Crema.Services.Users
 
         #region IUser
 
-        string IUser.ID
-        {
-            get { return this.ID; }
-        }
+        string IUser.ID => this.ID;
 
         IUserCategory IUser.Category
         {
@@ -569,10 +614,7 @@ namespace Ntreev.Crema.Services.Users
 
         #region IUserItem
 
-        string IUserItem.Name
-        {
-            get { return this.ID; }
-        }
+        string IUserItem.Name => this.ID;
 
         IUserItem IUserItem.Parent
         {

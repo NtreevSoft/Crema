@@ -28,7 +28,6 @@ namespace Ntreev.Crema.Services.Domains
     {
         private readonly Domain domain;
         private DomainUser owner;
-        private string ownerUserID;
 
         public DomainUserCollection(Domain domain)
         {
@@ -53,7 +52,7 @@ namespace Ntreev.Crema.Services.Domains
 
         public DomainUser Owner
         {
-            get { return this.owner; }
+            get => this.owner;
             set
             {
                 if (this.owner != null)
@@ -63,21 +62,15 @@ namespace Ntreev.Crema.Services.Domains
                 this.owner = value;
                 if (this.owner != null)
                 {
-                    this.ownerUserID = this.owner.ID;
+                    this.OwnerUserID = this.owner.ID;
                     this.owner.IsOwner = true;
                 }
             }
         }
 
-        public string OwnerUserID
-        {
-            get { return this.ownerUserID; }
-        }
+        public string OwnerUserID { get; private set; }
 
-        public CremaDispatcher Dispatcher
-        {
-            get { return this.domain.Dispatcher; }
-        }
+        public CremaDispatcher Dispatcher => this.domain.Dispatcher;
 
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {

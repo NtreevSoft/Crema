@@ -89,7 +89,7 @@ namespace Ntreev.Crema.Services.Domains
 
             try
             {
-                for (int i = 0; i < rows.Length; i++)
+                for (var i = 0; i < rows.Length; i++)
                 {
                     var rowView = CremaDomainUtility.AddNew(this.view, rows[i].Fields);
                     rows[i].Keys = CremaDomainUtility.GetKeys(rowView);
@@ -99,10 +99,10 @@ namespace Ntreev.Crema.Services.Domains
 
                 return rows;
             }
-            catch (Exception e)
+            catch
             {
                 this.dataType.RejectChanges();
-                throw e;
+                throw;
             }
         }
 
@@ -112,7 +112,7 @@ namespace Ntreev.Crema.Services.Domains
 
             try
             {
-                for (int i = 0; i < rows.Length; i++)
+                for (var i = 0; i < rows.Length; i++)
                 {
                     rows[i].Fields = CremaDomainUtility.SetFields(this.view, rows[i].Keys, rows[i].Fields);
                 }
@@ -121,10 +121,10 @@ namespace Ntreev.Crema.Services.Domains
 
                 return rows;
             }
-            catch (Exception e)
+            catch
             {
                 this.dataType.RejectChanges();
-                throw e;
+                throw;
             }
         }
 
@@ -141,10 +141,10 @@ namespace Ntreev.Crema.Services.Domains
 
                 this.dataType.AcceptChanges();
             }
-            catch (Exception e)
+            catch
             {
                 this.dataType.RejectChanges();
-                throw e;
+                throw;
             }
         }
 
@@ -152,13 +152,13 @@ namespace Ntreev.Crema.Services.Domains
         {
             base.OnSetProperty(domainUser, propertyName, value, signatureProvider);
 
-            if (propertyName == "TypeName")
+            if (propertyName == CremaSchema.TypeName)
             {
                 if (this.IsNew == false)
                     throw new InvalidOperationException(Resources.Exception_CannotRename);
                 this.dataType.TypeName = (string)value;
             }
-            else if (propertyName == "IsFlag")
+            else if (propertyName == CremaSchema.IsFlag)
             {
                 this.dataType.IsFlag = (bool)value;
             }

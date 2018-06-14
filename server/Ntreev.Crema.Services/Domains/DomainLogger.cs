@@ -15,23 +15,16 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-using System.Xml.Serialization;
-using System.Xml;
-using Ntreev.Crema.Services;
-using Ntreev.Crema.Data.Xml;
 using Ntreev.Crema.ServiceModel;
+using Ntreev.Crema.Services.Domains.Actions;
 using Ntreev.Library.IO;
 using Ntreev.Library.Serialization;
+using System;
+using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Runtime.Serialization;
-using System.Collections.Specialized;
-using Ntreev.Crema.Services.Domains.Actions;
-using Ntreev.Library;
+using System.Text;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace Ntreev.Crema.Services.Domains
 {
@@ -48,9 +41,7 @@ namespace Ntreev.Crema.Services.Domains
 
         private StreamWriter postedWriter;
         private StreamWriter completedWriter;
-        private long id;
         private DomainActionBase current;
-        private bool isEnabled = true;
 
         public DomainLogger(Domain domain)
         {
@@ -105,73 +96,107 @@ namespace Ntreev.Crema.Services.Domains
 
         public void NewRow(Authentication authentication, DomainRowInfo[] rows)
         {
-            if (this.isEnabled == false)
+            if (this.IsEnabled == false)
                 return;
 
-            var action = new NewRowAction() { UserID = authentication.ID, Rows = rows, AcceptTime = authentication.SignatureDate.DateTime };
-            this.Post(action);
+            this.Post(new NewRowAction()
+            {
+                UserID = authentication.ID,
+                Rows = rows,
+                AcceptTime = authentication.SignatureDate.DateTime
+            });
         }
 
         public void SetRow(Authentication authentication, DomainRowInfo[] rows)
         {
-            if (this.isEnabled == false)
+            if (this.IsEnabled == false)
                 return;
 
-            var action = new SetRowAction() { UserID = authentication.ID, Rows = rows, AcceptTime = authentication.SignatureDate.DateTime };
-            this.Post(action);
+            this.Post(new SetRowAction()
+            {
+                UserID = authentication.ID,
+                Rows = rows,
+                AcceptTime = authentication.SignatureDate.DateTime
+            });
         }
 
         public void RemoveRow(Authentication authentication, DomainRowInfo[] rows)
         {
-            if (this.isEnabled == false)
+            if (this.IsEnabled == false)
                 return;
 
-            var action = new RemoveRowAction() { UserID = authentication.ID, Rows = rows, AcceptTime = authentication.SignatureDate.DateTime };
-            this.Post(action);
+            this.Post(new RemoveRowAction()
+            {
+                UserID = authentication.ID,
+                Rows = rows,
+                AcceptTime = authentication.SignatureDate.DateTime
+            });
         }
 
         public void SetProperty(Authentication authentication, string propertyName, object value)
         {
-            if (this.isEnabled == false)
+            if (this.IsEnabled == false)
                 return;
 
-            var action = new SetPropertyAction() { UserID = authentication.ID, PropertyName = propertyName, Value = value, AcceptTime = authentication.SignatureDate.DateTime };
-            this.Post(action);
+            this.Post(new SetPropertyAction()
+            {
+                UserID = authentication.ID,
+                PropertyName = propertyName,
+                Value = value,
+                AcceptTime = authentication.SignatureDate.DateTime
+            });
         }
 
         public void Join(Authentication authentication, DomainAccessType accessType)
         {
-            var action = new JoinAction() { UserID = authentication.ID, AccessType = accessType, AcceptTime = authentication.SignatureDate.DateTime};
-            this.Post(action);
+            this.Post(new JoinAction()
+            {
+                UserID = authentication.ID,
+                AccessType = accessType,
+                AcceptTime = authentication.SignatureDate.DateTime
+            });
         }
 
         public void Disjoin(Authentication authentication, RemoveInfo removeInfo)
         {
-            var action = new DisjoinAction() { UserID = authentication.ID, RemoveInfo = removeInfo, AcceptTime = authentication.SignatureDate.DateTime };
-            this.Post(action);
+            this.Post(new DisjoinAction()
+            {
+                UserID = authentication.ID,
+                RemoveInfo = removeInfo,
+                AcceptTime = authentication.SignatureDate.DateTime
+            });
         }
 
         public void Kick(Authentication authentication, string userID, string comment)
         {
-            var action = new KickAction() { UserID = authentication.ID, TargetID = userID, Comment = comment, AcceptTime = authentication.SignatureDate.DateTime };
-            this.Post(action);
+            this.Post(new KickAction()
+            {
+                UserID = authentication.ID,
+                TargetID = userID,
+                Comment = comment,
+                AcceptTime = authentication.SignatureDate.DateTime
+            });
         }
 
         public void SetOwner(Authentication authentication, string userID)
         {
-            var action = new SetOwnerAction() { UserID = authentication.ID, TargetID = userID, AcceptTime = authentication.SignatureDate.DateTime };
-            this.Post(action);
+            this.Post(new SetOwnerAction()
+            {
+                UserID = authentication.ID,
+                TargetID = userID,
+                AcceptTime = authentication.SignatureDate.DateTime
+            });
         }
 
         public void Post(DomainActionBase action)
         {
-            if (this.isEnabled == false)
+            if (this.IsEnabled == false)
                 return;
 
             var message = string.Empty;
 
             this.current = action;
-            action.ID = this.id++;
+            action.ID = this.ID++;
 
             var s = XmlSerializerUtility.GetSerializer(action.GetType());
 
@@ -192,7 +217,7 @@ namespace Ntreev.Crema.Services.Domains
 
         public void Complete()
         {
-            if (this.isEnabled == false)
+            if (this.IsEnabled == false)
                 return;
 
             var message = string.Empty;
@@ -213,17 +238,9 @@ namespace Ntreev.Crema.Services.Domains
             this.current = null;
         }
 
-        public long ID
-        {
-            get { return this.id; }
-            set { this.id = value; }
-        }
+        public long ID { get; set; }
 
-        public bool IsEnabled
-        {
-            get { return this.isEnabled; }
-            set { this.isEnabled = value; }
-        }
+        public bool IsEnabled { get; set; } = true;
 
         private void SerializeDomain(Domain domain)
         {

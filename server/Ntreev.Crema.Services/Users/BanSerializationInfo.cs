@@ -17,19 +17,12 @@
 
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Library;
-using Ntreev.Library.IO;
-using Ntreev.Library.ObjectModel;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
 
 namespace Ntreev.Crema.Services.Users
 {
-    [DataContract(Name = "BanInfo", Namespace = SchemaUtility.Namespace)]
+    [DataContract(Name = nameof(BanInfo), Namespace = SchemaUtility.Namespace)]
     public struct BanSerializationInfo
     {
         [DataMember(EmitDefaultValue = false)]

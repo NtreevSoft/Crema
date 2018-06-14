@@ -165,10 +165,10 @@ namespace Ntreev.Crema.Services.Data
 
         private void FindType(string itemPath, string text, FindOptions options, FindTableCacheInfo cacheInfo, List<FindResultInfo> results)
         {
-            int index = 0;
+            var index = 0;
             foreach (var row in cacheInfo.Rows)
             {
-                int c = 0;
+                var c = 0;
                 foreach (var value in row.Values)
                 {
                     if (value != null && value.IndexOf(text) >= 0)

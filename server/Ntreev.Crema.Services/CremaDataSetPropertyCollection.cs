@@ -1,12 +1,4 @@
-﻿using Ntreev.Crema.Data;
-using Ntreev.Library;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Ntreev.Library;
 
 namespace Ntreev.Crema.Services
 {
@@ -40,10 +32,7 @@ namespace Ntreev.Crema.Services
                     return value;
                 return false;
             }
-            set
-            {
-                this[nameof(SchemaOnly)] = value;
-            }
+            set => this[nameof(SchemaOnly)] = value;
         }
     }
 }

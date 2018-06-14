@@ -15,27 +15,24 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.Services.Data;
-using Ntreev.Crema.Services.Domains;
-using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Data;
+using Ntreev.Crema.Data.Xml.Schema;
+using Ntreev.Crema.ServiceModel;
+using Ntreev.Crema.Services.Data;
+using Ntreev.Crema.Services.Properties;
+using Ntreev.Library;
 using Ntreev.Library.Serialization;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
-using System.Threading.Tasks;
-using Ntreev.Library;
-using Ntreev.Crema.Services.Properties;
 
 namespace Ntreev.Crema.Services.Domains
 {
     [Serializable]
     class TableTemplateDomain : Domain
     {
-        public const string TypeName = "TableTemplate";
+        public const string TypeName = nameof(TableTemplate);
 
         private CremaTemplate template;
         private DataView view;
@@ -43,7 +40,7 @@ namespace Ntreev.Crema.Services.Domains
         public TableTemplateDomain(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            this.IsNew = info.GetBoolean("IsNew");
+            this.IsNew = info.GetBoolean(nameof(IsNew));
             this.view = this.template.View;
         }
 
@@ -54,10 +51,7 @@ namespace Ntreev.Crema.Services.Domains
             this.view = this.template.View;
         }
 
-        public override object Source
-        {
-            get { return this.template; }
-        }
+        public override object Source => this.template;
 
         public bool IsNew { get; set; }
 
@@ -76,14 +70,14 @@ namespace Ntreev.Crema.Services.Domains
         protected override void OnSerializaing(SerializationInfo info, StreamingContext context)
         {
             base.OnSerializaing(info, context);
-            info.AddValue("IsNew", this.IsNew);
+            info.AddValue(nameof(IsNew), this.IsNew);
         }
 
         protected override DomainRowInfo[] OnNewRow(DomainUser domainUser, DomainRowInfo[] rows, SignatureDateProvider signatureProvider)
         {
             this.template.SignatureDateProvider = signatureProvider;
 
-            for (int i = 0; i < rows.Length; i++)
+            for (var i = 0; i < rows.Length; i++)
             {
                 var rowView = CremaDomainUtility.AddNew(this.view, rows[i].Fields);
                 rows[i].Keys = CremaDomainUtility.GetKeys(rowView);
@@ -97,7 +91,7 @@ namespace Ntreev.Crema.Services.Domains
         {
             this.template.SignatureDateProvider = signatureProvider;
 
-            for (int i = 0; i < rows.Length; i++)
+            for (var i = 0; i < rows.Length; i++)
             {
                 rows[i].Fields = CremaDomainUtility.SetFields(this.view, rows[i].Keys, rows[i].Fields);
             }
@@ -117,17 +111,17 @@ namespace Ntreev.Crema.Services.Domains
 
         protected override void OnSetProperty(DomainUser domainUser, string propertyName, object value, SignatureDateProvider signatureProvider)
         {
-            if (propertyName == "TableName")
+            if (propertyName == CremaSchema.TableName)
             {
                 if (this.IsNew == false)
                     throw new InvalidOperationException(Resources.Exception_CannotRename);
                 this.template.TableName = (string)value;
             }
-            else if (propertyName == "Comment")
+            else if (propertyName == CremaSchema.Comment)
             {
                 this.template.Comment = (string)value;
             }
-            else if (propertyName == "Tags")
+            else if (propertyName == CremaSchema.Tags)
             {
                 this.template.Tags = (TagInfo)((string)value);
             }

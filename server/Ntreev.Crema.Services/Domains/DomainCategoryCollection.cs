@@ -18,10 +18,10 @@
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Library.ObjectModel;
 using System;
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 
 namespace Ntreev.Crema.Services.Domains
 {
@@ -162,10 +162,7 @@ namespace Ntreev.Crema.Services.Domains
             }
         }
 
-        public CremaDispatcher Dispatcher
-        {
-            get { return this.Context.Dispatcher; }
-        }
+        public CremaDispatcher Dispatcher => this.Context.Dispatcher;
 
         protected virtual void OnCategoriesCreated(ItemsCreatedEventArgs<IDomainCategory> e)
         {

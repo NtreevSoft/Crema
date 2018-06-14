@@ -31,7 +31,7 @@ using System.Xml.Serialization;
 
 namespace Ntreev.Crema.Services
 {
-    [DataContract(Name = "RepositoryInfo", Namespace = SchemaUtility.Namespace)]
+    [DataContract(Name = nameof(RepositoryInfo), Namespace = SchemaUtility.Namespace)]
     public struct RepositoryInfo
     {
         [XmlElement]
