@@ -42,34 +42,66 @@ namespace Ntreev.Crema.Services.Data
         {
             this.template = template;
             var query = from DataRow item in table.Rows
-                        select item.Field<string>("Name");
+                        select item.Field<string>(CremaSchema.Name);
 
             var newName = NameUtility.GenerateNewName("Type", query);
-            this.SetField(null, "Name", newName);
+            this.SetField(null, CremaSchema.Name, newName);
         }
 
         public void SetIndex(Authentication authentication, int value)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.SetField(authentication, CremaSchema.Index, value);
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.SetField(authentication, CremaSchema.Index, value);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void SetName(Authentication authentication, string value)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.SetField(authentication, CremaSchema.Name, value);
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.SetField(authentication, CremaSchema.Name, value);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void SetValue(Authentication authentication, long value)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.SetField(authentication, CremaSchema.Value, value);
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.SetField(authentication, CremaSchema.Value, value);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void SetComment(Authentication authentication, string value)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.SetField(authentication, CremaSchema.Comment, value);
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.SetField(authentication, CremaSchema.Comment, value);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public int Index
@@ -108,15 +140,11 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public override DataBase DataBase
-        {
-            get { return this.template.DataBase; }
-        }
+        public override DataBase DataBase => this.template.DataBase;
 
-        public override CremaDispatcher Dispatcher
-        {
-            get { return this.template.Dispatcher; }
-        }
+        public override CremaDispatcher Dispatcher => this.template.Dispatcher;
+
+        public override CremaHost CremaHost => this.template.CremaHost;
 
         #region ITypeTemplate
 

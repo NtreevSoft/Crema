@@ -73,11 +73,10 @@ namespace Ntreev.Crema.Services.Data
                 this.Repository.Delete(accessInfoPath);
                 this.Repository.Commit(authentication, message);
             }
-            catch (Exception e)
+            catch
             {
-                this.CremaHost.Error(e);
                 this.Repository.Revert();
-                throw e;
+                throw;
             }
         }
 
@@ -93,11 +92,10 @@ namespace Ntreev.Crema.Services.Data
                 this.Repository.Add(accessInfoPath);
                 this.Repository.Commit(authentication, message);
             }
-            catch (Exception e)
+            catch
             {
-                this.CremaHost.Error(e);
                 this.Repository.Revert();
-                throw e;
+                throw;
             }
         }
 
@@ -112,11 +110,10 @@ namespace Ntreev.Crema.Services.Data
                 typeItem.WriteAccessInfo(accessInfoPath, accessInfo);
                 this.Repository.Commit(authentication, message);
             }
-            catch (Exception e)
+            catch
             {
-                this.CremaHost.Error(e);
                 this.Repository.Revert();
-                throw e;
+                throw;
             }
         }
 
@@ -131,11 +128,10 @@ namespace Ntreev.Crema.Services.Data
                 typeItem.WriteAccessInfo(accessInfoPath, accessInfo);
                 this.Repository.Commit(authentication, message);
             }
-            catch (Exception e)
+            catch
             {
-                this.CremaHost.Error(e);
                 this.Repository.Revert();
-                throw e;
+                throw;
             }
         }
 
@@ -150,11 +146,10 @@ namespace Ntreev.Crema.Services.Data
                 typeItem.WriteAccessInfo(accessInfoPath, accessInfo);
                 this.Repository.Commit(authentication, message);
             }
-            catch (Exception e)
+            catch
             {
-                this.CremaHost.Error(e);
                 this.Repository.Revert();
-                throw e;
+                throw;
             }
         }
 
@@ -385,10 +380,7 @@ namespace Ntreev.Crema.Services.Data
             return this.DataBase.GetService(serviceType);
         }
 
-        public TypeCollection Types
-        {
-            get { return this.Items; }
-        }
+        public TypeCollection Types => this.Items;
 
         public DataBase DataBase
         {
@@ -400,15 +392,9 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public CremaHost CremaHost
-        {
-            get { return this.DataBase.CremaHost; }
-        }
+        public CremaHost CremaHost => this.DataBase.CremaHost;
 
-        public CremaDispatcher Dispatcher
-        {
-            get { return this.dataBase?.Dispatcher; }
-        }
+        public CremaDispatcher Dispatcher => this.dataBase?.Dispatcher;
 
         public string BasePath { get; }
 

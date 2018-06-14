@@ -16,19 +16,12 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma warning disable 0612
-using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Data;
-using Ntreev.Crema.Data.Xml.Schema;
+using Ntreev.Crema.ServiceModel;
+using Ntreev.Library;
 using Ntreev.Library.IO;
-using Ntreev.Library.Linq;
-using Ntreev.Library.Serialization;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Ntreev.Library;
-using Ntreev.Crema.Data.Xml;
 using System.IO;
 
 namespace Ntreev.Crema.Services.Data

@@ -30,194 +30,193 @@ namespace Ntreev.Crema.Services
     {
         public static string LockDataBase(Authentication authentication, IDataBase[] items, string[] comments)
         {
-            var sb = new StringBuilder();
+            var messageList = new List<string>(items.Length);
             for (var i = 0; i < items.Length; i++)
             {
-                if (i > 0)
-                    sb.AppendLine();
-                sb.AppendFormat(EventResources.LockDataBase, authentication.ID, authentication.Name, items[i].Name, comments[i]);
+                var message = string.Format(EventResources.LockDataBase, authentication.ID, authentication.Name, items[i].Name, comments[i]);
+                messageList.Add(message);
             }
-            return sb.ToString();
+            return string.Join(Environment.NewLine, messageList);
         }
 
         public static string UnlockDataBase(Authentication authentication, IDataBase[] items)
         {
-            var sb = new StringBuilder();
+            var messageList = new List<string>(items.Length);
             for (var i = 0; i < items.Length; i++)
             {
-                if (i > 0)
-                    sb.AppendLine();
-                sb.AppendFormat(EventResources.UnlockDataBase, authentication.ID, authentication.Name, items[i].Name);
+                var message = string.Format(EventResources.UnlockDataBase, authentication.ID, authentication.Name, items[i].Name);
+                messageList.Add(message);
             }
-            return sb.ToString();
+            return string.Join(Environment.NewLine, messageList);
         }
 
         public static string SetPrivateDataBase(Authentication authentication, IDataBase[] items)
         {
-            var sb = new StringBuilder();
+            var messageList = new List<string>(items.Length);
             for (var i = 0; i < items.Length; i++)
             {
-                if (i > 0)
-                    sb.AppendLine();
-                sb.AppendFormat(EventResources.SetPrivateDataBase, authentication.ID, authentication.Name, items[i].Name);
+                var message = string.Format(EventResources.SetPrivateDataBase, authentication.ID, authentication.Name, items[i].Name);
+                messageList.Add(message);
             }
-            return sb.ToString();
+            return string.Join(Environment.NewLine, messageList);
         }
 
         public static string SetPublicDataBase(Authentication authentication, IDataBase[] items)
         {
-            var sb = new StringBuilder();
+            var messageList = new List<string>(items.Length);
             for (var i = 0; i < items.Length; i++)
             {
-                if (i > 0)
-                    sb.AppendLine();
-                sb.AppendFormat(EventResources.SetPublicDataBase, authentication.ID, authentication.Name, items[i].Name);
+                var message = string.Format(EventResources.SetPublicDataBase, authentication.ID, authentication.Name, items[i].Name);
+                messageList.Add(message);
             }
-            return sb.ToString();
+            return string.Join(Environment.NewLine, messageList);
         }
 
         public static string AddAccessMemberToDataBase(Authentication authentication, IDataBase[] items, string[] memberIDs, AccessType[] accessTypes)
         {
-            var sb = new StringBuilder();
+            var messageList = new List<string>(items.Length);
             for (var i = 0; i < items.Length; i++)
             {
-                if (i > 0)
-                    sb.AppendLine();
-                sb.AppendFormat(EventResources.AddAccessMemberToDataBase, authentication.ID, authentication.Name, items[i].Name, memberIDs[i], accessTypes[i]);
+                var message = string.Format(EventResources.AddAccessMemberToDataBase, authentication.ID, authentication.Name, items[i].Name, memberIDs[i], accessTypes[i]);
+                messageList.Add(message);
             }
-            return sb.ToString();
+            return string.Join(Environment.NewLine, messageList);
         }
 
         public static string SetAccessMemberOfDataBase(Authentication authentication, IDataBase[] items, string[] memberIDs, AccessType[] accessTypes)
         {
-            var sb = new StringBuilder();
+            var messageList = new List<string>(items.Length);
             for (var i = 0; i < items.Length; i++)
             {
-                if (i > 0)
-                    sb.AppendLine();
-                sb.AppendFormat(EventResources.SetAccessMemberOfDataBase, authentication.ID, authentication.Name, items[i].Name, memberIDs[i], accessTypes[i]);
+                var message = string.Format(EventResources.SetAccessMemberOfDataBase, authentication.ID, authentication.Name, items[i].Name, memberIDs[i], accessTypes[i]);
+                messageList.Add(message);
             }
-            return sb.ToString();
+            return string.Join(Environment.NewLine, messageList);
         }
 
         public static string RemoveAccessMemberFromDataBase(Authentication authentication, IDataBase[] items, string[] memberIDs)
         {
-            var sb = new StringBuilder();
+            var messageList = new List<string>(items.Length);
             for (var i = 0; i < items.Length; i++)
             {
-                if (i > 0)
-                    sb.AppendLine();
-                sb.AppendFormat(EventResources.RemoveAccessMemberFromDataBase, authentication.ID, authentication.Name, items[i].Name, memberIDs[i]);
+                var message = string.Format(EventResources.RemoveAccessMemberFromDataBase, authentication.ID, authentication.Name, items[i].Name, memberIDs[i]);
+                messageList.Add(message);
             }
-            return sb.ToString();
+            return string.Join(Environment.NewLine, messageList);
         }
 
-        public static string CreateDataBase(Authentication authentication, string[] dataBases)
+        public static string CreateDataBase(Authentication authentication, string dataBase)
         {
-            var sb = new StringBuilder();
+            return string.Format(EventResources.CreateDataBase, authentication.ID, authentication.Name, dataBase);
+        }
+
+        public static string CreateDataBase(Authentication authentication, IDataBase[] dataBases)
+        {
+            var messageList = new List<string>(dataBases.Length);
             for (var i = 0; i < dataBases.Length; i++)
             {
-                if (i > 0)
-                    sb.AppendLine();
-                sb.AppendFormat(EventResources.CreateDataBase, authentication.ID, authentication.Name, dataBases[i]);
+                var message = CreateDataBase(authentication, dataBases[i].Name);
+                messageList.Add(message);
             }
-            return sb.ToString();
+            return string.Join(Environment.NewLine, messageList);
         }
 
-        public static string RenameDataBase(Authentication authentication, string[] dataBases, string[] oldNames)
+        public static string RenameDataBase(Authentication authentication, string dataBaseName, string newDataBaseName)
         {
-            var sb = new StringBuilder();
+            return string.Format(EventResources.RenameDataBase, authentication.ID, authentication.Name, dataBaseName, newDataBaseName);
+        }
+
+        public static string RenameDataBase(Authentication authentication, IDataBase[] dataBases, string[] oldNames)
+        {
+            var messageList = new List<string>(dataBases.Length);
             for (var i = 0; i < dataBases.Length; i++)
             {
-                if (i > 0)
-                    sb.AppendLine();
-                sb.AppendFormat(EventResources.RenameDataBase, authentication.ID, authentication.Name, oldNames[i], dataBases[i]);
+                var message = RenameDataBase(authentication, oldNames[i], dataBases[i].Name);
+                messageList.Add(message);
             }
-            return sb.ToString();
+            return string.Join(Environment.NewLine, messageList);
         }
 
-        public static string DeleteDataBase(Authentication authentication, string[] dataBaseNames)
+        public static string DeleteDataBase(Authentication authentication, string dataBaseName)
         {
-            var sb = new StringBuilder();
-            for (var i = 0; i < dataBaseNames.Length; i++)
+            return string.Format(EventResources.DeleteDataBase, authentication.ID, authentication.Name, dataBaseName);
+        }
+
+        public static string DeleteDataBase(Authentication authentication, IDataBase[] dataBases)
+        {
+            var messageList = new List<string>(dataBases.Length);
+            for (var i = 0; i < dataBases.Length; i++)
             {
-                if (i > 0)
-                    sb.AppendLine();
-                sb.AppendFormat(EventResources.DeleteDataBase, authentication.ID, authentication.Name, dataBaseNames[i]);
+                var message = DeleteDataBase(authentication, dataBases[i].Name);
+                messageList.Add(message);
             }
-            return sb.ToString();
+            return string.Join(Environment.NewLine, messageList);
         }
 
         public static string LoadDataBase(Authentication authentication, IDataBase[] dataBases)
         {
-            var sb = new StringBuilder();
+            var messageList = new List<string>(dataBases.Length);
             for (var i = 0; i < dataBases.Length; i++)
             {
-                if (i > 0)
-                    sb.AppendLine();
-                sb.AppendFormat(EventResources.LoadDataBase, authentication.ID, authentication.Name, dataBases[i]);
+                var message = string.Format(EventResources.LoadDataBase, authentication.ID, authentication.Name, dataBases[i]);
+                messageList.Add(message);
             }
-            return sb.ToString();
+            return string.Join(Environment.NewLine, messageList);
         }
 
         public static string UnloadDataBase(Authentication authentication, IDataBase[] dataBases)
         {
-            var sb = new StringBuilder();
+            var messageList = new List<string>(dataBases.Length);
             for (var i = 0; i < dataBases.Length; i++)
             {
-                if (i > 0)
-                    sb.AppendLine();
-                sb.AppendFormat(EventResources.UnloadDataBase, authentication.ID, authentication.Name, dataBases[i]);
+                var message = string.Format(EventResources.UnloadDataBase, authentication.ID, authentication.Name, dataBases[i]);
+                messageList.Add(message);
             }
-            return sb.ToString();
+            return string.Join(Environment.NewLine, messageList);
         }
 
         public static string ResettingDataBase(Authentication authentication, IDataBase[] dataBases)
         {
-            var sb = new StringBuilder();
+            var messageList = new List<string>(dataBases.Length);
             for (var i = 0; i < dataBases.Length; i++)
             {
-                if (i > 0)
-                    sb.AppendLine();
-                sb.AppendFormat(EventResources.ResettingDataBase, authentication.ID, authentication.Name, dataBases[i]);
+                var message = string.Format(EventResources.ResettingDataBase, authentication.ID, authentication.Name, dataBases[i]);
+                messageList.Add(message);
             }
-            return sb.ToString();
+            return string.Join(Environment.NewLine, messageList);
         }
 
         public static string ResetDataBase(Authentication authentication, IDataBase[] dataBases)
         {
-            var sb = new StringBuilder();
+            var messageList = new List<string>(dataBases.Length);
             for (var i = 0; i < dataBases.Length; i++)
             {
-                if (i > 0)
-                    sb.AppendLine();
-                sb.AppendFormat(EventResources.ResetDataBase, authentication.ID, authentication.Name, dataBases[i]);
+                var message = string.Format(EventResources.ResetDataBase, authentication.ID, authentication.Name, dataBases[i]);
+                messageList.Add(message);
             }
-            return sb.ToString();
+            return string.Join(Environment.NewLine, messageList);
         }
 
         public static string EnterDataBase(Authentication authentication, IDataBase[] dataBases)
         {
-            var sb = new StringBuilder();
+            var messageList = new List<string>(dataBases.Length);
             for (var i = 0; i < dataBases.Length; i++)
             {
-                if (i > 0)
-                    sb.AppendLine();
-                sb.AppendFormat(EventResources.EnterDataBase, authentication.ID, authentication.Name, dataBases[i]);
+                var message = string.Format(EventResources.EnterDataBase, authentication.ID, authentication.Name, dataBases[i]);
+                messageList.Add(message);
             }
-            return sb.ToString();
+            return string.Join(Environment.NewLine, messageList);
         }
 
         public static string LeaveDataBase(Authentication authentication, IDataBase[] dataBases)
         {
-            var sb = new StringBuilder();
+            var messageList = new List<string>(dataBases.Length);
             for (var i = 0; i < dataBases.Length; i++)
             {
-                if (i > 0)
-                    sb.AppendLine();
-                sb.AppendFormat(EventResources.LeaveDataBase, authentication.ID, authentication.Name, dataBases[i]);
+                var message = string.Format(EventResources.LeaveDataBase, authentication.ID, authentication.Name, dataBases[i]);
+                messageList.Add(message);
             }
-            return sb.ToString();
+            return string.Join(Environment.NewLine, messageList);
         }
 
         public static string RevertDataBase(Authentication authentication, DataBase dataBase, string revision)
@@ -227,26 +226,24 @@ namespace Ntreev.Crema.Services
 
         public static string LockTypeItem(Authentication authentication, ITypeItem[] items, string[] comments)
         {
-            var sb = new StringBuilder();
+            var messageList = new List<string>(items.Length);
             for (var i = 0; i < items.Length; i++)
             {
-                if (i > 0)
-                    sb.AppendLine();
-                sb.AppendFormat(EventResources.LockTypeItem, authentication.ID, authentication.Name, items[i].Name, comments[i]);
+                var message = string.Format(EventResources.LockTypeItem, authentication.ID, authentication.Name, items[i].Name, comments[i]);
+                messageList.Add(message);
             }
-            return sb.ToString();
+            return string.Join(Environment.NewLine, messageList);
         }
 
         public static string UnlockTypeItem(Authentication authentication, ITypeItem[] items)
         {
-            var sb = new StringBuilder();
+            var messageList = new List<string>(items.Length);
             for (var i = 0; i < items.Length; i++)
             {
-                if (i > 0)
-                    sb.AppendLine();
-                sb.AppendFormat(EventResources.UnlockTypeItem, authentication.ID, authentication.Name, items[i].Name);
+                var message = string.Format(EventResources.UnlockTypeItem, authentication.ID, authentication.Name, items[i].Name);
+                messageList.Add(message);
             }
-            return sb.ToString();
+            return string.Join(Environment.NewLine, messageList);
         }
 
         public static string SetPrivateTypeItem(Authentication authentication, string typeItem)
@@ -491,26 +488,24 @@ namespace Ntreev.Crema.Services
 
         public static string LockTableItem(Authentication authentication, ITableItem[] items, string[] comments)
         {
-            var sb = new StringBuilder();
+            var messageList = new List<string>(items.Length);
             for (var i = 0; i < items.Length; i++)
             {
-                if (i > 0)
-                    sb.AppendLine();
-                sb.AppendFormat(EventResources.LockTableItem, authentication.ID, authentication.Name, items[i].Name, comments[i]);
+                var message = string.Format(EventResources.LockTableItem, authentication.ID, authentication.Name, items[i].Name, comments[i]);
+                messageList.Add(message);
             }
-            return sb.ToString();
+            return string.Join(Environment.NewLine, messageList);
         }
 
         public static string UnlockTableItem(Authentication authentication, ITableItem[] items)
         {
-            var sb = new StringBuilder();
+            var messageList = new List<string>(items.Length);
             for (var i = 0; i < items.Length; i++)
             {
-                if (i > 0)
-                    sb.AppendLine();
-                sb.AppendFormat(EventResources.UnlockTableItem, authentication.ID, authentication.Name, items[i].Name);
+                var message = string.Format(EventResources.UnlockTableItem, authentication.ID, authentication.Name, items[i].Name);
+                messageList.Add(message);
             }
-            return sb.ToString();
+            return string.Join(Environment.NewLine, messageList);
         }
 
         public static string SetPrivateTableItem(Authentication authentication, string tableItem)

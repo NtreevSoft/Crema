@@ -15,15 +15,10 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.Services.Domains;
 using Ntreev.Crema.ServiceModel;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Services.Data
 {
@@ -34,7 +29,6 @@ namespace Ntreev.Crema.Services.Data
         public const string ServiceID = "44343501-B6B7-444D-8A5E-7CAE32F054A4";
         private readonly ICremaHost cremaHost;
         private readonly IDomainContext domainContext;
-        private CremaDispatcher dispatcher;
         private Authentication authentication;
 
         private Dictionary<Guid, DataFindServiceItem> items = new Dictionary<Guid, DataFindServiceItem>();
@@ -52,12 +46,12 @@ namespace Ntreev.Crema.Services.Data
 
         public void Initialize(Authentication authentication)
         {
-            this.dispatcher = new CremaDispatcher(this);
+            this.Dispatcher = new CremaDispatcher(this);
             this.authentication = authentication;
 
             foreach (var item in this.cremaHost.DataBases)
             {
-                var serviceItem = new DataFindServiceItem(item, this.dispatcher, authentication);
+                var serviceItem = new DataFindServiceItem(item, this.Dispatcher, authentication);
                 this.items.Add(item.ID, serviceItem);
             }
         }
@@ -67,34 +61,25 @@ namespace Ntreev.Crema.Services.Data
 
         }
 
-        public string Name
-        {
-            get { return this.GetType().Name; }
-        }
+        public string Name => this.GetType().Name;
 
         public FindResultInfo[] FindFromTable(Guid dataBaseID, string[] itemPaths, string text, FindOptions options)
         {
-            this.dispatcher.VerifyAccess();
+            this.Dispatcher.VerifyAccess();
 
             return this.items[dataBaseID].FindFromTable(itemPaths, text, options);
         }
 
         public FindResultInfo[] FindFromType(Guid dataBaseID, string[] itemPaths, string text, FindOptions options)
         {
-            this.dispatcher.VerifyAccess();
+            this.Dispatcher.VerifyAccess();
 
             return this.items[dataBaseID].FindFromType(itemPaths, text, options);
         }
 
-        public CremaDispatcher Dispatcher
-        {
-            get { return this.dispatcher; }
-        }
+        public CremaDispatcher Dispatcher { get; private set; }
 
-        public Guid ID
-        {
-            get { return Guid.Parse(ServiceID); }
-        }
+        public Guid ID => Guid.Parse(ServiceID);
 
         private void CremaHost_Opened(object sender, EventArgs e)
         {
@@ -104,7 +89,7 @@ namespace Ntreev.Crema.Services.Data
 
         private void CremaHost_Closing(object sender, EventArgs e)
         {
-            this.dispatcher.Invoke(() => this.dispatcher.Dispose());
+            this.Dispatcher.Invoke(() => this.Dispatcher.Dispose());
         }
 
         private void CremaHost_Closed(object sender, EventArgs e)
@@ -120,7 +105,7 @@ namespace Ntreev.Crema.Services.Data
         {
             foreach (var item in e.Items)
             {
-                var serviceItem = new DataFindServiceItem(item, this.dispatcher, authentication);
+                var serviceItem = new DataFindServiceItem(item, this.Dispatcher, authentication);
                 this.items.Add(item.ID, serviceItem);
             }
         }

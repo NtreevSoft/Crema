@@ -16,7 +16,6 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Ntreev.Crema.Data;
-using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services.Properties;
 using Ntreev.Library;
@@ -29,7 +28,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace Ntreev.Crema.Services.Data
 {
@@ -48,14 +46,22 @@ namespace Ntreev.Crema.Services.Data
 
         public TypeCategory AddNew(Authentication authentication, string name, string parentPath)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.ValidateAddNew(authentication, name, parentPath);
-            this.Sign(authentication);
-            this.InvokeCategoryCreate(authentication, name, parentPath);
-            var category = this.BaseAddNew(name, parentPath, authentication);
-            var items = EnumerableUtility.One(category).ToArray();
-            this.InvokeCategoriesCreatedEvent(authentication, items);
-            return category;
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.ValidateAddNew(authentication, name, parentPath);
+                this.Sign(authentication);
+                this.InvokeCategoryCreate(authentication, name, parentPath);
+                var category = this.BaseAddNew(name, parentPath, authentication);
+                var items = EnumerableUtility.One(category).ToArray();
+                this.InvokeCategoriesCreatedEvent(authentication, items);
+                return category;
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public object GetService(System.Type serviceType)
@@ -76,12 +82,11 @@ namespace Ntreev.Crema.Services.Data
                 this.Context.InvokeTypeItemCreate(authentication, parentPath + name);
                 this.Repository.Commit(authentication, message);
             }
-            catch (Exception e)
+            catch
             {
                 DirectoryUtility.Delete(path);
-                this.CremaHost.Error(e);
                 this.Repository.Revert();
-                throw e;
+                throw;
             }
         }
 
@@ -101,11 +106,10 @@ namespace Ntreev.Crema.Services.Data
                 this.Context.InvokeTypeItemRename(authentication, category, name);
                 this.Repository.Commit(authentication, message);
             }
-            catch (Exception e)
+            catch
             {
-                this.CremaHost.Error(e);
                 this.Repository.Revert();
-                throw e;
+                throw;
             }
         }
 
@@ -124,11 +128,10 @@ namespace Ntreev.Crema.Services.Data
                 this.Repository.Move(category.LocalPath, this.Context.GenerateCategoryPath(categoryName));
                 this.Repository.Commit(authentication, message);
             }
-            catch (Exception e)
+            catch
             {
-                this.CremaHost.Error(e);
                 this.Repository.Revert();
-                throw e;
+                throw;
             }
         }
 
@@ -142,11 +145,10 @@ namespace Ntreev.Crema.Services.Data
                 this.Context.InvokeTypeItemDelete(authentication, category);
                 this.Repository.Commit(authentication, message);
             }
-            catch (Exception e)
+            catch
             {
-                this.CremaHost.Error(e);
                 this.Repository.Revert();
-                throw e;
+                throw;
             }
         }
 
@@ -192,25 +194,13 @@ namespace Ntreev.Crema.Services.Data
             this.Context.InvokeItemsDeleteEvent(authentication, categories, categoryPaths, dataSet);
         }
 
-        public DataBaseRepositoryHost Repository
-        {
-            get { return this.DataBase.Repository; }
-        }
+        public DataBaseRepositoryHost Repository => this.DataBase.Repository;
 
-        public CremaHost CremaHost
-        {
-            get { return this.Context.CremaHost; }
-        }
+        public CremaHost CremaHost => this.Context.CremaHost;
 
-        public DataBase DataBase
-        {
-            get { return this.Context.DataBase; }
-        }
+        public DataBase DataBase => this.Context.DataBase;
 
-        public CremaDispatcher Dispatcher
-        {
-            get { return this.Context?.Dispatcher; }
-        }
+        public CremaDispatcher Dispatcher => this.Context?.Dispatcher;
 
         public IObjectSerializer Serializer => this.DataBase.Serializer;
 

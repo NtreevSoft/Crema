@@ -61,6 +61,8 @@ namespace Ntreev.Crema.Data.Xml.Schema
         public const string Modifier = "Modifier";
         public const string Tags = "Tags";
         public const string Enable = "Enable";
+        public const string TypeName = "TypeName";
+        public const string IsFlag = "IsFlag";
         public const string Comment = "Comment";
         public const string ReadOnly = "ReadOnly";
         [Obsolete]
@@ -74,6 +76,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
         public const string Index = "__Index__";
         public const string Name = "Name";
         public const string ColumnName = "ColumnName";
+        public const string TableName = "TableName";
         public const string Value = "Value";
         public const string DataType = "DataType";
         public const string DefaultValue = "DefaultValue";

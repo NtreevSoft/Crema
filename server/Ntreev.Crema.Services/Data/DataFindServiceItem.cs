@@ -15,20 +15,16 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Data;
 using Ntreev.Crema.Data.Xml.Schema;
+using Ntreev.Crema.ServiceModel;
+using Ntreev.Library;
 using Ntreev.Library.IO;
-using Ntreev.Library.Linq;
-using System;
+using Ntreev.Library.ObjectModel;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading.Tasks;
-using Ntreev.Library;
-using Ntreev.Library.ObjectModel;
 
 namespace Ntreev.Crema.Services.Data
 {
@@ -71,7 +67,7 @@ namespace Ntreev.Crema.Services.Data
 
             foreach (var item in itemPaths)
             {
-                if(item.EndsWith(PathUtility.Separator) == true)
+                if (item.EndsWith(PathUtility.Separator) == true)
                     continue;
 
                 var itemName = new ItemName(item);
@@ -82,15 +78,9 @@ namespace Ntreev.Crema.Services.Data
             return this.findResults.ToArray();
         }
 
-        public override CremaDispatcher Dispatcher
-        {
-            get { return this.dispatcher; }
-        }
+        public override CremaDispatcher Dispatcher => this.dispatcher;
 
-        public override string Name
-        {
-            get { return "find"; }
-        }
+        public override string Name => "find";
 
         protected override object GetObject(CremaDataTable dataTable)
         {
@@ -131,14 +121,14 @@ namespace Ntreev.Crema.Services.Data
         {
             var typeCache = new FindTableCacheInfo()
             {
-                Columns = new string[] { CremaSchema.Name, CremaSchema.Value, CremaSchema.Comment}
+                Columns = new string[] { CremaSchema.Name, CremaSchema.Value, CremaSchema.Comment }
             };
             var rowCaches = new List<FindRowCacheInfo>();
             foreach (var item in dataType.Members)
             {
                 var rowCache = new FindRowCacheInfo()
                 {
-                    Values = new string[] { item.Name, item.Value.ToString(), item.Comment},
+                    Values = new string[] { item.Name, item.Value.ToString(), item.Comment },
                     Tags = TagInfo.All.ToString(),
                     IsEnabled = true,
                     ModificationInfo = item.ModificationInfo

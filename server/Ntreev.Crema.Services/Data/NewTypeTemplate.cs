@@ -15,17 +15,14 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.Data;
+using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services.Domains;
 using Ntreev.Crema.Services.Properties;
-using Ntreev.Crema.ServiceModel;
-using Ntreev.Crema.Data;
 using Ntreev.Library;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Services.Data
 {
@@ -63,50 +60,21 @@ namespace Ntreev.Crema.Services.Data
             this.category.ValidateAccessType(authentication, AccessType.Master);
         }
 
-        public override IType Type
-        {
-            get { return this.type; }
-        }
+        public override IType Type => this.type;
 
-        public override DomainContext DomainContext
-        {
-            get { return this.category.GetService(typeof(DomainContext)) as DomainContext; }
-        }
+        public override DomainContext DomainContext => this.category.GetService(typeof(DomainContext)) as DomainContext;
 
-        public override string ItemPath
-        {
-            get { return this.category.Path; }
-        }
+        public override string ItemPath => this.category.Path;
 
-        public override CremaDispatcher Dispatcher
-        {
-            get
-            {
-                if (this.category == null)
-                    return null;
-                return this.category.Dispatcher;
-            }
-        }
+        public override CremaDispatcher Dispatcher => this.category?.Dispatcher;
 
-        public override CremaHost CremaHost
-        {
-            get { return this.category.CremaHost; }
-        }
+        public override CremaHost CremaHost => this.category.CremaHost;
 
-        public override DataBase DataBase
-        {
-            get { return this.category.DataBase; }
-        }
+        public override DataBase DataBase => this.category.DataBase;
 
-        public override IPermission Permission
-        {
-            get { return this.category; }
-        }
+        public override IPermission Permission => this.category;
 
-        public TypeCollection Types
-        {
-            get { return this.category.Context.Types; }
-        }
+        public TypeCollection Types => this.category.Context.Types;
 
         protected override void OnBeginEdit(Authentication authentication)
         {

@@ -20,11 +20,7 @@ using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services.Domains;
 using Ntreev.Library.IO;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Services.Data
 {
@@ -59,25 +55,43 @@ namespace Ntreev.Crema.Services.Data
 
         public void Commit(Authentication authentication)
         {
-            this.dataBase.VerifyAccess(authentication);
-            this.Sign(authentication);
-            this.repository.EndTransaction();
-            this.authentication.Expired -= Authentication_Expired;
-            this.OnDisposed(EventArgs.Empty);
+            try
+            {
+                this.dataBase.VerifyAccess(authentication);
+                this.Sign(authentication);
+                this.repository.EndTransaction();
+                this.authentication.Expired -= Authentication_Expired;
+                this.OnDisposed(EventArgs.Empty);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void Rollback(Authentication authentication)
         {
-            this.dataBase.VerifyAccess(authentication);
-            this.Sign(authentication);
-            this.dataBase.ResettingDataBase(authentication);
-            this.RollbackDomains(authentication);
-            this.dataBase.ResetDataBase(authentication, this.typeInfos, this.tableInfos);
-            this.authentication.Expired -= Authentication_Expired;
-            this.OnDisposed(EventArgs.Empty);
+            try
+            {
+                this.dataBase.VerifyAccess(authentication);
+                this.Sign(authentication);
+                this.dataBase.ResettingDataBase(authentication);
+                this.RollbackDomains(authentication);
+                this.dataBase.ResetDataBase(authentication, this.typeInfos, this.tableInfos);
+                this.authentication.Expired -= Authentication_Expired;
+                this.OnDisposed(EventArgs.Empty);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public CremaDispatcher Dispatcher => this.dataBase.Dispatcher;
+
+        public CremaHost CremaHost => this.dataBase.CremaHost;
 
         public event EventHandler Disposed;
 

@@ -19,13 +19,11 @@ using Ntreev.Crema.Data;
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services.Properties;
 using Ntreev.Library;
-using Ntreev.Library.IO;
 using Ntreev.Library.ObjectModel;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.IO;
 using System.Linq;
 
 namespace Ntreev.Crema.Services.Data
@@ -53,26 +51,42 @@ namespace Ntreev.Crema.Services.Data
 
         public Type AddNew(Authentication authentication, CremaDataType dataType)
         {
-            this.CremaHost.DebugMethod(authentication, this, nameof(AddNew), dataType.Name, dataType.CategoryPath);
-            this.ValidateAddNew(dataType.Name, dataType.CategoryPath, authentication);
-            this.Sign(authentication);
-            this.InvokeTypeCreate(authentication, dataType.Name, dataType.CategoryPath, dataType);
-            var type = this.BaseAddNew(dataType.Name, dataType.CategoryPath, authentication);
-            type.Initialize(dataType.TypeInfo);
-            this.InvokeTypesCreatedEvent(authentication, new Type[] { type, }, dataType.DataSet);
-            return type;
+            try
+            {
+                this.CremaHost.DebugMethod(authentication, this, nameof(AddNew), dataType.Name, dataType.CategoryPath);
+                this.ValidateAddNew(dataType.Name, dataType.CategoryPath, authentication);
+                this.Sign(authentication);
+                this.InvokeTypeCreate(authentication, dataType.Name, dataType.CategoryPath, dataType);
+                var type = this.BaseAddNew(dataType.Name, dataType.CategoryPath, authentication);
+                type.Initialize(dataType.TypeInfo);
+                this.InvokeTypesCreatedEvent(authentication, new Type[] { type, }, dataType.DataSet);
+                return type;
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public Type Copy(Authentication authentication, string typeName, string newTypeName, string categoryPath)
         {
-            this.CremaHost.DebugMethod(authentication, this, nameof(TypeCollection.Copy), typeName, newTypeName, categoryPath);
-            this.ValidateCopy(authentication, typeName, newTypeName);
-            var type = this[typeName];
-            var dataType = type.ReadData(authentication);
-            dataType.TypeName = newTypeName;
-            dataType.CategoryPath = categoryPath;
-            dataType.CreationInfo = authentication.SignatureDate;
-            return this.AddNew(authentication, dataType);
+            try
+            {
+                this.CremaHost.DebugMethod(authentication, this, nameof(TypeCollection.Copy), typeName, newTypeName, categoryPath);
+                this.ValidateCopy(authentication, typeName, newTypeName);
+                var type = this[typeName];
+                var dataType = type.ReadData(authentication);
+                dataType.TypeName = newTypeName;
+                dataType.CategoryPath = categoryPath;
+                dataType.CreationInfo = authentication.SignatureDate;
+                return this.AddNew(authentication, dataType);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public object GetService(System.Type serviceType)
@@ -95,11 +109,10 @@ namespace Ntreev.Crema.Services.Data
                 this.Context.InvokeTypeItemCreate(authentication, categoryPath + typeName);
                 this.Repository.Commit(authentication, message);
             }
-            catch (Exception e)
+            catch
             {
-                this.CremaHost.Error(e);
                 this.Repository.Revert();
-                throw e;
+                throw;
             }
         }
 
@@ -119,11 +132,10 @@ namespace Ntreev.Crema.Services.Data
                 this.Context.InvokeTypeItemRename(authentication, type, newName);
                 this.Repository.Commit(authentication, message);
             }
-            catch (Exception e)
+            catch
             {
-                this.CremaHost.Error(e);
                 this.Repository.Revert();
-                throw e;
+                throw;
             }
         }
 
@@ -143,11 +155,10 @@ namespace Ntreev.Crema.Services.Data
                 this.Context.InvokeTypeItemMove(authentication, type, newCategoryPath);
                 this.Repository.Commit(authentication, message);
             }
-            catch (Exception e)
+            catch
             {
-                this.CremaHost.Error(e);
                 this.Repository.Revert();
-                throw e;
+                throw;
             }
         }
 
@@ -166,11 +177,10 @@ namespace Ntreev.Crema.Services.Data
                 this.Context.InvokeTypeItemDelete(authentication, type);
                 this.Repository.Commit(authentication, message);
             }
-            catch (Exception e)
+            catch
             {
-                this.CremaHost.Error(e);
                 this.Repository.Revert();
-                throw e;
+                throw;
             }
         }
 
@@ -192,11 +202,10 @@ namespace Ntreev.Crema.Services.Data
                 this.Context.InvokeTypeItemChange(authentication, type);
                 this.Repository.Commit(authentication, message);
             }
-            catch (Exception e)
+            catch
             {
-                this.CremaHost.Error(e);
                 this.Repository.Revert();
-                throw e;
+                throw;
             }
         }
 
@@ -213,11 +222,10 @@ namespace Ntreev.Crema.Services.Data
                 this.Context.InvokeTypeItemChange(authentication, type);
                 this.Repository.Commit(authentication, message);
             }
-            catch (Exception e)
+            catch
             {
-                this.CremaHost.Error(e);
                 this.Repository.Revert();
-                throw e;
+                throw;
             }
         }
 
@@ -279,25 +287,13 @@ namespace Ntreev.Crema.Services.Data
             this.OnTypesStateChanged(new ItemsEventArgs<IType>(authentication, types));
         }
 
-        public DataBaseRepositoryHost Repository
-        {
-            get { return this.DataBase.Repository; }
-        }
+        public DataBaseRepositoryHost Repository => this.DataBase.Repository;
 
-        public CremaHost CremaHost
-        {
-            get { return this.Context.CremaHost; }
-        }
+        public CremaHost CremaHost => this.Context.CremaHost;
 
-        public DataBase DataBase
-        {
-            get { return this.Context.DataBase; }
-        }
+        public DataBase DataBase => this.Context.DataBase;
 
-        public CremaDispatcher Dispatcher
-        {
-            get { return this.Context?.Dispatcher; }
-        }
+        public CremaDispatcher Dispatcher => this.Context?.Dispatcher;
 
         public IObjectSerializer Serializer => this.DataBase.Serializer;
 

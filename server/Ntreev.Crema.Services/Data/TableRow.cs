@@ -15,17 +15,12 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.Services.Domains;
-using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Data;
 using Ntreev.Crema.Data.Xml.Schema;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Ntreev.Crema.ServiceModel;
 using Ntreev.Library;
+using System;
+using System.Data;
 
 namespace Ntreev.Crema.Services.Data
 {
@@ -63,8 +58,16 @@ namespace Ntreev.Crema.Services.Data
 
         public void SetField(Authentication authentication, string columnName, object value)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            base.SetField(authentication, columnName, value);
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                base.SetField(authentication, columnName, value);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public object this[string columnName]
@@ -103,15 +106,11 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public override DataBase DataBase
-        {
-            get { return this.content.DataBase; }
-        }
+        public override DataBase DataBase => this.content.DataBase;
 
-        public override CremaDispatcher Dispatcher
-        {
-            get { return this.content.Dispatcher; }
-        }
+        public override CremaDispatcher Dispatcher => this.content.Dispatcher;
+
+        public override CremaHost CremaHost => this.content.CremaHost;
 
         public string RelationID
         {
@@ -145,10 +144,7 @@ namespace Ntreev.Crema.Services.Data
 
         #region ITableRow
 
-        ITableContent ITableRow.Content
-        {
-            get { return this.Content as ITableContent; }
-        }
+        ITableContent ITableRow.Content => this.Content as ITableContent;
 
         #endregion
     }

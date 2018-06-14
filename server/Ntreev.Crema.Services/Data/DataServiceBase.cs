@@ -18,42 +18,33 @@
 using Ntreev.Crema.ServiceModel;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Services.Data
 {
     public abstract class DataServiceBase<T> : IPlugin where T : DataServiceItemBase
     {
-        private readonly ICremaHost cremaHost;
-        private readonly Guid pluginID;
         private readonly string name;
-        private readonly CremaDispatcher dispatcher;
-        private Authentication authentication;
-
         private Dictionary<IDataBase, T> items = new Dictionary<IDataBase, T>();
 
         protected DataServiceBase(ICremaHost cremaHost, Guid pluginID, string name)
         {
-            this.cremaHost = cremaHost;
-            this.pluginID = pluginID;
+            this.CremaHost = cremaHost;
+            this.ID = pluginID;
             this.name = name ?? throw new ArgumentNullException(nameof(name));
-            this.dispatcher = new CremaDispatcher(this);
-            this.cremaHost.Closing += CremaHost_Closing;
+            this.Dispatcher = new CremaDispatcher(this);
+            this.CremaHost.Closing += CremaHost_Closing;
         }
 
         public void Initialize(Authentication authentication)
         {
-            this.authentication = authentication;
-            foreach (var item in this.cremaHost.DataBases)
+            this.Authentication = authentication;
+            foreach (var item in this.CremaHost.DataBases)
             {
-                var serviceItem = this.CreateItem(item, this.dispatcher, authentication);
+                var serviceItem = this.CreateItem(item, this.Dispatcher, authentication);
                 this.items.Add(item, serviceItem);
             }
-            this.cremaHost.DataBases.ItemsCreated += DataBases_ItemCreated;
-            this.cremaHost.DataBases.ItemsDeleted += DataBases_ItemsDeleted;
+            this.CremaHost.DataBases.ItemsCreated += DataBases_ItemCreated;
+            this.CremaHost.DataBases.ItemsDeleted += DataBases_ItemsDeleted;
         }
 
         public void Release()
@@ -61,43 +52,28 @@ namespace Ntreev.Crema.Services.Data
 
         }
 
-        public virtual string Name
-        {
-            get { return this.name; }
-        }
+        public virtual string Name => this.name;
 
-        public Guid ID
-        {
-            get { return this.pluginID; }
-        }
+        public Guid ID { get; }
 
-        public CremaDispatcher Dispatcher
-        {
-            get { return this.dispatcher; }
-        }
+        public CremaDispatcher Dispatcher { get; }
 
-        public ICremaHost CremaHost
-        {
-            get { return this.cremaHost; }
-        }
+        public ICremaHost CremaHost { get; }
 
-        protected Authentication Authentication
-        {
-            get { return this.authentication; }
-        }
+        protected Authentication Authentication { get; private set; }
 
         protected abstract T CreateItem(IDataBase dataBase, CremaDispatcher Dispatcher, Authentication authentication);
 
         private void CremaHost_Closing(object sender, EventArgs e)
         {
-            this.dispatcher.Invoke(() => this.dispatcher.Dispose());
+            this.Dispatcher.Invoke(() => this.Dispatcher.Dispose());
         }
 
         private void DataBases_ItemCreated(object sender, ItemsCreatedEventArgs<IDataBase> e)
         {
             foreach (var item in e.Items)
             {
-                var serviceItem = this.CreateItem(item, this.dispatcher, authentication);
+                var serviceItem = this.CreateItem(item, this.Dispatcher, Authentication);
                 this.items.Add(item, serviceItem);
             }
         }

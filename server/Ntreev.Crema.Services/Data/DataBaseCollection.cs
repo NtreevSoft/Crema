@@ -16,7 +16,6 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Ntreev.Crema.Data;
-using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services.Domains;
 using Ntreev.Crema.Services.Properties;
@@ -36,7 +35,6 @@ namespace Ntreev.Crema.Services.Data
         public const string DataBaseString = "database";
         private const string databaseExtension = ".database";
         private const string stateExtension = ".state";
-        private readonly CremaHost cremaHost;
         private readonly IRepositoryProvider repositoryProvider;
         private readonly CremaDispatcher repositoryDispatcher;
         private readonly string cachePath;
@@ -59,7 +57,7 @@ namespace Ntreev.Crema.Services.Data
 
         public DataBaseCollection(CremaHost cremaHost, IRepositoryProvider repositoryProvider)
         {
-            this.cremaHost = cremaHost;
+            this.CremaHost = cremaHost;
             this.cachePath = cremaHost.GetPath(CremaPath.Caches, "databases");
             this.repositoryProvider = cremaHost.RepositoryProvider;
             this.repositoryDispatcher = cremaHost.RepositoryDispatcher;
@@ -78,8 +76,8 @@ namespace Ntreev.Crema.Services.Data
                 DataBase CreateDataBase()
                 {
                     if (caches.ContainsKey(item) == false)
-                        return new DataBase(this.cremaHost, item);
-                    return new DataBase(this.cremaHost, item, caches[item]);
+                        return new DataBase(this.CremaHost, item);
+                    return new DataBase(this.CremaHost, item, caches[item]);
                 }
             }
         }
@@ -148,124 +146,115 @@ namespace Ntreev.Crema.Services.Data
 
         public DataBase CreateDataBase(Authentication authentication, string dataBaseName, string comment)
         {
-            this.Dispatcher.VerifyAccess();
-            this.CremaHost.DebugMethod(authentication, this, nameof(CreateDataBase), dataBaseName, comment);
-            this.ValidateCreateDataBase(authentication, dataBaseName);
-
-            var dataSet = new CremaDataSet();
-            var tempPath = PathUtility.GetTempPath(true);
-            var dataBasePath = Path.Combine(tempPath, dataBaseName);
-            dataSet.WriteToDirectory(dataBasePath);
-
-            var dataBaseNames = new string[] { dataBaseName };
-            var commentMessage = EventMessageBuilder.CreateDataBase(authentication, dataBaseNames) + ": " + comment;
-
             try
             {
-                this.repositoryDispatcher.Invoke(() =>
+                this.Dispatcher.VerifyAccess();
+                this.CremaHost.DebugMethod(authentication, this, nameof(CreateDataBase), dataBaseName, comment);
+                this.ValidateCreateDataBase(authentication, dataBaseName);
+
+                var dataSet = new CremaDataSet();
+                var tempPath = PathUtility.GetTempPath(true);
+                var dataBasePath = Path.Combine(tempPath, dataBaseName);
+                var message = EventMessageBuilder.CreateDataBase(authentication, dataBaseName) + ": " + comment;
+
+                try
                 {
-                    this.repositoryProvider.CreateRepository(authentication, this.remotePath, tempPath, commentMessage);
-                });
+                    dataSet.WriteToDirectory(dataBasePath);
+                    this.repositoryDispatcher.Invoke(() =>
+                    {
+                        this.repositoryProvider.CreateRepository(authentication, this.remotePath, tempPath, message);
+                    });
+                }
+                finally
+                {
+                    DirectoryUtility.Delete(tempPath);
+                }
+                var dataBase = new DataBase(this.CremaHost, dataBaseName);
+                this.AddBase(dataBase.Name, dataBase);
+                dataBase.Initialize();
+                authentication.Sign();
+
+                this.InvokeItemsCreateEvent(authentication, new DataBase[] { dataBase, }, comment);
+                return dataBase;
             }
             catch (Exception e)
             {
                 this.CremaHost.Error(e);
-                throw e;
+                throw;
             }
-            finally
-            {
-                DirectoryUtility.Delete(tempPath);
-            }
-            this.CremaHost.Info(commentMessage);
-            var dataBase = new DataBase(this.cremaHost, dataBaseName);
-            this.AddBase(dataBase.Name, dataBase);
-            dataBase.Initialize();
-            authentication.Sign();
-
-            this.InvokeItemsCreateEvent(authentication, new DataBase[] { dataBase, });
-            return dataBase;
         }
 
         public DataBase CopyDataBase(Authentication authentication, DataBase dataBase, string newDataBaseName, string comment, bool force)
         {
-            this.Dispatcher.VerifyAccess();
-            this.CremaHost.DebugMethod(authentication, this, nameof(CopyDataBase), dataBase, newDataBaseName, comment);
-            this.ValidateCopyDataBase(authentication, dataBase, newDataBaseName, force);
-
-            var dataBaseName = dataBase.Name;
-            var dataBaseNames = new string[] { newDataBaseName };
-            var commentMessage = EventMessageBuilder.CreateDataBase(authentication, dataBaseNames) + ": " + comment;
             try
             {
+                this.Dispatcher.VerifyAccess();
+                this.CremaHost.DebugMethod(authentication, this, nameof(CopyDataBase), dataBase, newDataBaseName, comment);
+                this.ValidateCopyDataBase(authentication, dataBase, newDataBaseName, force);
+
+                var dataBaseName = dataBase.Name;
+                var message = EventMessageBuilder.CreateDataBase(authentication, newDataBaseName) + ": " + comment;
                 this.repositoryDispatcher.Invoke(() =>
                 {
-                    this.repositoryProvider.CopyRepository(authentication, this.remotePath, dataBaseName, newDataBaseName, commentMessage);
+                    this.repositoryProvider.CopyRepository(authentication, this.remotePath, dataBaseName, newDataBaseName, message);
                 });
+                var newDataBase = new DataBase(this.CremaHost, newDataBaseName);
+                this.AddBase(newDataBase.Name, newDataBase);
+                newDataBase.Initialize();
+                authentication.Sign();
+                this.InvokeItemsCreateEvent(authentication, new DataBase[] { newDataBase, }, comment);
+                return newDataBase;
             }
             catch (Exception e)
             {
                 this.CremaHost.Error(e);
-                throw e;
+                throw;
             }
-
-            this.CremaHost.Info(commentMessage);
-            var newDataBase = new DataBase(this.cremaHost, newDataBaseName);
-            this.AddBase(newDataBase.Name, newDataBase);
-            newDataBase.Initialize();
-            authentication.Sign();
-            this.InvokeItemsCreateEvent(authentication, new DataBase[] { newDataBase, });
-            return newDataBase;
         }
 
         public void InvokeDataBaseRename(Authentication authentication, DataBase dataBase, string newDataBaseName)
         {
-            this.CremaHost.DebugMethod(authentication, this, nameof(InvokeDataBaseRename), dataBase, newDataBaseName);
-            this.ValidateRenameDataBase(authentication, dataBase, newDataBaseName);
-
-            var dataBaseName = dataBase.Name;
-            var names = new string[] { newDataBaseName };
-            var oldNames = new string[] { dataBase.Name };
-            var commentMessage = EventMessageBuilder.RenameDataBase(authentication, names, oldNames);
-
             try
             {
+                this.CremaHost.DebugMethod(authentication, this, nameof(InvokeDataBaseRename), dataBase, newDataBaseName);
+                this.ValidateRenameDataBase(authentication, dataBase, newDataBaseName);
+
+                var dataBaseName = dataBase.Name;
+                var commentMessage = EventMessageBuilder.RenameDataBase(authentication, dataBase.Name, newDataBaseName);
                 this.repositoryDispatcher.Invoke(() =>
                 {
                     this.repositoryProvider.RenameRepository(authentication, this.remotePath, dataBase.Name, newDataBaseName, commentMessage);
                 });
+                this.ReplaceKeyBase(dataBaseName, newDataBaseName);
             }
             catch (Exception e)
             {
                 this.CremaHost.Error(e);
-                throw e;
+                throw;
             }
-            this.CremaHost.Info(commentMessage);
-            this.ReplaceKeyBase(dataBaseName, newDataBaseName);
         }
 
         public void InvokeDataBaseDelete(Authentication authentication, DataBase dataBase)
         {
-            this.Dispatcher.VerifyAccess();
-            this.CremaHost.DebugMethod(authentication, this, nameof(InvokeDataBaseDelete), dataBase);
-            this.ValidateDeleteDataBase(authentication, dataBase);
-
-            var dataBaseName = dataBase.Name;
-            var commentMessage = EventMessageBuilder.DeleteDataBase(authentication, new string[] { dataBaseName, });
-
             try
             {
+                this.Dispatcher.VerifyAccess();
+                this.CremaHost.DebugMethod(authentication, this, nameof(InvokeDataBaseDelete), dataBase);
+                this.ValidateDeleteDataBase(authentication, dataBase);
+
+                var dataBaseName = dataBase.Name;
+                var message = EventMessageBuilder.DeleteDataBase(authentication, dataBase.Name);
                 this.repositoryDispatcher.Invoke(() =>
                 {
-                    this.repositoryProvider.DeleteRepository(authentication, this.remotePath, dataBaseName, commentMessage);
+                    this.repositoryProvider.DeleteRepository(authentication, this.remotePath, dataBaseName, message);
                 });
+                this.RemoveBase(dataBase.Name);
             }
             catch (Exception e)
             {
                 this.CremaHost.Error(e);
-                throw e;
+                throw;
             }
-            this.CremaHost.Info(commentMessage);
-            this.RemoveBase(dataBase.Name);
         }
 
         public DataBaseCollectionMetaData GetMetaData(Authentication authentication)
@@ -279,25 +268,31 @@ namespace Ntreev.Crema.Services.Data
             };
         }
 
-        public void InvokeItemsCreateEvent(Authentication authentication, DataBase[] items)
+        public void InvokeItemsCreateEvent(Authentication authentication, DataBase[] items, string comment)
         {
             var args = items.Select(item => (object)item.DataBaseInfo).ToArray();
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsCreateEvent), items);
+            var message = EventMessageBuilder.CreateDataBase(authentication, items) + ": " + comment;
             this.CremaHost.Debug(eventLog);
+            this.CremaHost.Info(message);
             this.OnItemsCreated(new ItemsCreatedEventArgs<IDataBase>(authentication, items, args, null));
         }
 
         public void InvokeItemsRenamedEvent(Authentication authentication, DataBase[] items, string[] oldNames)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsRenamedEvent), items, oldNames);
+            var message = EventMessageBuilder.RenameDataBase(authentication, items, oldNames);
             this.CremaHost.Debug(eventLog);
+            this.CremaHost.Info(message);
             this.OnItemsRenamed(new ItemsRenamedEventArgs<IDataBase>(authentication, items, oldNames, oldNames));
         }
 
         public void InvokeItemsDeletedEvent(Authentication authentication, IDataBase[] items, string[] paths)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsDeletedEvent), paths);
+            var message = EventMessageBuilder.DeleteDataBase(authentication, items);
             this.CremaHost.Debug(eventLog);
+            this.CremaHost.Info(message);
             this.OnItemsDeleted(new ItemsDeletedEventArgs<IDataBase>(authentication, items, paths));
         }
 
@@ -358,70 +353,70 @@ namespace Ntreev.Crema.Services.Data
         public void InvokeItemsSetPublicEvent(Authentication authentication, string basePath, IDataBase[] items)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsSetPublicEvent), items);
-            var comment = EventMessageBuilder.SetPublicDataBase(authentication, items);
+            var message = EventMessageBuilder.SetPublicDataBase(authentication, items);
             var metaData = EventMetaDataBuilder.Build(items, AccessChangeType.Public);
             this.CremaHost.Debug(eventLog);
-            this.CremaHost.Info(comment);
+            this.CremaHost.Info(message);
             this.OnItemsAccessChanged(new ItemsEventArgs<IDataBase>(authentication, items, metaData));
         }
 
         public void InvokeItemsSetPrivateEvent(Authentication authentication, string basePath, IDataBase[] items)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsSetPrivateEvent), items);
-            var comment = EventMessageBuilder.SetPrivateDataBase(authentication, items);
+            var message = EventMessageBuilder.SetPrivateDataBase(authentication, items);
             var metaData = EventMetaDataBuilder.Build(items, AccessChangeType.Private);
             this.CremaHost.Debug(eventLog);
-            this.CremaHost.Info(comment);
+            this.CremaHost.Info(message);
             this.OnItemsAccessChanged(new ItemsEventArgs<IDataBase>(authentication, items, metaData));
         }
 
         public void InvokeItemsAddAccessMemberEvent(Authentication authentication, string basePath, IDataBase[] items, string[] memberIDs, AccessType[] accessTypes)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsAddAccessMemberEvent), items, memberIDs, accessTypes);
-            var comment = EventMessageBuilder.AddAccessMemberToDataBase(authentication, items, memberIDs, accessTypes);
+            var message = EventMessageBuilder.AddAccessMemberToDataBase(authentication, items, memberIDs, accessTypes);
             var metaData = EventMetaDataBuilder.Build(items, AccessChangeType.Add, memberIDs, accessTypes);
             this.CremaHost.Debug(eventLog);
-            this.CremaHost.Info(comment);
+            this.CremaHost.Info(message);
             this.OnItemsAccessChanged(new ItemsEventArgs<IDataBase>(authentication, items, metaData));
         }
 
         public void InvokeItemsSetAccessMemberEvent(Authentication authentication, string basePath, IDataBase[] items, string[] memberIDs, AccessType[] accessTypes)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsSetAccessMemberEvent), items, memberIDs, accessTypes);
-            var comment = EventMessageBuilder.SetAccessMemberOfDataBase(authentication, items, memberIDs, accessTypes);
+            var message = EventMessageBuilder.SetAccessMemberOfDataBase(authentication, items, memberIDs, accessTypes);
             var metaData = EventMetaDataBuilder.Build(items, AccessChangeType.Set, memberIDs, accessTypes);
             this.CremaHost.Debug(eventLog);
-            this.CremaHost.Info(comment);
+            this.CremaHost.Info(message);
             this.OnItemsAccessChanged(new ItemsEventArgs<IDataBase>(authentication, items, metaData));
         }
 
         public void InvokeItemsRemoveAccessMemberEvent(Authentication authentication, string basePath, IDataBase[] items, string[] memberIDs)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsRemoveAccessMemberEvent), items, memberIDs);
-            var comment = EventMessageBuilder.RemoveAccessMemberFromDataBase(authentication, items, memberIDs);
+            var message = EventMessageBuilder.RemoveAccessMemberFromDataBase(authentication, items, memberIDs);
             var metaData = EventMetaDataBuilder.Build(items, AccessChangeType.Remove, memberIDs);
             this.CremaHost.Debug(eventLog);
-            this.CremaHost.Info(comment);
+            this.CremaHost.Info(message);
             this.OnItemsAccessChanged(new ItemsEventArgs<IDataBase>(authentication, items, metaData));
         }
 
         public void InvokeItemsLockedEvent(Authentication authentication, IDataBase[] items, string[] comments)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsLockedEvent), items, comments);
-            var comment = EventMessageBuilder.LockDataBase(authentication, items, comments);
+            var message = EventMessageBuilder.LockDataBase(authentication, items, comments);
             var metaData = EventMetaDataBuilder.Build(items, LockChangeType.Lock, comments);
             this.CremaHost.Debug(eventLog);
-            this.CremaHost.Info(comment);
+            this.CremaHost.Info(message);
             this.OnItemsLockChanged(new ItemsEventArgs<IDataBase>(authentication, items, metaData));
         }
 
         public void InvokeItemsUnlockedEvent(Authentication authentication, IDataBase[] items)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsUnlockedEvent), items);
-            var comment = EventMessageBuilder.UnlockDataBase(authentication, items);
+            var message = EventMessageBuilder.UnlockDataBase(authentication, items);
             var metaData = EventMetaDataBuilder.Build(items, LockChangeType.Unlock);
             this.CremaHost.Debug(eventLog);
-            this.CremaHost.Info(comment);
+            this.CremaHost.Info(message);
             this.OnItemsLockChanged(new ItemsEventArgs<IDataBase>(authentication, items, metaData));
         }
 
@@ -463,20 +458,14 @@ namespace Ntreev.Crema.Services.Data
 
         public DataBase AddFromPath(string path)
         {
-            var dataBase = new DataBase(this.cremaHost, Path.GetFileName(path));
+            var dataBase = new DataBase(this.CremaHost, Path.GetFileName(path));
             this.AddBase(dataBase.Name, dataBase);
             return dataBase;
         }
 
-        public CremaDispatcher Dispatcher
-        {
-            get { return this.CremaHost.Dispatcher; }
-        }
+        public CremaDispatcher Dispatcher => this.CremaHost.Dispatcher;
 
-        public CremaHost CremaHost
-        {
-            get { return this.cremaHost; }
-        }
+        public CremaHost CremaHost { get; }
 
         public string RemotePath => this.remotePath;
 
@@ -741,14 +730,6 @@ namespace Ntreev.Crema.Services.Data
             if (authentication.Types.HasFlag(AuthenticationType.Administrator) == false)
                 throw new PermissionDeniedException();
 
-            //var dataBasePath1 = Path.Combine(this.CremaHost.TagsPath, newDataBaseName);
-            //if (DirectoryUtility.Exists(dataBasePath1) == true)
-            //    throw new ArgumentException(string.Format(Resources.Exception_ExistsPath_Format, newDataBaseName), nameof(newDataBaseName));
-
-            //var dataBasePath2 = Path.Combine(this.CremaHost.BranchesPath, newDataBaseName);
-            //if (DirectoryUtility.Exists(dataBasePath2) == true)
-            //    throw new ArgumentException(string.Format(Resources.Exception_ExistsPath_Format, newDataBaseName), nameof(newDataBaseName));
-
             if (this.ContainsKey(newDataBaseName) == true)
                 throw new ArgumentException(string.Format(Resources.Exception_DataBaseIsAlreadyExisted_Format, newDataBaseName), nameof(newDataBaseName));
 
@@ -776,14 +757,6 @@ namespace Ntreev.Crema.Services.Data
         {
             if (authentication.Types.HasFlag(AuthenticationType.Administrator) == false)
                 throw new PermissionDeniedException();
-
-            //var dataBasePath1 = Path.Combine(this.CremaHost.TagsPath, dataBaseName);
-            //if (DirectoryUtility.Exists(dataBasePath1) == true)
-            //    throw new ArgumentException(string.Format(Resources.Exception_ExistsPath_Format, dataBaseName), nameof(dataBaseName));
-
-            //var dataBasePath2 = Path.Combine(this.CremaHost.BranchesPath, dataBaseName);
-            //if (DirectoryUtility.Exists(dataBasePath2) == true)
-            //    throw new ArgumentException(string.Format(Resources.Exception_ExistsPath_Format, dataBaseName), nameof(dataBaseName));
 
             if (this.ContainsKey(dataBaseName) == true)
                 throw new ArgumentException(string.Format(Resources.Exception_DataBaseIsAlreadyExisted_Format, dataBaseName), nameof(dataBaseName));

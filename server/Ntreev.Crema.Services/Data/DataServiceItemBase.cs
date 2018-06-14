@@ -15,20 +15,16 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Data;
 using Ntreev.Crema.Data.Xml.Schema;
-using Ntreev.Library;
+using Ntreev.Crema.ServiceModel;
 using Ntreev.Library.IO;
+using Ntreev.Library.Linq;
+using Ntreev.Library.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Ntreev.Library.Linq;
-using Ntreev.Library.Serialization;
-using System.Runtime.Serialization;
 
 namespace Ntreev.Crema.Services.Data
 {
@@ -37,12 +33,8 @@ namespace Ntreev.Crema.Services.Data
         private const string jsonExtension = ".json";
         private const string dataDirectory = "data";
         private const string infoDirectory = "info";
-
-        private readonly IDataBase dataBase;
         private Guid dataBaseID;
-        private string dataBaseName;
         private ILogService logService;
-        private bool noCache;
         private bool initialized;
         private string workingPath;
         private Dictionary<string, TableInfo> tableInfos = new Dictionary<string, TableInfo>();
@@ -56,19 +48,19 @@ namespace Ntreev.Crema.Services.Data
 
         protected DataServiceItemBase(IDataBase dataBase)
         {
-            this.dataBase = dataBase;
-            this.dataBaseName = dataBase.Name;
-            this.dataBase.Loaded += DataBase_Loaded;
-            this.dataBase.Renamed += DataBase_Renamed;
-            this.dataBase.Unloaded += DataBase_Unloaded;
+            this.DataBase = dataBase;
+            this.DataBaseName = dataBase.Name;
+            this.DataBase.Loaded += DataBase_Loaded;
+            this.DataBase.Renamed += DataBase_Renamed;
+            this.DataBase.Unloaded += DataBase_Unloaded;
             this.logService = dataBase.GetService(typeof(ILogService)) as ILogService;
 
             if (dataBase is DataBase dataBaseInternal)
             {
-                this.noCache = dataBaseInternal.CremaHost.NoCache;
+                this.NoCache = dataBaseInternal.CremaHost.NoCache;
             }
 
-            if (this.noCache == false)
+            if (this.NoCache == false)
                 this.ReadInfo();
 
             if (this.info.Revision != dataBase.DataBaseInfo.Revision)
@@ -129,55 +121,46 @@ namespace Ntreev.Crema.Services.Data
 
         public void Reset()
         {
-            this.dataBase.Dispatcher.Invoke(() =>
+            this.DataBase.Dispatcher.Invoke(() =>
             {
-                this.dataBase.Loaded -= DataBase_Loaded;
-                this.dataBase.Renamed -= DataBase_Renamed;
-                this.dataBase.Unloaded -= DataBase_Unloaded;
+                this.DataBase.Loaded -= DataBase_Loaded;
+                this.DataBase.Renamed -= DataBase_Renamed;
+                this.DataBase.Unloaded -= DataBase_Unloaded;
             });
-            var dataSet = this.dataBase.Dispatcher.Invoke(() =>
+            var dataSet = this.DataBase.Dispatcher.Invoke(() =>
             {
                 if (this.DataBase.IsLoaded == false)
-                    this.dataBase.Load(this.Authentication);
-                var contains = this.dataBase.Contains(this.Authentication);
+                    this.DataBase.Load(this.Authentication);
+                var contains = this.DataBase.Contains(this.Authentication);
                 if (contains == false)
-                    this.dataBase.Enter(this.Authentication);
+                    this.DataBase.Enter(this.Authentication);
                 try
                 {
-                    return this.dataBase.GetDataSet(this.Authentication, null);
+                    return this.DataBase.GetDataSet(this.Authentication, null);
                 }
                 finally
                 {
                     if (contains == false)
-                        this.dataBase.Leave(this.Authentication);
+                        this.DataBase.Leave(this.Authentication);
                 }
             });
 
             DirectoryUtility.Delete(this.BasePath);
             this.Serialize(dataSet, this.info.Revision);
             this.initialized = true;
-            this.dataBase.Dispatcher.Invoke(() =>
+            this.DataBase.Dispatcher.Invoke(() =>
             {
-                this.dataBase.Loaded += DataBase_Loaded;
-                this.dataBase.Renamed += DataBase_Renamed;
-                this.dataBase.Unloaded += DataBase_Unloaded;
+                this.DataBase.Loaded += DataBase_Loaded;
+                this.DataBase.Renamed += DataBase_Renamed;
+                this.DataBase.Unloaded += DataBase_Unloaded;
             });
         }
 
-        public abstract CremaDispatcher Dispatcher
-        {
-            get;
-        }
+        public abstract CremaDispatcher Dispatcher { get; }
 
-        public IDataBase DataBase
-        {
-            get { return this.dataBase; }
-        }
+        public IDataBase DataBase { get; }
 
-        public abstract string Name
-        {
-            get;
-        }
+        public abstract string Name { get; }
 
         public string BasePath
         {
@@ -185,9 +168,9 @@ namespace Ntreev.Crema.Services.Data
             {
                 if (this.workingPath == null)
                 {
-                    if (this.dataBase.GetService(typeof(ICremaHost)) is CremaHost cremaHost)
+                    if (this.DataBase.GetService(typeof(ICremaHost)) is CremaHost cremaHost)
                     {
-                        this.workingPath = cremaHost.GetPath(CremaPath.Caches, this.Name, $"{this.dataBase.ID}");
+                        this.workingPath = cremaHost.GetPath(CremaPath.Caches, this.Name, $"{this.DataBase.ID}");
                     }
                     else
                     {
@@ -198,25 +181,13 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public string DataBaseName
-        {
-            get { return this.dataBaseName; }
-        }
+        public string DataBaseName { get; private set; }
 
-        public string Revision
-        {
-            get { return this.info.Revision; }
-        }
+        public string Revision => this.info.Revision;
 
-        public bool NoCache
-        {
-            get { return this.noCache; }
-        }
+        public bool NoCache { get; private set; }
 
-        public DataServiceItemInfo DataServiceItemInfo
-        {
-            get { return this.info; }
-        }
+        public DataServiceItemInfo DataServiceItemInfo => this.info;
 
         public event EventHandler Changed;
 
@@ -292,30 +263,30 @@ namespace Ntreev.Crema.Services.Data
 
         private void DataBase_Loaded(object sender, EventArgs e)
         {
-            this.dataBase.TypeContext.ItemsCreated += TypeContext_ItemCreated;
-            this.dataBase.TypeContext.ItemsRenamed += TypeContext_ItemRenamed;
-            this.dataBase.TypeContext.ItemsMoved += TypeContext_ItemMoved;
-            this.dataBase.TypeContext.ItemsDeleted += TypeContext_ItemDeleted;
-            this.dataBase.TypeContext.ItemsChanged += TypeContext_ItemsChanged;
+            this.DataBase.TypeContext.ItemsCreated += TypeContext_ItemCreated;
+            this.DataBase.TypeContext.ItemsRenamed += TypeContext_ItemRenamed;
+            this.DataBase.TypeContext.ItemsMoved += TypeContext_ItemMoved;
+            this.DataBase.TypeContext.ItemsDeleted += TypeContext_ItemDeleted;
+            this.DataBase.TypeContext.ItemsChanged += TypeContext_ItemsChanged;
 
-            this.dataBase.TableContext.ItemsCreated += TableContext_ItemCreated;
-            this.dataBase.TableContext.ItemsRenamed += TableContext_ItemRenamed;
-            this.dataBase.TableContext.ItemsMoved += TableContext_ItemMoved;
-            this.dataBase.TableContext.ItemsDeleted += TableContext_ItemDeleted;
-            this.dataBase.TableContext.ItemsChanged += TableContext_ItemsChanged;
-            this.dataBaseID = this.dataBase.ID;
+            this.DataBase.TableContext.ItemsCreated += TableContext_ItemCreated;
+            this.DataBase.TableContext.ItemsRenamed += TableContext_ItemRenamed;
+            this.DataBase.TableContext.ItemsMoved += TableContext_ItemMoved;
+            this.DataBase.TableContext.ItemsDeleted += TableContext_ItemDeleted;
+            this.DataBase.TableContext.ItemsChanged += TableContext_ItemsChanged;
+            this.dataBaseID = this.DataBase.ID;
 
-            if (this.dataBase is DataBase dataBaseInternal)
+            if (this.DataBase is DataBase dataBaseInternal)
             {
-                this.noCache = dataBaseInternal.CremaHost.NoCache;
+                this.NoCache = dataBaseInternal.CremaHost.NoCache;
             }
 
-            if (this.noCache == true)
+            if (this.NoCache == true)
             {
                 this.info.Revision = null;
             }
 
-            var domainContext = this.dataBase.GetService(typeof(IDomainContext)) as IDomainContext;
+            var domainContext = this.DataBase.GetService(typeof(IDomainContext)) as IDomainContext;
             domainContext.Domains.DomainCreated += Domains_DomainCreated;
             domainContext.Domains.DomainDeleted += Domains_DomainDeleted;
             domainContext.Domains.DomainRowAdded += Domains_DomainRowAdded;
@@ -370,12 +341,12 @@ namespace Ntreev.Crema.Services.Data
 
         private void DataBase_Renamed(object sender, EventArgs e)
         {
-            this.dataBaseName = this.dataBase.Name;
+            this.DataBaseName = this.DataBase.Name;
         }
 
         private void DataBase_Unloaded(object sender, EventArgs e)
         {
-            var domainContext = this.dataBase.GetService(typeof(IDomainContext)) as IDomainContext;
+            var domainContext = this.DataBase.GetService(typeof(IDomainContext)) as IDomainContext;
             domainContext.Domains.DomainCreated -= Domains_DomainCreated;
             domainContext.Domains.DomainDeleted -= Domains_DomainDeleted;
             this.Dispatcher.InvokeAsync(() =>
@@ -443,7 +414,7 @@ namespace Ntreev.Crema.Services.Data
         private void TypeContext_ItemCreated(object sender, Services.ItemsCreatedEventArgs<ITypeItem> e)
         {
             var dataSet = e.MetaData as CremaDataSet;
-            var revision = this.dataBase.DataBaseInfo.Revision;
+            var revision = this.DataBase.DataBaseInfo.Revision;
 
             this.Dispatcher.InvokeAsync(() => this.Serialize(dataSet, revision));
         }
@@ -451,7 +422,7 @@ namespace Ntreev.Crema.Services.Data
         private void TypeContext_ItemRenamed(object sender, Services.ItemsRenamedEventArgs<ITypeItem> e)
         {
             var dataSet = e.MetaData as CremaDataSet;
-            var revision = this.dataBase.DataBaseInfo.Revision;
+            var revision = this.DataBase.DataBaseInfo.Revision;
 
             this.Dispatcher.InvokeAsync(() =>
             {
@@ -467,7 +438,7 @@ namespace Ntreev.Crema.Services.Data
         private void TypeContext_ItemMoved(object sender, Services.ItemsMovedEventArgs<ITypeItem> e)
         {
             var dataSet = e.MetaData as CremaDataSet;
-            var revision = this.dataBase.DataBaseInfo.Revision;
+            var revision = this.DataBase.DataBaseInfo.Revision;
 
             this.Dispatcher.InvokeAsync(() => this.Serialize(dataSet, revision));
         }
@@ -475,7 +446,7 @@ namespace Ntreev.Crema.Services.Data
         private void TypeContext_ItemDeleted(object sender, Services.ItemsDeletedEventArgs<ITypeItem> e)
         {
             var dataSet = e.MetaData as CremaDataSet;
-            var revision = this.dataBase.DataBaseInfo.Revision;
+            var revision = this.DataBase.DataBaseInfo.Revision;
 
             this.Dispatcher.InvokeAsync(() =>
             {
@@ -491,7 +462,7 @@ namespace Ntreev.Crema.Services.Data
         private void TypeContext_ItemsChanged(object sender, Services.ItemsEventArgs<ITypeItem> e)
         {
             var dataSet = e.MetaData as CremaDataSet;
-            var revision = this.dataBase.DataBaseInfo.Revision;
+            var revision = this.DataBase.DataBaseInfo.Revision;
 
             this.Dispatcher.InvokeAsync(() => this.Serialize(dataSet, revision));
         }
@@ -499,7 +470,7 @@ namespace Ntreev.Crema.Services.Data
         private void TableContext_ItemCreated(object sender, Services.ItemsCreatedEventArgs<ITableItem> e)
         {
             var dataSet = e.MetaData as CremaDataSet;
-            var revision = this.dataBase.DataBaseInfo.Revision;
+            var revision = this.DataBase.DataBaseInfo.Revision;
 
             this.Dispatcher.InvokeAsync(() => this.Serialize(dataSet, revision));
         }
@@ -507,7 +478,7 @@ namespace Ntreev.Crema.Services.Data
         private void TableContext_ItemRenamed(object sender, Services.ItemsRenamedEventArgs<ITableItem> e)
         {
             var dataSet = e.MetaData as CremaDataSet;
-            var revision = this.dataBase.DataBaseInfo.Revision;
+            var revision = this.DataBase.DataBaseInfo.Revision;
 
             this.Dispatcher.InvokeAsync(() =>
             {
@@ -523,7 +494,7 @@ namespace Ntreev.Crema.Services.Data
         private void TableContext_ItemMoved(object sender, Services.ItemsMovedEventArgs<ITableItem> e)
         {
             var dataSet = e.MetaData as CremaDataSet;
-            var revision = this.dataBase.DataBaseInfo.Revision;
+            var revision = this.DataBase.DataBaseInfo.Revision;
 
             this.Dispatcher.InvokeAsync(() => this.Serialize(dataSet, revision));
         }
@@ -531,7 +502,7 @@ namespace Ntreev.Crema.Services.Data
         private void TableContext_ItemDeleted(object sender, Services.ItemsDeletedEventArgs<ITableItem> e)
         {
             var dataSet = e.MetaData as CremaDataSet;
-            var revision = this.dataBase.DataBaseInfo.Revision;
+            var revision = this.DataBase.DataBaseInfo.Revision;
 
             this.Dispatcher.InvokeAsync(() =>
             {
@@ -547,7 +518,7 @@ namespace Ntreev.Crema.Services.Data
         private void TableContext_ItemsChanged(object sender, Services.ItemsEventArgs<ITableItem> e)
         {
             var dataSet = e.MetaData as CremaDataSet;
-            var revision = this.dataBase.DataBaseInfo.Revision;
+            var revision = this.DataBase.DataBaseInfo.Revision;
 
             this.Dispatcher.InvokeAsync(() => this.Serialize(dataSet, revision));
         }
@@ -600,15 +571,15 @@ namespace Ntreev.Crema.Services.Data
 
             if (error == true)
             {
-                var result = this.dataBase.Dispatcher.Invoke(() =>
+                var result = this.DataBase.Dispatcher.Invoke(() =>
                 {
-                    var revision = this.dataBase.DataBaseInfo.Revision;
-                    var contains = this.dataBase.Contains(this.Authentication);
+                    var revision = this.DataBase.DataBaseInfo.Revision;
+                    var contains = this.DataBase.Contains(this.Authentication);
                     if (contains == false)
-                        this.dataBase.Enter(this.Authentication);
-                    var dataSet = this.dataBase.GetDataSet(this.Authentication, null);
+                        this.DataBase.Enter(this.Authentication);
+                    var dataSet = this.DataBase.GetDataSet(this.Authentication, null);
                     if (contains == false)
-                        this.dataBase.Leave(this.Authentication);
+                        this.DataBase.Leave(this.Authentication);
                     return new Tuple<string, CremaDataSet>(revision, dataSet);
                 });
                 this.Serialize(result.Item2, result.Item1);

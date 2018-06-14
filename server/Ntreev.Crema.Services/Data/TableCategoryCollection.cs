@@ -16,8 +16,6 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Ntreev.Crema.Data;
-using Ntreev.Crema.Data.Xml;
-using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services.Properties;
 using Ntreev.Library;
@@ -30,7 +28,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace Ntreev.Crema.Services.Data
 {
@@ -77,12 +74,11 @@ namespace Ntreev.Crema.Services.Data
                 this.Context.InvokeTableItemCreate(authentication, categoryName);
                 this.Repository.Commit(authentication, message);
             }
-            catch (Exception e)
+            catch
             {
                 DirectoryUtility.Delete(path);
-                this.CremaHost.Error(e);
                 this.Repository.Revert();
-                throw e;
+                throw;
             }
         }
 
@@ -100,11 +96,10 @@ namespace Ntreev.Crema.Services.Data
                 this.Context.InvokeTableItemRename(authentication, category, name);
                 this.Repository.Commit(authentication, message);
             }
-            catch (Exception e)
+            catch
             {
-                this.CremaHost.Error(e);
                 this.Repository.Revert();
-                throw e;
+                throw;
             }
         }
 
@@ -122,11 +117,10 @@ namespace Ntreev.Crema.Services.Data
                 this.Context.InvokeTableItemMove(authentication, category, parentPath);
                 this.Repository.Commit(authentication, message);
             }
-            catch (Exception e)
+            catch
             {
-                this.CremaHost.Error(e);
                 this.Repository.Revert();
-                throw e;
+                throw;
             }
         }
 
@@ -140,11 +134,10 @@ namespace Ntreev.Crema.Services.Data
                 this.Context.InvokeTableItemDelete(authentication, category);
                 this.Repository.Commit(authentication, message);
             }
-            catch (Exception e)
+            catch
             {
-                this.CremaHost.Error(e);
                 this.Repository.Revert();
-                throw e;
+                throw;
             }
         }
 
@@ -191,25 +184,13 @@ namespace Ntreev.Crema.Services.Data
             this.Context.InvokeItemsDeletedEvent(authentication, categories, categoryPaths, dataSet);
         }
 
-        public DataBaseRepositoryHost Repository
-        {
-            get { return this.DataBase.Repository; }
-        }
+        public DataBaseRepositoryHost Repository => this.DataBase.Repository;
 
-        public CremaHost CremaHost
-        {
-            get { return this.Context.CremaHost; }
-        }
+        public CremaHost CremaHost => this.Context.CremaHost;
 
-        public DataBase DataBase
-        {
-            get { return this.Context.DataBase; }
-        }
+        public DataBase DataBase => this.Context.DataBase;
 
-        public CremaDispatcher Dispatcher
-        {
-            get { return this.Context?.Dispatcher; }
-        }
+        public CremaDispatcher Dispatcher => this.Context?.Dispatcher;
 
         public IObjectSerializer Serializer => this.DataBase.Serializer;
 

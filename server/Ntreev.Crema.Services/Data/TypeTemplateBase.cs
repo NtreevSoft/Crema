@@ -15,24 +15,22 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.Data;
+using Ntreev.Crema.Data.Xml.Schema;
+using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services.Domains;
 using Ntreev.Crema.Services.Properties;
-using Ntreev.Crema.ServiceModel;
-using Ntreev.Crema.Data;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Services.Data
 {
     abstract class TypeTemplateBase : ITypeTemplate, IDomainHost
     {
         private TypeDomain domain;
-        private CremaDataType dataType;
         private DataTable table;
 
         private readonly List<TypeMember> members = new List<TypeMember>();
@@ -46,53 +44,93 @@ namespace Ntreev.Crema.Services.Data
 
         public TypeMember AddNew(Authentication authentication)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            return new TypeMember(this, this.dataType.View.Table);
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                return new TypeMember(this, this.TypeSource.View.Table);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void EndNew(Authentication authentication, TypeMember member)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.table.RowChanged -= Table_RowChanged;
             try
             {
-                member.EndNew(authentication);
-                this.members.Add(member);
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.table.RowChanged -= Table_RowChanged;
+                try
+                {
+                    member.EndNew(authentication);
+                    this.members.Add(member);
+                }
+                finally
+                {
+                    this.table.RowChanged += Table_RowChanged;
+                }
             }
-            finally
+            catch (Exception e)
             {
-                this.table.RowChanged += Table_RowChanged;
+                this.CremaHost.Error(e);
+                throw;
             }
         }
 
         public void BeginEdit(Authentication authentication)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(BeginEdit));
-            this.ValidateBeginEdit(authentication);
-            this.Sign(authentication);
-            this.OnBeginEdit(authentication);
-            this.OnEditBegun(EventArgs.Empty);
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.CremaHost.DebugMethod(authentication, this, nameof(BeginEdit));
+                this.ValidateBeginEdit(authentication);
+                this.Sign(authentication);
+                this.OnBeginEdit(authentication);
+                this.OnEditBegun(EventArgs.Empty);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void EndEdit(Authentication authentication)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(EndEdit));
-            this.ValidateEndEdit(authentication);
-            this.Sign(authentication);
-            this.OnEndEdit(authentication);
-            this.OnEditEnded(EventArgs.Empty);
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.CremaHost.DebugMethod(authentication, this, nameof(EndEdit));
+                this.ValidateEndEdit(authentication);
+                this.Sign(authentication);
+                this.OnEndEdit(authentication);
+                this.OnEditEnded(EventArgs.Empty);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void CancelEdit(Authentication authentication)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(CancelEdit));
-            this.ValidateCancelEdit(authentication);
-            this.Sign(authentication);
-            this.OnCancelEdit(authentication);
-            this.OnEditCanceled(EventArgs.Empty);
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.CremaHost.DebugMethod(authentication, this, nameof(CancelEdit));
+                this.ValidateCancelEdit(authentication);
+                this.Sign(authentication);
+                this.OnCancelEdit(authentication);
+                this.OnEditCanceled(EventArgs.Empty);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void ValidateBeginEdit(Authentication authentication)
@@ -118,20 +156,44 @@ namespace Ntreev.Crema.Services.Data
 
         public void SetTypeName(Authentication authentication, string value)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.domain.Dispatcher.Invoke(() => this.domain.SetProperty(authentication, "TypeName", value));
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.domain.Dispatcher.Invoke(() => this.domain.SetProperty(authentication, CremaSchema.TypeName, value));
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void SetIsFlag(Authentication authentication, bool value)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.domain.Dispatcher.Invoke(() => this.domain.SetProperty(authentication, "IsFlag", value));
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.domain.Dispatcher.Invoke(() => this.domain.SetProperty(authentication, CremaSchema.IsFlag, value));
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void SetComment(Authentication authentication, string value)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.domain.Dispatcher.Invoke(() => this.domain.SetProperty(authentication, "Comment", value));
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.domain.Dispatcher.Invoke(() => this.domain.SetProperty(authentication, CremaSchema.Comment, value));
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public bool Contains(string memberName)
@@ -151,10 +213,7 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public abstract IPermission Permission
-        {
-            get;
-        }
+        public abstract IPermission Permission { get; }
 
         public int Count
         {
@@ -167,42 +226,24 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public abstract DomainContext DomainContext
-        {
-            get;
-        }
+        public abstract DomainContext DomainContext { get; }
 
-        public abstract string ItemPath
-        {
-            get;
-        }
+        public abstract string ItemPath { get; }
 
-        public abstract CremaDispatcher Dispatcher
-        {
-            get;
-        }
+        public abstract CremaDispatcher Dispatcher { get; }
 
-        public abstract CremaHost CremaHost
-        {
-            get;
-        }
+        public abstract CremaHost CremaHost { get; }
 
-        public abstract IType Type
-        {
-            get;
-        }
+        public abstract IType Type { get; }
 
-        public abstract DataBase DataBase
-        {
-            get;
-        }
+        public abstract DataBase DataBase { get; }
 
         public string TypeName
         {
             get
             {
                 this.Dispatcher?.VerifyAccess();
-                return this.dataType.Name;
+                return this.TypeSource.Name;
             }
         }
 
@@ -211,7 +252,7 @@ namespace Ntreev.Crema.Services.Data
             get
             {
                 this.Dispatcher?.VerifyAccess();
-                return this.dataType.IsFlag;
+                return this.TypeSource.IsFlag;
             }
         }
 
@@ -220,7 +261,7 @@ namespace Ntreev.Crema.Services.Data
             get
             {
                 this.Dispatcher?.VerifyAccess();
-                return this.dataType.Comment;
+                return this.TypeSource.Comment;
             }
         }
 
@@ -320,12 +361,14 @@ namespace Ntreev.Crema.Services.Data
 
         protected virtual void OnBeginEdit(Authentication authentication)
         {
-            this.dataType = this.CreateSource(authentication);
-            this.domain = new TypeDomain(authentication, this.dataType, this.DataBase, this.ItemPath, this.GetType().Name);
-            this.domain.IsNew = this.IsNew;
-            this.domain.Host = this;
+            this.TypeSource = this.CreateSource(authentication);
+            this.domain = new TypeDomain(authentication, this.TypeSource, this.DataBase, this.ItemPath, this.GetType().Name)
+            {
+                IsNew = this.IsNew,
+                Host = this
+            };
 
-            this.table = this.dataType.View.Table;
+            this.table = this.TypeSource.View.Table;
             for (var i = 0; i < this.table.Rows.Count; i++)
             {
                 var item = this.table.Rows[i];
@@ -380,12 +423,12 @@ namespace Ntreev.Crema.Services.Data
 
         protected virtual void OnRestore(Domain domain)
         {
-            this.dataType = domain.Source as CremaDataType;
+            this.TypeSource = domain.Source as CremaDataType;
             this.domain = domain as TypeDomain;
 
-            if (this.dataType != null)
+            if (this.TypeSource != null)
             {
-                this.table = this.dataType.View.Table;
+                this.table = this.TypeSource.View.Table;
                 for (var i = 0; i < this.table.Rows.Count; i++)
                 {
                     var item = this.table.Rows[i];
@@ -420,7 +463,7 @@ namespace Ntreev.Crema.Services.Data
         [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual void OnValidateEndEdit(Authentication authentication, object target)
         {
-            if (this.dataType.Members.Any() == false)
+            if (this.TypeSource.Members.Any() == false)
                 throw new InvalidOperationException(Resources.Exception_AtLeastOneMemberInType);
         }
 
@@ -430,10 +473,7 @@ namespace Ntreev.Crema.Services.Data
 
         }
 
-        protected CremaDataType TypeSource
-        {
-            get { return this.dataType; }
-        }
+        protected CremaDataType TypeSource { get; private set; }
 
         protected abstract CremaDataType CreateSource(Authentication authentication);
 

@@ -22,12 +22,10 @@ using Ntreev.Crema.Services.Properties;
 using Ntreev.Library;
 using Ntreev.Library.Linq;
 using Ntreev.Library.ObjectModel;
-using Ntreev.Library.Serialization;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -36,37 +34,42 @@ namespace Ntreev.Crema.Services.Data
     class Table : TableBase<Table, TableCategory, TableCollection, TableCategoryCollection, TableContext>,
         ITable, ITableItem, IInfoProvider, IStateProvider
     {
-        private readonly TableTemplate template;
-        private readonly TableContent content;
         private readonly List<NewChildTableTemplate> templateList = new List<NewChildTableTemplate>();
 
         public Table()
         {
-            this.template = new TableTemplate(this);
-            this.content = new TableContent(this);
+            this.Template = new TableTemplate(this);
+            this.Content = new TableContent(this);
         }
 
         public Table AddNew(Authentication authentication, CremaTemplate template)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-
-            var dataSet = template.TargetTable.DataSet.Copy();
-            var tableName = template.TableName;
-            var childName = CremaDataTable.GenerateName(base.Name, tableName);
-            this.Container.InvokeChildTableCreate(authentication, this, childName, dataSet);
-            var childTable = this.Container.AddNew(authentication, childName, template.CategoryPath);
-            childTable.Initialize(dataSet.Tables[childTable.Name, childTable.Category.Path].TableInfo);
-            foreach (var item in this.DerivedTables)
+            try
             {
-                var derivedChild = this.Container.AddNew(authentication, CremaDataTable.GenerateName(item.Name, tableName), item.Category.Path);
-                derivedChild.TemplatedParent = childTable;
-                derivedChild.Initialize(dataSet.Tables[derivedChild.Name, derivedChild.Category.Path].TableInfo);
-            }
+                this.DataBase.ValidateBeginInDataBase(authentication);
 
-            this.Sign(authentication);
-            var items = EnumerableUtility.Friends(childTable, childTable.DerivedTables).ToArray();
-            this.Container.InvokeTablesCreatedEvent(authentication, items, dataSet);
-            return childTable;
+                var dataSet = template.TargetTable.DataSet.Copy();
+                var tableName = template.TableName;
+                var childName = CremaDataTable.GenerateName(base.Name, tableName);
+                this.Container.InvokeChildTableCreate(authentication, this, childName, dataSet);
+                var childTable = this.Container.AddNew(authentication, childName, template.CategoryPath);
+                childTable.Initialize(dataSet.Tables[childTable.Name, childTable.Category.Path].TableInfo);
+                foreach (var item in this.DerivedTables)
+                {
+                    var derivedChild = this.Container.AddNew(authentication, CremaDataTable.GenerateName(item.Name, tableName), item.Category.Path);
+                    derivedChild.TemplatedParent = childTable;
+                    derivedChild.Initialize(dataSet.Tables[derivedChild.Name, derivedChild.Category.Path].TableInfo);
+                }
+                this.Sign(authentication);
+                var items = EnumerableUtility.Friends(childTable, childTable.DerivedTables).ToArray();
+                this.Container.InvokeTablesCreatedEvent(authentication, items, dataSet);
+                return childTable;
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public AccessType GetAccessType(Authentication authentication)
@@ -77,232 +80,384 @@ namespace Ntreev.Crema.Services.Data
 
         public void SetPublic(Authentication authentication)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(SetPublic), this);
-            base.ValidateSetPublic(authentication);
-            this.Sign(authentication);
-            this.Context.InvokeTableItemSetPublic(authentication, this);
-            base.SetPublic(authentication);
-            this.Context.InvokeItemsSetPublicEvent(authentication, new ITableItem[] { this });
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.CremaHost.DebugMethod(authentication, this, nameof(SetPublic), this);
+                base.ValidateSetPublic(authentication);
+                this.Sign(authentication);
+                this.Context.InvokeTableItemSetPublic(authentication, this);
+                base.SetPublic(authentication);
+                this.Context.InvokeItemsSetPublicEvent(authentication, new ITableItem[] { this });
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void SetPrivate(Authentication authentication)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(SetPrivate), this);
-            base.ValidateSetPrivate(authentication);
-            this.Sign(authentication);
-            this.Context.InvokeTableItemSetPrivate(authentication, this, AccessInfo.Empty);
-            base.SetPrivate(authentication);
-            this.Context.InvokeItemsSetPrivateEvent(authentication, new ITableItem[] { this });
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.CremaHost.DebugMethod(authentication, this, nameof(SetPrivate), this);
+                base.ValidateSetPrivate(authentication);
+                this.Sign(authentication);
+                this.Context.InvokeTableItemSetPrivate(authentication, this, AccessInfo.Empty);
+                base.SetPrivate(authentication);
+                this.Context.InvokeItemsSetPrivateEvent(authentication, new ITableItem[] { this });
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void AddAccessMember(Authentication authentication, string memberID, AccessType accessType)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(AddAccessMember), this, memberID, accessType);
-            base.ValidateAddAccessMember(authentication, memberID, accessType);
-            this.Sign(authentication);
-            this.Context.InvokeTableItemAddAccessMember(authentication, this, this.AccessInfo, memberID, accessType);
-            base.AddAccessMember(authentication, memberID, accessType);
-            this.Context.InvokeItemsAddAccessMemberEvent(authentication, new ITableItem[] { this }, new string[] { memberID }, new AccessType[] { accessType });
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.CremaHost.DebugMethod(authentication, this, nameof(AddAccessMember), this, memberID, accessType);
+                base.ValidateAddAccessMember(authentication, memberID, accessType);
+                this.Sign(authentication);
+                this.Context.InvokeTableItemAddAccessMember(authentication, this, this.AccessInfo, memberID, accessType);
+                base.AddAccessMember(authentication, memberID, accessType);
+                this.Context.InvokeItemsAddAccessMemberEvent(authentication, new ITableItem[] { this }, new string[] { memberID }, new AccessType[] { accessType });
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void SetAccessMember(Authentication authentication, string memberID, AccessType accessType)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(SetAccessMember), this, memberID, accessType);
-            base.ValidateSetAccessMember(authentication, memberID, accessType);
-            this.Sign(authentication);
-            this.Context.InvokeTableItemSetAccessMember(authentication, this, this.AccessInfo, memberID, accessType);
-            base.SetAccessMember(authentication, memberID, accessType);
-            this.Context.InvokeItemsSetAccessMemberEvent(authentication, new ITableItem[] { this }, new string[] { memberID }, new AccessType[] { accessType });
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.CremaHost.DebugMethod(authentication, this, nameof(SetAccessMember), this, memberID, accessType);
+                base.ValidateSetAccessMember(authentication, memberID, accessType);
+                this.Sign(authentication);
+                this.Context.InvokeTableItemSetAccessMember(authentication, this, this.AccessInfo, memberID, accessType);
+                base.SetAccessMember(authentication, memberID, accessType);
+                this.Context.InvokeItemsSetAccessMemberEvent(authentication, new ITableItem[] { this }, new string[] { memberID }, new AccessType[] { accessType });
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void RemoveAccessMember(Authentication authentication, string memberID)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(RemoveAccessMember), this, memberID);
-            base.ValidateRemoveAccessMember(authentication, memberID);
-            this.Sign(authentication);
-            this.Context.InvokeTableItemRemoveAccessMember(authentication, this, this.AccessInfo, memberID);
-            base.RemoveAccessMember(authentication, memberID);
-            this.Context.InvokeItemsRemoveAccessMemberEvent(authentication, new ITableItem[] { this }, new string[] { memberID });
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.CremaHost.DebugMethod(authentication, this, nameof(RemoveAccessMember), this, memberID);
+                base.ValidateRemoveAccessMember(authentication, memberID);
+                this.Sign(authentication);
+                this.Context.InvokeTableItemRemoveAccessMember(authentication, this, this.AccessInfo, memberID);
+                base.RemoveAccessMember(authentication, memberID);
+                this.Context.InvokeItemsRemoveAccessMemberEvent(authentication, new ITableItem[] { this }, new string[] { memberID });
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void Lock(Authentication authentication, string comment)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(Lock), this, comment);
-            base.ValidateLock(authentication);
-            this.Sign(authentication);
-            this.Context.InvokeTableItemLock(authentication, this, comment);
-            base.Lock(authentication, comment);
-            this.Context.InvokeItemsLockedEvent(authentication, new ITableItem[] { this }, new string[] { comment });
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.CremaHost.DebugMethod(authentication, this, nameof(Lock), this, comment);
+                base.ValidateLock(authentication);
+                this.Sign(authentication);
+                this.Context.InvokeTableItemLock(authentication, this, comment);
+                base.Lock(authentication, comment);
+                this.Context.InvokeItemsLockedEvent(authentication, new ITableItem[] { this }, new string[] { comment });
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void Unlock(Authentication authentication)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(Unlock), this);
-            base.ValidateUnlock(authentication);
-            this.Sign(authentication);
-            this.Context.InvokeTableItemUnlock(authentication, this);
-            base.Unlock(authentication);
-            this.Context.InvokeItemsUnlockedEvent(authentication, new ITableItem[] { this });
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.CremaHost.DebugMethod(authentication, this, nameof(Unlock), this);
+                base.ValidateUnlock(authentication);
+                this.Sign(authentication);
+                this.Context.InvokeTableItemUnlock(authentication, this);
+                base.Unlock(authentication);
+                this.Context.InvokeItemsUnlockedEvent(authentication, new ITableItem[] { this });
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void Rename(Authentication authentication, string name)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(Rename), this, name);
-            base.ValidateRename(authentication, name);
-            this.Sign(authentication);
-            var items = this.Parent == null ? EnumerableUtility.Friends(this, this.Childs).ToArray() : EnumerableUtility.Friends(this, this.DerivedTables).ToArray();
-            var oldNames = items.Select(item => item.Name).ToArray();
-            var oldPaths = items.Select(item => item.Path).ToArray();
-            var dataSet = this.ReadAll(authentication);
-            this.Container.InvokeTableRename(authentication, this, name, dataSet);
-            base.Rename(authentication, name);
-            this.Container.InvokeTablesRenamedEvent(authentication, items, oldNames, oldPaths, dataSet);
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.CremaHost.DebugMethod(authentication, this, nameof(Rename), this, name);
+                base.ValidateRename(authentication, name);
+                this.Sign(authentication);
+                var items = this.Parent == null ? EnumerableUtility.Friends(this, this.Childs).ToArray() : EnumerableUtility.Friends(this, this.DerivedTables).ToArray();
+                var oldNames = items.Select(item => item.Name).ToArray();
+                var oldPaths = items.Select(item => item.Path).ToArray();
+                var dataSet = this.ReadAll(authentication);
+                this.Container.InvokeTableRename(authentication, this, name, dataSet);
+                base.Rename(authentication, name);
+                this.Container.InvokeTablesRenamedEvent(authentication, items, oldNames, oldPaths, dataSet);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void Move(Authentication authentication, string categoryPath)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(Move), this, categoryPath);
-            base.ValidateMove(authentication, categoryPath);
-            this.Sign(authentication);
-            var items = EnumerableUtility.Friends(this, this.Childs).ToArray();
-            var oldPaths = items.Select(item => item.Path).ToArray();
-            var oldCategoryPaths = items.Select(item => item.Category.Path).ToArray();
-            var dataSet = this.ReadAll(authentication);
-            this.Container.InvokeTableMove(authentication, this, categoryPath, dataSet);
-            base.Move(authentication, categoryPath);
-            this.Container.InvokeTablesMovedEvent(authentication, items, oldPaths, oldCategoryPaths, dataSet);
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.CremaHost.DebugMethod(authentication, this, nameof(Move), this, categoryPath);
+                base.ValidateMove(authentication, categoryPath);
+                this.Sign(authentication);
+                var items = EnumerableUtility.Friends(this, this.Childs).ToArray();
+                var oldPaths = items.Select(item => item.Path).ToArray();
+                var oldCategoryPaths = items.Select(item => item.Category.Path).ToArray();
+                var dataSet = this.ReadAll(authentication);
+                this.Container.InvokeTableMove(authentication, this, categoryPath, dataSet);
+                base.Move(authentication, categoryPath);
+                this.Container.InvokeTablesMovedEvent(authentication, items, oldPaths, oldCategoryPaths, dataSet);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void Delete(Authentication authentication)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(Delete), this);
-            base.ValidateDelete(authentication);
-            this.Sign(authentication);
-            var items = this.Parent == null ? EnumerableUtility.Friends(this, this.Childs).ToArray() : EnumerableUtility.Friends(this, this.DerivedTables).ToArray();
-            var oldPaths = items.Select(item => item.Path).ToArray();
-            var container = this.Container;
-            var dataSet = this.Parent != null ? this.ReadAll(authentication) : null;
-            container.InvokeTableDelete(authentication, this, dataSet);
-            base.Delete(authentication);
-            container.InvokeTablesDeletedEvent(authentication, items, oldPaths);
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.CremaHost.DebugMethod(authentication, this, nameof(Delete), this);
+                base.ValidateDelete(authentication);
+                this.Sign(authentication);
+                var items = this.Parent == null ? EnumerableUtility.Friends(this, this.Childs).ToArray() : EnumerableUtility.Friends(this, this.DerivedTables).ToArray();
+                var oldPaths = items.Select(item => item.Path).ToArray();
+                var container = this.Container;
+                var dataSet = this.Parent != null ? this.ReadAll(authentication) : null;
+                container.InvokeTableDelete(authentication, this, dataSet);
+                base.Delete(authentication);
+                container.InvokeTablesDeletedEvent(authentication, items, oldPaths);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void SetProperty(Authentication authentication, string propertyName, string value)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(SetProperty), this, propertyName, value);
-            if (propertyName == CremaSchema.Tags)
+            try
             {
-                this.SetTags(authentication, (TagInfo)value);
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.CremaHost.DebugMethod(authentication, this, nameof(SetProperty), this, propertyName, value);
+                if (propertyName == CremaSchema.Tags)
+                {
+                    this.SetTags(authentication, (TagInfo)value);
+                }
+                else if (propertyName == CremaSchema.Comment)
+                {
+                    this.SetComment(authentication, value);
+                }
             }
-            else if (propertyName == CremaSchema.Comment)
+            catch (Exception e)
             {
-                this.SetComment(authentication, value);
+                this.CremaHost.Error(e);
+                throw;
             }
         }
 
         public void SetTags(Authentication authentication, TagInfo tags)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(SetTags), this, tags);
-            this.ValidateSetTags(authentication, tags);
-            this.Sign(authentication);
-            var items = EnumerableUtility.Friends(this, this.Childs).SelectMany(item => item.DerivedTables).ToArray();
-            var dataSet = this.ReadAll(authentication);
-            this.Container.InvokeTableSetTags(authentication, this, tags, dataSet);
-            this.UpdateTags(tags);
-            this.Container.InvokeTablesTemplateChangedEvent(authentication, items, dataSet);
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.CremaHost.DebugMethod(authentication, this, nameof(SetTags), this, tags);
+                this.ValidateSetTags(authentication, tags);
+                this.Sign(authentication);
+                var items = EnumerableUtility.Friends(this, this.Childs).SelectMany(item => item.DerivedTables).ToArray();
+                var dataSet = this.ReadAll(authentication);
+                this.Container.InvokeTableSetTags(authentication, this, tags, dataSet);
+                this.UpdateTags(tags);
+                this.Container.InvokeTablesTemplateChangedEvent(authentication, items, dataSet);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void SetComment(Authentication authentication, string comment)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(SetComment), this, comment);
-            this.ValidateSetComment(authentication, comment);
-            this.Sign(authentication);
-            var items = EnumerableUtility.Friends(this, this.Childs).SelectMany(item => item.DerivedTables).ToArray();
-            var dataSet = this.ReadAll(authentication);
-            this.Container.InvokeTableSetComment(authentication, this, comment, dataSet);
-            this.UpdateComment(comment);
-            this.Container.InvokeTablesTemplateChangedEvent(authentication, items, dataSet);
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.CremaHost.DebugMethod(authentication, this, nameof(SetComment), this, comment);
+                this.ValidateSetComment(authentication, comment);
+                this.Sign(authentication);
+                var items = EnumerableUtility.Friends(this, this.Childs).SelectMany(item => item.DerivedTables).ToArray();
+                var dataSet = this.ReadAll(authentication);
+                this.Container.InvokeTableSetComment(authentication, this, comment, dataSet);
+                this.UpdateComment(comment);
+                this.Container.InvokeTablesTemplateChangedEvent(authentication, items, dataSet);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public Table Copy(Authentication authentication, string newTableName, string categoryPath, bool copyContent)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(Copy), this, newTableName, categoryPath, copyContent);
-            return this.Container.Copy(authentication, this, newTableName, categoryPath, copyContent);
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.CremaHost.DebugMethod(authentication, this, nameof(Copy), this, newTableName, categoryPath, copyContent);
+                return this.Container.Copy(authentication, this, newTableName, categoryPath, copyContent);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public Table Inherit(Authentication authentication, string newTableName, string categoryPath, bool copyContent)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(Inherit), this, newTableName, categoryPath, copyContent);
-            return this.Container.Inherit(authentication, this, newTableName, categoryPath, copyContent);
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.CremaHost.DebugMethod(authentication, this, nameof(Inherit), this, newTableName, categoryPath, copyContent);
+                return this.Container.Inherit(authentication, this, newTableName, categoryPath, copyContent);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public NewChildTableTemplate NewChild(Authentication authentication)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(NewChild), this);
-            this.ValidateNewChild(authentication);
-            var template = new NewChildTableTemplate(this);
-            template.BeginEdit(authentication);
-            return template;
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.CremaHost.DebugMethod(authentication, this, nameof(NewChild), this);
+                this.ValidateNewChild(authentication);
+                var template = new NewChildTableTemplate(this);
+                template.BeginEdit(authentication);
+                return template;
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public CremaDataSet GetDataSet(Authentication authentication, string revision)
         {
-            this.DataBase.ValidateAsyncBeginInDataBase(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(GetDataSet), this, revision);
-            var item = this.Dispatcher.Invoke(() =>
+            try
             {
-                this.ValidateAccessType(authentication, AccessType.Guest);
-                this.Sign(authentication);
-                return new Tuple<string, string>(this.LocalPath, this.TemplatedParent?.LocalPath);
-            });
-            return this.Repository.GetTableData(this.Serializer, item.Item1, item.Item2, revision);
+                this.DataBase.ValidateAsyncBeginInDataBase(authentication);
+                this.CremaHost.DebugMethod(authentication, this, nameof(GetDataSet), this, revision);
+                var item = this.Dispatcher.Invoke(() =>
+                {
+                    this.ValidateAccessType(authentication, AccessType.Guest);
+                    this.Sign(authentication);
+                    return new Tuple<string, string>(this.LocalPath, this.TemplatedParent?.LocalPath);
+                });
+                return this.Repository.GetTableData(this.Serializer, item.Item1, item.Item2, revision);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public LogInfo[] GetLog(Authentication authentication)
         {
-            this.DataBase.ValidateAsyncBeginInDataBase(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(GetLog), this);
-            var itemPaths = this.Dispatcher.Invoke(() =>
+            try
             {
-                this.ValidateAccessType(authentication, AccessType.Guest);
-                this.Sign(authentication);
-                var props = new RelativeSchemaPropertyCollection(this.LocalPath, this.TemplatedParent?.LocalPath);
-                return this.Serializer.GetPath(this.LocalPath, typeof(CremaDataTable), props);
-            });
-            var result = this.Context.GetLog(itemPaths);
-            return result;
+                this.DataBase.ValidateAsyncBeginInDataBase(authentication);
+                this.CremaHost.DebugMethod(authentication, this, nameof(GetLog), this);
+                var itemPaths = this.Dispatcher.Invoke(() =>
+                {
+                    this.ValidateAccessType(authentication, AccessType.Guest);
+                    this.Sign(authentication);
+                    var props = new RelativeSchemaPropertyCollection(this.LocalPath, this.TemplatedParent?.LocalPath);
+                    return this.Serializer.GetPath(this.LocalPath, typeof(CremaDataTable), props);
+                });
+                var result = this.Context.GetLog(itemPaths);
+                return result;
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public FindResultInfo[] Find(Authentication authentication, string text, FindOptions options)
         {
-            this.DataBase.ValidateAsyncBeginInDataBase(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(Find), this, text, options);
-            var items = this.Dispatcher.Invoke(() =>
+            try
             {
-                this.ValidateAccessType(authentication, AccessType.Guest);
-                this.Sign(authentication);
-                var descendants = EnumerableUtility.Descendants<ITableItem>(this, item => item.Childs);
-                return EnumerableUtility.Friends(this, descendants).Select(item => item.Path).ToArray();
-            });
-            var service = this.GetService(typeof(DataFindService)) as DataFindService;
-            var result = service.Dispatcher.Invoke(() => service.FindFromTable(this.DataBase.ID, items, text, options));
-            return result;
+                this.DataBase.ValidateAsyncBeginInDataBase(authentication);
+                this.CremaHost.DebugMethod(authentication, this, nameof(Find), this, text, options);
+                var items = this.Dispatcher.Invoke(() =>
+                {
+                    this.ValidateAccessType(authentication, AccessType.Guest);
+                    this.Sign(authentication);
+                    var descendants = EnumerableUtility.Descendants<ITableItem>(this, item => item.Childs);
+                    return EnumerableUtility.Friends(this, descendants).Select(item => item.Path).ToArray();
+                });
+                var service = this.GetService(typeof(DataFindService)) as DataFindService;
+                var result = service.Dispatcher.Invoke(() => service.FindFromTable(this.DataBase.ID, items, text, options));
+                return result;
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public object GetService(System.Type serviceType)
@@ -338,9 +493,9 @@ namespace Ntreev.Crema.Services.Data
 
         public void ValidateNotBeingEdited()
         {
-            if (this.template.IsBeingEdited == true)
+            if (this.Template.IsBeingEdited == true)
                 throw new InvalidOperationException(string.Format(Resources.Exception_TableIsBeingSetup_Format, base.Name));
-            if (this.content.Domain != null)
+            if (this.Content.Domain != null)
                 throw new InvalidOperationException(string.Format(Resources.Exception_TableIsBeingEdited_Format, base.Name));
         }
 
@@ -385,7 +540,7 @@ namespace Ntreev.Crema.Services.Data
 
             foreach (var item in this.Childs)
             {
-                foreach(var i in item.Collect())
+                foreach (var i in item.Collect())
                 {
                     yield return i;
                 }
@@ -443,34 +598,19 @@ namespace Ntreev.Crema.Services.Data
             this.templateList.Add(template);
         }
 
-        public TableTemplate Template
-        {
-            get { return this.template; }
-        }
+        public TableTemplate Template { get; }
 
-        public TableContent Content
-        {
-            get { return this.content; }
-        }
+        public TableContent Content { get; }
 
-        public CremaDispatcher Dispatcher
-        {
-            get { return this.Context?.Dispatcher; }
-        }
+        public CremaDispatcher Dispatcher => this.Context?.Dispatcher;
 
         public IObjectSerializer Serializer => this.DataBase.Serializer;
 
         public DataBaseRepositoryHost Repository => this.DataBase.Repository;
 
-        public CremaHost CremaHost
-        {
-            get { return this.Context.CremaHost; }
-        }
+        public CremaHost CremaHost => this.Context.CremaHost;
 
-        public DataBase DataBase
-        {
-            get { return this.Context.DataBase; }
-        }
+        public DataBase DataBase => this.Context.DataBase;
 
         public new string Name
         {
@@ -869,7 +1009,7 @@ namespace Ntreev.Crema.Services.Data
             get
             {
                 this.Dispatcher?.VerifyAccess();
-                return this.content;
+                return this.Content;
             }
         }
 
