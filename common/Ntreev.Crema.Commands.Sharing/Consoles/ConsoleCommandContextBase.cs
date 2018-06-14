@@ -73,6 +73,8 @@ namespace Ntreev.Crema.Commands.Consoles
             }
             foreach (var item in driveItems)
             {
+                if (item.Name == Uri.UriSchemeFile)
+                    throw new Exception($"'{nameof(Uri.UriSchemeFile)}' can not use as name of {nameof(IConsoleDrive)}.");
                 if (item is ConsoleDriveBase driveBase)
                 {
                     driveBase.CommandContext = this;
@@ -101,11 +103,23 @@ namespace Ntreev.Crema.Commands.Consoles
         public IConsoleDrive GetDrive(string path)
         {
             var uri = new Uri(path, UriKind.RelativeOrAbsolute);
-            if (uri.IsAbsoluteUri == true)
+            if (Environment.OSVersion.Platform == PlatformID.Unix)
             {
-                return this.driveItems.First(item => item.Name == uri.Scheme);
+                if (uri.Scheme != Uri.UriSchemeFile)
+                {
+                    return this.driveItems.First(item => item.Name == uri.Scheme);
+                }
+                return this.Drive;
             }
-            return this.Drive;
+            else
+            {
+                
+                if (uri.IsAbsoluteUri == true)
+                {
+                    return this.driveItems.First(item => item.Name == uri.Scheme);
+                }
+                return this.Drive;
+            }
         }
 
         public bool ConfirmToDelete()

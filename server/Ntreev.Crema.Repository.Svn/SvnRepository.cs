@@ -133,7 +133,7 @@ namespace Ntreev.Crema.Repository.Svn
             {
                 var patchPath = Path.Combine(this.transactionPath, this.transactions[this.repositoryPath] + ".patch");
                 var text = this.Run("diff", this.repositoryPath.WrapQuot(), "--patch-compatible");
-                FileUtility.WriteAllText(text, patchPath);
+                FileUtility.WriteAllText(text, Encoding.UTF8, patchPath);
                 this.transactionMessages[this.repositoryPath] = this.transactionMessages[this.repositoryPath] + comment + Environment.NewLine;
                 //return DateTime.UtcNow;
             }
@@ -148,14 +148,14 @@ namespace Ntreev.Crema.Repository.Svn
                 if (this.needToUpdate == true)
                     this.Run("update", this.repositoryPath.WrapQuot());
 
-                File.WriteAllText(commentPath, commentMessage);
-                result = this.Run("commit", this.repositoryPath.WrapQuot(), "--file", $"\"{commentPath}\"");
+                File.WriteAllText(commentPath, commentMessage, Encoding.UTF8);
+                result = this.Run("commit", this.repositoryPath.WrapQuot(), "--file", $"\"{commentPath}\"", "--encoding UTF-8");
             }
             catch (Exception e)
             {
                 this.logService?.Warn(e);
                 this.Run("update", this.repositoryPath.WrapQuot());
-                result = this.Run("commit", this.repositoryPath.WrapQuot(), "--file", $"\"{commentPath}\"");
+                result = this.Run("commit", this.repositoryPath.WrapQuot(), "--file", $"\"{commentPath}\"", "--encoding UTF-8");
             }
             finally
             {

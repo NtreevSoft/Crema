@@ -37,6 +37,7 @@ namespace Ntreev.Crema.Repository.Svn
             process.StartInfo.Arguments = string.Join(" ", args);
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.RedirectStandardError = true;
+            process.StartInfo.StandardErrorEncoding = Encoding.UTF8;
             process.StartInfo.StandardOutputEncoding = Encoding.UTF8;
             process.OutputDataReceived += (s, e) =>
             {
