@@ -42,6 +42,17 @@ namespace Ntreev.Crema.Services
             });
         }
 
+        public void AddRange(string[] paths)
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+                foreach (var item in paths)
+                {
+                    this.Repository.Add(item);
+                }
+            });
+        }
+
         public void Add(string path, string contents)
         {
             File.WriteAllText(path, contents, Encoding.UTF8);

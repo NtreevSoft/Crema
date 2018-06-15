@@ -515,9 +515,10 @@ namespace Ntreev.Crema.Services.Data
 
         public CremaDataTable ReadData(Authentication authentication)
         {
-            var types = this.GetService(typeof(TypeCollection)) as TypeCollection;
-            var typePaths = (from Type item in this.GetTypes() select item.LocalPath).ToArray();
-            var tablePaths = new string[] { this.LocalPath };
+            var tables = this.CollectChilds().OrderBy(item => item.Name).ToArray();
+            var types = tables.SelectMany(item => item.GetTypes()).Distinct().ToArray();
+            var typePaths = types.Select(item => item.LocalPath).ToArray();
+            var tablePaths = tables.Select(item => item.LocalPath).ToArray();
             var props = new CremaDataSetPropertyCollection(authentication, typePaths, tablePaths);
             var dataSet = this.Serializer.Deserialize(this.LocalPath, typeof(CremaDataSet), props) as CremaDataSet;
             return dataSet.Tables[base.TableName, this.Category.Path];
@@ -549,6 +550,19 @@ namespace Ntreev.Crema.Services.Data
             foreach (var item in this.DerivedTables)
             {
                 yield return item;
+            }
+        }
+
+        private IEnumerable<Table> CollectChilds()
+        {
+            yield return this;
+
+            foreach (var item in this.Childs)
+            {
+                foreach (var i in item.CollectChilds())
+                {
+                    yield return i;
+                }
             }
         }
 

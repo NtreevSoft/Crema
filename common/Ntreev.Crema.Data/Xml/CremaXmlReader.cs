@@ -221,14 +221,6 @@ namespace Ntreev.Crema.Data.Xml
                     this.tables.Add(item.Name, item);
                 }
             }
-
-            //foreach (var item in this.tables)
-            //{
-            //    if (item.Value.Rows.Count > 0)
-            //    {
-            //        throw new CremaDataException("'{0}'은(는) 데이터가 존재하기 때문에 읽어들일 수 없습니다.", item.Value.TableName);
-            //    }
-            //}
         }
 
         private void ReadHeaderInfo(XmlReader reader)

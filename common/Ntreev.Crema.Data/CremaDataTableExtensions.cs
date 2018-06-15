@@ -29,21 +29,21 @@ namespace Ntreev.Crema.Data
     {
         public static DataView AsDataView(this CremaDataTable table)
         {
-            var view = table.InternalObject.AsDataView();
+            var view = Environment.OSVersion.Platform == PlatformID.Unix ? new DataView(table.InternalObject) : table.InternalObject.AsDataView();
             view.Sort = string.Join(",", table.Columns.Select(item => item.ColumnName));
             return view;
         }
 
         public static DataView AsDataView(this CremaDataType type)
         {
-            var view = type.InternalObject.AsDataView();
+            var view = Environment.OSVersion.Platform == PlatformID.Unix ? new DataView(type.InternalObject) : type.InternalObject.AsDataView();
             view.Sort = type.InternalObject.columnName.ColumnName;
             return view;
         }
 
         public static DataView AsDataView(this CremaTemplate template)
         {
-            var view = template.InternalObject.AsDataView();
+            var view = Environment.OSVersion.Platform == PlatformID.Unix ? new DataView(template.InternalObject) : template.InternalObject.AsDataView();
             return view;
         }
     }

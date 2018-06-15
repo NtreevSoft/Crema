@@ -359,16 +359,16 @@ namespace Ntreev.Crema.Commands.Consoles
 
         [ConsoleModeOnly]
         [CommandMethod]
-        [CommandMethodProperty(nameof(CategoryPath))]
+        [CommandMethodProperty(nameof(ParentPath))]
         public void Create()
         {
             var authentication = this.CommandContext.GetAuthentication(this);
-            var category = this.GetCategory(this.CategoryPath ?? this.GetCurrentDirectory());
+            //var category = this.GetCategory(this.CategoryPath ?? this.GetCurrentDirectory());
             var tableNames = this.GetTableNames();
-            var template = category.Dispatcher.Invoke(() => category.NewTable(authentication));
+            var template = CreateTemplate();
 
             var dataTypes = template.Dispatcher.Invoke(() => template.SelectableTypes);
-            var tableName = NameUtility.GenerateNewName("Table", tableNames);
+            var tableName = template.Dispatcher.Invoke(() => template.TableName);
             var tableInfo = JsonTableInfo.Default;
             if (tableInfo.TableName == string.Empty)
                 tableInfo.TableName = tableName;
@@ -394,6 +394,28 @@ namespace Ntreev.Crema.Commands.Consoles
                 if (template != null)
                 {
                     template.Dispatcher.Invoke(() => template.CancelEdit(authentication));
+                }
+            }
+
+            ITableTemplate CreateTemplate()
+            {
+                if (this.ParentPath == string.Empty)
+                {
+                    var category = this.GetCategory(this.ParentPath ?? this.GetCurrentDirectory());
+                    return category.Dispatcher.Invoke(() => category.NewTable(authentication));
+                }
+                else if (NameValidator.VerifyCategoryPath(this.ParentPath) == true)
+                {
+                    var category = this.GetCategory(this.ParentPath);
+                    return category.Dispatcher.Invoke(() => category.NewTable(authentication));
+                }
+                else if (this.GetTable(this.ParentPath) is ITable table)
+                {
+                    return table.Dispatcher.Invoke(() => table.NewTable(authentication));
+                }
+                else
+                {
+                    throw new NotImplementedException();
                 }
             }
 
@@ -490,6 +512,13 @@ namespace Ntreev.Crema.Commands.Consoles
 
         [CommandProperty]
         public string CategoryPath
+        {
+            get; set;
+        }
+
+        [CommandProperty("parent")]
+        [DefaultValue("")]
+        public string ParentPath
         {
             get; set;
         }

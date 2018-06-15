@@ -161,6 +161,7 @@ namespace Ntreev.Crema.Data
                 this.DataSet.ReadXmlSchemaString(schema, targetName);
                 if (xml != null)
                     this.DataSet.ReadXmlString(xml, targetName);
+                System.Diagnostics.Trace.WriteLine(item.Name);
             }
 
             //var schema = this.GetXmlSchema();
@@ -233,6 +234,8 @@ namespace Ntreev.Crema.Data
                     this.DataSet.ReadXmlSchemaString(schema, targetName);
                     if (xml != null)
                         this.DataSet.ReadXmlString(xml, targetName);
+                    var copiedTable = this.DataSet.Tables[targetName.Name];
+                    copiedTable.ExtendedProperties["SourceTable"] = item;
                 }
 
                 var dataTable = this.DataSet.Tables[itemName.Name, itemName.CategoryPath];
@@ -1049,22 +1052,6 @@ namespace Ntreev.Crema.Data
             }
         }
 
-        private void Table_ColumnChanged(object sender, DataColumnChangeEventArgs e)
-        {
-            if (e.Column.ColumnMapping == MappingType.Element)
-            {
-                this.OnColumnChanged(new CremaDataColumnChangeEventArgs(e));
-            }
-        }
-
-        private void Table_ColumnChanging(object sender, DataColumnChangeEventArgs e)
-        {
-            if (e.Column.ColumnMapping == MappingType.Element)
-            {
-                this.OnColumnChanging(new CremaDataColumnChangeEventArgs(e));
-            }
-        }
-
         private void UpdateSignatureDate(DataRowChangeEventArgs e)
         {
             var row = e.Row as InternalDataRow;
@@ -1102,6 +1089,22 @@ namespace Ntreev.Crema.Data
 
                     }
                     break;
+            }
+        }
+
+        private void Table_ColumnChanged(object sender, DataColumnChangeEventArgs e)
+        {
+            if (e.Column.ColumnMapping == MappingType.Element)
+            {
+                this.OnColumnChanged(new CremaDataColumnChangeEventArgs(e));
+            }
+        }
+
+        private void Table_ColumnChanging(object sender, DataColumnChangeEventArgs e)
+        {
+            if (e.Column.ColumnMapping == MappingType.Element)
+            {
+                this.OnColumnChanging(new CremaDataColumnChangeEventArgs(e));
             }
         }
 
@@ -1377,12 +1380,6 @@ namespace Ntreev.Crema.Data
             get { return this.InternalObject.InternalCategoryPath; }
             set { this.InternalObject.InternalCategoryPath = value; }
         }
-
-        //internal CremaDataTable InternalParent
-        //{
-        //    //get { return (CremaDataTable)this.InternalObject.InternalParent; }
-        //    set { this.InternalObject.InternalParent = value.InternalObject; }
-        //}
 
         internal SignatureDate InternalCreationInfo
         {

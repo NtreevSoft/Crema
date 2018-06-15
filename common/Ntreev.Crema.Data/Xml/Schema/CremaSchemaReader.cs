@@ -473,7 +473,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
                 }
             }
 
-            if (dataTable.ParentName != string.Empty && this.tables.ContainsKey(dataTable.ParentName))
+            if (dataTable.ParentName != string.Empty && this.tables.ContainsKey(dataTable.ParentName) == true)
             {
                 dataTable.Parent = this.tables[dataTable.ParentName];
             }
@@ -483,6 +483,19 @@ namespace Ntreev.Crema.Data.Xml.Schema
                 lock (CremaSchema.lockobj)
                 {
                     this.dataSet.Tables.Add(dataTable);
+
+                    if (dataTable.ParentName != string.Empty && dataTable.Parent == null && this.dataSet.Tables.Contains(dataTable.ParentName))
+                    {
+                        dataTable.Parent = this.dataSet.Tables[dataTable.ParentName];
+                    }
+
+                    foreach (var item in this.dataSet.Tables)
+                    {
+                        if (item.ParentName == dataTable.Name && item.Parent == null)
+                        {
+                            item.Parent = dataTable;
+                        }
+                    }
 
                     if (complexType.ContentModel != null)
                     {

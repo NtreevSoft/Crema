@@ -128,28 +128,57 @@ namespace Ntreev.Crema.Services.Data
         {
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeTableCreate), tableName, categoryPath, sourceTable);
             this.ValidateCreate(authentication, categoryPath);
-
-            var itemPath = this.Context.GenerateTablePath(categoryPath, tableName);
+            
             var message = EventMessageBuilder.CreateTable(authentication, tableName);
             try
             {
                 if (sourceTable != null)
                 {
-                    var sourceItemPath = this.Context.GenerateTablePath(categoryPath, sourceTable.Name);
-                    var props = new PropertyCollection
+                    var dataSet = dataTable.DataSet;
+
+                    var query = from item in dataSet.Tables
+                                where item.Name == tableName || item.ParentName == tableName
+                                select item;
+
+                    var itemName = new ItemName(sourceTable.Category.Path, sourceTable.Name);
+                    var names = StringUtility.Split(itemName.Name, '.');
+                    foreach (var item in query)
                     {
-                        { nameof(Table.TemplatedParent), dataTable.CategoryPath + dataTable.Name }
-                    };
-                    var items1 = this.Serializer.GetPath(sourceItemPath, dataTable.GetType(), props);
-                    var items2 = this.Serializer.GetPath(itemPath, dataTable.GetType(), props);
-                    for (var i = 0; i < items1.Length; i++)
-                    {
-                        this.Repository.Copy(items1[i], items2[i]);
+                        var targetNames = StringUtility.Split(item.Name, '.');
+                        for (var i = 0; i < names.Length; i++)
+                        {
+                            targetNames[i] = names[i];
+                        }
+                        var targetName = new ItemName(item.CategoryPath, string.Join(".", targetNames));
+                        var props = new RelativeSchemaPropertyCollection(item.Namespace, item.TemplateNamespace);
+                        //var sourceDataTable = item.ExtendedProperties["SourceTable"] as CremaDataTable;
+                        var sourceItemPath = this.Context.GenerateTablePath(targetName.CategoryPath, targetName.Name);
+                        var itemPath = this.Context.GenerateTablePath(item.CategoryPath, item.Name);
+                        var items1 = this.Serializer.GetPath(sourceItemPath, item.GetType(), props);
+                        var items2 = this.Serializer.GetPath(itemPath, item.GetType(), props);
+                        //this.Repository.AddRange(itemPaths);
+                        for (var i = 0; i < items1.Length; i++)
+                        {
+                            this.Repository.Copy(items1[i], items2[i]);
+                        }
+                        this.Serializer.Serialize(itemPath, item, props);
                     }
-                    this.Serializer.Serialize(itemPath, dataTable, props);
+
+
+                    //var destItemPath = this.Context.GenerateTablePath(categoryPath, tableName);
+                    //var templatedPath = dataTable.TemplatedParentName == string.Empty ? null : sourceItemPath;
+                    //var props = new RelativeSchemaPropertyCollection(destItemPath, templatedPath);
+                    //var items1 = this.Serializer.GetPath(sourceItemPath, dataTable.GetType(), props);
+                    //var items2 = this.Serializer.GetPath(itemPath, dataTable.GetType(), props);
+                    //for (var i = 0; i < items1.Length; i++)
+                    //{
+                    //    this.Repository.Copy(items1[i], items2[i]);
+                    //}
+                    
                 }
                 else
                 {
+                    var itemPath = this.Context.GenerateTablePath(categoryPath, tableName);
                     var itemPaths = this.Serializer.Serialize(itemPath, dataTable, null);
                     foreach (var item in itemPaths)
                     {
@@ -328,10 +357,28 @@ namespace Ntreev.Crema.Services.Data
         {
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeChildTableCreate), table);
             var dataTables = new DataTableCollection(dataSet, this.DataBase);
+            var dataTable = dataSet.Tables[childName];
+            //var itemPath = this.Context.GenerateTablePath(table.Category.Path, childName);
             var message = EventMessageBuilder.CreateTable(authentication, childName);
             try
             {
-                dataTables.Modify(this.Serializer);
+
+                var query = from item in dataSet.Tables
+                            where item.Name == childName || item.TemplatedParentName == childName
+                            select item;
+
+                foreach (var item in query)
+                {
+                    var props = new RelativeSchemaPropertyCollection(item.Namespace, item.TemplateNamespace);
+                    var itemPath = this.Context.GenerateTablePath(item.CategoryPath, item.Name);
+                    var itemPaths = this.Serializer.Serialize(itemPath, item, props);
+                    this.Repository.AddRange(itemPaths);
+                }
+
+                
+
+
+                //dataTables.Modify(this.Serializer);
                 this.Repository.Commit(authentication, message);
                 this.CremaHost.Info(message);
             }

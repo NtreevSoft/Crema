@@ -103,10 +103,10 @@ namespace Ntreev.Crema.Services
                 var xmlPath = itemPath + CremaSchema.XmlExtension;
                 if (properties is RelativeSchemaPropertyCollection prop && prop.RelativePath != string.Empty)
                 {
-                    var uri = new Uri(xmlPath);
-                    var schemaUri = UriUtility.Combine(UriUtility.GetDirectoryName(uri), prop.RelativePath);
-                    var schemaPath = schemaUri.LocalPath + CremaSchema.SchemaExtension;
-                    return new string[] { xmlPath, schemaPath };
+                    //var uri = new Uri(xmlPath);
+                    //var schemaUri = UriUtility.Combine(UriUtility.GetDirectoryName(uri), prop.RelativePath);
+                    //var schemaPath = schemaUri.LocalPath + CremaSchema.SchemaExtension;
+                    return new string[] { xmlPath };
                 }
                 else
                 {

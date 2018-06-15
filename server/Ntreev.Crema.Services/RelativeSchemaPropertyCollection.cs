@@ -23,7 +23,7 @@ namespace Ntreev.Crema.Services
     {
         public RelativeSchemaPropertyCollection(string path, string templatedPath)
         {
-            if (templatedPath != null)
+            if (string.IsNullOrEmpty(templatedPath) == false)
             {
                 var relativeUri = UriUtility.MakeRelative(path, templatedPath);
                 this.Add(nameof(RelativePath), relativeUri);

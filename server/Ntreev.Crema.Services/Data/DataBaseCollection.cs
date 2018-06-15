@@ -33,7 +33,7 @@ namespace Ntreev.Crema.Services.Data
     class DataBaseCollection : ContainerBase<DataBase>, IDataBaseCollection
     {
         public const string DataBaseString = "database";
-        private const string databaseExtension = ".database";
+        private const string databaseExtension = ".info";
         private const string stateExtension = ".state";
         private readonly IRepositoryProvider repositoryProvider;
         private readonly CremaDispatcher repositoryDispatcher;
@@ -427,12 +427,12 @@ namespace Ntreev.Crema.Services.Data
                 {
                     var dataBaseInfo = (DataBaseSerializationInfo)item.DataBaseInfo;
                     var filename = FileUtility.Prepare(this.cachePath, $"{item.ID}{databaseExtension}");
-                    JsonSerializerUtility.Write(filename, dataBaseInfo, true);
+                    this.Serializer.Serialize(filename, dataBaseInfo, SerializationPropertyCollection.Empty);
                 }
                 {
                     var dataBaseState = item.DataBaseState & DataBaseState.IsLoaded;
                     var filename = FileUtility.Prepare(this.cachePath, $"{item.ID}{stateExtension}");
-                    JsonSerializerUtility.Write(filename, dataBaseState, true);
+                    this.Serializer.Serialize(filename, dataBaseState, SerializationPropertyCollection.Empty);
                 }
                 item.Dispose();
             }
@@ -466,6 +466,8 @@ namespace Ntreev.Crema.Services.Data
         public CremaDispatcher Dispatcher => this.CremaHost.Dispatcher;
 
         public CremaHost CremaHost { get; }
+
+        public IObjectSerializer Serializer => this.CremaHost.Serializer;
 
         public string RemotePath => this.remotePath;
 
@@ -798,12 +800,14 @@ namespace Ntreev.Crema.Services.Data
             var caches = new Dictionary<string, DataBaseSerializationInfo>();
             if (Directory.Exists(this.cachePath) == true)
             {
-                var files = Directory.GetFiles(cachePath, $"*{databaseExtension}");
-                foreach (var item in files)
+                var itemPaths = this.Serializer.GetItemPaths(cachePath, typeof(DataBaseSerializationInfo), SerializationPropertyCollection.Empty);
+                foreach (var item in itemPaths)
                 {
+                    if (Path.GetExtension(item) != databaseExtension)
+                        continue;
                     try
                     {
-                        var dataBaseInfo = JsonSerializerUtility.Read<DataBaseSerializationInfo>(item);
+                        var dataBaseInfo = (DataBaseSerializationInfo)this.Serializer.Deserialize(item, typeof(DataBaseSerializationInfo), SerializationPropertyCollection.Empty);
                         caches.Add(dataBaseInfo.Name, dataBaseInfo);
                     }
                     catch (Exception e)
@@ -820,12 +824,14 @@ namespace Ntreev.Crema.Services.Data
             var caches = new Dictionary<string, DataBaseState>();
             if (Directory.Exists(this.cachePath) == true)
             {
-                var files = Directory.GetFiles(cachePath, $"*{stateExtension}");
-                foreach (var item in files)
+                var itemPaths = this.Serializer.GetItemPaths(cachePath, typeof(DataBaseState), SerializationPropertyCollection.Empty);
+                foreach (var item in itemPaths)
                 {
+                    if (Path.GetExtension(item) != stateExtension)
+                        continue;
                     try
                     {
-                        var dataBaseState = JsonSerializerUtility.Read<DataBaseState>(item);
+                        var dataBaseState = (DataBaseState)this.Serializer.Deserialize(item, typeof(DataBaseState), SerializationPropertyCollection.Empty);
                         caches.Add(Path.GetFileNameWithoutExtension(item), dataBaseState);
                     }
                     catch (Exception e)
