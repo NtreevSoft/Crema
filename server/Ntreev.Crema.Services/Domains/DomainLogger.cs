@@ -33,11 +33,11 @@ namespace Ntreev.Crema.Services.Domains
         public const string HeaderFileName = "info.dat";
         public const string PostedFileName = "posted.log";
         public const string CompletedFileName = "completed.log";
-        public const string UsersFileName = "users.xml";
+        //public const string UsersFileName = "users.xml";
 
-        private static XmlWriterSettings writerSettings = new XmlWriterSettings() { OmitXmlDeclaration = true, Indent = true };
+        private static readonly XmlWriterSettings writerSettings = new XmlWriterSettings() { OmitXmlDeclaration = true, Indent = true };
 
-        private string workingPath;
+        private string basePath;
 
         private StreamWriter postedWriter;
         private StreamWriter completedWriter;
@@ -48,16 +48,16 @@ namespace Ntreev.Crema.Services.Domains
             this.Initialize(domain);
         }
 
-        public DomainLogger(string workingPath)
+        public DomainLogger(string basePath)
         {
-            this.workingPath = workingPath;
+            this.basePath = basePath;
 
-            this.postedWriter = new StreamWriter(Path.Combine(workingPath, DomainLogger.PostedFileName), true, Encoding.UTF8)
+            this.postedWriter = new StreamWriter(Path.Combine(basePath, DomainLogger.PostedFileName), true, Encoding.UTF8)
             {
                 AutoFlush = true,
             };
 
-            this.completedWriter = new StreamWriter(Path.Combine(workingPath, DomainLogger.CompletedFileName), true, Encoding.UTF8)
+            this.completedWriter = new StreamWriter(Path.Combine(basePath, DomainLogger.CompletedFileName), true, Encoding.UTF8)
             {
                 AutoFlush = true,
             };
@@ -65,16 +65,16 @@ namespace Ntreev.Crema.Services.Domains
 
         public void Initialize(Domain domain)
         {
-            this.workingPath = DirectoryUtility.Prepare(domain.Context.BasePath, domain.DataBaseID.ToString(), domain.Name);
+            this.basePath = DirectoryUtility.Prepare(domain.Context.BasePath, domain.DataBaseID.ToString(), domain.Name);
 
-            domain.Write(Path.Combine(workingPath, DomainLogger.HeaderFileName));
+            domain.Write(Path.Combine(basePath, DomainLogger.HeaderFileName));
 
-            this.postedWriter = new StreamWriter(Path.Combine(workingPath, DomainLogger.PostedFileName), true, Encoding.UTF8)
+            this.postedWriter = new StreamWriter(Path.Combine(basePath, DomainLogger.PostedFileName), true, Encoding.UTF8)
             {
                 AutoFlush = true,
             };
 
-            this.completedWriter = new StreamWriter(Path.Combine(workingPath, DomainLogger.CompletedFileName), true, Encoding.UTF8)
+            this.completedWriter = new StreamWriter(Path.Combine(basePath, DomainLogger.CompletedFileName), true, Encoding.UTF8)
             {
                 AutoFlush = true,
             };
@@ -90,7 +90,7 @@ namespace Ntreev.Crema.Services.Domains
 
             if (delete == true)
             {
-                DirectoryUtility.Delete(this.workingPath);
+                DirectoryUtility.Delete(this.basePath);
             }
         }
 
@@ -245,7 +245,7 @@ namespace Ntreev.Crema.Services.Domains
         private void SerializeDomain(Domain domain)
         {
             var formatter = new BinaryFormatter();
-            using (var stream = new FileStream(Path.Combine(workingPath, DomainLogger.HeaderFileName), FileMode.Create))
+            using (var stream = new FileStream(Path.Combine(basePath, DomainLogger.HeaderFileName), FileMode.Create))
             {
                 formatter.Serialize(stream, domain);
                 stream.Close();

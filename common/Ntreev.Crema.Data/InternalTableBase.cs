@@ -685,20 +685,21 @@ namespace Ntreev.Crema.Data
             {
                 this.ValidateSetLocalName(value);
                 var childs = this.childItems.ToArray();
-                var derivedTable = this.parent != null ? this.derivedItems.ToArray() : new InternalTableBase[] { };
-                if (this.parent != null)
-                    this.InternalName = this.parent.Name + "." + value;
+                var derivedTables = this.derivedItems.ToArray();
+                if (this.ParentName != string.Empty)
+                    this.InternalName = this.ParentName + "." + value;
                 else
                     this.InternalName = value;
 
                 foreach (var item in childs)
                 {
-                    item.InternalName = base.TableName + "." + item.LocalName;
+                    item.InternalName = this.Name + "." + item.LocalName;
                 }
 
-                foreach (var item in derivedTable)
+                foreach (var item in derivedTables)
                 {
-                    item.InternalName = item.Parent.Name + "." + value;
+                    if (item.ParentName != string.Empty)
+                        item.InternalName = item.ParentName + "." + value;
                 }
             }
         }

@@ -16,11 +16,12 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Ntreev.Crema.Data;
+using Ntreev.Library;
 using System.Runtime.Serialization;
 
 namespace Ntreev.Crema.Services.Data
 {
-    [DataContract]
+    [DataContract(Namespace = SchemaUtility.Namespace)]
     struct DataBaseDataSerializationInfo
     {
         [DataMember]

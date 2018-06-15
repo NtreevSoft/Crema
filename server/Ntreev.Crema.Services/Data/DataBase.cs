@@ -39,7 +39,7 @@ namespace Ntreev.Crema.Services.Data
         IDataBase, IInfoProvider, IStateProvider
     {
         public static readonly Guid defaultID = Guid.Parse("9CAC6195-1F14-40D6-B56E-4747A67F5C8A");
-        public const string defaultName = "default";
+        //public const string defaultName = "default";
 
         private const string dataExtension = ".data";
         private readonly IRepositoryProvider repositoryProvider;
@@ -63,7 +63,7 @@ namespace Ntreev.Crema.Services.Data
             this.serializer = cremaHost.Serializer;
             this.Dispatcher = cremaHost.Dispatcher;
             base.Name = name;
-            this.cachePath = cremaHost.GetPath(CremaPath.Caches, "databases");
+            this.cachePath = cremaHost.GetPath(CremaPath.Caches, DataBaseCollection.DatabasesString);
             this.userContext = this.CremaHost.UserContext;
             this.userContext.Dispatcher.Invoke(() => this.userContext.Users.UsersLoggedOut += Users_UsersLoggedOut);
         }
@@ -547,17 +547,6 @@ namespace Ntreev.Crema.Services.Data
             base.DataBaseState = DataBaseState.None;
             this.tableContext = null;
             this.typeContext = null;
-        }
-
-        [Obsolete]
-        public void DeleteInternal(Authentication authentication)
-        {
-            FileUtility.Delete(this.cachePath, this.ID.ToString() + dataExtension);
-            this.Dispatcher = null;
-            base.DataBaseState = DataBaseState.None;
-            this.tableContext = null;
-            this.typeContext = null;
-            this.Delete(authentication);
         }
 
         public void ResettingDataBase(Authentication authentication)
@@ -1102,13 +1091,13 @@ namespace Ntreev.Crema.Services.Data
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override void OnValidateDelete(IAuthentication authentication, object target)
         {
-            base.OnValidateDelete(authentication, target);
-
             if (this.ID == DataBase.defaultID)
                 throw new PermissionDeniedException(Resources.Exception_DefaultDataBaseCannotDelete);
 
             if (this.IsLoaded == true)
                 throw new InvalidOperationException(Resources.Exception_DataBaseHasBeenLoaded);
+
+            base.OnValidateDelete(authentication, target);
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -1229,7 +1218,7 @@ namespace Ntreev.Crema.Services.Data
                 TypeInfos = this.typeContext.Types.Select((Type item) => item.TypeInfo).ToArray(),
                 TableInfos = this.tableContext.Tables.Select((Table item) => item.TableInfo).ToArray(),
             };
-            JsonSerializerUtility.Write(filename, dataInfo, true);
+            this.Serializer.Serialize(filename, dataInfo, SerializationPropertyCollection.Empty);
         }
 
         public void Initialize()
@@ -1273,18 +1262,20 @@ namespace Ntreev.Crema.Services.Data
 
         private void ReadCache()
         {
-            var filename = FileUtility.Prepare(this.cachePath, $"{this.ID}{dataExtension}");
-
-            if (this.CremaHost.NoCache == false && File.Exists(filename) == true)
+            if (this.CremaHost.NoCache == false)
             {
                 try
                 {
-                    var dataInfo = JsonSerializerUtility.Read<DataBaseDataSerializationInfo>(filename);
-                    if (this.Repository.RepositoryInfo.Revision == dataInfo.Revision)
+                    var filename = FileUtility.Prepare(this.cachePath, $"{this.ID}{dataExtension}");
+                    var itemPaths = this.Serializer.GetPath(filename, typeof(DataBaseDataSerializationInfo), SerializationPropertyCollection.Empty);
+                    if (itemPaths.Any(item => File.Exists(item) == false) == false)
                     {
-                        //this.ResettingDataBase(Authentication.System);
-                        this.ResetDataBase(Authentication.System, dataInfo.TypeInfos, dataInfo.TableInfos);
-                        return;
+                        var dataInfo = (DataBaseDataSerializationInfo)this.Serializer.Deserialize(filename, typeof(DataBaseDataSerializationInfo), SerializationPropertyCollection.Empty);
+                        if (this.Repository.RepositoryInfo.Revision == dataInfo.Revision)
+                        {
+                            this.ResetDataBase(Authentication.System, dataInfo.TypeInfos, dataInfo.TableInfos);
+                            return;
+                        }
                     }
                 }
                 catch (Exception e)

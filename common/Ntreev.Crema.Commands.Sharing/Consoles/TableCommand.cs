@@ -125,6 +125,13 @@ namespace Ntreev.Crema.Commands.Consoles
                     return this.GetTableNames();
                 }
             }
+            else if (methodDescriptor.DescriptorName == nameof(Rename))
+            {
+                if (memberDescriptor.DescriptorName == "tableName")
+                {
+                    return this.GetTableNames();
+                }
+            }
 
             return base.GetCompletions(methodDescriptor, memberDescriptor, find);
         }

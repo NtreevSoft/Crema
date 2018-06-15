@@ -39,7 +39,7 @@ namespace Ntreev.Crema.Repository.Svn
     [Export(typeof(IConfigurationPropertyProvider))]
     class SvnRepositoryProvider : IRepositoryProvider, IConfigurationPropertyProvider
     {
-        public const string repositoryName = "crema";
+        //public const string repositoryName = "crema";
         public const string remoteName = "svn";
         public const string trunkName = "trunk";
         public const string tagsName = "tags";
@@ -67,7 +67,7 @@ namespace Ntreev.Crema.Repository.Svn
         public IRepository CreateInstance(RepositorySettings settings)
         {
             var baseUri = new Uri(settings.BasePath);
-            var url = settings.RepositoryName == "default" ? UriUtility.Combine(baseUri, "trunk") : UriUtility.Combine(baseUri, "branches", repositoryName);
+            var url = settings.RepositoryName == "default" ? UriUtility.Combine(baseUri, "trunk") : UriUtility.Combine(baseUri, "branches", settings.RepositoryName);
             //var logService = this.logServices.FirstOrDefault(item => item.Value.Name == "repository");
 
             if (Directory.Exists(settings.WorkingPath) == false)
