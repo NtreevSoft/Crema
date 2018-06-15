@@ -62,7 +62,7 @@ namespace Ntreev.Crema.Services.Data
 
             this.ValidateAddNew(dataTable.TableName, categoryPath, authentication);
             this.Sign(authentication);
-            this.InvokeTableCreate(authentication, dataTable.TableName, categoryPath, dataTable, null);
+            this.InvokeTableCreate(authentication, dataTable.TableName, categoryPath, dataSet, null);
             var table = this.AddNew(authentication, dataTable.TableName, categoryPath);
             table.Initialize(dataTable.TableInfo);
             this.InvokeTablesCreatedEvent(authentication, new Table[] { table }, dataSet);
@@ -73,14 +73,15 @@ namespace Ntreev.Crema.Services.Data
         {
             this.ValidateInherit(authentication, table, newTableName, categoryPath, copyContent);
             this.Sign(authentication);
-            var dataTable = table.ReadData(authentication);
+            var dataSet = table.ReadData(authentication);
+            var dataTable = dataSet.Tables[table.Name, table.Category.Path];
             var itemName = new ItemName(categoryPath, newTableName);
             var newDataTable = dataTable.Inherit(itemName, copyContent);
             if (copyContent == false)
                 newDataTable.Clear();
             newDataTable.CategoryPath = categoryPath;
 
-            this.InvokeTableCreate(authentication, newTableName, categoryPath, newDataTable, table);
+            this.InvokeTableCreate(authentication, newTableName, categoryPath, dataSet, table);
             var newTable = this.AddNew(authentication, newTableName, categoryPath);
             newTable.TemplatedParent = table;
             newTable.Initialize(newDataTable.TableInfo);
@@ -99,14 +100,15 @@ namespace Ntreev.Crema.Services.Data
         {
             this.ValidateCopy(authentication, table, newTableName, categoryPath, copyContent);
             this.Sign(authentication);
-            var dataTable = table.ReadData(authentication);
+            var dataSet = table.ReadData(authentication);
+            var dataTable = dataSet.Tables[table.Name, table.Category.Path];
             var itemName = new ItemName(categoryPath, newTableName);
             var newDataTable = dataTable.Copy(itemName, copyContent);
             if (copyContent == false)
                 newDataTable.Clear();
             newDataTable.CategoryPath = categoryPath;
 
-            this.InvokeTableCreate(authentication, newTableName, categoryPath, newDataTable, table);
+            this.InvokeTableCreate(authentication, newTableName, categoryPath, dataSet, table);
             var newTable = this.AddNew(authentication, newTableName, categoryPath);
             newTable.Initialize(newDataTable.TableInfo);
             foreach (var item in newDataTable.Childs)
@@ -124,18 +126,16 @@ namespace Ntreev.Crema.Services.Data
             return this.DataBase.GetService(serviceType);
         }
 
-        public void InvokeTableCreate(Authentication authentication, string tableName, string categoryPath, CremaDataTable dataTable, Table sourceTable)
+        public void InvokeTableCreate(Authentication authentication, string tableName, string categoryPath, CremaDataSet dataSet, Table sourceTable)
         {
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeTableCreate), tableName, categoryPath, sourceTable);
             this.ValidateCreate(authentication, categoryPath);
-            
+
             var message = EventMessageBuilder.CreateTable(authentication, tableName);
             try
             {
                 if (sourceTable != null)
                 {
-                    var dataSet = dataTable.DataSet;
-
                     var query = from item in dataSet.Tables
                                 where item.Name == tableName || item.ParentName == tableName
                                 select item;
@@ -151,33 +151,21 @@ namespace Ntreev.Crema.Services.Data
                         }
                         var targetName = new ItemName(item.CategoryPath, string.Join(".", targetNames));
                         var props = new RelativeSchemaPropertyCollection(item.Namespace, item.TemplateNamespace);
-                        //var sourceDataTable = item.ExtendedProperties["SourceTable"] as CremaDataTable;
                         var sourceItemPath = this.Context.GenerateTablePath(targetName.CategoryPath, targetName.Name);
                         var itemPath = this.Context.GenerateTablePath(item.CategoryPath, item.Name);
                         var items1 = this.Serializer.GetPath(sourceItemPath, item.GetType(), props);
                         var items2 = this.Serializer.GetPath(itemPath, item.GetType(), props);
-                        //this.Repository.AddRange(itemPaths);
+
                         for (var i = 0; i < items1.Length; i++)
                         {
                             this.Repository.Copy(items1[i], items2[i]);
                         }
                         this.Serializer.Serialize(itemPath, item, props);
                     }
-
-
-                    //var destItemPath = this.Context.GenerateTablePath(categoryPath, tableName);
-                    //var templatedPath = dataTable.TemplatedParentName == string.Empty ? null : sourceItemPath;
-                    //var props = new RelativeSchemaPropertyCollection(destItemPath, templatedPath);
-                    //var items1 = this.Serializer.GetPath(sourceItemPath, dataTable.GetType(), props);
-                    //var items2 = this.Serializer.GetPath(itemPath, dataTable.GetType(), props);
-                    //for (var i = 0; i < items1.Length; i++)
-                    //{
-                    //    this.Repository.Copy(items1[i], items2[i]);
-                    //}
-                    
                 }
                 else
                 {
+                    var dataTable = dataSet.Tables[tableName, categoryPath];
                     var itemPath = this.Context.GenerateTablePath(categoryPath, tableName);
                     var itemPaths = this.Serializer.Serialize(itemPath, dataTable, null);
                     foreach (var item in itemPaths)
@@ -356,17 +344,12 @@ namespace Ntreev.Crema.Services.Data
         public void InvokeChildTableCreate(Authentication authentication, Table table, string childName, CremaDataSet dataSet)
         {
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeChildTableCreate), table);
-            var dataTables = new DataTableCollection(dataSet, this.DataBase);
-            var dataTable = dataSet.Tables[childName];
-            //var itemPath = this.Context.GenerateTablePath(table.Category.Path, childName);
             var message = EventMessageBuilder.CreateTable(authentication, childName);
             try
             {
-
                 var query = from item in dataSet.Tables
                             where item.Name == childName || item.TemplatedParentName == childName
                             select item;
-
                 foreach (var item in query)
                 {
                     var props = new RelativeSchemaPropertyCollection(item.Namespace, item.TemplateNamespace);
@@ -374,11 +357,6 @@ namespace Ntreev.Crema.Services.Data
                     var itemPaths = this.Serializer.Serialize(itemPath, item, props);
                     this.Repository.AddRange(itemPaths);
                 }
-
-                
-
-
-                //dataTables.Modify(this.Serializer);
                 this.Repository.Commit(authentication, message);
                 this.CremaHost.Info(message);
             }

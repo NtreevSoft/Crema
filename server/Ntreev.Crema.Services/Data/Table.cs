@@ -513,7 +513,7 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public CremaDataTable ReadData(Authentication authentication)
+        public CremaDataSet ReadData(Authentication authentication)
         {
             var tables = this.CollectChilds().OrderBy(item => item.Name).ToArray();
             var types = tables.SelectMany(item => item.GetTypes()).Distinct().ToArray();
@@ -521,7 +521,7 @@ namespace Ntreev.Crema.Services.Data
             var tablePaths = tables.Select(item => item.LocalPath).ToArray();
             var props = new CremaDataSetPropertyCollection(authentication, typePaths, tablePaths);
             var dataSet = this.Serializer.Deserialize(this.LocalPath, typeof(CremaDataSet), props) as CremaDataSet;
-            return dataSet.Tables[base.TableName, this.Category.Path];
+            return dataSet;
         }
 
         public CremaDataSet ReadAll(Authentication authentication)

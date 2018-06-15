@@ -63,8 +63,8 @@ namespace Ntreev.Crema.Services.Data
                 this.Sign(authentication);
                 if (this.domain == null)
                 {
-                    this.dataTable = this.table.ReadData(authentication);
-                    this.DataSet = this.dataTable.DataSet;
+                    this.DataSet = this.table.ReadData(authentication);
+                    this.dataTable = this.DataSet.Tables[this.table.Name, this.table.Category.Path];
                     this.domain = new TableContentDomain(authentication, this.DataSet, this.table.DataBase, this.table.Path, this.GetType().Name)
                     {
                         Host = this
