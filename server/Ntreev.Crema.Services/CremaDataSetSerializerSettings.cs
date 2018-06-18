@@ -16,44 +16,34 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Ntreev.Library;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Xml;
-using System.Xml.Linq;
-using System.Xml.XPath;
 
-namespace Ntreev.Crema.Repository.Svn
+namespace Ntreev.Crema.Services
 {
-    struct SvnStatusEventArgs
+    class CremaDataSetSerializerSettings : ObjectSerializerSettings
     {
-        public IDictionary<string, string> Status { get; private set; }
+        private readonly SignatureDateProvider signatureDateProvider;
+        private readonly string[] typePaths;
+        private readonly string[] tablePaths;
 
-        public static SvnStatusEventArgs Run(string path)
+        public CremaDataSetSerializerSettings(string[] typePaths, string[] tablePaths)
         {
-            var text = SvnClientHost.Run("status", path.ToSvnPath(), "--xml");
-            return Parse(text);
+            this.typePaths = typePaths;
+            this.tablePaths = tablePaths;
         }
 
-        public static SvnStatusEventArgs Parse(string text)
+        public CremaDataSetSerializerSettings(Authentication authentication, string[] typePaths, string[] tablePaths)
         {
-            using (var sr = new StringReader(text))
-            {
-                var doc = XDocument.Load(sr);
-                var dictionary = new Dictionary<string, string>();
-
-                foreach (var item in doc.XPathSelectElements("/status/target/entry"))
-                {
-                    var path = item.Attribute("path").Value;
-                    var status = item.XPathSelectElement("wc-status").Attribute("item").Value;
-                    dictionary.Add(path, status);
-                }
-
-                return new SvnStatusEventArgs() { Status = dictionary };
-            }
+            this.signatureDateProvider = new SignatureDateProvider(authentication.ID);
+            this.typePaths = typePaths;
+            this.tablePaths = tablePaths;
         }
+
+        public SignatureDateProvider SignatureDateProvider => this.signatureDateProvider ?? SignatureDateProvider.Default;
+
+        public string[] TypePaths => this.typePaths ?? new string[] { };
+
+        public string[] TablePaths => this.tablePaths ?? new string[] { };
+
+        public bool SchemaOnly { get; set; }
     }
 }

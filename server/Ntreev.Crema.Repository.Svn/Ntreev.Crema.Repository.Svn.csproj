@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="SvnChangeItem.cs" />
     <Compile Include="SvnCommentInfo.cs" />
+    <Compile Include="SvnPathUtility.cs" />
     <Compile Include="SvnStatusEventArgs.cs" />
     <Compile Include="SvnInfoEventArgs.cs" />
     <Compile Include="SvnLogEventArgs.cs" />

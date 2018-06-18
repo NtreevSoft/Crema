@@ -82,7 +82,7 @@ namespace Ntreev.Crema.Services.Data
 
                 var itemPath = this.dataBase.TableContext.GenerateTablePath(table.Category.Path, table.Name);
 
-                var props = new RelativeSchemaPropertyCollection(itemPath, table.TemplatedParent?.LocalPath);
+                var props = new CremaDataTableSerializerSettings(itemPath, table.TemplatedParent?.LocalPath);
                 serializer.Serialize(itemPath, dataTable, props);
             }
         }
@@ -105,8 +105,8 @@ namespace Ntreev.Crema.Services.Data
                 var itemPath1 = this.dataBase.TableContext.GenerateTablePath(table.Category.Path, table.Name);
                 var itemPath2 = this.dataBase.TableContext.GenerateTablePath(dataTable.CategoryPath, dataTable.Name);
 
-                var props1 = new RelativeSchemaPropertyCollection(itemPath1, table.TemplatedParent?.LocalPath);
-                var props2 = new RelativeSchemaPropertyCollection(itemPath1, table.TemplatedParent?.LocalPath);
+                var props1 = new CremaDataTableSerializerSettings(itemPath1, table.TemplatedParent?.LocalPath);
+                var props2 = new CremaDataTableSerializerSettings(itemPath1, table.TemplatedParent?.LocalPath);
                 var items1 = serializer.GetPath(itemPath1, typeof(CremaDataTable), props1);
                 var items2 = serializer.GetPath(itemPath2, typeof(CremaDataTable), props2);
 

@@ -119,6 +119,7 @@ namespace Ntreev.Crema.Services.Data
         public void InvokeTypeRename(Authentication authentication, Type type, string newName, CremaDataSet dataSet)
         {
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeTypeRename), type, newName);
+            var itemName = new ItemName(type.Path) { Name = newName };
             var dataTypes = new DataTypeCollection(dataSet, this.DataBase);
             var dataTables = new DataTableCollection(dataSet, this.DataBase);
             var dataType = dataSet.Types[type.Name, type.Category.Path];
@@ -129,7 +130,7 @@ namespace Ntreev.Crema.Services.Data
                 dataTypes.Modify(this.Serializer);
                 dataTables.Modify(this.Serializer);
                 dataTypes.Move(this.Repository, this.Serializer);
-                this.Context.InvokeTypeItemRename(authentication, type, newName);
+                this.Context.InvokeTypeItemRename(authentication, type, itemName);
                 this.Repository.Commit(authentication, message);
             }
             catch
@@ -142,6 +143,7 @@ namespace Ntreev.Crema.Services.Data
         public void InvokeTypeMove(Authentication authentication, Type type, string newCategoryPath, CremaDataSet dataSet)
         {
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeTypeMove), type, newCategoryPath);
+            var itemName = new ItemName(newCategoryPath, type.Name);
             var dataTypes = new DataTypeCollection(dataSet, this.DataBase);
             var dataTables = new DataTableCollection(dataSet, this.DataBase);
             var dataType = dataSet.Types[type.Name, type.Category.Path];
@@ -152,7 +154,7 @@ namespace Ntreev.Crema.Services.Data
                 dataTypes.Modify(this.Serializer);
                 dataTables.Modify(this.Serializer);
                 dataTypes.Move(this.Repository, this.Serializer);
-                this.Context.InvokeTypeItemMove(authentication, type, newCategoryPath);
+                this.Context.InvokeTypeItemMove(authentication, type, itemName);
                 this.Repository.Commit(authentication, message);
             }
             catch
@@ -197,7 +199,7 @@ namespace Ntreev.Crema.Services.Data
             var message = EventMessageBuilder.ChangeTypeTemplate(authentication, type.Name);
             try
             {
-                dataTypes.Modify(this.Repository, item => item == type);
+                dataTypes.Modify(this.Serializer);
                 dataTables.Modify(this.Serializer);
                 this.Context.InvokeTypeItemChange(authentication, type);
                 this.Repository.Commit(authentication, message);
@@ -218,7 +220,7 @@ namespace Ntreev.Crema.Services.Data
             try
             {
                 dataType.Tags = tags;
-                dataTypes.Modify(this.Repository, item => item == type);
+                dataTypes.Modify(this.Serializer);
                 this.Context.InvokeTypeItemChange(authentication, type);
                 this.Repository.Commit(authentication, message);
             }

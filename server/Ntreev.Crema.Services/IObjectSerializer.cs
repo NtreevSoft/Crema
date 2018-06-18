@@ -27,17 +27,19 @@ namespace Ntreev.Crema.Services
 {
     public interface IObjectSerializer
     {
-        string[] Serialize(string itemPath, object obj, IDictionary properties);
+        string[] Serialize(string itemPath, object obj, ObjectSerializerSettings settings);
 
-        object Deserialize(string itemPath, Type type, IDictionary properties);
+        object Deserialize(string itemPath, Type type, ObjectSerializerSettings settings);
 
-        string[] GetPath(string itemPath, Type type, IDictionary properties);
+        string[] GetPath(string itemPath, Type type, ObjectSerializerSettings settings);
 
-        string[] GetReferencedPath(string itemPath, Type type, IDictionary properties);
+        string[] GetReferencedPath(string itemPath, Type type, ObjectSerializerSettings settings);
 
-        string[] GetItemPaths(string path, Type type, IDictionary properties);
+        string[] GetItemPaths(string path, Type type, ObjectSerializerSettings settings);
 
-        void Validate(string itemPath, Type type, IDictionary properties);
+        void Validate(string itemPath, Type type, ObjectSerializerSettings settings);
+
+        bool Exists(string itemPath, Type type, ObjectSerializerSettings settings);
 
         string Name { get; }
     }

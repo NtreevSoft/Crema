@@ -63,45 +63,45 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public void Modify(DataBaseRepositoryHost repository)
-        {
-            this.Modify(repository, item => true);
-        }
+        //public void Modify(DataBaseRepositoryHost repository)
+        //{
+        //    this.Modify(repository, item => true);
+        //}
 
-        public void Modify(DataBaseRepositoryHost repository, Func<Type, bool> predicate)
-        {
-            var uri = new Uri(this.dataBase.TypeContext.BasePath);
+        //public void Modify(DataBaseRepositoryHost repository, Func<Type, bool> predicate)
+        //{
+        //    var uri = new Uri(this.dataBase.TypeContext.BasePath);
 
-            foreach (var item in this)
-            {
-                var dataType = item.Key;
-                var type = item.Value;
+        //    foreach (var item in this)
+        //    {
+        //        var dataType = item.Key;
+        //        var type = item.Value;
 
-                if (predicate(type) == false)
-                    continue;
+        //        if (predicate(type) == false)
+        //            continue;
 
-                var path1 = type.Path;
-                var path2 = dataType.CategoryPath + dataType.Name;
+        //        var path1 = type.Path;
+        //        var path2 = dataType.CategoryPath + dataType.Name;
 
-                var schemaUri = new Uri(uri.ToString() + path1 + CremaSchema.SchemaExtension);
+        //        var schemaUri = new Uri(uri.ToString() + path1 + CremaSchema.SchemaExtension);
 
-                if (dataType.DataSet == null)
-                {
-                    repository.Delete(schemaUri.LocalPath);
-                }
-                else
-                {
-                    File.WriteAllText(schemaUri.LocalPath, dataType.GetXmlSchema(), Encoding.UTF8);
+        //        if (dataType.DataSet == null)
+        //        {
+        //            repository.Delete(schemaUri.LocalPath);
+        //        }
+        //        else
+        //        {
+        //            File.WriteAllText(schemaUri.LocalPath, dataType.GetXmlSchema(), Encoding.UTF8);
 
-                    if (path1 != path2)
-                    {
-                        var targetSchemaUri = new Uri(uri.ToString() + path2 + CremaSchema.SchemaExtension);
+        //            if (path1 != path2)
+        //            {
+        //                var targetSchemaUri = new Uri(uri.ToString() + path2 + CremaSchema.SchemaExtension);
 
-                        repository.Move(schemaUri.LocalPath, targetSchemaUri.LocalPath);
-                    }
-                }
-            }
-        }
+        //                repository.Move(schemaUri.LocalPath, targetSchemaUri.LocalPath);
+        //            }
+        //        }
+        //    }
+        //}
 
         public void Move(DataBaseRepositoryHost repository, IObjectSerializer serializer)
         {
@@ -119,8 +119,8 @@ namespace Ntreev.Crema.Services.Data
                 var itemPath1 = this.dataBase.TypeContext.GenerateTypePath(type.Category.Path, type.Name);
                 var itemPath2 = this.dataBase.TypeContext.GenerateTypePath(dataType.CategoryPath, dataType.Name);
 
-                var items1 = serializer.GetPath(itemPath1, typeof(CremaDataType), null);
-                var items2 = serializer.GetPath(itemPath2, typeof(CremaDataType), null);
+                var items1 = serializer.GetPath(itemPath1, typeof(CremaDataType), ObjectSerializerSettings.Empty);
+                var items2 = serializer.GetPath(itemPath2, typeof(CremaDataType), ObjectSerializerSettings.Empty);
 
                 for (var i = 0; i < items1.Length; i++)
                 {

@@ -103,7 +103,7 @@ namespace Ntreev.Crema.Services.Data
                 dataTypes.Modify(this.Serializer);
                 dataTables.Modify(this.Serializer);
                 this.Repository.Move(category.LocalPath, this.Context.GenerateCategoryPath(categoryName.Path));
-                this.Context.InvokeTypeItemRename(authentication, category, name);
+                this.Context.InvokeTypeItemRename(authentication, category, categoryName);
                 this.Repository.Commit(authentication, message);
             }
             catch
@@ -126,6 +126,7 @@ namespace Ntreev.Crema.Services.Data
                 dataTypes.Modify(this.Serializer);
                 dataTables.Modify(this.Serializer);
                 this.Repository.Move(category.LocalPath, this.Context.GenerateCategoryPath(categoryName));
+                this.Context.InvokeTypeItemMove(authentication, category, categoryName);
                 this.Repository.Commit(authentication, message);
             }
             catch

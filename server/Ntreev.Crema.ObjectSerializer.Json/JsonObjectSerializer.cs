@@ -36,12 +36,12 @@ namespace Ntreev.Crema.ObjectSerializer.Json
 
         public string Name => "json";
 
-        public object Deserialize(string itemPath, Type type, IDictionary properties)
+        public object Deserialize(string itemPath, Type type, ObjectSerializerSettings settings)
         {
             throw new NotImplementedException();
         }
 
-        public string[] Serialize(string itemPath, object obj, IDictionary properties)
+        public string[] Serialize(string itemPath, object obj, ObjectSerializerSettings settings)
         {
             var filename = itemPath + extensions;
             var contents = JObject.FromObject(obj).ToString();
@@ -49,13 +49,13 @@ namespace Ntreev.Crema.ObjectSerializer.Json
             return new string[] { filename };
         }
 
-        public string[] GetPath(string itemPath, Type type, IDictionary properties)
+        public string[] GetPath(string itemPath, Type type, ObjectSerializerSettings settings)
         {
             var filename = itemPath + extensions;
             return new string[] { filename };
         }
 
-        public string[] GetItemPaths(string path, Type type, IDictionary properties)
+        public string[] GetItemPaths(string path, Type type, ObjectSerializerSettings settings)
         {
             //if (type == typeof(CremaDataTable))
             //{
@@ -70,12 +70,17 @@ namespace Ntreev.Crema.ObjectSerializer.Json
             throw new NotImplementedException();
         }
 
-        public string[] GetReferencedPath(string itemPath, Type type, IDictionary properties)
+        public string[] GetReferencedPath(string itemPath, Type type, ObjectSerializerSettings settings)
         {
             throw new NotImplementedException();
         }
 
-        public void Validate(string itemPath, Type type, IDictionary properties)
+        public void Validate(string itemPath, Type type, ObjectSerializerSettings settings)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Exists(string itemPath, Type type, ObjectSerializerSettings settings)
         {
             throw new NotImplementedException();
         }

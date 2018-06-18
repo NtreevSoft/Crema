@@ -55,7 +55,7 @@ namespace Ntreev.Crema.Repository.Svn
             this.transactionPath = transactionPath;
             this.repositoryInfo = repositoryInfo;
 
-            var items = this.Run("stat", this.repositoryPath.WrapQuot(), "-q").Trim();
+            var items = this.Run("stat", this.repositoryPath.ToSvnPath(), "-q").Trim();
 
             if (items != string.Empty)
             {
@@ -66,7 +66,7 @@ namespace Ntreev.Crema.Repository.Svn
                 throw new Exception($"{sb}");
             }
 
-            this.Run("log", this.repositoryPath.WrapQuot(), "-l 1");
+            this.Run("log", this.repositoryPath.ToSvnPath(), "-l 1");
 
             var info = SvnInfoEventArgs.Run(this.repositoryPath);
             this.repositoryRoot = info.RepositoryRoot;
@@ -86,11 +86,7 @@ namespace Ntreev.Crema.Repository.Svn
 
         public void Add(string path)
         {
-            if (path.EndsWith(Path.DirectorySeparatorChar.ToString()) == true)
-                path = path.TrimEnd(Path.DirectorySeparatorChar);
-            if (path.EndsWith(Path.AltDirectorySeparatorChar.ToString()) == true)
-                path = path.TrimEnd(Path.AltDirectorySeparatorChar);
-            this.Run("add", "--depth files", path.WrapQuot());
+            this.Run("add", "--depth files", path.ToSvnPath());
         }
 
         public void BeginTransaction(string name)
@@ -109,7 +105,7 @@ namespace Ntreev.Crema.Repository.Svn
             this.transactionMessages.Remove(this.repositoryPath);
             if (File.Exists(patchPath) == true)
             {
-                this.Run("patch", patchPath.WrapQuot(), this.repositoryPath.WrapQuot());
+                this.Run("patch", patchPath.ToSvnPath(), this.repositoryPath.ToSvnPath());
                 this.Commit("Transaction" + Environment.NewLine + message, new LogPropertyInfo[] { });
                 FileUtility.Delete(patchPath);
             }
@@ -122,7 +118,7 @@ namespace Ntreev.Crema.Repository.Svn
             this.transactions.Remove(this.repositoryPath);
             this.transactionMessages.Remove(this.repositoryPath);
             //DirectoryUtility.Delete(path);
-            SvnClientHost.Run("revert", this.repositoryPath.WrapQuot(), "-R");
+            SvnClientHost.Run("revert", this.repositoryPath.ToSvnPath(), "-R");
             FileUtility.Delete(patchPath);
         }
 
@@ -132,7 +128,7 @@ namespace Ntreev.Crema.Repository.Svn
             if (this.transactions.ContainsKey(this.repositoryPath) == true)
             {
                 var patchPath = Path.Combine(this.transactionPath, this.transactions[this.repositoryPath] + ".patch");
-                var text = this.Run("diff", this.repositoryPath.WrapQuot(), "--patch-compatible");
+                var text = this.Run("diff", this.repositoryPath.ToSvnPath(), "--patch-compatible");
                 FileUtility.WriteAllText(text, Encoding.UTF8, patchPath);
                 this.transactionMessages[this.repositoryPath] = this.transactionMessages[this.repositoryPath] + comment + Environment.NewLine;
                 //return DateTime.UtcNow;
@@ -140,22 +136,22 @@ namespace Ntreev.Crema.Repository.Svn
 
             //var propText = string.Join(" ", properties.Select(item => $"--with-revprop \"{propertyPrefix}{item.Key}={item.Value}\""));
 
-            this.logService?.Debug($"repository committing {this.repositoryPath.WrapQuot()}");
+            this.logService?.Debug($"repository committing {this.repositoryPath.ToSvnPath()}");
             var result = string.Empty;
             var commentPath = PathUtility.GetTempFileName();
             try
             {
                 if (this.needToUpdate == true)
-                    this.Run("update", this.repositoryPath.WrapQuot());
+                    this.Run("update", this.repositoryPath.ToSvnPath());
 
                 File.WriteAllText(commentPath, commentMessage, Encoding.UTF8);
-                result = this.Run("commit", this.repositoryPath.WrapQuot(), "--file", $"\"{commentPath}\"", "--encoding UTF-8");
+                result = this.Run("commit", this.repositoryPath.ToSvnPath(), "--file", $"\"{commentPath}\"", "--encoding UTF-8");
             }
             catch (Exception e)
             {
                 this.logService?.Warn(e);
-                this.Run("update", this.repositoryPath.WrapQuot());
-                result = this.Run("commit", this.repositoryPath.WrapQuot(), "--file", $"\"{commentPath}\"", "--encoding UTF-8");
+                this.Run("update", this.repositoryPath.ToSvnPath());
+                result = this.Run("commit", this.repositoryPath.ToSvnPath(), "--file", $"\"{commentPath}\"", "--encoding UTF-8");
             }
             finally
             {
@@ -165,7 +161,7 @@ namespace Ntreev.Crema.Repository.Svn
 
             if (result.Trim() != string.Empty)
             {
-                this.logService?.Debug($"repository committed {this.repositoryPath.WrapQuot()}");
+                this.logService?.Debug($"repository committed {this.repositoryPath.ToSvnPath()}");
                 var match = Regex.Match(result, @"Committed revision (?<revision>\d+)[.]", RegexOptions.ExplicitCapture | RegexOptions.Multiline);
                 var revision = match.Groups["revision"].Value;
                 this.repositoryInfo.Revision = revision;
@@ -181,16 +177,16 @@ namespace Ntreev.Crema.Repository.Svn
 
         public void Copy(string srcPath, string toPath)
         {
-            this.Run("copy", srcPath.WrapQuot(), toPath.WrapQuot());
+            this.Run("copy", srcPath.ToSvnPath(), toPath.ToSvnPath());
         }
 
         public void Delete(string path)
         {
             var items = new List<object>() { "delete", "--force" };
-            items.Add(path.WrapQuot());
+            items.Add(path.ToSvnPath());
 
             if (DirectoryUtility.IsDirectory(path) == true)
-                this.Run("update", path.WrapQuot());
+                this.Run("update", path.ToSvnPath());
 
             this.Run(items.ToArray());
         }
@@ -207,7 +203,7 @@ namespace Ntreev.Crema.Repository.Svn
             var relativeUri = UriUtility.MakeRelativeOfDirectory(this.repositoryUri, pureUri);
             var uriTarget = uri.LocalPath;
             var filename = FileUtility.Prepare(exportPath, $"{relativeUri}");
-            this.Run("export", uri.ToString().WrapQuot(), filename.WrapQuot());
+            this.Run("export", uri.ToString().ToSvnPath(), filename.ToSvnPath());
             return new FileInfo(Path.Combine(exportPath, $"{relativeUri}")).FullName;
         }
 
@@ -242,35 +238,30 @@ namespace Ntreev.Crema.Repository.Svn
             throw new NotImplementedException();
         }
 
-        //public void Modify(string path, string contents)
-        //{
-        //    File.WriteAllText(path, contents, Encoding.UTF8);
-        //}
-
         public void Move(string srcPath, string toPath)
         {
             if (DirectoryUtility.IsDirectory(srcPath) == true)
-                this.Run("update", srcPath.WrapQuot());
-            this.Run("move", srcPath.WrapQuot(), toPath.WrapQuot());
+                this.Run("update", srcPath.ToSvnPath());
+            this.Run("move", srcPath.ToSvnPath(), toPath.ToSvnPath());
         }
 
         public void Revert()
         {
             try
             {
-                this.Run("revert", "-R", this.repositoryPath.WrapQuot());
+                this.Run("revert", "-R", this.repositoryPath.ToSvnPath());
             }
             catch
             {
-                this.Run("cleanup", this.repositoryPath.WrapQuot());
-                this.Run("revert", "-R", this.repositoryPath.WrapQuot());
+                this.Run("cleanup", this.repositoryPath.ToSvnPath());
+                this.Run("revert", "-R", this.repositoryPath.ToSvnPath());
             }
         }
 
         public void Revert(string revision)
         {
-            this.Run("update", this.repositoryPath.WrapQuot());
-            this.Run("merge", "-r", $"head:{revision}", this.repositoryPath.WrapQuot(), this.repositoryPath.WrapQuot());
+            this.Run("update", this.repositoryPath.ToSvnPath());
+            this.Run("merge", "-r", $"head:{revision}", this.repositoryPath.ToSvnPath(), this.repositoryPath.ToSvnPath());
         }
 
         private string GetOriginPath(Uri repoUri, SvnLogEventArgs[] logs, string revision)

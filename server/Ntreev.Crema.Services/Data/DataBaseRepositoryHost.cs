@@ -70,20 +70,20 @@ namespace Ntreev.Crema.Services.Data
             try
             {
                 var itemList = new List<string>();
-                var files = serializer.GetPath(itemPath, typeof(CremaDataType), SerializationPropertyCollection.Empty);
+                var files = serializer.GetPath(itemPath, typeof(CremaDataType), ObjectSerializerSettings.Empty);
                 foreach (var item in files)
                 {
                     var exportPath = this.ExportItem(item, tempPath, revision);
                     itemList.Add(FileUtility.RemoveExtension(exportPath));
                 }
 
-                var referencedfiles = serializer.GetReferencedPath(itemPath, typeof(CremaDataType), SerializationPropertyCollection.Empty);
-                foreach (var item in referencedfiles)
+                var referencedFiles = serializer.GetReferencedPath(itemPath, typeof(CremaDataType), ObjectSerializerSettings.Empty);
+                foreach (var item in referencedFiles)
                 {
                     this.ExportItem(item, tempPath, revision);
                 }
 
-                var props = new CremaDataSetPropertyCollection(itemList.ToArray(), null);
+                var props = new CremaDataSetSerializerSettings(itemList.ToArray(), null);
                 return serializer.Deserialize(tempPath, typeof(CremaDataSet), props) as CremaDataSet;
             }
             finally
@@ -102,9 +102,9 @@ namespace Ntreev.Crema.Services.Data
                 var categoryUri = this.GetUri(itemPath, revisionValue);
                 var categoryPath = this.Export(categoryUri, tempPath);
                 var baseUri = this.GetDataBaseUri($"{repoUri}", $"{categoryUri}");
-                var items = serializer.GetItemPaths(categoryPath, typeof(CremaDataType), SerializationPropertyCollection.Empty);
-                var props = new CremaDataSetPropertyCollection(items, null);
-                return serializer.Deserialize(tempPath, typeof(CremaDataSet), SerializationPropertyCollection.Empty) as CremaDataSet;
+                var items = serializer.GetItemPaths(categoryPath, typeof(CremaDataType), ObjectSerializerSettings.Empty);
+                var props = new CremaDataSetSerializerSettings(items, null);
+                return serializer.Deserialize(tempPath, typeof(CremaDataSet), ObjectSerializerSettings.Empty) as CremaDataSet;
             }
             finally
             {
@@ -117,20 +117,20 @@ namespace Ntreev.Crema.Services.Data
             var tempPath = PathUtility.GetTempPath(true);
             try
             {
-                var props = new RelativeSchemaPropertyCollection(itemPath, templateItemPath);
+                var props = new CremaDataTableSerializerSettings(itemPath, templateItemPath);
                 var files = serializer.GetPath(itemPath, typeof(CremaDataTable), props);
                 foreach (var item in files)
                 {
                     this.ExportItem(item, tempPath, revision);
                 }
 
-                var referencedfiles = serializer.GetReferencedPath(itemPath, typeof(CremaDataTable), SerializationPropertyCollection.Empty);
-                foreach (var item in referencedfiles)
+                var referencedFiles = serializer.GetReferencedPath(itemPath, typeof(CremaDataTable), ObjectSerializerSettings.Empty);
+                foreach (var item in referencedFiles)
                 {
                     this.ExportItem(item, tempPath, revision);
                 }
 
-                return serializer.Deserialize(tempPath, typeof(CremaDataSet), SerializationPropertyCollection.Empty) as CremaDataSet;
+                return serializer.Deserialize(tempPath, typeof(CremaDataSet), ObjectSerializerSettings.Empty) as CremaDataSet;
             }
             finally
             {
@@ -149,23 +149,23 @@ namespace Ntreev.Crema.Services.Data
                 var categoryPath = this.Export(categoryUri, tempPath);
                 var baseUri = this.GetDataBaseUri($"{repoUri}", $"{categoryUri}");
 
-                var items = serializer.GetItemPaths(categoryPath, typeof(CremaDataTable), SerializationPropertyCollection.Empty);
+                var items = serializer.GetItemPaths(categoryPath, typeof(CremaDataTable), ObjectSerializerSettings.Empty);
                 foreach (var item in items)
                 {
-                    var files = serializer.GetPath(item, typeof(CremaDataTable), SerializationPropertyCollection.Empty);
+                    var files = serializer.GetPath(item, typeof(CremaDataTable), ObjectSerializerSettings.Empty);
                     foreach (var f in files)
                     {
                         this.ExportRevisionItem(f, tempPath, revision);
                     }
 
-                    var referencedfiles = serializer.GetReferencedPath(item, typeof(CremaDataTable), SerializationPropertyCollection.Empty);
-                    foreach (var f in referencedfiles)
+                    var referencedFiles = serializer.GetReferencedPath(item, typeof(CremaDataTable), ObjectSerializerSettings.Empty);
+                    foreach (var f in referencedFiles)
                     {
                         this.ExportRevisionItem(f, tempPath, revision);
                     }
                 }
 
-                return serializer.Deserialize(tempPath, typeof(CremaDataSet), SerializationPropertyCollection.Empty) as CremaDataSet;
+                return serializer.Deserialize(tempPath, typeof(CremaDataSet), ObjectSerializerSettings.Empty) as CremaDataSet;
             }
             finally
             {

@@ -19,17 +19,18 @@ using Ntreev.Library;
 
 namespace Ntreev.Crema.Services
 {
-    class RelativeSchemaPropertyCollection : SerializationPropertyCollection
+    class CremaDataTableSerializerSettings : ObjectSerializerSettings
     {
-        public RelativeSchemaPropertyCollection(string path, string templatedPath)
+        private readonly string relativePath;
+
+        public CremaDataTableSerializerSettings(string path, string templatedPath)
         {
             if (string.IsNullOrEmpty(templatedPath) == false)
             {
-                var relativeUri = UriUtility.MakeRelative(path, templatedPath);
-                this.Add(nameof(RelativePath), relativeUri);
+                this.relativePath = UriUtility.MakeRelative(path, templatedPath);
             }
         }
 
-        public string RelativePath => this[nameof(RelativePath)] as string ?? string.Empty;
+        public string RelativePath => this.relativePath ?? string.Empty;
     }
 }

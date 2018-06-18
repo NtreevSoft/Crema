@@ -57,9 +57,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthenticationToken.cs" />
+    <Compile Include="ObjectSerializerSettings.cs" />
     <Compile Include="LogServiceHost.cs" />
-    <Compile Include="RelativeSchemaPropertyCollection.cs" />
-    <Compile Include="CremaDataSetPropertyCollection.cs" />
+    <Compile Include="CremaDataTableSerializerSettings.cs" />
+    <Compile Include="CremaDataSetSerializerSettings.cs" />
     <Compile Include="IObjectSerializer.cs" />
     <Compile Include="IRepositoryProviderExtensions.cs" />
     <Compile Include="RepositorySettings.cs" />
@@ -74,7 +75,7 @@
     <Compile Include="Data\AccessSerializationInfo.cs" />
     <Compile Include="Data\DataBaseDataSerializationInfo.cs" />
     <Compile Include="Data\DataServiceItemInfo.cs" />
-    <Compile Include="Data\AccessInfoExtensions.cs" />
+    <None Include="Data\AccessInfoExtensions.cs" />
     <Compile Include="Domains\Actions\DisjoinAction.cs" />
     <Compile Include="Domains\Actions\JoinAction.cs" />
     <Compile Include="Domains\Actions\SetOwnerAction.cs" />

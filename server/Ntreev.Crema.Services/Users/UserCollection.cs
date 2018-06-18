@@ -85,7 +85,7 @@ namespace Ntreev.Crema.Services.Users
             try
             {
                 var itemPath = this.Context.GenerateUserPath(userInfo.CategoryPath, userInfo.ID);
-                var items = this.Serializer.Serialize(itemPath, userInfo, SerializationPropertyCollection.Empty);
+                var items = this.Serializer.Serialize(itemPath, userInfo, ObjectSerializerSettings.Empty);
                 foreach (var item in items)
                 {
                     this.Repository.Add(item);
@@ -117,8 +117,8 @@ namespace Ntreev.Crema.Services.Users
                 userInfo.CategoryPath = categoryPath;
                 userInfo.ModificationInfo = authentication.SignatureDate;
 
-                var pathItems = this.Serializer.Serialize(path, userInfo, SerializationPropertyCollection.Empty);
-                var newPathItems = this.Serializer.GetPath(newPath, userInfo.GetType(), SerializationPropertyCollection.Empty);
+                var pathItems = this.Serializer.Serialize(path, userInfo, ObjectSerializerSettings.Empty);
+                var newPathItems = this.Serializer.GetPath(newPath, userInfo.GetType(), ObjectSerializerSettings.Empty);
 
                 for (var i = 0; i < pathItems.Length; i++)
                 {
@@ -140,7 +140,7 @@ namespace Ntreev.Crema.Services.Users
             try
             {
                 var itemPath = this.Context.GenerateUserPath(user.Category.Path, user.ID);
-                var itemPaths = this.Serializer.GetPath(itemPath, typeof(UserSerializationInfo), SerializationPropertyCollection.Empty);
+                var itemPaths = this.Serializer.GetPath(itemPath, typeof(UserSerializationInfo), ObjectSerializerSettings.Empty);
                 foreach (var item in itemPaths)
                 {
                     this.Repository.Delete(item);
@@ -161,7 +161,7 @@ namespace Ntreev.Crema.Services.Users
             try
             {
                 var itemPath = this.Context.GenerateUserPath(user.Category.Path, user.ID);
-                this.Serializer.Serialize(itemPath, userInfo, SerializationPropertyCollection.Empty);
+                this.Serializer.Serialize(itemPath, userInfo, ObjectSerializerSettings.Empty);
                 this.Repository.Commit(authentication, message);
             }
             catch
@@ -182,7 +182,7 @@ namespace Ntreev.Crema.Services.Users
                 {
                     BanInfo = (BanSerializationInfo)banInfo
                 };
-                this.Serializer.Serialize(itemPath, userInfo, SerializationPropertyCollection.Empty);
+                this.Serializer.Serialize(itemPath, userInfo, ObjectSerializerSettings.Empty);
                 this.Repository.Commit(authentication, message);
             }
             catch
@@ -203,7 +203,7 @@ namespace Ntreev.Crema.Services.Users
                 {
                     BanInfo = (BanSerializationInfo)BanInfo.Empty
                 };
-                this.Serializer.Serialize(itemPath, userInfo, SerializationPropertyCollection.Empty);
+                this.Serializer.Serialize(itemPath, userInfo, ObjectSerializerSettings.Empty);
                 this.Repository.Commit(authentication, message);
             }
             catch

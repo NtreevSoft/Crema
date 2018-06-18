@@ -373,7 +373,7 @@ namespace Ntreev.Crema.Services.Data
 
         public CremaDataType ReadData(Authentication authentication)
         {
-            var props = new CremaDataSetPropertyCollection(new string[] { this.LocalPath }, null);
+            var props = new CremaDataSetSerializerSettings(new string[] { this.LocalPath }, null);
             var dataSet = this.Serializer.Deserialize(this.LocalPath, typeof(CremaDataSet), props) as CremaDataSet;
             return dataSet.Types[base.Name];
         }
@@ -390,7 +390,7 @@ namespace Ntreev.Crema.Services.Data
                                    .Distinct()
                                    .ToArray();
 
-            var props = new CremaDataSetPropertyCollection(authentication, typeFiles, tableFiles);
+            var props = new CremaDataSetSerializerSettings(authentication, typeFiles, tableFiles);
             var dataSet = this.Serializer.Deserialize(this.LocalPath, typeof(CremaDataSet), props) as CremaDataSet;
             return dataSet.Types[base.Name];
         }

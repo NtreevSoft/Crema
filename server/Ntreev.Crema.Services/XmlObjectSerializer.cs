@@ -38,7 +38,7 @@ namespace Ntreev.Crema.Services
     {
         public string Name => "xml";
 
-        public object Deserialize(string itemPath, Type type, IDictionary properties)
+        public object Deserialize(string itemPath, Type type, ObjectSerializerSettings settings)
         {
             if (type == typeof(CremaDataTable))
             {
@@ -50,7 +50,7 @@ namespace Ntreev.Crema.Services
             }
             else if (type == typeof(CremaDataSet))
             {
-                if (properties is CremaDataSetPropertyCollection props)
+                if (settings is CremaDataSetSerializerSettings props)
                 {
                     var dataSet = CremaDataSet.Create(props.SignatureDateProvider);
                     var typePaths = props.TypePaths.Select(item => item + CremaSchema.SchemaExtension).ToArray();
@@ -68,20 +68,21 @@ namespace Ntreev.Crema.Services
             }
             else
             {
-                var filename = itemPath + CremaSchema.XmlExtension;
+                var extension = settings.Extension != string.Empty ? settings.Extension : CremaSchema.XmlExtension;
+                var filename = itemPath + extension;
                 return DataContractSerializerUtility.Read(filename, type);
             }
         }
 
-        public string[] Serialize(string itemPath, object obj, IDictionary properties)
+        public string[] Serialize(string itemPath, object obj, ObjectSerializerSettings settings)
         {
             if (obj is CremaDataTable dataTable)
             {
-                return this.SerializeDataTable(dataTable, itemPath, properties);
+                return this.SerializeDataTable(dataTable, itemPath, settings);
             }
             else if (obj is CremaDataType dataType)
             {
-                return this.SerializeDataType(dataType, itemPath, properties);
+                return this.SerializeDataType(dataType, itemPath, settings);
             }
             else if (obj is CremaDataSet dataSet)
             {
@@ -92,20 +93,17 @@ namespace Ntreev.Crema.Services
             }
             else
             {
-                return this.SerializeObject(obj, itemPath);
+                return this.SerializeObject(obj, itemPath, settings);
             }
         }
 
-        public string[] GetPath(string itemPath, Type type, IDictionary properties)
+        public string[] GetPath(string itemPath, Type type, ObjectSerializerSettings settings)
         {
             if (type == typeof(CremaDataTable))
             {
                 var xmlPath = itemPath + CremaSchema.XmlExtension;
-                if (properties is RelativeSchemaPropertyCollection prop && prop.RelativePath != string.Empty)
+                if (settings is CremaDataTableSerializerSettings prop && prop.RelativePath != string.Empty)
                 {
-                    //var uri = new Uri(xmlPath);
-                    //var schemaUri = UriUtility.Combine(UriUtility.GetDirectoryName(uri), prop.RelativePath);
-                    //var schemaPath = schemaUri.LocalPath + CremaSchema.SchemaExtension;
                     return new string[] { xmlPath };
                 }
                 else
@@ -129,12 +127,13 @@ namespace Ntreev.Crema.Services
             }
             else
             {
-                var filename = itemPath + CremaSchema.XmlExtension;
+                var extension = settings.Extension != string.Empty ? settings.Extension : CremaSchema.XmlExtension;
+                var filename = itemPath + extension;
                 return new string[] { filename };
             }
         }
 
-        public string[] GetReferencedPath(string itemPath, Type type, IDictionary properties)
+        public string[] GetReferencedPath(string itemPath, Type type, ObjectSerializerSettings settings)
         {
             if (type == typeof(CremaDataTable))
             {
@@ -153,7 +152,7 @@ namespace Ntreev.Crema.Services
             }
         }
 
-        public string[] GetItemPaths(string path, Type type, IDictionary properties)
+        public string[] GetItemPaths(string path, Type type, ObjectSerializerSettings settings)
         {
             if (type == typeof(CremaDataTable))
             {
@@ -165,13 +164,14 @@ namespace Ntreev.Crema.Services
             }
             else
             {
+                var extension = settings.Extension != string.Empty ? settings.Extension : CremaSchema.XmlExtension;
                 var directories = DirectoryUtility.GetAllDirectories(path, "*", true);
-                var files = DirectoryUtility.GetAllFiles(path, "*.xml").Select(item => FileUtility.RemoveExtension(item));
-                return directories.Concat(files).OrderBy(item => item).ToArray();
+                var files = DirectoryUtility.GetAllFiles(path, $"*{extension}").Select(item => FileUtility.RemoveExtension(item));
+                return files.OrderBy(item => item).ToArray();
             }
         }
 
-        public void Validate(string itemPath, Type type, IDictionary properties)
+        public void Validate(string itemPath, Type type, ObjectSerializerSettings settings)
         {
             if (type == typeof(CremaDataSet))
             {
@@ -204,11 +204,11 @@ namespace Ntreev.Crema.Services
 
         public static readonly XmlObjectSerializer Default = new XmlObjectSerializer();
 
-        private string[] SerializeDataTable(CremaDataTable dataTable, string itemPath, IDictionary properties)
+        private string[] SerializeDataTable(CremaDataTable dataTable, string itemPath, ObjectSerializerSettings settings)
         {
             var xmlPath = itemPath + CremaSchema.XmlExtension;
 
-            if (properties is RelativeSchemaPropertyCollection prop && prop.RelativePath != string.Empty)
+            if (settings is CremaDataTableSerializerSettings prop && prop.RelativePath != string.Empty)
             {
                 File.WriteAllText(xmlPath, dataTable.GetXml(), Encoding.UTF8);
                 return new string[] { xmlPath };
@@ -230,11 +230,30 @@ namespace Ntreev.Crema.Services
             return new string[] { schemaPath, };
         }
 
-        private string[] SerializeObject(object obj, string itemPath)
+        private string[] SerializeObject(object obj, string itemPath, ObjectSerializerSettings settings)
         {
-            var filename = itemPath + CremaSchema.XmlExtension;
+            var extension = settings.Extension != string.Empty ? settings.Extension : CremaSchema.XmlExtension;
+            var filename = itemPath + extension;
             DataContractSerializerUtility.Write(filename, obj, true);
             return new string[] { filename };
+        }
+
+        public bool Exists(string itemPath, Type type, ObjectSerializerSettings settings)
+        {
+            if (type == typeof(CremaDataTable))
+            {
+                throw new NotImplementedException();
+            }
+            else if (type == typeof(CremaDataType))
+            {
+                throw new NotImplementedException();
+            }
+            else
+            {
+                var extension = settings.Extension != string.Empty ? settings.Extension : CremaSchema.XmlExtension;
+                var filename = itemPath + extension;
+                return File.Exists(filename);
+            }
         }
     }
 }

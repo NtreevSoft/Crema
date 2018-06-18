@@ -24,7 +24,6 @@ using Ntreev.Crema.Services.Users;
 using Ntreev.Library.IO;
 using Ntreev.Library.Linq;
 using Ntreev.Library.ObjectModel;
-using Ntreev.Library.Serialization;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -39,7 +38,6 @@ namespace Ntreev.Crema.Services.Data
         IDataBase, IInfoProvider, IStateProvider
     {
         public static readonly Guid defaultID = Guid.Parse("9CAC6195-1F14-40D6-B56E-4747A67F5C8A");
-        //public const string defaultName = "default";
 
         private const string dataExtension = ".data";
         private readonly IRepositoryProvider repositoryProvider;
@@ -63,7 +61,7 @@ namespace Ntreev.Crema.Services.Data
             this.serializer = cremaHost.Serializer;
             this.Dispatcher = cremaHost.Dispatcher;
             base.Name = name;
-            this.cachePath = cremaHost.GetPath(CremaPath.Caches, DataBaseCollection.DatabasesString);
+            this.cachePath = cremaHost.GetPath(CremaPath.Caches, DataBaseCollection.DataBasesString);
             this.userContext = this.CremaHost.UserContext;
             this.userContext.Dispatcher.Invoke(() => this.userContext.Users.UsersLoggedOut += Users_UsersLoggedOut);
         }
@@ -351,7 +349,7 @@ namespace Ntreev.Crema.Services.Data
                 base.ValidateDelete(authentication);
                 this.DataBases.InvokeDataBaseDelete(authentication, this);
                 base.DataBaseState = DataBaseState.None;
-                FileUtility.Delete(this.cachePath, this.ID.ToString() + dataExtension);
+                this.DeleteCache();
                 this.Dispatcher = null;
                 this.tableContext = null;
                 this.typeContext = null;
@@ -553,7 +551,6 @@ namespace Ntreev.Crema.Services.Data
         {
             if (this.GetService(typeof(DomainContext)) is DomainContext domainContext)
             {
-                Trace.WriteLine("resetting");
                 if (this.IsLoaded == true)
                     this.DetachDomainHost();
 
@@ -669,8 +666,6 @@ namespace Ntreev.Crema.Services.Data
                 return this.CremaHost.GetService(serviceType);
         }
 
-        public string BasePath => this.CremaHost.GetPath(CremaPath.Working, "databases", $"{base.DataBaseInfo.ID}");
-
         public CremaDataSet GetDataSet(Authentication authentication, string revision)
         {
             this.Dispatcher.Invoke(() => this.ValidatePreview(authentication));
@@ -711,19 +706,18 @@ namespace Ntreev.Crema.Services.Data
                                    .Distinct()
                                    .ToArray();
 
-            var props = new CremaDataSetPropertyCollection(authentication, typePaths, tablePaths)
+            var props = new CremaDataSetSerializerSettings(authentication, typePaths, tablePaths)
             {
                 SchemaOnly = schemaOnly,
             };
             return this.Serializer.Deserialize(this.BasePath, typeof(CremaDataSet), props) as CremaDataSet;
         }
 
+        public string BasePath => this.CremaHost.GetPath(CremaPath.Working, "databases", $"{base.DataBaseInfo.ID}");
+
         public CremaHost CremaHost { get; }
 
-        public DataBaseCollection DataBases
-        {
-            get { return this.CremaHost.DataBases; }
-        }
+        public DataBaseCollection DataBases => this.CremaHost.DataBases;
 
         public TableContext TableContext
         {
@@ -773,7 +767,6 @@ namespace Ntreev.Crema.Services.Data
                                         .ToArray();
 
                     var dataBaseInfo = base.DataBaseInfo;
-                    //dataBaseInfo.Paths = EnumerableUtility.Friends(PathUtility.Separator, allItems).Distinct().ToArray();
                     dataBaseInfo.Paths = CategoryName.MakeItemList(allItems);
                     base.DataBaseInfo = dataBaseInfo;
                 }
@@ -818,10 +811,7 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public bool IsLoaded
-        {
-            get { return this.DataBaseState.HasFlag(DataBaseState.IsLoaded); }
-        }
+        public bool IsLoaded => this.DataBaseState.HasFlag(DataBaseState.IsLoaded);
 
         public new bool IsLocked
         {
@@ -859,10 +849,7 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public Guid ID
-        {
-            get { return base.DataBaseInfo.ID; }
-        }
+        public Guid ID => base.DataBaseInfo.ID;
 
         public new event EventHandler Renamed
         {
@@ -1211,53 +1198,23 @@ namespace Ntreev.Crema.Services.Data
 
         private void WriteCache()
         {
-            var filename = FileUtility.Prepare(this.cachePath, $"{this.ID}{dataExtension}");
+            var settings = new ObjectSerializerSettings() { Extension = dataExtension };
+            var itemPath = FileUtility.Prepare(this.cachePath, $"{this.ID}");
             var dataInfo = new DataBaseDataSerializationInfo()
             {
                 Revision = this.Repository.RepositoryInfo.Revision,
                 TypeInfos = this.typeContext.Types.Select((Type item) => item.TypeInfo).ToArray(),
                 TableInfos = this.tableContext.Tables.Select((Table item) => item.TableInfo).ToArray(),
             };
-            this.Serializer.Serialize(filename, dataInfo, SerializationPropertyCollection.Empty);
+            this.Serializer.Serialize(itemPath, dataInfo, settings);
         }
 
-        public void Initialize()
+        private void DeleteCache()
         {
-            //if (this.repositoryHost == null)
-            //{
-            //    this.repositoryHost = new DataBaseRepositoryHost(this, cremaHost.Repository);
-            //    this.repositoryHost.Changed += Repository_Changed;
-            //}
-
-            var remotePath = this.CremaHost.GetPath(CremaPath.RemoteDataBases);
-            var repositoryInfo = this.repositoryProvider.GetRepositoryInfo(remotePath, this.Name);
-
-            if (base.DataBaseInfo.Revision != repositoryInfo.Revision)
-            {
-                this.CremaHost.Debug($"initialize database : {base.Name}");
-                //var branchRevision = this.Repository.BranchRevision;
-                //var branchLog = this.Repository.GetLog(this.basePath, branchRevision, 1).First();
-                //var latestLog = this.Repository.GetLog(this.basePath, this.repositoryHost.Revision, 1).First();
-                //var branchUserID = branchLog.GetPropertyString(LogPropertyInfo.UserIDKey) ?? string.Empty;
-                //var latestUserID = latestLog.GetPropertyString(LogPropertyInfo.UserIDKey) ?? string.Empty;
-                //var uri = this.Repository.GetUri(this.basePath, branchRevision);
-                //var branchName = uri.Segments.Last();
-
-                base.DataBaseInfo = new DataBaseInfo()
-                {
-                    ID = repositoryInfo.ID,
-                    Name = repositoryInfo.Name,
-                    Revision = repositoryInfo.Revision,
-                    Comment = repositoryInfo.Comment,
-                    BranchRevision = repositoryInfo.BranchRevision,
-                    BranchSource = repositoryInfo.BranchSource,
-                    BranchSourceRevision = repositoryInfo.BranchSourceRevision,
-                    CreationInfo = repositoryInfo.CreationInfo,
-                    ModificationInfo = repositoryInfo.ModificationInfo,
-                };
-            }
-
-            this.ReadAccessInfo();
+            var settings = new ObjectSerializerSettings() { Extension = dataExtension };
+            var itemPath = FileUtility.Prepare(this.cachePath, $"{this.ID}");
+            var itemPaths = this.Serializer.GetPath(itemPath, typeof(DataBaseDataSerializationInfo), settings);
+            FileUtility.Delete(itemPaths);
         }
 
         private void ReadCache()
@@ -1266,11 +1223,12 @@ namespace Ntreev.Crema.Services.Data
             {
                 try
                 {
-                    var filename = FileUtility.Prepare(this.cachePath, $"{this.ID}{dataExtension}");
-                    var itemPaths = this.Serializer.GetPath(filename, typeof(DataBaseDataSerializationInfo), SerializationPropertyCollection.Empty);
-                    if (itemPaths.Any(item => File.Exists(item) == false) == false)
+                    var settings = new ObjectSerializerSettings() { Extension = dataExtension };
+                    var itemPath = FileUtility.Prepare(this.cachePath, $"{this.ID}");
+                    var itemPaths = this.Serializer.GetPath(itemPath, typeof(DataBaseDataSerializationInfo), settings);
+                    if (itemPaths.Any() == true)
                     {
-                        var dataInfo = (DataBaseDataSerializationInfo)this.Serializer.Deserialize(filename, typeof(DataBaseDataSerializationInfo), SerializationPropertyCollection.Empty);
+                        var dataInfo = (DataBaseDataSerializationInfo)this.Serializer.Deserialize(itemPath, typeof(DataBaseDataSerializationInfo), settings);
                         if (this.Repository.RepositoryInfo.Revision == dataInfo.Revision)
                         {
                             this.ResetDataBase(Authentication.System, dataInfo.TypeInfos, dataInfo.TableInfos);
@@ -1292,10 +1250,35 @@ namespace Ntreev.Crema.Services.Data
 
                 var typeInfos = dataSet.Types.Select(item => item.TypeInfo);
                 var tableInfos = dataSet.Tables.Select(item => item.TableInfo);
-                //this.ResettingDataBase(Authentication.System);
                 this.ResetDataBase(Authentication.System, typeInfos, tableInfos);
                 this.dataSetCache = dataSet;
             }
+        }
+
+        public void Initialize()
+        {
+            var remotePath = this.CremaHost.GetPath(CremaPath.RemoteDataBases);
+            var repositoryInfo = this.repositoryProvider.GetRepositoryInfo(remotePath, this.Name);
+
+            if (base.DataBaseInfo.Revision != repositoryInfo.Revision)
+            {
+                this.CremaHost.Debug($"initialize database : {base.Name}");
+
+                base.DataBaseInfo = new DataBaseInfo()
+                {
+                    ID = repositoryInfo.ID,
+                    Name = repositoryInfo.Name,
+                    Revision = repositoryInfo.Revision,
+                    Comment = repositoryInfo.Comment,
+                    BranchRevision = repositoryInfo.BranchRevision,
+                    BranchSource = repositoryInfo.BranchSource,
+                    BranchSourceRevision = repositoryInfo.BranchSourceRevision,
+                    CreationInfo = repositoryInfo.CreationInfo,
+                    ModificationInfo = repositoryInfo.ModificationInfo,
+                };
+            }
+
+            this.ReadAccessInfo();
         }
 
         private void Users_UsersLoggedOut(object sender, ItemsEventArgs<IUser> e)
@@ -1311,15 +1294,17 @@ namespace Ntreev.Crema.Services.Data
 
         private void Repository_Changed(object sender, EventArgs e)
         {
-            var dataBaseInfo = base.DataBaseInfo;
-            dataBaseInfo.Revision = this.Repository.RepositoryInfo.Revision;
-            dataBaseInfo.ModificationInfo = this.Repository.RepositoryInfo.ModificationInfo;
-            dataBaseInfo.Paths = null;
-            dataBaseInfo.TypesHashValue = CremaDataSet.GenerateHashValue((from Type item in this.TypeContext.Types select item.TypeInfo).ToArray());
-            dataBaseInfo.TablesHashValue = CremaDataSet.GenerateHashValue((from Table item in this.TableContext.Tables select item.TableInfo).ToArray());
+            var dataBaseInfo = new DataBaseInfo(base.DataBaseInfo)
+            {
+                Revision = this.Repository.RepositoryInfo.Revision,
+                ModificationInfo = this.Repository.RepositoryInfo.ModificationInfo,
+                Paths = null,
+                TypesHashValue = CremaDataSet.GenerateHashValue((from Type item in this.TypeContext.Types select item.TypeInfo).ToArray()),
+                TablesHashValue = CremaDataSet.GenerateHashValue((from Table item in this.TableContext.Tables select item.TableInfo).ToArray()),
+            };
             this.dataSetCache = null;
             this.metaData = null;
-            Authentication.System.Sign();
+            this.Sign(Authentication.System);
             base.DataBaseInfo = dataBaseInfo;
 
             this.Dispatcher.InvokeAsync(() =>
@@ -1343,11 +1328,13 @@ namespace Ntreev.Crema.Services.Data
 
         private void InvokeDataBaseSetPublic(Authentication authentication)
         {
-            var accessInfoPath = this.GetAccessInfoPath();
             var message = EventMessageBuilder.SetPublicDataBase(authentication, this.Name);
             try
             {
-                this.Repository.Delete(accessInfoPath);
+                var settings = new ObjectSerializerSettings() { Extension = ".acs" };
+                var itemPath = this.BasePath + Path.DirectorySeparatorChar;
+                var itemPaths = this.Serializer.GetPath(itemPath, typeof(AccessSerializationInfo), settings);
+                this.Repository.DeleteRange(itemPaths);
                 this.Repository.Commit(authentication, message);
             }
             catch
@@ -1359,14 +1346,15 @@ namespace Ntreev.Crema.Services.Data
 
         private void InvokeDataBaseSetPrivate(Authentication authentication)
         {
-            var accessInfoPath = this.GetAccessInfoPath();
             var accessInfo = this.AccessInfo;
             var message = EventMessageBuilder.SetPrivateDataBase(authentication, this.Name);
             try
             {
                 accessInfo.SetPrivate(this.GetType().Name, authentication.SignatureDate);
-                this.WriteAccessInfo(accessInfoPath, accessInfo);
-                this.Repository.Add(accessInfoPath);
+                var settings = new ObjectSerializerSettings() { Extension = ".acs" };
+                var itemPath = this.BasePath + Path.DirectorySeparatorChar;
+                var itemPaths = this.Serializer.Serialize(itemPath, (AccessSerializationInfo)accessInfo, settings);
+                this.Repository.AddRange(itemPaths);
                 this.Repository.Commit(authentication, message);
             }
             catch
@@ -1378,13 +1366,14 @@ namespace Ntreev.Crema.Services.Data
 
         private void InvokeDataBaseAddAccessMember(Authentication authentication, string memberID, AccessType accessType)
         {
-            var accessInfoPath = this.GetAccessInfoPath();
             var accessInfo = this.AccessInfo;
             var message = EventMessageBuilder.AddAccessMemberToDataBase(authentication, this.Name, memberID, accessType);
             try
             {
                 accessInfo.Add(authentication.SignatureDate, memberID, accessType);
-                this.WriteAccessInfo(accessInfoPath, accessInfo);
+                var itemPath = this.BasePath + Path.DirectorySeparatorChar;
+                var settings = new ObjectSerializerSettings() { Extension = ".acs" };
+                this.Serializer.Serialize(itemPath, (AccessSerializationInfo)accessInfo, settings);
                 this.Repository.Commit(authentication, message);
             }
             catch
@@ -1395,13 +1384,14 @@ namespace Ntreev.Crema.Services.Data
 
         private void InvokeDataBaseSetAccessMember(Authentication authentication, string memberID, AccessType accessType)
         {
-            var accessInfoPath = this.GetAccessInfoPath();
             var accessInfo = this.AccessInfo;
             var message = EventMessageBuilder.SetAccessMemberOfDataBase(authentication, this.Name, memberID, accessType);
             try
             {
                 accessInfo.Set(authentication.SignatureDate, memberID, accessType);
-                this.WriteAccessInfo(accessInfoPath, accessInfo);
+                var itemPath = this.BasePath + Path.DirectorySeparatorChar;
+                var settings = new ObjectSerializerSettings() { Extension = ".acs" };
+                this.Serializer.Serialize(itemPath, (AccessSerializationInfo)accessInfo, settings);
                 this.Repository.Commit(authentication, message);
             }
             catch
@@ -1413,14 +1403,15 @@ namespace Ntreev.Crema.Services.Data
 
         private void InvokeDataBaseRemoveAccessMember(Authentication authentication, string memberID)
         {
-            var accessInfoPath = this.GetAccessInfoPath();
             var accessInfo = this.AccessInfo;
             var message = EventMessageBuilder.RemoveAccessMemberFromDataBase(authentication, this.Name, memberID);
 
             try
             {
                 accessInfo.Remove(authentication.SignatureDate, memberID);
-                this.WriteAccessInfo(accessInfoPath, accessInfo);
+                var itemPath = this.BasePath + Path.DirectorySeparatorChar;
+                var settings = new ObjectSerializerSettings() { Extension = ".acs" };
+                this.Serializer.Serialize(itemPath, (AccessSerializationInfo)accessInfo, settings);
                 this.Repository.Commit(authentication, message);
             }
             catch
@@ -1528,10 +1519,15 @@ namespace Ntreev.Crema.Services.Data
 
         private void ReadAccessInfo()
         {
-            var accessInfoPath = this.GetAccessInfoPath();
+            var settings = new ObjectSerializerSettings() { Extension = ".acs" };
+            var itemPath = this.BasePath + Path.DirectorySeparatorChar;
             try
             {
-                this.ReadAccessInfo(accessInfoPath);
+                if (this.serializer.Exists(itemPath, typeof(AccessSerializationInfo), settings) == true)
+                {
+                    var accessInfo = (AccessSerializationInfo)this.serializer.Deserialize(itemPath, typeof(AccessSerializationInfo), settings);
+                    this.SetAccessInfo((AccessInfo)accessInfo);
+                }
             }
             catch (Exception e)
             {

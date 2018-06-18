@@ -372,7 +372,7 @@ namespace Ntreev.Crema.Services.Data
                                    .Distinct()
                                    .ToArray();
 
-            var props = new CremaDataSetPropertyCollection(authentication, typePaths, tablePaths);
+            var props = new CremaDataSetSerializerSettings(authentication, typePaths, tablePaths);
             var dataSet = this.Serializer.Deserialize(this.LocalPath, typeof(CremaDataSet), props) as CremaDataSet;
             return dataSet;
 
@@ -409,7 +409,7 @@ namespace Ntreev.Crema.Services.Data
         {
             var types = CollectTypes();
             var typePaths = types.Select(item => item.LocalPath).ToArray();
-            var info = new CremaDataSetPropertyCollection(authentication, typePaths, null);
+            var info = new CremaDataSetSerializerSettings(authentication, typePaths, null);
             var dataSet = this.Serializer.Deserialize(this.LocalPath, typeof(CremaDataSet), info) as CremaDataSet;
             return dataSet;
 

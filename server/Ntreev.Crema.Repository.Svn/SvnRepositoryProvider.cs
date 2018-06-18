@@ -39,16 +39,12 @@ namespace Ntreev.Crema.Repository.Svn
     [Export(typeof(IConfigurationPropertyProvider))]
     class SvnRepositoryProvider : IRepositoryProvider, IConfigurationPropertyProvider
     {
-        //public const string repositoryName = "crema";
         public const string remoteName = "svn";
         public const string trunkName = "trunk";
         public const string tagsName = "tags";
         private const string commentHeader = "# revision properties";
         private static readonly Serializer propertySerializer = new SerializerBuilder().Build();
         private static readonly Deserializer propertyDeserializer = new Deserializer();
-
-        [ImportMany]
-        private IEnumerable<Lazy<ILogService>> logServices = null;
 
         [Import]
         private Lazy<ICremaHost> cremaHost = null;
@@ -67,18 +63,17 @@ namespace Ntreev.Crema.Repository.Svn
         public IRepository CreateInstance(RepositorySettings settings)
         {
             var baseUri = new Uri(settings.BasePath);
-            var url = settings.RepositoryName == "default" ? UriUtility.Combine(baseUri, "trunk") : UriUtility.Combine(baseUri, "branches", settings.RepositoryName);
-            //var logService = this.logServices.FirstOrDefault(item => item.Value.Name == "repository");
+            var url = settings.RepositoryName == "default" ? UriUtility.Combine(baseUri, trunkName) : UriUtility.Combine(baseUri, "branches", settings.RepositoryName);
 
             if (Directory.Exists(settings.WorkingPath) == false)
             {
-                SvnClientHost.Run("checkout", url.ToString().WrapQuot(), settings.WorkingPath.WrapQuot());
+                SvnClientHost.Run("checkout", url.ToString().ToSvnPath(), settings.WorkingPath.ToSvnPath());
             }
             else
             {
-                SvnClientHost.Run("update", settings.WorkingPath.WrapQuot());
+                SvnClientHost.Run("update", settings.WorkingPath.ToSvnPath());
             }
-            //var transactionPath = Path.Combine(this.CremaHost.GetPath(CremaPath.Transactions), Path.GetFileName(settings.WorkingPath));
+
             var repositoryInfo = this.GetRepositoryInfo(settings.BasePath, settings.RepositoryName);
             return new SvnRepository(this, settings.LogService, settings.WorkingPath, settings.TransactionPath, repositoryInfo);
         }
@@ -91,9 +86,9 @@ namespace Ntreev.Crema.Repository.Svn
             var branchesPath = DirectoryUtility.Prepare(tempPath, "branches");
             var trunkPath = DirectoryUtility.Prepare(tempPath, "trunk");
 
-            SvnServerHost.Run("create", basePath.WrapQuot(), "--fs-type", "fsfs");
+            SvnServerHost.Run("create", basePath.ToSvnPath(), "--fs-type", "fsfs");
             DirectoryUtility.Copy(initPath, trunkPath);
-            SvnClientHost.Run("import", "-m", "first", tempPath.WrapQuot(), baseUri.ToString().WrapQuot());
+            SvnClientHost.Run("import", "-m", "first", tempPath.ToSvnPath(), baseUri.ToString().ToSvnPath());
         }
 
         public void CreateRepository(string basePath, string initPath, string comment, params LogPropertyInfo[] properties)
@@ -164,10 +159,18 @@ namespace Ntreev.Crema.Repository.Svn
             }
         }
 
+        public void ValidateRepository(string basePath, string repositoryPath)
+        {
+            if (DirectoryUtility.Exists(basePath) == false)
+                throw new DirectoryNotFoundException($"base path does not exists :\"{basePath}\"");
+            if (DirectoryUtility.Exists(repositoryPath) == false)
+                throw new DirectoryNotFoundException($"repository path does not exists :\"{repositoryPath}\"");
+        }
+
         public string[] GetRepositories(string basePath)
         {
             var uri = new Uri(basePath);
-            var list = SvnClientHost.Run("list", $"{uri}".WrapQuot());
+            var list = SvnClientHost.Run("list", $"{uri}".ToSvnPath());
             var sr = new StringReader(list);
             var line = string.Empty;
             var itemList = new List<string>();
@@ -194,18 +197,10 @@ namespace Ntreev.Crema.Repository.Svn
             return itemList.ToArray();
         }
 
-        public void ValidateRepository(string basePath, string repositoryPath)
-        {
-            if (DirectoryUtility.Exists(basePath) == false)
-                throw new DirectoryNotFoundException($"base path does not exists :\"{basePath}\"");
-            if (DirectoryUtility.Exists(repositoryPath) == false)
-                throw new DirectoryNotFoundException($"repository path does not exists :\"{repositoryPath}\"");
-        }
-
         public string GetRevision(string basePath, string repositoryName)
         {
             var uri = this.GetUrl(basePath, repositoryName);
-            var args = SvnInfoEventArgs.Run($"{uri}".WrapQuot());
+            var args = SvnInfoEventArgs.Run($"{uri}".ToSvnPath());
             return $"{args.Revision}";
         }
 
@@ -250,67 +245,10 @@ namespace Ntreev.Crema.Repository.Svn
             return logs.Select(item => (LogInfo)item).ToArray();
         }
 
-        private Uri GetUrl(string basePath, string repositoryName)
-        {
-            var paths = this.GetRepositoryPaths(basePath).ToDictionary(item => item.Key, item => item.Value);
-            var uri = paths[repositoryName];
-            //var uri = repositoryName == "default" ? UriUtility.Combine(baseUri, "trunk") : UriUtility.Combine(baseUri, "tags", repositoryName);
-            return uri;
-        }
-
-        private Uri GenerateUrl(string basePath, string repositoryName)
-        {
-            var baseUri = new Uri(basePath);
-            return UriUtility.Combine(baseUri, "branches", repositoryName);
-        }
-
-        private void GetBranchInfo(string path, out string revision, out string source, out string sourceRevision)
-        {
-            var info = SvnInfoEventArgs.Run(path);
-            this.GetBranchRevision(info.RepositoryRoot, info.Uri, out revision, out source, out sourceRevision);
-        }
-
-        private void GetBranchRevision(Uri repositoryRoot, Uri uri, out string revision, out string source, out string sourceRevision)
-        {
-            var log = SvnLogEventArgs.Runa($"{uri}", "--xml -v --stop-on-copy").Last();
-            var relativeUri = repositoryRoot.MakeRelativeUri(uri);
-
-            var localPath = $"/{relativeUri}";
-            var oldPath = string.Empty;
-            var oldRevision = null as string;
-
-            revision = log.Revision;
-            source = null;
-            sourceRevision = log.Revision;
-            foreach (var item in log.ChangedPaths)
-            {
-                if (item.Action == "A" && item.Path == localPath)
-                {
-                    oldPath = item.CopyFromPath;
-                    oldRevision = item.CopyFromRevision;
-                    source = Path.GetFileName(item.CopyFromPath);
-                    sourceRevision = item.CopyFromRevision;
-                }
-            }
-
-            if (oldPath == string.Empty)
-                return;
-
-            foreach (var item in log.ChangedPaths)
-            {
-                if (item.Action == "D" && item.Path == oldPath)
-                {
-                    var url = new Uri(repositoryRoot + item.Path.Substring(1) + "@" + oldRevision);
-                    GetBranchRevision(repositoryRoot, url, out revision, out source, out sourceRevision);
-                    return;
-                }
-            }
-        }
-
         public IEnumerable<KeyValuePair<string, Uri>> GetRepositoryPaths(string basePath)
         {
             var uri = new Uri(basePath);
-            var list = SvnClientHost.Run("list", $"{uri}".WrapQuot());
+            var list = SvnClientHost.Run("list", $"{uri}".ToSvnPath());
             var sr = new StringReader(list);
             var line = string.Empty;
 
@@ -382,6 +320,63 @@ namespace Ntreev.Crema.Repository.Svn
             {
                 comment = null;
                 properties = null;
+            }
+        }
+
+        private Uri GetUrl(string basePath, string repositoryName)
+        {
+            var paths = this.GetRepositoryPaths(basePath).ToDictionary(item => item.Key, item => item.Value);
+            var uri = paths[repositoryName];
+            //var uri = repositoryName == "default" ? UriUtility.Combine(baseUri, "trunk") : UriUtility.Combine(baseUri, "tags", repositoryName);
+            return uri;
+        }
+
+        private Uri GenerateUrl(string basePath, string repositoryName)
+        {
+            var baseUri = new Uri(basePath);
+            return UriUtility.Combine(baseUri, "branches", repositoryName);
+        }
+
+        private void GetBranchInfo(string path, out string revision, out string source, out string sourceRevision)
+        {
+            var info = SvnInfoEventArgs.Run(path);
+            this.GetBranchRevision(info.RepositoryRoot, info.Uri, out revision, out source, out sourceRevision);
+        }
+
+        private void GetBranchRevision(Uri repositoryRoot, Uri uri, out string revision, out string source, out string sourceRevision)
+        {
+            var log = SvnLogEventArgs.Runa($"{uri}", "--xml -v --stop-on-copy").Last();
+            var relativeUri = repositoryRoot.MakeRelativeUri(uri);
+
+            var localPath = $"/{relativeUri}";
+            var oldPath = string.Empty;
+            var oldRevision = null as string;
+
+            revision = log.Revision;
+            source = null;
+            sourceRevision = log.Revision;
+            foreach (var item in log.ChangedPaths)
+            {
+                if (item.Action == "A" && item.Path == localPath)
+                {
+                    oldPath = item.CopyFromPath;
+                    oldRevision = item.CopyFromRevision;
+                    source = Path.GetFileName(item.CopyFromPath);
+                    sourceRevision = item.CopyFromRevision;
+                }
+            }
+
+            if (oldPath == string.Empty)
+                return;
+
+            foreach (var item in log.ChangedPaths)
+            {
+                if (item.Action == "D" && item.Path == oldPath)
+                {
+                    var url = new Uri(repositoryRoot + item.Path.Substring(1) + "@" + oldRevision);
+                    GetBranchRevision(repositoryRoot, url, out revision, out source, out sourceRevision);
+                    return;
+                }
             }
         }
 

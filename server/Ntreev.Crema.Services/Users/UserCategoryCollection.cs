@@ -92,7 +92,7 @@ namespace Ntreev.Crema.Services.Users
                     var item = users[i];
                     var itemPath = this.Context.GenerateUserPath(item.CategoryPath, item.ID);
                     item.CategoryPath = Regex.Replace(item.CategoryPath, "^" + categoryPath, newCategoryPath);
-                    this.Serializer.Serialize(itemPath, item, SerializationPropertyCollection.Empty);
+                    this.Serializer.Serialize(itemPath, item, ObjectSerializerSettings.Empty);
                 }
                 this.Repository.Move(path, newPath);
                 this.Repository.Commit(authentication, message);
@@ -125,7 +125,7 @@ namespace Ntreev.Crema.Services.Users
                     var item = users[i];
                     var itemPath = this.Context.GenerateUserPath(item.CategoryPath, item.ID);
                     item.CategoryPath = Regex.Replace(item.CategoryPath, "^" + categoryPath, newCategoryPath);
-                    this.Serializer.Serialize(itemPath, item, SerializationPropertyCollection.Empty);
+                    this.Serializer.Serialize(itemPath, item, ObjectSerializerSettings.Empty);
                 }
                 this.Repository.Move(path, newPath);
                 this.Repository.Commit(authentication, message);

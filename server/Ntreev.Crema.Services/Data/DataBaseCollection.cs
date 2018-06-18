@@ -32,8 +32,8 @@ namespace Ntreev.Crema.Services.Data
 {
     class DataBaseCollection : ContainerBase<DataBase>, IDataBaseCollection
     {
-        internal const string DatabasesString = "databases";
-        private const string databaseExtension = ".info";
+        internal const string DataBasesString = "databases";
+        private const string infoExtension = ".info";
         private const string stateExtension = ".state";
         private readonly IRepositoryProvider repositoryProvider;
         private readonly CremaDispatcher repositoryDispatcher;
@@ -58,11 +58,11 @@ namespace Ntreev.Crema.Services.Data
         public DataBaseCollection(CremaHost cremaHost, IRepositoryProvider repositoryProvider)
         {
             this.CremaHost = cremaHost;
-            this.cachePath = cremaHost.GetPath(CremaPath.Caches, DatabasesString);
+            this.cachePath = cremaHost.GetPath(CremaPath.Caches, DataBasesString);
             this.repositoryProvider = cremaHost.RepositoryProvider;
             this.repositoryDispatcher = cremaHost.RepositoryDispatcher;
             this.remotesPath = cremaHost.GetPath(CremaPath.RemoteDataBases);
-            this.basePath = cremaHost.GetPath(CremaPath.Working, DatabasesString);
+            this.basePath = cremaHost.GetPath(CremaPath.Working, DataBasesString);
 
             var caches = this.CremaHost.NoCache == true ? new Dictionary<string, DataBaseSerializationInfo>() : this.ReadCaches();
             var dataBases = repositoryProvider.GetRepositories(this.remotesPath);
@@ -411,13 +411,13 @@ namespace Ntreev.Crema.Services.Data
             {
                 {
                     var dataBaseInfo = (DataBaseSerializationInfo)item.DataBaseInfo;
-                    var filename = FileUtility.Prepare(this.cachePath, $"{item.ID}{databaseExtension}");
-                    this.Serializer.Serialize(filename, dataBaseInfo, SerializationPropertyCollection.Empty);
+                    var filename = FileUtility.Prepare(this.cachePath, $"{item.ID}{infoExtension}");
+                    this.Serializer.Serialize(filename, dataBaseInfo, ObjectSerializerSettings.Empty);
                 }
                 {
                     var dataBaseState = item.DataBaseState & DataBaseState.IsLoaded;
                     var filename = FileUtility.Prepare(this.cachePath, $"{item.ID}{stateExtension}");
-                    this.Serializer.Serialize(filename, dataBaseState, SerializationPropertyCollection.Empty);
+                    this.Serializer.Serialize(filename, dataBaseState, ObjectSerializerSettings.Empty);
                 }
                 item.Dispose();
             }
@@ -785,14 +785,13 @@ namespace Ntreev.Crema.Services.Data
             var caches = new Dictionary<string, DataBaseSerializationInfo>();
             if (Directory.Exists(this.cachePath) == true)
             {
-                var itemPaths = this.Serializer.GetItemPaths(cachePath, typeof(DataBaseSerializationInfo), SerializationPropertyCollection.Empty);
+                var settings = new ObjectSerializerSettings() { Extension = infoExtension };
+                var itemPaths = this.Serializer.GetItemPaths(cachePath, typeof(DataBaseSerializationInfo), settings);
                 foreach (var item in itemPaths)
                 {
-                    if (Path.GetExtension(item) != databaseExtension)
-                        continue;
                     try
                     {
-                        var dataBaseInfo = (DataBaseSerializationInfo)this.Serializer.Deserialize(item, typeof(DataBaseSerializationInfo), SerializationPropertyCollection.Empty);
+                        var dataBaseInfo = (DataBaseSerializationInfo)this.Serializer.Deserialize(item, typeof(DataBaseSerializationInfo), settings);
                         caches.Add(dataBaseInfo.Name, dataBaseInfo);
                     }
                     catch (Exception e)
@@ -809,14 +808,13 @@ namespace Ntreev.Crema.Services.Data
             var caches = new Dictionary<string, DataBaseState>();
             if (Directory.Exists(this.cachePath) == true)
             {
-                var itemPaths = this.Serializer.GetItemPaths(cachePath, typeof(DataBaseState), SerializationPropertyCollection.Empty);
+                var settings = new ObjectSerializerSettings() { Extension = stateExtension };
+                var itemPaths = this.Serializer.GetItemPaths(cachePath, typeof(DataBaseState), settings);
                 foreach (var item in itemPaths)
                 {
-                    if (Path.GetExtension(item) != stateExtension)
-                        continue;
                     try
                     {
-                        var dataBaseState = (DataBaseState)this.Serializer.Deserialize(item, typeof(DataBaseState), SerializationPropertyCollection.Empty);
+                        var dataBaseState = (DataBaseState)this.Serializer.Deserialize(item, typeof(DataBaseState), settings);
                         caches.Add(Path.GetFileNameWithoutExtension(item), dataBaseState);
                     }
                     catch (Exception e)
@@ -832,14 +830,14 @@ namespace Ntreev.Crema.Services.Data
         {
             {
                 var dataBaseInfo = (DataBaseSerializationInfo)dataBase.DataBaseInfo;
-                var filename = FileUtility.Prepare(this.cachePath, $"{dataBase.ID}{databaseExtension}");
-                var itemPaths = this.Serializer.Serialize(filename, dataBaseInfo, SerializationPropertyCollection.Empty);
+                var filename = FileUtility.Prepare(this.cachePath, $"{dataBase.ID}{infoExtension}");
+                var itemPaths = this.Serializer.Serialize(filename, dataBaseInfo, ObjectSerializerSettings.Empty);
                 FileUtility.Delete(itemPaths);
             }
             {
                 var dataBaseState = dataBase.DataBaseState & DataBaseState.IsLoaded;
                 var filename = FileUtility.Prepare(this.cachePath, $"{dataBase.ID}{stateExtension}");
-                var itemPaths = this.Serializer.Serialize(filename, dataBaseState, SerializationPropertyCollection.Empty);
+                var itemPaths = this.Serializer.Serialize(filename, dataBaseState, ObjectSerializerSettings.Empty);
                 FileUtility.Delete(itemPaths);
             }
         }

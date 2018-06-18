@@ -42,13 +42,13 @@ namespace Ntreev.Crema.Repository.Svn
 
         public static SvnInfoEventArgs Run(string path, string revision)
         {
-            var text = SvnClientHost.Run("info", path.WrapQuot(), "-r", revision, "--xml");
+            var text = SvnClientHost.Run("info", path.ToSvnPath(), "-r", revision, "--xml");
             return Parse(text);
         }
 
         public static SvnInfoEventArgs Run(string path)
         {
-            var text = SvnClientHost.Run("info", path.WrapQuot(), "--xml");
+            var text = SvnClientHost.Run("info", path.ToSvnPath(), "--xml");
             return Parse(text);
         }
 

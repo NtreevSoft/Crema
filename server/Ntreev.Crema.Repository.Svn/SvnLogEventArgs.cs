@@ -63,13 +63,13 @@ namespace Ntreev.Crema.Repository.Svn
 
         public static SvnLogEventArgs[] Run(string path, string revision)
         {
-            var text = SvnClientHost.Run("log", path.WrapQuot(), "-r", $"head:{revision}", "--xml", "-v");
+            var text = SvnClientHost.Run("log", path.ToSvnPath(), "-r", $"head:{revision}", "--xml", "-v");
             return SvnLogEventArgs.Read(text);
         }
 
         public static SvnLogEventArgs[] Run(string path, string revision, int count)
         {
-            var text = SvnClientHost.Run("log", path.WrapQuot(), "-r", $"{revision ?? "head"}:1", "--xml", "-v", "-l", count, "--with-all-revprops");
+            var text = SvnClientHost.Run("log", path.ToSvnPath(), "-r", $"{revision ?? "head"}:1", "--xml", "-v", "-l", count, "--with-all-revprops");
             return SvnLogEventArgs.Read(text);
         }
 
@@ -81,7 +81,7 @@ namespace Ntreev.Crema.Repository.Svn
             };
             foreach (var item in paths)
             {
-                argList.Add(item.WrapQuot());
+                argList.Add(item.ToSvnPath());
             }
             var text = SvnClientHost.Run(argList.ToArray());
             return SvnLogEventArgs.Read(text);
@@ -91,7 +91,7 @@ namespace Ntreev.Crema.Repository.Svn
         {
             if (arguments.IndexOf("--xml") < 0)
                 arguments += " --xml";
-            var text = SvnClientHost.Run("log", path.WrapQuot(), arguments);
+            var text = SvnClientHost.Run("log", path.ToSvnPath(), arguments);
             return SvnLogEventArgs.Read(text);
         }
 

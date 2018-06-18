@@ -33,6 +33,11 @@ namespace Ntreev.Crema.ServiceModel
     [DataContract(Namespace = SchemaUtility.Namespace)]
     public struct DataBaseInfo
     {
+        public DataBaseInfo(DataBaseInfo dataBaseInfo)
+        {
+            this = dataBaseInfo;
+        }
+
         [XmlElement]
         public Guid ID { get; set; }
 

@@ -15,45 +15,26 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Library;
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.IO;
+using System.Data;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Xml;
-using System.Xml.Linq;
-using System.Xml.XPath;
+using System.Threading.Tasks;
 
-namespace Ntreev.Crema.Repository.Svn
+namespace Ntreev.Crema.Services
 {
-    struct SvnStatusEventArgs
+    public class ObjectSerializerSettings
     {
-        public IDictionary<string, string> Status { get; private set; }
+        private string extension;
 
-        public static SvnStatusEventArgs Run(string path)
+        public string Extension
         {
-            var text = SvnClientHost.Run("status", path.ToSvnPath(), "--xml");
-            return Parse(text);
+            get => this.extension ?? string.Empty;
+            set => this.extension = value;
         }
 
-        public static SvnStatusEventArgs Parse(string text)
-        {
-            using (var sr = new StringReader(text))
-            {
-                var doc = XDocument.Load(sr);
-                var dictionary = new Dictionary<string, string>();
-
-                foreach (var item in doc.XPathSelectElements("/status/target/entry"))
-                {
-                    var path = item.Attribute("path").Value;
-                    var status = item.XPathSelectElement("wc-status").Attribute("item").Value;
-                    dictionary.Add(path, status);
-                }
-
-                return new SvnStatusEventArgs() { Status = dictionary };
-            }
-        }
+        public static readonly ObjectSerializerSettings Empty = new ObjectSerializerSettings();
     }
 }

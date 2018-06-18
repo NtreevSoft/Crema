@@ -114,7 +114,7 @@ namespace Ntreev.Crema.Services
                 var repository = repositoryProvider.CreateInstance(repositorySettings);
                 try
                 {
-                    serializer.Validate(repository.BasePath, typeof(CremaDataSet), SerializationPropertyCollection.Empty);
+                    serializer.Validate(repository.BasePath, typeof(CremaDataSet), ObjectSerializerSettings.Empty);
                 }
                 catch (Exception e)
                 {
@@ -415,8 +415,8 @@ namespace Ntreev.Crema.Services
         {
             using (var repository = repositoryProvider.CreateInstance(settings))
             {
-                var dataSet = serializer.Deserialize(repository.BasePath, typeof(CremaDataSet), SerializationPropertyCollection.Empty) as CremaDataSet;
-                var files = serializer.Serialize(repository.BasePath, dataSet, SerializationPropertyCollection.Empty);
+                var dataSet = serializer.Deserialize(repository.BasePath, typeof(CremaDataSet), ObjectSerializerSettings.Empty) as CremaDataSet;
+                var files = serializer.Serialize(repository.BasePath, dataSet, ObjectSerializerSettings.Empty);
 
                 var items = repository.Status();
                 foreach (var item in items)

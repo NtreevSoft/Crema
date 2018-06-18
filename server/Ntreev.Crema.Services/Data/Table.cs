@@ -423,7 +423,7 @@ namespace Ntreev.Crema.Services.Data
                 {
                     this.ValidateAccessType(authentication, AccessType.Guest);
                     this.Sign(authentication);
-                    var props = new RelativeSchemaPropertyCollection(this.LocalPath, this.TemplatedParent?.LocalPath);
+                    var props = new CremaDataTableSerializerSettings(this.LocalPath, this.TemplatedParent?.LocalPath);
                     return this.Serializer.GetPath(this.LocalPath, typeof(CremaDataTable), props);
                 });
                 var result = this.Context.GetLog(itemPaths);
@@ -519,7 +519,7 @@ namespace Ntreev.Crema.Services.Data
             var types = tables.SelectMany(item => item.GetTypes()).Distinct().ToArray();
             var typePaths = types.Select(item => item.LocalPath).ToArray();
             var tablePaths = tables.Select(item => item.LocalPath).ToArray();
-            var props = new CremaDataSetPropertyCollection(authentication, typePaths, tablePaths);
+            var props = new CremaDataSetSerializerSettings(authentication, typePaths, tablePaths);
             var dataSet = this.Serializer.Deserialize(this.LocalPath, typeof(CremaDataSet), props) as CremaDataSet;
             return dataSet;
         }
@@ -530,7 +530,7 @@ namespace Ntreev.Crema.Services.Data
             var types = tables.SelectMany(item => item.GetTypes()).Distinct().ToArray();
             var typePaths = types.Select(item => item.LocalPath).ToArray();
             var tablePaths = tables.Select(item => item.LocalPath).ToArray();
-            var props = new CremaDataSetPropertyCollection(authentication, typePaths, tablePaths);
+            var props = new CremaDataSetSerializerSettings(authentication, typePaths, tablePaths);
             var dataSet = this.Serializer.Deserialize(this.LocalPath, typeof(CremaDataSet), props) as CremaDataSet;
             return dataSet;
         }
@@ -889,9 +889,7 @@ namespace Ntreev.Crema.Services.Data
             if (this.Parent == null)
             {
                 var itemName = new ItemName(Regex.Replace(this.Path, $"^{oldPath}", newPath));
-                if (this.TemplatedParent == null)
-                    this.Context.ValidateTableSchemaPath(itemName.CategoryPath, itemName.Name);
-                this.Context.ValidateTableXmlPath(itemName.CategoryPath, itemName.Name);
+                this.Context.ValidateTablePath(itemName.CategoryPath, itemName.Name, this.TemplatedParent);
             }
         }
 
@@ -907,9 +905,7 @@ namespace Ntreev.Crema.Services.Data
             if (this.Parent == null)
             {
                 var itemName = new ItemName(Regex.Replace(this.Path, $"^{oldPath}", newPath));
-                if (this.TemplatedParent == null)
-                    this.Context.ValidateTableSchemaPath(itemName.CategoryPath, itemName.Name);
-                this.Context.ValidateTableXmlPath(itemName.CategoryPath, itemName.Name);
+                this.Context.ValidateTablePath(itemName.CategoryPath, itemName.Name, this.TemplatedParent);
             }
         }
 

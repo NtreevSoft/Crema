@@ -85,7 +85,7 @@ namespace Ntreev.Crema.Services.Data
         public void InvokeCategoryRename(Authentication authentication, TableCategory category, string name, CremaDataSet dataSet)
         {
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeCategoryRename), category, name);
-            var categoryName = new CategoryName(category.Path) { Name = name, };
+            var categoryName = new CategoryName(category.Path) { Name = name };
             var dataTables = new DataTableCollection(dataSet, this.DataBase);
             var message = EventMessageBuilder.RenameTableCategory(authentication, category.Path, categoryName);
             try
@@ -93,7 +93,7 @@ namespace Ntreev.Crema.Services.Data
                 dataTables.SetCategoryPath(category.Path, categoryName);
                 dataTables.Modify(this.Serializer);
                 this.Repository.Move(category.LocalPath, this.Context.GenerateCategoryPath(categoryName.Path));
-                this.Context.InvokeTableItemRename(authentication, category, name);
+                this.Context.InvokeTableItemRename(authentication, category, categoryName);
                 this.Repository.Commit(authentication, message);
             }
             catch
@@ -114,7 +114,7 @@ namespace Ntreev.Crema.Services.Data
                 dataTables.SetCategoryPath(category.Path, categoryName);
                 dataTables.Modify(this.Serializer);
                 this.Repository.Move(category.LocalPath, this.Context.GenerateCategoryPath(categoryName));
-                this.Context.InvokeTableItemMove(authentication, category, parentPath);
+                this.Context.InvokeTableItemMove(authentication, category, categoryName);
                 this.Repository.Commit(authentication, message);
             }
             catch

@@ -83,6 +83,17 @@ namespace Ntreev.Crema.Services
             });
         }
 
+        public void DeleteRange(string[] paths)
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+                foreach (var item in paths)
+                {
+                    this.Repository.Delete(item);
+                }
+            });
+        }
+
         public void Copy(string srcPath, string toPath)
         {
             this.Dispatcher.Invoke(() =>
