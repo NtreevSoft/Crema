@@ -28,9 +28,6 @@ namespace Ntreev.Crema.Services
 {
     public class ItemEventArgs<T> : Ntreev.Library.ObjectModel.ItemEventArgs<T>
     {
-        private readonly SignatureDate signatureDate;
-        private readonly object metaData;
-
         public ItemEventArgs(Authentication authentication, T item)
             : this(authentication, item, null)
         {
@@ -46,28 +43,16 @@ namespace Ntreev.Crema.Services
                 throw new ArgumentException(ServiceModel.Properties.Resources.Exception_AuthenticationDoesNotSigned, nameof(authentication));
             if (item == null)
                 throw new ArgumentNullException(nameof(item));
-            this.signatureDate = authentication.SignatureDate;
-            this.metaData = metaData;
+            this.SignatureDate = authentication.SignatureDate;
+            this.MetaData = metaData;
         }
 
-        public string UserID
-        {
-            get { return this.signatureDate.ID; }
-        }
+        public string UserID => this.SignatureDate.ID;
 
-        public SignatureDate SignatureDate
-        {
-            get { return this.signatureDate; }
-        }
+        public DateTime DateTime => this.SignatureDate.DateTime;
 
-        public DateTime DateTime
-        {
-            get { return this.signatureDate.DateTime; }
-        }
+        public SignatureDate SignatureDate { get; }
 
-        public object MetaData
-        {
-            get { return this.metaData; }
-        }
+        public object MetaData { get; }
     }
 }

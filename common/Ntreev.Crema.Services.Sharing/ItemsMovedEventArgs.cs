@@ -27,9 +27,6 @@ namespace Ntreev.Crema.Services
 {
     public class ItemsMovedEventArgs<T> : ItemsEventArgs<T>
     {
-        private readonly string[] oldPaths;
-        private readonly string[] oldCategoryPaths;
-
         public ItemsMovedEventArgs(Authentication authentication, T[] items, string[] oldPaths, string[] oldCategoryPaths)
             : this(authentication, items, oldPaths, oldCategoryPaths, null)
         {
@@ -39,18 +36,12 @@ namespace Ntreev.Crema.Services
         public ItemsMovedEventArgs(Authentication authentication, T[] items, string[] oldPaths, string[] oldCategoryPaths, object metaData)
             : base(authentication, items, metaData)
         {
-            this.oldPaths = oldPaths;
-            this.oldCategoryPaths = oldCategoryPaths;   
+            this.OldPaths = oldPaths;
+            this.OldCategoryPaths = oldCategoryPaths;   
         }
 
-        public string[] OldPaths
-        {
-            get { return this.oldPaths; }
-        }
+        public string[] OldPaths { get; }
 
-        public string[] OldCategoryPaths
-        {
-            get { return this.oldCategoryPaths; }
-        }
+        public string[] OldCategoryPaths { get; }
     }
 }

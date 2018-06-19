@@ -24,23 +24,16 @@ namespace Ntreev.Crema.Services
 {
     public class ClosedEventArgs : EventArgs
     {
-        private readonly CloseReason reason;
         private readonly string message;
 
         public ClosedEventArgs(CloseReason reason, string message)
         {
-            this.reason = reason;
+            this.Reason = reason;
             this.message = message;
         }
 
-        public CloseReason Reason
-        {
-            get { return this.reason; }
-        }
+        public CloseReason Reason { get; }
 
-        public string Message
-        {
-            get { return this.message ?? string.Empty; }
-        }
+        public string Message => this.message ?? string.Empty;
     }
 }

@@ -408,7 +408,7 @@ namespace Ntreev.Crema.Commands.Consoles
             {
                 if (this.ParentPath == string.Empty)
                 {
-                    var category = this.GetCategory(this.ParentPath ?? this.GetCurrentDirectory());
+                    var category = this.GetCategory(this.GetCurrentDirectory());
                     return category.Dispatcher.Invoke(() => category.NewTable(authentication));
                 }
                 else if (NameValidator.VerifyCategoryPath(this.ParentPath) == true)

@@ -192,6 +192,11 @@ namespace Ntreev.Crema.Services
             return pureRepoUri;
         }
 
+        public RepositoryItem[] Status(params string[] paths)
+        {
+            return this.Dispatcher.Invoke(() => this.Repository.Status(paths));
+        }
+
         public void Dispose()
         {
             this.Repository.Dispose();

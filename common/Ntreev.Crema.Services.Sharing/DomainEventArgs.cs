@@ -27,47 +27,24 @@ namespace Ntreev.Crema.Services
 {
     public class DomainEventArgs : EventArgs
     {
-        private readonly SignatureDate signatureDate;
-        private readonly IDomain domain;
-        private readonly DomainInfo domainInfo;
-        private readonly DomainState domainState;
-
         public DomainEventArgs(Authentication authentication, IDomain domain)
         {
-            this.domain = domain;
-            this.domainInfo = domain.DomainInfo;
-            this.domainState = domain.DomainState;
-            this.signatureDate = authentication.SignatureDate;
+            this.Domain = domain;
+            this.DomainInfo = domain.DomainInfo;
+            this.DomainState = domain.DomainState;
+            this.SignatureDate = authentication.SignatureDate;
         }
 
-        public IDomain Domain
-        {
-            get { return this.domain; }
-        }
+        public IDomain Domain { get; }
 
-        public DomainInfo DomainInfo
-        {
-            get { return this.domainInfo; }
-        }
+        public DomainInfo DomainInfo { get; }
 
-        public DomainState DomainState
-        {
-            get { return this.domainState; }
-        }
+        public DomainState DomainState { get; }
 
-        public string UserID
-        {
-            get { return this.signatureDate.ID; }
-        }
+        public string UserID => this.SignatureDate.ID;
 
-        public DateTime DateTime
-        {
-            get { return this.signatureDate.DateTime; }
-        }
+        public DateTime DateTime => this.SignatureDate.DateTime;
 
-        public SignatureDate SignatureDate
-        {
-            get { return this.signatureDate; }
-        }
+        public SignatureDate SignatureDate { get; }
     }
 }

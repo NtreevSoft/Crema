@@ -25,17 +25,12 @@ namespace Ntreev.Crema.Services
 {
     public class DomainUserRemovedEventArgs : DomainUserEventArgs
     {
-        private readonly RemoveInfo removeInfo;
-
         public DomainUserRemovedEventArgs(Authentication authentication, IDomain domain, IDomainUser domainUser, RemoveInfo removeInfo)
             : base(authentication, domain, domainUser)
         {
-            this.removeInfo = removeInfo;
+            this.RemoveInfo = removeInfo;
         }
 
-        public RemoveInfo RemoveInfo
-        {
-            get { return this.removeInfo; }
-        }
+        public RemoveInfo RemoveInfo { get; }
     }
 }

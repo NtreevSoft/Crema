@@ -27,8 +27,6 @@ namespace Ntreev.Crema.Services
 {
     public class ItemsDeletedEventArgs<T> : ItemsEventArgs<T>
     {
-        private readonly string[] itemPaths;
-
         public ItemsDeletedEventArgs(Authentication authentication, T[] items, string[] itemPaths)
             : this(authentication, items, itemPaths, null)
         {
@@ -38,12 +36,9 @@ namespace Ntreev.Crema.Services
         public ItemsDeletedEventArgs(Authentication authentication, T[] items, string[] itemPaths, object metaData)
             : base(authentication, items, metaData)
         {
-            this.itemPaths = itemPaths;
+            this.ItemPaths = itemPaths;
         }
 
-        public string[] ItemPaths
-        {
-            get { return this.itemPaths; }
-        }
+        public string[] ItemPaths { get; }
     }
 }

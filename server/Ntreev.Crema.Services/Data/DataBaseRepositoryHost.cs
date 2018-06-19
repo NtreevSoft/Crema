@@ -112,6 +112,18 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
+        public void RenameTableCategory(CremaDataSet dataSet, TableCategory category, string newCategoryPath)
+        {
+            var dataBaseSet = new DataBaseSet(category.DataBase, dataSet);
+            dataBaseSet.SetTableCategoryPath(category, newCategoryPath);
+        }
+
+        public void MoveTableCategory(CremaDataSet dataSet, TableCategory category, string newCategoryPath)
+        {
+            var dataBaseSet = new DataBaseSet(category.DataBase, dataSet);
+            dataBaseSet.SetTableCategoryPath(category, newCategoryPath);
+        }
+
         public CremaDataSet GetTableData(IObjectSerializer serializer, string itemPath, string templateItemPath, string revision)
         {
             var tempPath = PathUtility.GetTempPath(true);
@@ -199,6 +211,46 @@ namespace Ntreev.Crema.Services.Data
                 return this.Export(itemRevisionUri, exportPath);
             }
             return null;
+        }
+
+        public void CreateTable(CremaDataSet dataSet, DataBase dataBase)
+        {
+            DataBaseSet.CreateTable(dataSet, dataBase);
+        }
+
+        public void RenameTable(CremaDataSet dataSet, Table table, string newName)
+        {
+            DataBaseSet.RenameTable(dataSet, table, newName);
+        }
+
+        public void MoveTable(CremaDataSet dataSet, Table table, string newCategoryPath)
+        {
+            var dataBaseSet = new DataBaseSet(table.DataBase, dataSet);
+            dataBaseSet.MoveTable(table, newCategoryPath);
+        }
+
+        public void DeleteTable(CremaDataSet dataSet, Table table)
+        {
+            var dataBaseSet = new DataBaseSet(table.DataBase, dataSet);
+            dataBaseSet.DeleteTable(table);
+        }
+
+        public void ModifyTable(CremaDataSet dataSet, Table table)
+        {
+            var dataBaseSet = new DataBaseSet(table.DataBase, dataSet);
+            dataBaseSet.SerializeTables();
+        }
+
+        public void SetTableTags(CremaDataSet dataSet, Table table, TagInfo tags)
+        {
+            var dataBaseSet = new DataBaseSet(table.DataBase, dataSet);
+            dataBaseSet.SetTableTags(table, tags);
+        }
+
+        public void SetTableComment(CremaDataSet dataSet, Table table, string comment)
+        {
+            var dataBaseSet = new DataBaseSet(table.DataBase, dataSet);
+            dataBaseSet.SetTableComment(table, comment);
         }
     }
 }

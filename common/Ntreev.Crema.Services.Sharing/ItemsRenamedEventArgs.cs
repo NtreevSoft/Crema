@@ -26,9 +26,6 @@ namespace Ntreev.Crema.Services
 {
     public class ItemsRenamedEventArgs<T> : ItemsEventArgs<T>
     {
-        private readonly string[] oldNames;
-        private readonly string[] oldPaths;
-
         public ItemsRenamedEventArgs(Authentication authentication, T[] items, string[] oldNames, string[] oldPaths)
             : this(authentication, items, oldNames, oldPaths, null)
         {
@@ -38,18 +35,12 @@ namespace Ntreev.Crema.Services
         public ItemsRenamedEventArgs(Authentication authentication, T[] items, string[] oldNames, string[] oldPaths, object metaData)
             : base(authentication, items, metaData)
         {
-            this.oldNames = oldNames;
-            this.oldPaths = oldPaths;
+            this.OldNames = oldNames;
+            this.OldPaths = oldPaths;
         }
 
-        public string[] OldNames
-        {
-            get { return this.oldNames; }
-        }
+        public string[] OldNames { get; }
 
-        public string[] OldPaths
-        {
-            get { return this.oldPaths; }
-        }
+        public string[] OldPaths { get; }
     }
 }

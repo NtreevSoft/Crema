@@ -53,7 +53,9 @@ namespace Ntreev.Crema.Services
         private IEnumerable<IConfigurationPropertyProvider> propertiesProvider = null;
 
         [ImportingConstructor]
-        public CremaHost(CremaSettings settings, [ImportMany]IEnumerable<IRepositoryProvider> repoProviders, [ImportMany]IEnumerable<IObjectSerializer> serializers)
+        public CremaHost(CremaSettings settings,
+            [ImportMany]IEnumerable<IRepositoryProvider> repoProviders,
+            [ImportMany]IEnumerable<IObjectSerializer> serializers)
         {
             CremaLog.Debug("crema instance created.");
             this.settings = settings;

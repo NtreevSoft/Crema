@@ -268,7 +268,7 @@ namespace Ntreev.Crema.Services.Data
                 var items = this.Parent == null ? EnumerableUtility.Friends(this, this.Childs).ToArray() : EnumerableUtility.Friends(this, this.DerivedTables).ToArray();
                 var oldPaths = items.Select(item => item.Path).ToArray();
                 var container = this.Container;
-                var dataSet = this.Parent != null ? this.ReadAll(authentication) : null;
+                var dataSet = this.ReadAll(authentication);
                 container.InvokeTableDelete(authentication, this, dataSet);
                 base.Delete(authentication);
                 container.InvokeTablesDeletedEvent(authentication, items, oldPaths);

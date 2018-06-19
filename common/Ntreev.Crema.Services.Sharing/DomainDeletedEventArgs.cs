@@ -27,24 +27,15 @@ namespace Ntreev.Crema.Services
 {
     public class DomainDeletedEventArgs : DomainEventArgs
     {
-        private readonly Authentication authentication;
-        private readonly bool isCanceled;
-
         public DomainDeletedEventArgs(Authentication authentication, IDomain domain, bool isCanceled)
             : base(authentication, domain)
         {
-            this.isCanceled = isCanceled;
-            this.authentication = authentication;
+            this.IsCanceled = isCanceled;
+            this.Authentication = authentication;
         }
 
-        public bool IsCanceled
-        {
-            get { return this.isCanceled; }
-        }
+        public bool IsCanceled { get; }
 
-        internal Authentication Authentication
-        {
-            get { return this.authentication; }
-        }
+        internal Authentication Authentication { get; }
     }
 }

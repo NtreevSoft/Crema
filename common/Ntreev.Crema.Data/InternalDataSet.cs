@@ -156,6 +156,16 @@ namespace Ntreev.Crema.Data
         {
             this.ValidateRemoveTable(dataTable);
             this.Sign();
+
+            if (dataTable.ParentName != string.Empty)
+            {
+                var derivedItems = dataTable.DerivedItems.ToArray();
+                foreach (var item in derivedItems)
+                {
+                    this.Tables.Remove(item);
+                }
+            }
+
             foreach (var item in dataTable.ChildItems)
             {
                 this.Tables.Remove(item);
@@ -169,9 +179,9 @@ namespace Ntreev.Crema.Data
                 return false;
             if (dataTable.DataSet != this)
                 return false;
-            if (dataTable.Parent != null)
+            if (dataTable.ParentName != string.Empty && dataTable.TemplatedParentName != string.Empty)
                 return false;
-            return this.Tables.CanRemove(dataTable);
+            return true;
         }
 
         public void BeginLoad()
@@ -466,8 +476,10 @@ namespace Ntreev.Crema.Data
         {
             if (dataTable.DataSet != this)
                 throw new CremaDataException("DataSet에 속해 있지 않은 테이블은 제거할 수 없습니다.");
-            if (dataTable.Parent != null)
-                throw new CremaDataException(Resources.Exception_CannotRemoveChildTable);
+            //if (dataTable.Parent != null)
+            //    throw new CremaDataException(Resources.Exception_CannotRemoveChildTable);
+            if (dataTable.ParentName != string.Empty && dataTable.TemplatedParentName != string.Empty)
+                throw new CremaDataException("상속된 자식 테이블은 제거할 수 없습니다.");
         }
 
         private void ValidateAddType(TypeInfo typeInfo)

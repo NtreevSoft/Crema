@@ -24,16 +24,11 @@ namespace Ntreev.Crema.Services
 {
     public class AuthenticationEventArgs : EventArgs
     {
-        private readonly AuthenticationInfo authenticationInfo;
-
         public AuthenticationEventArgs(AuthenticationInfo authenticationInfo)
         {
-            this.authenticationInfo = authenticationInfo;
+            this.AuthenticationInfo = authenticationInfo;
         }
 
-        public AuthenticationInfo AuthenticationInfo
-        {
-            get { return this.authenticationInfo; }
-        }
+        public AuthenticationInfo AuthenticationInfo { get; }
     }
 }

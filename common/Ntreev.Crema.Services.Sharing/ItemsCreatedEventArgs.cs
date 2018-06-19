@@ -27,8 +27,6 @@ namespace Ntreev.Crema.Services
 {
     public class ItemsCreatedEventArgs<T> : ItemsEventArgs<T>
     {
-        private readonly object[] args;
-
         public ItemsCreatedEventArgs(Authentication authentication, T[] items, object[] args)
             : this(authentication, items, args, null)
         {
@@ -38,12 +36,9 @@ namespace Ntreev.Crema.Services
         public ItemsCreatedEventArgs(Authentication authentication, T[] items, object[] args, object metaData)
             : base(authentication, items, metaData)
         {
-            this.args = args;
+            this.Arguments = args;
         }
 
-        public object[] Arguments
-        {
-            get { return this.args; }
-        }
+        public object[] Arguments { get; }
     }
 }

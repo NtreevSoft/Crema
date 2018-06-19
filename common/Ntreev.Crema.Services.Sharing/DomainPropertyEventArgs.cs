@@ -25,24 +25,15 @@ namespace Ntreev.Crema.Services
 {
     public class DomainPropertyEventArgs : DomainEventArgs
     {
-        private readonly string propertyName;
-        private readonly object value;
-
         public DomainPropertyEventArgs(Authentication authentication, IDomain domain, string propertyName, object value)
             : base(authentication, domain)
         {
-            this.propertyName = propertyName;
-            this.value = value;
+            this.PropertyName = propertyName;
+            this.Value = value;
         }
 
-        public string PropertyName
-        {
-            get { return this.propertyName; }
-        }
+        public string PropertyName { get; }
 
-        public object Value
-        {
-            get { return this.value; }
-        }
+        public object Value { get; }
     }
 }

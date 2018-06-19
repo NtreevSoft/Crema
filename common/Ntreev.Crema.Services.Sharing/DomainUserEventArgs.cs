@@ -25,24 +25,15 @@ namespace Ntreev.Crema.Services
 {
     public class DomainUserEventArgs : DomainEventArgs
     {
-        private readonly DomainUserInfo domainUserInfo;
-        private readonly DomainUserState domainUserState;
-
         public DomainUserEventArgs(Authentication authentication, IDomain domain, IDomainUser domainUser)
             : base(authentication, domain)
         {
-            this.domainUserInfo = domainUser.DomainUserInfo;
-            this.domainUserState = domainUser.DomainUserState;
+            this.DomainUserInfo = domainUser.DomainUserInfo;
+            this.DomainUserState = domainUser.DomainUserState;
         }
 
-        public DomainUserInfo DomainUserInfo
-        {
-            get { return this.domainUserInfo; }
-        }
+        public DomainUserInfo DomainUserInfo { get; }
 
-        public DomainUserState DomainUserState
-        {
-            get { return this.domainUserState; }
-        }
+        public DomainUserState DomainUserState { get; }
     }
 }

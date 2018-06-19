@@ -25,23 +25,18 @@ namespace Ntreev.Crema.Services
 {
     public class DomainRowEventArgs : DomainEventArgs
     {
-        private readonly DomainRowInfo[] rows;
-
         public DomainRowEventArgs(Authentication authentication, IDomain domain, DomainRowInfo row)
             : base(authentication, domain)
         {
-            this.rows = new DomainRowInfo[] { row };
+            this.Rows = new DomainRowInfo[] { row };
         }
 
         public DomainRowEventArgs(Authentication authentication, IDomain domain, DomainRowInfo[] rows)
             : base(authentication, domain)
         {
-            this.rows = rows;
+            this.Rows = rows;
         }
 
-        public DomainRowInfo[] Rows
-        {
-            get { return this.rows; }
-        }
+        public DomainRowInfo[] Rows { get; }
     }
 }

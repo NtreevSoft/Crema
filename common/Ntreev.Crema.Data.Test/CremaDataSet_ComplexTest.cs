@@ -26,6 +26,7 @@ using Ntreev.Crema.Data.Xml;
 using Ntreev.Crema.Data.Random;
 using Ntreev.Library.Random;
 using Ntreev.Crema.Data.Xml.Schema;
+using Ntreev.Library.IO;
 
 namespace Ntreev.Crema.Data.Test
 {
@@ -516,6 +517,132 @@ namespace Ntreev.Crema.Data.Test
             dataTable2.ImportRow(dataRow1);
 
             childTable2.ImportRow(childRow1);
+        }
+
+        [TestMethod]
+        public void RemoveChildTest()
+        {
+            var dataSet = new CremaDataSet();
+            var dataTable = dataSet.Tables.Add();
+            var derivedTable = dataTable.Inherit();
+
+            var childTable = dataTable.Childs.Add();
+            var derivedChildTable = derivedTable.Childs[childTable.TableName];
+
+            dataSet.Tables.Remove(childTable);
+
+            Assert.IsNull(childTable.DataSet);
+            Assert.IsNull(derivedChildTable.DataSet);
+        }
+
+        [TestMethod]
+        public void CanRemoveChildTest()
+        {
+            var dataSet = new CremaDataSet();
+            var dataTable = dataSet.Tables.Add();
+            var derivedTable = dataTable.Inherit();
+
+            var childTable = dataTable.Childs.Add();
+            var derivedChildTable = derivedTable.Childs[childTable.TableName];
+
+            var canRemove = dataSet.Tables.CanRemove(childTable);
+
+            Assert.IsTrue(canRemove);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(CremaDataException))]
+        public void RemoveDerivedChildTest_Fail()
+        {
+            var dataSet = new CremaDataSet();
+            var dataTable = dataSet.Tables.Add();
+            var derivedTable = dataTable.Inherit();
+
+            var childTable = dataTable.Childs.Add();
+            var derivedChildTable = derivedTable.Childs[childTable.TableName];
+
+            dataSet.Tables.Remove(derivedChildTable);
+        }
+
+        [TestMethod]
+        public void CanRemoveDerivedChildTest()
+        {
+            var dataSet = new CremaDataSet();
+            var dataTable = dataSet.Tables.Add();
+            var derivedTable = dataTable.Inherit();
+
+            var childTable = dataTable.Childs.Add();
+            var derivedChildTable = derivedTable.Childs[childTable.TableName];
+
+            var canRemove = dataSet.Tables.CanRemove(derivedChildTable);
+
+            Assert.IsFalse(canRemove);
+        }
+
+        [TestMethod]
+        public void RemoveChildWithoutParentTest()
+        {
+            var dataSet = new CremaDataSet();
+            var dataTable = dataSet.Tables.Add();
+            var derivedTable = dataTable.Inherit();
+
+            var childTable = dataTable.Childs.Add();
+            var derivedChildTable = derivedTable.Childs[childTable.TableName];
+
+            var tempPath = PathUtility.GetTempPath(true);
+
+            try
+            {
+                dataSet.WriteToDirectory(tempPath);
+
+                var dataSet2 = new CremaDataSet();
+                dataSet2.ReadTable(Path.Combine(tempPath, CremaSchema.TableDirectory, childTable.Name + CremaSchema.XmlExtension));
+                dataSet2.ReadTable(Path.Combine(tempPath, CremaSchema.TableDirectory, derivedChildTable.Name + CremaSchema.XmlExtension));
+
+                var childTable2 = dataSet2.Tables[childTable.Name];
+                var derivedChildTable2 = dataSet2.Tables[derivedChildTable.Name];
+
+                dataSet2.Tables.Remove(childTable2);
+
+                Assert.IsNull(childTable2.DataSet);
+                Assert.IsNull(derivedChildTable2.DataSet);
+            }
+            finally
+            {
+                DirectoryUtility.Delete(tempPath);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(CremaDataException))]
+        public void RemoveChildWithoutParentTest_Fail()
+        {
+            var dataSet = new CremaDataSet();
+            var dataTable = dataSet.Tables.Add();
+            var derivedTable = dataTable.Inherit();
+
+            var childTable = dataTable.Childs.Add();
+            var derivedChildTable = derivedTable.Childs[childTable.TableName];
+
+            var tempPath = PathUtility.GetTempPath(true);
+
+            try
+            {
+                dataSet.WriteToDirectory(tempPath);
+
+                var dataSet2 = new CremaDataSet();
+                dataSet2.ReadTable(Path.Combine(tempPath, CremaSchema.TableDirectory, childTable.Name + CremaSchema.XmlExtension));
+                dataSet2.ReadTable(Path.Combine(tempPath, CremaSchema.TableDirectory, derivedChildTable.Name + CremaSchema.XmlExtension));
+
+                var childTable2 = dataSet2.Tables[childTable.Name];
+                var derivedChildTable2 = dataSet2.Tables[derivedChildTable.Name];
+
+                dataSet2.Tables.Remove(derivedChildTable2);
+            }
+            finally
+            {
+                DirectoryUtility.Delete(tempPath);
+            }
         }
     }
 }
