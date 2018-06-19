@@ -187,8 +187,7 @@ namespace Ntreev.Crema.Services.Data
                 var items = EnumerableUtility.One(this).ToArray();
                 var oldNames = items.Select(item => item.Name).ToArray();
                 var oldPaths = items.Select(item => item.Path).ToArray();
-                var dataType = this.ReadAllData(authentication);
-                var dataSet = dataType.DataSet;
+                var dataSet = this.ReadAllData(authentication);
                 this.Container.InvokeTypeRename(authentication, this, name, dataSet);
                 base.Rename(authentication, name);
                 this.Container.InvokeTypesRenamedEvent(authentication, items, oldNames, oldPaths, dataSet);
@@ -211,8 +210,7 @@ namespace Ntreev.Crema.Services.Data
                 var items = EnumerableUtility.One(this).ToArray();
                 var oldPaths = items.Select(item => item.Path).ToArray();
                 var oldCategoryPaths = items.Select(item => item.Category.Path).ToArray();
-                var dataType = this.ReadAllData(authentication);
-                var dataSet = dataType.DataSet;
+                var dataSet = this.ReadAllData(authentication);
                 this.Container.InvokeTypeMove(authentication, this, categoryPath, dataSet);
                 base.Move(authentication, categoryPath);
                 this.Container.InvokeTypesMovedEvent(authentication, items, oldPaths, oldCategoryPaths, dataSet);
@@ -235,7 +233,8 @@ namespace Ntreev.Crema.Services.Data
                 var items = EnumerableUtility.One(this).ToArray();
                 var oldPaths = items.Select(item => item.Path).ToArray();
                 var container = this.Container;
-                container.InvokeTypeDelete(authentication, this);
+                var dataSet = this.ReadAllData(authentication);
+                container.InvokeTypeDelete(authentication, this, dataSet);
                 base.Delete(authentication);
                 container.InvokeTypesDeletedEvent(authentication, items, oldPaths);
             }
@@ -378,7 +377,7 @@ namespace Ntreev.Crema.Services.Data
             return dataSet.Types[base.Name];
         }
 
-        public CremaDataType ReadAllData(Authentication authentication)
+        public CremaDataSet ReadAllData(Authentication authentication)
         {
             var tables = this.ReferencedTables.ToArray();
             var typeFiles = tables.SelectMany(item => item.GetTypes())
@@ -392,7 +391,7 @@ namespace Ntreev.Crema.Services.Data
 
             var props = new CremaDataSetSerializerSettings(authentication, typeFiles, tableFiles);
             var dataSet = this.Serializer.Deserialize(this.LocalPath, typeof(CremaDataSet), props) as CremaDataSet;
-            return dataSet.Types[base.Name];
+            return dataSet;
         }
 
         public object GetService(System.Type serviceType)

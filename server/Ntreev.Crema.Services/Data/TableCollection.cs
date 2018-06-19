@@ -64,7 +64,7 @@ namespace Ntreev.Crema.Services.Data
 
             this.ValidateAddNew(dataTable.TableName, categoryPath, authentication);
             this.Sign(authentication);
-            this.InvokeTableCreate(authentication, dataTable.TableName, categoryPath, dataSet, null);
+            this.InvokeTableCreate(authentication, dataTable.TableName, dataSet, null);
             var table = this.AddNew(authentication, dataTable.TableName, categoryPath);
             table.Initialize(dataTable.TableInfo);
             this.InvokeTablesCreatedEvent(authentication, new Table[] { table }, dataSet);
@@ -83,7 +83,7 @@ namespace Ntreev.Crema.Services.Data
                 newDataTable.Clear();
             newDataTable.CategoryPath = categoryPath;
 
-            this.InvokeTableCreate(authentication, newTableName, categoryPath, dataSet, table);
+            this.InvokeTableCreate(authentication, newTableName, dataSet, table);
             var newTable = this.AddNew(authentication, newTableName, categoryPath);
             newTable.TemplatedParent = table;
             newTable.Initialize(newDataTable.TableInfo);
@@ -110,7 +110,7 @@ namespace Ntreev.Crema.Services.Data
                 newDataTable.Clear();
             newDataTable.CategoryPath = categoryPath;
 
-            this.InvokeTableCreate(authentication, newTableName, categoryPath, dataSet, table);
+            this.InvokeTableCreate(authentication, newTableName, dataSet, table);
             var newTable = this.AddNew(authentication, newTableName, categoryPath);
             newTable.Initialize(newDataTable.TableInfo);
             foreach (var item in newDataTable.Childs)
@@ -128,52 +128,12 @@ namespace Ntreev.Crema.Services.Data
             return this.DataBase.GetService(serviceType);
         }
 
-        public void InvokeTableCreate(Authentication authentication, string tableName, string categoryPath, CremaDataSet dataSet, Table sourceTable)
+        public void InvokeTableCreate(Authentication authentication, string tableName, CremaDataSet dataSet, Table sourceTable)
         {
-            this.ValidateCreate(authentication, categoryPath);
-
             var message = EventMessageBuilder.CreateTable(authentication, tableName);
             try
             {
-                if (sourceTable != null)
-                {
-                    var query = from item in dataSet.Tables
-                                where item.Name == tableName || item.ParentName == tableName
-                                select item;
-
-                    var itemName = new ItemName(sourceTable.Category.Path, sourceTable.Name);
-                    var names = StringUtility.Split(itemName.Name, '.');
-                    foreach (var item in query)
-                    {
-                        var targetNames = StringUtility.Split(item.Name, '.');
-                        for (var i = 0; i < names.Length; i++)
-                        {
-                            targetNames[i] = names[i];
-                        }
-                        var targetName = new ItemName(item.CategoryPath, string.Join(".", targetNames));
-                        var settings = new CremaDataTableSerializerSettings(item.Namespace, item.TemplateNamespace);
-                        var itemPath1 = this.Context.GenerateTablePath(targetName.CategoryPath, targetName.Name);
-                        var itemPath2 = this.Context.GenerateTablePath(item.CategoryPath, item.Name);
-                        var itemPaths1 = this.Serializer.GetPath(itemPath1, item.GetType(), settings);
-                        var itemPaths2 = this.Serializer.GetPath(itemPath2, item.GetType(), settings);
-                        for (var i = 0; i < itemPaths1.Length; i++)
-                        {
-                            this.Repository.Copy(itemPaths1[i], itemPaths2[i]);
-                        }
-                        this.Serializer.Serialize(itemPath2, item, settings);
-                    }
-                }
-                else
-                {
-                    //var dataTable = dataSet.Tables[tableName, categoryPath];
-                    //var itemPath = this.Context.GenerateTablePath(categoryPath, tableName);
-                    //var itemPaths = this.Serializer.Serialize(itemPath, dataTable, null);
-                    //foreach (var item in itemPaths)
-                    //{
-                    //    this.Repository.Add(item);
-                    //}
-                    this.Repository.CreateTable(dataSet, this.DataBase);
-                }
+                this.Repository.CreateTable(dataSet, this.DataBase);
                 this.Repository.Commit(authentication, message);
             }
             catch
@@ -290,31 +250,31 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public void InvokeChildTableCreate(Authentication authentication, Table table, string childName, CremaDataSet dataSet)
-        {
-            this.CremaHost.DebugMethod(authentication, this, nameof(InvokeChildTableCreate), table);
-            var message = EventMessageBuilder.CreateTable(authentication, childName);
-            try
-            {
-                var query = from item in dataSet.Tables
-                            where item.Name == childName || item.TemplatedParentName == childName
-                            select item;
-                foreach (var item in query)
-                {
-                    var props = new CremaDataTableSerializerSettings(item.Namespace, item.TemplateNamespace);
-                    var itemPath = this.Context.GenerateTablePath(item.CategoryPath, item.Name);
-                    var itemPaths = this.Serializer.Serialize(itemPath, item, props);
-                    this.Repository.AddRange(itemPaths);
-                }
-                this.Repository.Commit(authentication, message);
-                this.CremaHost.Info(message);
-            }
-            catch
-            {
-                this.Repository.Revert();
-                throw;
-            }
-        }
+        //public void InvokeChildTableCreate(Authentication authentication, Table table, string childName, CremaDataSet dataSet)
+        //{
+        //    var message = EventMessageBuilder.CreateTable(authentication, childName);
+        //    try
+        //    {
+        //        //var query = from item in dataSet.Tables
+        //        //            where item.Name == childName || item.TemplatedParentName == childName
+        //        //            select item;
+        //        //foreach (var item in query)
+        //        //{
+        //        //    var props = new CremaDataTableSerializerSettings(item.Namespace, item.TemplateNamespace);
+        //        //    var itemPath = this.Context.GenerateTablePath(item.CategoryPath, item.Name);
+        //        //    var itemPaths = this.Serializer.Serialize(itemPath, item, props);
+        //        //    this.Repository.AddRange(itemPaths);
+        //        //}
+        //        this.Repository.CreateTable(dataSet, this.DataBase);
+        //        this.Repository.Commit(authentication, message);
+        //        //this.CremaHost.Info(message);
+        //    }
+        //    catch
+        //    {
+        //        this.Repository.Revert();
+        //        throw;
+        //    }
+        //}
 
         public void InvokeTablesCreatedEvent(Authentication authentication, Table[] tables, CremaDataSet dataSet)
         {
@@ -511,6 +471,8 @@ namespace Ntreev.Crema.Services.Data
             if (validation is Authentication authentication)
             {
                 var category = this.GetCategory(categoryPath);
+                if (category == null)
+                    throw new CategoryNotFoundException(categoryPath);
                 category.ValidateAccessType(authentication, AccessType.Master);
             }
         }
@@ -555,15 +517,15 @@ namespace Ntreev.Crema.Services.Data
             authentication.Sign();
         }
 
-        private void ValidateCreate(Authentication authentication, string categoryPath)
-        {
-            var category = this.GetCategory(categoryPath);
+        //private void ValidateCreate(Authentication authentication, string categoryPath)
+        //{
+        //    var category = this.GetCategory(categoryPath);
 
-            if (category == null)
-                throw new CategoryNotFoundException(categoryPath);
+        //    if (category == null)
+        //        throw new CategoryNotFoundException(categoryPath);
 
-            category.ValidateAccessType(authentication, AccessType.Master);
-        }
+        //    category.ValidateAccessType(authentication, AccessType.Master);
+        //}
 
         private void ValidateInherit(Authentication authentication, Table table, string newTableName, string categoryPath, bool copyXml)
         {
@@ -580,6 +542,9 @@ namespace Ntreev.Crema.Services.Data
 
             if (this.Context.Categories.Contains(categoryPath) == false)
                 throw new CategoryNotFoundException(categoryPath);
+
+            var category = this.Context.Categories[categoryPath];
+            category.ValidateAccessType(authentication, AccessType.Master);
 
             if (copyXml == true)
             {
@@ -603,6 +568,9 @@ namespace Ntreev.Crema.Services.Data
 
             if (this.Context.Categories.Contains(categoryPath) == false)
                 throw new CategoryNotFoundException(categoryPath);
+
+            var category = this.Context.Categories[categoryPath];
+            category.ValidateAccessType(authentication, AccessType.Master);
 
             if (copyXml == true)
             {

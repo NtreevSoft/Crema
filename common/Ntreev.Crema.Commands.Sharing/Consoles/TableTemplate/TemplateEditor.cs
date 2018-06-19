@@ -52,7 +52,7 @@ namespace Ntreev.Crema.Commands.Consoles.TableTemplate
                         DefaultValue = item.DefaultValue,
                         Tags = (string)item.Tags,
                         IsReadOnly = item.IsReadOnly,
-                        AllowNull = item.AllowNull,
+                        DisallowNull = !item.AllowNull,
                     };
                     idToColumn.Add(column.ID, item);
                     columnList.Add(column);
@@ -133,7 +133,7 @@ namespace Ntreev.Crema.Commands.Consoles.TableTemplate
             column.SetIsUnique(authentication, item.IsUnique);
             column.SetAutoIncrement(authentication, item.AutoIncrement);
             column.SetDefaultValue(authentication, item.DefaultValue);
-            column.SetAllowNull(authentication, item.AllowNull);
+            column.SetAllowNull(authentication, !item.DisallowNull);
             return item;
         }
 
@@ -155,8 +155,8 @@ namespace Ntreev.Crema.Commands.Consoles.TableTemplate
                 column.SetAutoIncrement(authentication, item.AutoIncrement);
             if (column.DefaultValue != item.DefaultValue)
                 column.SetDefaultValue(authentication, item.DefaultValue);
-            if (column.AllowNull != item.AllowNull)
-                column.SetAllowNull(authentication, item.AllowNull);
+            if (column.AllowNull != !item.DisallowNull)
+                column.SetAllowNull(authentication, !item.DisallowNull);
         }
     }
 }

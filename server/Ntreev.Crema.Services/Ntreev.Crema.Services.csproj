@@ -58,8 +58,6 @@
   <ItemGroup>
     <Compile Include="AuthenticationToken.cs" />
     <Compile Include="Data\DataBaseSet.cs" />
-    <Compile Include="TableItemSerializerEvent.cs" />
-    <Compile Include="IObjectSerializerEvent.cs" />
     <Compile Include="ObjectSerializerSettings.cs" />
     <Compile Include="LogServiceHost.cs" />
     <Compile Include="CremaDataTableSerializerSettings.cs" />

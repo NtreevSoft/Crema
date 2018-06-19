@@ -71,7 +71,7 @@ namespace Ntreev.Crema.Commands.Consoles.Serializations
             Comment = string.Empty,
             Columns = new JsonTableColumnInfo[]
             {
-                new JsonTableColumnInfo() { Name = "Key", IsKey = true, IsUnique = true, Comment = string.Empty },
+                new JsonTableColumnInfo() { Name = "Key", IsKey = true, IsUnique = true, Comment = string.Empty, DisallowNull = true,  },
                 new JsonTableColumnInfo() { Name = "Value", Comment = string.Empty }
             },
         };
@@ -128,6 +128,10 @@ namespace Ntreev.Crema.Commands.Consoles.Serializations
             [JsonProperty(Required = Required.DisallowNull, DefaultValueHandling = DefaultValueHandling.Ignore)]
             [DefaultValue(false)]
             public bool IsReadOnly { get; set; }
+
+            [JsonProperty(Required = Required.DisallowNull, DefaultValueHandling = DefaultValueHandling.Ignore)]
+            [DefaultValue(false)]
+            public bool DisallowNull { get; set; }
         }
     }
 }

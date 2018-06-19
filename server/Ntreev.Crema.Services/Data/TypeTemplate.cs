@@ -80,7 +80,7 @@ namespace Ntreev.Crema.Services.Data
 
         protected override void OnEndEdit(Authentication authentication)
         {
-            this.Container.InvokeTypeEndTemplateEdit(authentication, this.type, this.TypeSource);
+            this.Container.InvokeTypeEndTemplateEdit(authentication, this.type, this.TypeSource.DataSet);
             base.OnEndEdit(authentication);
             this.type.UpdateTypeInfo(this.TypeSource.TypeInfo);
             this.type.IsBeingEdited = false;
@@ -103,7 +103,8 @@ namespace Ntreev.Crema.Services.Data
 
         protected override CremaDataType CreateSource(Authentication authentication)
         {
-            return this.type.ReadAllData(authentication);
+            var dataSet = this.type.ReadAllData(authentication);
+            return dataSet.Types[this.type.Name, this.type.Category.Path];
         }
 
         private TypeCollection Container

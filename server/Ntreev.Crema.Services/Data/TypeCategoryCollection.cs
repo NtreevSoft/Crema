@@ -71,20 +71,18 @@ namespace Ntreev.Crema.Services.Data
 
         public void InvokeCategoryCreate(Authentication authentication, string name, string parentPath)
         {
-            this.CremaHost.DebugMethod(authentication, this, nameof(InvokeCategoryCreate), name, parentPath);
             var categoryName = new CategoryName(parentPath, name);
-            var path = this.Context.GenerateCategoryPath(parentPath, name);
+            var itemPath = this.Context.GenerateCategoryPath(parentPath, name);
             var message = EventMessageBuilder.CreateTypeCategory(authentication, categoryName);
             try
             {
-                Directory.CreateDirectory(path);
-                this.Repository.Add(path);
-                this.Context.InvokeTypeItemCreate(authentication, parentPath + name);
+                Directory.CreateDirectory(itemPath);
+                this.Repository.Add(itemPath);
                 this.Repository.Commit(authentication, message);
             }
             catch
             {
-                DirectoryUtility.Delete(path);
+                DirectoryUtility.Delete(itemPath);
                 this.Repository.Revert();
                 throw;
             }
@@ -92,18 +90,11 @@ namespace Ntreev.Crema.Services.Data
 
         public void InvokeCategoryRename(Authentication authentication, TypeCategory category, string name, CremaDataSet dataSet)
         {
-            this.CremaHost.DebugMethod(authentication, this, nameof(InvokeCategoryRename), category, name);
             var categoryName = new CategoryName(category.Path) { Name = name, };
-            var dataTypes = new DataTypeCollection(dataSet, this.DataBase);
-            var dataTables = new DataTableCollection(dataSet, this.DataBase);
             var message = EventMessageBuilder.RenameTypeCategory(authentication, category.Path, categoryName);
             try
             {
-                dataTypes.SetCategoryPath(category.Path, categoryName);
-                dataTypes.Modify(this.Serializer);
-                dataTables.Modify(this.Serializer);
-                this.Repository.Move(category.LocalPath, this.Context.GenerateCategoryPath(categoryName.Path));
-                this.Context.InvokeTypeItemRename(authentication, category, categoryName);
+                this.Repository.RenameTypeCategory(dataSet, category, categoryName);
                 this.Repository.Commit(authentication, message);
             }
             catch
@@ -115,18 +106,11 @@ namespace Ntreev.Crema.Services.Data
 
         public void InvokeCategoryMove(Authentication authentication, TypeCategory category, string parentPath, CremaDataSet dataSet)
         {
-            this.CremaHost.DebugMethod(authentication, this, nameof(InvokeCategoryMove), category, parentPath);
             var categoryName = new CategoryName(parentPath, category.Name);
-            var dataTypes = new DataTypeCollection(dataSet, this.DataBase);
-            var dataTables = new DataTableCollection(dataSet, this.DataBase);
             var message = EventMessageBuilder.MoveTypeCategory(authentication, category.Path, category.Parent.Path, parentPath);
             try
             {
-                dataTypes.SetCategoryPath(category.Path, categoryName);
-                dataTypes.Modify(this.Serializer);
-                dataTables.Modify(this.Serializer);
-                this.Repository.Move(category.LocalPath, this.Context.GenerateCategoryPath(categoryName));
-                this.Context.InvokeTypeItemMove(authentication, category, categoryName);
+                this.Repository.MoveTypeCategory(dataSet, category, categoryName);
                 this.Repository.Commit(authentication, message);
             }
             catch
@@ -138,12 +122,10 @@ namespace Ntreev.Crema.Services.Data
 
         public void InvokeCategoryDelete(Authentication authentication, TypeCategory category, CremaDataSet dataSet)
         {
-            this.CremaHost.DebugMethod(authentication, this, nameof(InvokeCategoryDelete), category);
-            var message = EventMessageBuilder.DeleteTypeCategory(authentication, category.Path);
+            var message = EventMessageBuilder.DeleteTableCategory(authentication, category.Path);
             try
             {
                 this.Repository.Delete(category.LocalPath);
-                this.Context.InvokeTypeItemDelete(authentication, category);
                 this.Repository.Commit(authentication, message);
             }
             catch

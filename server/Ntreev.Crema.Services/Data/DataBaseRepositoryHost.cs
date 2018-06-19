@@ -20,6 +20,7 @@ using Ntreev.Crema.Data;
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Library;
 using Ntreev.Library.IO;
+using Ntreev.Library.ObjectModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -112,18 +113,6 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public void RenameTableCategory(CremaDataSet dataSet, TableCategory category, string newCategoryPath)
-        {
-            var dataBaseSet = new DataBaseSet(category.DataBase, dataSet);
-            dataBaseSet.SetTableCategoryPath(category, newCategoryPath);
-        }
-
-        public void MoveTableCategory(CremaDataSet dataSet, TableCategory category, string newCategoryPath)
-        {
-            var dataBaseSet = new DataBaseSet(category.DataBase, dataSet);
-            dataBaseSet.SetTableCategoryPath(category, newCategoryPath);
-        }
-
         public CremaDataSet GetTableData(IObjectSerializer serializer, string itemPath, string templateItemPath, string revision)
         {
             var tempPath = PathUtility.GetTempPath(true);
@@ -213,6 +202,56 @@ namespace Ntreev.Crema.Services.Data
             return null;
         }
 
+        public void RenameTypeCategory(CremaDataSet dataSet, TypeCategory category, string newCategoryPath)
+        {
+            DataBaseSet.SetTypeCategoryPath(dataSet, category, newCategoryPath);
+        }
+
+        public void MoveTypeCategory(CremaDataSet dataSet, TypeCategory category, string newCategoryPath)
+        {
+            DataBaseSet.SetTypeCategoryPath(dataSet, category, newCategoryPath);
+        }
+
+        public void RenameTableCategory(CremaDataSet dataSet, TableCategory category, string newCategoryPath)
+        {
+            DataBaseSet.SetTableCategoryPath(dataSet, category, newCategoryPath);
+        }
+
+        public void MoveTableCategory(CremaDataSet dataSet, TableCategory category, string newCategoryPath)
+        {
+            DataBaseSet.SetTableCategoryPath(dataSet, category, newCategoryPath);
+        }
+
+        public void CreateType(CremaDataSet dataSet, DataBase dataBase)
+        {
+            DataBaseSet.CreateType(dataSet, dataBase);
+        }
+
+        public void RenameType(CremaDataSet dataSet, Type type, string newName)
+        {
+            DataBaseSet.RenameType(dataSet, type, newName);
+        }
+
+        public void MoveType(CremaDataSet dataSet, Type type, string newCategoryPath)
+        {
+            DataBaseSet.MoveType(dataSet, type, newCategoryPath);
+        }
+
+        public void DeleteType(CremaDataSet dataSet, Type type)
+        {
+            DataBaseSet.DeleteType(dataSet, type);
+        }
+
+        public void ModifyType(CremaDataSet dataSet, Type type)
+        {
+            DataBaseSet.ModifyType(dataSet, type);
+        }
+
+        public void SetTypeTags(CremaDataSet dataSet, Type type, TagInfo tags)
+        {
+            DataBaseSet.SetTypeTags(dataSet, type, tags);
+        }
+
         public void CreateTable(CremaDataSet dataSet, DataBase dataBase)
         {
             DataBaseSet.CreateTable(dataSet, dataBase);
@@ -225,32 +264,27 @@ namespace Ntreev.Crema.Services.Data
 
         public void MoveTable(CremaDataSet dataSet, Table table, string newCategoryPath)
         {
-            var dataBaseSet = new DataBaseSet(table.DataBase, dataSet);
-            dataBaseSet.MoveTable(table, newCategoryPath);
+            DataBaseSet.MoveTable(dataSet, table, newCategoryPath);
         }
 
         public void DeleteTable(CremaDataSet dataSet, Table table)
         {
-            var dataBaseSet = new DataBaseSet(table.DataBase, dataSet);
-            dataBaseSet.DeleteTable(table);
+            DataBaseSet.DeleteTable(dataSet, table);
         }
 
         public void ModifyTable(CremaDataSet dataSet, Table table)
         {
-            var dataBaseSet = new DataBaseSet(table.DataBase, dataSet);
-            dataBaseSet.SerializeTables();
+            DataBaseSet.ModifyTable(dataSet, table);
         }
 
         public void SetTableTags(CremaDataSet dataSet, Table table, TagInfo tags)
         {
-            var dataBaseSet = new DataBaseSet(table.DataBase, dataSet);
-            dataBaseSet.SetTableTags(table, tags);
+            DataBaseSet.SetTableTags(dataSet, table, tags);
         }
 
         public void SetTableComment(CremaDataSet dataSet, Table table, string comment)
         {
-            var dataBaseSet = new DataBaseSet(table.DataBase, dataSet);
-            dataBaseSet.SetTableComment(table, comment);
+            DataBaseSet.SetTableComment(dataSet, table, comment);
         }
     }
 }

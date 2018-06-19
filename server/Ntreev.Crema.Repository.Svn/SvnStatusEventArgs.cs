@@ -15,6 +15,7 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.Services;
 using Ntreev.Library;
 using System;
 using System.Collections.Generic;
@@ -30,29 +31,63 @@ namespace Ntreev.Crema.Repository.Svn
 {
     struct SvnStatusEventArgs
     {
-        public IDictionary<string, string> Status { get; private set; }
+        public string Path { get; set; }
 
-        public static SvnStatusEventArgs Run(string path)
+        public string OldPath { get; set; }
+
+        public RepositoryItemStatus Status { get; set; }
+
+        public static SvnStatusEventArgs[] Run(params string[] paths)
         {
-            var text = SvnClientHost.Run("status", path.ToSvnPath(), "--xml");
+            var argList = new List<object>()
+            {
+                "status", "--xml",
+            };
+            foreach (var item in paths)
+            {
+                argList.Add(SvnPathUtility.ToSvnPath(item));
+            }
+            var text = SvnClientHost.Run(argList.ToArray());
             return Parse(text);
         }
 
-        public static SvnStatusEventArgs Parse(string text)
+        public static SvnStatusEventArgs[] Parse(string text)
         {
             using (var sr = new StringReader(text))
             {
                 var doc = XDocument.Load(sr);
-                var dictionary = new Dictionary<string, string>();
+                var itemList = new List<SvnStatusEventArgs>();
 
-                foreach (var item in doc.XPathSelectElements("/status/target/entry"))
+                foreach (var element in doc.XPathSelectElements("/status/target/entry"))
                 {
-                    var path = item.Attribute("path").Value;
-                    var status = item.XPathSelectElement("wc-status").Attribute("item").Value;
-                    dictionary.Add(path, status);
+                    var path = element.Attribute("path").Value;
+                    var status = element.XPathSelectElement("wc-status").Attribute("item").Value;
+
+                    var item = new SvnStatusEventArgs()
+                    {
+                        Path = path,
+                    };
+
+                    if (status == "added")
+                    {
+                        item.Status = RepositoryItemStatus.Added;
+                    }
+                    else if (status == "deleted")
+                    {
+                        item.Status = RepositoryItemStatus.Deleted;
+                    }
+                    else if (status == "modified")
+                    {
+                        item.Status = RepositoryItemStatus.Modified;
+                    }
+                    else if (status == "unversioned")
+                    {
+                        item.Status = RepositoryItemStatus.Untracked;
+                    }
+                    itemList.Add(item);
                 }
 
-                return new SvnStatusEventArgs() { Status = dictionary };
+                return itemList.ToArray();
             }
         }
     }

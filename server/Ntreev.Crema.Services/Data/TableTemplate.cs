@@ -98,7 +98,7 @@ namespace Ntreev.Crema.Services.Data
 
         protected override CremaTemplate CreateSource(Authentication authentication)
         {
-            var dataSet = this.table.ReadAll(authentication);
+            var dataSet = this.table.ReadAll(authentication, true);
             return new CremaTemplate(dataSet.Tables[this.table.Name, this.table.Category.Path]);
         }
 

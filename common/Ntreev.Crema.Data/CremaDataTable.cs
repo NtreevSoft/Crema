@@ -161,7 +161,8 @@ namespace Ntreev.Crema.Data
                 this.DataSet.ReadXmlSchemaString(schema, targetName);
                 if (xml != null)
                     this.DataSet.ReadXmlString(xml, targetName);
-                System.Diagnostics.Trace.WriteLine(item.Name);
+                var copiedTable = this.DataSet.Tables[targetName.Name];
+                copiedTable.SourceTable = item;
             }
 
             //var schema = this.GetXmlSchema();
@@ -235,7 +236,7 @@ namespace Ntreev.Crema.Data
                     if (xml != null)
                         this.DataSet.ReadXmlString(xml, targetName);
                     var copiedTable = this.DataSet.Tables[targetName.Name];
-                    copiedTable.ExtendedProperties["SourceTable"] = item;
+                    copiedTable.SourceTable = item;
                 }
 
                 var dataTable = this.DataSet.Tables[itemName.Name, itemName.CategoryPath];
@@ -783,6 +784,11 @@ namespace Ntreev.Crema.Data
         public string TemplatedParentName
         {
             get { return this.InternalObject.TemplatedParentName; }
+        }
+
+        public CremaDataTable SourceTable
+        {
+            get; private set;
         }
 
         public IEnumerable<CremaDataTable> DerivedTables

@@ -49,9 +49,10 @@ namespace Ntreev.Crema.Services.Data
                 this.DataBase.ValidateBeginInDataBase(authentication);
 
                 var dataSet = template.TargetTable.DataSet.Copy();
+                var name = template.Name;
                 var tableName = template.TableName;
                 var childName = CremaDataTable.GenerateName(base.Name, tableName);
-                this.Container.InvokeChildTableCreate(authentication, this, childName, dataSet);
+                this.Container.InvokeTableCreate(authentication, name, dataSet, null);
                 var childTable = this.Container.AddNew(authentication, childName, template.CategoryPath);
                 childTable.Initialize(dataSet.Tables[childTable.Name, childTable.Category.Path].TableInfo);
                 foreach (var item in this.DerivedTables)
@@ -526,8 +527,14 @@ namespace Ntreev.Crema.Services.Data
 
         public CremaDataSet ReadAll(Authentication authentication)
         {
+            return this.ReadAll(authentication, false);
+        }
+
+        public CremaDataSet ReadAll(Authentication authentication, bool allTypes)
+        {
+            var typeCollection = this.GetService(typeof(TypeCollection)) as TypeCollection;
             var tables = this.Collect().OrderBy(item => item.Name).ToArray();
-            var types = tables.SelectMany(item => item.GetTypes()).Distinct().ToArray();
+            var types = allTypes == true ? typeCollection.ToArray<Type>() : tables.SelectMany(item => item.GetTypes()).Distinct().ToArray();
             var typePaths = types.Select(item => item.LocalPath).ToArray();
             var tablePaths = tables.Select(item => item.LocalPath).ToArray();
             var props = new CremaDataSetSerializerSettings(authentication, typePaths, tablePaths);

@@ -95,8 +95,8 @@ namespace Ntreev.Crema.Commands.Consoles.Serializations
             public bool IsReadOnly { get; set; }
 
             [JsonProperty(Required = Required.DisallowNull, DefaultValueHandling = DefaultValueHandling.Ignore)]
-            [DefaultValue(true)]
-            public bool AllowNull { get; set; }
+            [DefaultValue(false)]
+            public bool DisallowNull { get; set; }
         }
     }
 }

@@ -63,7 +63,6 @@ namespace Ntreev.Crema.Services.Data
 
         public void InvokeCategoryCreate(Authentication authentication, string name, string parentPath)
         {
-            this.CremaHost.DebugMethod(authentication, this, nameof(InvokeCategoryCreate), name, parentPath);
             var categoryName = new CategoryName(parentPath, name);
             var itemPath = this.Context.GenerateCategoryPath(parentPath, name);
             var message = EventMessageBuilder.CreateTableCategory(authentication, categoryName);

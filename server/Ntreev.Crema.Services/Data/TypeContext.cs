@@ -159,58 +159,58 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public void InvokeTypeItemCreate(Authentication authentication, string path)
-        {
+        //public void InvokeTypeItemCreate(Authentication authentication, string path)
+        //{
 
-        }
+        //}
 
-        public void InvokeTypeItemRename(Authentication authentication, ITypeItem typeItem, string newPath)
-        {
-            if (typeItem.AccessInfo.Path == typeItem.Path)
-            {
-                var itemPath1 = this.GeneratePath(typeItem.Path);
-                var itemPath2 = this.GeneratePath(newPath);
-                var settings = new ObjectSerializerSettings() { Extension = ".acs" };
-                var itemPaths1 = this.Serializer.GetPath(itemPath1, typeof(AccessSerializationInfo), settings);
-                var itemPaths2 = this.Serializer.GetPath(itemPath2, typeof(AccessSerializationInfo), settings);
-                for (var i = 0; i < itemPaths1.Length; i++)
-                {
-                    this.Repository.Move(itemPaths1[i], itemPaths2[i]);
-                }
-            }
-        }
+        //public void InvokeTypeItemRename(Authentication authentication, ITypeItem typeItem, string newPath)
+        //{
+        //    if (typeItem.AccessInfo.Path == typeItem.Path)
+        //    {
+        //        var itemPath1 = this.GeneratePath(typeItem.Path);
+        //        var itemPath2 = this.GeneratePath(newPath);
+        //        var settings = new ObjectSerializerSettings() { Extension = ".acs" };
+        //        var itemPaths1 = this.Serializer.GetPath(itemPath1, typeof(AccessSerializationInfo), settings);
+        //        var itemPaths2 = this.Serializer.GetPath(itemPath2, typeof(AccessSerializationInfo), settings);
+        //        for (var i = 0; i < itemPaths1.Length; i++)
+        //        {
+        //            this.Repository.Move(itemPaths1[i], itemPaths2[i]);
+        //        }
+        //    }
+        //}
 
-        public void InvokeTypeItemMove(Authentication authentication, ITypeItem typeItem, string newPath)
-        {
-            if (typeItem.AccessInfo.Path == typeItem.Path)
-            {
-                var itemPath1 = this.GeneratePath(typeItem.Path);
-                var itemPath2 = this.GeneratePath(newPath);
-                var settings = new ObjectSerializerSettings() { Extension = ".acs" };
-                var itemPaths1 = this.Serializer.GetPath(itemPath1, typeof(AccessSerializationInfo), settings);
-                var itemPaths2 = this.Serializer.GetPath(itemPath2, typeof(AccessSerializationInfo), settings);
-                for (var i = 0; i < itemPaths1.Length; i++)
-                {
-                    this.Repository.Move(itemPaths1[i], itemPaths2[i]);
-                }
-            }
-        }
+        //public void InvokeTypeItemMove(Authentication authentication, ITypeItem typeItem, string newPath)
+        //{
+        //    if (typeItem.AccessInfo.Path == typeItem.Path)
+        //    {
+        //        var itemPath1 = this.GeneratePath(typeItem.Path);
+        //        var itemPath2 = this.GeneratePath(newPath);
+        //        var settings = new ObjectSerializerSettings() { Extension = ".acs" };
+        //        var itemPaths1 = this.Serializer.GetPath(itemPath1, typeof(AccessSerializationInfo), settings);
+        //        var itemPaths2 = this.Serializer.GetPath(itemPath2, typeof(AccessSerializationInfo), settings);
+        //        for (var i = 0; i < itemPaths1.Length; i++)
+        //        {
+        //            this.Repository.Move(itemPaths1[i], itemPaths2[i]);
+        //        }
+        //    }
+        //}
 
-        public void InvokeTypeItemDelete(Authentication authentication, ITypeItem typeItem)
-        {
-            if (typeItem.AccessInfo.Path == typeItem.Path)
-            {
-                var itemPath = this.GeneratePath(typeItem.Path);
-                var settings = new ObjectSerializerSettings() { Extension = ".acs" };
-                var itemPaths = this.Serializer.GetPath(itemPath, typeof(AccessSerializationInfo), settings);
-                this.Repository.DeleteRange(itemPaths);
-            }
-        }
+        //public void InvokeTypeItemDelete(Authentication authentication, ITypeItem typeItem)
+        //{
+        //    if (typeItem.AccessInfo.Path == typeItem.Path)
+        //    {
+        //        var itemPath = this.GeneratePath(typeItem.Path);
+        //        var settings = new ObjectSerializerSettings() { Extension = ".acs" };
+        //        var itemPaths = this.Serializer.GetPath(itemPath, typeof(AccessSerializationInfo), settings);
+        //        this.Repository.DeleteRange(itemPaths);
+        //    }
+        //}
 
-        public void InvokeTypeItemChange(Authentication authentication, ITypeItem typeItem)
-        {
+        //public void InvokeTypeItemChange(Authentication authentication, ITypeItem typeItem)
+        //{
 
-        }
+        //}
 
         public void Import(Authentication authentication, CremaDataSet dataSet, string comment)
         {
@@ -331,24 +331,24 @@ namespace Ntreev.Crema.Services.Data
             return this.Repository.GetLog(new string[] { localPath }, null, 100);
         }
 
-        public string GenerateTypePath(string categoryPath, string typeName)
+        public string GenerateCategoryPath(string parentPath, string name)
         {
-            NameValidator.ValidateCategoryPath(categoryPath);
-            return PathUtility.ConvertFromUri(this.BasePath + categoryPath + typeName);
+            var categoryName = new CategoryName(parentPath, name);
+            return this.GenerateCategoryPath(categoryName.Path);
         }
 
         public string GenerateCategoryPath(string categoryPath)
         {
             NameValidator.ValidateCategoryPath(categoryPath);
             var baseUri = new Uri(this.BasePath);
-            var uri = new Uri(baseUri + categoryPath.TrimEnd(PathUtility.SeparatorChar));
+            var uri = new Uri(baseUri + categoryPath);
             return uri.LocalPath;
         }
 
-        public string GenerateCategoryPath(string parentPath, string name)
+        public string GenerateTypePath(string categoryPath, string name)
         {
-            var categoryName = new CategoryName(parentPath, name);
-            return this.GenerateCategoryPath(categoryName.Path);
+            NameValidator.ValidateCategoryPath(categoryPath);
+            return PathUtility.ConvertFromUri(this.BasePath + categoryPath + name);
         }
 
         public string GeneratePath(string path)

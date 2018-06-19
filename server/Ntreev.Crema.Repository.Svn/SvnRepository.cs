@@ -191,11 +191,11 @@ namespace Ntreev.Crema.Repository.Svn
             this.Run(items.ToArray());
         }
 
-        public IDictionary<string, string> Status()
-        {
-            var args = SvnStatusEventArgs.Run(this.repositoryPath);
-            return args.Status;
-        }
+        //public IDictionary<string, string> Status()
+        //{
+        //    var args = SvnStatusEventArgs.Run(this.repositoryPath);
+        //    return args.Status;
+        //}
 
         public string Export(Uri uri, string exportPath)
         {
@@ -235,7 +235,18 @@ namespace Ntreev.Crema.Repository.Svn
 
         public RepositoryItem[] Status(params string[] paths)
         {
-            throw new NotImplementedException();
+            var args = SvnStatusEventArgs.Run(paths);
+            var itemList = new List<RepositoryItem>(args.Length);
+            foreach (var item in args)
+            {
+                itemList.Add(new RepositoryItem()
+                {
+                    Path = item.Path,
+                    OldPath = item.OldPath,
+                    Status = item.Status,
+                });
+            }
+            return itemList.ToArray();
         }
 
         public void Move(string srcPath, string toPath)
