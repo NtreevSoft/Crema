@@ -272,7 +272,7 @@ namespace Ntreev.Crema.Services
             get => this.settings.BasePath;
             set
             {
-                var fullpath = Path.GetFullPath(value);
+                var fullpath = PathUtility.GetFullPath(value);
                 this.settings.BasePath = PathUtility.GetCaseSensitivePath(fullpath);
             }
         }
