@@ -107,9 +107,6 @@ namespace Ntreev.Crema.Services.Data
             return dataSet.Types[this.type.Name, this.type.Category.Path];
         }
 
-        private TypeCollection Container
-        {
-            get { return this.type.Container; }
-        }
+        private TypeCollection Container => this.type.Container;
     }
 }

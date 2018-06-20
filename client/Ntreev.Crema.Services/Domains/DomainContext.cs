@@ -15,21 +15,17 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.ServiceModel;
+using Ntreev.Crema.Services.Data;
+using Ntreev.Crema.Services.DomainService;
+using Ntreev.Crema.Services.Users;
+using Ntreev.Library;
+using Ntreev.Library.ObjectModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
-using System.ServiceModel.Channels;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Threading;
-using Ntreev.Crema.Services.DomainService;
-using Ntreev.Crema.ServiceModel;
-using Ntreev.Library.ObjectModel;
-using Ntreev.Crema.Services.Data;
-using System.IO;
-using Ntreev.Library;
-using Ntreev.Crema.Services.Users;
 using System.Timers;
 
 namespace Ntreev.Crema.Services.Domains
@@ -38,7 +34,6 @@ namespace Ntreev.Crema.Services.Domains
     class DomainContext : ItemContext<Domain, DomainCategory, DomainCollection, DomainCategoryCollection, DomainContext>,
         IDomainServiceCallback, IDomainContext, IServiceProvider, ICremaService
     {
-        private readonly CremaHost cremaHost;
         private readonly UserContext userContext;
         private DomainServiceClient service;
         private CremaDispatcher serviceDispatcher;
@@ -51,7 +46,7 @@ namespace Ntreev.Crema.Services.Domains
 
         public DomainContext(CremaHost cremaHost, string address, ServiceInfo serviceInfo)
         {
-            this.cremaHost = cremaHost;
+            this.CremaHost = cremaHost;
             this.userContext = cremaHost.UserContext;
 
             this.serviceDispatcher = new CremaDispatcher(this);
@@ -70,7 +65,7 @@ namespace Ntreev.Crema.Services.Domains
                 {
                     service.Faulted += Service_Faulted;
                 }
-                var result = this.service.Subscribe(this.cremaHost.AuthenticationToken);
+                var result = this.service.Subscribe(this.CremaHost.AuthenticationToken);
                 result.Validate();
 #if !DEBUG
                 this.timer = new Timer(30000);
@@ -81,10 +76,10 @@ namespace Ntreev.Crema.Services.Domains
             });
 
             this.Initialize(metaData);
-            this.cremaHost.DataBases.ItemsCreated += DataBases_ItemsCreated;
-            this.cremaHost.DataBases.ItemsRenamed += DataBases_ItemsRenamed;
-            this.cremaHost.DataBases.ItemsDeleted += DataBases_ItemDeleted;
-            this.cremaHost.AddService(this);
+            this.CremaHost.DataBases.ItemsCreated += DataBases_ItemsCreated;
+            this.CremaHost.DataBases.ItemsRenamed += DataBases_ItemsRenamed;
+            this.CremaHost.DataBases.ItemsDeleted += DataBases_ItemDeleted;
+            this.CremaHost.AddService(this);
         }
 
         public DomainMetaData[] Restore(DataBase dataBase)
@@ -212,25 +207,13 @@ namespace Ntreev.Crema.Services.Domains
             };
         }
 
-        public CremaHost CremaHost
-        {
-            get { return this.cremaHost; }
-        }
+        public CremaHost CremaHost { get; }
 
-        public DomainCollection Domains
-        {
-            get { return this.Items; }
-        }
+        public DomainCollection Domains => this.Items;
 
-        public CremaDispatcher Dispatcher
-        {
-            get { return this.cremaHost.Dispatcher; }
-        }
+        public CremaDispatcher Dispatcher => this.CremaHost.Dispatcher;
 
-        public IDomainService Service
-        {
-            get { return this.service; }
-        }
+        public IDomainService Service => this.service;
 
         public event ItemsCreatedEventHandler<IDomainItem> ItemsCreated
         {
@@ -426,17 +409,17 @@ namespace Ntreev.Crema.Services.Domains
             });
             this.InvokeAsync(() =>
             {
-                this.cremaHost.RemoveService(this);
+                this.CremaHost.RemoveService(this);
             }, nameof(Service_Faulted));
         }
 
         private async void InvokeAsync(Action action, string callbackName)
         {
             var count = 0;
-_Invoke:
+            _Invoke:
             try
             {
-                
+
                 await this.Dispatcher.InvokeAsync(action);
             }
             catch (NullReferenceException e)
@@ -447,13 +430,13 @@ _Invoke:
                     count++;
                     goto _Invoke;
                 }
-                this.cremaHost.Error(callbackName);
-                this.cremaHost.Error(e);
+                this.CremaHost.Error(callbackName);
+                this.CremaHost.Error(e);
             }
             catch (Exception e)
             {
-                this.cremaHost.Error(callbackName);
-                this.cremaHost.Error(e);
+                this.CremaHost.Error(callbackName);
+                this.CremaHost.Error(e);
             }
         }
 
@@ -471,7 +454,7 @@ _Invoke:
             }
         }
 
-#region IDomainServiceCallback
+        #region IDomainServiceCallback
 
         void IDomainServiceCallback.OnDomainCreated(SignatureDate signatureDate, DomainInfo domainInfo, DomainState domainState)
         {
@@ -595,13 +578,13 @@ _Invoke:
             this.serviceDispatcher = null;
             this.InvokeAsync(() =>
             {
-                this.cremaHost.RemoveService(this);
+                this.CremaHost.RemoveService(this);
             }, nameof(IDomainServiceCallback.OnServiceClosed));
         }
 
-#endregion
+        #endregion
 
-#region IDomainContext
+        #region IDomainContext
 
         IDomainCollection IDomainContext.Domains
         {
@@ -639,7 +622,9 @@ _Invoke:
             }
         }
 
-#region IEnumerable
+        #endregion
+
+        #region IEnumerable
 
         IEnumerator<IDomainItem> IEnumerable<IDomainItem>.GetEnumerator()
         {
@@ -659,17 +644,15 @@ _Invoke:
             }
         }
 
-#endregion
+        #endregion
 
-#endregion
-
-#region IServiceProvider 
+        #region IServiceProvider 
 
         object IServiceProvider.GetService(System.Type serviceType)
         {
-            return (this.cremaHost as ICremaHost).GetService(serviceType);
+            return (this.CremaHost as ICremaHost).GetService(serviceType);
         }
 
-#endregion
+        #endregion
     }
 }

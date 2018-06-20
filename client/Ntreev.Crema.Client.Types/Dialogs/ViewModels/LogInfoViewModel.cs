@@ -65,7 +65,7 @@ namespace Ntreev.Crema.Client.Types.Dialogs.ViewModels
             get { return this.logInfo.UserID; }
         }
 
-        public long Revision
+        public string Revision
         {
             get { return this.logInfo.Revision; }
         }

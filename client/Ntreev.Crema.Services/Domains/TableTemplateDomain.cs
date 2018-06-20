@@ -15,28 +15,21 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Data;
 using Ntreev.Crema.Data.Xml.Schema;
-using Ntreev.Crema.Data.Xml;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections;
-using System.IO;
-using System.Data;
-using Ntreev.Library.Serialization;
+using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services.Data;
-using Ntreev.Library;
 using Ntreev.Crema.Services.Properties;
+using Ntreev.Library;
+using Ntreev.Library.Serialization;
+using System;
+using System.Data;
+using System.Text;
 
 namespace Ntreev.Crema.Services.Domains
 {
     class TableTemplateDomain : Domain
     {
-        private CremaTemplate template;
         private DataView view;
 
         public TableTemplateDomain(DomainInfo domainInfo, CremaDispatcher dispatcher)
@@ -48,32 +41,22 @@ namespace Ntreev.Crema.Services.Domains
                 this.IsNew = true;
         }
 
-        public bool IsNew
-        {
-            get;
-            set;
-        }
+        public bool IsNew { get; set; }
 
-        public override object Source
-        {
-            get { return this.template; }
-        }
+        public override object Source => this.TemplateSource;
 
-        public CremaTemplate TemplateSource
-        {
-            get { return this.template; }
-        }
+        public CremaTemplate TemplateSource { get; private set; }
 
         protected override byte[] SerializeSource()
         {
-            var xml = XmlSerializerUtility.GetString(this.template);
+            var xml = XmlSerializerUtility.GetString(this.TemplateSource);
             return Encoding.UTF8.GetBytes(xml.Compress());
         }
 
         protected override void DerializeSource(byte[] data)
         {
             var xml = Encoding.UTF8.GetString(data).Decompress();
-            this.template = XmlSerializerUtility.ReadString<CremaTemplate>(xml);
+            this.TemplateSource = XmlSerializerUtility.ReadString<CremaTemplate>(xml);
         }
 
         protected override void OnInitialize(DomainMetaData metaData)
@@ -81,14 +64,14 @@ namespace Ntreev.Crema.Services.Domains
             base.OnInitialize(metaData);
 
             var xml = Encoding.UTF8.GetString(metaData.Data).Decompress();
-            this.template = XmlSerializerUtility.ReadString<CremaTemplate>(xml);
-            this.view = this.template.View;
+            this.TemplateSource = XmlSerializerUtility.ReadString<CremaTemplate>(xml);
+            this.view = this.TemplateSource.View;
         }
 
         protected override void OnRelease()
         {
             base.OnRelease();
-            this.template = null;
+            this.TemplateSource = null;
             this.view = null;
         }
 
@@ -99,50 +82,50 @@ namespace Ntreev.Crema.Services.Domains
 
         protected override void OnNewRow(DomainUser domainUser, DomainRowInfo[] rows, SignatureDate signatureDate)
         {
-            this.template.SignatureDateProvider = new InternalSignatureDateProvider(signatureDate);
+            this.TemplateSource.SignatureDateProvider = new InternalSignatureDateProvider(signatureDate);
             foreach (var item in rows)
             {
                 CremaDomainUtility.AddNew(this.view, item.Fields);
             }
-            this.template.AcceptChanges();
+            this.TemplateSource.AcceptChanges();
         }
 
         protected override void OnRemoveRow(DomainUser domainUser, DomainRowInfo[] rows, SignatureDate signatureDate)
         {
-            this.template.SignatureDateProvider = new InternalSignatureDateProvider(signatureDate);
+            this.TemplateSource.SignatureDateProvider = new InternalSignatureDateProvider(signatureDate);
             foreach (var item in rows)
             {
                 CremaDomainUtility.Delete(this.view, item.Keys);
             }
-            this.template.AcceptChanges();
+            this.TemplateSource.AcceptChanges();
         }
 
         protected override void OnSetRow(DomainUser domainUser, DomainRowInfo[] rows, SignatureDate signatureDate)
         {
-            this.template.SignatureDateProvider = new InternalSignatureDateProvider(signatureDate);
+            this.TemplateSource.SignatureDateProvider = new InternalSignatureDateProvider(signatureDate);
             foreach (var item in rows)
             {
                 CremaDomainUtility.SetFieldsForce(this.view, item.Keys, item.Fields);
             }
-            this.template.AcceptChanges();
+            this.TemplateSource.AcceptChanges();
         }
 
         protected override void OnSetProperty(DomainUser domainUser, string propertyName, object value, SignatureDate signatureDate)
         {
-            this.template.SignatureDateProvider = new InternalSignatureDateProvider(signatureDate);
-            if (propertyName == "TableName")
+            this.TemplateSource.SignatureDateProvider = new InternalSignatureDateProvider(signatureDate);
+            if (propertyName == CremaSchema.TableName)
             {
                 if (this.IsNew == false)
                     throw new InvalidOperationException(Resources.Exception_CannotRename);
-                this.template.TableName = (string)value;
+                this.TemplateSource.TableName = (string)value;
             }
-            else if (propertyName == "Comment")
+            else if (propertyName == CremaSchema.Comment)
             {
-                this.template.Comment = (string)value;
+                this.TemplateSource.Comment = (string)value;
             }
-            else if (propertyName == "Tags")
+            else if (propertyName == CremaSchema.Tags)
             {
-                this.template.Tags = (TagInfo)((string)value);
+                this.TemplateSource.Tags = (TagInfo)((string)value);
             }
             else
             {

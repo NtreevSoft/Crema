@@ -618,9 +618,9 @@ namespace Ntreev.Crema.Services.Data
         void ITableTemplate.EndNew(Authentication authentication, ITableColumn column)
         {
             if (column == null)
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(column));
             if (column is TableColumn == false)
-                throw new ArgumentException(nameof(column));
+                throw new ArgumentException(Resources.Exception_InvalidObject, nameof(column));
             this.EndNew(authentication, column as TableColumn);
         }
 

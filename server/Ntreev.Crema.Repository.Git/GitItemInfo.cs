@@ -60,7 +60,7 @@ namespace Ntreev.Crema.Repository.Git
 
         public static GitItemInfo[] Run(string repositoryPath, string filename)
         {
-            var text = GitHost.Run(repositoryPath, "git log --follow --pretty=format:%H --name-status", filename.WrapQuot());
+            var text = GitHost.Run(repositoryPath, "git log --follow --pretty=format:%H --name-status", filename.ToGitPath());
             return Parse(text);
         }
 

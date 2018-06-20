@@ -81,6 +81,13 @@ namespace Ntreev.Crema.Commands.Consoles
                     return this.GetTypeNames();
                 }
             }
+            else if (methodDescriptor.DescriptorName == nameof(Copy))
+            {
+                if (memberDescriptor.DescriptorName == "typeName")
+                {
+                    return this.GetTypeNames();
+                }
+            }
 
             return base.GetCompletions(methodDescriptor, memberDescriptor, find);
         }

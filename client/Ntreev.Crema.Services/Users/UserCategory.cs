@@ -15,17 +15,13 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.ServiceModel;
+using Ntreev.Crema.Services.UserService;
+using Ntreev.Library.Linq;
+using Ntreev.Library.ObjectModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Collections.ObjectModel;
-using Ntreev.Crema.ServiceModel;
-using Ntreev.Library.ObjectModel;
-using System.Threading.Tasks;
-using System.Windows.Threading;
-using Ntreev.Crema.Services.UserService;
-using Ntreev.Library.Linq;
 using System.Security;
 
 namespace Ntreev.Crema.Services.Users
@@ -35,54 +31,91 @@ namespace Ntreev.Crema.Services.Users
     {
         public void Rename(Authentication authentication, string name)
         {
-            this.Dispatcher.VerifyAccess();
-            this.CremaHost.DebugMethod(authentication, this, nameof(Rename), this, name);
-
-            var items = EnumerableUtility.One(this).ToArray();
-            var oldNames = items.Select(item => item.Name).ToArray();
-            var oldPaths = items.Select(item => item.Path).ToArray();
-            var result = this.Service.RenameUserItem(this.Path, name);
-            result.Validate(authentication);
-            base.Name = name;
-            this.Container.InvokeCategoriesRenamedEvent(authentication, items, oldNames, oldPaths);
+            try
+            {
+                this.Dispatcher.VerifyAccess();
+                this.CremaHost.DebugMethod(authentication, this, nameof(Rename), this, name);
+                var items = EnumerableUtility.One(this).ToArray();
+                var oldNames = items.Select(item => item.Name).ToArray();
+                var oldPaths = items.Select(item => item.Path).ToArray();
+                var result = this.Service.RenameUserItem(this.Path, name);
+                this.Sign(authentication, result);
+                base.Name = name;
+                this.Container.InvokeCategoriesRenamedEvent(authentication, items, oldNames, oldPaths);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void Move(Authentication authentication, string parentPath)
         {
-            this.Dispatcher.VerifyAccess();
-            this.CremaHost.DebugMethod(authentication, this, nameof(Move), this, parentPath);
-
-            var items = EnumerableUtility.One(this).ToArray();
-            var oldPaths = items.Select(item => item.Path).ToArray();
-            var oldParentPaths = items.Select(item => item.Parent.Path).ToArray();
-            var result = this.Service.MoveUserItem(this.Path, parentPath);
-            result.Validate(authentication);
-            this.Parent = this.Container[parentPath];
-            this.Container.InvokeCategoriesMovedEvent(authentication, items, oldPaths, oldParentPaths);
+            try
+            {
+                this.Dispatcher.VerifyAccess();
+                this.CremaHost.DebugMethod(authentication, this, nameof(Move), this, parentPath);
+                var items = EnumerableUtility.One(this).ToArray();
+                var oldPaths = items.Select(item => item.Path).ToArray();
+                var oldParentPaths = items.Select(item => item.Parent.Path).ToArray();
+                var result = this.Service.MoveUserItem(this.Path, parentPath);
+                this.Sign(authentication, result);
+                this.Parent = this.Container[parentPath];
+                this.Container.InvokeCategoriesMovedEvent(authentication, items, oldPaths, oldParentPaths);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void Delete(Authentication authentication)
         {
-            this.Dispatcher.VerifyAccess();
-            this.CremaHost.DebugMethod(authentication, this, nameof(Delete), this);
-
-            var items = EnumerableUtility.One(this).ToArray();
-            var oldPaths = items.Select(item => item.Path).ToArray();
-            var container = this.Container;
-            var result = this.Service.DeleteUserItem(this.Path);
-            result.Validate(authentication);
-            this.Dispose();
-            container.InvokeCategoriesDeletedEvent(authentication, items, oldPaths);
+            try
+            {
+                this.Dispatcher.VerifyAccess();
+                this.CremaHost.DebugMethod(authentication, this, nameof(Delete), this);
+                var items = EnumerableUtility.One(this).ToArray();
+                var oldPaths = items.Select(item => item.Path).ToArray();
+                var container = this.Container;
+                var result = this.Service.DeleteUserItem(this.Path);
+                this.Sign(authentication, result);
+                this.Dispose();
+                container.InvokeCategoriesDeletedEvent(authentication, items, oldPaths);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public UserCategory AddNewCategory(Authentication authentication, string name)
         {
-            return this.Container.AddNew(authentication, name, this.Path);
+            try
+            {
+                return this.Container.AddNew(authentication, name, this.Path);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public User AddNewUser(Authentication authentication, string userID, SecureString password, string userName, Authority authority)
         {
-            return this.Context.Users.AddNew(authentication, userID, this.Path, password, userName, authority);
+            try
+            {
+                return this.Context.Users.AddNew(authentication, userID, this.Path, password, userName, authority);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void InternalSetName(string name)
@@ -90,21 +123,12 @@ namespace Ntreev.Crema.Services.Users
             base.Name = name;
         }
 
-        public IUserService Service
-        {
-            get { return this.Context.Service; }
-        }
+        public IUserService Service => this.Context.Service;
 
-        public CremaHost CremaHost
-        {
-            get { return this.Context.CremaHost; }
-        }
+        public CremaHost CremaHost => this.Context.CremaHost;
 
-        public CremaDispatcher Dispatcher
-        {
-            get { return this.Context.Dispatcher; }
-        }
-        
+        public CremaDispatcher Dispatcher => this.Context.Dispatcher;
+
         public new string Name
         {
             get
@@ -163,6 +187,16 @@ namespace Ntreev.Crema.Services.Users
                 this.Dispatcher.VerifyAccess();
                 base.Deleted -= value;
             }
+        }
+
+        private void Sign(Authentication authentication, ResultBase result)
+        {
+            result.Validate(authentication);
+        }
+
+        private void Sign<T>(Authentication authentication, ResultBase<T> result)
+        {
+            result.Validate(authentication);
         }
 
         #region IUserCategory

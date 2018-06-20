@@ -71,8 +71,7 @@ namespace Ntreev.Crema.Services.Data
             try
             {
                 var itemPath = this.GeneratePath(tableItem.Path);
-                var settings = new ObjectSerializerSettings() { Extension = ".acs" };
-                var itemPaths = this.Serializer.GetPath(itemPath, typeof(AccessSerializationInfo), settings);
+                var itemPaths = this.Serializer.GetPath(itemPath, typeof(AccessSerializationInfo), AccessSerializationInfo.Settings);
                 this.Repository.DeleteRange(itemPaths);
                 this.Repository.Commit(authentication, message);
             }
@@ -91,8 +90,7 @@ namespace Ntreev.Crema.Services.Data
             {
                 accessInfo.SetPrivate(tableItem.GetType().Name, authentication.SignatureDate);
                 var itemPath = this.GeneratePath(tableItem.Path);
-                var settings = new ObjectSerializerSettings() { Extension = ".acs" };
-                var itemPaths = this.Serializer.Serialize(itemPath, (AccessSerializationInfo)accessInfo, settings);
+                var itemPaths = this.Serializer.Serialize(itemPath, (AccessSerializationInfo)accessInfo, AccessSerializationInfo.Settings);
                 this.Repository.AddRange(itemPaths);
                 this.Repository.Commit(authentication, message);
             }
@@ -111,8 +109,7 @@ namespace Ntreev.Crema.Services.Data
             {
                 accessInfo.Add(authentication.SignatureDate, memberID, accessType);
                 var itemPath = this.GeneratePath(tableItem.Path);
-                var settings = new ObjectSerializerSettings() { Extension = ".acs" };
-                this.Serializer.Serialize(itemPath, (AccessSerializationInfo)accessInfo, settings);
+                this.Serializer.Serialize(itemPath, (AccessSerializationInfo)accessInfo, AccessSerializationInfo.Settings);
                 this.Repository.Commit(authentication, message);
             }
             catch
@@ -130,8 +127,7 @@ namespace Ntreev.Crema.Services.Data
             {
                 accessInfo.Set(authentication.SignatureDate, memberID, accessType);
                 var itemPath = this.GeneratePath(tableItem.Path);
-                var settings = new ObjectSerializerSettings() { Extension = ".acs" };
-                this.Serializer.Serialize(itemPath, (AccessSerializationInfo)accessInfo, settings);
+                this.Serializer.Serialize(itemPath, (AccessSerializationInfo)accessInfo, AccessSerializationInfo.Settings);
                 this.Repository.Commit(authentication, message);
             }
             catch
@@ -149,8 +145,7 @@ namespace Ntreev.Crema.Services.Data
             {
                 accessInfo.Remove(authentication.SignatureDate, memberID);
                 var itemPath = this.GeneratePath(tableItem.Path);
-                var settings = new ObjectSerializerSettings() { Extension = ".acs" };
-                this.Serializer.Serialize(itemPath, (AccessSerializationInfo)accessInfo, settings);
+                this.Serializer.Serialize(itemPath, (AccessSerializationInfo)accessInfo, AccessSerializationInfo.Settings);
                 this.Repository.Commit(authentication, message);
             }
             catch
@@ -159,59 +154,6 @@ namespace Ntreev.Crema.Services.Data
                 throw;
             }
         }
-
-        //public void InvokeTableItemCreate(Authentication authentication, string categoryPath)
-        //{
-
-        //}
-
-        //public void InvokeTableItemRename(Authentication authentication, ITableItem tableItem, string newPath)
-        //{
-        //    if (tableItem.AccessInfo.Path == tableItem.Path)
-        //    {
-        //        var itemPath1 = this.GeneratePath(tableItem.Path);
-        //        var itemPath2 = this.GeneratePath(newPath);
-        //        var settings = new ObjectSerializerSettings() { Extension = ".acs" };
-        //        var itemPaths1 = this.Serializer.GetPath(itemPath1, typeof(AccessSerializationInfo), settings);
-        //        var itemPaths2 = this.Serializer.GetPath(itemPath2, typeof(AccessSerializationInfo), settings);
-        //        for (var i = 0; i < itemPaths1.Length; i++)
-        //        {
-        //            this.Repository.Move(itemPaths1[i], itemPaths2[i]);
-        //        }
-        //    }
-        //}
-
-        //public void InvokeTableItemMove(Authentication authentication, ITableItem tableItem, string newPath)
-        //{
-        //    if (tableItem.AccessInfo.Path == tableItem.Path)
-        //    {
-        //        var itemPath1 = this.GeneratePath(tableItem.Path);
-        //        var itemPath2 = this.GeneratePath(newPath);
-        //        var settings = new ObjectSerializerSettings() { Extension = ".acs" };
-        //        var itemPaths1 = this.Serializer.GetPath(itemPath1, typeof(AccessSerializationInfo), settings);
-        //        var itemPaths2 = this.Serializer.GetPath(itemPath2, typeof(AccessSerializationInfo), settings);
-        //        for (var i = 0; i < itemPaths1.Length; i++)
-        //        {
-        //            this.Repository.Move(itemPaths1[i], itemPaths2[i]);
-        //        }
-        //    }
-        //}
-
-        //public void InvokeTableItemDelete(Authentication authentication, ITableItem tableItem)
-        //{
-        //    if (tableItem.AccessInfo.Path == tableItem.Path)
-        //    {
-        //        var itemPath = this.GeneratePath(tableItem.Path);
-        //        var settings = new ObjectSerializerSettings() { Extension = ".acs" };
-        //        var itemPaths = this.Serializer.GetPath(itemPath, typeof(AccessSerializationInfo), settings);
-        //        this.Repository.DeleteRange(itemPaths);
-        //    }
-        //}
-
-        //public void InvokeTableItemChange(Authentication authentication, ITableItem tableItem)
-        //{
-
-        //}
 
         public void Import(Authentication authentication, CremaDataSet dataSet, string comment)
         {
@@ -246,15 +188,14 @@ namespace Ntreev.Crema.Services.Data
                     }
                     item.ContentsInfo = dataTable.ContentsInfo;
                 }
-
-                var dataTables = new DataTableCollection(targetSet, this.DataBase);
                 try
                 {
-                    dataTables.Modify(this.Serializer);
+                    this.Repository.Modify(targetSet);
+                    this.Repository.Commit(authentication, comment);
                 }
                 catch
                 {
-
+                    this.Repository.Revert();
                 }
 
                 foreach (var item in items)
@@ -264,7 +205,6 @@ namespace Ntreev.Crema.Services.Data
                 }
 
                 var eventLog = EventLogBuilder.Build(authentication, this, nameof(Import), comment);
-                this.Repository.Commit(authentication, comment);
                 this.OnItemsChanged(new ItemsEventArgs<ITableItem>(Authentication.System, items, targetSet));
             }
             finally
@@ -416,10 +356,18 @@ namespace Ntreev.Crema.Services.Data
             return this.GenerateTablePath(itemName.CategoryPath, itemName.Name);
         }
 
+        public string[] GetFiles(string itemPath)
+        {
+            var directoryName = Path.GetDirectoryName(itemPath);
+            var name = Path.GetFileNameWithoutExtension(itemPath);
+            var files = Directory.GetFiles(directoryName, $"{name}.*").Where(item => Path.GetFileNameWithoutExtension(item) == name).ToArray();
+            return files;
+        }
+
         public void ValidateTablePath(string categoryPath, string name, Table templatedParent)
         {
             var itemPath = this.GenerateTablePath(categoryPath, name);
-            var settings = new CremaDataTableSerializerSettings(itemPath, templatedParent?.LocalPath);
+            var settings = new CremaDataTableSerializerSettings(itemPath, templatedParent?.ItemPath);
             var itemPaths = this.Serializer.GetPath(itemPath, typeof(CremaDataTable), settings);
             foreach (var item in itemPaths)
             {
@@ -733,11 +681,10 @@ namespace Ntreev.Crema.Services.Data
                 }
             }
 
-            var settings = new ObjectSerializerSettings() { Extension = ".acs" };
-            var itemPaths = this.Serializer.GetItemPaths(this.BasePath, typeof(AccessSerializationInfo), settings);
+            var itemPaths = this.Serializer.GetItemPaths(this.BasePath, typeof(AccessSerializationInfo), AccessSerializationInfo.Settings);
             foreach (var item in itemPaths)
             {
-                var accessInfo = (AccessSerializationInfo)this.Serializer.Deserialize(item, typeof(AccessSerializationInfo), settings);
+                var accessInfo = (AccessSerializationInfo)this.Serializer.Deserialize(item, typeof(AccessSerializationInfo), AccessSerializationInfo.Settings);
                 var tableItem = this.GetTableItemByItemPath(item);
                 if (tableItem is Table table)
                 {

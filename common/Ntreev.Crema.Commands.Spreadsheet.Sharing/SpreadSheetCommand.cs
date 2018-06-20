@@ -89,9 +89,9 @@ namespace Ntreev.Crema.Commands.Spreadsheet
             using (DataBaseUsing.Set(dataBase, authentication, true))
             {
                 if (this.Context == CremaSchema.TableDirectory)
-                    this.ReadTables(dataSet, dataBase, itemNames);
+                    this.ReadTables(authentication, dataSet, dataBase, itemNames);
                 else
-                    this.ReadTypes(dataSet, dataBase, itemNames);
+                    this.ReadTypes(authentication, dataSet, dataBase, itemNames);
             }
 
             if (this.Context == CremaSchema.TableDirectory)
@@ -114,7 +114,7 @@ namespace Ntreev.Crema.Commands.Spreadsheet
                 if (this.Context == CremaSchema.TableDirectory)
                 {
                     this.ReadTables(dataSet, dataBase, path, itemNames);
-                    this.ImportTables(dataSet, dataBase);
+                    this.ImportTables(authentication, dataSet, dataBase);
                 }
                 else
                 {
@@ -238,9 +238,8 @@ namespace Ntreev.Crema.Commands.Spreadsheet
             }
         }
 
-        private void ImportTables(CremaDataSet dataSet, IDataBase dataBase)
+        private void ImportTables(Authentication authentication, CremaDataSet dataSet, IDataBase dataBase)
         {
-            var authentication = this.CommandContext.GetAuthentication(this);
             this.Out.WriteLine($"importing data");
             dataBase.Dispatcher.Invoke(() =>
             {
@@ -249,9 +248,8 @@ namespace Ntreev.Crema.Commands.Spreadsheet
             this.Out.WriteLine($"importing data has been completed.");
         }
 
-        private void ReadTypes(CremaDataSet dataSet, IDataBase dataBase, string typeNames)
+        private void ReadTypes(Authentication authentication, CremaDataSet dataSet, IDataBase dataBase, string typeNames)
         {
-            var authentication = this.CommandContext.GetAuthentication(this);
             var types = dataBase.Dispatcher.Invoke(() => this.GetFilterTypes(dataBase.TypeContext.Types, typeNames));
             if (types.Any() == false)
                 throw new CremaException("조건에 맞는 타입이 존재하지 않습니다.");
@@ -300,9 +298,8 @@ namespace Ntreev.Crema.Commands.Spreadsheet
             }
         }
 
-        private void ReadTables(CremaDataSet dataSet, IDataBase dataBase, string tableNames)
+        private void ReadTables(Authentication authentication, CremaDataSet dataSet, IDataBase dataBase, string tableNames)
         {
-            var authentication = this.CommandContext.GetAuthentication(this);
             var tables = dataBase.Dispatcher.Invoke(() => this.GetFilterTables(dataBase.TableContext.Tables, tableNames));
             if (tables.Any() == false)
                 throw new CremaException("조건에 맞는 테이블이 존재하지 않습니다.");
@@ -369,7 +366,7 @@ namespace Ntreev.Crema.Commands.Spreadsheet
         {
             var query = from item in tables
                         where item.Name.GlobMany(tableNames) || item.Path.GlobMany(tableNames)
-                        select item.Parent ?? item;
+                        select item;
 
             return query.Distinct().ToArray();
         }

@@ -20,9 +20,6 @@ using Ntreev.Crema.Services.Properties;
 using Ntreev.Crema.Services.Users;
 using Ntreev.Library;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Ntreev.Crema.Services
 {
@@ -39,7 +36,6 @@ namespace Ntreev.Crema.Services
         private SignatureDate signatureDate;
         private EventHandler expired;
         private bool isExpired;
-        private Authentication parent;
         private Authentication child;
 
         private Authentication()
@@ -61,14 +57,14 @@ namespace Ntreev.Crema.Services
 
         public Authentication BeginCommission()
         {
-            if (this.parent != null || this.isExpired == true)
+            if (this.Parent != null || this.isExpired == true)
                 throw new InvalidOperationException(Resources.Exception_Expired);
             if (this.child != null)
                 throw new InvalidOperationException(Resources.Exception_Commissioned);
             var authentication = new Authentication(new UserAuthenticationProvider(this.provider.ID, this.provider.Name, this.provider.Authority, this.provider.AuthenticationTypes), this.token)
             {
                 signatureDate = this.signatureDate,
-                parent = this,
+                Parent = this,
             };
             this.child = authentication;
             return authentication;
@@ -89,24 +85,15 @@ namespace Ntreev.Crema.Services
             return $"{this.provider.ID}({this.provider.Name})";
         }
 
-        public string ID
-        {
-            get { return this.provider.ID; }
-        }
+        public string ID => this.provider.ID;
 
-        public string Name
-        {
-            get { return this.provider.Name; }
-        }
+        public string Name => this.provider.Name;
 
-        public Authority Authority
-        {
-            get { return this.provider.Authority; }
-        }
+        public Authority Authority => this.provider.Authority;
 
         public SignatureDate SignatureDate
         {
-            get { return this.signatureDate; }
+            get => this.signatureDate;
             internal set
             {
                 if (this.ID != value.ID)
@@ -134,8 +121,8 @@ namespace Ntreev.Crema.Services
             {
                 lock (lockobj)
                 {
-                    if (this.parent != null)
-                        this.parent.expired += value;
+                    if (this.Parent != null)
+                        this.Parent.expired += value;
                     else
                         this.expired += value;
                 }
@@ -145,7 +132,7 @@ namespace Ntreev.Crema.Services
             {
                 lock (lockobj)
                 {
-                    if (this.parent != null)
+                    if (this.Parent != null)
                         this.expired -= value;
                     else
                         this.expired -= value;
@@ -178,44 +165,23 @@ namespace Ntreev.Crema.Services
             return this.signatureDate;
         }
 
-        internal AuthenticationType Types
-        {
-            get { return this.provider.AuthenticationTypes; }
-        }
+        internal AuthenticationType Types => this.provider.AuthenticationTypes;
 
-        internal Authentication Parent
-        {
-            get { return this.parent; }
-        }
+        internal Authentication Parent { get; private set; }
 
-        internal bool IsAdmin
-        {
-            get { return this.Types.HasFlag(AuthenticationType.Administrator); }
-        }
+        internal bool IsAdmin => this.Types.HasFlag(AuthenticationType.Administrator);
 
-        internal bool IsSystem
-        {
-            get { return this.Types.HasFlag(AuthenticationType.System); }
-        }
+        internal bool IsSystem => this.Types.HasFlag(AuthenticationType.System);
 
         internal readonly static Authentication System = new Authentication(new SystemAuthenticationProvider(), Guid.Parse("62E5A6E9-D4BE-438F-A188-D5842C0ED65E"));
 
         #region IAuthentication
 
-        AuthenticationType IAuthentication.Types
-        {
-            get { return this.Types; }
-        }
+        AuthenticationType IAuthentication.Types => this.Types;
 
-        bool IAuthentication.IsAdmin
-        {
-            get { return this.Types.HasFlag(AuthenticationType.Administrator); }
-        }
+        bool IAuthentication.IsAdmin => this.Types.HasFlag(AuthenticationType.Administrator);
 
-        bool IAuthentication.IsSystem
-        {
-            get { return this.Types.HasFlag(AuthenticationType.System); }
-        }
+        bool IAuthentication.IsSystem => this.Types.HasFlag(AuthenticationType.System);
 
         #endregion
 
@@ -223,25 +189,13 @@ namespace Ntreev.Crema.Services
 
         class SystemAuthenticationProvider : IAuthenticationProvider
         {
-            public AuthenticationType AuthenticationTypes
-            {
-                get { return AuthenticationType.Administrator; }
-            }
+            public AuthenticationType AuthenticationTypes => AuthenticationType.Administrator;
 
-            public Authority Authority
-            {
-                get { return Authority.Admin; }
-            }
+            public Authority Authority => Authority.Admin;
 
-            public string ID
-            {
-                get { return Authentication.SystemID; }
-            }
+            public string ID => Authentication.SystemID;
 
-            public string Name
-            {
-                get { return Authentication.SystemName; }
-            }
+            public string Name => Authentication.SystemName;
         }
 
         #endregion

@@ -35,8 +35,6 @@ namespace Ntreev.Crema.Services.Users
     class UserContext : ItemContext<User, UserCategory, UserCollection, UserCategoryCollection, UserContext>,
         IUserServiceCallback, IUserContext, ICremaService
     {
-        private readonly CremaHost cremaHost;
-        private readonly Guid authenticationToken;
         private UserServiceClient service;
         private CremaDispatcher serviceDispatcher;
         private Timer timer;
@@ -56,7 +54,7 @@ namespace Ntreev.Crema.Services.Users
 
         public UserContext(CremaHost cremaHost, string address, ServiceInfo serviceInfo, string userID, SecureString password)
         {
-            this.cremaHost = cremaHost;
+            this.CremaHost = cremaHost;
 
             this.serviceDispatcher = new CremaDispatcher(this);
             var metaData = this.serviceDispatcher.Invoke(() =>
@@ -91,14 +89,14 @@ namespace Ntreev.Crema.Services.Users
                 }
             });
 
-            this.authenticationToken = metaData.AuthenticationToken;
+            this.AuthenticationToken = metaData.AuthenticationToken;
             this.Initialize(metaData);
             this.Items.MessageReceived += Users_MessageReceived;
             this.Items.UsersLoggedIn += Users_UsersLoggedIn;
             this.Items.UsersLoggedOut += Users_UsersLoggedOut;
             this.Items.UsersKicked += Users_UsersKicked;
             this.Items.UsersBanChanged += Users_UsersBanChanged;
-            this.cremaHost.AddService(this);
+            this.CremaHost.AddService(this);
         }
 
         public static byte[] Encrypt(string userID, SecureString value)
@@ -257,30 +255,15 @@ namespace Ntreev.Crema.Services.Users
             });
         }
 
-        public Guid AuthenticationToken
-        {
-            get { return this.authenticationToken; }
-        }
+        public Guid AuthenticationToken { get; }
 
-        public IUserService Service
-        {
-            get { return this.service; }
-        }
+        public IUserService Service => this.service;
 
-        public UserCollection Users
-        {
-            get { return this.Items; }
-        }
+        public UserCollection Users => this.Items;
 
-        public CremaHost CremaHost
-        {
-            get { return this.cremaHost; }
-        }
+        public CremaHost CremaHost { get; }
 
-        public CremaDispatcher Dispatcher
-        {
-            get { return this.cremaHost.Dispatcher; }
-        }
+        public CremaDispatcher Dispatcher => this.CremaHost.Dispatcher;
 
         public event ItemsCreatedEventHandler<IUserItem> ItemsCreated
         {
@@ -485,7 +468,7 @@ namespace Ntreev.Crema.Services.Users
             });
             this.InvokeAsync(() =>
             {
-                this.cremaHost.RemoveService(this, new CloseInfo(CloseReason.Faulted, "서버와의 연결이 끊어졌습니다."));
+                this.CremaHost.RemoveService(this, new CloseInfo(CloseReason.Faulted, "서버와의 연결이 끊어졌습니다."));
             }, nameof(Service_Faulted));
         }
 
@@ -497,8 +480,8 @@ namespace Ntreev.Crema.Services.Users
             }
             catch (Exception e)
             {
-                this.cremaHost.Error(callbackName);
-                this.cremaHost.Error(e);
+                this.CremaHost.Error(callbackName);
+                this.CremaHost.Error(e);
             }
         }
 
@@ -512,9 +495,9 @@ namespace Ntreev.Crema.Services.Users
             }
             catch
             {
-                this.cremaHost.Dispatcher.Invoke(() =>
+                this.CremaHost.Dispatcher.Invoke(() =>
                 {
-                    this.cremaHost.InvokeClose(new CloseInfo(CloseReason.NoResponding, "서버가 응답하질 않습니다."));
+                    this.CremaHost.InvokeClose(new CloseInfo(CloseReason.NoResponding, "서버가 응답하질 않습니다."));
                 });
             }
         }
@@ -556,7 +539,7 @@ namespace Ntreev.Crema.Services.Users
             this.serviceDispatcher = null;
             this.InvokeAsync(() =>
             {
-                this.cremaHost.RemoveService(this, closeInfo);
+                this.CremaHost.RemoveService(this, closeInfo);
             }, nameof(IUserServiceCallback.OnServiceClosed));
         }
 

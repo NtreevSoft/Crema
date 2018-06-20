@@ -17,11 +17,7 @@
 
 using Ntreev.Crema.ServiceModel;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Services.Domains
 {
@@ -103,11 +99,8 @@ namespace Ntreev.Crema.Services.Domains
 
         public DomainLocationInfo Location
         {
-            get { return base.DomainUserInfo.Location; }
-            set
-            {
-                base.UpdateLocation(value);
-            }
+            get => base.DomainUserInfo.Location;
+            set => base.UpdateLocation(value);
         }
 
         public CremaDispatcher Dispatcher => this.domain.Dispatcher;

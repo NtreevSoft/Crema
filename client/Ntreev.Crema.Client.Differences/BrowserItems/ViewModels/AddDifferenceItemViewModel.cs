@@ -58,7 +58,7 @@ namespace Ntreev.Crema.Client.Differences.BrowserItems.ViewModels
                 var dataSet1 = this.cremaHost.Dispatcher.Invoke(() =>
                 {
                     var dataBase = this.cremaHost.DataBases[this.cremaAppHost.DataBaseName];
-                    return dataBase.GetDataSet(this.authenticator, -1);
+                    return dataBase.GetDataSet(this.authenticator, null);
                 });
                 p.Report(0.33, "대상 데이터 베이스 가져오는중");
                 var dataSet2 = this.cremaHost.Dispatcher.Invoke(() =>
@@ -69,7 +69,7 @@ namespace Ntreev.Crema.Client.Differences.BrowserItems.ViewModels
                     dataBase.Enter(this.authenticator);
                     try
                     {
-                        return dataBase.GetDataSet(this.authenticator, -1);
+                        return dataBase.GetDataSet(this.authenticator, null);
                     }
                     finally
                     {

@@ -34,13 +34,10 @@ namespace Ntreev.Crema.Services.Data
     class Table : TableBase<Table, TableCategory, TableCollection, TableCategoryCollection, TableContext>,
         ITable, ITableItem, IInfoProvider, IStateProvider
     {
-        private readonly TableTemplate template;
-        private readonly TableContent content;
-
         public Table()
         {
-            this.template = new TableTemplate(this);
-            this.content = new TableContent(this);
+            this.Template = new TableTemplate(this);
+            this.Content = new TableContent(this);
         }
 
         public Table AddNew(Authentication authentication, TableInfo tableInfo)
@@ -445,36 +442,17 @@ namespace Ntreev.Crema.Services.Data
             return this.DataBase.GetService(serviceType);
         }
 
+        public TableTemplate Template { get; }
 
-        public TableTemplate Template
-        {
-            get { return this.template; }
-        }
+        public TableContent Content { get; }
 
-        public TableContent Content
-        {
-            get { return this.content; }
-        }
+        public CremaDispatcher Dispatcher => this.Context?.Dispatcher;
 
-        public CremaDispatcher Dispatcher
-        {
-            get { return this.Context?.Dispatcher; }
-        }
+        public IDataBaseService Service => this.Context.Service;
 
-        public IDataBaseService Service
-        {
-            get { return this.Context.Service; }
-        }
+        public CremaHost CremaHost => this.Context.CremaHost;
 
-        public CremaHost CremaHost
-        {
-            get { return this.Context.CremaHost; }
-        }
-
-        public DataBase DataBase
-        {
-            get { return this.Context.DataBase; }
-        }
+        public DataBase DataBase => this.Context.DataBase;
 
         public new string Name
         {
@@ -790,7 +768,7 @@ namespace Ntreev.Crema.Services.Data
             get
             {
                 this.Dispatcher?.VerifyAccess();
-                return this.content;
+                return this.Content;
             }
         }
 

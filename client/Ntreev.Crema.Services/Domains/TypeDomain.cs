@@ -15,23 +15,17 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Data;
 using Ntreev.Crema.Data.Xml.Schema;
-using Ntreev.Crema.Data.Xml;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections;
-using System.IO;
-using System.Data;
-using Ntreev.Library.Serialization;
-using Ntreev.Library.ObjectModel;
+using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services.Data;
-using Ntreev.Library;
 using Ntreev.Crema.Services.Properties;
+using Ntreev.Library;
+using Ntreev.Library.ObjectModel;
+using Ntreev.Library.Serialization;
+using System;
+using System.Data;
+using System.Text;
 
 namespace Ntreev.Crema.Services.Domains
 {
@@ -47,10 +41,7 @@ namespace Ntreev.Crema.Services.Domains
                 this.IsNew = true;
         }
 
-        public override object Source
-        {
-            get { return this.dataType; }
-        }
+        public override object Source => this.dataType;
 
         public bool IsNew { get; set; }
 
@@ -153,17 +144,17 @@ namespace Ntreev.Crema.Services.Domains
 
         protected override void OnSetProperty(DomainUser domainUser, string propertyName, object value, SignatureDate signatureDate)
         {
-            if (propertyName == "TypeName")
+            if (propertyName == CremaSchema.TypeName)
             {
                 if (this.IsNew == false)
                     throw new InvalidOperationException(Resources.Exception_CannotRename);
                 this.dataType.TypeName = (string)value;
             }
-            else if (propertyName == "IsFlag")
+            else if (propertyName == CremaSchema.IsFlag)
             {
                 this.dataType.IsFlag = (bool)value;
             }
-            else if (propertyName == "Comment")
+            else if (propertyName == CremaSchema.Comment)
             {
                 this.dataType.Comment = (string)value;
             }

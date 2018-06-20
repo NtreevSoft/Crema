@@ -31,7 +31,6 @@ namespace Ntreev.Crema.Services.Data
         private readonly Table table;
         private readonly TableContentCollection childs;
         private Domain domain;
-        private CremaDataSet dataSet;
         private CremaDataTable dataTable;
 
         private EventHandler editBegun;
@@ -56,110 +55,174 @@ namespace Ntreev.Crema.Services.Data
 
         public void BeginEdit(Authentication authentication)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(BeginEdit), this.table);
-            var result = this.table.Service.BeginTableContentEdit(this.table.Name);
-            this.Sign(authentication, result);
-            if (this.domain == null)
+            try
             {
-                this.domain = this.DomainContext.Create(authentication, result.Value);
-                this.domain.Host = this;
-                this.domain.Dispatcher.Invoke(() =>
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.CremaHost.DebugMethod(authentication, this, nameof(BeginEdit), this.table);
+                var result = this.table.Service.BeginTableContentEdit(this.table.Name);
+                this.Sign(authentication, result);
+                if (this.domain == null)
                 {
-                    this.AttachDomainEvent();
-                });
+                    this.domain = this.DomainContext.Create(authentication, result.Value);
+                    this.domain.Host = this;
+                    this.domain.Dispatcher.Invoke(() =>
+                    {
+                        this.AttachDomainEvent();
+                    });
+                }
+                this.BeginContent(authentication, this.domain);
+                this.InvokeEditBegunEvent(EventArgs.Empty);
             }
-            this.BeginContent(authentication, this.domain);
-            this.InvokeEditBegunEvent(EventArgs.Empty);
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void EndEdit(Authentication authentication)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(EndEdit), this.table);
-            var result = this.table.Service.EndTableContentEdit(this.table.Name);
-            this.Sign(authentication, result);
-            if (this.domain != null)
+            try
             {
-                this.masterUserID = this.domain.Users.OwnerUserID;
-                this.DetachDomainEvent();
-                this.domain.Dispose(authentication, false);
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.CremaHost.DebugMethod(authentication, this, nameof(EndEdit), this.table);
+                var result = this.table.Service.EndTableContentEdit(this.table.Name);
+                this.Sign(authentication, result);
+                if (this.domain != null)
+                {
+                    this.masterUserID = this.domain.Users.OwnerUserID;
+                    this.DetachDomainEvent();
+                    this.domain.Dispose(authentication, false);
+                }
+                else
+                {
+                    this.DomainContext.Delete(authentication, this.table.DataBase.ID, this.table.Path, nameof(TableContent), false);
+                }
+                this.EndContent(authentication, result.Value);
+                this.InvokeEditEndedEvent(EventArgs.Empty);
             }
-            else
+            catch (Exception e)
             {
-                this.DomainContext.Delete(authentication, this.table.DataBase.ID, this.table.Path, nameof(TableContent), false);
+                this.CremaHost.Error(e);
+                throw;
             }
-            this.EndContent(authentication, result.Value);
-            this.InvokeEditEndedEvent(EventArgs.Empty);
         }
 
         public void CancelEdit(Authentication authentication)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(CancelEdit), this.table);
-            var result = this.table.Service.CancelTableContentEdit(this.table.Name);
-            this.Sign(authentication, result);
-            if (this.domain != null)
+            try
             {
-                this.DetachDomainEvent();
-                this.domain.Dispose(authentication, true);
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.CremaHost.DebugMethod(authentication, this, nameof(CancelEdit), this.table);
+                var result = this.table.Service.CancelTableContentEdit(this.table.Name);
+                this.Sign(authentication, result);
+                if (this.domain != null)
+                {
+                    this.DetachDomainEvent();
+                    this.domain.Dispose(authentication, true);
+                }
+                else
+                {
+                    this.DomainContext.Delete(authentication, this.table.DataBase.ID, this.table.Path, nameof(TableContent), true);
+                }
+                this.CancelContent(authentication);
+                this.InvokeEditCanceledEvent(EventArgs.Empty);
             }
-            else
+            catch (Exception e)
             {
-                this.DomainContext.Delete(authentication, this.table.DataBase.ID, this.table.Path, nameof(TableContent), true);
+                this.CremaHost.Error(e);
+                throw;
             }
-            this.CancelContent(authentication);
-            this.InvokeEditCanceledEvent(EventArgs.Empty);
         }
 
         public void EnterEdit(Authentication authentication)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(EnterEdit), this.table);
-            var result = this.table.Service.EnterTableContentEdit(this.table.Name);
-            this.Sign(authentication, result);
-            this.domain.Dispatcher.Invoke(() => this.domain.Initialize(authentication, result.Value));
-            this.EnterContent(authentication, this.domain);
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.CremaHost.DebugMethod(authentication, this, nameof(EnterEdit), this.table);
+                var result = this.table.Service.EnterTableContentEdit(this.table.Name);
+                this.Sign(authentication, result);
+                this.domain.Dispatcher.Invoke(() => this.domain.Initialize(authentication, result.Value));
+                this.EnterContent(authentication, this.domain);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void LeaveEdit(Authentication authentication)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(LeaveEdit), this.table);
-            var result = this.table.Service.LeaveTableContentEdit(this.table.Name);
-            this.Sign(authentication, result);
-            this.domain.Dispatcher.Invoke(() => this.domain.Release(authentication, result.Value));
-            this.LeaveContent(authentication);
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.CremaHost.DebugMethod(authentication, this, nameof(LeaveEdit), this.table);
+                var result = this.table.Service.LeaveTableContentEdit(this.table.Name);
+                this.Sign(authentication, result);
+                this.domain.Dispatcher.Invoke(() => this.domain.Release(authentication, result.Value));
+                this.LeaveContent(authentication);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void Clear(Authentication authentication)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(Clear), this.table);
-            var rowInfo = new DomainRowInfo()
+            try
             {
-                TableName = this.table.Name,
-                Keys = DomainRowInfo.ClearKey,
-            };
-            this.domain.Dispatcher.Invoke(() => this.domain.RemoveRow(authentication, new DomainRowInfo[] { rowInfo, }));
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.CremaHost.DebugMethod(authentication, this, nameof(Clear), this.table);
+                var rowInfo = new DomainRowInfo()
+                {
+                    TableName = this.table.Name,
+                    Keys = DomainRowInfo.ClearKey,
+                };
+                this.domain.Dispatcher.Invoke(() => this.domain.RemoveRow(authentication, new DomainRowInfo[] { rowInfo, }));
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public TableRow AddNew(Authentication authentication, string relationID)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            if (this.domain == null)
-                throw new InvalidOperationException(Resources.Exception_NotBeingEdited);
-            var view = this.dataTable.DefaultView;
-            return new TableRow(this, view.Table);
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                if (this.domain == null)
+                    throw new InvalidOperationException(Resources.Exception_NotBeingEdited);
+                var view = this.dataTable.DefaultView;
+                return new TableRow(this, view.Table);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void EndNew(Authentication authentication, TableRow row)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            if (this.domain == null)
-                throw new InvalidOperationException(Resources.Exception_NotBeingEdited);
-            row.EndNew(authentication);
-            this.Add(row);
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                if (this.domain == null)
+                    throw new InvalidOperationException(Resources.Exception_NotBeingEdited);
+                row.EndNew(authentication);
+                this.Add(row);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public override Domain Domain
@@ -171,10 +234,7 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public IPermission Permission
-        {
-            get { return this.table; }
-        }
+        public IPermission Permission => this.table;
 
         public Table Table
         {
@@ -185,20 +245,11 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public CremaHost CremaHost
-        {
-            get { return this.table.CremaHost; }
-        }
+        public override CremaHost CremaHost => this.table.CremaHost;
 
-        public override DataBase DataBase
-        {
-            get { return this.table.DataBase; }
-        }
+        public override DataBase DataBase => this.table.DataBase;
 
-        public override CremaDispatcher Dispatcher
-        {
-            get { return this.table.Dispatcher; }
-        }
+        public override CremaDispatcher Dispatcher => this.table.Dispatcher;
 
         public int Count
         {
@@ -211,20 +262,11 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public CremaDataSet DataSet
-        {
-            get { return this.dataSet; }
-        }
+        public CremaDataSet DataSet { get; private set; }
 
-        public override CremaDataTable DataTable
-        {
-            get { return this.dataTable; }
-        }
+        public override CremaDataTable DataTable => this.dataTable;
 
-        public DomainContext DomainContext
-        {
-            get { return this.table.CremaHost.DomainContext; }
-        }
+        public DomainContext DomainContext => this.table.CremaHost.DomainContext;
 
         public IEnumerable<TableContent> Childs
         {
@@ -454,7 +496,7 @@ namespace Ntreev.Crema.Services.Data
                 item.table.SetTableState(TableState.None);
                 if (tableInfos != null)
                     item.table.UpdateContent(tableInfos.First(i => i.Name == item.table.Name));
-                item.dataSet = null;
+                item.DataSet = null;
                 item.dataTable = null;
             }
             this.Container.InvokeTablesContentChangedEvent(authentication, this, items.ToArray());
@@ -467,7 +509,7 @@ namespace Ntreev.Crema.Services.Data
             foreach (var item in items.Select(i => i.Content))
             {
                 item.domain = null;
-                item.dataSet = null;
+                item.DataSet = null;
                 item.dataTable = null;
                 item.table.SetTableState(TableState.None);
             }
@@ -481,7 +523,7 @@ namespace Ntreev.Crema.Services.Data
             {
                 var dataSet = domain.Source as CremaDataSet;
                 var tableState = item.table.TableState;
-                item.dataSet = dataSet;
+                item.DataSet = dataSet;
                 item.dataTable = dataSet?.Tables[item.table.Name, item.table.Category.Path];
                 if (dataSet != null)
                     tableState |= TableState.IsMember;
@@ -498,7 +540,7 @@ namespace Ntreev.Crema.Services.Data
             var items = EnumerableUtility.Friends(this.table, this.table.Childs);
             foreach (var item in items.Select(i => i.Content))
             {
-                item.dataSet = null;
+                item.DataSet = null;
                 item.dataTable = null;
                 item.table.SetTableState(item.table.TableState & ~TableState.IsMember);
             }
@@ -516,10 +558,7 @@ namespace Ntreev.Crema.Services.Data
             result.Validate(authentication);
         }
 
-        private TableCollection Container
-        {
-            get { return this.table.Container; }
-        }
+        private TableCollection Container => this.table.Container;
 
         #region ITableContent
 
@@ -547,15 +586,9 @@ namespace Ntreev.Crema.Services.Data
             return this.Select(authentication, filterExpression);
         }
 
-        IDomain ITableContent.Domain
-        {
-            get { return this.Domain; }
-        }
+        IDomain ITableContent.Domain => this.Domain;
 
-        ITable ITableContent.Table
-        {
-            get { return this.Table; }
-        }
+        ITable ITableContent.Table => this.Table;
 
         ITableContent ITableContent.Parent
         {

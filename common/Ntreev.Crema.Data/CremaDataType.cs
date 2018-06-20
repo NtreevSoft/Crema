@@ -326,10 +326,47 @@ namespace Ntreev.Crema.Data
             return dataSet.Types[this.TypeName, this.CategoryPath];
         }
 
+        public CremaDataType Copy(string name)
+        {
+            return this.Copy(name, this.CategoryPath);
+        }
+
+        public CremaDataType Copy(string name, string categoryPath)
+        {
+            return this.Copy(name, categoryPath);
+        }
+        
+        public CremaDataType Copy(ItemName itemName)
+        {
+            this.ValidateCopy(itemName);
+            if (this.DataSet != null)
+            {
+                var schema = this.GetXmlSchema();
+                this.DataSet.ReadTypeString(schema, itemName);
+                var dataType = this.DataSet.Types[itemName.Name, itemName.CategoryPath];
+                dataType.SourceType = this;
+                dataType.InternalTypeID = Guid.NewGuid();
+                dataType.CreationInfo = this.SignatureDateProvider.Provide();
+                return dataType;
+            }
+            else
+            {
+                var schema = this.GetXmlSchema();
+                var dataType = new CremaDataType();
+                var schemaReader = new CremaSchemaReader(dataType, itemName);
+                using (var sr = new StringReader(schema))
+                using (var reader = XmlReader.Create(sr))
+                {
+                    schemaReader.Read(reader);
+                    return dataType;
+                }
+            }
+        }
+
         public static CremaDataType ReadSchema(TextReader reader)
         {
             var dataType = new CremaDataType();
-            var schemaReader = new CremaSchemaReader(dataType);
+            var schemaReader = new CremaSchemaReader(dataType, null);
             schemaReader.Read(reader);
             return dataType;
         }
@@ -337,7 +374,7 @@ namespace Ntreev.Crema.Data
         public static CremaDataType ReadSchema(XmlReader reader)
         {
             var dataType = new CremaDataType();
-            var schemaReader = new CremaSchemaReader(dataType);
+            var schemaReader = new CremaSchemaReader(dataType, null);
             schemaReader.Read(reader);
             return dataType;
         }
@@ -345,7 +382,7 @@ namespace Ntreev.Crema.Data
         public static CremaDataType ReadSchema(string filename)
         {
             var dataType = new CremaDataType();
-            var schemaReader = new CremaSchemaReader(dataType);
+            var schemaReader = new CremaSchemaReader(dataType, null);
             schemaReader.Read(filename);
             return dataType;
         }
@@ -353,7 +390,7 @@ namespace Ntreev.Crema.Data
         public static CremaDataType ReadSchema(Stream stream)
         {
             var dataType = new CremaDataType();
-            var schemaReader = new CremaSchemaReader(dataType);
+            var schemaReader = new CremaSchemaReader(dataType, null);
             schemaReader.Read(stream);
             return dataType;
         }
@@ -539,6 +576,11 @@ namespace Ntreev.Crema.Data
 
         public string HashValue { get; internal set; }
 
+        public CremaDataType SourceType
+        {
+            get; private set;
+        }
+
         public static readonly string[] FieldNames = new string[] { CremaSchema.Name, CremaSchema.Value, CremaSchema.Comment };
 
         public event CremaTypeMemberChangeEventHandler MemberChanging;
@@ -662,6 +704,15 @@ namespace Ntreev.Crema.Data
                 throw new CremaDataException(Resources.Exception_CannotCopyToSameDataSet);
             if (dataSet.Types.Contains(this.TypeName, this.CategoryPath) == true)
                 throw new CremaDataException(this.TypeName);
+        }
+
+        private void ValidateCopy(ItemName itemName)
+        {
+            if (itemName == null)
+                throw new ArgumentNullException(nameof(itemName));
+
+            if (this.DataSet != null && this.DataSet.Types.Contains(itemName.Name, itemName.CategoryPath) == true)
+                throw new ArgumentException(string.Format(Resources.Exception_AlreadyExistedItem_Format, itemName));
         }
 
         private void ValidateSetTypeName(string value)

@@ -95,8 +95,7 @@ namespace Ntreev.Crema.Services
 
         public static void Error(Exception e)
         {
-            LogService.Error(e.Message);
-            LogService.Debug(e);
+            LogService.Error(e.ToString());
         }
 
         public static void Warn(string format, params object[] args)

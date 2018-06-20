@@ -19,7 +19,6 @@ using Ntreev.Crema.Data;
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services.DataBaseService;
 using Ntreev.Crema.Services.Domains;
-using Ntreev.Library;
 using Ntreev.Library.Linq;
 using System;
 using System.Linq;
@@ -50,35 +49,17 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public override DomainContext DomainContext
-        {
-            get { return this.table.GetService(typeof(DomainContext)) as DomainContext; }
-        }
+        public override DomainContext DomainContext => this.table.GetService(typeof(DomainContext)) as DomainContext;
 
-        public override string ItemPath
-        {
-            get { return this.table.Path; }
-        }
+        public override string ItemPath => this.table.Path;
 
-        public override CremaHost CremaHost
-        {
-            get { return this.table.CremaHost; }
-        }
+        public override CremaHost CremaHost => this.table.CremaHost;
 
-        public override CremaDispatcher Dispatcher
-        {
-            get { return this.table.Dispatcher; }
-        }
+        public override CremaDispatcher Dispatcher => this.table.Dispatcher;
 
-        public override DataBase DataBase
-        {
-            get { return this.table.DataBase; }
-        }
+        public override DataBase DataBase => this.table.DataBase;
 
-        public override IPermission Permission
-        {
-            get { return this.table; }
-        }
+        public override IPermission Permission => this.table;
 
         protected override void OnBeginEdit(Authentication authentication, DomainMetaData metaData)
         {
@@ -123,14 +104,8 @@ namespace Ntreev.Crema.Services.Data
             return this.Service.CancelTableTemplateEdit(domainID);
         }
 
-        private TableCollection Container
-        {
-            get { return this.table.Container; }
-        }
+        private TableCollection Container => this.table.Container;
 
-        private IDataBaseService Service
-        {
-            get { return this.table.Service; }
-        }
+        private IDataBaseService Service => this.table.Service;
     }
 }

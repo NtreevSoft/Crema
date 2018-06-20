@@ -89,7 +89,7 @@ namespace Ntreev.Crema.Repository.Git
             argList.Add("--");
             foreach (var item in paths)
             {
-                argList.Add(item.WrapQuot());
+                argList.Add(item.ToGitPath());
             }
             var text = GitHost.Run(repositoryPath, argList.ToArray());
             return ParseMany(text);

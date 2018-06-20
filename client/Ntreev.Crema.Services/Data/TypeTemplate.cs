@@ -15,16 +15,10 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.Services.Domains;
-using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Data;
+using Ntreev.Crema.ServiceModel;
+using Ntreev.Crema.Services.Domains;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Threading;
-using Ntreev.Library;
 
 namespace Ntreev.Crema.Services.Data
 {
@@ -37,35 +31,17 @@ namespace Ntreev.Crema.Services.Data
             this.type = type;
         }
 
-        public override DomainContext DomainContext
-        {
-            get { return this.type.GetService(typeof(DomainContext)) as DomainContext; }
-        }
+        public override DomainContext DomainContext => this.type.GetService(typeof(DomainContext)) as DomainContext;
 
-        public override CremaDispatcher Dispatcher
-        {
-            get { return this.type.Dispatcher; }
-        }
+        public override CremaDispatcher Dispatcher => this.type.Dispatcher;
 
-        public override CremaHost CremaHost
-        {
-            get { return this.type.CremaHost; }
-        }
+        public override CremaHost CremaHost => this.type.CremaHost;
 
-        public override IType Type
-        {
-            get { return this.type; }
-        }
+        public override IType Type => this.type;
 
-        public override DataBase DataBase
-        {
-            get { return this.type.DataBase; }
-        }
+        public override DataBase DataBase => this.type.DataBase;
 
-        public override IPermission Permission
-        {
-            get { return this.type; }
-        }
+        public override IPermission Permission => this.type;
 
         protected override void OnBeginEdit(Authentication authentication, DomainMetaData metaData)
         {
@@ -106,9 +82,6 @@ namespace Ntreev.Crema.Services.Data
             return this.type.Service.CancelTypeTemplateEdit(domainID);
         }
 
-        private TypeCollection Container
-        {
-            get { return this.type.Container; }
-        }
+        private TypeCollection Container => this.type.Container;
     }
 }

@@ -15,18 +15,14 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.Services.Domains;
-using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Data;
 using Ntreev.Crema.Data.Xml.Schema;
+using Ntreev.Crema.ServiceModel;
+using Ntreev.Crema.Services.Domains;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Services.Data
 {
@@ -34,13 +30,12 @@ namespace Ntreev.Crema.Services.Data
     {
         private readonly Domain domain;
         private readonly DataTable table;
-        private DataRow row;
         private Dictionary<string, object> fields;
 
         protected DomainBasedRow(Domain domain, DataRow row)
         {
             this.domain = domain ?? throw new ArgumentNullException(nameof(domain));
-            this.row = row;
+            this.Row = row;
             this.table = row.Table;
         }
 
@@ -60,46 +55,52 @@ namespace Ntreev.Crema.Services.Data
 
         public void Delete(Authentication authentication)
         {
+            try
+            {
             this.DataBase.ValidateBeginInDataBase(authentication);
-            if (this.row == null)
-                throw new InvalidOperationException("");
+            if (this.Row == null)
+                    throw new InvalidOperationException();
             this.domain.Dispatcher.Invoke(() =>
             {
-                var keys = this.row.GetKeys();
+                var keys = this.Row.GetKeys();
                 this.domain.RemoveRow(authentication, this.table.TableName, keys);
             });
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void EndNew(Authentication authentication)
         {
-            if (this.row != null)
+            try
+        {
+            if (this.Row != null)
                 throw new InvalidOperationException();
 
             var fields = this.fields.Values.ToArray();
             var keys = this.domain.Dispatcher.Invoke(() => this.domain.NewRow(authentication, this.table.TableName, fields));
-            this.row = this.table.Rows.Find(keys);
+            this.Row = this.table.Rows.Find(keys);
             this.fields = null;
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
-        public bool IsNew
-        {
-            get { return this.row == null; }
-        }
+        public bool IsNew => this.Row == null;
 
-        public DataRow Row
-        {
-            get { return this.row; }
-        }
+        public DataRow Row { get; private set; }
 
-        public abstract CremaDispatcher Dispatcher
-        {
-            get;
-        }
+        public abstract CremaDispatcher Dispatcher { get; }
 
-        public abstract DataBase DataBase
-        {
-            get;
-        }
+        public abstract DataBase DataBase { get; }
+
+        public abstract CremaHost CremaHost { get; }
 
         protected T GetField<T>(string columnName)
         {
@@ -107,7 +108,7 @@ namespace Ntreev.Crema.Services.Data
             {
                 return (T)this.fields[columnName];
             }
-            return this.row.Field<T>(columnName);
+            return this.Row.Field<T>(columnName);
         }
 
         protected void SetField<T>(Authentication authentication, string columnName, T value)
@@ -122,7 +123,7 @@ namespace Ntreev.Crema.Services.Data
             {
                 this.domain.Dispatcher.Invoke(() =>
                 {
-                    var keys = this.row.GetKeys();
+                    var keys = this.Row.GetKeys();
                     var fields = new object[this.table.Columns.Count];
                     var column = this.table.Columns[columnName];
                     fields[column.Ordinal] = value;

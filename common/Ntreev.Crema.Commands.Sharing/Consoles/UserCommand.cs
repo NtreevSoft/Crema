@@ -242,24 +242,26 @@ namespace Ntreev.Crema.Commands.Consoles
         }
 
         [CommandMethod]
-        public void Kick(string userID, string comment)
+        [CommandMethodProperty(nameof(Comment))]
+        public void Kick(string userID)
         {
             this.UserContext.Dispatcher.Invoke(() =>
             {
                 var user = this.GetUser(userID);
                 var authentication = this.CommandContext.GetAuthentication(this);
-                user.Kick(authentication, comment);
+                user.Kick(authentication, this.Comment);
             });
         }
 
         [CommandMethod]
-        public void Ban(string userID, string comment)
+        [CommandMethodProperty(nameof(Comment))]
+        public void Ban(string userID)
         {
             this.UserContext.Dispatcher.Invoke(() =>
             {
                 var user = this.GetUser(userID);
                 var authentication = this.CommandContext.GetAuthentication(this);
-                user.Ban(authentication, comment);
+                user.Ban(authentication, this.Comment);
             });
         }
 
@@ -407,6 +409,12 @@ namespace Ntreev.Crema.Commands.Consoles
 
         [CommandProperty("banned")]
         public bool IsBanned
+        {
+            get; set;
+        }
+
+        [CommandProperty('m', IsRequired = true)]
+        public string Comment
         {
             get; set;
         }

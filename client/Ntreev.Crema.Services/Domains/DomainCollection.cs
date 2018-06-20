@@ -16,7 +16,6 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Ntreev.Crema.ServiceModel;
-using Ntreev.Library.IO;
 using Ntreev.Library.ObjectModel;
 using System;
 using System.Collections;
@@ -273,15 +272,9 @@ namespace Ntreev.Crema.Services.Domains
             }
         }
 
-        public CremaHost CremaHost
-        {
-            get { return this.Context.CremaHost; }
-        }
+        public CremaHost CremaHost => this.Context.CremaHost;
 
-        public CremaDispatcher Dispatcher
-        {
-            get { return this.Context.Dispatcher; }
-        }
+        public CremaDispatcher Dispatcher => this.Context.Dispatcher;
 
         public new int Count
         {

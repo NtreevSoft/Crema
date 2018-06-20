@@ -25,6 +25,8 @@ namespace Ntreev.Crema.Services.Data
     [DataContract]
     struct DataBaseSerializationInfo
     {
+        public const string Extension = ".info";
+
         [DataMember]
         public Guid ID { get; set; }
 
@@ -88,5 +90,7 @@ namespace Ntreev.Crema.Services.Data
                 ModificationInfo = obj.ModificationInfo,
             };
         }
+
+        public static readonly ObjectSerializerSettings Settings = new ObjectSerializerSettings() { Extension = Extension };
     }
 }

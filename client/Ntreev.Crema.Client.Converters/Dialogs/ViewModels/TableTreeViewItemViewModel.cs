@@ -53,7 +53,7 @@ namespace Ntreev.Crema.Client.Converters.Dialogs.ViewModels
 
         public override async Task PreviewAsync(CremaDataSet dataSet)
         {
-            var preview = await TableDescriptorUtility.GetDataAsync(authentication, this.descriptor, -1);
+            var preview = await TableDescriptorUtility.GetDataAsync(authentication, this.descriptor, null);
 
             foreach (TableTreeViewItemViewModel item in this.Items)
             {

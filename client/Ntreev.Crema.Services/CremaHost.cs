@@ -30,7 +30,6 @@ using System.Linq;
 using System.Security;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
-using System.Windows.Threading;
 using System.Xml;
 
 namespace Ntreev.Crema.Services
@@ -41,10 +40,6 @@ namespace Ntreev.Crema.Services
     {
         private readonly List<Authentication> authentications = new List<Authentication>();
         private readonly List<ICremaService> services = new List<ICremaService>();
-        private bool isConnected;
-        private string userID;
-        private Authority authority;
-        private string address;
         private CloseInfo closeInfo;
 
         private CremaConfiguration configs;
@@ -53,20 +48,13 @@ namespace Ntreev.Crema.Services
         [Import]
         private IServiceProvider container = null;
         private LogService log;
-        private DomainContext domainContext;
-        private UserContext userContext;
-        private DataBaseCollection dataBases;
-        private CremaDispatcher dispatcher;
-
-        private Dictionary<string, ServiceInfo> serviceInfos;
-        private string ipAddress;
         private Guid token;
         private LogVerbose verbose;
 
         [ImportingConstructor]
         public CremaHost()
         {
-            this.dispatcher = new CremaDispatcher(this);
+            this.Dispatcher = new CremaDispatcher(this);
             CremaLog.Debug($"available tags : {string.Join(",", TagInfoUtility.Names)}");
             CremaLog.Debug("Crema created.");
         }
@@ -76,19 +64,19 @@ namespace Ntreev.Crema.Services
             if (serviceType == typeof(ICremaHost))
                 return this;
             if (serviceType == typeof(IDataBaseCollection))
-                return this.dataBases;
+                return this.DataBases;
             if (serviceType == typeof(IUserContext))
-                return this.userContext;
+                return this.UserContext;
             if (serviceType == typeof(IUserCollection))
-                return this.userContext.Users;
+                return this.UserContext.Users;
             if (serviceType == typeof(IUserCategoryCollection))
-                return this.userContext.Categories;
+                return this.UserContext.Categories;
             if (serviceType == typeof(IDomainContext))
-                return this.domainContext;
+                return this.DomainContext;
             if (serviceType == typeof(IDomainCollection))
-                return this.domainContext.Domains;
+                return this.DomainContext.Domains;
             if (serviceType == typeof(IDomainCategoryCollection))
-                return this.domainContext.Categories;
+                return this.DomainContext.Categories;
             if (serviceType == typeof(ILogService))
                 return this;
             if (this.IsOpened == true && serviceType == typeof(ICremaConfiguration))
@@ -124,7 +112,7 @@ namespace Ntreev.Crema.Services
             CremaLog.Debug($"{service.GetType().Name} Released.");
             if (this.services.Any() == false)
             {
-                await this.dispatcher.InvokeAsync(() =>
+                await this.Dispatcher.InvokeAsync(() =>
                 {
                     this.InvokeClose(this.closeInfo);
                 });
@@ -144,53 +132,63 @@ namespace Ntreev.Crema.Services
 
         public Guid Open(string address, string userID, SecureString password)
         {
-            if (this.isConnected == true)
-                throw new InvalidOperationException(Resources.Exception_AlreadyConnected);
-
-            this.ipAddress = AddressUtility.GetIPAddress(address);
-            this.serviceInfos = GetServiceInfo(address).ToDictionary(item => item.Name);
-
-            this.OnOpening(EventArgs.Empty);
-            return this.dispatcher.Invoke(() =>
+            try
             {
-                try
-                {
-                    this.address = AddressUtility.GetDisplayAddress(address);
-                    this.log = new LogService(this.address.Replace(':', '_'), userID, AppUtility.UserAppDataPath);
-                    this.log.Verbose = this.verbose;
-                    this.userContext = new UserContext(this, this.ipAddress, serviceInfos[nameof(UserService)], userID, password);
-                    var user = this.userContext.Users[userID];
-                    user.SetUserState(UserState.Online);
-                    this.userID = userID;
-                    this.authority = user.Authority;
+                if (this.IsOpened == true)
+                    throw new InvalidOperationException(Resources.Exception_AlreadyConnected);
 
-                    this.dataBases = new DataBaseCollection(this, this.ipAddress, serviceInfos[nameof(DataBaseCollectionService)]);
-                    this.domainContext = new DomainContext(this, this.ipAddress, serviceInfos[nameof(DomainService)]);
-                    this.isConnected = true;
-                    this.configs = new CremaConfiguration(this.ConfigPath);
-                    this.plugins = this.container.GetService(typeof(IEnumerable<IPlugin>)) as IEnumerable<IPlugin>;
-                    foreach (var item in this.plugins)
+                this.IPAddress = AddressUtility.GetIPAddress(address);
+                this.ServiceInfos = GetServiceInfo(address).ToDictionary(item => item.Name);
+
+                this.OnOpening(EventArgs.Empty);
+                return this.Dispatcher.Invoke(() =>
+                {
+                    try
                     {
-                        var authentication = new Authentication(new AuthenticationProvider(user), item.ID);
-                        this.authentications.Add(authentication);
-                        item.Initialize(authentication);
-                    }
+                        this.Address = AddressUtility.GetDisplayAddress(address);
+                        this.log = new LogService(this.Address.Replace(':', '_'), userID, AppUtility.UserAppDataPath)
+                        {
+                            Verbose = this.verbose
+                        };
+                        this.UserContext = new UserContext(this, this.IPAddress, ServiceInfos[nameof(UserService)], userID, password);
+                        var user = this.UserContext.Users[userID];
+                        user.SetUserState(UserState.Online);
+                        this.UserID = userID;
+                        this.Authority = user.Authority;
 
-                    this.OnOpened(EventArgs.Empty);
-                    this.token = Guid.NewGuid();
-                    CremaLog.Info($"Crema opened : {address} {userID}");
-                    return token;
-                }
-                catch
-                {
-                    this.userContext?.Close(CloseInfo.Empty);
-                    this.userContext = null;
-                    this.log?.Dispose();
-                    this.log = null;
-                    this.address = null;
-                    throw;
-                }
-            });
+                        this.DataBases = new DataBaseCollection(this, this.IPAddress, ServiceInfos[nameof(DataBaseCollectionService)]);
+                        this.DomainContext = new DomainContext(this, this.IPAddress, ServiceInfos[nameof(DomainService)]);
+                        this.IsOpened = true;
+                        this.configs = new CremaConfiguration(this.ConfigPath);
+                        this.plugins = this.container.GetService(typeof(IEnumerable<IPlugin>)) as IEnumerable<IPlugin>;
+                        foreach (var item in this.plugins)
+                        {
+                            var authentication = new Authentication(new AuthenticationProvider(user), item.ID);
+                            this.authentications.Add(authentication);
+                            item.Initialize(authentication);
+                        }
+
+                        this.OnOpened(EventArgs.Empty);
+                        this.token = Guid.NewGuid();
+                        CremaLog.Info($"Crema opened : {address} {userID}");
+                        return token;
+                    }
+                    catch
+                    {
+                        this.UserContext?.Close(CloseInfo.Empty);
+                        this.UserContext = null;
+                        this.log?.Dispose();
+                        this.log = null;
+                        this.Address = null;
+                        throw;
+                    }
+                });
+            }
+            catch (Exception e)
+            {
+                CremaLog.Error(e);
+                throw;
+            }
         }
 
         public void SaveConfigs()
@@ -202,10 +200,10 @@ namespace Ntreev.Crema.Services
         {
             if (this.token != token)
                 throw new ArgumentException(Resources.Exception_InvalidToken, nameof(token));
-            if (this.isConnected == false)
+            if (this.IsOpened == false)
                 throw new InvalidOperationException(Resources.Exception_NotConnected);
 
-            this.dispatcher.Invoke(() =>
+            this.Dispatcher.Invoke(() =>
             {
                 this.Close(CloseInfo.Empty);
                 this.token = Guid.Empty;
@@ -215,14 +213,14 @@ namespace Ntreev.Crema.Services
         public void Shutdown(Authentication authentication, int milliseconds, ShutdownType shutdownType, string message)
         {
             this.DebugMethod(authentication, this, nameof(Shutdown), this, milliseconds, shutdownType, message);
-            var result = this.userContext.Service.Shutdown(milliseconds, shutdownType, message);
+            var result = this.UserContext.Service.Shutdown(milliseconds, shutdownType, message);
             result.Validate();
         }
 
         public void CancelShutdown(Authentication authentication)
         {
             this.DebugMethod(authentication, this, nameof(CancelShutdown));
-            var result = this.userContext.Service.CancelShutdown();
+            var result = this.UserContext.Service.CancelShutdown();
             result.Validate();
         }
 
@@ -235,8 +233,8 @@ namespace Ntreev.Crema.Services
                 this.Close(CloseInfo.Empty);
             }
 
-            this.dispatcher.Dispose(false);
-            this.dispatcher = null;
+            this.Dispatcher.Dispose(false);
+            this.Dispatcher = null;
             this.OnDisposed(EventArgs.Empty);
             CremaLog.Info("Crema disposed.");
         }
@@ -293,25 +291,13 @@ namespace Ntreev.Crema.Services
             return binding;
         }
 
-        public ConfigurationBase Configs
-        {
-            get { return this.configs; }
-        }
+        public ConfigurationBase Configs => this.configs;
 
-        public string Address
-        {
-            get { return this.address; }
-        }
+        public string Address { get; private set; }
 
-        public string UserID
-        {
-            get { return this.userID; }
-        }
+        public string UserID { get; private set; }
 
-        public Authority Authority
-        {
-            get { return this.authority; }
-        }
+        public Authority Authority { get; private set; }
 
         public User User
         {
@@ -319,14 +305,11 @@ namespace Ntreev.Crema.Services
             {
                 if (this.IsOpened == false)
                     return null;
-                return this.userContext.Users[this.userID];
+                return this.UserContext.Users[this.UserID];
             }
         }
 
-        public bool IsOpened
-        {
-            get { return this.isConnected; }
-        }
+        public bool IsOpened { get; private set; }
 
         public LogVerbose Verbose
         {
@@ -344,35 +327,17 @@ namespace Ntreev.Crema.Services
             }
         }
 
-        public DataBaseCollection DataBases
-        {
-            get { return this.dataBases; }
-        }
+        public DataBaseCollection DataBases { get; private set; }
 
-        public DomainContext DomainContext
-        {
-            get { return this.domainContext; }
-        }
+        public DomainContext DomainContext { get; private set; }
 
-        public UserContext UserContext
-        {
-            get { return this.userContext; }
-        }
+        public UserContext UserContext { get; private set; }
 
-        public CremaDispatcher Dispatcher
-        {
-            get { return this.dispatcher; }
-        }
+        public CremaDispatcher Dispatcher { get; private set; }
 
-        public Dictionary<string, ServiceInfo> ServiceInfos
-        {
-            get { return this.serviceInfos; }
-        }
+        public Dictionary<string, ServiceInfo> ServiceInfos { get; private set; }
 
-        public string IPAddress
-        {
-            get { return this.ipAddress; }
-        }
+        public string IPAddress { get; private set; }
 
         public event EventHandler Opening;
 
@@ -413,7 +378,7 @@ namespace Ntreev.Crema.Services
         {
             if (Environment.ExitCode == 0 && this.IsOpened == true)
                 throw new InvalidOperationException(Resources.Exception_NotClosed);
-            if (this.dispatcher == null)
+            if (this.Dispatcher == null)
                 throw new InvalidOperationException(Resources.Exception_AlreadyDisposed);
         }
 
@@ -425,9 +390,9 @@ namespace Ntreev.Crema.Services
                 item.Close(closeInfo);
             }
             this.services.Clear();
-            this.domainContext = null;
-            this.dataBases = null;
-            this.userContext = null;
+            this.DomainContext = null;
+            this.DataBases = null;
+            this.UserContext = null;
             foreach (var item in this.plugins)
             {
                 item.Release();
@@ -436,14 +401,14 @@ namespace Ntreev.Crema.Services
             {
                 item.InvokeExpiredEvent(Authentication.SystemID);
             }
-            this.dispatcher.InvokeAsync(() =>
+            this.Dispatcher.InvokeAsync(() =>
             {
                 this.log?.Dispose();
                 this.log = null;
             });
-            this.address = null;
-            this.userID = null;
-            this.isConnected = false;
+            this.Address = null;
+            this.UserID = null;
+            this.IsOpened = false;
             this.OnClosed(new ClosedEventArgs(closeInfo.Reason, closeInfo.Message));
             CremaLog.Info("Crema closed.");
         }
@@ -469,8 +434,8 @@ namespace Ntreev.Crema.Services
             {
                 var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                 var productName = AppUtility.ProductName;
-                var address = this.address.Replace(':', '-');
-                return Path.Combine(path, productName, $"{this.userID}@{address}.config");
+                var address = this.Address.Replace(':', '-');
+                return Path.Combine(path, productName, $"{this.UserID}@{address}.config");
             }
         }
 
@@ -484,16 +449,13 @@ namespace Ntreev.Crema.Services
             }
         }
 
-        internal Guid AuthenticationToken
-        {
-            get { return this.userContext.AuthenticationToken; }
-        }
+        internal Guid AuthenticationToken => this.UserContext.AuthenticationToken;
 
         #region ILogService
 
         LogVerbose ILogService.Verbose
         {
-            get { return this.Log.Verbose; }
+            get => this.Log.Verbose;
             set
             {
                 this.Log.Verbose = value;
@@ -503,33 +465,21 @@ namespace Ntreev.Crema.Services
 
         TextWriter ILogService.RedirectionWriter
         {
-            get { return this.Log.RedirectionWriter; }
-            set { this.Log.RedirectionWriter = value; }
+            get => this.Log.RedirectionWriter;
+            set => this.Log.RedirectionWriter = value;
         }
 
-        string ILogService.Name
-        {
-            get { return this.log.Name; }
-        }
+        string ILogService.Name => this.log.Name;
 
-        string ILogService.FileName
-        {
-            get { return this.log.FileName; }
-        }
+        string ILogService.FileName => this.log.FileName;
 
-        bool ILogService.IsEnabled
-        {
-            get { return this.IsOpened; }
-        }
+        bool ILogService.IsEnabled => this.IsOpened;
 
         #endregion
 
         #region ICremaHost
 
-        string ICremaHost.Address
-        {
-            get { return this.address; }
-        }
+        string ICremaHost.Address => this.Address;
 
         IDataBaseCollection ICremaHost.DataBases
         {
@@ -540,15 +490,7 @@ namespace Ntreev.Crema.Services
             }
         }
 
-        ICremaConfiguration ICremaHost.Configs
-        {
-            get { return this.configs; }
-        }
-
-        //IUser ICremaHost.User
-        //{
-        //    get { return this.User; }
-        //}
+        ICremaConfiguration ICremaHost.Configs => this.configs;
 
         #endregion
     }

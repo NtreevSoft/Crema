@@ -16,41 +16,33 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Ntreev.Crema.ServiceModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Services
 {
     class AuthenticationProvider : IAuthenticationProvider
     {
         private readonly bool isUser;
-        private readonly string userID;
-        private readonly string userName;
-        private readonly Authority authority;
 
         public AuthenticationProvider(IUser user)
         {
             this.isUser = true;
-            this.userID = user.ID;
-            this.userName = user.UserName;
-            this.authority = user.Authority;
+            this.ID = user.ID;
+            this.Name = user.UserName;
+            this.Authority = user.Authority;
         }
 
         public AuthenticationProvider(string name)
         {
-            this.userID = name;
-            this.userName = name;
-            this.authority = Authority.Guest;
+            this.ID = name;
+            this.Name = name;
+            this.Authority = Authority.Guest;
         }
 
         internal AuthenticationType AuthenticationTypes
         {
             get
             {
-                var authority = this.authority;
+                var authority = this.Authority;
                 if (authority == Authority.Admin)
                     return AuthenticationType.User | AuthenticationType.Administrator;
                 else if (authority == Authority.Member)
@@ -61,27 +53,15 @@ namespace Ntreev.Crema.Services
             }
         }
 
-        public Authority Authority
-        {
-            get { return this.authority; }
-        }
+        public Authority Authority { get; }
 
-        public string ID
-        {
-            get { return this.userID; }
-        }
+        public string ID { get; }
 
-        public string Name
-        {
-            get { return this.userName; }
-        }
+        public string Name { get; }
 
         #region IAuthenticationProvider
 
-        AuthenticationType IAuthenticationProvider.AuthenticationTypes
-        {
-            get { return this.AuthenticationTypes; }
-        }
+        AuthenticationType IAuthenticationProvider.AuthenticationTypes => this.AuthenticationTypes;
 
         #endregion
     }

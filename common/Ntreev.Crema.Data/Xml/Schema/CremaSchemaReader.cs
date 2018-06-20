@@ -42,7 +42,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
     {
         private readonly CremaDataSet dataSet;
         private readonly CremaDataTable dataTable;
-        private readonly CremaDataType type;
+        private readonly CremaDataType dataType;
         private readonly ItemName itemName;
         private readonly Dictionary<string, CremaDataTable> tables = new Dictionary<string, CremaDataTable>();
         private Version version = new Version();
@@ -72,9 +72,10 @@ namespace Ntreev.Crema.Data.Xml.Schema
             this.itemName = itemName;
         }
 
-        public CremaSchemaReader(CremaDataType type)
+        public CremaSchemaReader(CremaDataType type, ItemName itemName)
         {
-            this.type = type ?? throw new ArgumentNullException();
+            this.dataType = type ?? throw new ArgumentNullException();
+            this.itemName = itemName;
         }
 
         public void Read(string filename)
@@ -170,9 +171,9 @@ namespace Ntreev.Crema.Data.Xml.Schema
                 this.version = new Version(2, 0);
             }
             this.schema = schema;
-            if (this.type != null)
+            if (this.dataType != null)
             {
-                this.ReadType(schema);
+                this.ReadDataType(schema);
             }
             else if (this.dataTable != null)
             {
@@ -187,12 +188,39 @@ namespace Ntreev.Crema.Data.Xml.Schema
                 if (element.Name != CremaDataSet.DefaultDataSetName)
                     throw new CremaDataException();
 
-                this.ReadType(schema);
+                this.ReadDataTypes(schema);
                 this.ReadDataTables(element);
             }
         }
 
-        private void ReadType(XmlSchema schema)
+        private void ReadDataType(XmlSchema schema)
+        {
+            if (this.version < new Version(3, 0))
+            {
+                var query = from item in schema.GetSimpleTypes()
+                            where item.Name.EndsWith("_Flags") == false
+                            select item;
+                var simpleType = query.Single();
+                this.ReadType(simpleType);
+            }
+            else
+            {
+                var query = from item in schema.GetSimpleTypes()
+                            where item.Name.EndsWith(CremaSchema.FlagExtension) == false
+                            select item;
+
+                var simpleType = query.Single();
+                this.ReadType(simpleType);
+            }
+            if (this.itemName != null)
+            {
+                this.dataType.InternalName = this.itemName.Name;
+                this.dataType.InternalCategoryPath = this.itemName.CategoryPath;
+
+            }
+        }
+
+        private void ReadDataTypes(XmlSchema schema)
         {
             if (this.version < new Version(3, 0))
             {
@@ -703,7 +731,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
 
             var contentType = simpleType;
             var restriction = simpleType.Content as XmlSchemaSimpleTypeRestriction;
-            var dataType = this.type ?? new CremaDataType();
+            var dataType = this.dataType ?? new CremaDataType();
             dataType.InternalName = simpleType.Name;
             dataType.BeginLoadData();
 

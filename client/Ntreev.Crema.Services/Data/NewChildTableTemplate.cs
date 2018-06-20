@@ -15,19 +15,11 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.Data;
+using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services.DataBaseService;
 using Ntreev.Crema.Services.Domains;
-using Ntreev.Crema.ServiceModel;
-using Ntreev.Crema.Data;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Threading;
-using Ntreev.Library;
-using Ntreev.Library.Serialization;
 
 namespace Ntreev.Crema.Services.Data
 {
@@ -58,40 +50,19 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public override DomainContext DomainContext
-        {
-            get { return this.parent.GetService(typeof(DomainContext)) as DomainContext; }
-        }
+        public override DomainContext DomainContext => this.parent.GetService(typeof(DomainContext)) as DomainContext;
 
-        public override string ItemPath
-        {
-            get { return this.parent.Path; }
-        }
+        public override string ItemPath => this.parent.Path;
 
-        public override CremaHost CremaHost
-        {
-            get { return this.parent.CremaHost; }
-        }
+        public override CremaHost CremaHost => this.parent.CremaHost;
 
-        public override CremaDispatcher Dispatcher
-        {
-            get { return this.parent.Dispatcher; }
-        }
+        public override CremaDispatcher Dispatcher => this.parent.Dispatcher;
 
-        public override DataBase DataBase
-        {
-            get { return this.parent.DataBase; }
-        }
+        public override DataBase DataBase => this.parent.DataBase;
 
-        public override IPermission Permission
-        {
-            get { return this.parent; }
-        }
+        public override IPermission Permission => this.parent;
 
-        public IDataBaseService Service
-        {
-            get { return this.parent.Service; }
-        }
+        public IDataBaseService Service => this.parent.Service;
 
         protected override void OnBeginEdit(Authentication authentication, DomainMetaData metaData)
         {

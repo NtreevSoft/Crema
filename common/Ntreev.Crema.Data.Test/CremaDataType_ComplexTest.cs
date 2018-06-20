@@ -866,5 +866,21 @@ namespace Ntreev.Crema.Data.Test
 
             CremaComparer.CompareType(dataType1, dataType2);
         }
+
+        [TestMethod]
+        public void ItemNameTest()
+        {
+            var dataSet1 = new CremaDataSet();
+            var dataType1 = dataSet1.AddRandomType();
+
+            var dataSet2 = new CremaDataSet();
+            var typeName = RandomUtility.NextIdentifier();
+            var categoryPath = RandomUtility.NextCategoryPath();
+            dataSet2.ReadTypeString(dataType1.GetXmlSchema(), new ItemName(categoryPath, typeName));
+
+            var dataType2 = dataSet2.Types.First();
+            Assert.AreEqual(typeName, dataType2.Name);
+            Assert.AreEqual(categoryPath, dataType2.CategoryPath);
+        }
     }
 }

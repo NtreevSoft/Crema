@@ -53,6 +53,8 @@ namespace Ntreev.Crema.Services.Data
 
         public Type AddNew(Authentication authentication, TypeInfo typeInfo)
         {
+            try
+            {
             this.CremaHost.DebugMethod(authentication, this, nameof(AddNew), typeInfo.Name, typeInfo.CategoryPath);
             this.InvokeTypeCreate(authentication, typeInfo.Name, typeInfo.CategoryPath);
             var type = this.BaseAddNew(typeInfo.Name, typeInfo.CategoryPath, authentication);
@@ -60,6 +62,12 @@ namespace Ntreev.Crema.Services.Data
             var items = EnumerableUtility.One(type).ToArray();
             this.InvokeTypesCreatedEvent(authentication, items);
             return type;
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public Type Copy(Authentication authentication, Type type, string newTypeName, string categoryPath)
@@ -76,42 +84,32 @@ namespace Ntreev.Crema.Services.Data
 
         public void InvokeTypeCreate(Authentication authentication, string typeName, string categoryPath)
         {
-            this.CremaHost.DebugMethod(authentication, this, nameof(InvokeTypeCreate), typeName, categoryPath);
-            var comment = EventMessageBuilder.CreateType(authentication, new string[] { typeName });
-            this.CremaHost.Info(comment);
+            
         }
 
         public void InvokeTypeRename(Authentication authentication, Type type, string newName)
         {
-            this.CremaHost.DebugMethod(authentication, this, nameof(InvokeTypeRename), type, newName);
-            var comment = EventMessageBuilder.RenameType(authentication, new string[] { newName }, new string[] { type.Name });
-            this.CremaHost.Info(comment);
+            
         }
 
         public void InvokeTypeMove(Authentication authentication, Type type, string newCategoryPath)
         {
-            this.CremaHost.DebugMethod(authentication, this, nameof(InvokeTypeMove), type, newCategoryPath);
-            var comment = EventMessageBuilder.MoveType(authentication, new string[] { type.Name }, new string[] { newCategoryPath }, new string[] { type.Category.Path });
-            this.CremaHost.Info(comment);
+            
         }
 
         public void InvokeTypeDelete(Authentication authentication, Type type)
         {
-            this.CremaHost.DebugMethod(authentication, this, nameof(InvokeTypeDelete), type);
-            var comment = EventMessageBuilder.DeleteType(authentication, new string[] { type.Name });
-            this.CremaHost.Info(comment);
+          
         }
 
         public void InvokeTypeBeginTemplateEdit(Authentication authentication, Type type)
         {
-            this.CremaHost.DebugMethod(authentication, this, nameof(InvokeTypeBeginTemplateEdit), type);
+            
         }
 
         public void InvokeTypeEndTemplateEdit(Authentication authentication, Type type, TypeInfo typeInfo)
         {
-            this.CremaHost.DebugMethod(authentication, this, nameof(InvokeTypeEndTemplateEdit), type);
-            var comment = EventMessageBuilder.ChangeTypeTemplate(authentication, new string[] { type.Name });
-            this.CremaHost.Info(comment);
+            
         }
 
         public void InvokeTypeSetTags(Authentication authentication, Type type, TagInfo tags)
@@ -122,7 +120,9 @@ namespace Ntreev.Crema.Services.Data
         {
             var args = types.Select(item => (object)item.TypeInfo).ToArray();
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeTypesCreatedEvent), types);
+            var message = EventMessageBuilder.CreateType(authentication, types);
             this.CremaHost.Debug(eventLog);
+            this.CremaHost.Info(message);
             this.OnTypesCreated(new ItemsCreatedEventArgs<IType>(authentication, types, args));
             this.Context.InvokeItemsCreatedEvent(authentication, types, args);
         }
@@ -130,7 +130,9 @@ namespace Ntreev.Crema.Services.Data
         public void InvokeTypesRenamedEvent(Authentication authentication, Type[] types, string[] oldNames, string[] oldPaths)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeTypesRenamedEvent), types, oldNames, oldPaths);
+            var message = EventMessageBuilder.RenameType(authentication, types, oldNames);
             this.CremaHost.Debug(eventLog);
+            this.CremaHost.Info(message);
             this.OnTypesRenamed(new ItemsRenamedEventArgs<IType>(authentication, types, oldNames, oldPaths));
             this.Context.InvokeItemsRenamedEvent(authentication, types, oldNames, oldPaths);
         }
@@ -138,7 +140,9 @@ namespace Ntreev.Crema.Services.Data
         public void InvokeTypesMovedEvent(Authentication authentication, Type[] types, string[] oldPaths, string[] oldCategoryPaths)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeTypesMovedEvent), types, oldPaths, oldCategoryPaths);
+            var message = EventMessageBuilder.MoveType(authentication, types, oldCategoryPaths);
             this.CremaHost.Debug(eventLog);
+            this.CremaHost.Info(message);
             this.OnTypesMoved(new ItemsMovedEventArgs<IType>(authentication, types, oldPaths, oldCategoryPaths));
             this.Context.InvokeItemsMovedEvent(authentication, types, oldPaths, oldCategoryPaths);
         }
@@ -146,7 +150,9 @@ namespace Ntreev.Crema.Services.Data
         public void InvokeTypesDeletedEvent(Authentication authentication, Type[] types, string[] oldPaths)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeTypesDeletedEvent), oldPaths);
+            var message = EventMessageBuilder.DeleteType(authentication, types);
             this.CremaHost.Debug(eventLog);
+            this.CremaHost.Info(message);
             this.OnTypesDeleted(new ItemsDeletedEventArgs<IType>(authentication, types, oldPaths));
             this.Context.InvokeItemsDeleteEvent(authentication, types, oldPaths);
         }
@@ -154,7 +160,9 @@ namespace Ntreev.Crema.Services.Data
         public void InvokeTypesChangedEvent(Authentication authentication, Type[] types)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeTypesChangedEvent), types);
+            var message = EventMessageBuilder.ChangeTypeTemplate(authentication, types);
             this.CremaHost.Debug(eventLog);
+            this.CremaHost.Info(message);
             this.OnTypesChanged(new ItemsEventArgs<IType>(authentication, types));
             this.Context.InvokeItemsChangedEvent(authentication, types);
         }

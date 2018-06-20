@@ -164,6 +164,8 @@ namespace Ntreev.Crema.Services.Users
 
         public CremaHost CremaHost => this.Context.CremaHost;
 
+        public string ItemPath => this.Context.GenerateCategoryPath(base.Path);
+
         public new string Name
         {
             get

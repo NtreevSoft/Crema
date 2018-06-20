@@ -36,7 +36,6 @@ namespace Ntreev.Crema.Services.Domains
     {
         private readonly Dictionary<string, DataView> views = new Dictionary<string, DataView>();
         private readonly Dictionary<DataView, CremaDataTable> tables = new Dictionary<DataView, CremaDataTable>();
-        private CremaDataSet dataSet;
 
         public TableContentDomain(DomainInfo domainInfo, CremaDispatcher dispatcher)
             : base(domainInfo, dispatcher)
@@ -44,28 +43,22 @@ namespace Ntreev.Crema.Services.Domains
             
         }
 
-        public override object Source
-        {
-            get { return this.dataSet; }
-        }
+        public override object Source => this.DataSet;
 
-        public CremaDataSet DataSet
-        {
-            get { return this.dataSet; }
-        }
+        public CremaDataSet DataSet { get; private set; }
 
         protected override byte[] SerializeSource()
         {
-            var xml = XmlSerializerUtility.GetString(this.dataSet);
+            var xml = XmlSerializerUtility.GetString(this.DataSet);
             return Encoding.UTF8.GetBytes(xml.Compress());
         }
 
         protected override void DerializeSource(byte[] data)
         {
             var xml = Encoding.UTF8.GetString(data).Decompress();
-            this.dataSet = XmlSerializerUtility.ReadString<CremaDataSet>(xml);
+            this.DataSet = XmlSerializerUtility.ReadString<CremaDataSet>(xml);
 
-            foreach (var item in this.dataSet.Tables)
+            foreach (var item in this.DataSet.Tables)
             {
                 var view = item.AsDataView();
                 this.views.Add(item.TableName, view);
@@ -78,10 +71,10 @@ namespace Ntreev.Crema.Services.Domains
             base.OnInitialize(metaData);
 
             var xml = Encoding.UTF8.GetString(metaData.Data).Decompress();
-            this.dataSet = XmlSerializerUtility.ReadString<CremaDataSet>(xml);
-            this.dataSet.AcceptChanges();
+            this.DataSet = XmlSerializerUtility.ReadString<CremaDataSet>(xml);
+            this.DataSet.AcceptChanges();
             this.views.Clear();
-            foreach (var item in this.dataSet.Tables)
+            foreach (var item in this.DataSet.Tables)
             {
                 var view = item.AsDataView();
                 //view.AllowDelete = false;
@@ -95,23 +88,23 @@ namespace Ntreev.Crema.Services.Domains
         protected override void OnRelease()
         {
             base.OnRelease();
-            this.dataSet = null;
+            this.DataSet = null;
             this.views.Clear();
         }
 
         protected override void OnDeleted(EventArgs e)
         {
             base.OnDeleted(e);
-            if (this.dataSet != null)
+            if (this.DataSet != null)
             {
-                this.dataSet.Dispose();
-                this.dataSet = null;
+                this.DataSet.Dispose();
+                this.DataSet = null;
             }
         }
 
         protected override void OnNewRow(DomainUser domainUser, DomainRowInfo[] rows, SignatureDate signatureDate)
         {
-            this.dataSet.BeginLoad();
+            this.DataSet.BeginLoad();
             try
             {
                 foreach (var item in rows)
@@ -123,9 +116,9 @@ namespace Ntreev.Crema.Services.Domains
             }
             finally
             {
-                this.dataSet.EndLoad();
+                this.DataSet.EndLoad();
             }
-            this.dataSet.AcceptChanges();
+            this.DataSet.AcceptChanges();
         }
 
         protected override void OnRemoveRow(DomainUser domainUser, DomainRowInfo[] rows, SignatureDate signatureDate)
@@ -143,12 +136,12 @@ namespace Ntreev.Crema.Services.Domains
                 }
                 this.tables[view].ContentsInfo = signatureDate;
             }
-            this.dataSet.AcceptChanges();
+            this.DataSet.AcceptChanges();
         }
 
         protected override void OnSetRow(DomainUser domainUser, DomainRowInfo[] rows, SignatureDate signatureDate)
         {
-            this.dataSet.BeginLoad();
+            this.DataSet.BeginLoad();
             try
             {
                 foreach (var item in rows)
@@ -160,9 +153,9 @@ namespace Ntreev.Crema.Services.Domains
             }
             finally
             {
-                this.dataSet.EndLoad();
+                this.DataSet.EndLoad();
             }
-            this.dataSet.AcceptChanges();
+            this.DataSet.AcceptChanges();
         }
     }
 }

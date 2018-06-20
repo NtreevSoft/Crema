@@ -34,31 +34,31 @@ namespace Ntreev.Crema.Services
     [DataContract(Name = nameof(RepositoryInfo), Namespace = SchemaUtility.Namespace)]
     public struct RepositoryInfo
     {
-        [XmlElement]
+        [DataMember]
         public Guid ID { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string Name { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string Comment { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string Revision { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string BranchRevision { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string BranchSource { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string BranchSourceRevision { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public SignatureDate CreationInfo { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public SignatureDate ModificationInfo { get; set; }
 
         public IDictionary<string, object> ToDictionary()
@@ -88,17 +88,5 @@ namespace Ntreev.Crema.Services
             CreationInfo = SignatureDate.Empty,
             ModificationInfo = SignatureDate.Empty,
         };
-
-        #region DataMember
-
-        [DataMember]
-        [XmlIgnore]
-        private string Xml
-        {
-            get { return XmlSerializerUtility.GetString(this); }
-            set { this = XmlSerializerUtility.ReadString(this, value); }
-        }
-
-        #endregion
     }
 }

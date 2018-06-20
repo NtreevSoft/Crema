@@ -152,7 +152,11 @@ namespace Ntreev.Crema.Services.Users
                 var comments = Enumerable.Repeat(comment, users.Length).ToArray();
                 var banInfo = new BanInfo() { Path = this.Path, Comment = comment, SignatureDate = authentication.SignatureDate };
                 var isOnline = this.IsOnline;
-                this.Container.InvokeUserBan(authentication, this, banInfo);
+                var userInfo = new UserSerializationInfo(this.SerializationInfo)
+                {
+                    BanInfo = (BanSerializationInfo)banInfo
+                };
+                this.Container.InvokeUserBan(authentication, this, userInfo);
                 base.Ban(authentication, banInfo);
                 this.IsOnline = false;
                 this.Container.InvokeUsersBannedEvent(authentication, users, comments);
@@ -179,8 +183,11 @@ namespace Ntreev.Crema.Services.Users
                 this.CremaHost.DebugMethod(authentication, this, nameof(Unban), this);
                 this.ValidateUnban(authentication);
                 this.Sign(authentication);
-                var banInfo = BanInfo.Empty;
-                this.Container.InvokeUserUnban(authentication, this);
+                var userInfo = new UserSerializationInfo(this.SerializationInfo)
+                {
+                    BanInfo = (BanSerializationInfo)BanInfo.Empty
+                };
+                this.Container.InvokeUserUnban(authentication, this, userInfo);
                 base.Unban(authentication);
                 this.Container.InvokeUsersUnbannedEvent(authentication, new User[] { this });
             }
@@ -352,6 +359,8 @@ namespace Ntreev.Crema.Services.Users
         public CremaDispatcher Dispatcher => this.Context?.Dispatcher;
 
         public CremaHost CremaHost => this.Context.CremaHost;
+
+        public string ItemPath => this.Context.GenerateUserPath(this.Category.Path, base.Name);
 
         public new event EventHandler Renamed
         {

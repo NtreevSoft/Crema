@@ -36,10 +36,7 @@ namespace Ntreev.Crema.Services.Data
     class DataBase : DataBaseBase<Type, TypeCategory, TypeCollection, TypeCategoryCollection, TypeContext, Table, TableCategory, TableCollection, TableCategoryCollection, TableContext>,
         IDataBaseServiceCallback, IDataBase, ICremaService, IInfoProvider, IStateProvider
     {
-        private readonly CremaHost cremaHost;
         private readonly UserContext userContext;
-        private CremaDispatcher dispatcher;
-
         private TableContext tableContext;
         private TypeContext typeContext;
         private DataBaseServiceClient service;
@@ -50,12 +47,11 @@ namespace Ntreev.Crema.Services.Data
         private EventHandler<AuthenticationEventArgs> authenticationLeft;
 
         private readonly HashSet<AuthenticationToken> authentications = new HashSet<AuthenticationToken>();
-        private bool isResetting;
 
         public DataBase(CremaHost cremaHost, DataBaseInfo dataBaseInfo)
         {
-            this.cremaHost = cremaHost;
-            this.dispatcher = cremaHost.Dispatcher;
+            this.CremaHost = cremaHost;
+            this.Dispatcher = cremaHost.Dispatcher;
             this.userContext = cremaHost.UserContext;
             base.Name = dataBaseInfo.Name;
             base.DataBaseInfo = dataBaseInfo;
@@ -63,8 +59,8 @@ namespace Ntreev.Crema.Services.Data
 
         public DataBase(CremaHost cremaHost, DataBaseMetaData metaData)
         {
-            this.cremaHost = cremaHost;
-            this.dispatcher = cremaHost.Dispatcher;
+            this.CremaHost = cremaHost;
+            this.Dispatcher = cremaHost.Dispatcher;
             this.userContext = cremaHost.UserContext;
             base.Name = metaData.DataBaseInfo.Name;
             base.DataBaseInfo = metaData.DataBaseInfo;
@@ -234,7 +230,7 @@ namespace Ntreev.Crema.Services.Data
             var transaction = new DataBaseTransaction(authentication, this, this.DataBases.Service);
             transaction.Disposed += (s, e) =>
             {
-                this.dispatcher.InvokeAsync(() =>
+                this.Dispatcher.InvokeAsync(() =>
                 {
                     if (this.LockInfo.Comment == $"{this.ID}" && this.IsLocked == true)
                     {
@@ -346,7 +342,7 @@ namespace Ntreev.Crema.Services.Data
             System.Diagnostics.Trace.WriteLine("Resetting");
             this.typeContext?.Dispose();
             this.tableContext?.Dispose();
-            this.isResetting = true;
+            this.IsResetting = true;
             base.ResettingDataBase(authentication);
             this.DataBases.InvokeItemsResettingEvent(authentication, new IDataBase[] { this, });
 
@@ -368,7 +364,7 @@ namespace Ntreev.Crema.Services.Data
         public void SetReset(Authentication authentication, DomainMetaData[] metaDatas)
         {
             var domains = metaDatas.Where(item => item.DomainInfo.DataBaseID == this.ID).ToArray();
-            this.cremaHost.DomainContext.AddDomains(domains);
+            this.CremaHost.DomainContext.AddDomains(domains);
             if (this.serviceDispatcher != null)
             {
                 var result = this.service.GetMetaData();
@@ -378,8 +374,8 @@ namespace Ntreev.Crema.Services.Data
                 base.UpdateLockParent();
                 base.UpdateAccessParent();
             }
-            
-            this.isResetting = false;
+
+            this.IsResetting = false;
             base.ResetDataBase(authentication);
             this.DataBases.InvokeItemsResetEvent(authentication, new IDataBase[] { this, });
             System.Diagnostics.Trace.WriteLine("Reset");
@@ -427,7 +423,7 @@ namespace Ntreev.Crema.Services.Data
         [EditorBrowsable(EditorBrowsableState.Never)]
         public void SetLockInfo(LockChangeType changeType, LockInfo lockInfo)
         {
-            if (this.isResetting == true)
+            if (this.IsResetting == true)
                 return;
             if (changeType == LockChangeType.Lock)
                 base.LockInfo = lockInfo;
@@ -482,7 +478,7 @@ namespace Ntreev.Crema.Services.Data
 
         public void Delete()
         {
-            this.dispatcher = null;
+            this.Dispatcher = null;
             base.DataBaseState = DataBaseState.None;
             this.tableContext = null;
             this.typeContext = null;
@@ -548,15 +544,9 @@ namespace Ntreev.Crema.Services.Data
                 return this.CremaHost.GetService(serviceType);
         }
 
-        public CremaHost CremaHost
-        {
-            get { return this.cremaHost; }
-        }
+        public CremaHost CremaHost { get; }
 
-        public DataBaseCollection DataBases
-        {
-            get { return this.CremaHost.DataBases; }
-        }
+        public DataBaseCollection DataBases => this.CremaHost.DataBases;
 
         public TableContext TableContext
         {
@@ -576,15 +566,9 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public CremaDispatcher Dispatcher
-        {
-            get { return this.dispatcher; }
-        }
+        public CremaDispatcher Dispatcher { get; private set; }
 
-        public IDataBaseService Service
-        {
-            get { return this.service; }
-        }
+        public IDataBaseService Service => this.service;
 
         public new DataBaseInfo DataBaseInfo
         {
@@ -613,15 +597,9 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public override TypeCategoryBase<Type, TypeCategory, TypeCollection, TypeCategoryCollection, TypeContext> TypeCategory
-        {
-            get { return this.typeContext?.Root; }
-        }
+        public override TypeCategoryBase<Type, TypeCategory, TypeCollection, TypeCategoryCollection, TypeContext> TypeCategory => this.typeContext?.Root;
 
-        public override TableCategoryBase<Table, TableCategory, TableCollection, TableCategoryCollection, TableContext> TableCategory
-        {
-            get { return this.tableContext?.Root; }
-        }
+        public override TableCategoryBase<Table, TableCategory, TableCollection, TableCategoryCollection, TableContext> TableCategory => this.tableContext?.Root;
 
         public new string Name
         {
@@ -636,15 +614,9 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public bool IsLoaded
-        {
-            get { return this.DataBaseState.HasFlag(DataBaseState.IsLoaded); }
-        }
+        public bool IsLoaded => this.DataBaseState.HasFlag(DataBaseState.IsLoaded);
 
-        public bool IsResetting
-        {
-            get { return this.isResetting; }
-        }
+        public bool IsResetting { get; private set; }
 
         public new bool IsLocked
         {
@@ -664,10 +636,7 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public Guid ID
-        {
-            get { return base.DataBaseInfo.ID; }
-        }
+        public Guid ID => base.DataBaseInfo.ID;
 
         public new event EventHandler Renamed
         {
@@ -868,7 +837,7 @@ namespace Ntreev.Crema.Services.Data
                 result.Validate();
                 return result.SignatureDate;
             });
-            this.cremaHost.RemoveService(this);
+            this.CremaHost.RemoveService(this);
             return signatureDate;
         }
 
@@ -892,7 +861,7 @@ namespace Ntreev.Crema.Services.Data
             });
             this.InvokeAsync(() =>
             {
-                this.cremaHost.RemoveService(this);
+                this.CremaHost.RemoveService(this);
                 this.OnUnloaded(EventArgs.Empty);
             }, nameof(Service_Faulted));
         }
@@ -905,8 +874,8 @@ namespace Ntreev.Crema.Services.Data
             }
             catch (Exception e)
             {
-                this.cremaHost.Error(callbackName);
-                this.cremaHost.Error(e);
+                this.CremaHost.Error(callbackName);
+                this.CremaHost.Error(e);
             }
         }
 
@@ -934,13 +903,13 @@ namespace Ntreev.Crema.Services.Data
                 this.serviceDispatcher = new CremaDispatcher(this);
                 var metaData = this.serviceDispatcher.Invoke(() =>
                 {
-                    this.service = DataServiceFactory.CreateServiceClient(this.cremaHost.IPAddress, this.cremaHost.ServiceInfos[nameof(DataBaseService)], this);
+                    this.service = DataServiceFactory.CreateServiceClient(this.CremaHost.IPAddress, this.CremaHost.ServiceInfos[nameof(DataBaseService)], this);
                     this.service.Open();
                     if (this.service is ICommunicationObject service)
                     {
                         service.Faulted += Service_Faulted;
                     }
-                    var result = this.service.Subscribe(this.cremaHost.AuthenticationToken, base.Name);
+                    var result = this.service.Subscribe(this.CremaHost.AuthenticationToken, base.Name);
                     result.Validate(authentication);
 #if !DEBUG
                     this.timer = new Timer(30000);
@@ -952,7 +921,7 @@ namespace Ntreev.Crema.Services.Data
                 this.typeContext = new TypeContext(this, metaData);
                 this.tableContext = new TableContext(this, metaData);
                 this.AttachDomainHost();
-                this.cremaHost.AddService(this);
+                this.CremaHost.AddService(this);
                 base.UpdateAccessParent();
                 base.UpdateLockParent();
                 this.authenticationEntered?.Invoke(this, new AuthenticationEventArgs(authentication.AuthenticationInfo));
@@ -988,7 +957,7 @@ namespace Ntreev.Crema.Services.Data
             result.Validate(authentication);
         }
 
-#region IDataBase
+        #region IDataBase
 
         IDataBase IDataBase.Copy(Authentication authentication, string newDataBaseName, string comment, bool force)
         {
@@ -1023,9 +992,9 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-#endregion
+        #endregion
 
-#region IServiceProvider
+        #region IServiceProvider
 
         object IServiceProvider.GetService(System.Type serviceType)
         {
@@ -1051,9 +1020,9 @@ namespace Ntreev.Crema.Services.Data
             return this.CremaHost.GetService(serviceType);
         }
 
-#endregion
+        #endregion
 
-#region IDataBaseServiceCallback
+        #region IDataBaseServiceCallback
 
         void IDataBaseServiceCallback.OnServiceClosed(SignatureDate signatureDate, CloseInfo closeInfo)
         {
@@ -1066,7 +1035,7 @@ namespace Ntreev.Crema.Services.Data
             this.InvokeAsync(() =>
             {
                 base.DataBaseState = DataBaseState.None;
-                this.cremaHost.RemoveService(this);
+                this.CremaHost.RemoveService(this);
             }, nameof(IDataBaseServiceCallback.OnServiceClosed));
         }
 
@@ -1796,18 +1765,18 @@ namespace Ntreev.Crema.Services.Data
             }, nameof(IDataBaseServiceCallback.OnTypeItemsLockChanged));
         }
 
-#endregion
+        #endregion
 
-#region IInfoProvider
+        #region IInfoProvider
 
         IDictionary<string, object> IInfoProvider.Info => this.DataBaseInfo.ToDictionary();
 
-#endregion
+        #endregion
 
-#region IStateProvider
+        #region IStateProvider
 
         object IStateProvider.State => this.DataBaseState;
 
-#endregion
+        #endregion
     }
 }

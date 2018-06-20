@@ -403,7 +403,7 @@ namespace Ntreev.Crema.Services.Data
                 {
                     this.ValidateAccessType(authentication, AccessType.Guest);
                     this.Sign(authentication);
-                    return new Tuple<string, string>(this.LocalPath, this.TemplatedParent?.LocalPath);
+                    return new Tuple<string, string>(this.ItemPath, this.TemplatedParent?.ItemPath);
                 });
                 return this.Repository.GetTableData(this.Serializer, item.Item1, item.Item2, revision);
             }
@@ -420,14 +420,14 @@ namespace Ntreev.Crema.Services.Data
             {
                 this.DataBase.ValidateAsyncBeginInDataBase(authentication);
                 this.CremaHost.DebugMethod(authentication, this, nameof(GetLog), this);
-                var itemPaths = this.Dispatcher.Invoke(() =>
+                var itemPath = this.Dispatcher.Invoke(() =>
                 {
                     this.ValidateAccessType(authentication, AccessType.Guest);
                     this.Sign(authentication);
-                    var props = new CremaDataTableSerializerSettings(this.LocalPath, this.TemplatedParent?.LocalPath);
-                    return this.Serializer.GetPath(this.LocalPath, typeof(CremaDataTable), props);
+                    return this.ItemPath;
                 });
-                var result = this.Context.GetLog(itemPaths);
+                var files = this.Context.GetFiles(itemPath);
+                var result = this.Context.GetLog(files);
                 return result;
             }
             catch (Exception e)
@@ -466,10 +466,7 @@ namespace Ntreev.Crema.Services.Data
             return this.DataBase.GetService(serviceType);
         }
 
-        public string LocalPath
-        {
-            get { return this.Context.GenerateTablePath(this.Category.Path, base.Name); }
-        }
+        public string ItemPath => this.Context.GenerateTablePath(this.Category.Path, base.Name);
 
         public bool IsTypeUsed(string typePath)
         {
@@ -518,10 +515,10 @@ namespace Ntreev.Crema.Services.Data
         {
             var tables = this.CollectChilds().OrderBy(item => item.Name).ToArray();
             var types = tables.SelectMany(item => item.GetTypes()).Distinct().ToArray();
-            var typePaths = types.Select(item => item.LocalPath).ToArray();
-            var tablePaths = tables.Select(item => item.LocalPath).ToArray();
+            var typePaths = types.Select(item => item.ItemPath).ToArray();
+            var tablePaths = tables.Select(item => item.ItemPath).ToArray();
             var props = new CremaDataSetSerializerSettings(authentication, typePaths, tablePaths);
-            var dataSet = this.Serializer.Deserialize(this.LocalPath, typeof(CremaDataSet), props) as CremaDataSet;
+            var dataSet = this.Serializer.Deserialize(this.ItemPath, typeof(CremaDataSet), props) as CremaDataSet;
             return dataSet;
         }
 
@@ -535,10 +532,10 @@ namespace Ntreev.Crema.Services.Data
             var typeCollection = this.GetService(typeof(TypeCollection)) as TypeCollection;
             var tables = this.Collect().OrderBy(item => item.Name).ToArray();
             var types = allTypes == true ? typeCollection.ToArray<Type>() : tables.SelectMany(item => item.GetTypes()).Distinct().ToArray();
-            var typePaths = types.Select(item => item.LocalPath).ToArray();
-            var tablePaths = tables.Select(item => item.LocalPath).ToArray();
+            var typePaths = types.Select(item => item.ItemPath).ToArray();
+            var tablePaths = tables.Select(item => item.ItemPath).ToArray();
             var props = new CremaDataSetSerializerSettings(authentication, typePaths, tablePaths);
-            var dataSet = this.Serializer.Deserialize(this.LocalPath, typeof(CremaDataSet), props) as CremaDataSet;
+            var dataSet = this.Serializer.Deserialize(this.ItemPath, typeof(CremaDataSet), props) as CremaDataSet;
             return dataSet;
         }
 

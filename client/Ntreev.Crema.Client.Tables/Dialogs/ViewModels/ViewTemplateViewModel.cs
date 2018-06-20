@@ -64,7 +64,7 @@ namespace Ntreev.Crema.Client.Tables.Dialogs.ViewModels
             {
                 return table.Dispatcher.InvokeAsync(() =>
                 {
-                    var dataSet = table.GetDataSet(authentication, -1);
+                    var dataSet = table.GetDataSet(authentication, null);
                     var dataTable = dataSet.Tables[table.Name];
                     var template = new CremaTemplate(dataTable);
                     return new ViewTemplateViewModel(authentication, template);

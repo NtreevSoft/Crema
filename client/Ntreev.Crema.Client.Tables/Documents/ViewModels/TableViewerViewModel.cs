@@ -112,7 +112,7 @@ namespace Ntreev.Crema.Client.Tables.Documents.ViewModels
                 this.BeginProgress(Resources.Message_LoadingData);
 
 
-                var dataSet = await TableDescriptorUtility.GetDataAsync(this.authentication, this.descriptor, -1);
+                var dataSet = await TableDescriptorUtility.GetDataAsync(this.authentication, this.descriptor, null);
                 foreach (var item in this.Tables)
                 {
                     item.Source = dataSet.Tables[item.Name];

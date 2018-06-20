@@ -19,10 +19,6 @@ using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services.DataBaseCollectionService;
 using Ntreev.Crema.Services.Domains;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Services.Data
 {

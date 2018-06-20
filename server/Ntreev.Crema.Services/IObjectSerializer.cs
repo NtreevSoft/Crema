@@ -25,6 +25,14 @@ using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Services
 {
+    /// <summary>
+    /// 경로로 표현되는 객체를 읽고 쓰도록 하는 인터페이스입니다.
+    /// 경로는 itemPath로 나타내며 확장자가 포함되지 않는 순수 경로를 나타냅니다. 
+    /// 폴더를 일 경우에는 경우 마지막에 경로 문자(window는 \, linux는 /)가 있게 됩니다.
+    /// 또한 실제 접근 가능한 경로로 표현됩니다.
+    /// C:\\repo-svn\database\tables\
+    /// C:\\repo-svn\database\tables\table1
+    /// </summary>
     public interface IObjectSerializer
     {
         string[] Serialize(string itemPath, object obj, ObjectSerializerSettings settings);

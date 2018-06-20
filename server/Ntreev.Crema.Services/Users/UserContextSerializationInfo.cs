@@ -81,7 +81,7 @@ namespace Ntreev.Crema.Services.Users
                 pathList.AddRange(segments);
                 pathList.Add(item.ID);
                 var itemPath = FileUtility.Prepare(pathList.ToArray());
-                serializer.Serialize(itemPath, item, null);
+                serializer.Serialize(itemPath, item, ObjectSerializerSettings.Empty);
             }
         }
 

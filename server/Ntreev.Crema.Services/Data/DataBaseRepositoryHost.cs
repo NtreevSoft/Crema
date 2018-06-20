@@ -125,7 +125,7 @@ namespace Ntreev.Crema.Services.Data
                     this.ExportItem(item, tempPath, revision);
                 }
 
-                var referencedFiles = serializer.GetReferencedPath(itemPath, typeof(CremaDataTable), ObjectSerializerSettings.Empty);
+                var referencedFiles = serializer.GetReferencedPath(itemPath, typeof(CremaDataTable), props);
                 foreach (var item in referencedFiles)
                 {
                     this.ExportItem(item, tempPath, revision);
@@ -222,9 +222,9 @@ namespace Ntreev.Crema.Services.Data
             DataBaseSet.SetTableCategoryPath(dataSet, category, newCategoryPath);
         }
 
-        public void CreateType(CremaDataSet dataSet, DataBase dataBase)
+        public void CreateType(CremaDataSet dataSet)
         {
-            DataBaseSet.CreateType(dataSet, dataBase);
+            DataBaseSet.CreateType(dataSet, this.dataBase);
         }
 
         public void RenameType(CremaDataSet dataSet, Type type, string newName)
@@ -252,9 +252,9 @@ namespace Ntreev.Crema.Services.Data
             DataBaseSet.SetTypeTags(dataSet, type, tags);
         }
 
-        public void CreateTable(CremaDataSet dataSet, DataBase dataBase)
+        public void CreateTable(CremaDataSet dataSet)
         {
-            DataBaseSet.CreateTable(dataSet, dataBase);
+            DataBaseSet.CreateTable(dataSet, this.dataBase);
         }
 
         public void RenameTable(CremaDataSet dataSet, Table table, string newName)
@@ -285,6 +285,11 @@ namespace Ntreev.Crema.Services.Data
         public void SetTableComment(CremaDataSet dataSet, Table table, string comment)
         {
             DataBaseSet.SetTableComment(dataSet, table, comment);
+        }
+
+        public void Modify(CremaDataSet dataSet)
+        {
+            DataBaseSet.Modify(dataSet, this.dataBase);
         }
     }
 }

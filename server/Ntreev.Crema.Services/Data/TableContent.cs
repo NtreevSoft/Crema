@@ -494,7 +494,7 @@ namespace Ntreev.Crema.Services.Data
             {
                 if (isCanceled == false)
                 {
-                    this.EndContent(e.Authentication, isModified);
+                    this.EndContent(e.Authentication, this.isModified);
                     this.InvokeEditEndedEvent(e);
                 }
                 else
@@ -661,9 +661,9 @@ namespace Ntreev.Crema.Services.Data
         void ITableContent.EndNew(Authentication authentication, ITableRow row)
         {
             if (row == null)
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(row));
             if (row is TableRow == false)
-                throw new ArgumentException(nameof(row));
+                throw new ArgumentException(Resources.Exception_InvalidObject, nameof(row));
             this.EndNew(authentication, row as TableRow);
         }
 

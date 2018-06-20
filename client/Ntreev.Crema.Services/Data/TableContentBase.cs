@@ -17,19 +17,16 @@
 
 using Ntreev.Crema.Services.Domains;
 using Ntreev.Crema.Data;
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Ntreev.Crema.ServiceModel;
 
 namespace Ntreev.Crema.Services.Data
 {
     abstract class TableContentBase
     {
-        private Dictionary<DataRow, TableRow> rows = new Dictionary<DataRow, TableRow>();
+        private readonly Dictionary<DataRow, TableRow> rows = new Dictionary<DataRow, TableRow>();
 
         protected void Add(TableRow row)
         {
@@ -87,24 +84,14 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public abstract Domain Domain
-        {
-            get;
-        }
+        public abstract Domain Domain { get; }
 
-        public abstract DataBase DataBase
-        {
-            get;
-        }
+        public abstract DataBase DataBase { get; }
 
-        public abstract CremaDataTable DataTable
-        {
-            get;
-        }
+        public abstract CremaDataTable DataTable { get; }
 
-        public abstract CremaDispatcher Dispatcher
-        {
-            get;
-        }
+        public abstract CremaDispatcher Dispatcher { get; }
+
+        public abstract CremaHost CremaHost { get; }
     }
 }

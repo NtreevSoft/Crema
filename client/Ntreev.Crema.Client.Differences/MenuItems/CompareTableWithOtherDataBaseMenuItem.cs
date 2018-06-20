@@ -63,7 +63,7 @@ namespace Ntreev.Crema.Client.Differences.MenuItems
             var dataSet1 = this.PreviewOtherTable(dataBaseName, tableName);
             if (dataSet1 != null)
             {
-                var dataSet2 = table.Dispatcher.Invoke(() => table.GetDataSet(this.authenticator, -1));
+                var dataSet2 = table.Dispatcher.Invoke(() => table.GetDataSet(this.authenticator, null));
                 var dataSet = new DiffDataSet(dataSet1, dataSet2)
                 {
                     Header1 = $"{dataBaseName}: {tableName}",
@@ -104,7 +104,7 @@ namespace Ntreev.Crema.Client.Differences.MenuItems
                         if (dataBase.TableContext.Tables.Contains(tableName) == true)
                         {
                             var table2 = dataBase.TableContext.Tables[tableName];
-                            return table2.GetDataSet(this.authenticator, -1);
+                            return table2.GetDataSet(this.authenticator, null);
                         }
                         return null;
                     }

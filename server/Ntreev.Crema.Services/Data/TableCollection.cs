@@ -133,7 +133,7 @@ namespace Ntreev.Crema.Services.Data
             var message = EventMessageBuilder.CreateTable(authentication, tableName);
             try
             {
-                this.Repository.CreateTable(dataSet, this.DataBase);
+                this.Repository.CreateTable(dataSet);
                 this.Repository.Commit(authentication, message);
             }
             catch

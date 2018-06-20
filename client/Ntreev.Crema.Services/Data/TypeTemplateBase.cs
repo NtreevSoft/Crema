@@ -15,25 +15,20 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.Services.Domains;
-using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Data;
+using Ntreev.Crema.ServiceModel;
+using Ntreev.Crema.Services.Domains;
+using Ntreev.Crema.Services.Properties;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Threading;
-using Ntreev.Library;
-using Ntreev.Crema.Services.Properties;
 
 namespace Ntreev.Crema.Services.Data
 {
     abstract class TypeTemplateBase : ITypeTemplate, IDomainHost
     {
         private TypeDomain domain;
-        private CremaDataType dataType;
         private DataTable table;
 
         private readonly List<TypeMember> members = new List<TypeMember>();
@@ -48,7 +43,7 @@ namespace Ntreev.Crema.Services.Data
         public TypeMember AddNew(Authentication authentication)
         {
             this.DataBase.ValidateBeginInDataBase(authentication);
-            return new TypeMember(this, this.dataType.View.Table);
+            return new TypeMember(this, this.TypeSource.View.Table);
         }
 
         public void EndNew(Authentication authentication, TypeMember member)
@@ -131,10 +126,7 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public abstract IPermission Permission
-        {
-            get;
-        }
+        public abstract IPermission Permission { get; }
 
         public int Count
         {
@@ -147,37 +139,22 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public abstract DomainContext DomainContext
-        {
-            get;
-        }
+        public abstract DomainContext DomainContext { get; }
 
-        public abstract CremaDispatcher Dispatcher
-        {
-            get;
-        }
+        public abstract CremaDispatcher Dispatcher { get; }
 
-        public abstract CremaHost CremaHost
-        {
-            get;
-        }
+        public abstract CremaHost CremaHost { get; }
 
-        public abstract IType Type
-        {
-            get;
-        }
+        public abstract IType Type { get; }
 
-        public abstract DataBase DataBase
-        {
-            get;
-        }
+        public abstract DataBase DataBase { get; }
 
         public string TypeName
         {
             get
             {
                 this.Dispatcher?.VerifyAccess();
-                return this.dataType.Name;
+                return this.TypeSource.Name;
             }
         }
 
@@ -186,7 +163,7 @@ namespace Ntreev.Crema.Services.Data
             get
             {
                 this.Dispatcher?.VerifyAccess();
-                return this.dataType.IsFlag;
+                return this.TypeSource.IsFlag;
             }
         }
 
@@ -195,7 +172,7 @@ namespace Ntreev.Crema.Services.Data
             get
             {
                 this.Dispatcher?.VerifyAccess();
-                return this.dataType.Comment;
+                return this.TypeSource.Comment;
             }
         }
 
@@ -300,8 +277,8 @@ namespace Ntreev.Crema.Services.Data
             this.domain.Host = this;
             this.AttachDomainEvent();
 
-            this.dataType = this.domain.Source as CremaDataType;
-            this.table = this.dataType.View.Table;
+            this.TypeSource = this.domain.Source as CremaDataType;
+            this.table = this.TypeSource.View.Table;
             for (var i = 0; i < this.table.Rows.Count; i++)
             {
                 var item = this.table.Rows[i];
@@ -349,12 +326,12 @@ namespace Ntreev.Crema.Services.Data
 
         protected virtual void OnRestore(Domain domain)
         {
-            this.dataType = domain.Source as CremaDataType;
+            this.TypeSource = domain.Source as CremaDataType;
             this.domain = domain as TypeDomain;
 
-            if (this.dataType != null)
+            if (this.TypeSource != null)
             {
-                this.table = this.dataType.View.Table;
+                this.table = this.TypeSource.View.Table;
                 for (var i = 0; i < this.table.Rows.Count; i++)
                 {
                     var item = this.table.Rows[i];
@@ -380,10 +357,7 @@ namespace Ntreev.Crema.Services.Data
             this.domain = null;
         }
 
-        protected CremaDataType TypeSource
-        {
-            get { return this.dataType; }
-        }
+        protected CremaDataType TypeSource { get; private set; }
 
         protected abstract ResultBase<DomainMetaData> BeginDomain(Authentication authentication);
 

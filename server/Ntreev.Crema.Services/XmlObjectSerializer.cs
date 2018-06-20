@@ -23,6 +23,7 @@ using Ntreev.Library.IO;
 using Ntreev.Library.Serialization;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Data;
 using System.IO;
@@ -137,10 +138,14 @@ namespace Ntreev.Crema.Services
         {
             if (type == typeof(CremaDataTable))
             {
+                var fileList = new List<string>();
                 var xmlPath = itemPath + CremaSchema.XmlExtension;
                 var xmlInfo = new CremaXmlReadInfo(xmlPath);
+                if (xmlInfo.ItemName != null)
+                    fileList.Add(xmlInfo.SchemaPath);
                 var schemaInfo = new CremaSchemaReadInfo(xmlInfo.SchemaPath);
-                return schemaInfo.LocalTypePaths;
+                fileList.AddRange(schemaInfo.LocalTypePaths);
+                return fileList.ToArray();
             }
             else if (type == typeof(CremaDataType))
             {

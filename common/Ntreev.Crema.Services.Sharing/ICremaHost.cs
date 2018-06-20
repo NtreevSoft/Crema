@@ -43,13 +43,6 @@ namespace Ntreev.Crema.Services
         void Logout(Authentication authentication);
 
         string GetPath(CremaPath pathType, params string[] paths);
-
-        //string BasePath { get; }
-
-        //string RepositoryPath { get; }
-
-        //string WorkingPath { get; }
-
 #endif
         event EventHandler Opening;
 

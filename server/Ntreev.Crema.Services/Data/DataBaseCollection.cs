@@ -33,8 +33,7 @@ namespace Ntreev.Crema.Services.Data
     class DataBaseCollection : ContainerBase<DataBase>, IDataBaseCollection
     {
         internal const string DataBasesString = "databases";
-        private const string infoExtension = ".info";
-        private const string stateExtension = ".state";
+        
         private readonly IRepositoryProvider repositoryProvider;
         private readonly CremaDispatcher repositoryDispatcher;
         private readonly string cachePath;
@@ -91,7 +90,7 @@ namespace Ntreev.Crema.Services.Data
                 {
                     if (stateCaches.ContainsKey($"{item.ID}") == true)
                     {
-                        if (stateCaches[$"{item.ID}"] == DataBaseState.IsLoaded)
+                        if (stateCaches[$"{item.ID}"].IsLoaded == true)
                         {
                             item.Load(Authentication.System);
                         }
@@ -411,13 +410,13 @@ namespace Ntreev.Crema.Services.Data
             {
                 {
                     var dataBaseInfo = (DataBaseSerializationInfo)item.DataBaseInfo;
-                    var filename = FileUtility.Prepare(this.cachePath, $"{item.ID}{infoExtension}");
-                    this.Serializer.Serialize(filename, dataBaseInfo, ObjectSerializerSettings.Empty);
+                    var filename = FileUtility.Prepare(this.cachePath, $"{item.ID}");
+                    this.Serializer.Serialize(filename, dataBaseInfo, DataBaseSerializationInfo.Settings);
                 }
                 {
-                    var dataBaseState = item.DataBaseState & DataBaseState.IsLoaded;
-                    var filename = FileUtility.Prepare(this.cachePath, $"{item.ID}{stateExtension}");
-                    this.Serializer.Serialize(filename, dataBaseState, ObjectSerializerSettings.Empty);
+                    var dataBaseState = (DataBaseStateSerializationInfo)item.DataBaseState;
+                    var filename = FileUtility.Prepare(this.cachePath, $"{item.ID}");
+                    this.Serializer.Serialize(filename, dataBaseState, DataBaseStateSerializationInfo.Settings);
                 }
                 item.Dispose();
             }
@@ -785,13 +784,12 @@ namespace Ntreev.Crema.Services.Data
             var caches = new Dictionary<string, DataBaseSerializationInfo>();
             if (Directory.Exists(this.cachePath) == true)
             {
-                var settings = new ObjectSerializerSettings() { Extension = infoExtension };
-                var itemPaths = this.Serializer.GetItemPaths(cachePath, typeof(DataBaseSerializationInfo), settings);
+                var itemPaths = this.Serializer.GetItemPaths(cachePath, typeof(DataBaseSerializationInfo), DataBaseSerializationInfo.Settings);
                 foreach (var item in itemPaths)
                 {
                     try
                     {
-                        var dataBaseInfo = (DataBaseSerializationInfo)this.Serializer.Deserialize(item, typeof(DataBaseSerializationInfo), settings);
+                        var dataBaseInfo = (DataBaseSerializationInfo)this.Serializer.Deserialize(item, typeof(DataBaseSerializationInfo), DataBaseSerializationInfo.Settings);
                         caches.Add(dataBaseInfo.Name, dataBaseInfo);
                     }
                     catch (Exception e)
@@ -803,18 +801,17 @@ namespace Ntreev.Crema.Services.Data
             return caches;
         }
 
-        private Dictionary<string, DataBaseState> ReadStateCaches()
+        private Dictionary<string, DataBaseStateSerializationInfo> ReadStateCaches()
         {
-            var caches = new Dictionary<string, DataBaseState>();
+            var caches = new Dictionary<string, DataBaseStateSerializationInfo>();
             if (Directory.Exists(this.cachePath) == true)
             {
-                var settings = new ObjectSerializerSettings() { Extension = stateExtension };
-                var itemPaths = this.Serializer.GetItemPaths(cachePath, typeof(DataBaseState), settings);
+                var itemPaths = this.Serializer.GetItemPaths(cachePath, typeof(DataBaseStateSerializationInfo), DataBaseStateSerializationInfo.Settings);
                 foreach (var item in itemPaths)
                 {
                     try
                     {
-                        var dataBaseState = (DataBaseState)this.Serializer.Deserialize(item, typeof(DataBaseState), settings);
+                        var dataBaseState = (DataBaseStateSerializationInfo)this.Serializer.Deserialize(item, typeof(DataBaseStateSerializationInfo), DataBaseStateSerializationInfo.Settings);
                         caches.Add(Path.GetFileNameWithoutExtension(item), dataBaseState);
                     }
                     catch (Exception e)
@@ -830,14 +827,14 @@ namespace Ntreev.Crema.Services.Data
         {
             {
                 var dataBaseInfo = (DataBaseSerializationInfo)dataBase.DataBaseInfo;
-                var filename = FileUtility.Prepare(this.cachePath, $"{dataBase.ID}{infoExtension}");
-                var itemPaths = this.Serializer.Serialize(filename, dataBaseInfo, ObjectSerializerSettings.Empty);
+                var filename = FileUtility.Prepare(this.cachePath, $"{dataBase.ID}");
+                var itemPaths = this.Serializer.Serialize(filename, dataBaseInfo, DataBaseSerializationInfo.Settings);
                 FileUtility.Delete(itemPaths);
             }
             {
-                var dataBaseState = dataBase.DataBaseState & DataBaseState.IsLoaded;
-                var filename = FileUtility.Prepare(this.cachePath, $"{dataBase.ID}{stateExtension}");
-                var itemPaths = this.Serializer.Serialize(filename, dataBaseState, ObjectSerializerSettings.Empty);
+                var dataBaseState = (DataBaseStateSerializationInfo)dataBase.DataBaseState;
+                var filename = FileUtility.Prepare(this.cachePath, $"{dataBase.ID}");
+                var itemPaths = this.Serializer.Serialize(filename, dataBaseState, DataBaseStateSerializationInfo.Settings);
                 FileUtility.Delete(itemPaths);
             }
         }

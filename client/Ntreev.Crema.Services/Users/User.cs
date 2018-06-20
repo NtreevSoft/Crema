@@ -15,19 +15,14 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Library;
 using Ntreev.Crema.ServiceModel;
-using Ntreev.Library.ObjectModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Threading;
 using Ntreev.Crema.Services.UserService;
 using Ntreev.Library.Linq;
-using System.Security;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using System.Security;
 
 namespace Ntreev.Crema.Services.Users
 {
@@ -38,7 +33,7 @@ namespace Ntreev.Crema.Services.Users
 
         public User()
         {
-            
+
         }
 
         public void Rename(Authentication authentication, string newName)
@@ -49,103 +44,159 @@ namespace Ntreev.Crema.Services.Users
 
         public void Move(Authentication authentication, string categoryPath)
         {
-            this.Dispatcher.VerifyAccess();
-            this.CremaHost.DebugMethod(authentication, this, nameof(Move), this, categoryPath);
-            var result = this.Service.MoveUserItem(this.Path, categoryPath);
-            this.Sign(authentication, result);
-            var items = EnumerableUtility.One(this).ToArray();
-            var oldPaths = items.Select(item => item.Path).ToArray();
-            var oldCategoryPaths = items.Select(item => item.Category.Path).ToArray();
-            this.Container.InvokeUserMove(authentication, this, categoryPath);
-            base.Move(authentication, categoryPath);
-            this.Container.InvokeUsersMovedEvent(authentication, items, oldPaths, oldCategoryPaths);
+            try
+            {
+                this.Dispatcher.VerifyAccess();
+                this.CremaHost.DebugMethod(authentication, this, nameof(Move), this, categoryPath);
+                var result = this.Service.MoveUserItem(this.Path, categoryPath);
+                this.Sign(authentication, result);
+                var items = EnumerableUtility.One(this).ToArray();
+                var oldPaths = items.Select(item => item.Path).ToArray();
+                var oldCategoryPaths = items.Select(item => item.Category.Path).ToArray();
+                this.Container.InvokeUserMove(authentication, this, categoryPath);
+                base.Move(authentication, categoryPath);
+                this.Container.InvokeUsersMovedEvent(authentication, items, oldPaths, oldCategoryPaths);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void Delete(Authentication authentication)
         {
-            this.Dispatcher.VerifyAccess();
-            this.CremaHost.DebugMethod(authentication, this, nameof(Delete), this);
-            var result = this.Service.DeleteUserItem(this.Path);
-            this.Sign(authentication, result);
-            var items = EnumerableUtility.One(this).ToArray();
-            var oldPaths = items.Select(item => item.Path).ToArray();
-            var container = this.Container;
-            container.InvokeUserDelete(authentication, this);
-            base.Delete(authentication);
-            container.InvokeUsersDeletedEvent(authentication, items, oldPaths);
+            try
+            {
+                this.Dispatcher.VerifyAccess();
+                this.CremaHost.DebugMethod(authentication, this, nameof(Delete), this);
+                var result = this.Service.DeleteUserItem(this.Path);
+                this.Sign(authentication, result);
+                var items = EnumerableUtility.One(this).ToArray();
+                var oldPaths = items.Select(item => item.Path).ToArray();
+                var container = this.Container;
+                container.InvokeUserDelete(authentication, this);
+                base.Delete(authentication);
+                container.InvokeUsersDeletedEvent(authentication, items, oldPaths);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void Kick(Authentication authentication, string comment)
         {
-            this.Dispatcher.VerifyAccess();
-            this.CremaHost.DebugMethod(authentication, this, nameof(Kick), this, comment);
-            var result = this.Service.Kick(this.ID, comment ?? string.Empty);
-            this.Sign(authentication, result);
-            var users = new User[] { this };
-            var comments = Enumerable.Repeat(comment, users.Length).ToArray();
-            this.Container.InvokeUserKick(authentication, this, comment);
-            this.IsOnline = false;
-            this.Container.InvokeUsersKickedEvent(authentication, users, comments);
-            this.Container.InvokeUsersStateChangedEvent(authentication, users);
-            this.Container.InvokeUsersLoggedOutEvent(authentication, users, new CloseInfo(CloseReason.Kicked, comment));
+            try
+            {
+                this.Dispatcher.VerifyAccess();
+                this.CremaHost.DebugMethod(authentication, this, nameof(Kick), this, comment);
+                var result = this.Service.Kick(this.ID, comment ?? string.Empty);
+                this.Sign(authentication, result);
+                var users = new User[] { this };
+                var comments = Enumerable.Repeat(comment, users.Length).ToArray();
+                this.Container.InvokeUserKick(authentication, this, comment);
+                this.IsOnline = false;
+                this.Container.InvokeUsersKickedEvent(authentication, users, comments);
+                this.Container.InvokeUsersStateChangedEvent(authentication, users);
+                this.Container.InvokeUsersLoggedOutEvent(authentication, users, new CloseInfo(CloseReason.Kicked, comment));
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void Ban(Authentication authentication, string comment)
         {
-            this.Dispatcher.VerifyAccess();
-            this.CremaHost.DebugMethod(authentication, this, nameof(Ban), this, comment);
-            var result = this.Service.Ban(this.ID, comment ?? string.Empty);
-            this.Sign(authentication, result);
-            var users = new User[] { this };
-            var comments = Enumerable.Repeat(comment, users.Length).ToArray();
-            this.Container.InvokeUserBan(authentication, this, result.Value);
-            base.Ban(authentication, result.Value);
-            this.Container.InvokeUsersBannedEvent(authentication, users, comments);
-            if (this.IsOnline == true)
+            try
             {
-                this.IsOnline = false;
-                this.Container.InvokeUsersStateChangedEvent(authentication, users);
-                this.Container.InvokeUsersLoggedOutEvent(authentication, users, new CloseInfo(CloseReason.Banned, comment));
+                this.Dispatcher.VerifyAccess();
+                this.CremaHost.DebugMethod(authentication, this, nameof(Ban), this, comment);
+                var result = this.Service.Ban(this.ID, comment ?? string.Empty);
+                this.Sign(authentication, result);
+                var users = new User[] { this };
+                var comments = Enumerable.Repeat(comment, users.Length).ToArray();
+                this.Container.InvokeUserBan(authentication, this, result.Value);
+                base.Ban(authentication, result.Value);
+                this.Container.InvokeUsersBannedEvent(authentication, users, comments);
+                if (this.IsOnline == true)
+                {
+                    this.IsOnline = false;
+                    this.Container.InvokeUsersStateChangedEvent(authentication, users);
+                    this.Container.InvokeUsersLoggedOutEvent(authentication, users, new CloseInfo(CloseReason.Banned, comment));
+                }
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
             }
         }
 
         public void Unban(Authentication authentication)
         {
-            this.Dispatcher.VerifyAccess();
-            this.CremaHost.DebugMethod(authentication, this, nameof(Unban), this);
-            var result = this.Service.Unban(this.ID);
-            this.Sign(authentication, result);
-            var users = new User[] { this };
-            this.Container.InvokeUserUnban(authentication, this);            
-            base.Unban(authentication);
-            this.Container.InvokeUsersUnbannedEvent(authentication, users);
-            this.Container.InvokeUsersStateChangedEvent(authentication, users);
+            try
+            {
+                this.Dispatcher.VerifyAccess();
+                this.CremaHost.DebugMethod(authentication, this, nameof(Unban), this);
+                var result = this.Service.Unban(this.ID);
+                this.Sign(authentication, result);
+                var users = new User[] { this };
+                this.Container.InvokeUserUnban(authentication, this);
+                base.Unban(authentication);
+                this.Container.InvokeUsersUnbannedEvent(authentication, users);
+                this.Container.InvokeUsersStateChangedEvent(authentication, users);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void ChangeUserInfo(Authentication authentication, SecureString password, SecureString newPassword, string userName, Authority? authority)
         {
-            this.Dispatcher.VerifyAccess();
+            try
+            {
+                this.Dispatcher.VerifyAccess();
 
-            if (this.ID == authentication.ID && password == null && newPassword != null)
-                throw new ArgumentNullException(nameof(password));
-            if (newPassword == null && password != null)
-                throw new ArgumentNullException(nameof(newPassword));
+                if (this.ID == authentication.ID && password == null && newPassword != null)
+                    throw new ArgumentNullException(nameof(password));
+                if (newPassword == null && password != null)
+                    throw new ArgumentNullException(nameof(newPassword));
 
-            var p1 = password == null ? null : UserContext.Encrypt(this.ID, password);
-            var p2 = newPassword == null ? null : UserContext.Encrypt(this.ID, newPassword);
-            var result = this.Service.ChangeUserInfo(this.UserInfo.ID, p1, p2, userName, authority);
-            this.Sign(authentication, result);
-            this.Container.InvokeUserChange(authentication, this);
-            base.UpdateUserInfo(result.Value);
-            this.Container.InvokeUsersChangedEvent(authentication, new User[] { this });
+                var p1 = password == null ? null : UserContext.Encrypt(this.ID, password);
+                var p2 = newPassword == null ? null : UserContext.Encrypt(this.ID, newPassword);
+                var result = this.Service.ChangeUserInfo(this.UserInfo.ID, p1, p2, userName, authority);
+                this.Sign(authentication, result);
+                this.Container.InvokeUserChange(authentication, this);
+                base.UpdateUserInfo(result.Value);
+                this.Container.InvokeUsersChangedEvent(authentication, new User[] { this });
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void SendMessage(Authentication authentication, string message)
         {
-            this.Dispatcher.VerifyAccess();
-            var result = this.Service.SendMessage(this.UserInfo.ID, message);
-            this.Sign(authentication, result);
-            this.Container.InvokeSendMessageEvent(authentication, this, message);
+            try
+            {
+                this.Dispatcher.VerifyAccess();
+                var result = this.Service.SendMessage(this.UserInfo.ID, message);
+                this.Sign(authentication, result);
+                this.Container.InvokeSendMessageEvent(authentication, this, message);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -232,30 +283,15 @@ namespace Ntreev.Crema.Services.Users
             }
         }
 
-        public bool IsBanned
-        {
-            get { return this.BanInfo.Path != string.Empty; }
-        }
+        public bool IsBanned => this.BanInfo.Path != string.Empty;
 
-        public Authentication Authentication
-        {
-            get { return authentication; }
-        }
+        public Authentication Authentication => authentication;
 
-        public IUserService Service
-        {
-            get { return this.Context.Service; }
-        }
+        public IUserService Service => this.Context.Service;
 
-        public CremaHost CremaHost
-        {
-            get { return this.Context.CremaHost; }
-        }
+        public CremaHost CremaHost => this.Context.CremaHost;
 
-        public CremaDispatcher Dispatcher
-        {
-            get { return this.CremaHost.Dispatcher; }
-        }
+        public CremaDispatcher Dispatcher => this.CremaHost.Dispatcher;
 
         public new event EventHandler Renamed
         {
@@ -359,10 +395,7 @@ namespace Ntreev.Crema.Services.Users
 
         #region IUser
 
-        string IUser.ID
-        {
-            get { return this.ID; }
-        }
+        string IUser.ID => this.ID;
 
         IUserCategory IUser.Category
         {
@@ -377,10 +410,7 @@ namespace Ntreev.Crema.Services.Users
 
         #region IUserItem
 
-        string IUserItem.Name
-        {
-            get { return this.ID; }
-        }
+        string IUserItem.Name => this.ID;
 
         IUserItem IUserItem.Parent
         {

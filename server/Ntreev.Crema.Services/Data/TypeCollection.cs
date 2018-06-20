@@ -56,7 +56,7 @@ namespace Ntreev.Crema.Services.Data
                 this.CremaHost.DebugMethod(authentication, this, nameof(AddNew), dataType.Name, dataType.CategoryPath);
                 this.ValidateAddNew(dataType.Name, dataType.CategoryPath, authentication);
                 this.Sign(authentication);
-                this.InvokeTypeCreate(authentication, dataType.Name, dataType.CategoryPath, dataType.DataSet);
+                this.InvokeTypeCreate(authentication, dataType.Name, dataType.DataSet);
                 var type = this.BaseAddNew(dataType.Name, dataType.CategoryPath, authentication);
                 type.Initialize(dataType.TypeInfo);
                 this.InvokeTypesCreatedEvent(authentication, new Type[] { type, }, dataType.DataSet);
@@ -76,11 +76,15 @@ namespace Ntreev.Crema.Services.Data
                 this.CremaHost.DebugMethod(authentication, this, nameof(TypeCollection.Copy), typeName, newTypeName, categoryPath);
                 this.ValidateCopy(authentication, typeName, newTypeName);
                 var type = this[typeName];
-                var dataType = type.ReadData(authentication);
-                dataType.TypeName = newTypeName;
-                dataType.CategoryPath = categoryPath;
-                dataType.CreationInfo = authentication.SignatureDate;
-                return this.AddNew(authentication, dataType);
+                var dataSet = type.ReadData(authentication);
+                var dataType = dataSet.Types[type.Name, type.Category.Path];
+                var itemName = new ItemName(categoryPath, newTypeName);
+                var newDataType = dataType.Copy(itemName);
+                this.InvokeTypeCreate(authentication, newTypeName, dataSet);
+                var newType = this.BaseAddNew(newTypeName, categoryPath, authentication);
+                newType.Initialize(newDataType.TypeInfo);
+                this.InvokeTypesCreatedEvent(authentication, new Type[] { newType, }, dataSet);
+                return newType;
             }
             catch (Exception e)
             {
@@ -94,12 +98,12 @@ namespace Ntreev.Crema.Services.Data
             return this.DataBase.GetService(serviceType);
         }
 
-        public void InvokeTypeCreate(Authentication authentication, string typeName, string categoryPath, CremaDataSet dataSet)
+        public void InvokeTypeCreate(Authentication authentication, string typeName, CremaDataSet dataSet)
         {
             var message = EventMessageBuilder.CreateType(authentication, typeName);
             try
             {
-                this.Repository.CreateType(dataSet, this.DataBase);
+                this.Repository.CreateType(dataSet);
                 this.Repository.Commit(authentication, message);
             }
             catch

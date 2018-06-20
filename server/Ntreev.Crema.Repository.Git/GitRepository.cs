@@ -71,12 +71,12 @@ namespace Ntreev.Crema.Repository.Git
                 if (File.Exists(keepPath) == false)
                 {
                     File.WriteAllText(keepPath, string.Empty);
-                    GitHost.Run(this.repositoryPath, "add", keepPath.WrapQuot());
+                    GitHost.Run(this.repositoryPath, "add", keepPath.ToGitPath());
                 }
             }
             else
             {
-                GitHost.Run(this.repositoryPath, "add", path.WrapQuot());
+                GitHost.Run(this.repositoryPath, "add", path.ToGitPath());
             }
         }
 
@@ -96,7 +96,7 @@ namespace Ntreev.Crema.Repository.Git
             //if (this.transactions.ContainsKey(path) == true)
             //{
             //    var patchPath = Path.Combine(this.transactionPath, this.transactions[path] + ".patch");
-            //    var text = this.Run("diff", path.WrapQuot(), "--patch-compatible");
+            //    var text = this.Run("diff", path.ToGitPath(), "--patch-compatible");
             //    FileUtility.WriteAllText(text, patchPath);
             //    this.transactionMessages[path] = this.transactionMessages[path] + comment + Environment.NewLine;
             //    //return DateTime.UtcNow;
@@ -104,7 +104,7 @@ namespace Ntreev.Crema.Repository.Git
 
             //var propText = string.Join(" ", properties.Select(item => $"--with-revprop \"{propertyPrefix}{item.Key}={item.Value}\""));
 
-            this.logService?.Debug($"repository committing {this.repositoryPath.WrapQuot()}");
+            this.logService?.Debug($"repository committing {this.repositoryPath.ToGitPath()}");
             var result = string.Empty;
             var commentPath = PathUtility.GetTempFileName();
             try
@@ -129,7 +129,7 @@ namespace Ntreev.Crema.Repository.Git
 
             if (result.Trim() != string.Empty)
             {
-                this.logService?.Debug($"repository committed {this.repositoryPath.WrapQuot()}");
+                this.logService?.Debug($"repository committed {this.repositoryPath.ToGitPath()}");
                 this.logService?.Debug(result);
                 var userID = properties.FirstOrDefault(item => item.Key == LogPropertyInfo.UserIDKey).Value;
                 var log = GitLogInfo.Run(this.repositoryPath, "--max-count=1").First();
@@ -151,7 +151,7 @@ namespace Ntreev.Crema.Repository.Git
             else
             {
                 File.Copy(srcPath, toPath);
-                GitHost.Run(this.repositoryPath, "add", toPath.WrapQuot());
+                GitHost.Run(this.repositoryPath, "add", toPath.ToGitPath());
             }
         }
 
@@ -159,11 +159,11 @@ namespace Ntreev.Crema.Repository.Git
         {
             if (Directory.Exists(path) == true)
             {
-                GitHost.Run(this.repositoryPath, "rm", path.WrapQuot(), "-r");
+                GitHost.Run(this.repositoryPath, "rm", path.ToGitPath(), "-r");
             }
             else
             {
-                GitHost.Run(this.repositoryPath, "rm", path.WrapQuot());
+                GitHost.Run(this.repositoryPath, "rm", path.ToGitPath());
             }
         }
 
@@ -190,7 +190,7 @@ namespace Ntreev.Crema.Repository.Git
                 if (DirectoryUtility.IsEmpty(exportPath) == true)
                     new CremaDataSet().WriteToDirectory(exportPath);
                 var relativePath = UriUtility.MakeRelativeOfDirectory(this.repositoryPath, path);
-                GitHost.Run(this.repositoryPath, "archive", $"--output=\"{tempPath}\"", "--format=zip", revision, "--", path.WrapQuot());
+                GitHost.Run(this.repositoryPath, "archive", $"--output=\"{tempPath}\"", "--format=zip", revision, "--", path.ToGitPath());
                 ZipFile.ExtractToDirectory(tempPath, exportPath);
                 var exportUri = new Uri(UriUtility.Combine(exportPath, relativePath));
                 return exportUri.LocalPath;
@@ -209,7 +209,6 @@ namespace Ntreev.Crema.Repository.Git
 
         public Uri GetUri(string path, string revision)
         {
-            // git log --follow --pretty=oneline --name-status .\tables\Table1.xml
             if (DirectoryUtility.IsDirectory(path) == true)
             {
                 var uri = new Uri($"{path}@{revision ?? this.repositoryInfo.Revision}");
@@ -222,7 +221,7 @@ namespace Ntreev.Crema.Repository.Git
 
         public void Move(string srcPath, string toPath)
         {
-            GitHost.Run(this.repositoryPath, "mv", srcPath.WrapQuot(), toPath.WrapQuot());
+            GitHost.Run(this.repositoryPath, "mv", srcPath.ToGitPath(), toPath.ToGitPath());
         }
 
         public void Revert()

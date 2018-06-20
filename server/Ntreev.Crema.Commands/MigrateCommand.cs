@@ -37,14 +37,14 @@ namespace Ntreev.Crema.Commands
     [ResourceDescription]
     class MigrateCommand : CommandBase
     {
-        private readonly CremaBootstrapper application;
+        private readonly CremaBootstrapper boot;
         private string repositoryModule;
 
         [ImportingConstructor]
-        public MigrateCommand(CremaBootstrapper application)
+        public MigrateCommand(CremaBootstrapper boot)
             : base("migrate")
         {
-            this.application = application;
+            this.boot = boot;
         }
 
         [CommandProperty("path", IsRequired = true)]
@@ -83,7 +83,7 @@ namespace Ntreev.Crema.Commands
                 BasePath = this.Path,
                 FileType = this.FileType,
             };
-            this.application.MigrateRepository(settings);
+            CremaBootstrapper.MigrateRepository(this.boot, settings);
         }
     }
 }

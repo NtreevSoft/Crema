@@ -58,13 +58,13 @@ namespace Ntreev.Crema.Services.Users
             this.basePath = cremaHost.GetPath(CremaPath.Working, "users");
             this.serializer = cremaHost.Serializer;
 
-            this.Repository = new RepositoryHost(this.CremaHost.RepositoryProvider.CreateInstance(new RepositorySettings()
+            this.Repository = new UserRepositoryHost(this, this.CremaHost.RepositoryProvider.CreateInstance(new RepositorySettings()
             {
                 BasePath = this.remotePath,
                 RepositoryName = "default",
                 WorkingPath = this.basePath,
                 LogService = this.CremaHost
-            }), cremaHost.RepositoryDispatcher);
+            }));
 
             this.Dispatcher = new CremaDispatcher(this);
             this.Dispatcher.Invoke(() =>
@@ -448,7 +448,7 @@ namespace Ntreev.Crema.Services.Users
         {
             NameValidator.ValidateCategoryPath(categoryPath);
             var baseUri = new Uri(this.basePath);
-            var uri = new Uri(baseUri + categoryPath.TrimEnd(PathUtility.SeparatorChar));
+            var uri = new Uri(baseUri + categoryPath);
             return uri.LocalPath;
         }
 
@@ -457,16 +457,27 @@ namespace Ntreev.Crema.Services.Users
             return Path.Combine(this.GenerateCategoryPath(categoryPath), userID);
         }
 
-        public string GeneratePath(string parentPath, string name, string extension)
+        public string GeneratePath(string path)
         {
-            return Path.Combine(this.basePath, parentPath.Replace(PathUtility.SeparatorChar, Path.AltDirectorySeparatorChar), name + extension);
+            if (NameValidator.VerifyCategoryPath(path) == true)
+                return this.GenerateCategoryPath(path);
+            var itemName = new ItemName(path);
+            return this.GenerateUserPath(itemName.CategoryPath, itemName.Name);
+        }
+
+        public string[] GetFiles(string itemPath)
+        {
+            var directoryName = Path.GetDirectoryName(itemPath);
+            var name = Path.GetFileNameWithoutExtension(itemPath);
+            var files = Directory.GetFiles(directoryName, $"{name}.*").Where(item => Path.GetFileNameWithoutExtension(item) == name).ToArray();
+            return files;
         }
 
         public void Initialize()
         {
             this.CremaHost.Debug("Load user data...");
 
-            var directories = DirectoryUtility.GetAllDirectories(this.BasePath);
+            var directories = DirectoryUtility.GetAllDirectories(this.BasePath, "*", true);
             foreach (var item in directories)
             {
                 var relativeUri = UriUtility.MakeRelativeOfDirectory(this.basePath, item);
@@ -507,7 +518,7 @@ namespace Ntreev.Crema.Services.Users
             base.Clear();
         }
 
-        public RepositoryHost Repository { get; }
+        public UserRepositoryHost Repository { get; }
 
         public string BasePath => this.basePath;
 

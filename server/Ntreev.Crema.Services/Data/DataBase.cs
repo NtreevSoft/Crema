@@ -39,7 +39,6 @@ namespace Ntreev.Crema.Services.Data
     {
         public static readonly Guid defaultID = Guid.Parse("9CAC6195-1F14-40D6-B56E-4747A67F5C8A");
 
-        private const string dataExtension = ".data";
         private readonly IRepositoryProvider repositoryProvider;
         private readonly IObjectSerializer serializer;
         private readonly string cachePath;
@@ -697,12 +696,12 @@ namespace Ntreev.Crema.Services.Data
         public CremaDataSet GetDataSet(Authentication authentication, IEnumerable<Table> tables, bool schemaOnly)
         {
             var typePaths = tables.SelectMany(item => item.GetTypes())
-                                  .Select(item => item.LocalPath)
+                                  .Select(item => item.ItemPath)
                                   .Distinct()
                                   .ToArray();
             var tablePaths = tables.SelectMany(item => EnumerableUtility.Friends(item, item.DerivedTables))
                                    .Select(item => item.Parent ?? item)
-                                   .Select(item => item.LocalPath)
+                                   .Select(item => item.ItemPath)
                                    .Distinct()
                                    .ToArray();
 
@@ -1198,7 +1197,6 @@ namespace Ntreev.Crema.Services.Data
 
         private void WriteCache()
         {
-            var settings = new ObjectSerializerSettings() { Extension = dataExtension };
             var itemPath = FileUtility.Prepare(this.cachePath, $"{this.ID}");
             var dataInfo = new DataBaseDataSerializationInfo()
             {
@@ -1206,14 +1204,13 @@ namespace Ntreev.Crema.Services.Data
                 TypeInfos = this.typeContext.Types.Select((Type item) => item.TypeInfo).ToArray(),
                 TableInfos = this.tableContext.Tables.Select((Table item) => item.TableInfo).ToArray(),
             };
-            this.Serializer.Serialize(itemPath, dataInfo, settings);
+            this.Serializer.Serialize(itemPath, dataInfo, DataBaseDataSerializationInfo.Settings);
         }
 
         private void DeleteCache()
         {
-            var settings = new ObjectSerializerSettings() { Extension = dataExtension };
             var itemPath = FileUtility.Prepare(this.cachePath, $"{this.ID}");
-            var itemPaths = this.Serializer.GetPath(itemPath, typeof(DataBaseDataSerializationInfo), settings);
+            var itemPaths = this.Serializer.GetPath(itemPath, typeof(DataBaseDataSerializationInfo), DataBaseDataSerializationInfo.Settings);
             FileUtility.Delete(itemPaths);
         }
 
@@ -1223,12 +1220,10 @@ namespace Ntreev.Crema.Services.Data
             {
                 try
                 {
-                    var settings = new ObjectSerializerSettings() { Extension = dataExtension };
                     var itemPath = FileUtility.Prepare(this.cachePath, $"{this.ID}");
-                    var itemPaths = this.Serializer.GetPath(itemPath, typeof(DataBaseDataSerializationInfo), settings);
-                    if (itemPaths.Any() == true)
+                    if (this.Serializer.Exists(itemPath, typeof(DataBaseDataSerializationInfo), DataBaseDataSerializationInfo.Settings) == true)
                     {
-                        var dataInfo = (DataBaseDataSerializationInfo)this.Serializer.Deserialize(itemPath, typeof(DataBaseDataSerializationInfo), settings);
+                        var dataInfo = (DataBaseDataSerializationInfo)this.Serializer.Deserialize(itemPath, typeof(DataBaseDataSerializationInfo), DataBaseDataSerializationInfo.Settings);
                         if (this.Repository.RepositoryInfo.Revision == dataInfo.Revision)
                         {
                             this.ResetDataBase(Authentication.System, dataInfo.TypeInfos, dataInfo.TableInfos);
@@ -1331,9 +1326,8 @@ namespace Ntreev.Crema.Services.Data
             var message = EventMessageBuilder.SetPublicDataBase(authentication, this.Name);
             try
             {
-                var settings = new ObjectSerializerSettings() { Extension = ".acs" };
                 var itemPath = this.BasePath + Path.DirectorySeparatorChar;
-                var itemPaths = this.Serializer.GetPath(itemPath, typeof(AccessSerializationInfo), settings);
+                var itemPaths = this.Serializer.GetPath(itemPath, typeof(AccessSerializationInfo), AccessSerializationInfo.Settings);
                 this.Repository.DeleteRange(itemPaths);
                 this.Repository.Commit(authentication, message);
             }
@@ -1351,9 +1345,8 @@ namespace Ntreev.Crema.Services.Data
             try
             {
                 accessInfo.SetPrivate(this.GetType().Name, authentication.SignatureDate);
-                var settings = new ObjectSerializerSettings() { Extension = ".acs" };
                 var itemPath = this.BasePath + Path.DirectorySeparatorChar;
-                var itemPaths = this.Serializer.Serialize(itemPath, (AccessSerializationInfo)accessInfo, settings);
+                var itemPaths = this.Serializer.Serialize(itemPath, (AccessSerializationInfo)accessInfo, AccessSerializationInfo.Settings);
                 this.Repository.AddRange(itemPaths);
                 this.Repository.Commit(authentication, message);
             }
@@ -1372,8 +1365,7 @@ namespace Ntreev.Crema.Services.Data
             {
                 accessInfo.Add(authentication.SignatureDate, memberID, accessType);
                 var itemPath = this.BasePath + Path.DirectorySeparatorChar;
-                var settings = new ObjectSerializerSettings() { Extension = ".acs" };
-                this.Serializer.Serialize(itemPath, (AccessSerializationInfo)accessInfo, settings);
+                this.Serializer.Serialize(itemPath, (AccessSerializationInfo)accessInfo, AccessSerializationInfo.Settings);
                 this.Repository.Commit(authentication, message);
             }
             catch
@@ -1390,8 +1382,7 @@ namespace Ntreev.Crema.Services.Data
             {
                 accessInfo.Set(authentication.SignatureDate, memberID, accessType);
                 var itemPath = this.BasePath + Path.DirectorySeparatorChar;
-                var settings = new ObjectSerializerSettings() { Extension = ".acs" };
-                this.Serializer.Serialize(itemPath, (AccessSerializationInfo)accessInfo, settings);
+                this.Serializer.Serialize(itemPath, (AccessSerializationInfo)accessInfo, AccessSerializationInfo.Settings);
                 this.Repository.Commit(authentication, message);
             }
             catch
@@ -1410,8 +1401,7 @@ namespace Ntreev.Crema.Services.Data
             {
                 accessInfo.Remove(authentication.SignatureDate, memberID);
                 var itemPath = this.BasePath + Path.DirectorySeparatorChar;
-                var settings = new ObjectSerializerSettings() { Extension = ".acs" };
-                this.Serializer.Serialize(itemPath, (AccessSerializationInfo)accessInfo, settings);
+                this.Serializer.Serialize(itemPath, (AccessSerializationInfo)accessInfo, AccessSerializationInfo.Settings);
                 this.Repository.Commit(authentication, message);
             }
             catch
@@ -1519,13 +1509,12 @@ namespace Ntreev.Crema.Services.Data
 
         private void ReadAccessInfo()
         {
-            var settings = new ObjectSerializerSettings() { Extension = ".acs" };
             var itemPath = this.BasePath + Path.DirectorySeparatorChar;
             try
             {
-                if (this.serializer.Exists(itemPath, typeof(AccessSerializationInfo), settings) == true)
+                if (this.serializer.Exists(itemPath, typeof(AccessSerializationInfo), AccessSerializationInfo.Settings) == true)
                 {
-                    var accessInfo = (AccessSerializationInfo)this.serializer.Deserialize(itemPath, typeof(AccessSerializationInfo), settings);
+                    var accessInfo = (AccessSerializationInfo)this.serializer.Deserialize(itemPath, typeof(AccessSerializationInfo), AccessSerializationInfo.Settings);
                     this.SetAccessInfo((AccessInfo)accessInfo);
                 }
             }

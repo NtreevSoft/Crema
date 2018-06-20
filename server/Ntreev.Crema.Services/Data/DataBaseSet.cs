@@ -1,4 +1,21 @@
-﻿using Ntreev.Crema.Data;
+﻿//Released under the MIT License.
+//
+//Copyright (c) 2018 Ntreev Soft co., Ltd.
+//
+//Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+//documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
+//rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+//persons to whom the Software is furnished to do so, subject to the following conditions:
+//
+//The above copyright notice and this permission notice shall be included in all copies or substantial portions of the 
+//Software.
+//
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
+//WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+//COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+//OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+using Ntreev.Crema.Data;
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services.Properties;
 using Ntreev.Library.ObjectModel;
@@ -50,7 +67,7 @@ namespace Ntreev.Crema.Services.Data
 
             dataBaseSet.Serialize();
 
-            var itemPath1 = category.LocalPath;
+            var itemPath1 = category.ItemPath;
             var itemPath2 = dataBaseSet.dataBase.TypeContext.GenerateCategoryPath(newCategoryPath);
             dataBaseSet.Repository.Move(itemPath1, itemPath2);
         }
@@ -72,7 +89,7 @@ namespace Ntreev.Crema.Services.Data
 
             dataBaseSet.Serialize();
 
-            var itemPath1 = category.LocalPath;
+            var itemPath1 = category.ItemPath;
             var itemPath2 = dataBaseSet.dataBase.TableContext.GenerateCategoryPath(newCategoryPath);
             dataBaseSet.Repository.Move(itemPath1, itemPath2);
         }
@@ -179,6 +196,12 @@ namespace Ntreev.Crema.Services.Data
             dataBaseSet.Serialize();
         }
 
+        public static void Modify(CremaDataSet dataSet, DataBase dataBase)
+        {
+            var dataBaseSet = new DataBaseSet(dataBase, dataSet);
+            dataBaseSet.Serialize();
+        }
+
         private void Serialize()
         {
             var typeContext = this.dataBase.TypeContext;
@@ -207,7 +230,7 @@ namespace Ntreev.Crema.Services.Data
                 if (table != null)
                 {
                     var itemPath = tableContext.GenerateTablePath(table.Category.Path, table.Name);
-                    var props = new CremaDataTableSerializerSettings(table.LocalPath, table.TemplatedParent?.LocalPath);
+                    var props = new CremaDataTableSerializerSettings(table.ItemPath, table.TemplatedParent?.ItemPath);
                     this.Serializer.Serialize(itemPath, dataTable, props);
                 }
                 else
@@ -223,12 +246,12 @@ namespace Ntreev.Crema.Services.Data
         {
             foreach (var item in this.types)
             {
-                var dataTable = item.Key;
-                var table = item.Value;
-                if (table != null)
+                var dataType = item.Key;
+                var type = item.Value;
+                if (type != null)
                     continue;
 
-                this.AddRepositoryPath(dataTable);
+                this.AddRepositoryPath(dataType);
             }
         }
 
@@ -310,41 +333,41 @@ namespace Ntreev.Crema.Services.Data
         private void AddRepositoryPath(CremaDataType dataType)
         {
             var context = this.dataBase.TypeContext;
-            var directoryName = context.GenerateCategoryPath(dataType.CategoryPath);
-            var files = Directory.GetFiles(directoryName, $"{dataType.Name}.*").Where(item => Path.GetFileNameWithoutExtension(item) == dataType.Name).ToArray();
+            var itemPath = context.GenerateTypePath(dataType.CategoryPath, dataType.Name);
+            var files = context.GetFiles(itemPath);
             var status = this.Repository.Status(files);
 
             foreach (var item in status)
             {
                 if (item.Status == RepositoryItemStatus.Untracked)
                 {
-                    //if (dataType.SourceTable == null)
+                    if (dataType.SourceType == null)
                     {
                         this.Repository.Add(item.Path);
                     }
-                    //else
-                    //{
-                    //    var extension = Path.GetExtension(item.Path);
-                    //    var sourceTable = dataType.SourceTable;
-                    //    var sourcePath = context.GenerateTablePath(sourceTable.CategoryPath, sourceTable.Name) + extension;
-                    //    FileUtility.Backup(item.Path);
-                    //    try
-                    //    {
-                    //        this.Repository.Copy(sourcePath, item.Path);
-                    //    }
-                    //    finally
-                    //    {
-                    //        FileUtility.Restore(item.Path);
-                    //    }
-                    //}
+                    else
+                    {
+                        var extension = Path.GetExtension(item.Path);
+                        var sourceType = dataType.SourceType;
+                        var sourcePath = context.GenerateTypePath(sourceType.CategoryPath, sourceType.Name) + extension;
+                        FileUtility.Backup(item.Path);
+                        try
+                        {
+                            this.Repository.Copy(sourcePath, item.Path);
+                        }
+                        finally
+                        {
+                            FileUtility.Restore(item.Path);
+                        }
+                    }
                 }
             }
         }
 
         private void MoveRepositoryPath(CremaDataType dataType, Type type)
         {
-            var directoryName = Path.GetDirectoryName(type.LocalPath);
-            var files = Directory.GetFiles(directoryName, $"{type.Name}.*").Where(item => Path.GetFileNameWithoutExtension(item) == type.Name).ToArray();
+            var context = type.Context;
+            var files = context.GetFiles(type.ItemPath);
 
             for (var i = 0; i < files.Length; i++)
             {
@@ -357,16 +380,16 @@ namespace Ntreev.Crema.Services.Data
 
         private void DeleteRepositoryPath(CremaDataType dataType, Type type)
         {
-            var directoryName = Path.GetDirectoryName(type.LocalPath);
-            var files = Directory.GetFiles(directoryName, $"{type.Name}.*").Where(item => Path.GetFileNameWithoutExtension(item) == type.Name).ToArray();
+            var context = type.Context;
+            var files = context.GetFiles(type.ItemPath);
             this.Repository.DeleteRange(files);
         }
 
         private void AddRepositoryPath(CremaDataTable dataTable)
         {
             var context = this.dataBase.TableContext;
-            var directoryName = context.GenerateCategoryPath(dataTable.CategoryPath);
-            var files = Directory.GetFiles(directoryName, $"{dataTable.Name}.*").Where(item => Path.GetFileNameWithoutExtension(item) == dataTable.Name).ToArray();
+            var itemPath = context.GenerateTablePath(dataTable.CategoryPath, dataTable.Name);
+            var files = context.GetFiles(itemPath);
             var status = this.Repository.Status(files);
 
             foreach (var item in status)
@@ -398,8 +421,8 @@ namespace Ntreev.Crema.Services.Data
 
         private void MoveRepositoryPath(CremaDataTable dataTable, Table table)
         {
-            var directoryName = Path.GetDirectoryName(table.LocalPath);
-            var files = Directory.GetFiles(directoryName, $"{table.Name}.*").Where(item => Path.GetFileNameWithoutExtension(item) == table.Name).ToArray();
+            var context = table.Context;
+            var files = context.GetFiles(table.ItemPath);
 
             for (var i = 0; i < files.Length; i++)
             {
@@ -412,8 +435,8 @@ namespace Ntreev.Crema.Services.Data
 
         private void DeleteRepositoryPath(CremaDataTable dataTable, Table table)
         {
-            var directoryName = Path.GetDirectoryName(table.LocalPath);
-            var files = Directory.GetFiles(directoryName, $"{table.Name}.*").Where(item => Path.GetFileNameWithoutExtension(item) == table.Name).ToArray();
+            var context = table.Context;
+            var files = context.GetFiles(table.ItemPath);
             this.Repository.DeleteRange(files);
         }
 

@@ -59,31 +59,31 @@ namespace Ntreev.Crema.Services.Data
 
         public void InvokeCategoryCreate(Authentication authentication, string name, string parentPath)
         {
-            this.CremaHost.DebugMethod(authentication, this, nameof(InvokeCategoryCreate), name, parentPath);
+            
         }
 
         public void InvokeCategoryRename(Authentication authentication, TypeCategory category, string name)
         {
-            this.CremaHost.DebugMethod(authentication, this, nameof(InvokeCategoryRename), category, name);
+            
         }
 
         public void InvokeCategoryMove(Authentication authentication, TypeCategory category, string parentPath)
         {
-            this.CremaHost.DebugMethod(authentication, this, nameof(InvokeCategoryMove), category, parentPath);
+            
         }
 
         public void InvokeCategoryDelete(Authentication authentication, TypeCategory category)
         {
-            this.CremaHost.DebugMethod(authentication, this, nameof(InvokeCategoryDelete), category);
+            
         }
 
         public void InvokeCategoriesCreatedEvent(Authentication authentication, TypeCategory[] categories)
         {
             var args = categories.Select(item => (object)null).ToArray();
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeCategoriesCreatedEvent), categories);
-            var comment = EventMessageBuilder.CreateTypeCategory(authentication, categories);
+            var message = EventMessageBuilder.CreateTypeCategory(authentication, categories);
             this.CremaHost.Debug(eventLog);
-            this.CremaHost.Info(comment);
+            this.CremaHost.Info(message);
             this.OnCategoriesCreated(new ItemsCreatedEventArgs<ITypeCategory>(authentication, categories, args));
             this.Context.InvokeItemsCreatedEvent(authentication, categories, args);
         }
@@ -91,9 +91,9 @@ namespace Ntreev.Crema.Services.Data
         public void InvokeCategoriesRenamedEvent(Authentication authentication, TypeCategory[] categories, string[] oldNames, string[] oldPaths)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeCategoriesRenamedEvent), categories, oldNames, oldPaths);
-            var comment = EventMessageBuilder.RenameTypeCategory(authentication, categories, oldNames);
+            var message = EventMessageBuilder.RenameTypeCategory(authentication, categories, oldPaths);
             this.CremaHost.Debug(eventLog);
-            this.CremaHost.Info(comment);
+            this.CremaHost.Info(message);
             this.OnCategoriesRenamed(new ItemsRenamedEventArgs<ITypeCategory>(authentication, categories, oldNames, oldPaths));
             this.Context.InvokeItemsRenamedEvent(authentication, categories, oldNames, oldPaths);
         }
@@ -101,9 +101,9 @@ namespace Ntreev.Crema.Services.Data
         public void InvokeCategoriesMovedEvent(Authentication authentication, TypeCategory[] categories, string[] oldPaths, string[] oldParentPaths)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeCategoriesMovedEvent), categories, oldPaths, oldParentPaths);
-            var comment = EventMessageBuilder.MoveTypeCategory(authentication, categories, oldParentPaths);
+            var message = EventMessageBuilder.MoveTypeCategory(authentication, categories, oldPaths, oldParentPaths);
             this.CremaHost.Debug(eventLog);
-            this.CremaHost.Info(comment);
+            this.CremaHost.Info(message);
             this.OnCategoriesMoved(new ItemsMovedEventArgs<ITypeCategory>(authentication, categories, oldPaths, oldParentPaths));
             this.Context.InvokeItemsMovedEvent(authentication, categories, oldPaths, oldParentPaths);
         }
@@ -111,9 +111,9 @@ namespace Ntreev.Crema.Services.Data
         public void InvokeCategoriesDeletedEvent(Authentication authentication, TypeCategory[] categories, string[] categoryPaths)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeCategoriesDeletedEvent), categories, categoryPaths);
-            var comment = EventMessageBuilder.DeleteTypeCategory(authentication, categories);
+            var message = EventMessageBuilder.DeleteTypeCategory(authentication, categories);
             this.CremaHost.Debug(eventLog);
-            this.CremaHost.Info(comment);
+            this.CremaHost.Info(message);
             this.OnCategoriesDeleted(new ItemsDeletedEventArgs<ITypeCategory>(authentication, categories, categoryPaths));
             this.Context.InvokeItemsDeleteEvent(authentication, categories, categoryPaths);
         }

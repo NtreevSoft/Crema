@@ -123,7 +123,7 @@ namespace Ntreev.Crema.Client.Types.Documents.ViewModels
             this.BeginProgress();
             var itemsSource = await this.type.Dispatcher.InvokeAsync(() =>
              {
-                 var dataSet = this.type.GetDataSet(this.authentication, -1);
+                 var dataSet = this.type.GetDataSet(this.authentication, null);
                  this.type.TypeInfoChanged += Type_TypeInfoChanged;
                  return dataSet.Types.FirstOrDefault();
              });
@@ -139,7 +139,7 @@ namespace Ntreev.Crema.Client.Types.Documents.ViewModels
                 this.BeginProgress();
             });
 
-            var dataSet = await this.type.Dispatcher.InvokeAsync(() => this.type.GetDataSet(this.authentication, -1));
+            var dataSet = await this.type.Dispatcher.InvokeAsync(() => this.type.GetDataSet(this.authentication, null));
 
             await this.Dispatcher.InvokeAsync(() =>
             {

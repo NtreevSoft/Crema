@@ -77,8 +77,7 @@ namespace Ntreev.Crema.Commands
                 FileType = this.FileType,
                 Force = this.Force,
             };
-
-            this.boot.CreateRepository(settings);
+            CremaBootstrapper.CreateRepository(this.boot, settings);
         }
     }
 }

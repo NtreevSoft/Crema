@@ -33,7 +33,6 @@ namespace Ntreev.Crema.Services.Domains
         public const string HeaderFileName = "info.dat";
         public const string PostedFileName = "posted.log";
         public const string CompletedFileName = "completed.log";
-        //public const string UsersFileName = "users.xml";
 
         private static readonly XmlWriterSettings writerSettings = new XmlWriterSettings() { OmitXmlDeclaration = true, Indent = true };
 

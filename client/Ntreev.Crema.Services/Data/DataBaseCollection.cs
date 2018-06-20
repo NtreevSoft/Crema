@@ -34,7 +34,6 @@ namespace Ntreev.Crema.Services.Data
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     class DataBaseCollection : ContainerBase<DataBase>, IDataBaseCollection, IDataBaseCollectionServiceCallback, ICremaService
     {
-        private readonly CremaHost cremaHost;
         private readonly UserContext userContext;
         private CremaDispatcher serviceDispatcher;
         private Timer timer;
@@ -56,7 +55,7 @@ namespace Ntreev.Crema.Services.Data
 
         public DataBaseCollection(CremaHost cremaHost, string address, ServiceInfo serviceInfo)
         {
-            this.cremaHost = cremaHost;
+            this.CremaHost = cremaHost;
             this.userContext = cremaHost.UserContext;
 
             this.serviceDispatcher = new CremaDispatcher(this);
@@ -143,7 +142,7 @@ namespace Ntreev.Crema.Services.Data
             var result = this.service.Create(dataBaseName, comment);
             result.Validate(authentication);
             var dataBaseInfo = result.Value;
-            var dataBase = new DataBase(this.cremaHost, dataBaseInfo);
+            var dataBase = new DataBase(this.CremaHost, dataBaseInfo);
             this.AddBase(dataBase.Name, dataBase);
             authentication.SignatureDate = dataBaseInfo.CreationInfo;
             this.InvokeItemsCreateEvent(authentication, new DataBase[] { dataBase }, comment);
@@ -204,7 +203,7 @@ namespace Ntreev.Crema.Services.Data
             var result = this.service.Copy(dataBase.Name, newDataBaseName, comment, force);
             result.Validate(authentication);
             var dataBaseInfo = result.Value;
-            var newDataBase = new DataBase(this.cremaHost, dataBaseInfo);
+            var newDataBase = new DataBase(this.CremaHost, dataBaseInfo);
             this.AddBase(newDataBase.Name, newDataBase);
             authentication.SignatureDate = dataBaseInfo.CreationInfo;
             this.InvokeItemsCreateEvent(authentication, new DataBase[] { newDataBase }, comment);
@@ -254,18 +253,18 @@ namespace Ntreev.Crema.Services.Data
         public void InvokeItemsRenamedEvent(Authentication authentication, IDataBase[] items, string[] oldNames)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsRenamedEvent), items, oldNames);
-            var comment = EventMessageBuilder.RenameDataBase(authentication, items, oldNames);
+            var message = EventMessageBuilder.RenameDataBase(authentication, items, oldNames);
             this.CremaHost.Debug(eventLog);
-            this.CremaHost.Info(comment);
+            this.CremaHost.Info(message);
             this.OnItemsRenamed(new ItemsRenamedEventArgs<IDataBase>(authentication, items, oldNames, oldNames));
         }
 
         public void InvokeItemsDeletedEvent(Authentication authentication, IDataBase[] items, string[] paths)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsDeletedEvent), paths);
-            var comment = EventMessageBuilder.DeleteDataBase(authentication, paths);
+            var message = EventMessageBuilder.DeleteDataBase(authentication, items);
             this.CremaHost.Debug(eventLog);
-            this.CremaHost.Info(comment);
+            this.CremaHost.Info(message);
             this.OnItemsDeleted(new ItemsDeletedEventArgs<IDataBase>(authentication, items, paths));
         }
 
@@ -326,60 +325,60 @@ namespace Ntreev.Crema.Services.Data
         public void InvokeItemsSetPublicEvent(Authentication authentication, IDataBase[] items)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsSetPublicEvent), items);
-            var comment = EventMessageBuilder.SetPublicDataBase(authentication, items);
+            var message = EventMessageBuilder.SetPublicDataBase(authentication, items);
             var metaData = new object[] { AccessChangeType.Public, new string[] { string.Empty, }, new AccessType[] { AccessType.None, }, };
             this.CremaHost.Debug(eventLog);
-            this.CremaHost.Info(comment);
+            this.CremaHost.Info(message);
             this.OnItemsAccessChanged(new ItemsEventArgs<IDataBase>(authentication, items, metaData));
         }
 
         public void InvokeItemsSetPrivateEvent(Authentication authentication, IDataBase[] items)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsSetPrivateEvent), items);
-            var comment = EventMessageBuilder.SetPrivateDataBase(authentication, items);
+            var message = EventMessageBuilder.SetPrivateDataBase(authentication, items);
             var metaData = new object[] { AccessChangeType.Private, new string[] { string.Empty, }, new AccessType[] { AccessType.None, }, };
             this.CremaHost.Debug(eventLog);
-            this.CremaHost.Info(comment);
+            this.CremaHost.Info(message);
             this.OnItemsAccessChanged(new ItemsEventArgs<IDataBase>(authentication, items, metaData));
         }
 
         public void InvokeItemsAddAccessMemberEvent(Authentication authentication, IDataBase[] items, string[] memberIDs, AccessType[] accessTypes)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsAddAccessMemberEvent), items, memberIDs, accessTypes);
-            var comment = EventMessageBuilder.AddAccessMemberToDataBase(authentication, items, memberIDs, accessTypes);
+            var message = EventMessageBuilder.AddAccessMemberToDataBase(authentication, items, memberIDs, accessTypes);
             var metaData = new object[] { AccessChangeType.Add, memberIDs, accessTypes, };
             this.CremaHost.Debug(eventLog);
-            this.CremaHost.Info(comment);
+            this.CremaHost.Info(message);
             this.OnItemsAccessChanged(new ItemsEventArgs<IDataBase>(authentication, items, metaData));
         }
 
         public void InvokeItemsSetAccessMemberEvent(Authentication authentication, IDataBase[] items, string[] memberIDs, AccessType[] accessTypes)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsSetAccessMemberEvent), items, memberIDs, accessTypes);
-            var comment = EventMessageBuilder.SetAccessMemberOfDataBase(authentication, items, memberIDs, accessTypes);
+            var message = EventMessageBuilder.SetAccessMemberOfDataBase(authentication, items, memberIDs, accessTypes);
             var metaData = new object[] { AccessChangeType.Set, memberIDs, accessTypes, };
             this.CremaHost.Debug(eventLog);
-            this.CremaHost.Info(comment);
+            this.CremaHost.Info(message);
             this.OnItemsAccessChanged(new ItemsEventArgs<IDataBase>(authentication, items, metaData));
         }
 
         public void InvokeItemsRemoveAccessMemberEvent(Authentication authentication, IDataBase[] items, string[] memberIDs)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsRemoveAccessMemberEvent), items, memberIDs);
-            var comment = EventMessageBuilder.RemoveAccessMemberFromDataBase(authentication, items, memberIDs);
+            var message = EventMessageBuilder.RemoveAccessMemberFromDataBase(authentication, items, memberIDs);
             var metaData = new object[] { AccessChangeType.Remove, memberIDs, new AccessType[] { AccessType.None, }, };
             this.CremaHost.Debug(eventLog);
-            this.CremaHost.Info(comment);
+            this.CremaHost.Info(message);
             this.OnItemsAccessChanged(new ItemsEventArgs<IDataBase>(authentication, items, new object[] { AccessChangeType.Remove, memberIDs, }));
         }
 
         public void InvokeItemsLockedEvent(Authentication authentication, IDataBase[] items, string[] comments)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsLockedEvent), items, comments);
-            var comment = EventMessageBuilder.LockDataBase(authentication, items, comments);
-            var metaData = new object[] { LockChangeType.Lock, new string[] { comment, }, };
+            var message = EventMessageBuilder.LockDataBase(authentication, items, comments);
+            var metaData = new object[] { LockChangeType.Lock, new string[] { message, }, };
             this.CremaHost.Debug(eventLog);
-            this.CremaHost.Info(comment);
+            this.CremaHost.Info(message);
             this.OnItemsLockChanged(new ItemsEventArgs<IDataBase>(authentication, items, metaData));
         }
 
@@ -453,20 +452,11 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public CremaDispatcher Dispatcher
-        {
-            get { return this.CremaHost.Dispatcher; }
-        }
+        public CremaDispatcher Dispatcher => this.CremaHost.Dispatcher;
 
-        public CremaHost CremaHost
-        {
-            get { return this.cremaHost; }
-        }
+        public CremaHost CremaHost { get; }
 
-        public IDataBaseCollectionService Service
-        {
-            get { return this.service; }
-        }
+        public IDataBaseCollectionService Service => this.service;
 
         public new int Count
         {
@@ -729,7 +719,7 @@ namespace Ntreev.Crema.Services.Data
             for (var i = 0; i < metaData.DataBases.Length; i++)
             {
                 var dataBaseInfo = metaData.DataBases[i];
-                var dataBase = new DataBase(cremaHost, dataBaseInfo);
+                var dataBase = new DataBase(CremaHost, dataBaseInfo);
                 this.AddBase(dataBase.Name, dataBase);
             }
         }
@@ -811,7 +801,7 @@ namespace Ntreev.Crema.Services.Data
                 {
                     var dataBaseName = dataBaseNames[i];
                     var dataBaseInfo = dataBaseInfos[i];
-                    var dataBase = new DataBase(this.cremaHost, dataBaseInfo);
+                    var dataBase = new DataBase(this.CremaHost, dataBaseInfo);
                     this.AddBase(dataBase.Name, dataBase);
                     dataBases[i] = dataBase;
                 }

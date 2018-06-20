@@ -77,8 +77,7 @@ namespace Ntreev.Crema.Commands
                 RepositoryModule = this.RepositoryModule,
                 FileType = this.FileType,
             };
-            this.boot.RepositoryModule = this.RepositoryModule;
-            this.boot.ValidateRepository(settings);
+            CremaBootstrapper.ValidateRepository(this.boot, settings);
         }
     }
 }

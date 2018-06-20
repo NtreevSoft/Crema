@@ -24,6 +24,8 @@ namespace Ntreev.Crema.Services.Data
     [DataContract(Namespace = SchemaUtility.Namespace)]
     struct DataBaseDataSerializationInfo
     {
+        public const string Extension = ".data";
+
         [DataMember]
         public string Revision { get; set; }
 
@@ -32,5 +34,7 @@ namespace Ntreev.Crema.Services.Data
 
         [DataMember]
         public TableInfo[] TableInfos { get; set; }
+
+        public static readonly ObjectSerializerSettings Settings = new ObjectSerializerSettings() { Extension = Extension };
     }
 }

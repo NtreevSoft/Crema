@@ -15,22 +15,13 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Ntreev.Crema.ServiceModel;
+using System;
 
 namespace Ntreev.Crema.Services.Users
 {
     class UserAuthenticationProvider : IAuthenticationProvider
     {
-        private readonly string userID;
-        private string userName;
-        private Authority authority;
-
-        private AuthenticationType authenticationTypes;
         private bool dummy;
 
         public UserAuthenticationProvider(User user)
@@ -41,48 +32,36 @@ namespace Ntreev.Crema.Services.Users
 
         public UserAuthenticationProvider(User user, bool dummy)
         {
-            this.userID = user.ID;
-            this.userName = user.UserName;
-            this.authority = user.Authority;
-            this.authenticationTypes = this.GetAuthenticationTypes(user.Authority, dummy);
+            this.ID = user.ID;
+            this.Name = user.UserName;
+            this.Authority = user.Authority;
+            this.AuthenticationTypes = this.GetAuthenticationTypes(user.Authority, dummy);
             user.UserInfoChanged += User_UserInfoChanged;
         }
 
         public UserAuthenticationProvider(string userID, string userName, Authority authority, AuthenticationType authenticationTypes)
         {
-            this.userID = userID;
-            this.userName = userName;
-            this.authority = authority;
-            this.authenticationTypes = authenticationTypes;
+            this.ID = userID;
+            this.Name = userName;
+            this.Authority = authority;
+            this.AuthenticationTypes = authenticationTypes;
             this.dummy = true;
         }
 
-        public AuthenticationType AuthenticationTypes
-        {
-            get { return this.authenticationTypes; }
-        }
+        public AuthenticationType AuthenticationTypes { get; private set; }
 
-        public string ID
-        {
-            get { return this.userID; }
-        }
+        public string ID { get; }
 
-        public string Name
-        {
-            get { return this.userName; }
-        }
+        public string Name { get; private set; }
 
-        public Authority Authority
-        {
-            get { return this.authority; }
-        }
+        public Authority Authority { get; private set; }
 
         private void User_UserInfoChanged(object sender, EventArgs e)
         {
             var user = sender as User;
-            this.userName = user.UserName;
-            this.authority = user.Authority;
-            this.authenticationTypes = this.GetAuthenticationTypes(user.Authority, this.dummy);
+            this.Name = user.UserName;
+            this.Authority = user.Authority;
+            this.AuthenticationTypes = this.GetAuthenticationTypes(user.Authority, this.dummy);
         }
 
         private AuthenticationType GetAuthenticationTypes(Authority authority, bool dummy)

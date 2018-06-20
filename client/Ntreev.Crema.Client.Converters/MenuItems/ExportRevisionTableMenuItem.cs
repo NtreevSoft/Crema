@@ -61,7 +61,7 @@ namespace Ntreev.Crema.Client.Converters.MenuItems
                     if (viewModel is IInfoProvider provider)
                     {
                         var props = provider.Info;
-                        var revision = (long)props["Revision"];
+                        var revision = (string)props["Revision"];
                         var tableName = await tableItem.Dispatcher.InvokeAsync(() => tableItem.Name);
                         var dialog = new CommonSaveFileDialog();
                         dialog.Filters.Add(new CommonFileDialogFilter("excel file", "*.xlsx"));

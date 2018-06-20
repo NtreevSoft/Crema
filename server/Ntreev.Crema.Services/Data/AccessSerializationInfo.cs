@@ -26,6 +26,8 @@ namespace Ntreev.Crema.Services.Data
     [DataContract(Name = "AccessInfo", Namespace = SchemaUtility.Namespace)]
     struct AccessSerializationInfo
     {
+        public const string Extension = ".acs";
+
         [DataMember(EmitDefaultValue = false)]
         public SignatureDate SignatureDate { get; set; }
 
@@ -57,5 +59,7 @@ namespace Ntreev.Crema.Services.Data
                 obj.SignatureDate = new SignatureDate();
             return obj;
         }
+
+        public static readonly ObjectSerializerSettings Settings = new ObjectSerializerSettings() { Extension = Extension };
     }
 }

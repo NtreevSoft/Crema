@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthenticationToken.cs" />
+    <Compile Include="Data\DataBaseStateSerializationInfo.cs" />
     <Compile Include="Data\DataBaseSet.cs" />
     <Compile Include="ObjectSerializerSettings.cs" />
     <Compile Include="LogServiceHost.cs" />
@@ -76,7 +77,6 @@
     <Compile Include="Data\AccessSerializationInfo.cs" />
     <Compile Include="Data\DataBaseDataSerializationInfo.cs" />
     <Compile Include="Data\DataServiceItemInfo.cs" />
-    <None Include="Data\AccessInfoExtensions.cs" />
     <Compile Include="Domains\Actions\DisjoinAction.cs" />
     <Compile Include="Domains\Actions\JoinAction.cs" />
     <Compile Include="Domains\Actions\SetOwnerAction.cs" />
@@ -90,8 +90,6 @@
     <Compile Include="Data\DataBaseTransaction.cs" />
     <Compile Include="Data\DataFindServiceItem.cs" />
     <Compile Include="Data\DataFindService.cs" />
-    <Compile Include="Data\DataTypeCollection.cs" />
-    <Compile Include="Data\DataTableCollection.cs" />
     <Compile Include="Data\DomainBasedRow.cs" />
     <Compile Include="IRepositoryExtensions.cs" />
     <Compile Include="IRepositoryProvider.cs" />
@@ -152,7 +150,6 @@
     <Compile Include="RepositoryHost.cs" />
     <Compile Include="RepositoryItemStatus.cs" />
     <Compile Include="RepositoryItem.cs" />
-    <Compile Include="SerializationPropertyCollection.cs" />
     <Compile Include="Users\User.cs" />
     <Compile Include="Users\UserAuthenticationProvider.cs" />
     <Compile Include="Users\UserCategory.cs" />
@@ -162,6 +159,7 @@
     <Compile Include="Users\UserContextSerializationInfo.cs" />
     <Compile Include="Users\UserCategorySerializationInfoList.cs" />
     <Compile Include="Users\BanSerializationInfo.cs" />
+    <Compile Include="Users\UserRepositoryHost.cs" />
     <Compile Include="Users\UserSerializationInfo.cs" />
     <Compile Include="XmlObjectSerializer.cs" />
   </ItemGroup>

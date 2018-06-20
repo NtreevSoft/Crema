@@ -64,11 +64,11 @@ namespace Ntreev.Crema.Repository.Git
 
             if (Directory.Exists(settings.WorkingPath) == false)
             {
-                GitServerHost.Run("clone", baseUri.ToString().WrapQuot(), "-b", branchName, settings.WorkingPath.WrapQuot(), "--single-branch");
+                GitServerHost.Run("clone", baseUri.ToString().ToGitPath(), "-b", branchName, settings.WorkingPath.ToGitPath(), "--single-branch");
             }
             else
             {
-                //GitHost.Run("update", workingPath.WrapQuot());
+                //GitHost.Run("update", workingPath.ToGitPath());
             }
             //var transactionPath = Path.Combine(this.CremaHost.GetPath(CremaPath.Transactions), Path.GetFileName(workingPath));
             var repositoryInfo = this.GetRepositoryInfo(settings.BasePath, settings.RepositoryName);
@@ -147,7 +147,7 @@ namespace Ntreev.Crema.Repository.Git
                     ID = Guid.NewGuid(),
                 };
                 var props = propertySerializer.Serialize(info);
-                GitHost.Run(repositoryPath, "config", $"branch.{branchName}.description", props.WrapQuot());
+                GitHost.Run(repositoryPath, "config", $"branch.{branchName}.description", props.ToGitPath());
                 repositoryInfo.ID = info.ID;
             }
 
@@ -186,7 +186,7 @@ namespace Ntreev.Crema.Repository.Git
 
         public void InitializeRepository(string basePath, string repositoryPath)
         {
-            GitServerHost.Run("init", basePath.WrapQuot());
+            GitServerHost.Run("init", basePath.ToGitPath());
             GitHost.Run(basePath, "config receive.denyCurrentBranch ignore");
             GitHost.Run(basePath, "commit --allow-empty -m \"root commit\"");
             GitHost.Run(basePath, $"branch {emptyBranch}");
@@ -198,7 +198,7 @@ namespace Ntreev.Crema.Repository.Git
             }
 
             var query = from item in DirectoryUtility.GetAllFiles(basePath, "*", true)
-                        select item.WrapQuot();
+                        select item.ToGitPath();
 
             var argList = new List<object>()
             {
@@ -249,7 +249,7 @@ namespace Ntreev.Crema.Repository.Git
         //        var repositoryPath = this.CremaHost.GetPath(CremaPath.Caches, "git-cache", $"{id}");
         //        this.cacheRepositories.Add(baseUri, repositoryPath);
         //        DirectoryUtility.Delete(repositoryPath);
-        //        GitServerHost.Run("init", repositoryPath.WrapQuot());
+        //        GitServerHost.Run("init", repositoryPath.ToGitPath());
         //        GitHost.Run(repositoryPath, "remote add origin", baseUri);
         //    }
         //    {

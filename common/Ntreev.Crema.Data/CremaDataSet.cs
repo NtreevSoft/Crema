@@ -405,9 +405,14 @@ namespace Ntreev.Crema.Data
 
         public void ReadTypeString(string schema)
         {
+            this.ReadTypeString(schema, null);
+        }
+
+        public void ReadTypeString(string schema, ItemName itemName)
+        {
             using (var sr = new StringReader(schema))
             {
-                this.ReadType(sr);
+                this.ReadType(sr, itemName);
             }
         }
 
@@ -585,8 +590,13 @@ namespace Ntreev.Crema.Data
 
         public void ReadType(string filename)
         {
+            this.ReadType(filename, null);
+        }
+
+        public void ReadType(string filename, ItemName itemName)
+        {
             var dataType = new CremaDataType();
-            var schemaReader = new CremaSchemaReader(dataType);
+            var schemaReader = new CremaSchemaReader(dataType, itemName);
             schemaReader.Read(filename);
             lock (this)
             {
@@ -596,26 +606,41 @@ namespace Ntreev.Crema.Data
 
         public void ReadType(TextReader reader)
         {
-            var type = new CremaDataType();
-            var schemaReader = new CremaSchemaReader(type);
-            schemaReader.Read(reader);
-            this.types.Add(type);
+            this.ReadType(reader, null);
         }
 
-        public void ReadType(Stream stream)
+        public void ReadType(TextReader reader, ItemName itemName)
         {
-            var type = new CremaDataType();
-            var schemaReader = new CremaSchemaReader(type);
+            var dataType = new CremaDataType();
+            var schemaReader = new CremaSchemaReader(dataType, itemName);
+            schemaReader.Read(reader);
+            this.types.Add(dataType);
+        }
+
+        public void ReadType(Stream reader)
+        {
+            this.ReadType(reader, null);
+        }
+
+        public void ReadType(Stream stream, ItemName itemName)
+        {
+            var dataType = new CremaDataType();
+            var schemaReader = new CremaSchemaReader(dataType, itemName);
             schemaReader.Read(stream);
-            this.types.Add(type);
+            this.types.Add(dataType);
         }
 
         public void ReadType(XmlReader reader)
         {
-            var type = new CremaDataType();
-            var schemaReader = new CremaSchemaReader(type);
+            this.ReadType(reader, null);
+        }
+
+        public void ReadType(XmlReader reader, ItemName itemName)
+        {
+            var dataType = new CremaDataType();
+            var schemaReader = new CremaSchemaReader(dataType, itemName);
             schemaReader.Read(reader);
-            this.types.Add(type);
+            this.types.Add(dataType);
         }
 
         public void ReadXmlSchema(string filename)
@@ -877,13 +902,6 @@ namespace Ntreev.Crema.Data
         {
             get { return this.types; }
         }
-
-        //[Obsolete]
-        //public static Func<string, bool> NameVerifier
-        //{
-        //    get { return nameVerifier ?? defaultNameVerifier; }
-        //    set { nameVerifier = value; }
-        //}
 
         public static void ValidateName(string name)
         {

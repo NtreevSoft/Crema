@@ -47,7 +47,7 @@ namespace Ntreev.Crema.Services
             CremaLog.Debug("default repository module : {0}", this.settings.RepositoryModule);
         }
 
-        public void CreateRepository(RepositoryCreationSettings settings)
+        public static void CreateRepository(IServiceProvider serviceProvider, RepositoryCreationSettings settings)
         {
             var directoryInfo = new DirectoryInfo(settings.BasePath);
 
@@ -64,8 +64,8 @@ namespace Ntreev.Crema.Services
             try
             {
                 var basePath = directoryInfo.FullName;
-                var repositoryProvider = this.GetRepositoryProvider(settings.RepositoryModule);
-                var serializer = this.GetSerializer(settings.FileType);
+                var repositoryProvider = GetRepositoryProvider(serviceProvider, settings.RepositoryModule);
+                var serializer = GetSerializer(serviceProvider, settings.FileType);
 
                 var tempPath = PathUtility.GetTempPath(true);
                 var usersRepo = DirectoryUtility.Prepare(basePath, "remotes", "users");
@@ -85,12 +85,12 @@ namespace Ntreev.Crema.Services
             }
         }
 
-        public void ValidateRepository(RepositoryValidationSettings settings)
+        public static void ValidateRepository(IServiceProvider serviceProvider, RepositoryValidationSettings settings)
         {
-            var repositoryProvider = this.GetRepositoryProvider(settings.RepositoryModule);
-            var serializer = this.GetSerializer(settings.FileType);
+            var repositoryProvider = GetRepositoryProvider(serviceProvider, settings.RepositoryModule);
+            var serializer = GetSerializer(serviceProvider, settings.FileType);
 
-            var logService = new LogServiceHost(this.GetType().FullName, CremaHost.GetPath(settings.GetTempPath(), CremaPath.Logs))
+            var logService = new LogServiceHost(serviceProvider.GetType().FullName, CremaHost.GetPath(settings.GetTempPath(), CremaPath.Logs))
             {
                 Verbose = settings.Verbose
             };
@@ -127,12 +127,12 @@ namespace Ntreev.Crema.Services
             logService.Info("end");
         }
 
-        public void MigrateRepository(RepositoryMigrationSettings settings)
+        public static void MigrateRepository(IServiceProvider serviceProvider, RepositoryMigrationSettings settings)
         {
-            var repositoryProvider = this.GetRepositoryProvider(settings.RepositoryModule);
-            var serializer = this.GetSerializer(settings.FileType);
+            var repositoryProvider = GetRepositoryProvider(serviceProvider, settings.RepositoryModule);
+            var serializer = GetSerializer(serviceProvider, settings.FileType);
 
-            var logService = new LogServiceHost(this.GetType().FullName, CremaHost.GetPath(settings.BasePath, CremaPath.Logs))
+            var logService = new LogServiceHost(serviceProvider.GetType().FullName, CremaHost.GetPath(settings.BasePath, CremaPath.Logs))
             {
                 Verbose = settings.Verbose
             };
@@ -155,7 +155,7 @@ namespace Ntreev.Crema.Services
                         WorkingPath = tempPath,
                         LogService = logService,
                     };
-                    this.MigrateRepository(repositoryProvider, serializer, repositorySettings);
+                    MigrateRepository(repositoryProvider, serializer, repositorySettings);
                     CremaLog.Info("migtrated : {0}", item);
                 }
                 finally
@@ -386,6 +386,24 @@ namespace Ntreev.Crema.Services
             this.Disposed?.Invoke(this, e);
         }
 
+        private static IObjectSerializer GetSerializer(IServiceProvider serviceProvider, string fileType)
+        {
+            var serializers = serviceProvider.GetService(typeof(IEnumerable<IObjectSerializer>)) as IEnumerable<IObjectSerializer>;
+            var serializer = serializers.FirstOrDefault(item => item.Name == fileType);
+            if (serializer == null)
+                throw new InvalidOperationException("no serializer");
+            return serializer;
+        }
+
+        private static IRepositoryProvider GetRepositoryProvider(IServiceProvider serviceProvider, string repositoryModule)
+        {
+            var repositoryProviders = serviceProvider.GetService(typeof(IEnumerable<IRepositoryProvider>)) as IEnumerable<IRepositoryProvider>;
+            var repositoryProvider = repositoryProviders.FirstOrDefault(item => item.Name == repositoryModule);
+            if (repositoryProvider == null)
+                throw new InvalidOperationException(Resources.Exception_NoRepositoryModule);
+            return repositoryProvider;
+        }
+
         private void Initialize()
         {
             CremaLog.Debug("Initialize.");
@@ -393,25 +411,7 @@ namespace Ntreev.Crema.Services
             CremaLog.Debug("Initialized.");
         }
 
-        private IObjectSerializer GetSerializer(string fileType)
-        {
-            var serializers = this.GetInstances(typeof(IObjectSerializer)).OfType<IObjectSerializer>();
-            var serializer = serializers.FirstOrDefault(item => item.Name == fileType);
-            if (serializer == null)
-                throw new InvalidOperationException("no serializer");
-            return serializer;
-        }
-
-        private IRepositoryProvider GetRepositoryProvider(string repositoryModule)
-        {
-            var repositoryProviders = this.GetInstances(typeof(IRepositoryProvider)).OfType<IRepositoryProvider>();
-            var repositoryProvider = repositoryProviders.FirstOrDefault(item => item.Name == repositoryModule);
-            if (repositoryProvider == null)
-                throw new InvalidOperationException(Resources.Exception_NoRepositoryModule);
-            return repositoryProvider;
-        }
-
-        private void MigrateRepository(IRepositoryProvider repositoryProvider, IObjectSerializer serializer, RepositorySettings settings)
+        private static void MigrateRepository(IRepositoryProvider repositoryProvider, IObjectSerializer serializer, RepositorySettings settings)
         {
             using (var repository = repositoryProvider.CreateInstance(settings))
             {

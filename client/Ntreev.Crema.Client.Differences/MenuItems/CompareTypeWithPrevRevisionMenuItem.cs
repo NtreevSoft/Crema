@@ -63,7 +63,7 @@ namespace Ntreev.Crema.Client.Differences.MenuItems
                 var logs = type.GetLog(this.authenticator);
                 var hasRevision = logs.Length >= 2;
                 var dataSet1 = hasRevision ? type.GetDataSet(this.authenticator, logs[1].Revision) : new CremaDataSet();
-                var dataSet2 = type.GetDataSet(this.authenticator, -1);
+                var dataSet2 = type.GetDataSet(this.authenticator, null);
                 var header1 = hasRevision ? $"[{logs[1].DateTime}] {logs[1].Revision}" : string.Empty;
                 var dataSet = new DiffDataSet(dataSet1, dataSet2)
                 {

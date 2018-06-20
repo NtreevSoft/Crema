@@ -117,7 +117,7 @@ namespace Ntreev.Crema.Services.Data
             var message = EventMessageBuilder.DeleteTableCategory(authentication, category.Path);
             try
             {
-                this.Repository.Delete(category.LocalPath);
+                this.Repository.Delete(category.ItemPath);
                 this.Repository.Commit(authentication, message);
             }
             catch

@@ -15,13 +15,7 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.ServiceModel;
-using Ntreev.Library.Linq;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Services
 {
@@ -44,7 +38,7 @@ namespace Ntreev.Crema.Services
 
         public static void Error(this ILogService logService, Exception e)
         {
-            logService.Error(e.Message);
+            logService.Error(e.ToString());
         }
 
         public static void Warn(this ILogService logService, string format, params object[] args)

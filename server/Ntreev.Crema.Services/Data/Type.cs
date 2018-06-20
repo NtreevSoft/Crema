@@ -275,8 +275,8 @@ namespace Ntreev.Crema.Services.Data
                 this.CremaHost.DebugMethod(authentication, this, nameof(SetTags), this, tags);
                 this.Template.ValidateBeginEdit(authentication);
                 this.Sign(authentication);
-                var dataType = this.ReadData(authentication);
-                var dataSet = dataType.DataSet;
+                var dataSet = this.ReadData(authentication);
+                var dataType = dataSet.Types[this.Name, this.Category.Path];
                 this.Container.InvokeTypeSetTags(authentication, this, tags, dataSet);
                 this.UpdateTags(tags);
                 this.Container.InvokeTypesChangedEvent(authentication, new Type[] { this }, dataSet);
@@ -309,13 +309,14 @@ namespace Ntreev.Crema.Services.Data
             {
                 this.DataBase.ValidateAsyncBeginInDataBase(authentication);
                 this.CremaHost.DebugMethod(authentication, this, nameof(GetLog), this);
-                var itemPaths = this.Dispatcher.Invoke(() =>
+                var itemPath = this.Dispatcher.Invoke(() =>
                 {
                     this.ValidateAccessType(authentication, AccessType.Guest);
                     this.Sign(authentication);
-                    return this.Serializer.GetPath(this.LocalPath, typeof(CremaDataType), null);
+                    return this.ItemPath;
                 });
-                var result = this.Context.GetLog(itemPaths);
+                var files = this.Context.GetFiles(itemPath);
+                var result = this.Context.GetLog(files);
                 return result;
             }
             catch (Exception e)
@@ -359,7 +360,7 @@ namespace Ntreev.Crema.Services.Data
                 {
                     this.ValidateAccessType(authentication, AccessType.Guest);
                     this.Sign(authentication);
-                    return this.LocalPath;
+                    return this.ItemPath;
                 });
                 return this.Repository.GetTypeData(this.Serializer, itemPath, revision);
             }
@@ -370,11 +371,11 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public CremaDataType ReadData(Authentication authentication)
+        public CremaDataSet ReadData(Authentication authentication)
         {
-            var props = new CremaDataSetSerializerSettings(new string[] { this.LocalPath }, null);
-            var dataSet = this.Serializer.Deserialize(this.LocalPath, typeof(CremaDataSet), props) as CremaDataSet;
-            return dataSet.Types[base.Name];
+            var props = new CremaDataSetSerializerSettings(new string[] { this.ItemPath }, null);
+            var dataSet = this.Serializer.Deserialize(this.ItemPath, typeof(CremaDataSet), props) as CremaDataSet;
+            return dataSet;
         }
 
         public CremaDataSet ReadAllData(Authentication authentication)
@@ -382,15 +383,15 @@ namespace Ntreev.Crema.Services.Data
             var tables = this.ReferencedTables.ToArray();
             var typeFiles = tables.SelectMany(item => item.GetTypes())
                                   .Concat(EnumerableUtility.One(this))
-                                  .Select(item => item.LocalPath)
+                                  .Select(item => item.ItemPath)
                                   .Distinct()
                                   .ToArray();
-            var tableFiles = tables.Select(item => item.LocalPath)
+            var tableFiles = tables.Select(item => item.ItemPath)
                                    .Distinct()
                                    .ToArray();
 
             var props = new CremaDataSetSerializerSettings(authentication, typeFiles, tableFiles);
-            var dataSet = this.Serializer.Deserialize(this.LocalPath, typeof(CremaDataSet), props) as CremaDataSet;
+            var dataSet = this.Serializer.Deserialize(this.ItemPath, typeof(CremaDataSet), props) as CremaDataSet;
             return dataSet;
         }
 
@@ -399,7 +400,7 @@ namespace Ntreev.Crema.Services.Data
             return this.DataBase.GetService(serviceType);
         }
 
-        public string LocalPath => this.Context.GenerateTypePath(this.Category.Path, base.Name);
+        public string ItemPath => this.Context.GenerateTypePath(this.Category.Path, base.Name);
 
         public IEnumerable<Table> ReferencedTables
         {
