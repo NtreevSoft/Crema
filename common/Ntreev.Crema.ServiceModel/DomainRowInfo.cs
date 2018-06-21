@@ -58,15 +58,15 @@ namespace Ntreev.Crema.ServiceModel
         [DataMember]
         public DomainFieldInfo[] FieldInfos
         {
-            get { return this.fields.Select(item => new DomainFieldInfo(item)).ToArray(); }
-            set { this.fields = value.Select(item => item.ToValue()).ToArray(); }
+            get { return this.fields != null ? this.fields.Select(item => new DomainFieldInfo(item)).ToArray() : new DomainFieldInfo[] { }; }
+            set { this.fields = value?.Select(item => item.ToValue()).ToArray(); }
         }
 
         [DataMember]
         public DomainFieldInfo[] KeyInfos
         {
-            get { return this.keys.Select(item => new DomainFieldInfo(item)).ToArray(); }
-            set { this.keys = value.Select(item => item.ToValue()).ToArray(); }
+            get { return this.keys != null ? this.keys.Select(item => new DomainFieldInfo(item)).ToArray() : new DomainFieldInfo[] { }; }
+            set { this.keys = value?.Select(item => item.ToValue()).ToArray(); }
         }
 
         public static readonly DomainRowInfo Empty;
