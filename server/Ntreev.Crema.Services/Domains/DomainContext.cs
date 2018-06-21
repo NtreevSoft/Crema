@@ -115,6 +115,8 @@ namespace Ntreev.Crema.Services.Domains
 
         public CremaDispatcher Dispatcher => this.CremaHost.Dispatcher;
 
+        public IObjectSerializer Serializer => this.CremaHost.Serializer;
+
         public event ItemsCreatedEventHandler<IDomainItem> ItemsCreated
         {
             add
@@ -179,43 +181,95 @@ namespace Ntreev.Crema.Services.Domains
             if (Directory.Exists(path) == false)
                 return;
 
-            var dirs = Directory.GetDirectories(path);
-
-            var totalCount = 0;
-            foreach (var item in dirs)
+            var domainList = new List<string>();
+            foreach (var item in Directory.GetDirectories(path))
             {
                 var dirInfo = new DirectoryInfo(item);
-                if (Guid.TryParse(dirInfo.Name, out Guid domainID) == false)
-                    continue;
-
-                var restorer = new DomainRestorer(authentication, this, item);
-
-                if (totalCount == 0)
-                    this.CremaHost.Info(Resources.Message_DomainRestorationMessage);
-
-                totalCount++;
-
-                try
+                if (Guid.TryParse(dirInfo.Name, out Guid domainID) == true)
                 {
-                    restorer.Restore();
-                    this.CremaHost.Debug(Resources.Message_DomainIsRestored_Format, domainID);
-                    succeededCount++;
-                }
-                catch (Exception e)
-                {
-                    this.CremaHost.Error(e.Message);
-                    this.CremaHost.Error(Resources.Message_DomainRestorationIsFailed_Format, domainID);
-                    failedCount++;
+                    domainList.Add(item);
                 }
             }
 
-            if (succeededCount != 0 || failedCount != 0)
-                this.CremaHost.Debug(string.Format(Resources.Message_RestoreResult_Format, succeededCount, failedCount));
-            else
-                this.CremaHost.Debug(Resources.Message_NotFoundDomainsToRestore);
+            if(domainList.Any() == true)
+            {
+                this.CremaHost.Info(Resources.Message_DomainRestorationMessage);
+                foreach(var item in domainList)
+                {
+                    var domainID = Guid.Parse(Path.GetFileName(item));
+                    //var restorer = new DomainRestorer(authentication, this, item);
 
-            if (totalCount != 0)
-                this.CremaHost.Info(Resources.Message_DomainState_Format, totalCount, succeededCount, failedCount);
+                    //if (totalCount == 0)
+                    //    this.CremaHost.Info(Resources.Message_DomainRestorationMessage);
+
+                    //totalCount++;
+
+                    try
+                    {
+                        DomainRestorer.Restore(authentication, this, item);
+                        this.CremaHost.Debug(Resources.Message_DomainIsRestored_Format, domainID);
+                        succeededCount++;
+                    }
+                    catch (Exception e)
+                    {
+                        this.CremaHost.Error(e.Message);
+                        this.CremaHost.Error(Resources.Message_DomainRestorationIsFailed_Format, domainID);
+                        failedCount++;
+                    }
+                }
+
+                this.CremaHost.Debug(string.Format(Resources.Message_RestoreResult_Format, succeededCount, failedCount));
+                //this.CremaHost.Info(Resources.Message_DomainState_Format, totalCount, succeededCount, failedCount);
+                //if (succeededCount != 0 || failedCount != 0)
+                    
+                //else
+                //    this.CremaHost.Debug(Resources.Message_NotFoundDomainsToRestore);
+
+                //if (totalCount != 0)
+                    
+            }
+            else
+            {
+                this.CremaHost.Debug(Resources.Message_NotFoundDomainsToRestore);
+            }
+           
+            //var dirs = Directory.GetDirectories(path);
+
+            //var totalCount = 0;
+            //foreach (var item in dirs)
+            //{
+            //    var dirInfo = new DirectoryInfo(item);
+            //    if (Guid.TryParse(dirInfo.Name, out Guid domainID) == false)
+            //        continue;
+
+            //    var restorer = new DomainRestorer(authentication, this, item);
+
+            //    if (totalCount == 0)
+            //        this.CremaHost.Info(Resources.Message_DomainRestorationMessage);
+
+            //    totalCount++;
+
+            //    try
+            //    {
+            //        restorer.Restore();
+            //        this.CremaHost.Debug(Resources.Message_DomainIsRestored_Format, domainID);
+            //        succeededCount++;
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        this.CremaHost.Error(e.Message);
+            //        this.CremaHost.Error(Resources.Message_DomainRestorationIsFailed_Format, domainID);
+            //        failedCount++;
+            //    }
+            //}
+
+            //if (succeededCount != 0 || failedCount != 0)
+            //    this.CremaHost.Debug(string.Format(Resources.Message_RestoreResult_Format, succeededCount, failedCount));
+            //else
+            //    this.CremaHost.Debug(Resources.Message_NotFoundDomainsToRestore);
+
+            //if (totalCount != 0)
+            //    this.CremaHost.Info(Resources.Message_DomainState_Format, totalCount, succeededCount, failedCount);
         }
 
         public new void Clear()

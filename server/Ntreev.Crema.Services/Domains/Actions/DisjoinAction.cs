@@ -16,11 +16,12 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Ntreev.Crema.ServiceModel;
+using Ntreev.Library;
 using System.Runtime.Serialization;
 
 namespace Ntreev.Crema.Services.Domains.Actions
 {
-    [DataContract]
+    [DataContract(Namespace = SchemaUtility.Namespace)]
     public class DisjoinAction : DomainActionBase
     {
         [DataMember]

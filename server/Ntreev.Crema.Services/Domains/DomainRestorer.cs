@@ -29,7 +29,7 @@ using System.Xml;
 
 namespace Ntreev.Crema.Services.Domains
 {
-    class DomainRestorer
+    class DomainRestorer : IDisposable
     {
         private readonly static XmlReaderSettings readerSettings = new XmlReaderSettings()
         {
@@ -41,116 +41,73 @@ namespace Ntreev.Crema.Services.Domains
         private readonly DomainContext domainContext;
         private readonly string workingPath;
 
-        private readonly HashSet<long> completedActions = new HashSet<long>();
-        private readonly List<DomainActionBase> postedActions = new List<DomainActionBase>();
+        private readonly List<DomainActionPost> postedList = new List<DomainActionPost>();
+        private readonly Dictionary<long, DomainActionComplete> completedList = new Dictionary<long, DomainActionComplete>();
+        private readonly List<DomainActionBase> actionList = new List<DomainActionBase>();
         private Dictionary<string, Authentication> authentications;
         private Domain domain;
         private DateTime dateTime;
 
         private long lastID;
 
-        public DomainRestorer(Authentication authentication, DomainContext domainContext, string workingPath)
+        private DomainRestorer(Authentication authentication, DomainContext domainContext, string workingPath)
         {
             this.authentication = authentication;
             this.domainContext = domainContext;
             this.workingPath = workingPath;
         }
 
-        public void Restore()
+        public static void Restore(Authentication authentication, DomainContext domainContext, string workingPath)
         {
-            try
+            using (var restorer = new DomainRestorer(authentication, domainContext, workingPath))
             {
-                this.CollectCompletedActions();
-                this.CollectPostedActions();
-                this.DeserializeDomain();
-                this.CollectAuthentications();
-                this.RestoreDomain();
-            }
-            finally
-            {
-                this.ExpireAuthetications();
+                restorer.CollectCompletedActions();
+                restorer.CollectPostedActions();
+                restorer.DeserializeDomain();
+                restorer.CollectAuthentications();
+                restorer.RestoreDomain();
             }
         }
 
         private void CollectCompletedActions()
         {
-            var completedPath = Path.Combine(this.workingPath, DomainLogger.CompletedFileName);
+            var itemPath = Path.Combine(this.workingPath, DomainLogger.CompletedItemPath);
+            var items = this.Serializer.Deserialize(itemPath, typeof(DomainActionComplete[]), ObjectSerializerSettings.Empty) as DomainActionComplete[];
 
-            using (var reader = XmlReader.Create(completedPath, readerSettings))
+            foreach (var item in items)
             {
-                while (reader.Read() == true)
-                {
-                    var id = long.Parse(reader.GetAttribute("ID"));
-                    this.completedActions.Add(id);
-                }
+                this.completedList.Add(item.ID, item);
             }
         }
 
         private void CollectPostedActions()
         {
-            var postedPath = Path.Combine(this.workingPath, DomainLogger.PostedFileName);
+            var itemPath = Path.Combine(this.workingPath, DomainLogger.PostedItemPath);
+            var items = this.Serializer.Deserialize(itemPath, typeof(DomainActionPost[]), ObjectSerializerSettings.Empty) as DomainActionPost[];
 
-            using (var reader = XmlReader.Create(postedPath, readerSettings))
+            foreach (var item in items)
             {
-                reader.Read();
-                while (reader.EOF != true)
+                if (this.completedList.ContainsKey(item.ID) == true)
                 {
-                    DomainActionBase actionObject = null;
-                    if (reader.Name == typeof(NewRowAction).Name)
-                    {
-                        actionObject = DataContractSerializerUtility.Read<NewRowAction>(reader);
-                    }
-                    else if (reader.Name == typeof(RemoveRowAction).Name)
-                    {
-                        actionObject = DataContractSerializerUtility.Read<RemoveRowAction>(reader);
-                    }
-                    else if (reader.Name == typeof(SetRowAction).Name)
-                    {
-                        actionObject = DataContractSerializerUtility.Read<SetRowAction>(reader);
-                    }
-                    else if (reader.Name == typeof(SetPropertyAction).Name)
-                    {
-                        actionObject = DataContractSerializerUtility.Read<SetPropertyAction>(reader);
-                    }
-                    else if (reader.Name == typeof(JoinAction).Name)
-                    {
-                        actionObject = DataContractSerializerUtility.Read<JoinAction>(reader);
-                    }
-                    else if (reader.Name == typeof(DisjoinAction).Name)
-                    {
-                        actionObject = DataContractSerializerUtility.Read<DisjoinAction>(reader);
-                    }
-                    else if (reader.Name == typeof(KickAction).Name)
-                    {
-                        actionObject = DataContractSerializerUtility.Read<KickAction>(reader);
-                    }
-                    else if (reader.Name == typeof(SetOwnerAction).Name)
-                    {
-                        actionObject = DataContractSerializerUtility.Read<SetOwnerAction>(reader);
-                    }
-                    else
-                    {
-                        throw new NotImplementedException();
-                    }
-
-                    this.lastID = actionObject.ID;
-
-                    if (this.completedActions.Contains(actionObject.ID) == false)
-                        continue;
-
-                    this.postedActions.Add(actionObject);
+                    var type = Type.GetType(item.Type);
+                    var path = Path.Combine(this.workingPath, $"{item.ID}");
+                    var action = (DomainActionBase)this.Serializer.Deserialize(path, type, ObjectSerializerSettings.Empty);
+                    this.actionList.Add(action);
                 }
+
+                this.lastID = item.ID;
             }
         }
 
         private void DeserializeDomain()
         {
-            var path = Path.Combine(this.workingPath, DomainLogger.HeaderFileName);
+            var path = Path.Combine(this.workingPath, DomainLogger.SourceItemPath);
+            //var source = this.Serializer.
             var formatter = new BinaryFormatter() { Context = new StreamingContext(StreamingContextStates.CrossAppDomain, this.domainContext.CremaHost) };
             using (var stream = File.OpenRead(path))
             {
                 this.domain = formatter.Deserialize(stream) as Domain;
-                this.domain.Logger = new DomainLogger(this.workingPath);
+                this.domain.Logger = new DomainLogger(this.domainContext.Serializer, this.workingPath);
                 this.domainContext.Domains.Restore(this.authentication, this.domain);
             }
         }
@@ -159,7 +116,7 @@ namespace Ntreev.Crema.Services.Domains
         {
             var creatorID = this.domain.DomainInfo.CreationInfo.ID;
             var userContext = this.domainContext.CremaHost.UserContext;
-            var userIDs = this.postedActions.Select(item => item.UserID).Concat(Enumerable.Repeat(creatorID, 1)).Distinct();
+            var userIDs = this.actionList.Select(item => item.UserID).Concat(Enumerable.Repeat(creatorID, 1)).Distinct();
 
             var users = userContext.Dispatcher.Invoke(() =>
             {
@@ -180,7 +137,7 @@ namespace Ntreev.Crema.Services.Domains
             {
                 this.domain.Logger.IsEnabled = false;
 
-                foreach (var item in this.postedActions)
+                foreach (var item in this.actionList)
                 {
                     var authentication = this.authentications[item.UserID];
                     try
@@ -244,7 +201,14 @@ namespace Ntreev.Crema.Services.Domains
             this.domain.Host = null;
         }
 
-        private void ExpireAuthetications()
+        private DateTime GetTime()
+        {
+            return this.dateTime;
+        }
+
+        private IObjectSerializer Serializer => this.domainContext.Serializer;
+
+        void IDisposable.Dispose()
         {
             if (this.authentications == null)
                 return;
@@ -252,11 +216,6 @@ namespace Ntreev.Crema.Services.Domains
             {
                 item.Value.InvokeExpiredEvent(Authentication.SystemID);
             }
-        }
-
-        private DateTime GetTime()
-        {
-            return this.dateTime;
         }
     }
 }

@@ -178,7 +178,7 @@ namespace Ntreev.Crema.Services.Domains
             var category = this.Context.Categories.Prepare(categoryName);
             domain.Category = category;
             domain.Dispatcher = new CremaDispatcher(domain);
-            domain.Logger = new DomainLogger(domain);
+            domain.Logger = new DomainLogger(this.Context.Serializer, domain);
             domain.Dispatcher.InvokeAsync(() => this.InvokeDomainCreatedEvent(authentication, domain));
         }
 

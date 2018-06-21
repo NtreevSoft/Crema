@@ -20,6 +20,8 @@ using Ntreev.Crema.Services.Domains.Actions;
 using Ntreev.Library.IO;
 using Ntreev.Library.Serialization;
 using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
@@ -30,63 +32,55 @@ namespace Ntreev.Crema.Services.Domains
 {
     class DomainLogger
     {
-        public const string HeaderFileName = "info.dat";
-        public const string PostedFileName = "posted.log";
-        public const string CompletedFileName = "completed.log";
+        public const string HeaderItemPath = "header";
+        public const string SourceItemPath = "source";
+        public const string PostedItemPath = "posted";
+        public const string CompletedItemPath = "completed";
 
         private static readonly XmlWriterSettings writerSettings = new XmlWriterSettings() { OmitXmlDeclaration = true, Indent = true };
 
-        private string basePath;
+        private readonly string basePath;
 
-        private StreamWriter postedWriter;
-        private StreamWriter completedWriter;
-        private DomainActionBase current;
+        private readonly string headerPath;
+        private readonly string sourcePath;
+        private readonly string postedPath;
+        private readonly string completedPath;
 
-        public DomainLogger(Domain domain)
+        private DomainActionPost currentPost;
+        private IObjectSerializer serializer;
+        private List<DomainActionPost> postedList = new List<DomainActionPost>();
+        private List<DomainActionComplete> completedList = new List<DomainActionComplete>();
+
+        public DomainLogger(IObjectSerializer serializer, Domain domain)
         {
-            this.Initialize(domain);
+            this.serializer = serializer;
+            this.basePath = DirectoryUtility.Prepare(domain.Context.BasePath, domain.DataBaseID.ToString(), domain.Name);
+            this.headerPath = Path.Combine(this.basePath, HeaderItemPath);
+            this.sourcePath = Path.Combine(this.basePath, SourceItemPath);
+            this.postedPath = Path.Combine(this.basePath, PostedItemPath);
+            this.completedPath = Path.Combine(this.basePath, CompletedItemPath);
+            this.serializer.Serialize(this.headerPath, domain.GetSerializationInfo(), ObjectSerializerSettings.Empty);
+            this.serializer.Serialize(this.sourcePath, domain.Source, ObjectSerializerSettings.Empty);
         }
 
-        public DomainLogger(string basePath)
+        public DomainLogger(IObjectSerializer serializer, string basePath)
         {
+            this.serializer = serializer;
             this.basePath = basePath;
 
-            this.postedWriter = new StreamWriter(Path.Combine(basePath, DomainLogger.PostedFileName), true, Encoding.UTF8)
-            {
-                AutoFlush = true,
-            };
+            //this.postedWriter = new StreamWriter(Path.Combine(basePath, DomainLogger.PostedFileName), true, Encoding.UTF8)
+            //{
+            //    AutoFlush = true,
+            //};
 
-            this.completedWriter = new StreamWriter(Path.Combine(basePath, DomainLogger.CompletedFileName), true, Encoding.UTF8)
-            {
-                AutoFlush = true,
-            };
-        }
-
-        public void Initialize(Domain domain)
-        {
-            this.basePath = DirectoryUtility.Prepare(domain.Context.BasePath, domain.DataBaseID.ToString(), domain.Name);
-
-            domain.Write(Path.Combine(basePath, DomainLogger.HeaderFileName));
-
-            this.postedWriter = new StreamWriter(Path.Combine(basePath, DomainLogger.PostedFileName), true, Encoding.UTF8)
-            {
-                AutoFlush = true,
-            };
-
-            this.completedWriter = new StreamWriter(Path.Combine(basePath, DomainLogger.CompletedFileName), true, Encoding.UTF8)
-            {
-                AutoFlush = true,
-            };
+            //this.completedWriter = new StreamWriter(Path.Combine(basePath, DomainLogger.CompletedFileName), true, Encoding.UTF8)
+            //{
+            //    AutoFlush = true,
+            //};
         }
 
         public void Dispose(bool delete)
         {
-            this.postedWriter?.Close();
-            this.postedWriter = null;
-
-            this.completedWriter?.Close();
-            this.completedWriter = null;
-
             if (delete == true)
             {
                 DirectoryUtility.Delete(this.basePath);
@@ -192,26 +186,12 @@ namespace Ntreev.Crema.Services.Domains
             if (this.IsEnabled == false)
                 return;
 
-            var message = string.Empty;
-
-            this.current = action;
-            action.ID = this.ID++;
-
-            var s = XmlSerializerUtility.GetSerializer(action.GetType());
-
-            var ns = new XmlSerializerNamespaces();
-            ns.Add(string.Empty, string.Empty);
-            ns.Add("fn", action.GetType().AssemblyQualifiedName);
-
-            using (var sw = new Utf8StringWriter())
-            using (var writer = XmlWriter.Create(sw, writerSettings))
-            {
-                DataContractSerializerUtility.Write(writer, action);
-                writer.Close();
-                message = sw.ToString();
-            }
-
-            this.postedWriter.WriteLine(message);
+            var id = this.ID++;
+            var itemPath = Path.Combine(this.basePath, $"{id}");
+            this.currentPost = new DomainActionPost(id, action.GetType());
+            this.postedList.Add(this.currentPost);
+            this.serializer.Serialize(itemPath, action, ObjectSerializerSettings.Empty);
+            this.serializer.Serialize(this.postedPath, this.postedList.ToArray(), ObjectSerializerSettings.Empty);
         }
 
         public void Complete()
@@ -219,22 +199,8 @@ namespace Ntreev.Crema.Services.Domains
             if (this.IsEnabled == false)
                 return;
 
-            var message = string.Empty;
-            using (var sw = new Utf8StringWriter())
-            using (var writer = XmlWriter.Create(sw, writerSettings))
-            {
-                writer.WriteStartElement("Action");
-                {
-                    writer.WriteAttributeString("ID", this.current.ID.ToString());
-                    writer.WriteAttributeString("DateTime", DateTime.Now.ToString("o"));
-                }
-                writer.WriteEndElement();
-                writer.Close();
-                message = sw.ToString();
-            }
-
-            this.completedWriter.WriteLine(message);
-            this.current = null;
+            this.completedList.Add(new DomainActionComplete(this.currentPost.ID));
+            this.serializer.Serialize(this.completedPath, this.completedList.ToArray(), ObjectSerializerSettings.Empty);
         }
 
         public long ID { get; set; }
@@ -244,7 +210,7 @@ namespace Ntreev.Crema.Services.Domains
         private void SerializeDomain(Domain domain)
         {
             var formatter = new BinaryFormatter();
-            using (var stream = new FileStream(Path.Combine(basePath, DomainLogger.HeaderFileName), FileMode.Create))
+            using (var stream = new FileStream(Path.Combine(basePath, DomainLogger.HeaderItemPath), FileMode.Create))
             {
                 formatter.Serialize(stream, domain);
                 stream.Close();

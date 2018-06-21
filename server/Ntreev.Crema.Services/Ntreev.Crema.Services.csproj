@@ -59,6 +59,9 @@
     <Compile Include="AuthenticationToken.cs" />
     <Compile Include="Data\DataBaseStateSerializationInfo.cs" />
     <Compile Include="Data\DataBaseSet.cs" />
+    <Compile Include="Domains\DomainActionComplete.cs" />
+    <Compile Include="Domains\DomainActionPost.cs" />
+    <Compile Include="Domains\DomainSerializationInfo.cs" />
     <Compile Include="ObjectSerializerSettings.cs" />
     <Compile Include="LogServiceHost.cs" />
     <Compile Include="CremaDataTableSerializerSettings.cs" />

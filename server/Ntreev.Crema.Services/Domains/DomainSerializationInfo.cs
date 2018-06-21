@@ -15,18 +15,27 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.ServiceModel;
 using Ntreev.Library;
+using System;
+using System.Linq;
 using System.Runtime.Serialization;
 
-namespace Ntreev.Crema.Services.Domains.Actions
+namespace Ntreev.Crema.Services.Domains
 {
     [DataContract(Namespace = SchemaUtility.Namespace)]
-    public class SetPropertyAction : DomainActionBase
+    struct DomainSerializationInfo
     {
         [DataMember]
-        public string PropertyName { get; set; }
+        public string DomainType { get; set; }
 
         [DataMember]
-        public object Value { get; set; }
+        public string SourceType { get; set; }
+
+        [DataMember]
+        public DomainInfo DomainInfo { get; set; }
+
+        [DataMember]
+        public DomainUserInfo[] UserInfos { get; set; }
     }
 }

@@ -452,6 +452,18 @@ namespace Ntreev.Crema.Services.Domains
             });
         }
 
+        public DomainSerializationInfo GetSerializationInfo()
+        {
+            var query = from DomainUser item in this.Users select item.DomainUserInfo;
+            return new DomainSerializationInfo()
+            {
+                DomainType = this.GetType().AssemblyQualifiedName,
+                SourceType = this.Source.GetType().AssemblyQualifiedName,
+                DomainInfo = this.DomainInfo,
+                UserInfos = query.ToArray(),
+            };
+        }
+
         public Guid ID
         {
             get => Guid.Parse(this.Name);
