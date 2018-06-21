@@ -34,22 +34,22 @@ namespace Ntreev.Crema.ServiceModel
     [DataContract(Namespace = SchemaUtility.Namespace)]
     public struct AccessInfo
     {
-        [XmlElement]
+        [DataMember]
         public string Path { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string ParentPath { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public SignatureDate SignatureDate { get; set; }
 
-        [XmlArray]
+        [DataMember]
         public AccessMemberInfo[] Members { get; set; }
 
-        [XmlIgnore]
+        [IgnoreDataMember]
         public string UserID { get { return this.SignatureDate.ID; } }
 
-        [XmlIgnore]
+        [IgnoreDataMember]
         public DateTime DateTime { get { return this.SignatureDate.DateTime; } }
 
         public static bool operator ==(AccessInfo x, AccessInfo y)
@@ -171,13 +171,13 @@ namespace Ntreev.Crema.ServiceModel
             SignatureDate = SignatureDate.Empty
         };
 
-        [XmlIgnore]
+        [IgnoreDataMember]
         public bool IsInherited
         {
             get { return this.ParentPath != string.Empty; }
         }
 
-        [XmlIgnore]
+        [IgnoreDataMember]
         public bool IsPrivate
         {
             get { return this.UserID != string.Empty; }
@@ -249,7 +249,7 @@ namespace Ntreev.Crema.ServiceModel
 
         internal void Remove(SignatureDate signatureDate, string memberID)
         {
-            if(this.Contains(memberID) == false)
+            if (this.Contains(memberID) == false)
                 throw new ArgumentException();
 
             var member = this.Members.First(item => item.UserID == memberID);
@@ -295,19 +295,5 @@ namespace Ntreev.Crema.ServiceModel
                 throw new InvalidOperationException();
             }
         }
-
-        
-
-        #region DataMember
-
-        [DataMember]
-        [XmlIgnore]
-        private string Xml
-        {
-            get { return XmlSerializerUtility.GetString(this); }
-            set { this = XmlSerializerUtility.ReadString(this, value); }
-        }
-
-        #endregion
     }
 }

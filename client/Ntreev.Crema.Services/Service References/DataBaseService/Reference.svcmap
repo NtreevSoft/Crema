@@ -26,9 +26,8 @@
     <MetadataFile FileName="www.ntreev.com.xsd" MetadataType="Schema" ID="a5817552-38bd-4cfb-a110-3d8ea669a409" SourceId="1" SourceUrl="net.tcp://localhost:4004/DataBaseService/mex" />
     <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="90b9e2f8-5251-4682-a0e6-220f03044644" SourceId="1" SourceUrl="net.tcp://localhost:4004/DataBaseService/mex" />
     <MetadataFile FileName="schemas.ntreev.com.xsd" MetadataType="Schema" ID="285ef272-b222-4ca7-be45-275e905e44f9" SourceId="1" SourceUrl="net.tcp://localhost:4004/DataBaseService/mex" />
-    <MetadataFile FileName="Ntreev.Crema.Data1.xsd" MetadataType="Schema" ID="baf4541f-119b-4418-bdc7-7e996ada44eb" SourceId="1" SourceUrl="net.tcp://localhost:4004/DataBaseService/mex" />
-    <MetadataFile FileName="Ntreev.Crema.ServiceModel.xsd" MetadataType="Schema" ID="3f557c45-fd94-499e-ae01-75bc9f459750" SourceId="1" SourceUrl="net.tcp://localhost:4004/DataBaseService/mex" />
     <MetadataFile FileName="Arrays.xsd" MetadataType="Schema" ID="86ec3038-2bce-44b2-b725-8948e22438fb" SourceId="1" SourceUrl="net.tcp://localhost:4004/DataBaseService/mex" />
+    <MetadataFile FileName="Ntreev.Crema.Data1.xsd" MetadataType="Schema" ID="baf4541f-119b-4418-bdc7-7e996ada44eb" SourceId="1" SourceUrl="net.tcp://localhost:4004/DataBaseService/mex" />
     <MetadataFile FileName="System.xsd" MetadataType="Schema" ID="69143c35-45a9-4ad6-bc26-60010952ffad" SourceId="1" SourceUrl="net.tcp://localhost:4004/DataBaseService/mex" />
   </Metadata>
   <Extensions>

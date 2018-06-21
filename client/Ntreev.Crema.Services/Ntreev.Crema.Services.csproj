@@ -173,9 +173,6 @@
     <None Include="Service References\DataBaseService\Ntreev.Crema.ServiceModel.Data.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\DataBaseService\Ntreev.Crema.ServiceModel.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="Service References\DataBaseService\schemas.ntreev.com.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -190,6 +187,9 @@
     <None Include="Service References\DataBaseService\www.ntreev.com.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Service References\DescriptorService\Arrays.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\DescriptorService\schemas.ntreev.com.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -199,6 +199,9 @@
     </None>
     <None Include="Service References\DescriptorService\www.ntreev.com.wsdl" />
     <None Include="Service References\DescriptorService\www.ntreev.com.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DomainService\Arrays.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\DomainService\schemas.ntreev.com.xsd">

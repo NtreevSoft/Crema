@@ -39,19 +39,19 @@ namespace Ntreev.Crema.ServiceModel
     [DataContract(Namespace = SchemaUtility.Namespace)]
     public struct TypeMetaData
     {
-        [XmlElement]
+        [DataMember]
         public string Path { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public TypeInfo TypeInfo { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public TypeState TypeState { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public LockInfo LockInfo { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public AccessInfo AccessInfo { get; set; }
 
         public static readonly TypeMetaData Empty = new TypeMetaData()
@@ -61,17 +61,5 @@ namespace Ntreev.Crema.ServiceModel
             LockInfo = LockInfo.Empty,
             AccessInfo = AccessInfo.Empty,
         };
-
-        #region DataMember
-
-        [DataMember]
-        [XmlIgnore]
-        private string Xml
-        {
-            get { return XmlSerializerUtility.GetString(this); }
-            set { this = XmlSerializerUtility.ReadString(this, value); }
-        }
-
-        #endregion
     }
 }

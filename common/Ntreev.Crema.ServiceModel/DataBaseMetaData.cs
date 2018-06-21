@@ -39,31 +39,31 @@ namespace Ntreev.Crema.ServiceModel
     [DataContract(Namespace = SchemaUtility.Namespace)]
     public struct DataBaseMetaData
     {
-        [XmlElement]
+        [DataMember]
         public DataBaseInfo DataBaseInfo { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public DataBaseState DataBaseState { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public AccessInfo AccessInfo { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public LockInfo LockInfo { get; set; }
 
-        [XmlArray]
+        [DataMember]
         public TypeMetaData[] Types { get; set; }
 
-        [XmlArray]
+        [DataMember]
         public CategoryMetaData[] TypeCategories { get; set; }
 
-        [XmlArray]
+        [DataMember]
         public TableMetaData[] Tables { get; set; }
 
-        [XmlArray]
+        [DataMember]
         public CategoryMetaData[] TableCategories { get; set; }
 
-        [XmlArray]
+        [DataMember]
         public AuthenticationInfo[] Authentications { get; set; }
 
         public readonly static DataBaseMetaData Empty = new DataBaseMetaData()
@@ -77,17 +77,5 @@ namespace Ntreev.Crema.ServiceModel
             TableCategories = new CategoryMetaData[] { },
             Authentications = new AuthenticationInfo[] { },
         };
-
-        #region DataMember
-
-        [DataMember]
-        [XmlIgnore]
-        private string Xml
-        {
-            get { return XmlSerializerUtility.GetString(this); }
-            set { this = XmlSerializerUtility.ReadString(this, value); }
-        }
-
-        #endregion
     }
 }

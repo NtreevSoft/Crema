@@ -32,19 +32,19 @@ namespace Ntreev.Crema.ServiceModel
     [Serializable]
     public struct LogInfo
     {
-        [XmlElement]
+        [DataMember]
         public string UserID { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string Revision { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string Comment { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public DateTime DateTime { get; set; }
 
-        [XmlArray]
+        [DataMember]
         public LogPropertyInfo[] Properties { get; set; }
 
         internal bool ContainsProperty(string key)
@@ -70,17 +70,5 @@ namespace Ntreev.Crema.ServiceModel
                 return query.First().Value;
             return null;
         }
-
-        #region DataMember
-
-        [DataMember]
-        [XmlIgnore]
-        private string Xml
-        {
-            get { return XmlSerializerUtility.GetString(this); }
-            set { this = XmlSerializerUtility.ReadString(this, value); }
-        }
-
-        #endregion
     }
 }

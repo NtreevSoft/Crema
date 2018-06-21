@@ -53,35 +53,18 @@ namespace Ntreev.Crema.ServiceModel
 
         }
 
-        [XmlElement]
+        [DataMember]
         public string ExceptionType
         {
             get { return this.exceptionType; }
             set { this.exceptionType = value; }
         }
 
-        [XmlElement]
+        [DataMember]
         public string Message
         {
             get { return this.message; }
             set { this.message = value; }
         }
-
-        #region DataMember
-
-        [DataMember]
-        [XmlIgnore]
-        private string Xml
-        {
-            get { return XmlSerializerUtility.GetString(this); }
-            set
-            {
-                var obj = XmlSerializerUtility.ReadString(this, value);
-                this.exceptionType = obj.exceptionType;
-                this.message = obj.exceptionType;
-            }
-        }
-
-        #endregion
     }
 }

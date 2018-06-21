@@ -37,25 +37,25 @@ namespace Ntreev.Crema.ServiceModel
     [Serializable]
     public struct DomainInfo
     {
-        [XmlElement]
+        [DataMember]
         public Guid DomainID { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public Guid DataBaseID { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string ItemPath { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string ItemType { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string DomainType { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string CategoryName { get; set; }
 
-        [XmlIgnore]
+        [IgnoreDataMember]
         public string CategoryPath
         {
             get
@@ -74,10 +74,10 @@ namespace Ntreev.Crema.ServiceModel
             }
         }
 
-        [XmlElement]
+        [DataMember]
         public SignatureDate CreationInfo { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public SignatureDate ModificationInfo { get; set; }
 
         public IDictionary<string, object> ToDictionary()
@@ -97,17 +97,5 @@ namespace Ntreev.Crema.ServiceModel
             };
             return props;
         }
-
-        #region DataMember
-
-        [DataMember]
-        [XmlIgnore]
-        private string Xml
-        {
-            get { return XmlSerializerUtility.GetString(this); }
-            set { this = XmlSerializerUtility.ReadString(this, value); }
-        }
-
-        #endregion
     }
 }

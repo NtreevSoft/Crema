@@ -31,28 +31,16 @@ namespace Ntreev.Crema.ServiceModel
     [DataContract(Namespace = SchemaUtility.Namespace)]
     public struct DomainUserInfo
     {
-        [XmlElement]
+        [DataMember]
         public string UserID { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string UserName { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public DomainLocationInfo Location { get; set; }
 
-        [XmlElement]
-        public DomainAccessType AccessType { get; set; }
-
-        #region DataMember
-
         [DataMember]
-        [XmlIgnore]
-        private string Xml
-        {
-            get { return XmlSerializerUtility.GetString(this); }
-            set { this = XmlSerializerUtility.ReadString(this, value); }
-        }
-
-        #endregion
+        public DomainAccessType AccessType { get; set; }
     }
 }

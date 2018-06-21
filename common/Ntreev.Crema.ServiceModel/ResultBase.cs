@@ -44,10 +44,10 @@ namespace Ntreev.Crema.ServiceModel
     [DataContract(Namespace = SchemaUtility.Namespace)]
     public struct ResultBase
     {
-        [XmlElement]
+        [DataMember]
         public SignatureDate SignatureDate { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public CremaFault Fault
         {
             get; set;
@@ -58,30 +58,18 @@ namespace Ntreev.Crema.ServiceModel
             if (this.Fault != null)
                 throw new Exception(this.Fault.Message);
         }
-
-        #region DataMember
-
-        [DataMember]
-        [XmlIgnore]
-        private string Xml
-        {
-            get { return XmlSerializerUtility.GetString(this); }
-            set { this = XmlSerializerUtility.ReadString(this, value); }
-        }
-
-        #endregion
     }
 
     [DataContract(Namespace = SchemaUtility.Namespace)]
     public struct ResultBase<T>
     {
-        [XmlElement]
+        [DataMember]
         public SignatureDate SignatureDate { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public T Value { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public CremaFault Fault
         {
             get; set;
@@ -94,33 +82,21 @@ namespace Ntreev.Crema.ServiceModel
                 throw new Exception(this.Fault.Message);
             }
         }
-
-        #region DataMember
-
-        [DataMember]
-        [XmlIgnore]
-        private string Xml
-        {
-            get { return XmlSerializerUtility.GetString(this); }
-            set { this = XmlSerializerUtility.ReadString(this, value); }
-        }
-
-        #endregion
     }
 
     [DataContract(Namespace = SchemaUtility.Namespace)]
     public struct ResultBase<T1, T2>
     {
-        [XmlElement]
+        [DataMember]
         public SignatureDate SignatureDate { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public T1 Value1 { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public T2 Value2 { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public CremaFault Fault
         {
             get; set;
@@ -133,17 +109,5 @@ namespace Ntreev.Crema.ServiceModel
                 throw new Exception(this.Fault.Message);
             }
         }
-
-        #region DataMember
-
-        [DataMember]
-        [XmlIgnore]
-        private string Xml
-        {
-            get { return XmlSerializerUtility.GetString(this); }
-            set { this = XmlSerializerUtility.ReadString(this, value); }
-        }
-
-        #endregion
     }
 }

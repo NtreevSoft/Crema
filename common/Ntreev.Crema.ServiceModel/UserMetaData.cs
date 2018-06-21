@@ -35,28 +35,16 @@ namespace Ntreev.Crema.ServiceModel
     [DataContract(Namespace = SchemaUtility.Namespace)]
     public struct UserMetaData
     {
-        [XmlElement]
+        [DataMember]
         public string Path { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public UserInfo UserInfo { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public UserState UserState { get; set; }
 
-        [XmlElement]
-        public BanInfo BanInfo { get; set; }
-
-        #region DataMember
-
         [DataMember]
-        [XmlIgnore]
-        private string Xml
-        {
-            get { return XmlSerializerUtility.GetString(this); }
-            set { this = XmlSerializerUtility.ReadString(this, value); }
-        }
-
-        #endregion
+        public BanInfo BanInfo { get; set; }
     }
 }

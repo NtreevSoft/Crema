@@ -36,25 +36,25 @@ namespace Ntreev.Crema.ServiceModel
     [DataContract(Namespace = SchemaUtility.Namespace)]
     public struct UserInfo
     {
-        [XmlElement]
+        [DataMember]
         public string ID { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string Name { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string CategoryName { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public Authority Authority { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public SignatureDate CreationInfo { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public SignatureDate ModificationInfo { get; set; }
 
-        [XmlIgnore]
+        [IgnoreDataMember]
         public string CategoryPath
         {
             get
@@ -88,17 +88,5 @@ namespace Ntreev.Crema.ServiceModel
             };
             return props;
         }
-
-        #region DataMember
-
-        [DataMember]
-        [XmlIgnore]
-        private string Xml
-        {
-            get { return XmlSerializerUtility.GetString(this); }
-            set { this = XmlSerializerUtility.ReadString(this, value); }
-        }
-
-        #endregion
     }
 }

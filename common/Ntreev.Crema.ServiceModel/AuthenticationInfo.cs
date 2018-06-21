@@ -29,13 +29,13 @@ namespace Ntreev.Crema.ServiceModel
     [DataContract(Namespace = SchemaUtility.Namespace)]
     public struct AuthenticationInfo
     {
-        [XmlElement]
+        [DataMember]
         public string ID { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string Name { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public Authority Authority { get; set; }
 
         public readonly static AuthenticationInfo Empty = new AuthenticationInfo()

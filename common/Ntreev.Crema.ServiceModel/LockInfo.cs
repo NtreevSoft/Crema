@@ -32,22 +32,22 @@ namespace Ntreev.Crema.ServiceModel
     [DataContract(Namespace = SchemaUtility.Namespace)]
     public struct LockInfo
     {
-        [XmlElement]
+        [DataMember]
         public string Path { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string ParentPath { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public SignatureDate SignatureDate { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string Comment { get; set; }
 
-        [XmlIgnore]
+        [IgnoreDataMember]
         public string UserID { get { return this.SignatureDate.ID; } }
 
-        [XmlIgnore]
+        [IgnoreDataMember]
         public DateTime DateTime { get { return this.SignatureDate.DateTime; } }
 
         public static bool operator ==(LockInfo x, LockInfo y)
@@ -126,28 +126,16 @@ namespace Ntreev.Crema.ServiceModel
             SignatureDate = SignatureDate.Empty
         };
 
-        [XmlIgnore]
+        [IgnoreDataMember]
         public bool IsInherited
         {
             get { return this.ParentPath != string.Empty; }
         }
 
-        [XmlIgnore]
+        [IgnoreDataMember]
         public bool IsLocked
         {
             get { return this.UserID != string.Empty; }
         }
-
-        #region DataMember
-
-        [DataMember]
-        [XmlIgnore]
-        private string Xml
-        {
-            get { return XmlSerializerUtility.GetString(this); }
-            set { this = XmlSerializerUtility.ReadString(this, value); }
-        }
-
-        #endregion
     }
 }

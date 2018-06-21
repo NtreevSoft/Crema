@@ -32,16 +32,16 @@ namespace Ntreev.Crema.ServiceModel
     [DataContract(Namespace = SchemaUtility.Namespace)]
     public struct AccessMemberInfo
     {
-        [XmlElement]
+        [DataMember]
         public SignatureDate SignatureDate { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public AccessType AccessType { get; set; }
 
-        [XmlIgnore]
+        [IgnoreDataMember]
         public string UserID { get { return this.SignatureDate.ID; } }
 
-        [XmlIgnore]
+        [IgnoreDataMember]
         public DateTime DateTime { get { return this.SignatureDate.DateTime; } }
 
         public static bool operator ==(AccessMemberInfo x, AccessMemberInfo y)
@@ -88,17 +88,5 @@ namespace Ntreev.Crema.ServiceModel
             AccessType = AccessType.Owner,
             SignatureDate = SignatureDate.Empty
         };
-
-        #region DataMember
-
-        [DataMember]
-        [XmlIgnore]
-        private string Xml
-        {
-            get { return XmlSerializerUtility.GetString(this); }
-            set { this = XmlSerializerUtility.ReadString(this, value); }
-        }
-
-        #endregion
     }
 }

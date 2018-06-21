@@ -35,25 +35,25 @@ namespace Ntreev.Crema.ServiceModel
     [Serializable]
     public struct FindResultInfo
     {
-        [XmlElement]
+        [DataMember]
         public string Path { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public int Row { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string ColumnName { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string Value { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string Tags { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public bool IsEnabled { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public SignatureDate ModificationInfo { get; set; }
 
         internal static FindResultInfo FromDataRow(CremaDataRow dataRow, CremaDataColumn dataColumn, int index)
@@ -72,17 +72,5 @@ namespace Ntreev.Crema.ServiceModel
 
             return fri;
         }
-
-        #region DataMember
-
-        [DataMember]
-        [XmlIgnore]
-        private string Xml
-        {
-            get { return XmlSerializerUtility.GetString(this); }
-            set { this = XmlSerializerUtility.ReadString(this, value); }
-        }
-
-        #endregion
     }
 }

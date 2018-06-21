@@ -32,19 +32,19 @@ namespace Ntreev.Crema.ServiceModel
     [DataContract(Namespace = SchemaUtility.Namespace)]
     public struct BanInfo
     {
-        [XmlElement]
+        [DataMember]
         public string Path { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public SignatureDate SignatureDate { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string Comment { get; set; }
 
-        [XmlIgnore]
+        [IgnoreDataMember]
         public string UserID { get { return this.SignatureDate.ID; } }
 
-        [XmlIgnore]
+        [IgnoreDataMember]
         public DateTime DateTime { get { return this.SignatureDate.DateTime; } }
 
         public static bool operator ==(BanInfo x, BanInfo y)
@@ -95,17 +95,5 @@ namespace Ntreev.Crema.ServiceModel
             Comment = string.Empty,
             SignatureDate = SignatureDate.Empty
         };
-
-        #region DataMember
-
-        [DataMember]
-        [XmlIgnore]
-        private string Xml
-        {
-            get { return XmlSerializerUtility.GetString(this); }
-            set { this = XmlSerializerUtility.ReadString(this, value); }
-        }
-
-        #endregion
     }
 }

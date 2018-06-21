@@ -35,24 +35,12 @@ namespace Ntreev.Crema.ServiceModel
     [DataContract(Namespace = SchemaUtility.Namespace)]
     public struct DomainUserMetaData
     {
-        [XmlElement]
+        [DataMember]
         public DomainUserInfo DomainUserInfo { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public DomainUserState DomainUserState { get; set; }
 
         public static readonly DomainUserMetaData Empty = new DomainUserMetaData();
-
-        #region DataMember
-
-        [DataMember]
-        [XmlIgnore]
-        private string Xml
-        {
-            get { return XmlSerializerUtility.GetString(this); }
-            set { this = XmlSerializerUtility.ReadString(this, value); }
-        }
-
-        #endregion
     }
 }

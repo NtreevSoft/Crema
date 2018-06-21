@@ -38,24 +38,12 @@ namespace Ntreev.Crema.ServiceModel
             this.Message = message ?? string.Empty;
         }
 
-        [XmlElement]
+        [DataMember]
         public CloseReason Reason { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string Message { get; set; }
 
         public readonly static CloseInfo Empty = new CloseInfo();
-
-        #region DataMember
-
-        [DataMember]
-        [XmlIgnore]
-        private string Xml
-        {
-            get { return XmlSerializerUtility.GetString(this); }
-            set { this = XmlSerializerUtility.ReadString(this, value); }
-        }
-
-        #endregion
     }
 }

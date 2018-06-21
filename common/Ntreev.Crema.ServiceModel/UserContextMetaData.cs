@@ -32,25 +32,13 @@ namespace Ntreev.Crema.ServiceModel
     [DataContract(Namespace = SchemaUtility.Namespace)]
     public struct UserContextMetaData
     {
-        [XmlArray]
+        [DataMember]
         public string[] Categories { get; set; }
 
-        [XmlArray]
+        [DataMember]
         public UserMetaData[] Users { get; set; }
 
-        [XmlElement]
-        public Guid AuthenticationToken { get; set; }
-
-        #region DataMember
-
         [DataMember]
-        [XmlIgnore]
-        private string Xml
-        {
-            get { return XmlSerializerUtility.GetString(this); }
-            set { this = XmlSerializerUtility.ReadString(this, value); }
-        }
-
-        #endregion
+        public Guid AuthenticationToken { get; set; }
     }
 }

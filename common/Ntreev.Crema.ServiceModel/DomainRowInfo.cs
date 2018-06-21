@@ -38,17 +38,17 @@ namespace Ntreev.Crema.ServiceModel
         private object[] fields;
         private object[] keys;
 
-        [XmlElement]
+        [DataMember]
         public string TableName { get; set; }
 
-        [XmlIgnore]
+        [DataMember]
         public object[] Fields
         {
             get { return this.fields; }
             set { this.fields = value; }
         }
 
-        [XmlIgnore]
+        [DataMember]
         public object[] Keys
         {
             get { return this.keys; }

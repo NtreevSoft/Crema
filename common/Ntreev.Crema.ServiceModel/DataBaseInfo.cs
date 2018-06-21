@@ -38,43 +38,43 @@ namespace Ntreev.Crema.ServiceModel
             this = dataBaseInfo;
         }
 
-        [XmlElement]
+        [DataMember]
         public Guid ID { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string Name { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string Comment { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string Revision { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public TagInfo Tags { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string BranchRevision { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string BranchSource { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string BranchSourceRevision { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string TypesHashValue { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string TablesHashValue { get; set; }
 
-        [XmlArray]
+        [DataMember]
         public string[] Paths { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public SignatureDate CreationInfo { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public SignatureDate ModificationInfo { get; set; }
 
         public IDictionary<string, object> ToDictionary()
@@ -106,18 +106,5 @@ namespace Ntreev.Crema.ServiceModel
             CreationInfo = SignatureDate.Empty,
             ModificationInfo = SignatureDate.Empty,
         };
-
-
-        #region DataMember
-
-        [DataMember]
-        [XmlIgnore]
-        private string Xml
-        {
-            get { return XmlSerializerUtility.GetString(this); }
-            set { this = XmlSerializerUtility.ReadString(this, value); }
-        }
-
-        #endregion
     }
 }

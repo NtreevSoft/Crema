@@ -37,13 +37,13 @@ namespace Ntreev.Crema.ServiceModel
     {
         private object[] keys;
 
-        [XmlElement]
+        [DataMember]
         public string TableName { get; set; }
 
-        [XmlElement]
+        [DataMember]
         public string ColumnName { get; set; }
 
-        [XmlIgnore]
+        [DataMember]
         public object[] Keys
         {
             get { return this.keys; }
@@ -81,7 +81,7 @@ namespace Ntreev.Crema.ServiceModel
 
         #region DataMember
 
-        [XmlElement]
+        [DataMember]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public string ItemXml
         {
