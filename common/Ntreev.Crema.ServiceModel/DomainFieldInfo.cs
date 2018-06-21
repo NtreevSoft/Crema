@@ -17,7 +17,6 @@
 
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using System.Xml;
 using System.Xml.Serialization;
 using Ntreev.Crema.Data.Xml;
 using System.Collections.Generic;
@@ -25,66 +24,60 @@ using System;
 using System.Linq;
 using Ntreev.Library;
 using System.Xml.Schema;
+using System.Xml;
 using Ntreev.Library.Serialization;
 using System.Text;
 using System.IO;
+using Ntreev.Crema.Data;
 
 namespace Ntreev.Crema.ServiceModel
 {
     [DataContract(Namespace = SchemaUtility.Namespace)]
-    [XmlInclude(typeof(DBNull))]
-    [XmlInclude(typeof(TimeSpan))]
-    public struct DomainLocationInfo
+    public struct DomainFieldInfo
     {
-        private object[] keys;
-
-        [DataMember]
-        public string TableName { get; set; }
-
-        [DataMember]
-        public string ColumnName { get; set; }
-
-        [IgnoreDataMember]
-        public object[] Keys
+        public DomainFieldInfo(object field)
         {
-            get { return this.keys; }
-            set { this.keys = value; }
-        }
-
-        [DataMember]
-        public DomainFieldInfo[] KeyInfos
-        {
-            get { return this.keys.Select(item => new DomainFieldInfo(item)).ToArray(); }
-            set { this.keys = value.Select(item => item.ToValue()).ToArray(); }
-        }
-
-        public static readonly DomainLocationInfo Empty = new DomainLocationInfo() { Keys = new object[] { } };
-
-        public static bool operator ==(DomainLocationInfo left, DomainLocationInfo right)
-        {
-            return left.Equals(right);
-        }
-
-        public static bool operator !=(DomainLocationInfo left, DomainLocationInfo right)
-        {
-            return !(left == right);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (!(obj is DomainLocationInfo))
+            if (field is DBNull)
             {
-                return false;
+                this.Type = nameof(DBNull);
+                this.Value = null;
             }
-            var location = (DomainLocationInfo)obj;
-            return HashUtility.Equals(location.Keys, this.Keys) &&
-                   location.TableName == this.TableName &&
-                   location.ColumnName == this.ColumnName;
+            else if (field != null)
+            {
+                if (field is Guid)
+                    this.Type = nameof(Guid);
+                else
+                    this.Type = field.GetType().GetTypeName();
+                this.Value = CremaXmlConvert.ToString(field);
+            }
+            else
+            {
+                this.Type = null;
+                this.Value = null;
+            }
         }
 
-        public override int GetHashCode()
+        public object ToValue()
         {
-            return HashUtility.GetHashCode(this.Keys, this.ColumnName, this.TableName);
+            if (this.Value != null)
+            {
+                var type = this.Type == nameof(Guid) ? typeof(Guid) : CremaDataTypeUtility.GetType(this.Type);
+                return CremaXmlConvert.ToValue(this.Value, type);
+            }
+            else if (this.Type == nameof(DBNull))
+            {
+                return DBNull.Value;
+            }
+            else
+            {
+                return null;
+            }
         }
+
+        [DataMember]
+        public string Type { get; set; }
+
+        [DataMember]
+        public string Value { get; set; }
     }
 }

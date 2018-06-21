@@ -38,7 +38,7 @@ namespace Ntreev.Crema.Services.Users
 
         public void Rename(Authentication authentication, string newName)
         {
-            this.Dispatcher.VerifyAccess();
+            this.Dispatcher?.VerifyAccess();
             throw new NotSupportedException();
         }
 
@@ -46,7 +46,7 @@ namespace Ntreev.Crema.Services.Users
         {
             try
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 this.CremaHost.DebugMethod(authentication, this, nameof(Move), this, categoryPath);
                 var result = this.Service.MoveUserItem(this.Path, categoryPath);
                 this.Sign(authentication, result);
@@ -68,7 +68,7 @@ namespace Ntreev.Crema.Services.Users
         {
             try
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 this.CremaHost.DebugMethod(authentication, this, nameof(Delete), this);
                 var result = this.Service.DeleteUserItem(this.Path);
                 this.Sign(authentication, result);
@@ -90,7 +90,7 @@ namespace Ntreev.Crema.Services.Users
         {
             try
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 this.CremaHost.DebugMethod(authentication, this, nameof(Kick), this, comment);
                 var result = this.Service.Kick(this.ID, comment ?? string.Empty);
                 this.Sign(authentication, result);
@@ -113,7 +113,7 @@ namespace Ntreev.Crema.Services.Users
         {
             try
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 this.CremaHost.DebugMethod(authentication, this, nameof(Ban), this, comment);
                 var result = this.Service.Ban(this.ID, comment ?? string.Empty);
                 this.Sign(authentication, result);
@@ -140,7 +140,7 @@ namespace Ntreev.Crema.Services.Users
         {
             try
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 this.CremaHost.DebugMethod(authentication, this, nameof(Unban), this);
                 var result = this.Service.Unban(this.ID);
                 this.Sign(authentication, result);
@@ -161,7 +161,7 @@ namespace Ntreev.Crema.Services.Users
         {
             try
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
 
                 if (this.ID == authentication.ID && password == null && newPassword != null)
                     throw new ArgumentNullException(nameof(password));
@@ -187,7 +187,7 @@ namespace Ntreev.Crema.Services.Users
         {
             try
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 var result = this.Service.SendMessage(this.UserInfo.ID, message);
                 this.Sign(authentication, result);
                 this.Container.InvokeSendMessageEvent(authentication, this, message);
@@ -224,7 +224,7 @@ namespace Ntreev.Crema.Services.Users
         {
             get
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 return this.Name;
             }
         }
@@ -233,7 +233,7 @@ namespace Ntreev.Crema.Services.Users
         {
             get
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 return this.UserInfo.Name;
             }
         }
@@ -242,7 +242,7 @@ namespace Ntreev.Crema.Services.Users
         {
             get
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 return base.Path;
             }
         }
@@ -251,7 +251,7 @@ namespace Ntreev.Crema.Services.Users
         {
             get
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 return base.Authority;
             }
         }
@@ -260,7 +260,7 @@ namespace Ntreev.Crema.Services.Users
         {
             get
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 return base.UserInfo;
             }
         }
@@ -269,7 +269,7 @@ namespace Ntreev.Crema.Services.Users
         {
             get
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 return base.UserState;
             }
         }
@@ -278,7 +278,7 @@ namespace Ntreev.Crema.Services.Users
         {
             get
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 return base.BanInfo;
             }
         }
@@ -297,12 +297,12 @@ namespace Ntreev.Crema.Services.Users
         {
             add
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 base.Renamed += value;
             }
             remove
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 base.Renamed -= value;
             }
         }
@@ -311,12 +311,12 @@ namespace Ntreev.Crema.Services.Users
         {
             add
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 base.Moved += value;
             }
             remove
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 base.Moved -= value;
             }
         }
@@ -325,12 +325,12 @@ namespace Ntreev.Crema.Services.Users
         {
             add
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 base.Deleted += value;
             }
             remove
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 base.Deleted -= value;
             }
         }
@@ -339,12 +339,12 @@ namespace Ntreev.Crema.Services.Users
         {
             add
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 base.UserInfoChanged += value;
             }
             remove
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 base.UserInfoChanged -= value;
             }
         }
@@ -353,12 +353,12 @@ namespace Ntreev.Crema.Services.Users
         {
             add
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 base.UserStateChanged += value;
             }
             remove
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 base.UserStateChanged -= value;
             }
         }
@@ -367,12 +367,12 @@ namespace Ntreev.Crema.Services.Users
         {
             add
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 base.UserBanInfoChanged += value;
             }
             remove
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 base.UserBanInfoChanged -= value;
             }
         }
@@ -401,7 +401,7 @@ namespace Ntreev.Crema.Services.Users
         {
             get
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 return this.Category;
             }
         }
@@ -416,7 +416,7 @@ namespace Ntreev.Crema.Services.Users
         {
             get
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 return this.Category;
             }
         }
@@ -425,7 +425,7 @@ namespace Ntreev.Crema.Services.Users
         {
             get
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 return Enumerable.Empty<IUserItem>();
             }
         }

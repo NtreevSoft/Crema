@@ -39,19 +39,7 @@ namespace Ntreev.Crema.ServiceModel
     [DataContract(Namespace = SchemaUtility.Namespace)]
     public struct DataBaseCollectionMetaData
     {
-        [XmlArray]
-        public DataBaseMetaData[] DataBases { get; set; }
-
-        #region DataMember
-
         [DataMember]
-        [XmlIgnore]
-        private string Xml
-        {
-            get { return XmlSerializerUtility.GetString(this); }
-            set { this = XmlSerializerUtility.ReadString(this, value); }
-        }
-
-        #endregion
+        public DataBaseMetaData[] DataBases { get; set; }
     }
 }

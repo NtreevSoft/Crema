@@ -60,6 +60,7 @@
     <Compile Include="AuthenticationInfo.cs" />
     <Compile Include="AuthenticationType.cs" />
     <Compile Include="Authority.cs" />
+    <Compile Include="DomainFieldInfo.cs" />
     <Compile Include="DomainUserBase.cs" />
     <Compile Include="DataBaseNotFoundException.cs" />
     <Compile Include="CloseReason.cs" />
