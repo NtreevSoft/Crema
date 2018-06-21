@@ -34,7 +34,7 @@ namespace Ntreev.Crema.Services.Users
         {
             try
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 this.CremaHost.DebugMethod(authentication, this, nameof(Rename), this, name);
                 this.ValidateRename(authentication, name);
                 this.Sign(authentication);
@@ -56,7 +56,7 @@ namespace Ntreev.Crema.Services.Users
         {
             try
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 this.CremaHost.DebugMethod(authentication, this, nameof(Move), this, parentPath);
                 this.ValidateMove(authentication, parentPath);
                 this.Sign(authentication);
@@ -78,7 +78,7 @@ namespace Ntreev.Crema.Services.Users
         {
             try
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 this.CremaHost.DebugMethod(authentication, this, nameof(Delete), this);
                 this.ValidateDelete(authentication);
                 this.Sign(authentication);
@@ -100,7 +100,7 @@ namespace Ntreev.Crema.Services.Users
         {
             try
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 return this.Container.AddNew(authentication, name, base.Path);
             }
             catch (Exception e)
@@ -114,7 +114,7 @@ namespace Ntreev.Crema.Services.Users
         {
             try
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 return this.Context.Users.AddNew(authentication, userID, base.Path, password, userName, authority);
             }
             catch (Exception e)
@@ -160,7 +160,7 @@ namespace Ntreev.Crema.Services.Users
                 throw new InvalidOperationException(Resources.Exception_CannotDeletePathWithItems);
         }
 
-        public CremaDispatcher Dispatcher => this.Context.Dispatcher;
+        public CremaDispatcher Dispatcher => this.Context?.Dispatcher;
 
         public CremaHost CremaHost => this.Context.CremaHost;
 
@@ -170,7 +170,7 @@ namespace Ntreev.Crema.Services.Users
         {
             get
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 return base.Name;
             }
         }
@@ -179,7 +179,7 @@ namespace Ntreev.Crema.Services.Users
         {
             get
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 return base.Path;
             }
         }
@@ -188,12 +188,12 @@ namespace Ntreev.Crema.Services.Users
         {
             add
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 base.Renamed += value;
             }
             remove
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 base.Renamed -= value;
             }
         }
@@ -202,12 +202,12 @@ namespace Ntreev.Crema.Services.Users
         {
             add
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 base.Moved += value;
             }
             remove
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 base.Moved -= value;
             }
         }
@@ -216,12 +216,12 @@ namespace Ntreev.Crema.Services.Users
         {
             add
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 base.Deleted += value;
             }
             remove
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 base.Deleted -= value;
             }
         }
@@ -247,7 +247,7 @@ namespace Ntreev.Crema.Services.Users
         {
             get
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 return this.Parent;
             }
         }
@@ -256,7 +256,7 @@ namespace Ntreev.Crema.Services.Users
         {
             get
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 return this.Items;
             }
         }
@@ -265,7 +265,7 @@ namespace Ntreev.Crema.Services.Users
         {
             get
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 return this.Categories;
             }
         }
@@ -278,7 +278,7 @@ namespace Ntreev.Crema.Services.Users
         {
             get
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 return this.Parent;
             }
         }
@@ -287,7 +287,7 @@ namespace Ntreev.Crema.Services.Users
         {
             get
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 foreach (var item in this.Categories)
                 {
                     yield return item;
