@@ -550,6 +550,7 @@ namespace Ntreev.Crema.Services.Data
         {
             if (this.GetService(typeof(DomainContext)) is DomainContext domainContext)
             {
+                this.Sign(authentication);
                 if (this.IsLoaded == true)
                     this.DetachDomainHost();
 
@@ -573,6 +574,7 @@ namespace Ntreev.Crema.Services.Data
 
         public void ResetDataBase(Authentication authentication, IEnumerable<TypeInfo> typeInfos, IEnumerable<TableInfo> tableInfos)
         {
+            this.Sign(authentication);
             this.DataBases.InvokeDataBaseReset(authentication, this);
 
             this.typeContext = new TypeContext(this, typeInfos);
