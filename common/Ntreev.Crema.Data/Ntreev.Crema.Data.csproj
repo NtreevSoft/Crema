@@ -68,7 +68,7 @@
     <Compile Include="CremaDataTableClearEventArgs.cs" />
     <Compile Include="CremaDataTableClearEventHandler.cs" />
     <Compile Include="CremaDataTableCollection.cs" />
-    <Compile Include="CremaDataTableExtensions.cs" />
+    <Compile Include="CremaDataExtensions.cs" />
     <Compile Include="CremaDataTableNamespace.cs" />
     <Compile Include="CremaDataTableNewRowEventArgs.cs" />
     <Compile Include="CremaDataTableNewRowEventHandler.cs" />
