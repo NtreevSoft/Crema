@@ -25,9 +25,9 @@ namespace Ntreev.Crema.Services
 {
     public enum CremaPath
     {
-        RemoteUsers,
+        RepositoryUsers,
 
-        RemoteDataBases,
+        RepositoryDataBases,
 
         Caches,
 

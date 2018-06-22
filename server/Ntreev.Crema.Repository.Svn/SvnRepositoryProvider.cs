@@ -42,6 +42,7 @@ namespace Ntreev.Crema.Repository.Svn
         public const string remoteName = "svn";
         public const string trunkName = "trunk";
         public const string tagsName = "tags";
+        public const string defaultName = "default";
         private const string commentHeader = "# revision properties";
         private static readonly Serializer propertySerializer = new SerializerBuilder().Build();
         private static readonly Deserializer propertyDeserializer = new Deserializer();
@@ -63,7 +64,8 @@ namespace Ntreev.Crema.Repository.Svn
         public IRepository CreateInstance(RepositorySettings settings)
         {
             var baseUri = new Uri(settings.BasePath);
-            var url = settings.RepositoryName == "default" ? UriUtility.Combine(baseUri, trunkName) : UriUtility.Combine(baseUri, "branches", settings.RepositoryName);
+            var repositoryName = settings.RepositoryName == string.Empty ? defaultName : settings.RepositoryName;
+            var url = repositoryName == defaultName ? UriUtility.Combine(baseUri, trunkName) : UriUtility.Combine(baseUri, "branches", settings.RepositoryName);
 
             if (Directory.Exists(settings.WorkingPath) == false)
             {
@@ -74,7 +76,7 @@ namespace Ntreev.Crema.Repository.Svn
                 SvnClientHost.Run("update", settings.WorkingPath.ToSvnPath());
             }
 
-            var repositoryInfo = this.GetRepositoryInfo(settings.BasePath, settings.RepositoryName);
+            var repositoryInfo = this.GetRepositoryInfo(settings.BasePath, repositoryName);
             return new SvnRepository(this, settings.LogService, settings.WorkingPath, settings.TransactionPath, repositoryInfo);
         }
 
@@ -326,9 +328,7 @@ namespace Ntreev.Crema.Repository.Svn
         private Uri GetUrl(string basePath, string repositoryName)
         {
             var paths = this.GetRepositoryPaths(basePath).ToDictionary(item => item.Key, item => item.Value);
-            var uri = paths[repositoryName];
-            //var uri = repositoryName == "default" ? UriUtility.Combine(baseUri, "trunk") : UriUtility.Combine(baseUri, "tags", repositoryName);
-            return uri;
+            return repositoryName == string.Empty ? paths[defaultName] : paths[repositoryName];
         }
 
         private Uri GenerateUrl(string basePath, string repositoryName)

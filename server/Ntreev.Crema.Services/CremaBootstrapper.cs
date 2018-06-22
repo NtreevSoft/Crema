@@ -37,14 +37,13 @@ namespace Ntreev.Crema.Services
         private const string pluginsString = "plugins";
         private const string serializersString = "serializers";
         private const string repoModulesString = "repo-modules";
-        private const string defaultString = "default";
         private CremaSettings settings = new CremaSettings();
         private CompositionContainer container;
 
         public CremaBootstrapper()
         {
             this.Initialize();
-            CremaLog.Debug("default repository module : {0}", this.settings.RepositoryModule);
+            //CremaLog.Debug("default repository module : {0}", this.settings.RepositoryModule);
         }
 
         public static void CreateRepository(IServiceProvider serviceProvider, RepositoryCreationSettings settings)
@@ -68,16 +67,27 @@ namespace Ntreev.Crema.Services
                 var serializer = GetSerializer(serviceProvider, settings.FileType);
 
                 var tempPath = PathUtility.GetTempPath(true);
-                var usersRepo = DirectoryUtility.Prepare(basePath, "remotes", "users");
-                var usersPath = DirectoryUtility.Prepare(tempPath, "remotes", "users");
+                var repositoryPath = DirectoryUtility.Prepare(basePath, $".repository");
+                var repositoryPathInfo = new DirectoryInfo(repositoryPath)
+                {
+                    Attributes = FileAttributes.Directory | FileAttributes.Hidden
+                };
+
+                var usersRepo = DirectoryUtility.Prepare(repositoryPath, "users");
+                var usersPath = DirectoryUtility.Prepare(tempPath, "users");
 
                 UserContext.GenerateDefaultUserInfos(usersPath, serializer);
                 repositoryProvider.InitializeRepository(usersRepo, usersPath);
 
-                var dataBasesRepo = DirectoryUtility.Prepare(basePath, "remotes", "databases");
-                var dataBasesPath = DirectoryUtility.Prepare(tempPath, "remotes", "databases");
+                var dataBasesRepo = DirectoryUtility.Prepare(repositoryPath, "databases");
+                var dataBasesPath = DirectoryUtility.Prepare(tempPath, "databases");
                 new CremaDataSet().WriteToDirectory(dataBasesPath);
                 repositoryProvider.InitializeRepository(dataBasesRepo, dataBasesPath);
+
+                var repoModulePath = FileUtility.WriteAllText(repositoryProvider.Name, repositoryPath, "repo");
+                new FileInfo(repoModulePath).Attributes |= FileAttributes.ReadOnly;
+                var fileTypePath = FileUtility.WriteAllText(serializer.Name, repositoryPath, "file");
+                new FileInfo(fileTypePath).Attributes |= FileAttributes.ReadOnly;
             }
             catch
             {
@@ -277,11 +287,11 @@ namespace Ntreev.Crema.Services
             }
         }
 
-        public string FileType
-        {
-            get => this.settings.FileType;
-            set => this.settings.FileType = value;
-        }
+        //public string FileType
+        //{
+        //    get => this.settings.FileType;
+        //    set => this.settings.FileType = value;
+        //}
 
         public bool MultiThreading
         {
@@ -295,11 +305,11 @@ namespace Ntreev.Crema.Services
             set => this.settings.Verbose = value;
         }
 
-        public string RepositoryModule
-        {
-            get => this.settings.RepositoryModule;
-            set => this.settings.RepositoryModule = value;
-        }
+        //public string RepositoryModule
+        //{
+        //    get => this.settings.RepositoryModule;
+        //    set => this.settings.RepositoryModule = value;
+        //}
 
         public bool NoCache
         {

@@ -35,14 +35,11 @@ namespace Ntreev.Crema.Repository.Git
     class GitRepositoryProvider : IRepositoryProvider
     {
         public const string keepExtension = ".keep";
-        private const string emptyBranch = "__empty__";
+        //private const string emptyBranch = "__empty__";
         private const string commentHeader = "# revision properties";
 
         private static readonly Serializer propertySerializer = new SerializerBuilder().Build();
         private static readonly Deserializer propertyDeserializer = new Deserializer();
-
-        [ImportMany]
-        private IEnumerable<Lazy<ILogService>> logServices = null;
 
         [Import]
         private Lazy<ICremaHost> cremaHost = null;
@@ -59,46 +56,77 @@ namespace Ntreev.Crema.Repository.Git
         public IRepository CreateInstance(RepositorySettings settings)
         {
             var baseUri = new Uri(settings.BasePath);
-            var branchName = this.GetBranchName(settings.RepositoryName);
-            //var logService = this.logServices.FirstOrDefault(item => item.Value.Name == "repository");
+            var repositoryName = settings.RepositoryName == string.Empty ? "master" : settings.RepositoryName;
 
             if (Directory.Exists(settings.WorkingPath) == false)
             {
-                GitServerHost.Run("clone", baseUri.ToString().ToGitPath(), "-b", branchName, settings.WorkingPath.ToGitPath(), "--single-branch");
+                GitServerHost.Run("clone", baseUri.ToString().ToGitPath(), "-b", repositoryName, settings.WorkingPath.ToGitPath(), "--single-branch");
             }
             else
             {
                 //GitHost.Run("update", workingPath.ToGitPath());
             }
-            //var transactionPath = Path.Combine(this.CremaHost.GetPath(CremaPath.Transactions), Path.GetFileName(workingPath));
-            var repositoryInfo = this.GetRepositoryInfo(settings.BasePath, settings.RepositoryName);
+
+            var repositoryInfo = this.GetRepositoryInfo(settings.BasePath, repositoryName);
             return new GitRepository(this, settings.LogService, settings.WorkingPath, settings.TransactionPath, repositoryInfo);
         }
 
         public void CreateRepository(string basePath, string initPath, string comment, params LogPropertyInfo[] properties)
         {
-            throw new NotImplementedException();
+            var baseUri = new Uri(basePath);
+            var repositoryPath = baseUri.LocalPath;
+            var repositoryName = Path.GetFileName(initPath);
+            GitHost.Run(repositoryPath, "checkout --orphan", repositoryName);
+            GitHost.Run(repositoryPath, "rm -rf .");
+            GitHost.Run(repositoryPath, "commit --allow-empty -m \"root commit\"");
+
+            DirectoryUtility.Copy(initPath, repositoryPath);
+
+            foreach (var item in GetEmptyDirectories(repositoryPath))
+            {
+                File.WriteAllText(Path.Combine(item, keepExtension), string.Empty);
+            }
+
+            var query = from item in DirectoryUtility.GetAllFiles(repositoryPath, "*", true)
+                        select item.ToGitPath();
+
+            var argList = new List<object>()
+            {
+                "add",
+            };
+            argList.AddRange(query);
+            GitHost.Run(repositoryPath, argList.ToArray());
+            GitHost.Run(repositoryPath, "commit -m \"first commit\"");
         }
 
         public void DeleteRepository(string basePath, string repositoryName, string comment, params LogPropertyInfo[] properties)
         {
-            throw new NotImplementedException();
+            var baseUri = new Uri(basePath);
+            var repositoryPath = baseUri.LocalPath;
+            var branchName = repositoryName;
+            var branchCollection = GitBranchCollection.Run(repositoryPath);
+            if (branchCollection.Count <= 1)
+                throw new InvalidOperationException();
+
+            if (branchCollection.CurrentBranch == branchName)
+            {
+                var nextBranchName = branchCollection.First(item => item != branchCollection.CurrentBranch);
+                this.CheckoutBranch(repositoryPath, nextBranchName);
+            }
+
+            GitHost.Run(repositoryPath, "branch -D", branchName);
         }
 
         public LogInfo[] GetLog(string basePath, string repositoryName, int count)
         {
             var baseUri = new Uri(basePath);
-            var branchName = this.GetBranchName(repositoryName);
             var repositoryPath = baseUri.LocalPath;
-            var logs = GitLogInfo.RunOnBranch(repositoryPath, branchName, $"--max-count={count}");
+            var logs = GitLogInfo.RunOnBranch(repositoryPath, repositoryName, $"--max-count={count}");
             return logs.Select(item => (LogInfo)item).ToArray();
         }
 
         public string[] GetRepositories(string basePath)
         {
-
-            //GitItemStatusInfo.Run(@"C:\Users\s2quake\AppData\Local\Temp\tmp1D24");
-
             var baseUri = new Uri(basePath);
             var repositoryPath = baseUri.LocalPath;
             var text = GitHost.Run(repositoryPath, "branch", "--list");
@@ -108,9 +136,7 @@ namespace Ntreev.Crema.Repository.Git
             {
                 var item = matches[i];
                 var branchName = item.Groups[1].Value;
-                var repositoryName = this.GetRepositoryName(branchName);
-                if (repositoryName != emptyBranch)
-                    itemList.Add(repositoryName);
+                itemList.Add(branchName);
             }
 
             return itemList.ToArray();
@@ -119,10 +145,9 @@ namespace Ntreev.Crema.Repository.Git
         public RepositoryInfo GetRepositoryInfo(string basePath, string repositoryName)
         {
             var baseUri = new Uri(basePath);
-            var branchName = this.GetBranchName(repositoryName);
             var repositoryInfo = new RepositoryInfo();
             var repositoryPath = baseUri.LocalPath;
-            var text = GitHost.Run(repositoryPath, "log", $"{branchName}", "--pretty=fuller", "--max-count=1");
+            var text = GitHost.Run(repositoryPath, "log", $"{repositoryName}", "--pretty=fuller", "--max-count=1");
             var logItems = GitLogInfo.ParseMany(text);
 
             var firstLog = logItems.Last();
@@ -136,7 +161,7 @@ namespace Ntreev.Crema.Repository.Git
 
             try
             {
-                var description = GitHost.Run(repositoryPath, "config", $"branch.{branchName}.description");
+                var description = GitHost.Run(repositoryPath, "config", $"branch.{repositoryName}.description");
                 var info = propertyDeserializer.Deserialize<GitBranchDescription>(description);
                 repositoryInfo.ID = info.ID;
             }
@@ -147,11 +172,9 @@ namespace Ntreev.Crema.Repository.Git
                     ID = Guid.NewGuid(),
                 };
                 var props = propertySerializer.Serialize(info);
-                GitHost.Run(repositoryPath, "config", $"branch.{branchName}.description", props.ToGitPath());
+                GitHost.Run(repositoryPath, "config", $"branch.{repositoryName}.description", props.ToGitPath());
                 repositoryInfo.ID = info.ID;
             }
-
-            //var reflog = GitHost.Run(tempPath, "reflog show", $"refs/remotes/origin/{branchName}", "--no-abbrev");
 
             return repositoryInfo;
         }
@@ -159,9 +182,8 @@ namespace Ntreev.Crema.Repository.Git
         public string[] GetRepositoryItemList(string basePath, string repositoryName)
         {
             var baseUri = new Uri(basePath);
-            var branchName = this.GetBranchName(repositoryName);
             var repositoryPath = baseUri.LocalPath;
-            var text = GitHost.Run(repositoryPath, "ls-tree", "-r", "--name-only", $"{branchName}");
+            var text = GitHost.Run(repositoryPath, "ls-tree", "-r", "--name-only", $"{repositoryName}");
             var lines = text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
             var itemList = new List<string>(lines.Length);
 
@@ -188,8 +210,6 @@ namespace Ntreev.Crema.Repository.Git
         {
             GitServerHost.Run("init", basePath.ToGitPath());
             GitHost.Run(basePath, "config receive.denyCurrentBranch ignore");
-            GitHost.Run(basePath, "commit --allow-empty -m \"root commit\"");
-            GitHost.Run(basePath, $"branch {emptyBranch}");
             DirectoryUtility.Copy(repositoryPath, basePath);
 
             foreach (var item in GetEmptyDirectories(basePath))
@@ -207,12 +227,13 @@ namespace Ntreev.Crema.Repository.Git
             argList.AddRange(query);
             GitHost.Run(basePath, argList.ToArray());
             GitHost.Run(basePath, "commit -m \"first commit\"");
-            
         }
 
         public void RenameRepository(string basePath, string repositoryName, string newRepositoryName, string comment, params LogPropertyInfo[] properties)
         {
-            throw new NotImplementedException();
+            var baseUri = new Uri(basePath);
+            var repositoryPath = baseUri.LocalPath;
+            GitHost.Run(repositoryPath, "branch -m", repositoryName, newRepositoryName);
         }
 
         private string[] GetEmptyDirectories(string path)
@@ -229,35 +250,13 @@ namespace Ntreev.Crema.Repository.Git
             return itemList.ToArray();
         }
 
-        private string GetBranchName(string repositoryName)
+        private void CheckoutBranch(string repositoryPath, string branchName)
         {
-            return repositoryName == "default" ? "master" : repositoryName;
-        }
-
-        private string GetRepositoryName(string branchName)
-        {
-            return branchName == "master" ? "default" : branchName;
+            GitHost.Run(repositoryPath, "reset --hard");
+            GitHost.Run(repositoryPath, "checkout", branchName);
         }
 
         private ICremaHost CremaHost => this.cremaHost.Value;
-
-        //private string Fetch(Uri baseUri)
-        //{
-        //    if (this.cacheRepositories.ContainsKey(baseUri) == false)
-        //    {
-        //        var id = GuidUtility.FromName(baseUri.ToString());
-        //        var repositoryPath = this.CremaHost.GetPath(CremaPath.Caches, "git-cache", $"{id}");
-        //        this.cacheRepositories.Add(baseUri, repositoryPath);
-        //        DirectoryUtility.Delete(repositoryPath);
-        //        GitServerHost.Run("init", repositoryPath.ToGitPath());
-        //        GitHost.Run(repositoryPath, "remote add origin", baseUri);
-        //    }
-        //    {
-        //        var repositoryPath = this.cacheRepositories[baseUri];
-        //        GitHost.Run(repositoryPath, "fetch");
-        //        return repositoryPath;
-        //    }
-        //}
 
         public string GenerateComment(string comment, params LogPropertyInfo[] properties)
         {

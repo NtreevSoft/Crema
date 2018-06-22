@@ -373,7 +373,7 @@ namespace Ntreev.Crema.Services.Data
             try
             {
                 this.ValidateDispatcher();
-                var remotePath = this.CremaHost.GetPath(CremaPath.RemoteDataBases);
+                var remotePath = this.CremaHost.GetPath(CremaPath.RepositoryDataBases);
                 var logs = this.repositoryProvider.GetLog(remotePath, this.Name, 100);
                 return logs.OrderByDescending(item => item.Revision).Take(100).ToArray();
             }
@@ -752,7 +752,7 @@ namespace Ntreev.Crema.Services.Data
                 this.Dispatcher?.VerifyAccess();
                 if (base.DataBaseInfo.Paths == null)
                 {
-                    var remotePath = this.CremaHost.GetPath(CremaPath.RemoteDataBases);
+                    var remotePath = this.CremaHost.GetPath(CremaPath.RepositoryDataBases);
                     var itemList = this.repositoryProvider.GetRepositoryItemList(remotePath, this.Name);
                     var categories = from item in itemList
                                      where item.EndsWith(PathUtility.Separator) == true
@@ -1255,7 +1255,7 @@ namespace Ntreev.Crema.Services.Data
 
         public void Initialize()
         {
-            var remotePath = this.CremaHost.GetPath(CremaPath.RemoteDataBases);
+            var remotePath = this.CremaHost.GetPath(CremaPath.RepositoryDataBases);
             var repositoryInfo = this.repositoryProvider.GetRepositoryInfo(remotePath, this.Name);
 
             if (base.DataBaseInfo.Revision != repositoryInfo.Revision)

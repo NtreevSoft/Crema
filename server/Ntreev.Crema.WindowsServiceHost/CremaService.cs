@@ -79,7 +79,7 @@ namespace Ntreev.Crema.WindowsServiceHost
                     {
                         BasePath = this.cremaService.BasePath,
                         Port = this.cremaService.Port,
-                        RepositoryModule = this.cremaService.RepositoryModule,
+                        //RepositoryModule = this.cremaService.RepositoryModule,
                         //RepositoryName = this.cremaService.RepositoryName,
                     };
                     var parser = new CommandLineParser("setting", settings);
@@ -87,7 +87,7 @@ namespace Ntreev.Crema.WindowsServiceHost
 
                     this.cremaService.BasePath = settings.BasePath;
                     this.cremaService.Port = settings.Port;
-                    this.cremaService.RepositoryModule = settings.RepositoryModule;
+                    //this.cremaService.RepositoryModule = settings.RepositoryModule;
                     //this.cremaService.RepositoryName = settings.RepositoryName;
 
                     CremaLog.Debug("=========================================================");

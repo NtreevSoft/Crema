@@ -290,10 +290,10 @@ namespace Ntreev.Crema.Services
         {
             switch (pathType)
             {
-                case CremaPath.RemoteUsers:
-                    return new Uri(Path.Combine(Path.Combine(basePath, "remotes", "users"), Path.Combine(paths))).ToString();
-                case CremaPath.RemoteDataBases:
-                    return new Uri(Path.Combine(Path.Combine(basePath, "remotes", "databases"), Path.Combine(paths))).ToString();
+                case CremaPath.RepositoryUsers:
+                    return new Uri(Path.Combine(Path.Combine(basePath, ".repository", "users"), Path.Combine(paths))).ToString();
+                case CremaPath.RepositoryDataBases:
+                    return new Uri(Path.Combine(Path.Combine(basePath, ".repository", "databases"), Path.Combine(paths))).ToString();
                 case CremaPath.Caches:
                     return Path.Combine(Path.Combine(basePath, "caches"), Path.Combine(paths));
                 case CremaPath.Logs:

@@ -55,14 +55,14 @@ namespace Ntreev.Crema.Services.Users
             this.CremaHost = cremaHost;
             this.CremaHost.Debug(Resources.Message_UserContextInitialize);
 
-            this.remotePath = cremaHost.GetPath(CremaPath.RemoteUsers);
+            this.remotePath = cremaHost.GetPath(CremaPath.RepositoryUsers);
             this.basePath = cremaHost.GetPath(CremaPath.Working, "users");
             this.serializer = cremaHost.Serializer;
 
             this.Repository = new UserRepositoryHost(this, this.CremaHost.RepositoryProvider.CreateInstance(new RepositorySettings()
             {
                 BasePath = this.remotePath,
-                RepositoryName = "default",
+                RepositoryName = string.Empty,
                 WorkingPath = this.basePath,
                 LogService = this.CremaHost
             }));

@@ -172,8 +172,8 @@ namespace Ntreev.Crema.ConsoleHost.Commands
             CremaLog.Verbose = this.Verbose ? LogVerbose.Debug : LogVerbose.Info;
             this.application.BasePath = this.Path;
             //this.application.RepositoryName = this.RepositoryName;
-            this.application.RepositoryModule = this.RepositoryModule;
-            this.application.FileType = this.FileType;
+            //this.application.RepositoryModule = this.RepositoryModule;
+            //this.application.FileType = this.FileType;
             this.application.Verbose = this.Verbose ? LogVerbose.Debug : LogVerbose.Info;
             this.application.NoCache = this.NoCache;
             this.application.Culture = this.Culture;
