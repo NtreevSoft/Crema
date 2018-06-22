@@ -6,12 +6,12 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ntreev.Crema.Services.Domains
+namespace Ntreev.Crema.Services.Domains.Serializations
 {
     [DataContract(Namespace = SchemaUtility.Namespace)]
-    struct DomainActionComplete
+    struct DomainCompleteItemSerializationInfo
     {
-        public DomainActionComplete(long id)
+        public DomainCompleteItemSerializationInfo(long id)
         {
             this.ID = id;
             this.DateTime = DateTime.Now;

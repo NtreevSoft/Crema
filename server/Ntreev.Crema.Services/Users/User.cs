@@ -17,6 +17,7 @@
 
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services.Properties;
+using Ntreev.Crema.Services.Users.Serializations;
 using Ntreev.Library;
 using Ntreev.Library.Linq;
 using System;

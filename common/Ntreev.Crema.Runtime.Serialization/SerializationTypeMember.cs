@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 namespace Ntreev.Crema.Runtime.Serialization
 {
     [Serializable]
-    [DataContract]
+    [DataContract(Namespace = SchemaUtility.Namespace)]
     public struct SerializationTypeMember
     {
         public SerializationTypeMember(CremaDataTypeMember typeMember)
@@ -40,10 +40,10 @@ namespace Ntreev.Crema.Runtime.Serialization
             this.Comment = typeMember.Comment;
         }
 
-        [DataMember]
+        [IgnoreDataMember]
         public TagInfo Tags { get; set; }
 
-        [DataMember]
+        [IgnoreDataMember]
         public TagInfo DerivedTags { get; set; }
 
         [DataMember]
@@ -54,5 +54,23 @@ namespace Ntreev.Crema.Runtime.Serialization
 
         [DataMember]
         public string Comment { get; set; }
+
+        #region Invisibles
+
+        [DataMember(Name = nameof(Tags))]
+        public string TagsMember
+        {
+            get => (string)this.Tags;
+            set => this.Tags = (TagInfo)value;
+        }
+
+        [DataMember(Name = nameof(DerivedTags))]
+        public string DerivedTagsMember
+        {
+            get => (string)this.DerivedTags;
+            set => this.DerivedTags = (TagInfo)value;
+        }
+
+        #endregion
     }
 }

@@ -18,6 +18,7 @@
 using Ntreev.Crema.Data;
 using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Crema.ServiceModel;
+using Ntreev.Crema.Services.Data.Serializations;
 using Ntreev.Crema.Services.Domains;
 using Ntreev.Crema.Services.Properties;
 using Ntreev.Crema.Services.Users;

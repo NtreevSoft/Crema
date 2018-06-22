@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 namespace Ntreev.Crema.Runtime.Generation
 {
     [Serializable]
-    [DataContract]
+    [DataContract(Namespace = SchemaUtility.Namespace)]
     public struct GenerationSet
     {
         [DataMember]

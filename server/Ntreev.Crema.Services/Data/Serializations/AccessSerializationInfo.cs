@@ -18,52 +18,48 @@
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Library;
 using System;
+using System.Linq;
 using System.Runtime.Serialization;
 
-namespace Ntreev.Crema.Services.Data
+namespace Ntreev.Crema.Services.Data.Serializations
 {
-    [DataContract(Name = "AccessMemberInfo", Namespace = SchemaUtility.Namespace)]
-    [KnownType(typeof(AccessType))]
-    struct AccessMemberSerializationInfo
+    [DataContract(Name = "AccessInfo", Namespace = SchemaUtility.Namespace)]
+    struct AccessSerializationInfo
     {
+        public const string Extension = ".acs";
+
         [DataMember(EmitDefaultValue = false)]
         public SignatureDate SignatureDate { get; set; }
 
-        [IgnoreDataMember]
-        public AccessType AccessType { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public AccessMemberSerializationInfo[] Members { get; set; }
 
-        [DataMember(Name = nameof(AccessType))]
-        public string AccessTypeText
+        public static explicit operator AccessInfo(AccessSerializationInfo value)
         {
-            get { return this.AccessType.ToString(); }
-            set
+            var obj = new AccessInfo()
             {
-                this.AccessType = (AccessType)Enum.Parse(typeof(AccessType), value);
-            }
-        }
-
-        public static explicit operator AccessMemberInfo(AccessMemberSerializationInfo value)
-        {
-            var obj = new AccessMemberInfo()
-            {
+                Path = string.Empty,
+                ParentPath = string.Empty,
                 SignatureDate = value.SignatureDate,
-                AccessType = value.AccessType,
+                Members = value.Members.Select(item => (AccessMemberInfo)item).ToArray(),
             };
             if (obj.SignatureDate.ID == null)
                 obj.SignatureDate = new SignatureDate(string.Empty, obj.SignatureDate.DateTime);
             return obj;
         }
 
-        public static explicit operator AccessMemberSerializationInfo(AccessMemberInfo value)
+        public static explicit operator AccessSerializationInfo(AccessInfo value)
         {
-            var obj = new AccessMemberSerializationInfo()
+            var obj = new AccessSerializationInfo()
             {
                 SignatureDate = value.SignatureDate,
-                AccessType = value.AccessType,
+                Members = value.Members.Select(item => (AccessMemberSerializationInfo)item).ToArray(),
             };
             if (obj.SignatureDate.ID == string.Empty && obj.SignatureDate.DateTime == DateTime.MinValue)
                 obj.SignatureDate = new SignatureDate();
             return obj;
         }
+
+        public static readonly ObjectSerializerSettings Settings = new ObjectSerializerSettings() { Extension = Extension };
     }
 }

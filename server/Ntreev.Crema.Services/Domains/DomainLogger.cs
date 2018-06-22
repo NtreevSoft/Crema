@@ -17,16 +17,12 @@
 
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services.Domains.Actions;
+using Ntreev.Crema.Services.Domains.Serializations;
 using Ntreev.Library.IO;
 using Ntreev.Library.Serialization;
-using System;
-using System.Linq;
-using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 using System.Xml;
-using System.Xml.Serialization;
 
 namespace Ntreev.Crema.Services.Domains
 {
@@ -46,10 +42,10 @@ namespace Ntreev.Crema.Services.Domains
         private readonly string postedPath;
         private readonly string completedPath;
 
-        private DomainActionPost currentPost;
+        private DomainPostItemSerializationInfo currentPost;
         private IObjectSerializer serializer;
-        private List<DomainActionPost> postedList = new List<DomainActionPost>();
-        private List<DomainActionComplete> completedList = new List<DomainActionComplete>();
+        private readonly DomainPostSerializationInfo postedList;
+        private readonly DomainCompleteSerializationInfo completedList;
 
         public DomainLogger(IObjectSerializer serializer, Domain domain)
         {
@@ -61,22 +57,20 @@ namespace Ntreev.Crema.Services.Domains
             this.completedPath = Path.Combine(this.basePath, CompletedItemPath);
             this.serializer.Serialize(this.headerPath, domain.GetSerializationInfo(), ObjectSerializerSettings.Empty);
             this.serializer.Serialize(this.sourcePath, domain.Source, ObjectSerializerSettings.Empty);
+            this.postedList = new DomainPostSerializationInfo() { Items = new SerializationItemCollection<DomainPostItemSerializationInfo>() };
+            this.completedList = new DomainCompleteSerializationInfo() { Items = new SerializationItemCollection<DomainCompleteItemSerializationInfo>() };
         }
 
         public DomainLogger(IObjectSerializer serializer, string basePath)
         {
             this.serializer = serializer;
             this.basePath = basePath;
-
-            //this.postedWriter = new StreamWriter(Path.Combine(basePath, DomainLogger.PostedFileName), true, Encoding.UTF8)
-            //{
-            //    AutoFlush = true,
-            //};
-
-            //this.completedWriter = new StreamWriter(Path.Combine(basePath, DomainLogger.CompletedFileName), true, Encoding.UTF8)
-            //{
-            //    AutoFlush = true,
-            //};
+            this.headerPath = Path.Combine(this.basePath, HeaderItemPath);
+            this.sourcePath = Path.Combine(this.basePath, SourceItemPath);
+            this.postedPath = Path.Combine(this.basePath, PostedItemPath);
+            this.completedPath = Path.Combine(this.basePath, CompletedItemPath);
+            this.postedList = (DomainPostSerializationInfo)this.serializer.Deserialize(this.postedPath, typeof(DomainPostSerializationInfo), ObjectSerializerSettings.Empty);
+            this.completedList = (DomainCompleteSerializationInfo)this.serializer.Deserialize(this.completedPath, typeof(DomainCompleteSerializationInfo), ObjectSerializerSettings.Empty);
         }
 
         public void Dispose(bool delete)
@@ -188,10 +182,10 @@ namespace Ntreev.Crema.Services.Domains
 
             var id = this.ID++;
             var itemPath = Path.Combine(this.basePath, $"{id}");
-            this.currentPost = new DomainActionPost(id, action.GetType());
-            this.postedList.Add(this.currentPost);
+            this.currentPost = new DomainPostItemSerializationInfo(id, action.GetType());
+            this.postedList.Items.Add(this.currentPost);
             this.serializer.Serialize(itemPath, action, ObjectSerializerSettings.Empty);
-            this.serializer.Serialize(this.postedPath, this.postedList.ToArray(), ObjectSerializerSettings.Empty);
+            this.serializer.Serialize(this.postedPath, this.postedList, ObjectSerializerSettings.Empty);
         }
 
         public void Complete()
@@ -199,8 +193,8 @@ namespace Ntreev.Crema.Services.Domains
             if (this.IsEnabled == false)
                 return;
 
-            this.completedList.Add(new DomainActionComplete(this.currentPost.ID));
-            this.serializer.Serialize(this.completedPath, this.completedList.ToArray(), ObjectSerializerSettings.Empty);
+            this.completedList.Items.Add(new DomainCompleteItemSerializationInfo(this.currentPost.ID));
+            this.serializer.Serialize(this.completedPath, this.completedList, ObjectSerializerSettings.Empty);
         }
 
         public long ID { get; set; }

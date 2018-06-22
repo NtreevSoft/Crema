@@ -23,6 +23,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Ntreev.Crema.ServiceModel;
+using Ntreev.Crema.Services.Users.Serializations;
 
 namespace Ntreev.Crema.Services.Users
 {

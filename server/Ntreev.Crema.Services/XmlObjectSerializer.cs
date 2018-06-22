@@ -47,7 +47,12 @@ namespace Ntreev.Crema.Services
             }
             else if (type == typeof(CremaDataType))
             {
-                throw new NotImplementedException();
+                var extension = settings.Extension != string.Empty ? settings.Extension : CremaSchema.SchemaExtension;
+                var filename = itemPath + extension;
+                var dataSet = new CremaDataSet();
+                var dataType = CremaDataType.ReadSchema(filename);
+                dataSet.Types.Add(dataType);
+                return dataType;
             }
             else if (type == typeof(CremaDataSet))
             {

@@ -19,10 +19,12 @@ using Ntreev.Crema.Data;
 using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services.Data;
+using Ntreev.Crema.Services.Domains.Serializations;
 using Ntreev.Crema.Services.Properties;
 using Ntreev.Library;
 using Ntreev.Library.Serialization;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Runtime.Serialization;
 using System.Text;
@@ -41,36 +43,43 @@ namespace Ntreev.Crema.Services.Domains
             : base(info, context)
         {
             this.IsNew = info.GetBoolean(nameof(IsNew));
+            this.template = this.Source as CremaTemplate;
+            this.view = this.template.View;
+        }
+
+        public TableTemplateDomain(DomainSerializationInfo serializationInfo, object source)
+            : base(serializationInfo, source)
+        {
+            this.IsNew = (bool)serializationInfo.GetProperty(nameof(IsNew));
+            this.template = source as CremaTemplate;
             this.view = this.template.View;
         }
 
         public TableTemplateDomain(Authentication authentication, CremaTemplate templateSource, DataBase dataBase, string itemPath, string itemType)
-            : base(authentication.ID, dataBase.ID, itemPath, itemType)
+            : base(authentication.ID, templateSource, dataBase.ID, itemPath, itemType)
         {
             this.template = templateSource;
             this.view = this.template.View;
         }
 
-        public override object Source => this.template;
-
         public bool IsNew { get; set; }
 
-        protected override byte[] SerializeSource()
+        protected override byte[] SerializeSource(object source)
         {
-            var xml = XmlSerializerUtility.GetString(this.template);
+            var xml = XmlSerializerUtility.GetString(source);
             return Encoding.UTF8.GetBytes(xml.Compress());
         }
 
-        protected override void DerializeSource(byte[] data)
+        protected override object DerializeSource(byte[] data)
         {
             var xml = Encoding.UTF8.GetString(data).Decompress();
-            this.template = XmlSerializerUtility.ReadString<CremaTemplate>(xml);
+            return XmlSerializerUtility.ReadString<CremaTemplate>(xml);
         }
 
-        protected override void OnSerializaing(SerializationInfo info, StreamingContext context)
+        protected override void OnSerializaing(IDictionary<string, object> properties)
         {
-            base.OnSerializaing(info, context);
-            info.AddValue(nameof(IsNew), this.IsNew);
+            base.OnSerializaing(properties);
+            properties.Add(nameof(IsNew), this.IsNew);
         }
 
         protected override DomainRowInfo[] OnNewRow(DomainUser domainUser, DomainRowInfo[] rows, SignatureDateProvider signatureProvider)

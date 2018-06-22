@@ -20,9 +20,9 @@ using Ntreev.Library;
 using System;
 using System.Runtime.Serialization;
 
-namespace Ntreev.Crema.Services.Data
+namespace Ntreev.Crema.Services.Data.Serializations
 {
-    [DataContract]
+    [DataContract(Name = nameof(DataBaseInfo), Namespace = SchemaUtility.Namespace)]
     struct DataBaseSerializationInfo
     {
         public const string Extension = ".info";

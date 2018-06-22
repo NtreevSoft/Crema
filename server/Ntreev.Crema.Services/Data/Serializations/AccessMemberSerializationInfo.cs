@@ -20,47 +20,47 @@ using Ntreev.Library;
 using System;
 using System.Runtime.Serialization;
 
-namespace Ntreev.Crema.Services.Users
+namespace Ntreev.Crema.Services.Data.Serializations
 {
-    [DataContract(Name = nameof(BanInfo), Namespace = SchemaUtility.Namespace)]
-    public struct BanSerializationInfo
+    [DataContract(Name = "AccessMemberInfo", Namespace = SchemaUtility.Namespace)]
+    [KnownType(typeof(AccessType))]
+    struct AccessMemberSerializationInfo
     {
-        [DataMember(EmitDefaultValue = false)]
-        public string Path { get; set; }
-
         [DataMember(EmitDefaultValue = false)]
         public SignatureDate SignatureDate { get; set; }
 
-        [DataMember(EmitDefaultValue = false)]
-        public string Comment { get; set; }
+        [IgnoreDataMember]
+        public AccessType AccessType { get; set; }
 
-        public static explicit operator BanInfo(BanSerializationInfo value)
+        [DataMember(Name = nameof(AccessType))]
+        public string AccessTypeText
         {
-            var obj = new BanInfo()
+            get { return this.AccessType.ToString(); }
+            set
             {
-                Path = value.Path ?? string.Empty,
-                SignatureDate = value.SignatureDate,
-                Comment = value.Comment ?? string.Empty,
-            };
+                this.AccessType = (AccessType)Enum.Parse(typeof(AccessType), value);
+            }
+        }
 
+        public static explicit operator AccessMemberInfo(AccessMemberSerializationInfo value)
+        {
+            var obj = new AccessMemberInfo()
+            {
+                SignatureDate = value.SignatureDate,
+                AccessType = value.AccessType,
+            };
             if (obj.SignatureDate.ID == null)
                 obj.SignatureDate = new SignatureDate(string.Empty, obj.SignatureDate.DateTime);
-            
             return obj;
         }
 
-        public static explicit operator BanSerializationInfo(BanInfo value)
+        public static explicit operator AccessMemberSerializationInfo(AccessMemberInfo value)
         {
-            var obj = new BanSerializationInfo()
+            var obj = new AccessMemberSerializationInfo()
             {
-                Path = value.Path,
                 SignatureDate = value.SignatureDate,
-                Comment = value.Comment,
+                AccessType = value.AccessType,
             };
-            if (obj.Path == string.Empty)
-                obj.Path = null;
-            if (obj.Comment == string.Empty)
-                obj.Comment = null;
             if (obj.SignatureDate.ID == string.Empty && obj.SignatureDate.DateTime == DateTime.MinValue)
                 obj.SignatureDate = new SignatureDate();
             return obj;

@@ -26,7 +26,7 @@ using Ntreev.Library;
 namespace Ntreev.Crema.Runtime.Serialization
 {
     [Serializable]
-    [DataContract]
+    [DataContract(Namespace = SchemaUtility.Namespace)]
     public struct SerializationTable
     {
         public SerializationTable(CremaDataTable dataTable)
@@ -76,10 +76,10 @@ namespace Ntreev.Crema.Runtime.Serialization
             this.HashValue = this.GetHashValue();
         }
 
-        [DataMember]
+        [IgnoreDataMember]
         public TagInfo Tags { get; set; }
 
-        [DataMember]
+        [IgnoreDataMember]
         public TagInfo DerivedTags { get; set; }
 
         [DataMember]
@@ -162,5 +162,23 @@ namespace Ntreev.Crema.Runtime.Serialization
             }
             return CremaDataTable.GenerateHashValue(argList.ToArray());
         }
+
+        #region Invisibles
+
+        [DataMember(Name = nameof(Tags))]
+        public string TagsMember
+        {
+            get => (string)this.Tags;
+            set => this.Tags = (TagInfo)value;
+        }
+
+        [DataMember(Name = nameof(DerivedTags))]
+        public string DerivedTagsMember
+        {
+            get => (string)this.DerivedTags;
+            set => this.DerivedTags = (TagInfo)value;
+        }
+
+        #endregion
     }
 }

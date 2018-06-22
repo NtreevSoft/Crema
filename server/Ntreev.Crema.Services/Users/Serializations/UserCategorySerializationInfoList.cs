@@ -15,37 +15,15 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.ServiceModel;
 using Ntreev.Library;
-using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace Ntreev.Crema.Services.Data
+namespace Ntreev.Crema.Services.Users.Serializations
 {
-    [DataContract]
-    struct DataBaseStateSerializationInfo
+    [CollectionDataContract(Name = "Category", Namespace = SchemaUtility.Namespace, ItemName = "Path")]
+    public class UserCategorySerializationInfoList : List<string>
     {
-        public const string Extension = ".state";
-
-        [DataMember]
-        public bool IsLoaded { get; set; }
-
-        public static explicit operator DataBaseState(DataBaseStateSerializationInfo obj)
-        {
-            var dataBaseState = DataBaseState.None;
-            if (obj.IsLoaded == true)
-                dataBaseState |= DataBaseState.IsLoaded;
-            return dataBaseState;
-        }
-
-        public static explicit operator DataBaseStateSerializationInfo(DataBaseState obj)
-        {
-            return new DataBaseStateSerializationInfo()
-            {
-                IsLoaded = obj.HasFlag(DataBaseState.IsLoaded)
-            };
-        }
-
-        public static readonly ObjectSerializerSettings Settings = new ObjectSerializerSettings() { Extension = Extension };
+        
     }
 }

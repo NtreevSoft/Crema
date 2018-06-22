@@ -18,6 +18,7 @@
 using Ntreev.Crema.Data;
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services.Data;
+using Ntreev.Crema.Services.Domains.Serializations;
 using Ntreev.Crema.Services.Properties;
 using Ntreev.Library;
 using Ntreev.Library.Serialization;
@@ -42,16 +43,31 @@ namespace Ntreev.Crema.Services.Domains
         private TableContentDomain(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
+            this.dataSet = this.Source as CremaDataSet;
+            foreach (var item in this.dataSet.Tables)
+            {
+                var view = item.AsDataView();
+                this.views.Add(item.TableName, view);
+            }
+        }
 
+        public TableContentDomain(DomainSerializationInfo serializationInfo, object source)
+            : base(serializationInfo, source)
+        {
+            this.dataSet = source as CremaDataSet;
+            foreach (var item in this.dataSet.Tables)
+            {
+                var view = item.AsDataView();
+                this.views.Add(item.TableName, view);
+            }
         }
 
         public TableContentDomain(Authentication authentication, CremaDataSet dataSet, DataBase dataBase, string itemPath, string itemType)
-            : base(authentication.ID, dataBase.ID, itemPath, itemType)
+            : base(authentication.ID, dataSet, dataBase.ID, itemPath, itemType)
         {
             if (dataSet.HasChanges() == true)
                 throw new ArgumentException(Resources.Exception_UnsavedDataCannotEdit, nameof(dataSet));
             this.dataSet = dataSet;
-
             foreach (var item in this.dataSet.Tables)
             {
                 var view = item.AsDataView();
@@ -59,24 +75,16 @@ namespace Ntreev.Crema.Services.Domains
             }
         }
 
-        public override object Source => this.dataSet;
-
-        protected override byte[] SerializeSource()
+        protected override byte[] SerializeSource(object source)
         {
-            var xml = XmlSerializerUtility.GetString(this.dataSet);
+            var xml = XmlSerializerUtility.GetString(source);
             return Encoding.UTF8.GetBytes(xml.Compress());
         }
 
-        protected override void DerializeSource(byte[] data)
+        protected override object DerializeSource(byte[] data)
         {
             var xml = Encoding.UTF8.GetString(data).Decompress();
-            this.dataSet = XmlSerializerUtility.ReadString<CremaDataSet>(xml);
-
-            foreach (var item in this.dataSet.Tables)
-            {
-                var view = item.AsDataView();
-                this.views.Add(item.TableName, view);
-            }
+            return XmlSerializerUtility.ReadString<CremaDataSet>(xml);
         }
 
         protected override DomainRowInfo[] OnNewRow(DomainUser domainUser, DomainRowInfo[] rows, SignatureDateProvider signatureProvider)

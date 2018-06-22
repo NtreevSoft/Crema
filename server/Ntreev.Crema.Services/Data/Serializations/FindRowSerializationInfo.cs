@@ -15,28 +15,52 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.Services.Domains.Actions;
+using Ntreev.Crema.Data;
 using Ntreev.Library;
+using Ntreev.Library.Serialization;
 using System;
 using System.Runtime.Serialization;
 
-namespace Ntreev.Crema.Services.Domains
+namespace Ntreev.Crema.Services.Data.Serializations
 {
-    [DataContract(Namespace = SchemaUtility.Namespace)]
-    public abstract class DomainActionBase
+    [DataContract(Name = "Row", Namespace = SchemaUtility.Namespace)]
+    struct FindRowSerializationInfo
     {
-        public DomainActionBase()
+        public FindRowSerializationInfo(CremaDataRow row, CremaDataColumn[] columns)
+            : this()
         {
-            this.AcceptTime = DateTime.Now;
+            var values = new string[columns.Length];
+
+            this.Tags = row.DerivedTags.ToString();
+            this.IsEnabled = row.IsEnabled;
+            this.ModificationInfo = row.ModificationInfo;
+
+            for (var i = 0; i < columns.Length; i++)
+            {
+                var value = row[i];
+                if (value == DBNull.Value)
+                {
+                    values[i] = null;
+                }
+                else
+                {
+                    values[i] = value.ToString();
+                }
+            }
+
+            this.Values = new SerializationItemCollection<string>(values);
         }
 
         [DataMember]
-        public string UserID { get; set; }
+        public SerializationItemCollection<string> Values { get; set; }
 
         [DataMember]
-        public long ID { get; set; }
+        public string Tags { get; set; }
 
         [DataMember]
-        public DateTime AcceptTime { get; set; }
+        public bool IsEnabled { get; set; }
+
+        [DataMember]
+        public SignatureDate ModificationInfo { get; set; }
     }
 }

@@ -18,24 +18,34 @@
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Library;
 using System;
-using System.Linq;
 using System.Runtime.Serialization;
 
-namespace Ntreev.Crema.Services.Domains
+namespace Ntreev.Crema.Services.Data.Serializations
 {
-    [DataContract(Namespace = SchemaUtility.Namespace)]
-    struct DomainSerializationInfo
+    [DataContract(Name = nameof(DataBaseState), Namespace = SchemaUtility.Namespace)]
+    struct DataBaseStateSerializationInfo
     {
-        [DataMember]
-        public string DomainType { get; set; }
+        public const string Extension = ".state";
 
         [DataMember]
-        public string SourceType { get; set; }
+        public bool IsLoaded { get; set; }
 
-        [DataMember]
-        public DomainInfo DomainInfo { get; set; }
+        public static explicit operator DataBaseState(DataBaseStateSerializationInfo obj)
+        {
+            var dataBaseState = DataBaseState.None;
+            if (obj.IsLoaded == true)
+                dataBaseState |= DataBaseState.IsLoaded;
+            return dataBaseState;
+        }
 
-        [DataMember]
-        public DomainUserInfo[] UserInfos { get; set; }
+        public static explicit operator DataBaseStateSerializationInfo(DataBaseState obj)
+        {
+            return new DataBaseStateSerializationInfo()
+            {
+                IsLoaded = obj.HasFlag(DataBaseState.IsLoaded)
+            };
+        }
+
+        public static readonly ObjectSerializerSettings Settings = new ObjectSerializerSettings() { Extension = Extension };
     }
 }

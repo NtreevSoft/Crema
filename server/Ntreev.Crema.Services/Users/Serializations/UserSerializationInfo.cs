@@ -23,7 +23,7 @@ using System;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
 
-namespace Ntreev.Crema.Services.Users
+namespace Ntreev.Crema.Services.Users.Serializations
 {
     [DataContract(Name = nameof(User), Namespace = SchemaUtility.Namespace)]
     public struct UserSerializationInfo

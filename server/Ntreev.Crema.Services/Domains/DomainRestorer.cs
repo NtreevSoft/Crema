@@ -16,6 +16,7 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Ntreev.Crema.Services.Domains.Actions;
+using Ntreev.Crema.Services.Domains.Serializations;
 using Ntreev.Crema.Services.Users;
 using Ntreev.Library.Serialization;
 using System;
@@ -41,8 +42,8 @@ namespace Ntreev.Crema.Services.Domains
         private readonly DomainContext domainContext;
         private readonly string workingPath;
 
-        private readonly List<DomainActionPost> postedList = new List<DomainActionPost>();
-        private readonly Dictionary<long, DomainActionComplete> completedList = new Dictionary<long, DomainActionComplete>();
+        private readonly List<DomainPostItemSerializationInfo> postedList = new List<DomainPostItemSerializationInfo>();
+        private readonly Dictionary<long, DomainCompleteItemSerializationInfo> completedList = new Dictionary<long, DomainCompleteItemSerializationInfo>();
         private readonly List<DomainActionBase> actionList = new List<DomainActionBase>();
         private Dictionary<string, Authentication> authentications;
         private Domain domain;
@@ -72,9 +73,9 @@ namespace Ntreev.Crema.Services.Domains
         private void CollectCompletedActions()
         {
             var itemPath = Path.Combine(this.workingPath, DomainLogger.CompletedItemPath);
-            var items = this.Serializer.Deserialize(itemPath, typeof(DomainActionComplete[]), ObjectSerializerSettings.Empty) as DomainActionComplete[];
+            var completedList = (DomainCompleteSerializationInfo)this.Serializer.Deserialize(itemPath, typeof(DomainCompleteSerializationInfo), ObjectSerializerSettings.Empty);
 
-            foreach (var item in items)
+            foreach (var item in completedList.Items)
             {
                 this.completedList.Add(item.ID, item);
             }
@@ -83,9 +84,9 @@ namespace Ntreev.Crema.Services.Domains
         private void CollectPostedActions()
         {
             var itemPath = Path.Combine(this.workingPath, DomainLogger.PostedItemPath);
-            var items = this.Serializer.Deserialize(itemPath, typeof(DomainActionPost[]), ObjectSerializerSettings.Empty) as DomainActionPost[];
+            var postedList = (DomainPostSerializationInfo)this.Serializer.Deserialize(itemPath, typeof(DomainPostSerializationInfo), ObjectSerializerSettings.Empty);
 
-            foreach (var item in items)
+            foreach (var item in postedList.Items)
             {
                 if (this.completedList.ContainsKey(item.ID) == true)
                 {
@@ -101,15 +102,15 @@ namespace Ntreev.Crema.Services.Domains
 
         private void DeserializeDomain()
         {
-            var path = Path.Combine(this.workingPath, DomainLogger.SourceItemPath);
-            //var source = this.Serializer.
-            var formatter = new BinaryFormatter() { Context = new StreamingContext(StreamingContextStates.CrossAppDomain, this.domainContext.CremaHost) };
-            using (var stream = File.OpenRead(path))
-            {
-                this.domain = formatter.Deserialize(stream) as Domain;
-                this.domain.Logger = new DomainLogger(this.domainContext.Serializer, this.workingPath);
-                this.domainContext.Domains.Restore(this.authentication, this.domain);
-            }
+            var headerItemPath = Path.Combine(this.workingPath, DomainLogger.HeaderItemPath);
+            var sourceItemPath = Path.Combine(this.workingPath, DomainLogger.SourceItemPath);
+            var domainSerializationInfo = (DomainSerializationInfo)this.Serializer.Deserialize(headerItemPath, typeof(DomainSerializationInfo), ObjectSerializerSettings.Empty);
+            var sourceType = Type.GetType(domainSerializationInfo.SourceType);
+            var source = this.Serializer.Deserialize(sourceItemPath, sourceType, ObjectSerializerSettings.Empty);
+            var domainType = Type.GetType(domainSerializationInfo.DomainType);
+            this.domain = (Domain)Activator.CreateInstance(domainType, domainSerializationInfo, source);
+            this.domain.Logger = new DomainLogger(this.domainContext.Serializer, this.workingPath);
+            this.domainContext.Domains.Restore(this.authentication, this.domain);
         }
 
         private void CollectAuthentications()

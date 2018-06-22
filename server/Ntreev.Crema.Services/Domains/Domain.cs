@@ -16,6 +16,7 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Ntreev.Crema.ServiceModel;
+using Ntreev.Crema.Services.Domains.Serializations;
 using Ntreev.Crema.Services.Properties;
 using Ntreev.Library;
 using Ntreev.Library.Serialization;
@@ -35,6 +36,7 @@ namespace Ntreev.Crema.Services.Domains
     {
         private const string dataKey = "Data";
         private const string usersKey = "Users";
+        private object source;
         private byte[] data;
         private Func<DateTime> dateTimeProvider;
 
@@ -49,17 +51,41 @@ namespace Ntreev.Crema.Services.Domains
 
         protected Domain(SerializationInfo info, StreamingContext context)
         {
-            var cremaHost = context.Context as CremaHost;
             var domainInfo = (DomainInfo)info.GetValue(typeof(DomainInfo).Name, typeof(DomainInfo));
+            var userInfos = FindUsersValue();
             this.Initialize(domainInfo);
             this.Name = base.DomainInfo.DomainID.ToString();
             this.data = (byte[])info.GetValue(dataKey, typeof(byte[]));
-            this.DerializeSource(this.data);
+            this.source = this.DerializeSource(this.data);
             this.Users = new DomainUserCollection(this);
-            this.InitializeUsers(info);
+            this.InitializeUsers(userInfos);
+
+            DomainUserInfo[] FindUsersValue()
+            {
+                var enumerator = info.GetEnumerator();
+                while (enumerator.MoveNext())
+                {
+                    var item = enumerator.Current;
+                    if (item.Name == usersKey)
+                    {
+                        return XmlSerializerUtility.ReadString<DomainUserInfo[]>(item.Value as string);
+                    }
+                }
+                return null;
+            }
         }
 
-        protected Domain(string creatorID, Guid dataBaseID, string itemPath, string itemType)
+        protected Domain(DomainSerializationInfo serializationInfo, object source)
+        {
+            this.source = source;
+            this.Initialize(serializationInfo.DomainInfo);
+            this.Name = serializationInfo.DomainInfo.DomainID.ToString();
+            this.data = this.SerializeSource(source);
+            this.Users = new DomainUserCollection(this);
+            this.InitializeUsers(serializationInfo.UserInfos);
+        }
+
+        protected Domain(string creatorID, object source, Guid dataBaseID, string itemPath, string itemType)
         {
             var signatureDate = new SignatureDate(creatorID, DateTime.UtcNow);
             var domainInfo = new DomainInfo()
@@ -73,6 +99,7 @@ namespace Ntreev.Crema.Services.Domains
                 DomainType = this.GetType().Name,
 
             };
+            this.source = source;
             this.Initialize(domainInfo);
             base.DomainState = DomainState.IsActivated;
             this.Name = base.DomainInfo.DomainID.ToString();
@@ -332,7 +359,7 @@ namespace Ntreev.Crema.Services.Domains
             if (this.Users.Contains(authentication.ID) == true)
             {
                 if (this.data == null)
-                    this.data = this.SerializeSource();
+                    this.data = this.SerializeSource(this.Source);
                 metaData.Data = this.data;
             }
 
@@ -455,13 +482,20 @@ namespace Ntreev.Crema.Services.Domains
         public DomainSerializationInfo GetSerializationInfo()
         {
             var query = from DomainUser item in this.Users select item.DomainUserInfo;
-            return new DomainSerializationInfo()
+            var properties = new Dictionary<string, object>();
+            var serializationInfo = new DomainSerializationInfo()
             {
                 DomainType = this.GetType().AssemblyQualifiedName,
                 SourceType = this.Source.GetType().AssemblyQualifiedName,
                 DomainInfo = this.DomainInfo,
                 UserInfos = query.ToArray(),
             };
+            this.OnSerializaing(properties);
+            foreach (var item in properties)
+            {
+                serializationInfo.AddProperty(item.Key, item.Value);
+            }
+            return serializationInfo;
         }
 
         public Guid ID
@@ -476,7 +510,7 @@ namespace Ntreev.Crema.Services.Domains
 
         public Guid DataBaseID => base.DomainInfo.DataBaseID;
 
-        public abstract object Source { get; }
+        public object Source => this.source;
 
         public CremaDispatcher Dispatcher { get; internal set; }
 
@@ -667,22 +701,13 @@ namespace Ntreev.Crema.Services.Domains
 
         }
 
-        protected abstract byte[] SerializeSource();
+        protected abstract byte[] SerializeSource(object source);
 
-        protected abstract void DerializeSource(byte[] data);
+        protected abstract object DerializeSource(byte[] data);
 
-        protected virtual void OnSerializaing(SerializationInfo info, StreamingContext context)
+        protected virtual void OnSerializaing(IDictionary<string, object> properties)
         {
-            info.AddValue(typeof(DomainInfo).Name, base.DomainInfo);
-            info.AddValue(dataKey, this.SerializeSource());
-            info.AddValue(usersKey, GetUsersXml());
 
-            string GetUsersXml()
-            {
-                var query = from DomainUser item in this.Users select item.DomainUserInfo;
-                var userInfos = query.ToArray();
-                return XmlSerializerUtility.GetString(userInfos);
-            }
         }
 
         protected virtual void OnUserAdded(DomainUserEventArgs e)
@@ -986,22 +1011,8 @@ namespace Ntreev.Crema.Services.Domains
             });
         }
 
-        private void InitializeUsers(SerializationInfo info)
+        private void InitializeUsers(DomainUserInfo[] users)
         {
-            DomainUserInfo[] FindUsersValue()
-            {
-                var enumerator = info.GetEnumerator();
-                while (enumerator.MoveNext())
-                {
-                    var item = enumerator.Current;
-                    if (item.Name == usersKey)
-                    {
-                        return XmlSerializerUtility.ReadString<DomainUserInfo[]>(item.Value as string);
-                    }
-                }
-                return null;
-            }
-            var users = FindUsersValue();
             if (users == null)
                 return;
 
@@ -1061,7 +1072,23 @@ namespace Ntreev.Crema.Services.Domains
 
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            this.OnSerializaing(info, context);
+            var properties = new Dictionary<string, object>();
+            info.AddValue(typeof(DomainInfo).Name, base.DomainInfo);
+            info.AddValue(dataKey, this.SerializeSource(this.Source));
+            info.AddValue(usersKey, GetUsersXml());
+
+            this.OnSerializaing(properties);
+            foreach (var item in properties)
+            {
+                info.AddValue(item.Key, item.Value);
+            }
+
+            string GetUsersXml()
+            {
+                var query = from DomainUser item in this.Users select item.DomainUserInfo;
+                var userInfos = query.ToArray();
+                return XmlSerializerUtility.GetString(userInfos);
+            }
         }
 
         #endregion

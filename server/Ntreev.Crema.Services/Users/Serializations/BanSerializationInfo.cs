@@ -18,48 +18,52 @@
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Library;
 using System;
-using System.Linq;
 using System.Runtime.Serialization;
 
-namespace Ntreev.Crema.Services.Data
+namespace Ntreev.Crema.Services.Users.Serializations
 {
-    [DataContract(Name = "AccessInfo", Namespace = SchemaUtility.Namespace)]
-    struct AccessSerializationInfo
+    [DataContract(Name = nameof(BanInfo), Namespace = SchemaUtility.Namespace)]
+    public struct BanSerializationInfo
     {
-        public const string Extension = ".acs";
+        [DataMember(EmitDefaultValue = false)]
+        public string Path { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
         public SignatureDate SignatureDate { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
-        public AccessMemberSerializationInfo[] Members { get; set; }
+        public string Comment { get; set; }
 
-        public static explicit operator AccessInfo(AccessSerializationInfo value)
+        public static explicit operator BanInfo(BanSerializationInfo value)
         {
-            var obj = new AccessInfo()
+            var obj = new BanInfo()
             {
-                Path = string.Empty,
-                ParentPath = string.Empty,
+                Path = value.Path ?? string.Empty,
                 SignatureDate = value.SignatureDate,
-                Members = value.Members.Select(item => (AccessMemberInfo)item).ToArray(),
+                Comment = value.Comment ?? string.Empty,
             };
+
             if (obj.SignatureDate.ID == null)
                 obj.SignatureDate = new SignatureDate(string.Empty, obj.SignatureDate.DateTime);
+            
             return obj;
         }
 
-        public static explicit operator AccessSerializationInfo(AccessInfo value)
+        public static explicit operator BanSerializationInfo(BanInfo value)
         {
-            var obj = new AccessSerializationInfo()
+            var obj = new BanSerializationInfo()
             {
+                Path = value.Path,
                 SignatureDate = value.SignatureDate,
-                Members = value.Members.Select(item => (AccessMemberSerializationInfo)item).ToArray(),
+                Comment = value.Comment,
             };
+            if (obj.Path == string.Empty)
+                obj.Path = null;
+            if (obj.Comment == string.Empty)
+                obj.Comment = null;
             if (obj.SignatureDate.ID == string.Empty && obj.SignatureDate.DateTime == DateTime.MinValue)
                 obj.SignatureDate = new SignatureDate();
             return obj;
         }
-
-        public static readonly ObjectSerializerSettings Settings = new ObjectSerializerSettings() { Extension = Extension };
     }
 }

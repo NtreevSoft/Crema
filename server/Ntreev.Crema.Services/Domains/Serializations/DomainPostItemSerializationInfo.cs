@@ -6,12 +6,12 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ntreev.Crema.Services.Domains
+namespace Ntreev.Crema.Services.Domains.Serializations
 {
     [DataContract(Namespace = SchemaUtility.Namespace)]
-    struct DomainActionPost
+    struct DomainPostItemSerializationInfo
     {
-        public DomainActionPost(long id, Type type)
+        public DomainPostItemSerializationInfo(long id, Type type)
         {
             this.ID = id;
             this.Type = type.AssemblyQualifiedName;

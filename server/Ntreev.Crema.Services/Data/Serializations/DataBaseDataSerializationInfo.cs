@@ -17,44 +17,24 @@
 
 using Ntreev.Crema.Data;
 using Ntreev.Library;
-using System;
+using System.Runtime.Serialization;
 
-namespace Ntreev.Crema.Services.Data
+namespace Ntreev.Crema.Services.Data.Serializations
 {
-    [Serializable]
-    struct FindRowCacheInfo
+    [DataContract(Name = nameof(DataBase), Namespace = SchemaUtility.Namespace)]
+    struct DataBaseDataSerializationInfo
     {
-        public FindRowCacheInfo(CremaDataRow row, CremaDataColumn[] columns)
-            : this()
-        {
-            var values = new string[columns.Length];
+        public const string Extension = ".data";
 
-            this.Tags = row.DerivedTags.ToString();
-            this.IsEnabled = row.IsEnabled;
-            this.ModificationInfo = row.ModificationInfo;
+        [DataMember]
+        public string Revision { get; set; }
 
-            for (var i = 0; i < columns.Length; i++)
-            {
-                var value = row[i];
-                if (value == DBNull.Value)
-                {
-                    values[i] = null;
-                }
-                else
-                {
-                    values[i] = value.ToString();
-                }
-            }
+        [DataMember]
+        public TypeInfo[] TypeInfos { get; set; }
 
-            this.Values = values;
-        }
+        [DataMember]
+        public TableInfo[] TableInfos { get; set; }
 
-        public string[] Values { get; set; }
-
-        public string Tags { get; set; }
-
-        public bool IsEnabled { get; set; }
-
-        public SignatureDate ModificationInfo { get; set; }
+        public static readonly ObjectSerializerSettings Settings = new ObjectSerializerSettings() { Extension = Extension };
     }
 }

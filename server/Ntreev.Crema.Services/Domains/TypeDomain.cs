@@ -15,21 +15,20 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.Services.Data;
-using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Data;
+using Ntreev.Crema.Data.Xml.Schema;
+using Ntreev.Crema.ServiceModel;
+using Ntreev.Crema.Services.Data;
+using Ntreev.Crema.Services.Domains.Serializations;
+using Ntreev.Crema.Services.Properties;
+using Ntreev.Library;
+using Ntreev.Library.ObjectModel;
+using Ntreev.Library.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Ntreev.Library.Serialization;
 using System.Runtime.Serialization;
-using Ntreev.Library.ObjectModel;
-using Ntreev.Library;
-using Ntreev.Crema.Data.Xml.Schema;
-using Ntreev.Crema.Services.Properties;
+using System.Text;
 
 namespace Ntreev.Crema.Services.Domains
 {
@@ -43,30 +42,38 @@ namespace Ntreev.Crema.Services.Domains
             : base(info, context)
         {
             this.IsNew = info.GetBoolean(nameof(this.IsNew));
+            this.dataType = this.Source as CremaDataType;
+            this.view = this.dataType.View;
+        }
+
+        public TypeDomain(DomainSerializationInfo serializationInfo, object source)
+            : base(serializationInfo, source)
+        {
+            this.IsNew = (bool)serializationInfo.GetProperty(nameof(IsNew));
+            this.dataType = source as CremaDataType;
             this.view = this.dataType.View;
         }
 
         public TypeDomain(Authentication authentication, CremaDataType dataType, DataBase dataBase, string itemPath, string itemType)
-            : base(authentication.ID, dataBase.ID, itemPath, itemType)
+            : base(authentication.ID, dataType, dataBase.ID, itemPath, itemType)
         {
             this.dataType = dataType;
             this.view = this.dataType.View;
         }
 
-        public override object Source
-        {
-            get { return this.dataType; }
-        }
-
         public bool IsNew { get; set; }
 
-        protected override byte[] SerializeSource()
+        protected override byte[] SerializeSource(object source)
         {
-            var text = this.dataType.Path + ";" + XmlSerializerUtility.GetString(this.dataType.DataSet);
-            return Encoding.UTF8.GetBytes(text.Compress());
+            if (source is CremaDataType dataType)
+            {
+                var text = dataType.Path + ";" + XmlSerializerUtility.GetString(dataType.DataSet);
+                return Encoding.UTF8.GetBytes(text.Compress());
+            }
+            throw new NotImplementedException();
         }
 
-        protected override void DerializeSource(byte[] data)
+        protected override object DerializeSource(byte[] data)
         {
             var text = Encoding.UTF8.GetString(data).Decompress();
             var index = text.IndexOf(";");
@@ -74,13 +81,13 @@ namespace Ntreev.Crema.Services.Domains
             var itemName = new ItemName(path);
             var xml = text.Substring(index + 1);
             var dataSet = XmlSerializerUtility.ReadString<CremaDataSet>(xml);
-            this.dataType = dataSet.Types[itemName.Name];
+            return dataSet.Types[itemName.Name];
         }
 
-        protected override void OnSerializaing(SerializationInfo info, StreamingContext context)
+        protected override void OnSerializaing(IDictionary<string, object> properties)
         {
-            base.OnSerializaing(info, context);
-            info.AddValue(nameof(this.IsNew), this.IsNew);
+            base.OnSerializaing(properties);
+            properties.Add(nameof(this.IsNew), this.IsNew);
         }
 
         protected override DomainRowInfo[] OnNewRow(DomainUser domainUser, DomainRowInfo[] rows, SignatureDateProvider signatureProvider)

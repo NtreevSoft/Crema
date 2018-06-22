@@ -15,15 +15,38 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.Data;
+using Ntreev.Crema.ServiceModel;
 using Ntreev.Library;
-using System.Collections.Generic;
+using System;
+using System.Linq;
 using System.Runtime.Serialization;
 
-namespace Ntreev.Crema.Services.Users
+namespace Ntreev.Crema.Services.Domains.Serializations
 {
-    [CollectionDataContract(Name = "Category", Namespace = SchemaUtility.Namespace, ItemName = "Path")]
-    public class UserCategorySerializationInfoList : List<string>
+    [DataContract(Namespace = SchemaUtility.Namespace)]
+    struct DomainPropertySerializationInfo
     {
-        
+        public DomainPropertySerializationInfo(string name, object value)
+        {
+            this.Name = name;
+            this.Type = value.GetType().GetTypeName();
+            this.Value = CremaConvert.ToString(value);
+        }
+
+        [DataMember]
+        public string Name { get; set; }
+
+        [DataMember]
+        public string Value { get; set; }
+
+        [DataMember]
+        public string Type { get; set; }
+
+        public object ToValue()
+        {
+            var type = CremaDataTypeUtility.GetType(this.Type);
+            return CremaConvert.ChangeType(this.Value, type);
+        }
     }
 }

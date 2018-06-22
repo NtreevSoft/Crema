@@ -57,11 +57,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthenticationToken.cs" />
-    <Compile Include="Data\DataBaseStateSerializationInfo.cs" />
+    <Compile Include="Data\DataServiceItemInfo.cs" />
+    <Compile Include="Data\Serializations\DataBaseStateSerializationInfo.cs" />
     <Compile Include="Data\DataBaseSet.cs" />
-    <Compile Include="Domains\DomainActionComplete.cs" />
-    <Compile Include="Domains\DomainActionPost.cs" />
-    <Compile Include="Domains\DomainSerializationInfo.cs" />
+    <Compile Include="Domains\Serializations\DomainCompleteSerializationInfo.cs" />
+    <Compile Include="Domains\Serializations\DomainCompleteItemSerializationInfo.cs" />
+    <Compile Include="Domains\Serializations\DomainPostSerializationInfo.cs" />
+    <Compile Include="Domains\Serializations\DomainPostItemSerializationInfo.cs" />
+    <Compile Include="Domains\Serializations\DomainPropertySerializationInfo.cs" />
+    <Compile Include="Domains\Serializations\DomainSerializationInfo.cs" />
     <Compile Include="ObjectSerializerSettings.cs" />
     <Compile Include="LogServiceHost.cs" />
     <Compile Include="CremaDataTableSerializerSettings.cs" />
@@ -76,10 +80,10 @@
     <Compile Include="CremaConfiguration.cs" />
     <Compile Include="CremaPath.cs" />
     <Compile Include="CremaSettings.cs" />
-    <Compile Include="Data\AccessMemberSerializationInfo.cs" />
-    <Compile Include="Data\AccessSerializationInfo.cs" />
-    <Compile Include="Data\DataBaseDataSerializationInfo.cs" />
-    <Compile Include="Data\DataServiceItemInfo.cs" />
+    <Compile Include="Data\Serializations\AccessMemberSerializationInfo.cs" />
+    <Compile Include="Data\Serializations\AccessSerializationInfo.cs" />
+    <Compile Include="Data\Serializations\DataBaseDataSerializationInfo.cs" />
+    <Compile Include="Data\Serializations\DataServiceItemSerializationInfo.cs" />
     <Compile Include="Domains\Actions\DisjoinAction.cs" />
     <Compile Include="Domains\Actions\JoinAction.cs" />
     <Compile Include="Domains\Actions\SetOwnerAction.cs" />
@@ -89,7 +93,7 @@
     <Compile Include="Data\DataServiceItemBase.cs" />
     <Compile Include="Data\TableContentCollection.cs" />
     <Compile Include="Data\DataBaseRepositoryHost.cs" />
-    <Compile Include="Data\DataBaseSerializationInfo.cs" />
+    <Compile Include="Data\Serializations\DataBaseSerializationInfo.cs" />
     <Compile Include="Data\DataBaseTransaction.cs" />
     <Compile Include="Data\DataFindServiceItem.cs" />
     <Compile Include="Data\DataFindService.cs" />
@@ -111,8 +115,8 @@
     <Compile Include="Domains\Actions\SetPropertyAction.cs" />
     <Compile Include="Domains\TypeDomain.cs" />
     <Compile Include="Domains\TableTemplateDomain.cs" />
-    <Compile Include="Data\FindTableCacheInfo.cs" />
-    <Compile Include="Data\FindRowCacheInfo.cs" />
+    <Compile Include="Data\Serializations\FindTableSerializationInfo.cs" />
+    <Compile Include="Data\Serializations\FindRowSerializationInfo.cs" />
     <Compile Include="Domains\DomainActionBase.cs" />
     <Compile Include="Domains\Actions\NewRowAction.cs" />
     <Compile Include="Domains\Actions\RemoveRowAction.cs" />
@@ -153,17 +157,17 @@
     <Compile Include="RepositoryHost.cs" />
     <Compile Include="RepositoryItemStatus.cs" />
     <Compile Include="RepositoryItem.cs" />
+    <Compile Include="Users\Serializations\BanSerializationInfo.cs" />
+    <Compile Include="Users\Serializations\UserCategorySerializationInfoList.cs" />
+    <Compile Include="Users\Serializations\UserContextSerializationInfo.cs" />
+    <Compile Include="Users\Serializations\UserSerializationInfo.cs" />
     <Compile Include="Users\User.cs" />
     <Compile Include="Users\UserAuthenticationProvider.cs" />
     <Compile Include="Users\UserCategory.cs" />
     <Compile Include="Users\UserCategoryCollection.cs" />
     <Compile Include="Users\UserCollection.cs" />
     <Compile Include="Users\UserContext.cs" />
-    <Compile Include="Users\UserContextSerializationInfo.cs" />
-    <Compile Include="Users\UserCategorySerializationInfoList.cs" />
-    <Compile Include="Users\BanSerializationInfo.cs" />
     <Compile Include="Users\UserRepositoryHost.cs" />
-    <Compile Include="Users\UserSerializationInfo.cs" />
     <Compile Include="XmlObjectSerializer.cs" />
   </ItemGroup>
   <ItemGroup>

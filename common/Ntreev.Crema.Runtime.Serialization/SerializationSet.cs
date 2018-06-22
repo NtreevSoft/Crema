@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 namespace Ntreev.Crema.Runtime.Serialization
 {
     [Serializable]
-    [DataContract]
+    [DataContract(Namespace = SchemaUtility.Namespace)]
     public struct SerializationSet
     {
         public SerializationSet(CremaDataSet dataSet)
@@ -40,7 +40,7 @@ namespace Ntreev.Crema.Runtime.Serialization
             this.Revision = null;
             this.TypesHashValue = GetTypesHashValue(this);
             this.TablesHashValue = GetTablesHashValue(this);
-            this.Tags = string.Empty;
+            this.Tags = TagInfo.All;
         }
 
         [DataMember]
@@ -52,8 +52,8 @@ namespace Ntreev.Crema.Runtime.Serialization
         [DataMember]
         public string Name { get; set; }
 
-        [DataMember]
-        public string Tags { get; set; }
+        [IgnoreDataMember]
+        public TagInfo Tags { get; set; }
 
         [DataMember]
         public string Revision { get; set; }
@@ -90,7 +90,7 @@ namespace Ntreev.Crema.Runtime.Serialization
             metaSet.Types = typeList.ToArray();
             metaSet.TypesHashValue = GetTypesHashValue(metaSet);
             metaSet.TablesHashValue = GetTablesHashValue(metaSet);
-            metaSet.Tags = (string)tags;
+            metaSet.Tags = tags;
             return metaSet;
         }
 
@@ -148,5 +148,16 @@ namespace Ntreev.Crema.Runtime.Serialization
                 return HashUtility.GetHashValue(algorithm, args);
             }
         }
+
+        #region Invisibles
+
+        [DataMember(Name = nameof(Tags))]
+        public string TagsMember
+        {
+            get => (string)this.Tags;
+            set => this.Tags = (TagInfo)value;
+        }
+
+        #endregion
     }
 }

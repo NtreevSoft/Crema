@@ -15,26 +15,53 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.Data;
 using Ntreev.Library;
+using Ntreev.Library.Serialization;
+using System;
+using System.Linq;
 using System.Runtime.Serialization;
 
-namespace Ntreev.Crema.Services.Data
+namespace Ntreev.Crema.Services.Data.Serializations
 {
-    [DataContract(Namespace = SchemaUtility.Namespace)]
-    struct DataBaseDataSerializationInfo
+    [DataContract(Name = nameof(DataServiceItemInfo), Namespace = SchemaUtility.Namespace)]
+    public struct DataServiceItemSerializationInfo
     {
-        public const string Extension = ".data";
+        [DataMember]
+        public SerializationItemCollection<string> ItemList { get; set; }
 
         [DataMember]
         public string Revision { get; set; }
 
         [DataMember]
-        public TypeInfo[] TypeInfos { get; set; }
+        public string Version { get; set; }
 
         [DataMember]
-        public TableInfo[] TableInfos { get; set; }
+        public DateTime DateTime { get; set; }
 
-        public static readonly ObjectSerializerSettings Settings = new ObjectSerializerSettings() { Extension = Extension };
+        public static explicit operator DataServiceItemInfo(DataServiceItemSerializationInfo value)
+        {
+            var obj = new DataServiceItemInfo()
+            {
+                ItemList = value.ItemList.ToArray(),
+                Revision = value.Revision,
+                Version = new Version(value.Version),
+                DateTime = value.DateTime,
+            };
+
+            return obj;
+        }
+
+        public static explicit operator DataServiceItemSerializationInfo(DataServiceItemInfo value)
+        {
+            var obj = new DataServiceItemSerializationInfo()
+            {
+                ItemList = new SerializationItemCollection<string>(value.ItemList),
+                Revision = value.Revision,
+                Version = value.Version.ToString(),
+                DateTime = value.DateTime,
+            };
+
+            return obj;
+        }
     }
 }

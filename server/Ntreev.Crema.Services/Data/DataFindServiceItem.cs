@@ -18,9 +18,11 @@
 using Ntreev.Crema.Data;
 using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Crema.ServiceModel;
+using Ntreev.Crema.Services.Data.Serializations;
 using Ntreev.Library;
 using Ntreev.Library.IO;
 using Ntreev.Library.ObjectModel;
+using Ntreev.Library.Serialization;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -32,7 +34,7 @@ namespace Ntreev.Crema.Services.Data
     {
         private readonly CremaDispatcher dispatcher;
         private readonly Authentication authentication;
-        private readonly BinaryFormatter formatter = new BinaryFormatter();
+        //private readonly BinaryFormatter formatter = new BinaryFormatter();
 
         private readonly List<FindResultInfo> findResults = new List<FindResultInfo>();
 
@@ -53,7 +55,7 @@ namespace Ntreev.Crema.Services.Data
                 if (item.EndsWith(PathUtility.Separator) == true)
                     continue;
                 var itemName = new ItemName(item);
-                var cacheInfo = (FindTableCacheInfo)this.ReadType(itemName.Name, true);
+                var cacheInfo = (FindTableSerializationInfo)this.ReadType(itemName.Name, true);
                 this.FindType(item, text, options, cacheInfo, this.findResults);
             }
 
@@ -71,7 +73,7 @@ namespace Ntreev.Crema.Services.Data
                     continue;
 
                 var itemName = new ItemName(item);
-                var cacheInfo = (FindTableCacheInfo)this.ReadTable(itemName.Name, true);
+                var cacheInfo = (FindTableSerializationInfo)this.ReadTable(itemName.Name, true);
                 this.FindTable(item, text, options, cacheInfo, this.findResults);
             }
 
@@ -92,43 +94,47 @@ namespace Ntreev.Crema.Services.Data
             return this.BuildCache(dataType);
         }
 
-        protected override void OnSerializeTable(Stream stream, object tableData)
-        {
-            this.formatter.Serialize(stream, tableData);
-        }
+        //protected override void OnSerializeTable(Stream stream, object tableData)
+        //{
+        //    this.formatter.Serialize(stream, tableData);
+        //}
 
-        protected override void OnSerializeType(Stream stream, object typeData)
-        {
-            this.formatter.Serialize(stream, typeData);
-        }
+        //protected override void OnSerializeType(Stream stream, object typeData)
+        //{
+        //    this.formatter.Serialize(stream, typeData);
+        //}
 
-        protected override object OnDeserializeTable(Stream stream)
-        {
-            return this.formatter.Deserialize(stream);
-        }
+        //protected override object OnDeserializeTable(Stream stream)
+        //{
+        //    return this.formatter.Deserialize(stream);
+        //}
 
-        protected override object OnDeserializeType(Stream stream)
-        {
-            return this.formatter.Deserialize(stream);
-        }
+        //protected override object OnDeserializeType(Stream stream)
+        //{
+        //    return this.formatter.Deserialize(stream);
+        //}
+
+        protected override System.Type TableDataType => typeof(FindTableSerializationInfo);
+
+        protected override System.Type TypeDataType => typeof(FindTableSerializationInfo);
 
         protected override Authentication Authentication
         {
             get { return this.authentication; }
         }
 
-        private FindTableCacheInfo BuildCache(CremaDataType dataType)
+        private FindTableSerializationInfo BuildCache(CremaDataType dataType)
         {
-            var typeCache = new FindTableCacheInfo()
+            var typeCache = new FindTableSerializationInfo()
             {
-                Columns = new string[] { CremaSchema.Name, CremaSchema.Value, CremaSchema.Comment }
+                Columns = new SerializationItemCollection<string>() { CremaSchema.Name, CremaSchema.Value, CremaSchema.Comment }
             };
-            var rowCaches = new List<FindRowCacheInfo>();
+            var rowCaches = new List<FindRowSerializationInfo>();
             foreach (var item in dataType.Members)
             {
-                var rowCache = new FindRowCacheInfo()
+                var rowCache = new FindRowSerializationInfo()
                 {
-                    Values = new string[] { item.Name, item.Value.ToString(), item.Comment },
+                    Values = new SerializationItemCollection<string>() { item.Name, item.Value.ToString(), item.Comment },
                     Tags = TagInfo.All.ToString(),
                     IsEnabled = true,
                     ModificationInfo = item.ModificationInfo
@@ -140,30 +146,30 @@ namespace Ntreev.Crema.Services.Data
             return typeCache;
         }
 
-        private FindTableCacheInfo BuildCache(CremaDataTable dataTable)
+        private FindTableSerializationInfo BuildCache(CremaDataTable dataTable)
         {
             var columns = dataTable.Columns.ToArray();
-            var tableCache = new FindTableCacheInfo()
+            var tableCache = new FindTableSerializationInfo()
             {
-                Columns = columns.Select(i => i.ColumnName).ToArray(),
+                Columns = new SerializationItemCollection<string>(columns.Select(i => i.ColumnName)),
                 Rows = this.BuildRowCache(dataTable, columns)
             };
             return tableCache;
         }
 
-        private FindRowCacheInfo[] BuildRowCache(CremaDataTable table, CremaDataColumn[] columns)
+        private FindRowSerializationInfo[] BuildRowCache(CremaDataTable table, CremaDataColumn[] columns)
         {
-            var rowCaches = new List<FindRowCacheInfo>();
+            var rowCaches = new List<FindRowSerializationInfo>();
 
             foreach (var item in table.Rows)
             {
-                rowCaches.Add(new FindRowCacheInfo(item, columns));
+                rowCaches.Add(new FindRowSerializationInfo(item, columns));
             }
 
             return rowCaches.ToArray();
         }
 
-        private void FindType(string itemPath, string text, FindOptions options, FindTableCacheInfo cacheInfo, List<FindResultInfo> results)
+        private void FindType(string itemPath, string text, FindOptions options, FindTableSerializationInfo cacheInfo, List<FindResultInfo> results)
         {
             var index = 0;
             foreach (var row in cacheInfo.Rows)
@@ -191,7 +197,7 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        private void FindTable(string itemPath, string text, FindOptions options, FindTableCacheInfo cacheInfo, List<FindResultInfo> results)
+        private void FindTable(string itemPath, string text, FindOptions options, FindTableSerializationInfo cacheInfo, List<FindResultInfo> results)
         {
             int index = 0;
             foreach (var row in cacheInfo.Rows)

@@ -18,6 +18,7 @@
 using Ntreev.Crema.Data;
 using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Crema.ServiceModel;
+using Ntreev.Crema.Services.Data.Serializations;
 using Ntreev.Library.IO;
 using Ntreev.Library.Linq;
 using Ntreev.Library.Serialization;
@@ -30,11 +31,12 @@ namespace Ntreev.Crema.Services.Data
 {
     public abstract class DataServiceItemBase : IDisposable
     {
-        private const string jsonExtension = ".json";
+        //private const string jsonExtension = ".json";
         private const string dataDirectory = "data";
         private const string infoDirectory = "info";
         private Guid dataBaseID;
-        private ILogService logService;
+        private readonly ILogService logService;
+        private readonly IObjectSerializer serializer;
         private bool initialized;
         private string workingPath;
         private Dictionary<string, TableInfo> tableInfos = new Dictionary<string, TableInfo>();
@@ -54,6 +56,7 @@ namespace Ntreev.Crema.Services.Data
             this.DataBase.Renamed += DataBase_Renamed;
             this.DataBase.Unloaded += DataBase_Unloaded;
             this.logService = dataBase.GetService(typeof(ILogService)) as ILogService;
+            this.serializer = dataBase.GetService(typeof(IObjectSerializer)) as IObjectSerializer;
 
             if (dataBase is DataBase dataBaseInternal)
             {
@@ -82,32 +85,25 @@ namespace Ntreev.Crema.Services.Data
             DirectoryUtility.Prepare(this.BasePath);
             foreach (var item in this.tableInfos)
             {
-                using (var stream = FileUtility.OpenWrite(this.BasePath, CremaSchema.TableDirectory, infoDirectory, item.Key + jsonExtension))
-                {
-                    JsonSerializerUtility.Write(stream, item.Value);
-                }
+                var itemPath = Path.Combine(this.BasePath, CremaSchema.TableDirectory, infoDirectory, item.Key);
+                this.Serializer.Serialize(itemPath, item.Value, ObjectSerializerSettings.Empty);
+
             }
             foreach (var item in this.tableDatas)
             {
-                using (var stream = FileUtility.OpenWrite(this.BasePath, CremaSchema.TableDirectory, dataDirectory, item.Key))
-                {
-                    this.OnSerializeTable(stream, item.Value);
-                }
+                var itemPath = Path.Combine(this.BasePath, CremaSchema.TableDirectory, dataDirectory, item.Key);
+                this.Serializer.Serialize(itemPath, item.Value, ObjectSerializerSettings.Empty);
             }
 
             foreach (var item in this.typeInfos)
             {
-                using (var stream = FileUtility.OpenWrite(this.BasePath, CremaSchema.TypeDirectory, infoDirectory, item.Key + jsonExtension))
-                {
-                    JsonSerializerUtility.Write(stream, item.Value);
-                }
+                var itemPath = Path.Combine(this.BasePath, CremaSchema.TypeDirectory, infoDirectory, item.Key);
+                this.Serializer.Serialize(itemPath, item.Value, ObjectSerializerSettings.Empty);
             }
             foreach (var item in this.typeDatas)
             {
-                using (var stream = FileUtility.OpenWrite(this.BasePath, CremaSchema.TypeDirectory, dataDirectory, item.Key))
-                {
-                    this.OnSerializeTable(stream, item.Value);
-                }
+                var itemPath = Path.Combine(this.BasePath, CremaSchema.TypeDirectory, dataDirectory, item.Key);
+                this.Serializer.Serialize(itemPath, item.Value, ObjectSerializerSettings.Empty);
             }
 
             var tableInfos = this.tableInfos.Select(item => Path.Combine(CremaSchema.TableDirectory, item.Key));
@@ -189,6 +185,8 @@ namespace Ntreev.Crema.Services.Data
 
         public DataServiceItemInfo DataServiceItemInfo => this.info;
 
+        public IObjectSerializer Serializer => this.serializer;
+
         public event EventHandler Changed;
 
         protected virtual void OnChanged(EventArgs e)
@@ -210,13 +208,17 @@ namespace Ntreev.Crema.Services.Data
 
         protected abstract object GetObject(CremaDataType dataType);
 
-        protected abstract void OnSerializeTable(Stream stream, object tableData);
+        //protected abstract void OnSerializeTable(Stream stream, object tableData);
 
-        protected abstract void OnSerializeType(Stream stream, object tableData);
+        //protected abstract void OnSerializeType(Stream stream, object tableData);
 
-        protected abstract object OnDeserializeTable(Stream stream);
+        //protected abstract object OnDeserializeTable(Stream stream);
 
-        protected abstract object OnDeserializeType(Stream stream);
+        //protected abstract object OnDeserializeType(Stream stream);
+
+        protected abstract System.Type TableDataType { get; }
+
+        protected abstract System.Type TypeDataType { get; }
 
         protected object ReadTable(string name, bool isDevmode)
         {
@@ -536,25 +538,29 @@ namespace Ntreev.Crema.Services.Data
                         if (item.StartsWith(CremaSchema.TableDirectory) == true)
                         {
                             var tableName = Path.GetFileName(item);
-                            using (var stream = FileUtility.OpenRead(this.BasePath, CremaSchema.TableDirectory, infoDirectory, tableName + jsonExtension))
                             {
-                                this.tableInfos.Add(tableName, JsonSerializerUtility.Read<TableInfo>(stream));
+                                var itemPath = Path.Combine(this.BasePath, CremaSchema.TableDirectory, infoDirectory, tableName);
+                                var tableInfo = (TableInfo)this.Serializer.Deserialize(itemPath, typeof(TableInfo), ObjectSerializerSettings.Empty);
+                                this.tableInfos.Add(tableName, tableInfo);
                             }
-                            using (var stream = FileUtility.OpenRead(this.BasePath, CremaSchema.TableDirectory, dataDirectory, tableName))
                             {
-                                this.tableDatas.Add(tableName, this.OnDeserializeTable(stream));
+                                var itemPath = Path.Combine(this.BasePath, CremaSchema.TableDirectory, dataDirectory, tableName);
+                                var tableData = this.Serializer.Deserialize(itemPath, this.TableDataType, ObjectSerializerSettings.Empty);
+                                this.tableDatas.Add(tableName, tableData);
                             }
                         }
                         else if (item.StartsWith(CremaSchema.TypeDirectory) == true)
                         {
                             var typeName = Path.GetFileName(item);
-                            using (var stream = FileUtility.OpenRead(this.BasePath, CremaSchema.TypeDirectory, infoDirectory, typeName + jsonExtension))
                             {
-                                this.typeInfos.Add(typeName, JsonSerializerUtility.Read<TypeInfo>(stream));
+                                var itemPath = Path.Combine(this.BasePath, CremaSchema.TypeDirectory, infoDirectory, typeName);
+                                var typeInfo = (TypeInfo)this.Serializer.Deserialize(itemPath, typeof(TypeInfo), ObjectSerializerSettings.Empty);
+                                this.typeInfos.Add(typeName, typeInfo);
                             }
-                            using (var stream = FileUtility.OpenRead(this.BasePath, CremaSchema.TypeDirectory, dataDirectory, typeName))
                             {
-                                this.typeDatas.Add(typeName, this.OnDeserializeType(stream));
+                                var itemPath = Path.Combine(this.BasePath, CremaSchema.TypeDirectory, dataDirectory, typeName);
+                                var typeData = this.Serializer.Deserialize(itemPath, this.TypeDataType, ObjectSerializerSettings.Empty);
+                                this.typeDatas.Add(typeName, typeData);
                             }
                         }
                     }
@@ -689,19 +695,20 @@ namespace Ntreev.Crema.Services.Data
 
         private void WriteInfo()
         {
-            var infoPath = Path.Combine(this.BasePath, "info.json");
-            JsonSerializerUtility.Write(infoPath, this.info, true);
+            var itemPath = Path.Combine(this.BasePath, "info");
+            this.Serializer.Serialize(itemPath, (DataServiceItemSerializationInfo)this.info, ObjectSerializerSettings.Empty);
         }
 
         private void ReadInfo()
         {
-            var infoPath = Path.Combine(this.BasePath, "info.json");
+            var itemPath = Path.Combine(this.BasePath, "info");
 
-            if (FileUtility.Exists(infoPath) == true)
+            if (this.Serializer.Exists(itemPath, typeof(DataServiceItemSerializationInfo), ObjectSerializerSettings.Empty) == true)
             {
                 try
                 {
-                    this.info = JsonSerializerUtility.Read<DataServiceItemInfo>(infoPath);
+                    var value = (DataServiceItemSerializationInfo)this.Serializer.Deserialize(itemPath, typeof(DataServiceItemSerializationInfo), ObjectSerializerSettings.Empty);
+                    this.info = (DataServiceItemInfo)value;
                 }
                 catch (Exception e)
                 {

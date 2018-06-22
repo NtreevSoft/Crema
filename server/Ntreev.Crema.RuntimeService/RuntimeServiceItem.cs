@@ -42,7 +42,7 @@ namespace Ntreev.Crema.RuntimeService
         private readonly Dictionary<string, SerializationSet> caches = new Dictionary<string, SerializationSet>();
         private readonly CremaDispatcher dispatcher;
         private readonly Authentication authentication;
-        private readonly BinaryFormatter formatter = new BinaryFormatter();
+        //private readonly BinaryFormatter formatter = new BinaryFormatter();
         private ILogService logService;
 
         private readonly Dictionary<long, CremaDataSet> cachesByRevison = new Dictionary<long, CremaDataSet>();
@@ -176,31 +176,35 @@ namespace Ntreev.Crema.RuntimeService
             return new SerializationType(dataType);
         }
 
-        protected override void OnSerializeTable(Stream stream, object tableData)
-        {
-            this.formatter.Serialize(stream, tableData);
-        }
+        //protected override void OnSerializeTable(Stream stream, object tableData)
+        //{
+        //    this.formatter.Serialize(stream, tableData);
+        //}
 
-        protected override void OnSerializeType(Stream stream, object typeData)
-        {
-            this.formatter.Serialize(stream, typeData);
-        }
+        //protected override void OnSerializeType(Stream stream, object typeData)
+        //{
+        //    this.formatter.Serialize(stream, typeData);
+        //}
 
-        protected override object OnDeserializeTable(Stream stream)
-        {
-            return this.formatter.Deserialize(stream);
-        }
+        //protected override object OnDeserializeTable(Stream stream)
+        //{
+        //    return this.formatter.Deserialize(stream);
+        //}
 
-        protected override object OnDeserializeType(Stream stream)
-        {
-            return this.formatter.Deserialize(stream);
-        }
+        //protected override object OnDeserializeType(Stream stream)
+        //{
+        //    return this.formatter.Deserialize(stream);
+        //}
 
         protected override void OnChanged(EventArgs e)
         {
             base.OnChanged(e);
             this.caches.Clear();
         }
+
+        protected override Type TableDataType => typeof(SerializationTable);
+
+        protected override Type TypeDataType => typeof(SerializationType);
 
         protected override Authentication Authentication
         {

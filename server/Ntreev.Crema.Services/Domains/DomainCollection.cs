@@ -449,10 +449,7 @@ namespace Ntreev.Crema.Services.Domains
 
         #region IDomainCollection
 
-        IDomain IDomainCollection.this[Guid domainID]
-        {
-            get { return this[domainID]; }
-        }
+        IDomain IDomainCollection.this[Guid domainID] => this[domainID];
 
         IEnumerator<IDomain> IEnumerable<IDomain>.GetEnumerator()
         {

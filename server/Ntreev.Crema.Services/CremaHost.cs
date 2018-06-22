@@ -98,6 +98,8 @@ namespace Ntreev.Crema.Services
                 return this.DomainContext.Categories;
             if (serviceType == typeof(ILogService))
                 return this;
+            if (serviceType == typeof(IObjectSerializer))
+                return this.Serializer;
             if (this.IsOpened == true && serviceType == typeof(ICremaConfiguration))
                 return this.configs;
 

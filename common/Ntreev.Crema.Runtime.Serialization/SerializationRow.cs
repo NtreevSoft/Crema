@@ -28,7 +28,7 @@ using System.Xml.Serialization;
 namespace Ntreev.Crema.Runtime.Serialization
 {
     [Serializable]
-    [DataContract]
+    [DataContract(Namespace = SchemaUtility.Namespace)]
     [KnownType(typeof(DBNull))]
     [XmlInclude(typeof(DBNull))]
     public struct SerializationRow
@@ -73,13 +73,13 @@ namespace Ntreev.Crema.Runtime.Serialization
             this.ParentID = dataRow.ParentID;
         }
 
-        [DataMember]
+        [IgnoreDataMember]
         public TagInfo Tags { get; set; }
 
-        [DataMember]
+        [IgnoreDataMember]
         public TagInfo DerivedTags { get; set; }
 
-        [DataMember]
+        [IgnoreDataMember]
         public object[] Fields { get; set; }
 
         [DataMember]
@@ -104,5 +104,30 @@ namespace Ntreev.Crema.Runtime.Serialization
             row.Fields = fieldList.ToArray();
             return row;
         }
+
+        #region Invisibles
+
+        [DataMember(Name = nameof(Tags))]
+        public string TagsMember
+        {
+            get => (string)this.Tags;
+            set => this.Tags = (TagInfo)value;
+        }
+
+        [DataMember(Name = nameof(DerivedTags))]
+        public string DerivedTagsMember
+        {
+            get => (string)this.DerivedTags;
+            set => this.DerivedTags = (TagInfo)value;
+        }
+
+        [DataMember(Name = nameof(Fields))]
+        public SerializationField[] FieldInfos
+        {
+            get { return this.Fields != null ? this.Fields.Select(item => new SerializationField(item)).ToArray() : new SerializationField[] { }; }
+            set { this.Fields = value?.Select(item => item.ToValue()).ToArray(); }
+        }
+
+        #endregion
     }
 }

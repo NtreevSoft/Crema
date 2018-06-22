@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 
-namespace Ntreev.Crema.Services.Users
+namespace Ntreev.Crema.Services.Users.Serializations
 {
     [DataContract(Namespace = SchemaUtility.Namespace)]
     public struct UserContextSerializationInfo
