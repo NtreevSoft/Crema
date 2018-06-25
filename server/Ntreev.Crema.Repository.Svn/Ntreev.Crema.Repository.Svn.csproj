@@ -58,6 +58,7 @@
     <Compile Include="SvnRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SvnRepositoryProvider.cs" />
+    <Compile Include="UpgradeCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\common\Ntreev.Crema.Data\Ntreev.Crema.Data.csproj">
@@ -70,9 +71,19 @@
       <Name>Ntreev.Crema.ServiceModel</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\sub-modules\Ntreev.Library.Commands\Ntreev.Library.Commands\Ntreev.Library.Commands.csproj">
+      <Project>{ceb280c0-463f-4e09-a00c-ce3a8326f6ff}</Project>
+      <Name>Ntreev.Library.Commands</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\sub-modules\Ntreev.Library\Ntreev.Library\Ntreev.Library.csproj">
       <Project>{1918437f-4fbf-4731-ac5b-981a4a4cb1f1}</Project>
       <Name>Ntreev.Library</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Ntreev.Crema.Commands\Ntreev.Crema.Commands.csproj">
+      <Project>{20dab068-f188-4ec5-96fa-227c11bba46d}</Project>
+      <Name>Ntreev.Crema.Commands</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Ntreev.Crema.Services\Ntreev.Crema.Services.csproj">
@@ -83,6 +94,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UpgradeCommand.ko-KR.resx">
+      <DependentUpon>UpgradeCommand.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UpgradeCommand.resx">
+      <DependentUpon>UpgradeCommand.cs</DependentUpon>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="..\..\common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

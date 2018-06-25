@@ -53,6 +53,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.Services", "server\Ntreev.Crema.Services\Ntreev.Crema.Services.csproj", "{B7B4C207-7729-4147-96C4-B55E85647A66}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.Data", "common\Ntreev.Crema.Data\Ntreev.Crema.Data.csproj", "{04AEB614-3510-4064-99AF-0AA807C7F957}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1918437F-4FBF-4731-AC5B-981A4A4CB1F1} = {1918437F-4FBF-4731-AC5B-981A4A4CB1F1}
+	EndProjectSection
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Ntreev.Crema.Services.Sharing", "common\Ntreev.Crema.Services.Sharing\Ntreev.Crema.Services.Sharing.shproj", "{24ECBEE1-2859-4F09-969B-F382E6341814}"
 EndProject

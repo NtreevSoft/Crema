@@ -48,20 +48,6 @@ namespace Ntreev.Crema.Commands
             set;
         }
 
-        [CommandProperty("repo-module")]
-        public string RepositoryModule
-        {
-            get;
-            set;
-        }
-
-        [CommandProperty("file-type")]
-        public string FileType
-        {
-            get;
-            set;
-        }
-
         [CommandPropertyArray]
         [Description("database list to migrate")]
         public string[] DataBaseList
@@ -71,13 +57,7 @@ namespace Ntreev.Crema.Commands
 
         protected override void OnExecute()
         {
-            var settings = new RepositoryValidationSettings()
-            {
-                BasePath = this.Path,
-                RepositoryModule = this.RepositoryModule,
-                FileType = this.FileType,
-            };
-            CremaBootstrapper.ValidateRepository(this.boot, settings);
+            CremaBootstrapper.ValidateRepository(this.boot, this.Path, this.DataBaseList);
         }
     }
 }

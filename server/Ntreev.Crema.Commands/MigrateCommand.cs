@@ -38,7 +38,7 @@ namespace Ntreev.Crema.Commands
     class MigrateCommand : CommandBase
     {
         private readonly CremaBootstrapper boot;
-        private string repositoryModule;
+        //private string repositoryModule;
 
         [ImportingConstructor]
         public MigrateCommand(CremaBootstrapper boot)
@@ -54,36 +54,30 @@ namespace Ntreev.Crema.Commands
             set;
         }
 
-        [CommandProperty("repo-module")]
-        public string RepositoryModule
-        {
-            get => this.repositoryModule;
-            set => this.repositoryModule = value;
-        }
+        //[CommandProperty("repo-module")]
+        //public string RepositoryModule
+        //{
+        //    get => this.repositoryModule;
+        //    set => this.repositoryModule = value;
+        //}
 
-        [CommandProperty("file-type")]
-        public string FileType
-        {
-            get;
-            set;
-        }
+        //[CommandProperty("file-type")]
+        //public string FileType
+        //{
+        //    get;
+        //    set;
+        //}
 
-        [CommandPropertyArray]
-        [Description("database list to migrate")]
-        public string[] DataBaseList
-        {
-            get; set;
-        }
+        //[CommandPropertyArray]
+        //[Description("database list to migrate")]
+        //public string[] DataBaseList
+        //{
+        //    get; set;
+        //}
 
         protected override void OnExecute()
         {
-            var settings = new RepositoryMigrationSettings()
-            {
-                RepositoryModule = this.RepositoryModule,
-                BasePath = this.Path,
-                FileType = this.FileType,
-            };
-            CremaBootstrapper.MigrateRepository(this.boot, settings);
+            CremaBootstrapper.MigrateRepository(this.boot, this.Path);
         }
     }
 }
