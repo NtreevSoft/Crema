@@ -301,7 +301,11 @@ namespace Ntreev.Crema.Client.Framework.Controls
             var endIndex = Math.Max(columnRange.StartIndex, columnRange.EndIndex);
             for (var i = startIndex; i <= endIndex; i++)
             {
-                yield return gridContext.VisibleColumns[i].FieldName;
+                foreach (var column in gridContext.Columns)
+                {
+                    if (column.VisiblePosition == i)
+                        yield return column.FieldName;
+                }
             }
         }
 
@@ -384,17 +388,6 @@ namespace Ntreev.Crema.Client.Framework.Controls
                             Fields = CremaDataRowUtility.GetResetFields(fields.Key, fields.ToArray()),
                         };
 
-
-            //var rows = new List<DomainRowInfo>();
-            //foreach (var item in query)
-            //{
-            //    var row = new DomainRowInfo();
-            //    row.Keys = CremaDataRowUtility.GetKeys(item.Key);
-            //    row.TableName = CremaDataRowUtility.GetTableName(item.Key);
-            //    row.Fields = CremaDataRowUtility.GetResetFields(item, item.ToArray());
-            //    rows.Add(row);
-            //}
-
             this.RequestResetFields(query.ToArray());
         }
 
@@ -407,8 +400,6 @@ namespace Ntreev.Crema.Client.Framework.Controls
         {
             this.RequestPasteFromClipboard();
         }
-
-        
 
         private void RequestPasteFromClipboard()
         {
