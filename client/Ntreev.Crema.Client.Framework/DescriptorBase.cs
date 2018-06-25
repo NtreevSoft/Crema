@@ -58,7 +58,7 @@ namespace Ntreev.Crema.Client.Framework
             this.descriptorTypes = descriptorTypes;
             if (this.descriptorTypes.HasFlag(DescriptorTypes.IsSubscriptable) == true)
             {
-                this.notifier = new DescriptorPropertyNotifier(this);
+                this.notifier = new DescriptorPropertyNotifier(this, item => this.NotifyOfPropertyChange(item));
                 this.Dispatcher.InvokeAsync(this.notifier.Save);
             }
         }
@@ -73,7 +73,7 @@ namespace Ntreev.Crema.Client.Framework
 
             if (this.descriptorTypes.HasFlag(DescriptorTypes.IsSubscriptable) == true)
             {
-                this.notifier = new DescriptorPropertyNotifier(this);
+                this.notifier = new DescriptorPropertyNotifier(this, item => this.NotifyOfPropertyChange(item));
                 this.Dispatcher.InvokeAsync(this.notifier.Save);
                 this.referenceTarget.PropertyChanged += ReferenceTarget_PropertyChanged;
                 this.referenceTarget.Disposed += ReferenceTarget_Disposed;
@@ -92,6 +92,7 @@ namespace Ntreev.Crema.Client.Framework
                     this.referenceTarget.Disposed -= ReferenceTarget_Disposed;
                 }
             }
+            this.notifier?.Dispose();
             this.isDisposed = true;
             this.OnDisposed(EventArgs.Empty);
         }

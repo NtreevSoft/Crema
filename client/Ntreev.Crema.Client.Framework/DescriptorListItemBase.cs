@@ -43,7 +43,7 @@ namespace Ntreev.Crema.Client.Framework
             this.descriptor.Host = this;
             this.descriptor.PropertyChanged += Descriptor_PropertyChanged;
             this.descriptor.Disposed += Descriptor_Disposed;
-            this.notifier = new DescriptorPropertyNotifier(this);
+            this.notifier = new DescriptorPropertyNotifier(this, item => this.NotifyOfPropertyChange(item));
             this.Dispatcher.InvokeAsync(this.notifier.Save);
             this.Target = descriptor.Target;
             this.Owner = owner;
@@ -66,6 +66,7 @@ namespace Ntreev.Crema.Client.Framework
                 this.descriptor.Disposed -= Descriptor_Disposed;
                 this.descriptor.Dispose();
             }
+            this.notifier?.Dispose();
             this.isDescriptorDisposed = true;
             this.Disposed?.Invoke(this, e);
         }
