@@ -38,6 +38,26 @@ namespace Ntreev.Crema.Repository.Git
             return new GitBranchCollection(itemList, currentBranch);
         }
 
+        public static GitBranchCollection GetRemoteBranches(string repositoryPath)
+        {
+            var text = GitHost.Run(repositoryPath, "branch", "-a");
+            var matches = Regex.Matches(text, "remotes/origin/(?<branch>[^/]+)$", RegexOptions.Multiline);
+            var itemList = new List<string>(matches.Count);
+            var currentBranch = string.Empty;
+            for (var i = 0; i < matches.Count; i++)
+            {
+                var item = matches[i];
+                //var isCurrent = item.Groups["current"].Value == "*";
+                var branchName = item.Groups["branch"].Value.Trim();
+
+                //if (isCurrent == true)
+                //    currentBranch = branchName;
+                itemList.Add(branchName);
+            }
+
+            return new GitBranchCollection(itemList, currentBranch);
+        }
+
         public string this[int index] => this.branchList[index];
 
         public string CurrentBranch { get; }

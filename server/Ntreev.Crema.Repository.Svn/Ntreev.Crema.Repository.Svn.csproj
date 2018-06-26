@@ -49,6 +49,7 @@
     <Compile Include="SvnChangeItem.cs" />
     <Compile Include="SvnCommentInfo.cs" />
     <Compile Include="SvnPathUtility.cs" />
+    <Compile Include="SvnRepositoryUpgrader.cs" />
     <Compile Include="SvnStatusEventArgs.cs" />
     <Compile Include="SvnInfoEventArgs.cs" />
     <Compile Include="SvnLogEventArgs.cs" />
@@ -58,7 +59,7 @@
     <Compile Include="SvnRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SvnRepositoryProvider.cs" />
-    <Compile Include="UpgradeCommand.cs" />
+    <Compile Include="SvnString.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\common\Ntreev.Crema.Data\Ntreev.Crema.Data.csproj">
@@ -94,15 +95,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="UpgradeCommand.ko-KR.resx">
-      <DependentUpon>UpgradeCommand.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UpgradeCommand.resx">
-      <DependentUpon>UpgradeCommand.cs</DependentUpon>
-      <Generator>ResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="..\..\common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -60,6 +60,7 @@
     <Compile Include="CommandContext.cs" />
     <Compile Include="CacheCommand.cs" />
     <Compile Include="MigrateCommand.cs" />
+    <Compile Include="UpgradeCommand.cs" />
     <Compile Include="ValidateCommand.cs" />
     <Compile Include="RepositoryModulesCommand.cs" />
     <Compile Include="InitializeCommand.cs" />
@@ -98,6 +99,13 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MigrateCommand.resx">
       <DependentUpon>MigrateCommand.cs</DependentUpon>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UpgradeCommand.ko-KR.resx">
+      <DependentUpon>UpgradeCommand.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UpgradeCommand.resx">
+      <DependentUpon>UpgradeCommand.cs</DependentUpon>
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="ValidateCommand.resx">

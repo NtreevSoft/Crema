@@ -54,13 +54,13 @@ namespace Ntreev.Crema.Services
 
         [ImportingConstructor]
         public CremaHost(CremaSettings settings,
-            [ImportMany]IEnumerable<IRepositoryProvider> repoProviders,
+            [ImportMany]IEnumerable<IRepositoryProvider> repositoryProviders,
             [ImportMany]IEnumerable<IObjectSerializer> serializers)
         {
             CremaLog.Debug("crema instance created.");
             this.settings = settings;
             this.BasePath = settings.BasePath;
-            this.repositoryProvider = repoProviders.First(item => item.Name == this.settings.RepositoryModule);
+            this.repositoryProvider = repositoryProviders.First(item => item.Name == this.settings.RepositoryModule);
             this.serializer = serializers.First(item => item.Name == this.settings.FileType);
 
             this.log = new LogService(this.GetType().FullName, this.GetPath(CremaPath.Logs))
@@ -124,9 +124,9 @@ namespace Ntreev.Crema.Services
             this.OnOpening(EventArgs.Empty);
             this.Dispatcher.Invoke(() =>
             {
-                (this).Info(Resources.Message_ProgramInfo, AppUtility.ProductName, AppUtility.ProductVersion);
+                this.Info(Resources.Message_ProgramInfo, AppUtility.ProductName, AppUtility.ProductVersion);
 
-                (this).Info("Repository module : {0}", this.settings.RepositoryModule);
+                this.Info("Repository module : {0}", this.settings.RepositoryModule);
                 this.Info(Resources.Message_ServiceStart);
 
                 this.configs = new CremaConfiguration(Path.Combine(this.BasePath, "configs.xml"), this.propertiesProvider);
@@ -150,7 +150,7 @@ namespace Ntreev.Crema.Services
                 {
                     var authentication = new Authentication(new AuthenticationProvider(item), item.ID);
                     item.Initialize(authentication);
-                    (this).Info("Plugin : {0}", item.Name);
+                    this.Info("Plugin : {0}", item.Name);
                 }
 
                 this.Dispatcher.InvokeAsync(() => this.DataBases.RestoreState(this.settings));
@@ -291,9 +291,9 @@ namespace Ntreev.Crema.Services
             switch (pathType)
             {
                 case CremaPath.RepositoryUsers:
-                    return new Uri(Path.Combine(Path.Combine(basePath, ".repository", "users"), Path.Combine(paths))).ToString();
+                    return new Uri(Path.Combine(Path.Combine(basePath, CremaString.Repository, CremaString.Users), Path.Combine(paths))).ToString();
                 case CremaPath.RepositoryDataBases:
-                    return new Uri(Path.Combine(Path.Combine(basePath, ".repository", "databases"), Path.Combine(paths))).ToString();
+                    return new Uri(Path.Combine(Path.Combine(basePath, CremaString.Repository, CremaString.DataBases), Path.Combine(paths))).ToString();
                 case CremaPath.Caches:
                     return Path.Combine(Path.Combine(basePath, "caches"), Path.Combine(paths));
                 case CremaPath.Logs:

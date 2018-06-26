@@ -35,14 +35,11 @@ using YamlDotNet.Serialization;
 
 namespace Ntreev.Crema.Repository.Svn
 {
+    [Export]
     [Export(typeof(IRepositoryProvider))]
     [Export(typeof(IConfigurationPropertyProvider))]
     class SvnRepositoryProvider : IRepositoryProvider, IConfigurationPropertyProvider
     {
-        public const string remoteName = "svn";
-        public const string trunkName = "trunk";
-        public const string tagsName = "tags";
-        public const string defaultName = "default";
         private const string commentHeader = "# revision properties";
         private static readonly Serializer propertySerializer = new SerializerBuilder().Build();
         private static readonly Deserializer propertyDeserializer = new Deserializer();
@@ -56,16 +53,13 @@ namespace Ntreev.Crema.Repository.Svn
 
         }
 
-        public string Name
-        {
-            get { return "svn"; }
-        }
+        public string Name => SvnString.Name;
 
         public IRepository CreateInstance(RepositorySettings settings)
         {
             var baseUri = new Uri(settings.BasePath);
-            var repositoryName = settings.RepositoryName == string.Empty ? defaultName : settings.RepositoryName;
-            var url = repositoryName == defaultName ? UriUtility.Combine(baseUri, trunkName) : UriUtility.Combine(baseUri, "branches", settings.RepositoryName);
+            var repositoryName = settings.RepositoryName == string.Empty ? SvnString.Default : settings.RepositoryName;
+            var url = repositoryName == SvnString.Default ? UriUtility.Combine(baseUri, SvnString.Trunk) : UriUtility.Combine(baseUri, SvnString.Branches, settings.RepositoryName);
 
             if (Directory.Exists(settings.WorkingPath) == false)
             {
@@ -84,9 +78,9 @@ namespace Ntreev.Crema.Repository.Svn
         {
             var baseUri = new Uri(basePath);
             var tempPath = PathUtility.GetTempPath(true);
-            var tagsPath = DirectoryUtility.Prepare(tempPath, "tags");
-            var branchesPath = DirectoryUtility.Prepare(tempPath, "branches");
-            var trunkPath = DirectoryUtility.Prepare(tempPath, "trunk");
+            var tagsPath = DirectoryUtility.Prepare(tempPath, SvnString.Tags);
+            var branchesPath = DirectoryUtility.Prepare(tempPath, SvnString.Branches);
+            var trunkPath = DirectoryUtility.Prepare(tempPath, SvnString.Trunk);
 
             SvnServerHost.Run("create", basePath.ToSvnPath(), "--fs-type", "fsfs");
             DirectoryUtility.Copy(initPath, trunkPath);
@@ -96,7 +90,7 @@ namespace Ntreev.Crema.Repository.Svn
         public void CreateRepository(string basePath, string initPath, string comment, params LogPropertyInfo[] properties)
         {
             var commentPath = PathUtility.GetTempFileName();
-            var uri = $"\"{UriUtility.Combine(new Uri(basePath), "branches")}\"";
+            var uri = $"\"{UriUtility.Combine(new Uri(basePath), SvnString.Branches)}\"";
             try
             {
                 File.WriteAllText(commentPath, this.GenerateComment(comment, properties));
@@ -181,11 +175,11 @@ namespace Ntreev.Crema.Repository.Svn
                 if (line.EndsWith(PathUtility.Separator) == true)
                 {
                     var name = line.Substring(0, line.Length - PathUtility.Separator.Length);
-                    if (name == "trunk")
+                    if (name == SvnString.Trunk)
                     {
                         itemList.Add("default");
                     }
-                    else if (name == "tags" || name == "branches")
+                    else if (name == SvnString.Tags || name == SvnString.Branches)
                     {
                         var subPath = Path.Combine(basePath, name);
                         itemList.AddRange(this.GetRepositories(subPath));
@@ -259,11 +253,11 @@ namespace Ntreev.Crema.Repository.Svn
                 if (line.EndsWith(PathUtility.Separator) == true)
                 {
                     var name = line.Substring(0, line.Length - PathUtility.Separator.Length);
-                    if (name == "trunk")
+                    if (name == SvnString.Trunk)
                     {
-                        yield return new KeyValuePair<string, Uri>("default", UriUtility.Combine(uri, name));
+                        yield return new KeyValuePair<string, Uri>(SvnString.Default, UriUtility.Combine(uri, name));
                     }
-                    else if (name == "tags" || name == "branches")
+                    else if (name == SvnString.Tags || name == SvnString.Branches)
                     {
                         var subPath = Path.Combine(basePath, name);
                         foreach (var item in this.GetRepositoryPaths(subPath))
@@ -328,13 +322,13 @@ namespace Ntreev.Crema.Repository.Svn
         private Uri GetUrl(string basePath, string repositoryName)
         {
             var paths = this.GetRepositoryPaths(basePath).ToDictionary(item => item.Key, item => item.Value);
-            return repositoryName == string.Empty ? paths[defaultName] : paths[repositoryName];
+            return repositoryName == string.Empty ? paths[SvnString.Default] : paths[repositoryName];
         }
 
         private Uri GenerateUrl(string basePath, string repositoryName)
         {
             var baseUri = new Uri(basePath);
-            return UriUtility.Combine(baseUri, "branches", repositoryName);
+            return UriUtility.Combine(baseUri, SvnString.Branches, repositoryName);
         }
 
         private void GetBranchInfo(string path, out string revision, out string source, out string sourceRevision)

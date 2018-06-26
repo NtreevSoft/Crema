@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthenticationToken.cs" />
+    <Compile Include="CremaString.cs" />
     <Compile Include="Data\DataServiceItemInfo.cs" />
     <Compile Include="Data\Serializations\DataBaseStateSerializationInfo.cs" />
     <Compile Include="Data\DataBaseSet.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="Domains\Serializations\DomainPostItemSerializationInfo.cs" />
     <Compile Include="Domains\Serializations\DomainPropertySerializationInfo.cs" />
     <Compile Include="Domains\Serializations\DomainSerializationInfo.cs" />
+    <Compile Include="IRepositoryUpgrader.cs" />
     <Compile Include="ObjectSerializerSettings.cs" />
     <Compile Include="LogServiceHost.cs" />
     <Compile Include="CremaDataTableSerializerSettings.cs" />
@@ -154,6 +156,7 @@
     <Compile Include="RepositoryHost.cs" />
     <Compile Include="RepositoryItemStatus.cs" />
     <Compile Include="RepositoryItem.cs" />
+    <Compile Include="RepositoryUpgrader.cs" />
     <Compile Include="Users\Serializations\BanSerializationInfo.cs" />
     <Compile Include="Users\Serializations\UserCategorySerializationInfoList.cs" />
     <Compile Include="Users\Serializations\UserContextSerializationInfo.cs" />

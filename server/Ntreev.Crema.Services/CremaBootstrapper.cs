@@ -51,41 +51,41 @@ namespace Ntreev.Crema.Services
             var serializer = GetSerializer(serviceProvider, fileType);
 
             var tempPath = PathUtility.GetTempPath(true);
-            var repositoryPath = DirectoryUtility.Prepare(basePath, $".repository");
+            var repositoryPath = DirectoryUtility.Prepare(basePath, CremaString.Repository);
             var repositoryPathInfo = new DirectoryInfo(repositoryPath)
             {
                 Attributes = FileAttributes.Directory | FileAttributes.Hidden
             };
 
-            var usersRepo = DirectoryUtility.Prepare(repositoryPath, "users");
-            var usersPath = DirectoryUtility.Prepare(tempPath, "users");
+            var usersRepo = DirectoryUtility.Prepare(repositoryPath, CremaString.Users);
+            var usersPath = DirectoryUtility.Prepare(tempPath, CremaString.Users);
 
             UserContext.GenerateDefaultUserInfos(usersPath, serializer);
             repositoryProvider.InitializeRepository(usersRepo, usersPath);
 
-            var dataBasesRepo = DirectoryUtility.Prepare(repositoryPath, "databases");
-            var dataBasesPath = DirectoryUtility.Prepare(tempPath, "databases");
+            var dataBasesRepo = DirectoryUtility.Prepare(repositoryPath, CremaString.DataBases);
+            var dataBasesPath = DirectoryUtility.Prepare(tempPath, CremaString.DataBases);
             new CremaDataSet().WriteToDirectory(dataBasesPath);
             repositoryProvider.InitializeRepository(dataBasesRepo, dataBasesPath);
 
-            var repoModulePath = FileUtility.WriteAllText(repositoryProvider.Name, repositoryPath, "repo");
+            var repoModulePath = FileUtility.WriteAllText(repositoryProvider.Name, repositoryPath, CremaString.Repo);
             new FileInfo(repoModulePath).Attributes |= FileAttributes.ReadOnly;
-            var fileTypePath = FileUtility.WriteAllText(serializer.Name, repositoryPath, "file");
+            var fileTypePath = FileUtility.WriteAllText(serializer.Name, repositoryPath, CremaString.File);
             new FileInfo(fileTypePath).Attributes |= FileAttributes.ReadOnly;
         }
 
         public static void ValidateRepository(IServiceProvider serviceProvider, string basePath, params string[] dataBaseNames)
         {
-            var repositoryPath = DirectoryUtility.Prepare(basePath, $".repository");
-            var repositoryModule = FileUtility.ReadAllText(repositoryPath, "repo");
-            var fileType = FileUtility.ReadAllText(repositoryPath, "file");
+            var repositoryPath = DirectoryUtility.Prepare(basePath, CremaString.Repository);
+            var repositoryModule = FileUtility.ReadAllText(repositoryPath, CremaString.Repo);
+            var fileType = FileUtility.ReadAllText(repositoryPath, CremaString.File);
             var repositoryProvider = GetRepositoryProvider(serviceProvider, repositoryModule);
             var serializer = GetSerializer(serviceProvider, fileType);
             var validationPath = Path.Combine(basePath, "validation");
 
             var logService = new LogServiceHost(serviceProvider.GetType().FullName, CremaHost.GetPath(validationPath, CremaPath.Logs));
 
-            var dataBasesPath = Path.Combine(basePath, "remotes", "databases");
+            var dataBasesPath = Path.Combine(basePath, CremaString.Repository, CremaString.DataBases);
             var items = repositoryProvider.GetRepositories(dataBasesPath);
 
             if (dataBaseNames.Length > 0)
@@ -124,7 +124,7 @@ namespace Ntreev.Crema.Services
 
             var logService = new LogServiceHost(serviceProvider.GetType().FullName, CremaHost.GetPath(basePath, CremaPath.Logs));
 
-            //var basePath = Path.Combine(settings.BasePath, "remotes", "databases");
+            //var basePath = Path.Combine(settings.BasePath, "remotes", CremaString.DataBasesString);
             var items = repositoryProvider.GetRepositories(basePath);
             var migrationPath = Path.Combine(basePath, "migration");
 
@@ -151,6 +151,12 @@ namespace Ntreev.Crema.Services
                     DirectoryUtility.Delete(tempPath);
                 }
             }
+        }
+
+        public static void UpgradeRepository(IServiceProvider serviceProvider, string basePath, string upgradeModule)
+        {
+            var repositoryUpgrader = GetRepositoryUpgrader(serviceProvider, upgradeModule ?? "svn");
+            RepositoryUpgrader.Upgrade(repositoryUpgrader, basePath);
         }
 
         public object GetService(System.Type serviceType)
@@ -362,7 +368,7 @@ namespace Ntreev.Crema.Services
             this.Disposed?.Invoke(this, e);
         }
 
-        public static IObjectSerializer GetSerializer(IServiceProvider serviceProvider, string fileType)
+        internal static IObjectSerializer GetSerializer(IServiceProvider serviceProvider, string fileType)
         {
             var serializers = serviceProvider.GetService(typeof(IEnumerable<IObjectSerializer>)) as IEnumerable<IObjectSerializer>;
             var serializer = serializers.FirstOrDefault(item => item.Name == fileType);
@@ -371,13 +377,22 @@ namespace Ntreev.Crema.Services
             return serializer;
         }
 
-        public static IRepositoryProvider GetRepositoryProvider(IServiceProvider serviceProvider, string repositoryModule)
+        internal static IRepositoryProvider GetRepositoryProvider(IServiceProvider serviceProvider, string repositoryModule)
         {
             var repositoryProviders = serviceProvider.GetService(typeof(IEnumerable<IRepositoryProvider>)) as IEnumerable<IRepositoryProvider>;
             var repositoryProvider = repositoryProviders.FirstOrDefault(item => item.Name == repositoryModule);
             if (repositoryProvider == null)
                 throw new InvalidOperationException(Resources.Exception_NoRepositoryModule);
             return repositoryProvider;
+        }
+
+        internal static IRepositoryUpgrader GetRepositoryUpgrader(IServiceProvider serviceProvider, string upgradeModule)
+        {
+            var repositoryUpgraders = serviceProvider.GetService(typeof(IEnumerable<IRepositoryUpgrader>)) as IEnumerable<IRepositoryUpgrader>;
+            var repositoryUpgrader = repositoryUpgraders.FirstOrDefault(item => item.Name == upgradeModule);
+            if (repositoryUpgrader == null)
+                throw new InvalidOperationException(Resources.Exception_NoRepositoryModule);
+            return repositoryUpgrader;
         }
 
         private void Initialize()

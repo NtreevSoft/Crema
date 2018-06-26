@@ -31,6 +31,7 @@ using YamlDotNet.Serialization;
 
 namespace Ntreev.Crema.Repository.Git
 {
+    [Export]
     [Export(typeof(IRepositoryProvider))]
     class GitRepositoryProvider : IRepositoryProvider
     {

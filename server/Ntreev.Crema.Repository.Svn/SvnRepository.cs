@@ -71,8 +71,6 @@ namespace Ntreev.Crema.Repository.Svn
             var info = SvnInfoEventArgs.Run(this.repositoryPath);
             this.repositoryRoot = info.RepositoryRoot;
             this.repositoryUri = info.Uri;
-            //var repositoryInfo = SvnInfoEventArgs.Run($"{info.Uri}");
-            //this.revision = repositoryInfo.Revision;
         }
 
         public string Name
@@ -117,7 +115,6 @@ namespace Ntreev.Crema.Repository.Svn
             var patchPath = Path.Combine(this.transactionPath, this.transactions[this.repositoryPath] + patchExtension);
             this.transactions.Remove(this.repositoryPath);
             this.transactionMessages.Remove(this.repositoryPath);
-            //DirectoryUtility.Delete(path);
             SvnClientHost.Run("revert", this.repositoryPath.ToSvnPath(), "-R");
             FileUtility.Delete(patchPath);
         }
@@ -131,10 +128,7 @@ namespace Ntreev.Crema.Repository.Svn
                 var text = this.Run("diff", this.repositoryPath.ToSvnPath(), "--patch-compatible");
                 FileUtility.WriteAllText(text, Encoding.UTF8, patchPath);
                 this.transactionMessages[this.repositoryPath] = this.transactionMessages[this.repositoryPath] + comment + Environment.NewLine;
-                //return DateTime.UtcNow;
             }
-
-            //var propText = string.Join(" ", properties.Select(item => $"--with-revprop \"{propertyPrefix}{item.Key}={item.Value}\""));
 
             this.logService?.Debug($"repository committing {this.repositoryPath.ToSvnPath()}");
             var result = string.Empty;
@@ -190,12 +184,6 @@ namespace Ntreev.Crema.Repository.Svn
 
             this.Run(items.ToArray());
         }
-
-        //public IDictionary<string, string> Status()
-        //{
-        //    var args = SvnStatusEventArgs.Run(this.repositoryPath);
-        //    return args.Status;
-        //}
 
         public string Export(Uri uri, string exportPath)
         {
@@ -275,6 +263,11 @@ namespace Ntreev.Crema.Repository.Svn
             this.Run("merge", "-r", $"head:{revision}", this.repositoryPath.ToSvnPath(), this.repositoryPath.ToSvnPath());
         }
 
+        public void Dispose()
+        {
+            DirectoryUtility.Delete(this.repositoryPath);
+        }
+
         private string GetOriginPath(Uri repoUri, SvnLogEventArgs[] logs, string revision)
         {
             var repoPath = PathUtility.SeparatorChar + repoUri.OriginalString;
@@ -347,11 +340,6 @@ namespace Ntreev.Crema.Repository.Svn
                     return;
                 }
             }
-        }
-
-        public void Dispose()
-        {
-            DirectoryUtility.Delete(this.repositoryPath);
         }
     }
 }

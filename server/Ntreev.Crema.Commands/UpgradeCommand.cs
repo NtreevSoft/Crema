@@ -15,69 +15,52 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.Services;
+using Ntreev.Crema.Services.Users.Serializations;
+using Ntreev.Library;
+using Ntreev.Library.Commands;
 using Ntreev.Library.IO;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
-namespace Ntreev.Crema.Services
+namespace Ntreev.Crema.Commands
 {
-    class CremaSettings
+    [Export(typeof(ICommand))]
+    [Export]
+    [ResourceDescription]
+    class UpgradeCommand : CommandBase
     {
-        public CremaSettings()
-        {
+        private readonly CremaBootstrapper boot;
 
+        [ImportingConstructor]
+        public UpgradeCommand(CremaBootstrapper boot)
+            : base("upgrade")
+        {
+            this.boot = boot;
         }
 
+        [CommandProperty("path", IsRequired = true)]
         public string BasePath
         {
             get;
             set;
         }
 
-        public bool MultiThreading
+        [CommandProperty]
+        public string UpgradeModule
         {
             get;
             set;
         }
 
-        public string RepositoryModule
+        protected override void OnExecute()
         {
-            get => FileUtility.ReadAllText(this.BasePath, CremaString.Repository, CremaString.Repo);
+            CremaBootstrapper.UpgradeRepository(this.boot, this.BasePath, this.UpgradeModule);
         }
-
-        public string FileType
-        {
-            get => FileUtility.ReadAllText(this.BasePath, CremaString.Repository, CremaString.File);
-        }
-
-        public LogVerbose Verbose
-        {
-            get;
-            set;
-        }
-
-        public bool NoCache
-        {
-            get;
-            set;
-        }
-
-        public string[] DataBaseList
-        {
-            get;
-            set;
-        }
-
-#if DEBUG
-        public bool ValidationMode
-        {
-            get;
-            set;
-        }
-#endif
     }
 }
