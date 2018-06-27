@@ -19,20 +19,41 @@ namespace Ntreev.Crema.Services
         private const string branchesString = "branches";
         private const string defaultString = "default";
 
-        //private readonly IServiceProvider serviceProvider;
         private readonly string basePath;
+        private readonly Uri repositoryUrl;
+        private readonly string relativeUrl;
+        private readonly Uri reposRootUrl;
         private readonly IRepositoryUpgrader repositoryUpgrader;
+        private readonly ILogService logService;
 
-        private RepositoryUpgrader(IRepositoryUpgrader repositoryUpgrader, string basePath)
+        private RepositoryUpgrader(IRepositoryUpgrader repositoryUpgrader, string basePath, Uri repositoryUrl)
         {
             this.repositoryUpgrader = repositoryUpgrader;
             this.basePath = basePath;
+            if (repositoryUrl == null)
+            {
+                this.repositoryUrl = new Uri(Path.Combine(this.basePath, nameString));
+            }
+            else if (repositoryUrl.IsAbsoluteUri)
+            {
+                this.repositoryUrl = repositoryUrl;
+            }
+            else
+            {
+                var svnUri = new Uri(Path.Combine(this.basePath, nameString));
+                this.repositoryUrl = UriUtility.Combine(svnUri, repositoryUrl.ToString());
+            }
+
+
+            this.reposRootUrl = new Uri(this.Run("info", $"{this.repositoryUrl}", "--show-item repos-root-url").Trim());
+            this.relativeUrl = UriUtility.MakeRelativeOfDirectory(this.reposRootUrl, this.repositoryUrl);
+
+            this.logService = new LogServiceHost(typeof(RepositoryUpgrader).FullName, CremaHost.GetPath(basePath, CremaPath.Logs));
         }
 
-        public static void Upgrade(IRepositoryUpgrader repositoryUpgrader, string basePath)
+        public static void Upgrade(IRepositoryUpgrader repositoryUpgrader, string basePath, string repositoryUrl)
         {
-            var obj = new RepositoryUpgrader(repositoryUpgrader, basePath);
-            obj.Upgrade();
+            new RepositoryUpgrader(repositoryUpgrader, basePath, repositoryUrl == null ? null : new Uri(repositoryUrl, UriKind.RelativeOrAbsolute)).Upgrade();
         }
 
         private void Upgrade()
@@ -43,44 +64,39 @@ namespace Ntreev.Crema.Services
 
             try
             {
-                var repositoryPathInfo = new DirectoryInfo(repositoryPath)
-                {
-                    Attributes = FileAttributes.Directory | FileAttributes.Hidden
-                };
-
-                var usersPath = this.UpgradeUsers(repositoryProvider, svnPath, repositoryPath);
+                //this.UpgradeUsers(repositoryProvider, svnPath, repositoryPath);
                 var databasesPath = this.UpgradeDataBases(svnPath, repositoryPath);
 
                 var destPath = this.repositoryUpgrader.Upgrade(databasesPath);
                 if (destPath != null)
                 {
-                    var tempPath = databasesPath + "_bak";
-                    DirectoryUtility.Move(databasesPath, tempPath);
+                    DirectoryUtility.Backup(databasesPath);
                     DirectoryUtility.Move(destPath, databasesPath);
+                    DirectoryUtility.Clean(databasesPath);
                 }
-                //if (this.IsGit == true)
-                //{
-                //    this.ConvertToGit(usersPath);
-                //    this.ConvertToGit(databasesPath);
-                //}
 
                 var repoModulePath = FileUtility.WriteAllText(repositoryProvider.Name, repositoryPath, CremaString.Repo);
-                new FileInfo(repoModulePath).Attributes |= FileAttributes.ReadOnly;
                 var fileTypePath = FileUtility.WriteAllText("xml", repositoryPath, CremaString.File);
-                new FileInfo(fileTypePath).Attributes |= FileAttributes.ReadOnly;
+
+                FileUtility.SetReadOnly(repoModulePath, true);
+                FileUtility.SetReadOnly(fileTypePath, true);
+                DirectoryUtility.SetVisible(repositoryPath, false);
             }
             catch (Exception e)
             {
+                logService.Error(e);
+                DirectoryUtility.SetVisible(repositoryPath, true);
                 DirectoryUtility.Delete(repositoryPath);
+                throw e;
             }
         }
 
-        private string UpgradeUsers(IRepositoryProvider repositoryProvider, string svnPath, string repositoryPath)
+        private void UpgradeUsers(IRepositoryProvider repositoryProvider, string svnPath, string repositoryPath)
         {
+            this.logService.Info(nameof(UpgradeUsers));
             var usersPath = Path.Combine(repositoryPath, CremaString.Users);
-            //return usersPath;
-            var svnUri = new Uri(svnPath);
-            var userUri = UriUtility.Combine(svnUri, $"{CremaString.Users}.xml");
+            //var svnUri = new Uri(svnPath);
+            var userUri = UriUtility.Combine(this.repositoryUrl, $"{CremaString.Users}.xml");
             var userPath = Path.Combine(this.basePath, $"{CremaString.Users}.xml");
 
             this.Run("export", userUri, this.basePath.WrapQuot(), "--force");
@@ -91,7 +107,6 @@ namespace Ntreev.Crema.Services
             {
                 userContext.WriteToDirectory(tempPath);
                 repositoryProvider.InitializeRepository(usersPath, tempPath);
-                return usersPath;
             }
             finally
             {
@@ -102,21 +117,49 @@ namespace Ntreev.Crema.Services
 
         private string UpgradeDataBases(string svnPath, string repositoryPath)
         {
+            this.logService.Info(nameof(UpgradeDataBases));
             var dataBasesPath = Path.Combine(repositoryPath, CremaString.DataBases);
             //return dataBasesPath;
-            var dataBasesUri = new Uri(dataBasesPath);
+            var dataBasesUri = new Uri(UriUtility.Combine(dataBasesPath, this.relativeUrl));
 
-            DirectoryUtility.Copy(svnPath, dataBasesPath);
-            this.PrepareBranches(dataBasesUri);
-            this.MoveTagsToBranches(dataBasesUri);
+            //DirectoryUtility.Copy(svnPath, dataBasesPath);
+            this.MoveToRoot(dataBasesPath);
+            this.PrepareBranches(dataBasesPath);
+            this.MoveTagsToBranches(dataBasesPath);
 
             return dataBasesPath;
         }
 
-        private void MoveTagsToBranches(Uri dataBasesUri)
+        private void MoveToRoot(string dataBasesPath)
         {
-            var tagsUri = UriUtility.Combine(dataBasesUri, tagsString);
-            var branchesUri = UriUtility.Combine(dataBasesUri, branchesString);
+            return;
+            //if (this.repositoryUrl == this.reposRootUrl)
+            //    return;
+
+            var dataBasesUri = new Uri(UriUtility.Combine(dataBasesPath, this.relativeUrl));
+            var rootUri = new Uri(UriUtility.Combine(dataBasesPath));
+            var text = this.Run("list", dataBasesUri);
+            var list = this.GetLines(text);
+
+            foreach (var item in list)
+            {
+                if (item.EndsWith(PathUtility.Separator) == true)
+                {
+                    var name = item.Remove(item.Length - PathUtility.Separator.Length);
+
+                    var sourceUri = UriUtility.Combine(dataBasesUri, name);
+                    var destUri = UriUtility.Combine(rootUri, name);
+
+                    this.Run("mv", $"\"{sourceUri}\"", $"\"{destUri}\"", "-m", $"\"Upgrade: move {name} from tags to branches\"");
+                }
+            }
+        }
+
+        private void MoveTagsToBranches(string dataBasesPath)
+        {
+            var dataBaseUri = new Uri(dataBasesPath);
+            var tagsUri = UriUtility.Combine(dataBaseUri, tagsString);
+            var branchesUri = UriUtility.Combine(dataBaseUri, branchesString);
             var text = this.Run("list", tagsUri);
             var list = this.GetLines(text);
 
@@ -134,13 +177,14 @@ namespace Ntreev.Crema.Services
             }
         }
 
-        private void PrepareBranches(Uri dataBasesUri)
+        private void PrepareBranches(string dataBasesPath)
         {
-            var text = this.Run("list", dataBasesUri);
+            var dataBaseUri = new Uri(dataBasesPath);
+            var text = this.Run("list", dataBaseUri);
             var list = this.GetLines(text);
             if (list.Contains($"{branchesString}{PathUtility.Separator}") == false)
             {
-                var branchesUri = UriUtility.Combine(dataBasesUri, branchesString);
+                var branchesUri = UriUtility.Combine(dataBaseUri, branchesString);
                 this.Run("mkdir", branchesUri, "-m", "\"Upgrade: create branches\"");
             }
         }
@@ -189,4 +233,5 @@ namespace Ntreev.Crema.Services
             return outputBuilder.ToString();
         }
     }
+
 }

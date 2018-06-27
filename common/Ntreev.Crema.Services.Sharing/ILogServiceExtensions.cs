@@ -38,7 +38,7 @@ namespace Ntreev.Crema.Services
 
         public static void Error(this ILogService logService, Exception e)
         {
-            logService.Error(e.ToString());
+            logService.Error(e);
         }
 
         public static void Warn(this ILogService logService, string format, params object[] args)

@@ -225,7 +225,14 @@ namespace Ntreev.Crema.Services
 
         public void Error(object message)
         {
-            this.log.Error(message);
+            if (message is Exception e)
+            {
+                this.log.Error(e.Message, e);
+            }
+            else
+            {
+                this.log.Error(message);
+            }
         }
 
         public void Warn(object message)

@@ -59,13 +59,14 @@ namespace Ntreev.Crema.Services
 
             var usersRepo = DirectoryUtility.Prepare(repositoryPath, CremaString.Users);
             var usersPath = DirectoryUtility.Prepare(tempPath, CremaString.Users);
+            var dataSet = new CremaDataSet();
 
             UserContext.GenerateDefaultUserInfos(usersPath, serializer);
             repositoryProvider.InitializeRepository(usersRepo, usersPath);
 
             var dataBasesRepo = DirectoryUtility.Prepare(repositoryPath, CremaString.DataBases);
             var dataBasesPath = DirectoryUtility.Prepare(tempPath, CremaString.DataBases);
-            new CremaDataSet().WriteToDirectory(dataBasesPath);
+            dataSet.WriteToDirectory(dataBasesPath);
             repositoryProvider.InitializeRepository(dataBasesRepo, dataBasesPath);
 
             var repoModulePath = FileUtility.WriteAllText(repositoryProvider.Name, repositoryPath, CremaString.Repo);
@@ -155,8 +156,13 @@ namespace Ntreev.Crema.Services
 
         public static void UpgradeRepository(IServiceProvider serviceProvider, string basePath, string upgradeModule)
         {
+            UpgradeRepository(serviceProvider, basePath, upgradeModule, null);
+        }
+
+        public static void UpgradeRepository(IServiceProvider serviceProvider, string basePath, string upgradeModule, string repositoryUrl)
+        {
             var repositoryUpgrader = GetRepositoryUpgrader(serviceProvider, upgradeModule ?? "svn");
-            RepositoryUpgrader.Upgrade(repositoryUpgrader, basePath);
+            RepositoryUpgrader.Upgrade(repositoryUpgrader, basePath, repositoryUrl);
         }
 
         public object GetService(System.Type serviceType)

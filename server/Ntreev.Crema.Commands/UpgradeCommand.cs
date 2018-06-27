@@ -58,9 +58,31 @@ namespace Ntreev.Crema.Commands
             set;
         }
 
+        [CommandProperty("url")]
+        public string RepositoryUrl
+        {
+            get;
+            set;
+        }
+
+        [CommandProperty]
+        public bool Force
+        {
+            get;
+            set;
+        }
+
         protected override void OnExecute()
         {
-            CremaBootstrapper.UpgradeRepository(this.boot, this.BasePath, this.UpgradeModule);
+            this.Validate();
+            CremaBootstrapper.UpgradeRepository(this.boot, this.BasePath, this.UpgradeModule, this.RepositoryUrl);
+        }
+
+        private void Validate()
+        {
+            var repositoryPath = Path.Combine(this.BasePath, CremaString.Repository);
+            if (Directory.Exists(repositoryPath) == true && this.Force == false)
+                throw new InvalidOperationException("path is existed.");
         }
     }
 }
