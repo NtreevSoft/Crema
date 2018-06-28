@@ -16,6 +16,7 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Ntreev.Crema.Data;
+using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Crema.Services.Properties;
 using Ntreev.Crema.Services.Users;
 using Ntreev.Library.IO;
@@ -77,27 +78,26 @@ namespace Ntreev.Crema.Services
 
         public static void ValidateRepository(IServiceProvider serviceProvider, string basePath, params string[] dataBaseNames)
         {
-            var repositoryPath = DirectoryUtility.Prepare(basePath, CremaString.Repository);
-            var repositoryModule = FileUtility.ReadAllText(repositoryPath, CremaString.Repo);
-            var fileType = FileUtility.ReadAllText(repositoryPath, CremaString.File);
+            var repositoryModule = FileUtility.ReadAllText(basePath, CremaString.Repository, CremaString.Repo);
+            var fileType = FileUtility.ReadAllText(basePath, CremaString.Repository, CremaString.File);
             var repositoryProvider = GetRepositoryProvider(serviceProvider, repositoryModule);
             var serializer = GetSerializer(serviceProvider, fileType);
             var validationPath = Path.Combine(basePath, "validation");
+            var logService = new LogServiceHost("validation", validationPath, true) { Verbose = LogVerbose.Info, };
 
-            var logService = new LogServiceHost(serviceProvider.GetType().FullName, CremaHost.GetPath(validationPath, CremaPath.Logs));
-
-            var dataBasesPath = Path.Combine(basePath, CremaString.Repository, CremaString.DataBases);
-            var items = repositoryProvider.GetRepositories(dataBasesPath);
+            var repositoryPath = CremaHost.GetPath(basePath, CremaPath.RepositoryDataBases);
+            var items = repositoryProvider.GetRepositories(repositoryPath);
 
             if (dataBaseNames.Length > 0)
                 items = items.Intersect(dataBaseNames).ToArray();
 
-            foreach (var item in items)
+            for (var i = 0; i < items.Length; i++)
             {
+                var item = items[i];
                 var tempPath = Path.Combine(validationPath, item);
                 var repositorySettings = new RepositorySettings()
                 {
-                    BasePath = dataBasesPath,
+                    BasePath = repositoryPath,
                     RepositoryName = item,
                     WorkingPath = tempPath,
                     LogService = logService,
@@ -106,63 +106,67 @@ namespace Ntreev.Crema.Services
                 try
                 {
                     serializer.Validate(repository.BasePath, typeof(CremaDataSet), ObjectSerializerSettings.Empty);
+                    repository.Dispose();
+                    DirectoryUtility.Delete(tempPath);
+                    logService.Info($"[{i}/{items.Length}]{item}: OK");
                 }
                 catch (Exception e)
                 {
                     logService.Error(e);
-                    throw;
+                    logService.Info($"[{i}/{items.Length}]{item}: Fail");
                 }
-                repository.Dispose();
-                DirectoryUtility.Delete(tempPath);
             }
-            logService.Info("end");
         }
 
-        public static void MigrateRepository(IServiceProvider serviceProvider, string basePath)
+        public static void UpgradeRepository(IServiceProvider serviceProvider, string basePath, params string[] dataBaseNames)
         {
-            var repositoryProvider = GetRepositoryProvider(serviceProvider, "svn");
-            var serializer = GetSerializer(serviceProvider, "xml");
+            var repositoryModule = FileUtility.ReadAllText(basePath, CremaString.Repository, CremaString.Repo);
+            var fileType = FileUtility.ReadAllText(basePath, CremaString.Repository, CremaString.File);
+            var repositoryProvider = GetRepositoryProvider(serviceProvider, repositoryModule);
+            var serializer = GetSerializer(serviceProvider, fileType);
+            var upgradePath = Path.Combine(basePath, "upgrade");
+            var logService = new LogServiceHost("upgrade", upgradePath, true)
+            {
+                Verbose = LogVerbose.Info,
+            };
 
-            var logService = new LogServiceHost(serviceProvider.GetType().FullName, CremaHost.GetPath(basePath, CremaPath.Logs));
+            var repositoryPath = CremaHost.GetPath(basePath, CremaPath.RepositoryDataBases);
+            var items = repositoryProvider.GetRepositories(repositoryPath);
 
-            //var basePath = Path.Combine(settings.BasePath, "remotes", CremaString.DataBasesString);
-            var items = repositoryProvider.GetRepositories(basePath);
-            var migrationPath = Path.Combine(basePath, "migration");
-
-            //if (settings.DataBaseNames.Length > 0)
-            //    items = items.Intersect(settings.DataBaseNames).ToArray();
+            if (dataBaseNames.Length > 0)
+                items = items.Intersect(dataBaseNames).ToArray();
 
             foreach (var item in items)
             {
-                var tempPath = Path.Combine(migrationPath, item);
-                try
+                var tempPath = Path.Combine(upgradePath, item);
+                var repositorySettings = new RepositorySettings()
                 {
-                    var repositorySettings = new RepositorySettings()
-                    {
-                        BasePath = basePath,
-                        RepositoryName = item,
-                        WorkingPath = tempPath,
-                        LogService = logService,
-                    };
-                    MigrateRepository(repositoryProvider, serializer, repositorySettings);
-                    CremaLog.Info("migtrated : {0}", item);
-                }
-                finally
+                    BasePath = repositoryPath,
+                    RepositoryName = item,
+                    WorkingPath = tempPath,
+                    LogService = logService,
+                };
+                if (UpgradeRepository(repositoryProvider, serializer, repositorySettings) == true)
                 {
-                    DirectoryUtility.Delete(tempPath);
+                    logService.Info("upgraded: {0}", item);
                 }
+                else
+                {
+                    logService.Info("skip: {0}", item);
+                }
+                DirectoryUtility.Delete(tempPath);
             }
         }
 
-        public static void UpgradeRepository(IServiceProvider serviceProvider, string basePath, string upgradeModule)
+        public static void MigrateRepository(IServiceProvider serviceProvider, string basePath, string migrationModule)
         {
-            UpgradeRepository(serviceProvider, basePath, upgradeModule, null);
+            MigrateRepository(serviceProvider, basePath, migrationModule, null);
         }
 
-        public static void UpgradeRepository(IServiceProvider serviceProvider, string basePath, string upgradeModule, string repositoryUrl)
+        public static void MigrateRepository(IServiceProvider serviceProvider, string basePath, string migrationModule, string repositoryUrl)
         {
-            var repositoryUpgrader = GetRepositoryUpgrader(serviceProvider, upgradeModule ?? "svn");
-            RepositoryUpgrader.Upgrade(repositoryUpgrader, basePath, repositoryUrl);
+            var repositoryMigrator = GetRepositoryMigrator(serviceProvider, migrationModule ?? "svn");
+            RepositoryMigrator.Migrate(repositoryMigrator, basePath, repositoryUrl);
         }
 
         public object GetService(System.Type serviceType)
@@ -392,10 +396,10 @@ namespace Ntreev.Crema.Services
             return repositoryProvider;
         }
 
-        internal static IRepositoryUpgrader GetRepositoryUpgrader(IServiceProvider serviceProvider, string upgradeModule)
+        internal static IRepositoryMigrator GetRepositoryMigrator(IServiceProvider serviceProvider, string migrationModule)
         {
-            var repositoryUpgraders = serviceProvider.GetService(typeof(IEnumerable<IRepositoryUpgrader>)) as IEnumerable<IRepositoryUpgrader>;
-            var repositoryUpgrader = repositoryUpgraders.FirstOrDefault(item => item.Name == upgradeModule);
+            var repositoryUpgraders = serviceProvider.GetService(typeof(IEnumerable<IRepositoryMigrator>)) as IEnumerable<IRepositoryMigrator>;
+            var repositoryUpgrader = repositoryUpgraders.FirstOrDefault(item => item.Name == migrationModule);
             if (repositoryUpgrader == null)
                 throw new InvalidOperationException(Resources.Exception_NoRepositoryModule);
             return repositoryUpgrader;
@@ -408,22 +412,46 @@ namespace Ntreev.Crema.Services
             CremaLog.Debug("Initialized.");
         }
 
-        private static void MigrateRepository(IRepositoryProvider repositoryProvider, IObjectSerializer serializer, RepositorySettings settings)
+        private static bool UpgradeRepository(IRepositoryProvider repositoryProvider, IObjectSerializer serializer, RepositorySettings settings)
         {
-            using (var repository = repositoryProvider.CreateInstance(settings))
+            var repository = repositoryProvider.CreateInstance(settings);
+            var versionPath = Path.Combine(repository.BasePath, ".version");
+            var version = GetVersion(versionPath);
+            if (version.Major == CremaSchema.MajorVersion && version.Minor == CremaSchema.MinorVersion)
+            {
+                repository.Dispose();
+                return false;
+            }
+            else
             {
                 var dataSet = serializer.Deserialize(repository.BasePath, typeof(CremaDataSet), ObjectSerializerSettings.Empty) as CremaDataSet;
                 var files = serializer.Serialize(repository.BasePath, dataSet, ObjectSerializerSettings.Empty);
 
-                var items = repository.Status();
-                foreach (var item in items)
+                File.WriteAllText(versionPath, $"{CremaSchema.MajorVersion}.{CremaSchema.MinorVersion}");
+                foreach (var item in repository.Status())
                 {
                     if (item.Status == RepositoryItemStatus.Untracked)
                     {
                         repository.Add(item.Path);
                     }
                 }
-                repository.Commit("migration");
+                repository.Commit($"upgrade: {CremaSchema.MajorVersion}.{CremaSchema.MinorVersion}");
+                repository.Dispose();
+                return true;
+            }
+        }
+
+        private static Version GetVersion(string versionPath)
+        {
+            if (File.Exists(versionPath) == false)
+                return new Version();
+            try
+            {
+                return new Version(File.ReadAllText(versionPath));
+            }
+            catch
+            {
+                return new Version();
             }
         }
     }

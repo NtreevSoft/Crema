@@ -1001,7 +1001,8 @@ namespace Ntreev.Crema.Data
                         select item;
 
             var errorList = new List<ValidationEventArgs>();
-            Parallel.ForEach(query, item =>
+            foreach (var item in query)
+            //Parallel.ForEach(query, item =>
             {
                 Validate(item, (s, e) =>
                 {
@@ -1010,7 +1011,8 @@ namespace Ntreev.Crema.Data
                         errorList.Add(e);
                     }
                 });
-            });
+            }
+            //});
 
             foreach (var item in errorList.OrderBy(i => i.Exception.SourceUri))
             {

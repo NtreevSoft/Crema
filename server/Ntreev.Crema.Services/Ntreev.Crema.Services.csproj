@@ -67,7 +67,7 @@
     <Compile Include="Domains\Serializations\DomainPostItemSerializationInfo.cs" />
     <Compile Include="Domains\Serializations\DomainPropertySerializationInfo.cs" />
     <Compile Include="Domains\Serializations\DomainSerializationInfo.cs" />
-    <Compile Include="IRepositoryUpgrader.cs" />
+    <Compile Include="IRepositoryMigrator.cs" />
     <Compile Include="ObjectSerializerSettings.cs" />
     <Compile Include="LogServiceHost.cs" />
     <Compile Include="CremaDataTableSerializerSettings.cs" />
@@ -156,7 +156,7 @@
     <Compile Include="RepositoryHost.cs" />
     <Compile Include="RepositoryItemStatus.cs" />
     <Compile Include="RepositoryItem.cs" />
-    <Compile Include="RepositoryUpgrader.cs" />
+    <Compile Include="RepositoryMigrator.cs" />
     <Compile Include="Users\Serializations\BanSerializationInfo.cs" />
     <Compile Include="Users\Serializations\UserCategorySerializationInfoList.cs" />
     <Compile Include="Users\Serializations\UserContextSerializationInfo.cs" />

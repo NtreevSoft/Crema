@@ -28,9 +28,9 @@ namespace Ntreev.Crema.Services
             this.logService = logService;
         }
 
-        public LogServiceHost(string name, string path)
+        public LogServiceHost(string name, string path, bool isSingle)
         {
-            this.logService = new LogService(name, path);
+            this.logService = new LogService(name, path, isSingle);
         }
 
         public LogVerbose Verbose
@@ -47,7 +47,10 @@ namespace Ntreev.Crema.Services
 
         public string Name => this.logService.Name;
 
-        public string FileName => this.logService.FileName;
+        public string FileName
+        {
+            get => this.logService.FileName;
+        }
 
         public bool IsEnabled => true;
 

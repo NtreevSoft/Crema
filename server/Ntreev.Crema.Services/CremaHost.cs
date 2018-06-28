@@ -63,7 +63,7 @@ namespace Ntreev.Crema.Services
             this.repositoryProvider = repositoryProviders.First(item => item.Name == this.settings.RepositoryModule);
             this.serializer = serializers.First(item => item.Name == this.settings.FileType);
 
-            this.log = new LogService(this.GetType().FullName, this.GetPath(CremaPath.Logs))
+            this.log = new LogService("log", this.GetPath(CremaPath.Logs), false)
             {
                 Name = "repository",
                 Verbose = settings.Verbose

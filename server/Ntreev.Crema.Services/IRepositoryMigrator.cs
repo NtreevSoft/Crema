@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Services
 {
-    public interface IRepositoryUpgrader
+    public interface IRepositoryMigrator
     {
-        string Upgrade(string sourcePath);
+        string Migrate(string sourcePath);
 
         IRepositoryProvider RepositoryProvider { get; }
 

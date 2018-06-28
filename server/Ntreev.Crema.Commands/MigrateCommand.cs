@@ -15,20 +15,18 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.Commands;
 using Ntreev.Crema.Services;
-using Ntreev.Crema.ServiceModel;
+using Ntreev.Crema.Services.Users.Serializations;
 using Ntreev.Library;
 using Ntreev.Library.Commands;
+using Ntreev.Library.IO;
 using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.IO;
-using System.Reflection;
-using Ntreev.Crema.Commands.Consoles;
-using System.Collections.Generic;
-using Ntreev.Library.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Ntreev.Crema.Commands
 {
@@ -38,7 +36,6 @@ namespace Ntreev.Crema.Commands
     class MigrateCommand : CommandBase
     {
         private readonly CremaBootstrapper boot;
-        //private string repositoryModule;
 
         [ImportingConstructor]
         public MigrateCommand(CremaBootstrapper boot)
@@ -48,36 +45,44 @@ namespace Ntreev.Crema.Commands
         }
 
         [CommandProperty("path", IsRequired = true)]
-        public string Path
+        public string BasePath
         {
             get;
             set;
         }
 
-        //[CommandProperty("repo-module")]
-        //public string RepositoryModule
-        //{
-        //    get => this.repositoryModule;
-        //    set => this.repositoryModule = value;
-        //}
+        [CommandProperty("repo-module")]
+        public string RepositoryModule
+        {
+            get;
+            set;
+        }
 
-        //[CommandProperty("file-type")]
-        //public string FileType
-        //{
-        //    get;
-        //    set;
-        //}
+        [CommandProperty("url")]
+        public string RepositoryUrl
+        {
+            get;
+            set;
+        }
 
-        //[CommandPropertyArray]
-        //[Description("database list to migrate")]
-        //public string[] DataBaseList
-        //{
-        //    get; set;
-        //}
+        [CommandProperty]
+        public bool Force
+        {
+            get;
+            set;
+        }
 
         protected override void OnExecute()
         {
-            CremaBootstrapper.MigrateRepository(this.boot, this.Path);
+            this.Validate();
+            CremaBootstrapper.MigrateRepository(this.boot, this.BasePath, this.RepositoryModule, this.RepositoryUrl);
+        }
+
+        private void Validate()
+        {
+            var repositoryPath = Path.Combine(this.BasePath, CremaString.Repository);
+            if (Directory.Exists(repositoryPath) == true && this.Force == false)
+                throw new InvalidOperationException("path is existed.");
         }
     }
 }

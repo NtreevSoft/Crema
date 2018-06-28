@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Repository.Svn
 {
-    [Export(typeof(IRepositoryUpgrader))]
-    class SvnRepositoryUpgrader : IRepositoryUpgrader
+    [Export(typeof(IRepositoryMigrator))]
+    class SvnRepositoryMigrator : IRepositoryMigrator
     {
         private readonly SvnRepositoryProvider repositoryProvider;
 
         [ImportingConstructor]
-        public SvnRepositoryUpgrader(SvnRepositoryProvider repositoryProvider)
+        public SvnRepositoryMigrator(SvnRepositoryProvider repositoryProvider)
         {
             this.repositoryProvider = repositoryProvider;
         }
@@ -23,7 +23,7 @@ namespace Ntreev.Crema.Repository.Svn
 
         public string Name => this.repositoryProvider.Name;
 
-        public string Upgrade(string sourcePath)
+        public string Migrate(string sourcePath)
         {
             return null;
         }

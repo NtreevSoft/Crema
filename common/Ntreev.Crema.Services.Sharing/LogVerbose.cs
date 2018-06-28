@@ -21,16 +21,19 @@ using System.Text;
 
 namespace Ntreev.Crema.Services
 {
+    [Flags]
     public enum LogVerbose
     {
-        Debug,
+        None,
 
-        Info,
+        Debug = 1,
 
-        Error,
+        Info = 2,
 
-        Warn,
+        Error = 4,
 
-        Fatal,
+        Warn = 8,
+
+        Fatal = 16,
     }
 }

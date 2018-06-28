@@ -60,7 +60,7 @@
     <Compile Include="GitLogInfo.cs" />
     <Compile Include="GitPropertyValue.cs" />
     <Compile Include="GitPathUtility.cs" />
-    <Compile Include="GitRepositoryUpgrader.cs" />
+    <Compile Include="GitRepositoryMigrator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\common\Ntreev.Crema.Data\Ntreev.Crema.Data.csproj">

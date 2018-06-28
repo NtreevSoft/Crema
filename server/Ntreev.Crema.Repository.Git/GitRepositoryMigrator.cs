@@ -1,5 +1,6 @@
 ﻿using Ntreev.Crema.Services;
 using Ntreev.Library;
+using Ntreev.Library.IO;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -11,13 +12,13 @@ using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Repository.Git
 {
-    [Export(typeof(IRepositoryUpgrader))]
-    class GitRepositoryUpgrader : IRepositoryUpgrader
+    [Export(typeof(IRepositoryMigrator))]
+    class GitRepositoryMigrator : IRepositoryMigrator
     {
         private readonly GitRepositoryProvider repositoryProvider;
 
         [ImportingConstructor]
-        public GitRepositoryUpgrader(GitRepositoryProvider repositoryProvider)
+        public GitRepositoryMigrator(GitRepositoryProvider repositoryProvider)
         {
             this.repositoryProvider = repositoryProvider;
         }
@@ -26,13 +27,9 @@ namespace Ntreev.Crema.Repository.Git
 
         public string Name => this.repositoryProvider.Name;
 
-        public string Upgrade(string sourcePath)
+        public string Migrate(string sourcePath)
         {
-            var repositoryPath2 = sourcePath + "_Temp";
-
-            
-
-
+            var repositoryPath2 = PathUtility.GetTempPath(false);
             var repositoryUri = new Uri(sourcePath).ToString();
 
             if (Environment.OSVersion.Platform == PlatformID.Win32NT)
