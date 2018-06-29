@@ -15,32 +15,49 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.Services;
+using Ntreev.Library;
+using Ntreev.Library.Commands;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ntreev.Crema.Services
+namespace Ntreev.Crema.Commands
 {
-    public enum CremaPath
+    [Description("캐시 파일을 삭제합니다.")]
+    [Export(typeof(ICommand))]
+    class CleanCommand : CommandBase
     {
-        RepositoryUsers,
+        private readonly CremaBootstrapper boot;
 
-        RepositoryDataBases,
+        [ImportingConstructor]
+        public CleanCommand(CremaBootstrapper boot)
+            : base("clean")
+        {
+            this.boot = boot;
+        }
 
-        Caches,
+        [CommandProperty("path", IsRequired = true)]
+        public string Path
+        {
+            get;
+            set;
+        }
 
-        Logs,
+        //[Description("로그 폴더와 working 폴더 그리고 관리되지 않는 폴더와 파일을 모두 삭제합니다.")]
+        //[CommandProperty("all")]
+        //public bool IsAll
+        //{
+        //    get; set;
+        //}
 
-        DataBases,
-
-        Users,
-
-        Domains,
-
-        Documents,
-        
-        Transactions,
+        protected override void OnExecute()
+        {
+            CremaBootstrapper.CleanRepository(this.boot, this.Path);
+        }
     }
 }

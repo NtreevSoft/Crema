@@ -715,7 +715,7 @@ namespace Ntreev.Crema.Services.Data
             return this.Serializer.Deserialize(this.BasePath, typeof(CremaDataSet), props) as CremaDataSet;
         }
 
-        public string BasePath => this.CremaHost.GetPath(CremaPath.Working, "databases", $"{base.DataBaseInfo.ID}");
+        public string BasePath => this.CremaHost.GetPath(CremaPath.DataBases, $"{base.DataBaseInfo.ID}");
 
         public CremaHost CremaHost { get; }
 
@@ -1256,12 +1256,12 @@ namespace Ntreev.Crema.Services.Data
         public void Initialize()
         {
             var remotePath = this.CremaHost.GetPath(CremaPath.RepositoryDataBases);
-            var repositoryInfo = this.repositoryProvider.GetRepositoryInfo(remotePath, this.Name);
+            var revision = this.repositoryProvider.GetRevision(remotePath, this.Name);
 
-            if (base.DataBaseInfo.Revision != repositoryInfo.Revision)
+            if (base.DataBaseInfo.Revision != revision)
             {
                 this.CremaHost.Debug($"initialize database : {base.Name}");
-
+                var repositoryInfo = this.repositoryProvider.GetRepositoryInfo(remotePath, this.Name);
                 base.DataBaseInfo = new DataBaseInfo()
                 {
                     ID = repositoryInfo.ID,

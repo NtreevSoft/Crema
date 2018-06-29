@@ -43,8 +43,10 @@ namespace Ntreev.Crema.Services
         [Import]
         private IServiceProvider container = null;
         private CremaSettings settings;
-        private IRepositoryProvider repositoryProvider;
-        private IObjectSerializer serializer;
+        private readonly IRepositoryProvider repositoryProvider;
+        private readonly IObjectSerializer serializer;
+        private readonly string databasesPath;
+        private readonly string usersPath;
         private readonly LogService log;
         private Guid token;
         private ShutdownTimer shutdownTimer;
@@ -62,6 +64,8 @@ namespace Ntreev.Crema.Services
             this.BasePath = settings.BasePath;
             this.repositoryProvider = repositoryProviders.First(item => item.Name == this.settings.RepositoryModule);
             this.serializer = serializers.First(item => item.Name == this.settings.FileType);
+            this.databasesPath = this.settings.RepositoryDataBasesUrl;
+            this.usersPath = this.settings.RepositoryUsersUrl;
 
             this.log = new LogService("log", this.GetPath(CremaPath.Logs), false)
             {
@@ -283,7 +287,15 @@ namespace Ntreev.Crema.Services
 
         public string GetPath(CremaPath pathType, params string[] paths)
         {
-            return GetPath(this.BasePath, pathType, paths);
+            switch (pathType)
+            {
+                case CremaPath.RepositoryUsers:
+                    return this.usersPath;
+                case CremaPath.RepositoryDataBases:
+                    return this.databasesPath;
+                default:
+                    return GetPath(this.BasePath, pathType, paths);
+            }
         }
 
         public static string GetPath(string basePath, CremaPath pathType, params string[] paths)
@@ -294,18 +306,8 @@ namespace Ntreev.Crema.Services
                     return new Uri(Path.Combine(Path.Combine(basePath, CremaString.Repository, CremaString.Users), Path.Combine(paths))).ToString();
                 case CremaPath.RepositoryDataBases:
                     return new Uri(Path.Combine(Path.Combine(basePath, CremaString.Repository, CremaString.DataBases), Path.Combine(paths))).ToString();
-                case CremaPath.Caches:
-                    return Path.Combine(Path.Combine(basePath, "caches"), Path.Combine(paths));
-                case CremaPath.Logs:
-                    return Path.Combine(Path.Combine(basePath, "logs"), Path.Combine(paths));
-                case CremaPath.Working:
-                    return Path.Combine(Path.Combine(basePath, "working"), Path.Combine(paths));
-                case CremaPath.Documents:
-                    return Path.Combine(Path.Combine(basePath, "documents"), Path.Combine(paths));
-                case CremaPath.Transactions:
-                    return Path.Combine(Path.Combine(basePath, "transactions"), Path.Combine(paths));
-                case CremaPath.Domains:
-                    return Path.Combine(Path.Combine(basePath, "domains"), Path.Combine(paths));
+                default:
+                    return Path.Combine(Path.Combine(basePath, $"{pathType}".ToLower()), Path.Combine(paths));
             }
 
             throw new NotImplementedException();

@@ -38,7 +38,6 @@ namespace Ntreev.Crema.Commands
     class UpgradeCommand : CommandBase
     {
         private readonly CremaBootstrapper boot;
-        //private string repositoryModule;
 
         [ImportingConstructor]
         public UpgradeCommand(CremaBootstrapper boot)
@@ -53,20 +52,6 @@ namespace Ntreev.Crema.Commands
             get;
             set;
         }
-
-        //[CommandProperty("repo-module")]
-        //public string RepositoryModule
-        //{
-        //    get => this.repositoryModule;
-        //    set => this.repositoryModule = value;
-        //}
-
-        //[CommandProperty("file-type")]
-        //public string FileType
-        //{
-        //    get;
-        //    set;
-        //}
 
         [CommandPropertyArray]
         [Description("database list to migrate")]

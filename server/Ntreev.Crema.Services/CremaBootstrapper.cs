@@ -158,15 +158,14 @@ namespace Ntreev.Crema.Services
             }
         }
 
-        public static void MigrateRepository(IServiceProvider serviceProvider, string basePath, string migrationModule)
+        public static void MigrateRepository(IServiceProvider serviceProvider, string basePath, string migrationModule, string repositoryUrl, bool force)
         {
-            MigrateRepository(serviceProvider, basePath, migrationModule, null);
+            RepositoryMigrator.Migrate(serviceProvider, basePath, migrationModule, repositoryUrl, force);
         }
 
-        public static void MigrateRepository(IServiceProvider serviceProvider, string basePath, string migrationModule, string repositoryUrl)
+        public static void CleanRepository(IServiceProvider serviceProvider, string basePath)
         {
-            var repositoryMigrator = GetRepositoryMigrator(serviceProvider, migrationModule ?? "svn");
-            RepositoryMigrator.Migrate(repositoryMigrator, basePath, repositoryUrl);
+            DirectoryUtility.Delete(CremaHost.GetPath(basePath, CremaPath.Caches));
         }
 
         public object GetService(System.Type serviceType)

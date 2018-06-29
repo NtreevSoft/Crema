@@ -56,7 +56,7 @@ namespace Ntreev.Crema.Services.Users
             this.CremaHost.Debug(Resources.Message_UserContextInitialize);
 
             this.remotePath = cremaHost.GetPath(CremaPath.RepositoryUsers);
-            this.basePath = cremaHost.GetPath(CremaPath.Working, "users");
+            this.basePath = cremaHost.GetPath(CremaPath.Users);
             this.serializer = cremaHost.Serializer;
 
             this.Repository = new UserRepositoryHost(this, this.CremaHost.RepositoryProvider.CreateInstance(new RepositorySettings()
@@ -506,6 +506,7 @@ namespace Ntreev.Crema.Services.Users
 
         public void Dispose()
         {
+            this.Repository.Dispose();
             this.Dispatcher.Dispose();
         }
 

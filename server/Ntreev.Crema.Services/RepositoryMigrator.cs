@@ -20,16 +20,19 @@ namespace Ntreev.Crema.Services
         private const string defaultString = "default";
 
         private readonly string basePath;
+        private readonly string repositoryPath;
         private readonly Uri sourceUrl;
         private readonly string sourceRelativeUrl;
         private readonly Uri sourceRootUrl;
         private readonly IRepositoryMigrator repositoryMigrator;
         private readonly LogService logService;
 
-        private RepositoryMigrator(IRepositoryMigrator repositoryMigrator, string basePath, Uri repositoryUrl)
+        private RepositoryMigrator(LogService logService, IRepositoryMigrator repositoryMigrator, string basePath, Uri repositoryUrl)
         {
+            this.logService = logService;
             this.repositoryMigrator = repositoryMigrator;
             this.basePath = basePath;
+            this.repositoryPath = DirectoryUtility.Prepare(basePath, CremaString.Repository);
             if (repositoryUrl == null)
             {
                 this.sourceUrl = new Uri(Path.Combine(this.basePath, nameString));
@@ -40,102 +43,149 @@ namespace Ntreev.Crema.Services
             }
             else
             {
-                var svnUri = new Uri(Path.Combine(this.basePath, nameString));
-                this.sourceUrl = UriUtility.Combine(svnUri, repositoryUrl.ToString());
+                this.sourceUrl = UriUtility.Combine(new Uri(this.basePath), nameString, repositoryUrl.ToString());
             }
 
-
-            this.sourceRootUrl = new Uri(this.Run("info", $"{this.sourceUrl}", "--show-item repos-root-url").Trim());
+            this.sourceRootUrl = new Uri(this.Run($"info \"{this.sourceUrl}\" --show-item repos-root-url").Trim());
             this.sourceRelativeUrl = UriUtility.MakeRelativeString(this.sourceRootUrl, this.sourceUrl);
-
-            this.logService = new LogService(typeof(RepositoryMigrator).FullName, CremaHost.GetPath(basePath, CremaPath.Logs), true);
         }
 
-        public static void Migrate(IRepositoryMigrator repositoryMigrator, string basePath, string repositoryUrl)
+        public static void Migrate(IServiceProvider serviceProvider, string basePath, string migrationModule, string repositoryUrl, bool force)
         {
-            new RepositoryMigrator(repositoryMigrator, basePath, repositoryUrl == null ? null : new Uri(repositoryUrl, UriKind.RelativeOrAbsolute)).Migrate();
-        }
+            Validate(serviceProvider, basePath, migrationModule, repositoryUrl, force);
 
-        private void Migrate()
-        {
-            var repositoryProvider = this.repositoryMigrator.RepositoryProvider;
-            var svnPath = Path.Combine(this.basePath, nameString);
-            var repositoryPath = DirectoryUtility.Prepare(this.basePath, CremaString.Repository);
-
+            var repositoryMigrator = CremaBootstrapper.GetRepositoryMigrator(serviceProvider, migrationModule ?? "svn");
+            var logService = new LogService("migrate", basePath, true) { Verbose = LogVerbose.Info };
+            var repositoryPath = Path.Combine(basePath, CremaString.Repository);
+            var repositoryExisted = Directory.Exists(repositoryPath);
             try
             {
-                this.MigrateUsers(repositoryProvider, svnPath, repositoryPath);
-                var dataBasesPath = this.MigrateDataBases(svnPath, repositoryPath);
-                var dataBaseUri = UriUtility.Combine(new Uri(dataBasesPath), this.sourceRelativeUrl);
-                var destPath = this.repositoryMigrator.Migrate(dataBaseUri.ToString());
-                if (destPath != null)
+                if (repositoryExisted == true)
                 {
-                    DirectoryUtility.Backup(dataBasesPath);
-                    DirectoryUtility.Copy(destPath, dataBasesPath);
-                    DirectoryUtility.Delete(destPath);
-                    DirectoryUtility.Clean(dataBasesPath);
+                    DirectoryUtility.Backup(repositoryPath);
                 }
-
-                var repoModulePath = FileUtility.WriteAllText(repositoryProvider.Name, repositoryPath, CremaString.Repo);
-                var fileTypePath = FileUtility.WriteAllText("xml", repositoryPath, CremaString.File);
-
-                FileUtility.SetReadOnly(repoModulePath, true);
-                FileUtility.SetReadOnly(fileTypePath, true);
-                DirectoryUtility.SetVisible(repositoryPath, false);
+                var url = repositoryUrl == null ? null : new Uri(repositoryUrl, UriKind.RelativeOrAbsolute);
+                var migrator = new RepositoryMigrator(logService, repositoryMigrator, basePath, url);
+                migrator.Migrate();
             }
             catch (Exception e)
             {
                 logService.Error(e);
-                DirectoryUtility.SetVisible(repositoryPath, true);
-                DirectoryUtility.Delete(repositoryPath);
+                throw;
+            }
+            finally
+            {
+                if (repositoryExisted == true)
+                {
+                    DirectoryUtility.Clean(repositoryPath);
+                }
+            }
+        }
+
+        private static void Validate(IServiceProvider serviceProvider, string basePath, string migrationModule, string repositoryUrl, bool force)
+        {
+            if (serviceProvider == null)
+                throw new ArgumentNullException(nameof(serviceProvider));
+            if (basePath == null)
+                throw new ArgumentNullException(nameof(basePath));
+            if (Directory.Exists(basePath) == false)
+                throw new DirectoryNotFoundException($"not found directory: \'{basePath}\'");
+
+            var repositoryPath = Path.Combine(basePath, CremaString.Repository);
+            if (Directory.Exists(repositoryPath) == true && force == false)
+                throw new InvalidOperationException($"path is existed: \'{repositoryPath}\'");
+        }
+
+        private void Migrate()
+        {
+            try
+            {
+                this.MigrateUsers();
+                this.MigrateDataBases();
+                this.WriteRepositoryInfo();
+            }
+            catch (Exception e)
+            {
+                this.logService.Error(e);
+                DirectoryUtility.SetVisible(this.repositoryPath, true);
+                DirectoryUtility.Delete(this.repositoryPath);
                 throw e;
             }
         }
 
-        private void MigrateUsers(IRepositoryProvider repositoryProvider, string svnPath, string repositoryPath)
+        private void MigrateUsers()
         {
             this.logService.Info(nameof(MigrateUsers));
-            var usersPath = Path.Combine(repositoryPath, CremaString.Users);
-            //var svnUri = new Uri(svnPath);
-            var userUri = UriUtility.Combine(this.sourceUrl, $"{CremaString.Users}.xml");
+            var repositoryProvider = this.repositoryMigrator.RepositoryProvider;
+            var usersPath = Path.Combine(this.repositoryPath, CremaString.Users);
+            var userUrl = UriUtility.Combine(this.sourceUrl, $"{CremaString.Users}.xml");
             var userPath = Path.Combine(this.basePath, $"{CremaString.Users}.xml");
 
-            this.Run("export", userUri, this.basePath.WrapQuot(), "--force");
+            this.logService.Info($" - export {CremaString.Users}.xml");
+            this.Run($"export \"{userUrl}\" \"{this.basePath}\" --force");
 
             var userContext = Ntreev.Library.Serialization.DataContractSerializerUtility.Read<UserContextSerializationInfo>(userPath);
             var tempPath = PathUtility.GetTempPath(true);
             try
             {
+                this.logService.Info($" - write users information");
                 userContext.WriteToDirectory(tempPath);
+                this.logService.Info($" - initialize users repository");
                 repositoryProvider.InitializeRepository(usersPath, tempPath);
             }
             finally
             {
+                this.logService.Info($" - delete temp files");
                 FileUtility.Delete(userPath);
                 DirectoryUtility.Delete(tempPath);
             }
         }
 
-        private string MigrateDataBases(string svnPath, string repositoryPath)
+        private void MigrateDataBases()
         {
             this.logService.Info(nameof(MigrateDataBases));
-            var dataBasesPath = Path.Combine(repositoryPath, CremaString.DataBases);
-            //return dataBasesPath;
-            //var dataBasesUri = new Uri(UriUtility.Combine(dataBasesPath, this.relativeUrl));
-
-            DirectoryUtility.Copy(svnPath, dataBasesPath);
+            var dataBasesPath = Path.Combine(this.repositoryPath, CremaString.DataBases);
+            this.logService.Info($" - copy databases repository");
+            DirectoryUtility.Copy(this.sourceRootUrl.LocalPath, dataBasesPath);
+            this.logService.Info($" - relocate databases repository");
             this.PrepareBranches(dataBasesPath);
             this.MoveTagsToBranches(dataBasesPath);
 
-            return dataBasesPath;
+            this.logService.Info($" - migrate databases repository");
+            var dataBaseUrl = UriUtility.Combine(new Uri(dataBasesPath), this.sourceRelativeUrl);
+            var destPath = this.repositoryMigrator.Migrate(dataBaseUrl.ToString());
+            if (destPath != null)
+            {
+                DirectoryUtility.Backup(dataBasesPath);
+                DirectoryUtility.Copy(destPath, dataBasesPath);
+                DirectoryUtility.Delete(destPath);
+                DirectoryUtility.Clean(dataBasesPath);
+            }
+        }
+
+        private void WriteRepositoryInfo()
+        {
+            this.logService.Info(nameof(WriteRepositoryInfo));
+            var repositoryProvider = this.repositoryMigrator.RepositoryProvider;
+            var repoModulePath = FileUtility.WriteAllText(repositoryProvider.Name, this.repositoryPath, CremaString.Repo);
+            var fileTypePath = FileUtility.WriteAllText("xml", this.repositoryPath, CremaString.File);
+
+            FileUtility.SetReadOnly(repoModulePath, true);
+            FileUtility.SetReadOnly(fileTypePath, true);
+            DirectoryUtility.SetVisible(this.repositoryPath, false);
+
+            if (this.sourceRelativeUrl != string.Empty)
+            {
+                FileUtility.WriteAllText(this.sourceRelativeUrl, this.repositoryPath, "databasesUrl");
+            }
         }
 
         private void MoveTagsToBranches(string dataBasesPath)
         {
-            var dataBaseUri = UriUtility.Combine(new Uri(dataBasesPath), this.sourceRelativeUrl);
-            var tagsUri = UriUtility.Combine(dataBaseUri, tagsString);
-            var branchesUri = UriUtility.Combine(dataBaseUri, branchesString);
-            var text = this.Run("list", tagsUri);
+            var dataBaseUrl = UriUtility.Combine(new Uri(dataBasesPath), this.sourceRelativeUrl);
+            var tagsUrl = UriUtility.Combine(dataBaseUrl, tagsString);
+            var branchesUri = UriUtility.Combine(dataBaseUrl, branchesString);
+            var text = this.Run($"list \"{tagsUrl}\"");
             var list = this.GetLines(text);
 
             foreach (var item in list)
@@ -144,23 +194,23 @@ namespace Ntreev.Crema.Services
                 {
                     var name = item.Remove(item.Length - PathUtility.Separator.Length);
 
-                    var sourceUri = UriUtility.Combine(tagsUri, name);
+                    var sourceUri = UriUtility.Combine(tagsUrl, name);
                     var destUri = UriUtility.Combine(branchesUri, name);
 
-                    this.Run("mv", $"\"{sourceUri}\"", $"\"{destUri}\"", "-m", $"\"Migrate: move {name} from tags to branches\"");
+                    this.Run($"mv \"{sourceUri}\" \"{destUri}\" -m \"Migrate: move {name} from tags to branches\"");
                 }
             }
         }
 
         private void PrepareBranches(string dataBasesPath)
         {
-            var dataBaseUri = UriUtility.Combine(new Uri(dataBasesPath), this.sourceRelativeUrl);
-            var text = this.Run("list", dataBaseUri);
+            var dataBaseUrl = UriUtility.Combine(new Uri(dataBasesPath), this.sourceRelativeUrl);
+            var text = this.Run($"list \"{dataBaseUrl}\"");
             var list = this.GetLines(text);
             if (list.Contains($"{branchesString}{PathUtility.Separator}") == false)
             {
-                var branchesUri = UriUtility.Combine(dataBaseUri, branchesString);
-                this.Run("mkdir", branchesUri, "-m", "\"Migrate: create branches\"");
+                var branchesUrl = UriUtility.Combine(dataBaseUrl, branchesString);
+                this.Run($"mkdir \"{branchesUrl}\" -m \"Migrate: create branches\"");
             }
         }
 
@@ -208,5 +258,4 @@ namespace Ntreev.Crema.Services
             return outputBuilder.ToString();
         }
     }
-
 }

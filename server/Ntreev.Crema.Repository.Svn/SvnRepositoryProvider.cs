@@ -196,8 +196,8 @@ namespace Ntreev.Crema.Repository.Svn
         public string GetRevision(string basePath, string repositoryName)
         {
             var uri = this.GetUrl(basePath, repositoryName);
-            var args = SvnInfoEventArgs.Run($"{uri}".ToSvnPath());
-            return $"{args.Revision}";
+            var args = SvnInfoEventArgs.Run($"{uri}");
+            return $"{args.LastChangeRevision}";
         }
 
         public RepositoryInfo GetRepositoryInfo(string basePath, string repositoryName)

@@ -58,7 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandContext.cs" />
-    <Compile Include="CacheCommand.cs" />
+    <Compile Include="CleanCommand.cs" />
     <Compile Include="UpgradeCommand.cs" />
     <Compile Include="MigrateCommand.cs" />
     <Compile Include="ValidateCommand.cs" />

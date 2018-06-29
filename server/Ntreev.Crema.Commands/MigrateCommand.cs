@@ -45,7 +45,7 @@ namespace Ntreev.Crema.Commands
         }
 
         [CommandProperty("path", IsRequired = true)]
-        public string BasePath
+        public string Path
         {
             get;
             set;
@@ -74,15 +74,7 @@ namespace Ntreev.Crema.Commands
 
         protected override void OnExecute()
         {
-            this.Validate();
-            CremaBootstrapper.MigrateRepository(this.boot, this.BasePath, this.RepositoryModule, this.RepositoryUrl);
-        }
-
-        private void Validate()
-        {
-            var repositoryPath = Path.Combine(this.BasePath, CremaString.Repository);
-            if (Directory.Exists(repositoryPath) == true && this.Force == false)
-                throw new InvalidOperationException("path is existed.");
+            CremaBootstrapper.MigrateRepository(this.boot, this.Path, this.RepositoryModule, this.RepositoryUrl, this.Force);
         }
     }
 }

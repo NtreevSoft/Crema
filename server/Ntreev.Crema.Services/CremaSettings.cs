@@ -15,6 +15,7 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Library;
 using Ntreev.Library.IO;
 using System;
 using System.Collections.Generic;
@@ -52,6 +53,56 @@ namespace Ntreev.Crema.Services
         public string FileType
         {
             get => FileUtility.ReadAllText(this.BasePath, CremaString.Repository, CremaString.File);
+        }
+
+        public string RepositoryDataBasesUrl
+        {
+            get
+            {
+                var urlPath = Path.Combine(this.BasePath, CremaString.Repository, "databasesUrl");
+                if (File.Exists(urlPath) == true)
+                {
+                    var text = File.ReadAllText(urlPath).Trim();
+                    if (text != string.Empty)
+                    {
+                        var url = new Uri(File.ReadAllText(urlPath), UriKind.RelativeOrAbsolute);
+                        if (url.IsAbsoluteUri)
+                        {
+                            return url.ToString();
+                        }
+                        else
+                        {
+                            return UriUtility.Combine(this.BasePath, CremaString.Repository, CremaString.DataBases, text);
+                        }
+                    }
+                }
+                return Path.Combine(this.BasePath, CremaString.Repository, CremaString.DataBases);
+            }
+        }
+
+        public string RepositoryUsersUrl
+        {
+            get
+            {
+                var urlPath = Path.Combine(this.BasePath, CremaString.Repository, "usersUrl");
+                if (File.Exists(urlPath) == true)
+                {
+                    var text = File.ReadAllText(urlPath).Trim();
+                    if (text != string.Empty)
+                    {
+                        var url = new Uri(File.ReadAllText(urlPath), UriKind.RelativeOrAbsolute);
+                        if (url.IsAbsoluteUri)
+                        {
+                            return url.ToString();
+                        }
+                        else
+                        {
+                            return UriUtility.Combine(this.BasePath, CremaString.Repository, CremaString.Users, text);
+                        }
+                    }
+                }
+                return Path.Combine(this.BasePath, CremaString.Repository, CremaString.Users);
+            }
         }
 
         public LogVerbose Verbose
