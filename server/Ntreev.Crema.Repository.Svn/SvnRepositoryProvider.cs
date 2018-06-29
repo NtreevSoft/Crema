@@ -82,7 +82,10 @@ namespace Ntreev.Crema.Repository.Svn
             var branchesPath = DirectoryUtility.Prepare(tempPath, SvnString.Branches);
             var trunkPath = DirectoryUtility.Prepare(tempPath, SvnString.Trunk);
 
-            SvnServerHost.Run("create", basePath.ToSvnPath(), "--fs-type", "fsfs");
+            if (basePath.StartsWith("file://") == true)
+            {
+                SvnServerHost.Run("create", basePath.ToSvnPath(), "--fs-type", "fsfs");
+            }
             DirectoryUtility.Copy(initPath, trunkPath);
             SvnClientHost.Run("import", "-m", "first", tempPath.ToSvnPath(), baseUri.ToString().ToSvnPath());
         }

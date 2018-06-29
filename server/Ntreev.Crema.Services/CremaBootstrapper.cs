@@ -46,10 +46,10 @@ namespace Ntreev.Crema.Services
             this.Initialize();
         }
 
-        public static void CreateRepository(IServiceProvider serviceProvider, string basePath, string repositoryModule, string fileType)
+        public static void CreateRepository(IServiceProvider serviceProvider, string basePath, string repositoryModule, string fileType, string databasesUrl, string usersUrl)
         {
-            var repositoryProvider = GetRepositoryProvider(serviceProvider, repositoryModule);
-            var serializer = GetSerializer(serviceProvider, fileType);
+            var repositoryProvider = GetRepositoryProvider(serviceProvider, repositoryModule ?? "svn");
+            var serializer = GetSerializer(serviceProvider, fileType ?? "xml");
 
             var tempPath = PathUtility.GetTempPath(true);
             var repositoryPath = DirectoryUtility.Prepare(basePath, CremaString.Repository);
@@ -58,7 +58,7 @@ namespace Ntreev.Crema.Services
                 Attributes = FileAttributes.Directory | FileAttributes.Hidden
             };
 
-            var usersRepo = DirectoryUtility.Prepare(repositoryPath, CremaString.Users);
+            var usersRepo = usersUrl ?? DirectoryUtility.Prepare(repositoryPath, CremaString.Users);
             var usersPath = DirectoryUtility.Prepare(tempPath, CremaString.Users);
             var dataSet = new CremaDataSet();
 
@@ -136,8 +136,9 @@ namespace Ntreev.Crema.Services
             if (dataBaseNames.Length > 0)
                 items = items.Intersect(dataBaseNames).ToArray();
 
-            foreach (var item in items)
+            for (var i = 0; i < items.Length; i++)
             {
+                var item = items[i];
                 var tempPath = Path.Combine(upgradePath, item);
                 var repositorySettings = new RepositorySettings()
                 {
@@ -146,15 +147,23 @@ namespace Ntreev.Crema.Services
                     WorkingPath = tempPath,
                     LogService = logService,
                 };
-                if (UpgradeRepository(repositoryProvider, serializer, repositorySettings) == true)
+                try
                 {
-                    logService.Info("upgraded: {0}", item);
+                    if (UpgradeRepository(repositoryProvider, serializer, repositorySettings) == true)
+                    {
+                        logService.Info($"[{i}/{items.Length}]{item}: upgraded");
+                    }
+                    else
+                    {
+                        logService.Info($"[{i}/{items.Length}]{item}: skip");
+                    }
+                    DirectoryUtility.Delete(tempPath);
                 }
-                else
+                catch (Exception e)
                 {
-                    logService.Info("skip: {0}", item);
+                    logService.Error(e);
+                    logService.Info($"[{i}/{items.Length}]{item}: fail");
                 }
-                DirectoryUtility.Delete(tempPath);
             }
         }
 

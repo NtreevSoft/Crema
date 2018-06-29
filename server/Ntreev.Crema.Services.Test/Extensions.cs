@@ -43,7 +43,7 @@ namespace Ntreev.Crema.Services.Test
         {
 #if SERVER
             var repositoryPath = DirectoryUtility.Prepare(context.TestRunDirectory + "_repo", name);
-            CremaBootstrapper.CreateRepository(boot, repositoryPath, "svn", "xml");
+            CremaBootstrapper.CreateRepository(boot, repositoryPath, "svn", "xml", null, null);
             boot.MultiThreading = true;
             boot.BasePath = repositoryPath;
 #endif

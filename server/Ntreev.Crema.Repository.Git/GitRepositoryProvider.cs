@@ -36,7 +36,6 @@ namespace Ntreev.Crema.Repository.Git
     class GitRepositoryProvider : IRepositoryProvider
     {
         public const string keepExtension = ".keep";
-        //private const string emptyBranch = "__empty__";
         private const string commentHeader = "# revision properties";
 
         private static readonly Serializer propertySerializer = new SerializerBuilder().Build();
