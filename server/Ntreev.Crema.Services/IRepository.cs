@@ -34,13 +34,13 @@ namespace Ntreev.Crema.Services
 
         void Copy(string srcPath, string toPath);
 
-        void Commit(string comment, params LogPropertyInfo[] properties);
+        void Commit(string author, string comment, params LogPropertyInfo[] properties);
 
         void Revert();
 
         void Revert(string revision);
 
-        void BeginTransaction(string name);
+        void BeginTransaction(string author, string name);
 
         void EndTransaction();
 

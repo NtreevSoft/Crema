@@ -46,34 +46,44 @@ namespace Ntreev.Crema.Services
             this.Initialize();
         }
 
-        public static void CreateRepository(IServiceProvider serviceProvider, string basePath, string repositoryModule, string fileType, string databasesUrl, string usersUrl)
+        public static void CreateRepository(IServiceProvider serviceProvider, string basePath, string repositoryModule, string fileType, bool force)
         {
-            var repositoryProvider = GetRepositoryProvider(serviceProvider, repositoryModule ?? "svn");
-            var serializer = GetSerializer(serviceProvider, fileType ?? "xml");
+            ValidateCreateRepository(serviceProvider, basePath, repositoryModule, fileType, force);
+            var repositoryProvider = GetRepositoryProvider(serviceProvider, repositoryModule);
+            var serializer = GetSerializer(serviceProvider, fileType);
 
             var tempPath = PathUtility.GetTempPath(true);
-            var repositoryPath = DirectoryUtility.Prepare(basePath, CremaString.Repository);
-            var repositoryPathInfo = new DirectoryInfo(repositoryPath)
+            var repositoryPath = Path.Combine(basePath, CremaString.Repository);
+
+            DirectoryUtility.Backup(repositoryPath);
+            try
             {
-                Attributes = FileAttributes.Directory | FileAttributes.Hidden
-            };
+                var usersRepo = DirectoryUtility.Prepare(repositoryPath, CremaString.Users);
+                var usersPath = DirectoryUtility.Prepare(tempPath, CremaString.Users);
+                var dataBasesRepo = DirectoryUtility.Prepare(repositoryPath, CremaString.DataBases);
+                var dataBasesPath = DirectoryUtility.Prepare(tempPath, CremaString.DataBases);
+                var dataSet = new CremaDataSet();
 
-            var usersRepo = usersUrl ?? DirectoryUtility.Prepare(repositoryPath, CremaString.Users);
-            var usersPath = DirectoryUtility.Prepare(tempPath, CremaString.Users);
-            var dataSet = new CremaDataSet();
+                UserContext.GenerateDefaultUserInfos(usersPath, serializer);
+                repositoryProvider.InitializeRepository(usersRepo, usersPath);
 
-            UserContext.GenerateDefaultUserInfos(usersPath, serializer);
-            repositoryProvider.InitializeRepository(usersRepo, usersPath);
+                dataSet.WriteToDirectory(dataBasesPath);
+                FileUtility.WriteAllText($"{CremaSchema.MajorVersion}.{CremaSchema.MinorVersion}", dataBasesPath, ".version");
+                repositoryProvider.InitializeRepository(dataBasesRepo, dataBasesPath);
 
-            var dataBasesRepo = DirectoryUtility.Prepare(repositoryPath, CremaString.DataBases);
-            var dataBasesPath = DirectoryUtility.Prepare(tempPath, CremaString.DataBases);
-            dataSet.WriteToDirectory(dataBasesPath);
-            repositoryProvider.InitializeRepository(dataBasesRepo, dataBasesPath);
+                var repoModulePath = FileUtility.WriteAllText(repositoryProvider.Name, repositoryPath, CremaString.Repo);
+                var fileTypePath = FileUtility.WriteAllText(serializer.Name, repositoryPath, CremaString.File);
 
-            var repoModulePath = FileUtility.WriteAllText(repositoryProvider.Name, repositoryPath, CremaString.Repo);
-            new FileInfo(repoModulePath).Attributes |= FileAttributes.ReadOnly;
-            var fileTypePath = FileUtility.WriteAllText(serializer.Name, repositoryPath, CremaString.File);
-            new FileInfo(fileTypePath).Attributes |= FileAttributes.ReadOnly;
+                FileUtility.SetReadOnly(repoModulePath, true);
+                FileUtility.SetReadOnly(fileTypePath, true);
+                DirectoryUtility.SetVisible(repositoryPath, false);
+                DirectoryUtility.Clean(repositoryPath);
+            }
+            catch
+            {
+                DirectoryUtility.Restore(repositoryPath);
+                throw;
+            }
         }
 
         public static void ValidateRepository(IServiceProvider serviceProvider, string basePath, params string[] dataBaseNames)
@@ -125,10 +135,7 @@ namespace Ntreev.Crema.Services
             var repositoryProvider = GetRepositoryProvider(serviceProvider, repositoryModule);
             var serializer = GetSerializer(serviceProvider, fileType);
             var upgradePath = Path.Combine(basePath, "upgrade");
-            var logService = new LogServiceHost("upgrade", upgradePath, true)
-            {
-                Verbose = LogVerbose.Info,
-            };
+            var logService = new LogServiceHost("upgrade", upgradePath, true) { Verbose = LogVerbose.Info, };
 
             var repositoryPath = CremaHost.GetPath(basePath, CremaPath.RepositoryDataBases);
             var items = repositoryProvider.GetRepositories(repositoryPath);
@@ -389,7 +396,7 @@ namespace Ntreev.Crema.Services
         internal static IObjectSerializer GetSerializer(IServiceProvider serviceProvider, string fileType)
         {
             var serializers = serviceProvider.GetService(typeof(IEnumerable<IObjectSerializer>)) as IEnumerable<IObjectSerializer>;
-            var serializer = serializers.FirstOrDefault(item => item.Name == fileType);
+            var serializer = serializers.FirstOrDefault(item => item.Name == (fileType ?? "xml"));
             if (serializer == null)
                 throw new InvalidOperationException("no serializer");
             return serializer;
@@ -398,7 +405,7 @@ namespace Ntreev.Crema.Services
         internal static IRepositoryProvider GetRepositoryProvider(IServiceProvider serviceProvider, string repositoryModule)
         {
             var repositoryProviders = serviceProvider.GetService(typeof(IEnumerable<IRepositoryProvider>)) as IEnumerable<IRepositoryProvider>;
-            var repositoryProvider = repositoryProviders.FirstOrDefault(item => item.Name == repositoryModule);
+            var repositoryProvider = repositoryProviders.FirstOrDefault(item => item.Name == (repositoryModule ?? "svn"));
             if (repositoryProvider == null)
                 throw new InvalidOperationException(Resources.Exception_NoRepositoryModule);
             return repositoryProvider;
@@ -418,6 +425,24 @@ namespace Ntreev.Crema.Services
             CremaLog.Debug("Initialize.");
             this.OnInitialize();
             CremaLog.Debug("Initialized.");
+        }
+
+        private static void ValidateCreateRepository(IServiceProvider serviceProvider, string basePath, string repositoryModule, string fileType, bool force)
+        {
+            if (serviceProvider == null)
+                throw new ArgumentNullException(nameof(serviceProvider));
+            if (basePath == null)
+                throw new ArgumentNullException(nameof(basePath));
+
+            var directoryInfo = new DirectoryInfo(basePath);
+            if (directoryInfo.Exists == false && force == true)
+            {
+                DirectoryUtility.Create(directoryInfo.FullName);
+            }
+            if (DirectoryUtility.IsEmpty(directoryInfo.FullName) == false && force == false)
+            {
+                throw new ArgumentException("Path is not an empty directory.", nameof(basePath));
+            }
         }
 
         private static bool UpgradeRepository(IRepositoryProvider repositoryProvider, IObjectSerializer serializer, RepositorySettings settings)
@@ -443,7 +468,7 @@ namespace Ntreev.Crema.Services
                         repository.Add(item.Path);
                     }
                 }
-                repository.Commit($"upgrade: {CremaSchema.MajorVersion}.{CremaSchema.MinorVersion}");
+                repository.Commit(Authentication.SystemID, $"upgrade: {CremaSchema.MajorVersion}.{CremaSchema.MinorVersion}");
                 repository.Dispose();
                 return true;
             }

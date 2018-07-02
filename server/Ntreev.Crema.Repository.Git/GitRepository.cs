@@ -67,7 +67,7 @@ namespace Ntreev.Crema.Repository.Git
         {
             if (DirectoryUtility.IsDirectory(path) == true)
             {
-                var keepPath = Path.Combine(path, GitRepositoryProvider.keepExtension);
+                var keepPath = Path.Combine(path, GitRepositoryProvider.KeepExtension);
                 if (File.Exists(keepPath) == false)
                 {
                     File.WriteAllText(keepPath, string.Empty);
@@ -80,7 +80,7 @@ namespace Ntreev.Crema.Repository.Git
             }
         }
 
-        public void BeginTransaction(string name)
+        public void BeginTransaction(string author, string name)
         {
             throw new NotImplementedException();
         }
@@ -90,7 +90,7 @@ namespace Ntreev.Crema.Repository.Git
             throw new NotImplementedException();
         }
 
-        public void Commit(string comment, params LogPropertyInfo[] properties)
+        public void Commit(string author, string comment, params LogPropertyInfo[] properties)
         {
             var commentMessage = this.repositoryProvider.GenerateComment(comment, properties);
             //if (this.transactions.ContainsKey(path) == true)

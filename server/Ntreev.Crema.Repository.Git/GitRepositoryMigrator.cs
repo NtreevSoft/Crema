@@ -37,7 +37,7 @@ namespace Ntreev.Crema.Repository.Git
                 repositoryUri = Regex.Replace(repositoryUri, "(file:///\\w):(.+)", "$1$2");
             }
 
-            this.Run("svn clone", repositoryUri, repositoryPath2.WrapQuot(), "--stdlayout");
+            this.Run("svn clone", repositoryUri, repositoryPath2.WrapQuot(), "-T trunk -b branches -b tags");
 
             var branches = GitBranchCollection.GetRemoteBranches(repositoryPath2);
             var b = GitBranchCollection.Run(repositoryPath2);

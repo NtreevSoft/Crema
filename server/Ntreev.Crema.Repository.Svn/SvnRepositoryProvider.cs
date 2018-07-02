@@ -82,7 +82,7 @@ namespace Ntreev.Crema.Repository.Svn
             var branchesPath = DirectoryUtility.Prepare(tempPath, SvnString.Branches);
             var trunkPath = DirectoryUtility.Prepare(tempPath, SvnString.Trunk);
 
-            if (basePath.StartsWith("file://") == true)
+            if (baseUri.Scheme == Uri.UriSchemeFile)
             {
                 SvnServerHost.Run("create", basePath.ToSvnPath(), "--fs-type", "fsfs");
             }
@@ -218,15 +218,15 @@ namespace Ntreev.Crema.Repository.Svn
             {
                 ID = GuidUtility.FromName(repositoryName + branchRevision),
                 Name = repositoryName,
-                Comment = latestLog.Comment,
+                Comment = branchLog.Comment,
                 Revision = latestLog.Revision,
-                BranchRevision = branchRevision,
-                BranchSource = branchSource,
-                BranchSourceRevision = branchSourceRevision,
+                //BranchRevision = branchRevision,
+                //BranchSource = branchSource,
+                //BranchSourceRevision = branchSourceRevision,
                 CreationInfo = new SignatureDate(branchUserID, branchLog.DateTime),
                 ModificationInfo = new SignatureDate(latestUserID, latestLog.DateTime),
             };
-            return repositoryInfo;
+             return repositoryInfo;
         }
 
         public string[] GetRepositoryItemList(string basePath, string repositoryName)
@@ -282,8 +282,11 @@ namespace Ntreev.Crema.Repository.Svn
             var sb = new StringBuilder();
             sb.AppendLine(comment);
             sb.AppendLine();
-            sb.AppendLine(commentHeader);
-            sb.Append(propText);
+            if (propText != string.Empty)
+            {
+                sb.AppendLine(commentHeader);
+                sb.Append(propText);
+            }
             return sb.ToString();
         }
 
@@ -313,6 +316,11 @@ namespace Ntreev.Crema.Repository.Svn
                     comment = string.Join(Environment.NewLine, lineList);
 
                     properties = propertyDeserializer.Deserialize<LogPropertyInfo[]>(propText);
+                }
+                else
+                {
+                    comment = null;
+                    properties = null;
                 }
             }
             catch

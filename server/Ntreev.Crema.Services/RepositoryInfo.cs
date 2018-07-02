@@ -46,14 +46,17 @@ namespace Ntreev.Crema.Services
         [DataMember]
         public string Revision { get; set; }
 
-        [DataMember]
-        public string BranchRevision { get; set; }
+        //// 복사된후 브랜치가 시작되는 지점
+        //[DataMember]
+        //public string BranchRevision { get; set; }
 
-        [DataMember]
-        public string BranchSource { get; set; }
+        //// svn 기준으로 이 브랜치가 복사된 시점의 브랜치 이름(다시 말해 어떤 브랜치에서 복사가 되었는지)
+        //[DataMember]
+        //public string BranchSource { get; set; }
 
-        [DataMember]
-        public string BranchSourceRevision { get; set; }
+        //// 복사된 소스 브랜치의 리비전
+        //[DataMember]
+        //public string BranchSourceRevision { get; set; }
 
         [DataMember]
         public SignatureDate CreationInfo { get; set; }
@@ -69,9 +72,9 @@ namespace Ntreev.Crema.Services
                 { nameof(this.Name), this.Name },
                 { nameof(this.Comment), this.Comment },
                 { nameof(this.Revision), this.Revision },
-                { nameof(this.BranchRevision), this.BranchRevision},
-                { nameof(this.BranchSource), this.BranchSource },
-                { nameof(this.BranchSourceRevision), this.BranchSourceRevision},
+                //{ nameof(this.BranchRevision), this.BranchRevision},
+                //{ nameof(this.BranchSource), this.BranchSource },
+                //{ nameof(this.BranchSourceRevision), this.BranchSourceRevision},
                 { nameof(CremaSchema.Creator), this.CreationInfo.ID },
                 { nameof(CremaSchema.CreatedDateTime), this.CreationInfo.DateTime },
                 { nameof(CremaSchema.Modifier), this.ModificationInfo.ID },
@@ -84,7 +87,7 @@ namespace Ntreev.Crema.Services
         {
             Name = string.Empty,
             Comment = string.Empty,
-            BranchSource = string.Empty,
+            //BranchSource = string.Empty,
             CreationInfo = SignatureDate.Empty,
             ModificationInfo = SignatureDate.Empty,
         };

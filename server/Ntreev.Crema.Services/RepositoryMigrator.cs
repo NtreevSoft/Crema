@@ -14,10 +14,10 @@ namespace Ntreev.Crema.Services
     class RepositoryMigrator
     {
         private const string nameString = "svn";
-        private const string trunkString = "trunk";
-        private const string tagsString = "tags";
-        private const string branchesString = "branches";
-        private const string defaultString = "default";
+        //private const string trunkString = "trunk";
+        //private const string tagsString = "tags";
+        //private const string branchesString = "branches";
+        //private const string defaultString = "default";
 
         private readonly string basePath;
         private readonly string repositoryPath;
@@ -148,8 +148,8 @@ namespace Ntreev.Crema.Services
             this.logService.Info($" - copy databases repository");
             DirectoryUtility.Copy(this.sourceRootUrl.LocalPath, dataBasesPath);
             this.logService.Info($" - relocate databases repository");
-            this.PrepareBranches(dataBasesPath);
-            this.MoveTagsToBranches(dataBasesPath);
+            //this.PrepareBranches(dataBasesPath);
+            //this.MoveTagsToBranches(dataBasesPath);
 
             this.logService.Info($" - migrate databases repository");
             var dataBaseUrl = UriUtility.Combine(new Uri(dataBasesPath), this.sourceRelativeUrl);
@@ -180,51 +180,51 @@ namespace Ntreev.Crema.Services
             }
         }
 
-        private void MoveTagsToBranches(string dataBasesPath)
-        {
-            var dataBaseUrl = UriUtility.Combine(new Uri(dataBasesPath), this.sourceRelativeUrl);
-            var tagsUrl = UriUtility.Combine(dataBaseUrl, tagsString);
-            var branchesUri = UriUtility.Combine(dataBaseUrl, branchesString);
-            var text = this.Run($"list \"{tagsUrl}\"");
-            var list = this.GetLines(text);
+        //private void MoveTagsToBranches(string dataBasesPath)
+        //{
+        //    //var propText = string.Join(" ", properties.Select(item => $"--with-revprop \"{propertyPrefix}{item.Key}={item.Value}\""));
+        //    var dataBaseUrl = UriUtility.Combine(new Uri(dataBasesPath), this.sourceRelativeUrl);
+        //    var tagsUrl = UriUtility.Combine(dataBaseUrl, tagsString);
+        //    var branchesUri = UriUtility.Combine(dataBaseUrl, branchesString);
+        //    var text = this.Run($"list \"{tagsUrl}\"");
+        //    var list = this.GetLines(text);
 
-            foreach (var item in list)
-            {
-                if (item.EndsWith(PathUtility.Separator) == true)
-                {
-                    var name = item.Remove(item.Length - PathUtility.Separator.Length);
+        //    foreach (var item in list)
+        //    {
+        //        if (item.EndsWith(PathUtility.Separator) == true)
+        //        {
+        //            var name = item.Remove(item.Length - PathUtility.Separator.Length);
+        //            var sourceUri = UriUtility.Combine(tagsUrl, name);
+        //            var destUri = UriUtility.Combine(branchesUri, name);
 
-                    var sourceUri = UriUtility.Combine(tagsUrl, name);
-                    var destUri = UriUtility.Combine(branchesUri, name);
+        //            this.Run($"mv \"{sourceUri}\" \"{destUri}\" -m \"Migrate: move {name} from tags to branches\"");
+        //        }
+        //    }
+        //}
 
-                    this.Run($"mv \"{sourceUri}\" \"{destUri}\" -m \"Migrate: move {name} from tags to branches\"");
-                }
-            }
-        }
+        //private void PrepareBranches(string dataBasesPath)
+        //{
+        //    var dataBaseUrl = UriUtility.Combine(new Uri(dataBasesPath), this.sourceRelativeUrl);
+        //    var text = this.Run($"list \"{dataBaseUrl}\"");
+        //    var list = this.GetLines(text);
+        //    if (list.Contains($"{branchesString}{PathUtility.Separator}") == false)
+        //    {
+        //        var branchesUrl = UriUtility.Combine(dataBaseUrl, branchesString);
+        //        this.Run($"mkdir \"{branchesUrl}\" -m \"Migrate: create branches\"");
+        //    }
+        //}
 
-        private void PrepareBranches(string dataBasesPath)
-        {
-            var dataBaseUrl = UriUtility.Combine(new Uri(dataBasesPath), this.sourceRelativeUrl);
-            var text = this.Run($"list \"{dataBaseUrl}\"");
-            var list = this.GetLines(text);
-            if (list.Contains($"{branchesString}{PathUtility.Separator}") == false)
-            {
-                var branchesUrl = UriUtility.Combine(dataBaseUrl, branchesString);
-                this.Run($"mkdir \"{branchesUrl}\" -m \"Migrate: create branches\"");
-            }
-        }
-
-        private string[] GetLines(string text)
-        {
-            var sr = new StringReader(text);
-            var line = null as string;
-            var lineList = new List<string>();
-            while ((line = sr.ReadLine()) != null)
-            {
-                lineList.Add(line);
-            }
-            return lineList.ToArray();
-        }
+        //private string[] GetLines(string text)
+        //{
+        //    var sr = new StringReader(text);
+        //    var line = null as string;
+        //    var lineList = new List<string>();
+        //    while ((line = sr.ReadLine()) != null)
+        //    {
+        //        lineList.Add(line);
+        //    }
+        //    return lineList.ToArray();
+        //}
 
         private string Run(params object[] args)
         {

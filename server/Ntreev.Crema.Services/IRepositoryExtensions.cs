@@ -40,7 +40,7 @@ namespace Ntreev.Crema.Services
             };
             props.AddRange(properties ?? Enumerable.Empty<LogPropertyInfo>());
 
-            repository.Commit(comment, props.ToArray());
+            repository.Commit(authentication.ID, comment, props.ToArray());
         }
     }
 }

@@ -119,11 +119,11 @@ namespace Ntreev.Crema.Services
             });
         }
 
-        public void BeginTransaction(string name)
+        public void BeginTransaction(string author, string name)
         {
             this.Dispatcher.Invoke(() =>
             {
-                this.Repository.BeginTransaction(name);
+                this.Repository.BeginTransaction(author, name);
             });
         }
 
@@ -164,7 +164,7 @@ namespace Ntreev.Crema.Services
             if (properties != null)
                 propList.AddRange(properties);
 
-            this.Dispatcher.Invoke(() => this.Repository.Commit(comment, propList.ToArray()));
+            this.Dispatcher.Invoke(() => this.Repository.Commit(authentication.ID, comment, propList.ToArray()));
 
             this.OnChanged(EventArgs.Empty);
         }

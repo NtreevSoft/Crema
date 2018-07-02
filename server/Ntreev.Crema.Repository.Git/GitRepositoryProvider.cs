@@ -35,18 +35,16 @@ namespace Ntreev.Crema.Repository.Git
     [Export(typeof(IRepositoryProvider))]
     class GitRepositoryProvider : IRepositoryProvider
     {
-        public const string keepExtension = ".keep";
+        public const string KeepExtension = ".keep";
         private const string commentHeader = "# revision properties";
 
         private static readonly Serializer propertySerializer = new SerializerBuilder().Build();
         private static readonly Deserializer propertyDeserializer = new Deserializer();
 
+        private readonly Dictionary<Uri, string> cacheRepositories = new Dictionary<Uri, string>();
+
         [Import]
         private Lazy<ICremaHost> cremaHost = null;
-
-        public string Name => "git";
-
-        private readonly Dictionary<Uri, string> cacheRepositories = new Dictionary<Uri, string>();
 
         public void CopyRepository(string basePath, string repositoryName, string newRepositoryName, string comment, params LogPropertyInfo[] properties)
         {
@@ -84,7 +82,7 @@ namespace Ntreev.Crema.Repository.Git
 
             foreach (var item in GetEmptyDirectories(repositoryPath))
             {
-                File.WriteAllText(Path.Combine(item, keepExtension), string.Empty);
+                File.WriteAllText(Path.Combine(item, KeepExtension), string.Empty);
             }
 
             var query = from item in DirectoryUtility.GetAllFiles(repositoryPath, "*", true)
@@ -167,13 +165,7 @@ namespace Ntreev.Crema.Repository.Git
             }
             catch
             {
-                var info = new GitBranchDescription()
-                {
-                    ID = Guid.NewGuid(),
-                };
-                var props = propertySerializer.Serialize(info);
-                GitHost.Run(repositoryPath, "config", $"branch.{repositoryName}.description", props.ToGitPath());
-                repositoryInfo.ID = info.ID;
+                this.SetID(repositoryPath, repositoryName, Guid.NewGuid());
             }
 
             return repositoryInfo;
@@ -189,9 +181,9 @@ namespace Ntreev.Crema.Repository.Git
 
             foreach (var item in lines)
             {
-                if (item.EndsWith(keepExtension) == true)
+                if (item.EndsWith(KeepExtension) == true)
                 {
-                    itemList.Add(PathUtility.Separator + item.Substring(0, item.Length - keepExtension.Length));
+                    itemList.Add(PathUtility.Separator + item.Substring(0, item.Length - KeepExtension.Length));
                 }
                 else
                 {
@@ -214,7 +206,7 @@ namespace Ntreev.Crema.Repository.Git
 
             foreach (var item in GetEmptyDirectories(basePath))
             {
-                File.WriteAllText(Path.Combine(item, keepExtension), string.Empty);
+                File.WriteAllText(Path.Combine(item, KeepExtension), string.Empty);
             }
 
             var query = from item in DirectoryUtility.GetAllFiles(basePath, "*", true)
@@ -227,6 +219,8 @@ namespace Ntreev.Crema.Repository.Git
             argList.AddRange(query);
             GitHost.Run(basePath, argList.ToArray());
             GitHost.Run(basePath, "commit -m \"first commit\"");
+
+            this.SetID(basePath, "master", Guid.NewGuid());
         }
 
         public void RenameRepository(string basePath, string repositoryName, string newRepositoryName, string comment, params LogPropertyInfo[] properties)
@@ -235,28 +229,6 @@ namespace Ntreev.Crema.Repository.Git
             var repositoryPath = baseUri.LocalPath;
             GitHost.Run(repositoryPath, "branch -m", repositoryName, newRepositoryName);
         }
-
-        private string[] GetEmptyDirectories(string path)
-        {
-            var items = DirectoryUtility.GetAllDirectories(path, "*", true);
-            var itemList = new List<string>(items.Length);
-            foreach (var item in items)
-            {
-                if (Directory.GetFiles(item).Length == 0)
-                {
-                    itemList.Add(item);
-                }
-            }
-            return itemList.ToArray();
-        }
-
-        private void CheckoutBranch(string repositoryPath, string branchName)
-        {
-            GitHost.Run(repositoryPath, "reset --hard");
-            GitHost.Run(repositoryPath, "checkout", branchName);
-        }
-
-        private ICremaHost CremaHost => this.cremaHost.Value;
 
         public string GenerateComment(string comment, params LogPropertyInfo[] properties)
         {
@@ -303,5 +275,39 @@ namespace Ntreev.Crema.Repository.Git
                 properties = null;
             }
         }
+
+        public string Name => "git";
+
+        private void SetID(string repositoryPath, string repositoryName, Guid guid)
+        {
+            var info = new GitBranchDescription()
+            {
+                ID = guid,
+            };
+            var props = propertySerializer.Serialize(info);
+            GitHost.Run(repositoryPath, "config", $"branch.{repositoryName}.description", props.ToGitPath());
+        }
+
+        private string[] GetEmptyDirectories(string path)
+        {
+            var items = DirectoryUtility.GetAllDirectories(path, "*", true);
+            var itemList = new List<string>(items.Length);
+            foreach (var item in items)
+            {
+                if (Directory.GetFiles(item).Length == 0)
+                {
+                    itemList.Add(item);
+                }
+            }
+            return itemList.ToArray();
+        }
+
+        private void CheckoutBranch(string repositoryPath, string branchName)
+        {
+            GitHost.Run(repositoryPath, "reset --hard");
+            GitHost.Run(repositoryPath, "checkout", branchName);
+        }
+
+        private ICremaHost CremaHost => this.cremaHost.Value;
     }
 }

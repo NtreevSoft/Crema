@@ -1268,9 +1268,9 @@ namespace Ntreev.Crema.Services.Data
                     Name = repositoryInfo.Name,
                     Revision = repositoryInfo.Revision,
                     Comment = repositoryInfo.Comment,
-                    BranchRevision = repositoryInfo.BranchRevision,
-                    BranchSource = repositoryInfo.BranchSource,
-                    BranchSourceRevision = repositoryInfo.BranchSourceRevision,
+                    //BranchRevision = repositoryInfo.BranchRevision,
+                    //BranchSource = repositoryInfo.BranchSource,
+                    //BranchSourceRevision = repositoryInfo.BranchSourceRevision,
                     CreationInfo = repositoryInfo.CreationInfo,
                     ModificationInfo = repositoryInfo.ModificationInfo,
                 };

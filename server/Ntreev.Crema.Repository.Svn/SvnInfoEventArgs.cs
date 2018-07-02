@@ -59,7 +59,6 @@ namespace Ntreev.Crema.Repository.Svn
                 var doc = XDocument.Load(sr);
                 var obj = new SvnInfoEventArgs()
                 {
-
                     Path = doc.XPathSelectElement("/info/entry").Attribute("path").Value,
                     RepositoryRoot = new Uri(doc.XPathSelectElement("/info/entry/repository/root").Value + "/"),
                     Revision = doc.XPathSelectElement("/info/entry").Attribute("revision").Value,

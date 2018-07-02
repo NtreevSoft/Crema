@@ -40,8 +40,9 @@ namespace Ntreev.Crema.Repository.Svn
         private readonly string transactionPath;
         private readonly SvnRepositoryProvider repositoryProvider;
         private readonly ILogService logService;
-        private readonly Dictionary<string, string> transactions = new Dictionary<string, string>();
-        private readonly Dictionary<string, string> transactionMessages = new Dictionary<string, string>();
+        private readonly string transactionAuthor;
+        private readonly string transactionName;
+        private readonly string transactionMessages;
         private bool needToUpdate;
         private Uri repositoryRoot;
         private Uri repositoryUri;
@@ -73,10 +74,7 @@ namespace Ntreev.Crema.Repository.Svn
             this.repositoryUri = info.Uri;
         }
 
-        public string Name
-        {
-            get { return "svn"; }
-        }
+        public string Name => "svn";
 
         public RepositoryInfo RepositoryInfo => this.repositoryInfo;
 
@@ -87,19 +85,19 @@ namespace Ntreev.Crema.Repository.Svn
             this.Run("add", "--depth files", path.ToSvnPath());
         }
 
-        public void BeginTransaction(string name)
+        public void BeginTransaction(string author, string name)
         {
             this.logService?.Debug("repository begin transaction \"{0}\" \"{1}\"", this.repositoryPath, name);
-            this.transactions.Add(this.repositoryPath, name);
+            this.transactionName.Add(this.repositoryPath, name);
             this.transactionMessages.Add(this.repositoryPath, string.Empty);
         }
 
         public void EndTransaction()
         {
             this.logService?.Debug("repository end transaction \"{0}\"", this.repositoryPath);
-            var patchPath = Path.Combine(this.transactionPath, this.transactions[this.repositoryPath] + patchExtension);
+            var patchPath = Path.Combine(this.transactionPath, this.transactionName[this.repositoryPath] + patchExtension);
             var message = this.transactionMessages[this.repositoryPath];
-            this.transactions.Remove(this.repositoryPath);
+            this.transactionName.Remove(this.repositoryPath);
             this.transactionMessages.Remove(this.repositoryPath);
             if (File.Exists(patchPath) == true)
             {
@@ -112,19 +110,19 @@ namespace Ntreev.Crema.Repository.Svn
         public void CancelTransaction()
         {
             this.logService?.Debug("repository cancel transaction \"{0}\"", this.repositoryPath);
-            var patchPath = Path.Combine(this.transactionPath, this.transactions[this.repositoryPath] + patchExtension);
-            this.transactions.Remove(this.repositoryPath);
+            var patchPath = Path.Combine(this.transactionPath, this.transactionName[this.repositoryPath] + patchExtension);
+            this.transactionName.Remove(this.repositoryPath);
             this.transactionMessages.Remove(this.repositoryPath);
             SvnClientHost.Run("revert", this.repositoryPath.ToSvnPath(), "-R");
             FileUtility.Delete(patchPath);
         }
 
-        public void Commit(string comment, params LogPropertyInfo[] properties)
+        public void Commit(string author, string comment, params LogPropertyInfo[] properties)
         {
             var commentMessage = this.repositoryProvider.GenerateComment(comment, properties);
-            if (this.transactions.ContainsKey(this.repositoryPath) == true)
+            if (this.transactionName.ContainsKey(this.repositoryPath) == true)
             {
-                var patchPath = Path.Combine(this.transactionPath, this.transactions[this.repositoryPath] + ".patch");
+                var patchPath = Path.Combine(this.transactionPath, this.transactionName[this.repositoryPath] + ".patch");
                 var text = this.Run("diff", this.repositoryPath.ToSvnPath(), "--patch-compatible");
                 FileUtility.WriteAllText(text, Encoding.UTF8, patchPath);
                 this.transactionMessages[this.repositoryPath] = this.transactionMessages[this.repositoryPath] + comment + Environment.NewLine;
@@ -139,13 +137,13 @@ namespace Ntreev.Crema.Repository.Svn
                     this.Run("update", this.repositoryPath.ToSvnPath());
 
                 File.WriteAllText(commentPath, commentMessage, Encoding.UTF8);
-                result = this.Run("commit", this.repositoryPath.ToSvnPath(), "--file", $"\"{commentPath}\"", "--encoding UTF-8");
+                result = this.Run("commit", this.repositoryPath.ToSvnPath(), "--file", $"\"{commentPath}\"", "--encoding UTF-8", "--username", author);
             }
             catch (Exception e)
             {
                 this.logService?.Warn(e);
                 this.Run("update", this.repositoryPath.ToSvnPath());
-                result = this.Run("commit", this.repositoryPath.ToSvnPath(), "--file", $"\"{commentPath}\"", "--encoding UTF-8");
+                result = this.Run("commit", this.repositoryPath.ToSvnPath(), "--file", $"\"{commentPath}\"", "--encoding UTF-8", "--username", author);
             }
             finally
             {
