@@ -63,36 +63,71 @@ namespace Ntreev.Crema.Repository.Svn
 
         public static SvnLogEventArgs[] Run(string path, string revision)
         {
-            var text = SvnClientHost.Run("log", path.ToSvnPath(), "-r", $"head:{revision}", "--xml", "-v");
-            return SvnLogEventArgs.Read(text);
+            var logCommand = new SvnCommand("log")
+            {
+                (SvnPath)path,
+                SvnCommandItem.FromRevision($"head:{revision}"),
+                SvnCommandItem.Xml,
+                SvnCommandItem.Verbose,
+            };
+            return SvnLogEventArgs.Read(logCommand.Run());
         }
 
         public static SvnLogEventArgs[] Run(string path, string revision, int count)
         {
-            var text = SvnClientHost.Run("log", path.ToSvnPath(), "-r", $"{revision ?? "head"}:1", "--xml", "-v", "-l", count, "--with-all-revprops");
-            return SvnLogEventArgs.Read(text);
+            var logCommand = new SvnCommand("log")
+            {
+                (SvnPath)path,
+                SvnCommandItem.FromRevision($"{revision ?? "head"}:1"),
+                SvnCommandItem.Xml,
+                SvnCommandItem.Verbose,
+                new SvnCommandItem('l', count),
+                new SvnCommandItem("with-all-revprops"),
+            };
+            return SvnLogEventArgs.Read(logCommand.Run());
+        }
+
+        public static SvnLogEventArgs[] Run(string path, string minRevision, string maxRevision, int count)
+        {
+            var logCommand = new SvnCommand("log")
+            {
+                (SvnPath)path,
+                SvnCommandItem.FromRevision($"{maxRevision}:{minRevision}"),
+                SvnCommandItem.Xml,
+                SvnCommandItem.Verbose,
+                new SvnCommandItem('l', count),
+                new SvnCommandItem("with-all-revprops"),
+            };
+            return SvnLogEventArgs.Read(logCommand.Run());
         }
 
         public static SvnLogEventArgs[] Run(string[] paths, string revision, int count)
         {
-            var argList = new List<object>()
+            var logCommand = new SvnCommand("log")
             {
-                "log", "-r", $"{revision ?? "head"}:1", "--xml", "-v", "-l", count, "--with-all-revprops"
+                SvnCommandItem.FromRevision($"{revision ?? "head"}:1"),
+                SvnCommandItem.Xml,
+                SvnCommandItem.Verbose,
+                new SvnCommandItem('l', count),
+                new SvnCommandItem("with-all-revprops"),
             };
             foreach (var item in paths)
             {
-                argList.Add(item.ToSvnPath());
+                logCommand.Add((SvnPath)item);
             }
-            var text = SvnClientHost.Run(argList.ToArray());
-            return SvnLogEventArgs.Read(text);
+            return SvnLogEventArgs.Read(logCommand.Run());
         }
 
-        public static SvnLogEventArgs[] Runa(string path, string arguments)
+        public static SvnLogEventArgs[] RunForGetBranch(Uri uri)
         {
-            if (arguments.IndexOf("--xml") < 0)
-                arguments += " --xml";
-            var text = SvnClientHost.Run("log", path.ToSvnPath(), arguments);
-            return SvnLogEventArgs.Read(text);
+            var logCommand = new SvnCommand("log")
+            {
+                (SvnPath)uri,
+                SvnCommandItem.Xml,
+                SvnCommandItem.Verbose,
+                new SvnCommandItem("stop-on-copy")
+            };
+            return SvnLogEventArgs.Read(logCommand.Run());
         }
 
         public static explicit operator LogInfo(SvnLogEventArgs value)
@@ -136,7 +171,6 @@ namespace Ntreev.Crema.Repository.Svn
             var commentValue = element.XPathSelectElement("msg").Value;
             var comment = null as string;
             var props = null as LogPropertyInfo[];
-            SvnRepositoryProvider.ParseComment(commentValue, out comment, out props);
 
             var obj = new SvnLogEventArgs()
             {

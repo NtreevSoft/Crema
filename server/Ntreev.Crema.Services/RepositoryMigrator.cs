@@ -147,12 +147,9 @@ namespace Ntreev.Crema.Services
             var dataBasesPath = Path.Combine(this.repositoryPath, CremaString.DataBases);
             this.logService.Info($" - copy databases repository");
             DirectoryUtility.Copy(this.sourceRootUrl.LocalPath, dataBasesPath);
-            this.logService.Info($" - relocate databases repository");
-            //this.PrepareBranches(dataBasesPath);
-            //this.MoveTagsToBranches(dataBasesPath);
 
             this.logService.Info($" - migrate databases repository");
-            var dataBaseUrl = UriUtility.Combine(new Uri(dataBasesPath), this.sourceRelativeUrl);
+            var dataBaseUrl = this.sourceRelativeUrl == string.Empty ? new Uri(dataBasesPath) : UriUtility.Combine(new Uri(dataBasesPath), this.sourceRelativeUrl);
             var destPath = this.repositoryMigrator.Migrate(dataBaseUrl.ToString());
             if (destPath != null)
             {

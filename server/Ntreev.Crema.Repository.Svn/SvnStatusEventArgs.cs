@@ -39,16 +39,15 @@ namespace Ntreev.Crema.Repository.Svn
 
         public static SvnStatusEventArgs[] Run(params string[] paths)
         {
-            var argList = new List<object>()
+            var statusCommand = new SvnCommand("status")
             {
-                "status", "--xml",
+                SvnCommandItem.Xml
             };
             foreach (var item in paths)
             {
-                argList.Add(SvnPathUtility.ToSvnPath(item));
+                statusCommand.Add((SvnPath)item);
             }
-            var text = SvnClientHost.Run(argList.ToArray());
-            return Parse(text);
+            return Parse(statusCommand.Run());
         }
 
         public static SvnStatusEventArgs[] Parse(string text)

@@ -27,15 +27,15 @@ namespace Ntreev.Crema.Services
 {
     public interface IRepositoryProvider
     {
-        void InitializeRepository(string basePath, string repositoryPath);
+        void InitializeRepository(string basePath, string initPath);
 
-        void CreateRepository(string basePath, string initPath, string comment, params LogPropertyInfo[] properties);
+        void CreateRepository(string author, string basePath, string initPath, string comment, params LogPropertyInfo[] properties);
 
-        void CopyRepository(string basePath, string repositoryName, string newRepositoryName, string comment, params LogPropertyInfo[] properties);
+        void CopyRepository(string author, string basePath, string repositoryName, string newRepositoryName, string comment, params LogPropertyInfo[] properties);
 
-        void RenameRepository(string basePath, string repositoryName, string newRepositoryName, string comment, params LogPropertyInfo[] properties);
+        void RenameRepository(string author, string basePath, string repositoryName, string newRepositoryName, string comment, params LogPropertyInfo[] properties);
 
-        void DeleteRepository(string basePath, string repositoryName, string comment, params LogPropertyInfo[] properties);
+        void DeleteRepository(string author, string basePath, string repositoryName, string comment, params LogPropertyInfo[] properties);
 
         IRepository CreateInstance(RepositorySettings settings);
 

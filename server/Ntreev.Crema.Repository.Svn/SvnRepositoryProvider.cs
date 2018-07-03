@@ -40,9 +40,10 @@ namespace Ntreev.Crema.Repository.Svn
     [Export(typeof(IConfigurationPropertyProvider))]
     class SvnRepositoryProvider : IRepositoryProvider, IConfigurationPropertyProvider
     {
-        private const string commentHeader = "# revision properties";
-        private static readonly Serializer propertySerializer = new SerializerBuilder().Build();
-        private static readonly Deserializer propertyDeserializer = new Deserializer();
+        private const string propertyPrefix = "prop:";
+        //private const string commentHeader = "# revision properties";
+        //private static readonly Serializer propertySerializer = new SerializerBuilder().Build();
+        //private static readonly Deserializer propertyDeserializer = new Deserializer();
 
         [Import]
         private Lazy<ICremaHost> cremaHost = null;
@@ -63,11 +64,20 @@ namespace Ntreev.Crema.Repository.Svn
 
             if (Directory.Exists(settings.WorkingPath) == false)
             {
-                SvnClientHost.Run("checkout", url.ToString().ToSvnPath(), settings.WorkingPath.ToSvnPath());
+                var checkoutCommand = new SvnCommand("checkout")
+                {
+                    (SvnPath)url,
+                    (SvnPath)settings.WorkingPath,
+                };
+                checkoutCommand.Run();
             }
             else
             {
-                SvnClientHost.Run("update", settings.WorkingPath.ToSvnPath());
+                var updateCommand = new SvnCommand("update")
+                {
+                    (SvnPath)settings.WorkingPath,
+                };
+                updateCommand.Run();
             }
 
             var repositoryInfo = this.GetRepositoryInfo(settings.BasePath, repositoryName);
@@ -84,78 +94,86 @@ namespace Ntreev.Crema.Repository.Svn
 
             if (baseUri.Scheme == Uri.UriSchemeFile)
             {
-                SvnServerHost.Run("create", basePath.ToSvnPath(), "--fs-type", "fsfs");
-            }
-            DirectoryUtility.Copy(initPath, trunkPath);
-            SvnClientHost.Run("import", "-m", "first", tempPath.ToSvnPath(), baseUri.ToString().ToSvnPath());
-        }
-
-        public void CreateRepository(string basePath, string initPath, string comment, params LogPropertyInfo[] properties)
-        {
-            var commentPath = PathUtility.GetTempFileName();
-            var uri = $"\"{UriUtility.Combine(new Uri(basePath), SvnString.Branches)}\"";
-            try
-            {
-                File.WriteAllText(commentPath, this.GenerateComment(comment, properties));
-                SvnClientHost.Run("import", initPath, uri, "--file", $"\"{commentPath}\"", "--force");
-            }
-            finally
-            {
-                FileUtility.Delete(commentPath);
-            }
-        }
-
-        public void CopyRepository(string basePath, string repositoryName, string newRepositoryName, string comment, params LogPropertyInfo[] properties)
-        {
-            var commentPath = PathUtility.GetTempFileName();
-            var uri = $"\"{this.GetUrl(basePath, repositoryName)}\"";
-            var newUri = $"\"{this.GenerateUrl(basePath, newRepositoryName)}\"";
-            try
-            {
-                File.WriteAllText(commentPath, this.GenerateComment(comment, properties));
-                SvnClientHost.Run("copy", "--file", $"\"{commentPath}\"", uri, newUri);
-            }
-            finally
-            {
-                FileUtility.Delete(commentPath);
-            }
-        }
-
-        public void RenameRepository(string basePath, string repositoryName, string newRepositoryName, string comment, params LogPropertyInfo[] properties)
-        {
-            var commentPath = PathUtility.GetTempFileName();
-            var uri = $"\"{this.GetUrl(basePath, repositoryName)}\"";
-            var newUri = $"\"{this.GenerateUrl(basePath, newRepositoryName)}\"";
-            try
-            {
-                File.WriteAllText(commentPath, this.GenerateComment(comment, properties));
-                SvnClientHost.Run("move", "--file", $"\"{commentPath}\"", uri, newUri);
-            }
-            finally
-            {
-                FileUtility.Delete(commentPath);
-            }
-        }
-
-        public void DeleteRepository(string basePath, string repositoryName, string comment, params LogPropertyInfo[] properties)
-        {
-            var commentPath = PathUtility.GetTempFileName();
-            var uri = this.GetUrl(basePath, repositoryName);
-
-            try
-            {
-                File.WriteAllText(commentPath, this.GenerateComment(comment, properties));
-                var argList = new List<object>()
+                var createCommand = new SvnAdminCommand("create")
                 {
-                    "delete", "--file", $"\"{commentPath}\"", $"\"{uri}\""
+                    (SvnPath)basePath,
+                    "--fs-type",
+                    "fsfs"
                 };
+                createCommand.Run();
+            }
 
-                SvnClientHost.Run(argList.ToArray());
-            }
-            finally
+            DirectoryUtility.Copy(initPath, trunkPath);
+
+            var importCommand = new SvnCommand("import")
             {
-                FileUtility.Delete(commentPath);
-            }
+                SvnCommandItem.FromMessage("first"),
+                (SvnPath)tempPath,
+                (SvnPath)baseUri,
+            };
+            importCommand.Run();
+        }
+
+        public void CreateRepository(string author, string basePath, string initPath, string comment, params LogPropertyInfo[] properties)
+        {
+            var uri = UriUtility.Combine(new Uri(basePath), SvnString.Branches);
+            var props = GeneratePropertiesArgument(properties);
+            var importCommand = new SvnCommand("import")
+            {
+                (SvnPath)initPath,
+                (SvnPath)uri,
+                SvnCommandItem.FromMessage(comment),
+                SvnCommandItem.Force,
+                props,
+                SvnCommandItem.FromUsername(author),
+            };
+            importCommand.Run();
+        }
+
+        public void CopyRepository(string author, string basePath, string repositoryName, string newRepositoryName, string comment, params LogPropertyInfo[] properties)
+        {
+            var uri = this.GetUrl(basePath, repositoryName);
+            var newUri = this.GenerateUrl(basePath, newRepositoryName);
+            var props = GeneratePropertiesArgument(properties);
+            var copyCommand = new SvnCommand("copy")
+            {
+                SvnCommandItem.FromMessage(comment),
+                (SvnPath)uri,
+                (SvnPath)newUri,
+                props,
+                SvnCommandItem.FromUsername(author),
+            };
+            copyCommand.Run();
+        }
+
+        public void RenameRepository(string author, string basePath, string repositoryName, string newRepositoryName, string comment, params LogPropertyInfo[] properties)
+        {
+            var uri = this.GetUrl(basePath, repositoryName);
+            var newUri = this.GenerateUrl(basePath, newRepositoryName);
+            var props = GeneratePropertiesArgument(properties);
+            var moveCommand = new SvnCommand("move")
+            {
+                SvnCommandItem.FromMessage(comment),
+                (SvnPath)uri,
+                (SvnPath)newUri,
+                props,
+                SvnCommandItem.FromUsername(author),
+            };
+            moveCommand.Run();
+        }
+
+        public void DeleteRepository(string author, string basePath, string repositoryName, string comment, params LogPropertyInfo[] properties)
+        {
+            var uri = this.GetUrl(basePath, repositoryName);
+            var props = GeneratePropertiesArgument(properties);
+            var deleteCommand = new SvnCommand("delete")
+            {
+                SvnCommandItem.FromMessage(comment),
+                (SvnPath)uri,
+                props,
+                SvnCommandItem.FromUsername(author),
+            };
+            deleteCommand.Run();
         }
 
         public void ValidateRepository(string basePath, string repositoryPath)
@@ -169,11 +187,10 @@ namespace Ntreev.Crema.Repository.Svn
         public string[] GetRepositories(string basePath)
         {
             var uri = new Uri(basePath);
-            var list = SvnClientHost.Run("list", $"{uri}".ToSvnPath());
-            var sr = new StringReader(list);
-            var line = string.Empty;
+            var listCommand = new SvnCommand("list") { (SvnPath)uri };
+            var lines = listCommand.ReadLines();
             var itemList = new List<string>();
-            while ((line = sr.ReadLine()) != null)
+            foreach (var line in lines)
             {
                 if (line.EndsWith(PathUtility.Separator) == true)
                 {
@@ -199,8 +216,12 @@ namespace Ntreev.Crema.Repository.Svn
         public string GetRevision(string basePath, string repositoryName)
         {
             var uri = this.GetUrl(basePath, repositoryName);
-            var args = SvnInfoEventArgs.Run($"{uri}");
-            return $"{args.LastChangeRevision}";
+            var infoCommand = new SvnCommand("info")
+            {
+                (SvnPath)uri,
+                new SvnCommandItem("show-item", "last-changed-revision"),
+            };
+            return infoCommand.Run().Trim();
         }
 
         public RepositoryInfo GetRepositoryInfo(string basePath, string repositoryName)
@@ -208,50 +229,55 @@ namespace Ntreev.Crema.Repository.Svn
             var uri = this.GetUrl(basePath, repositoryName);
             var latestLog = SvnLogEventArgs.Run(uri.ToString(), null, 1).First();
 
+            var ss = this.GetFirst(uri.ToString(), out var comment);
+
             this.GetBranchInfo(uri.ToString(), out var branchRevision, out var branchSource, out var branchSourceRevision);
 
-            var branchLog = SvnLogEventArgs.Run(uri.ToString(), branchRevision, 1).First();
-            var branchUserID = branchLog.GetPropertyString(LogPropertyInfo.UserIDKey) ?? string.Empty;
-            var latestUserID = latestLog.GetPropertyString(LogPropertyInfo.UserIDKey) ?? string.Empty;
+            //var branchLog = SvnLogEventArgs.Run(uri.ToString(), branchRevision, 1).First();
+            //var branchUserID = branchLog.GetPropertyString(LogPropertyInfo.UserIDKey) ?? string.Empty;
+            //var latestUserID = latestLog.GetPropertyString(LogPropertyInfo.UserIDKey) ?? string.Empty;
 
             var repositoryInfo = new RepositoryInfo()
             {
                 ID = GuidUtility.FromName(repositoryName + branchRevision),
                 Name = repositoryName,
-                Comment = branchLog.Comment,
+                Comment = comment,
                 Revision = latestLog.Revision,
                 //BranchRevision = branchRevision,
                 //BranchSource = branchSource,
                 //BranchSourceRevision = branchSourceRevision,
-                CreationInfo = new SignatureDate(branchUserID, branchLog.DateTime),
-                ModificationInfo = new SignatureDate(latestUserID, latestLog.DateTime),
+                CreationInfo = ss,
+                ModificationInfo = new SignatureDate(latestLog.Author, latestLog.DateTime),
             };
-             return repositoryInfo;
+            return repositoryInfo;
         }
+
+        
 
         public string[] GetRepositoryItemList(string basePath, string repositoryName)
         {
             var uri = this.GetUrl(basePath, repositoryName);
-            var text = SvnClientHost.Run("list", $"\"{uri}\"", "-R");
-            var lines = text.Split(new string[] { Environment.NewLine, }, StringSplitOptions.RemoveEmptyEntries);
-            return lines.Select(item => PathUtility.Separator + item).ToArray();
+            var listCommand = new SvnCommand("list") { (SvnPath)uri, SvnCommandItem.Recursive };
+            var lines = listCommand.ReadLines();
+            var query = from item in lines
+                        where item.Trim() != string.Empty
+                        select PathUtility.Separator + item;
+            return query.ToArray();
         }
 
         public LogInfo[] GetLog(string basePath, string repositoryName, int count)
         {
-            var uri = $"\"{this.GetUrl(basePath, repositoryName)}\"";
-            var logs = SvnLogEventArgs.Run(uri, null, count);
+            var uri = this.GetUrl(basePath, repositoryName);
+            var logs = SvnLogEventArgs.Run(uri.ToString(), null, count);
             return logs.Select(item => (LogInfo)item).ToArray();
         }
 
         public IEnumerable<KeyValuePair<string, Uri>> GetRepositoryPaths(string basePath)
         {
             var uri = new Uri(basePath);
-            var list = SvnClientHost.Run("list", $"{uri}".ToSvnPath());
-            var sr = new StringReader(list);
-            var line = string.Empty;
-
-            while ((line = sr.ReadLine()) != null)
+            var listCommand = new SvnCommand("list") { (SvnPath)uri };
+            var lines = listCommand.ReadLines();
+            foreach (var line in lines)
             {
                 if (line.EndsWith(PathUtility.Separator) == true)
                 {
@@ -276,59 +302,64 @@ namespace Ntreev.Crema.Repository.Svn
             }
         }
 
-        public string GenerateComment(string comment, params LogPropertyInfo[] properties)
+        public static string GeneratePropertiesArgument(LogPropertyInfo[] properties)
         {
-            var propText = propertySerializer.Serialize(properties);
-            var sb = new StringBuilder();
-            sb.AppendLine(comment);
-            sb.AppendLine();
-            if (propText != string.Empty)
-            {
-                sb.AppendLine(commentHeader);
-                sb.Append(propText);
-            }
-            return sb.ToString();
+            return string.Join(" ", properties.Select(item => $"--with-revprop \"{propertyPrefix}{item.Key}={item.Value}\""));
         }
 
-        public static void ParseComment(string message, out string comment, out LogPropertyInfo[] properties)
-        {
-            comment = string.Empty;
-            properties = new LogPropertyInfo[] { };
+        //public string GenerateComment(string comment, params LogPropertyInfo[] properties)
+        //{
+        //    var propText = propertySerializer.Serialize(properties);
+        //    var sb = new StringBuilder();
+        //    sb.AppendLine(comment);
+        //    sb.AppendLine();
+        //    if (propText != string.Empty)
+        //    {
+        //        sb.AppendLine(commentHeader);
+        //        sb.Append(propText);
+        //    }
+        //    return sb.ToString();
+        //}
 
-            try
-            {
-                var index = message.IndexOf(commentHeader);
-                if (index >= 0)
-                {
-                    var propText = message.Substring(index);
-                    comment = message.Remove(index);
+        //public static void ParseComment(string message, out string comment, out LogPropertyInfo[] properties)
+        //{
+        //    comment = string.Empty;
+        //    properties = new LogPropertyInfo[] { };
 
-                    var sr = new StringReader(comment);
-                    var lineList = new List<string>();
-                    var line = null as string;
-                    while ((line = sr.ReadLine()) != null)
-                    {
-                        lineList.Add(line);
-                    }
+        //    try
+        //    {
+        //        var index = message.IndexOf(commentHeader);
+        //        if (index >= 0)
+        //        {
+        //            var propText = message.Substring(index);
+        //            comment = message.Remove(index);
 
-                    if (lineList.Last() == string.Empty)
-                        lineList.RemoveAt(lineList.Count - 1);
-                    comment = string.Join(Environment.NewLine, lineList);
+        //            var sr = new StringReader(comment);
+        //            var lineList = new List<string>();
+        //            var line = null as string;
+        //            while ((line = sr.ReadLine()) != null)
+        //            {
+        //                lineList.Add(line);
+        //            }
 
-                    properties = propertyDeserializer.Deserialize<LogPropertyInfo[]>(propText);
-                }
-                else
-                {
-                    comment = null;
-                    properties = null;
-                }
-            }
-            catch
-            {
-                comment = null;
-                properties = null;
-            }
-        }
+        //            if (lineList.Last() == string.Empty)
+        //                lineList.RemoveAt(lineList.Count - 1);
+        //            comment = string.Join(Environment.NewLine, lineList);
+
+        //            properties = propertyDeserializer.Deserialize<LogPropertyInfo[]>(propText);
+        //        }
+        //        else
+        //        {
+        //            comment = null;
+        //            properties = null;
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        comment = null;
+        //        properties = null;
+        //    }
+        //}
 
         private Uri GetUrl(string basePath, string repositoryName)
         {
@@ -342,15 +373,85 @@ namespace Ntreev.Crema.Repository.Svn
             return UriUtility.Combine(baseUri, SvnString.Branches, repositoryName);
         }
 
+        private SignatureDate GetFirst(string path, out string comment)
+        {
+            var info = SvnInfoEventArgs.Run(path);
+            var revision = info.LastChangedRevision;
+            comment = null;
+
+            var localPath = PathUtility.Separator + UriUtility.MakeRelativeOfDirectory(info.RepositoryRoot, info.Uri);
+            while (revision != "1")
+            {
+                var logs = SvnLogEventArgs.Run(info.Uri.ToString(), "1", revision, 100);
+                foreach (var item in logs)
+                {
+                    bool b = false;
+                    foreach (var changedPath in item.ChangedPaths)
+                    {
+                        if (changedPath.Action == "A")
+                        {
+                            if (changedPath.Path == localPath)
+                            {
+                                localPath = changedPath.CopyFromPath;
+                                b = true;
+                            }
+                        }
+                    }
+
+                    bool hasdelete = false;
+                    if (b == true)
+                    {
+                        foreach (var changedPath in item.ChangedPaths)
+                        {
+                            if (changedPath.Action == "D")
+                            {
+                                if (changedPath.Path == localPath)
+                                {
+                                    hasdelete = true;
+                                }
+                            }
+                        }
+
+                        if (hasdelete == false)
+                        {
+                            comment = item.Comment;
+
+                            foreach (var p in item.Properties)
+                            {
+                                if (p.Prefix == propertyPrefix && p.Key == LogPropertyInfo.UserIDKey)
+                                {
+                                    return new SignatureDate(p.Value, item.DateTime);
+                                }
+                            }
+
+                            return new SignatureDate(item.Author, item.DateTime);
+                        }
+                    }
+                }
+                if (logs.Count() == 1)
+                    revision = "1";
+                else
+                    revision = logs.Last().Revision;
+            }
+
+            var firstLog = SvnLogEventArgs.Run(info.Uri.ToString(), "1").First();
+            comment = firstLog.Comment;
+            return new SignatureDate(firstLog.Author, firstLog.DateTime);
+        }
+
         private void GetBranchInfo(string path, out string revision, out string source, out string sourceRevision)
         {
+            revision = null;
+            source = null;
+            sourceRevision = null;
+            return;
             var info = SvnInfoEventArgs.Run(path);
             this.GetBranchRevision(info.RepositoryRoot, info.Uri, out revision, out source, out sourceRevision);
         }
 
         private void GetBranchRevision(Uri repositoryRoot, Uri uri, out string revision, out string source, out string sourceRevision)
         {
-            var log = SvnLogEventArgs.Runa($"{uri}", "--xml -v --stop-on-copy").Last();
+            var log = SvnLogEventArgs.RunForGetBranch(uri).Last();
             var relativeUri = repositoryRoot.MakeRelativeUri(uri);
 
             var localPath = $"/{relativeUri}";

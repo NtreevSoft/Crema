@@ -46,7 +46,7 @@ namespace Ntreev.Crema.Repository.Git
         [Import]
         private Lazy<ICremaHost> cremaHost = null;
 
-        public void CopyRepository(string basePath, string repositoryName, string newRepositoryName, string comment, params LogPropertyInfo[] properties)
+        public void CopyRepository(string author, string basePath, string repositoryName, string newRepositoryName, string comment, params LogPropertyInfo[] properties)
         {
             throw new NotImplementedException();
         }
@@ -69,7 +69,7 @@ namespace Ntreev.Crema.Repository.Git
             return new GitRepository(this, settings.LogService, settings.WorkingPath, settings.TransactionPath, repositoryInfo);
         }
 
-        public void CreateRepository(string basePath, string initPath, string comment, params LogPropertyInfo[] properties)
+        public void CreateRepository(string author, string basePath, string initPath, string comment, params LogPropertyInfo[] properties)
         {
             var baseUri = new Uri(basePath);
             var repositoryPath = baseUri.LocalPath;
@@ -97,7 +97,7 @@ namespace Ntreev.Crema.Repository.Git
             GitHost.Run(repositoryPath, "commit -m \"first commit\"");
         }
 
-        public void DeleteRepository(string basePath, string repositoryName, string comment, params LogPropertyInfo[] properties)
+        public void DeleteRepository(string author, string basePath, string repositoryName, string comment, params LogPropertyInfo[] properties)
         {
             var baseUri = new Uri(basePath);
             var repositoryPath = baseUri.LocalPath;
@@ -223,7 +223,7 @@ namespace Ntreev.Crema.Repository.Git
             this.SetID(basePath, "master", Guid.NewGuid());
         }
 
-        public void RenameRepository(string basePath, string repositoryName, string newRepositoryName, string comment, params LogPropertyInfo[] properties)
+        public void RenameRepository(string author, string basePath, string repositoryName, string newRepositoryName, string comment, params LogPropertyInfo[] properties)
         {
             var baseUri = new Uri(basePath);
             var repositoryPath = baseUri.LocalPath;

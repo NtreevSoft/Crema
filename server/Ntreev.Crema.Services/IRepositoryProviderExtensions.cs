@@ -29,38 +29,22 @@ namespace Ntreev.Crema.Services
     {
         public static void CreateRepository(this IRepositoryProvider repositoryProvider, Authentication authentication, string basePath, string initPath, string comment)
         {
-            var props = new List<LogPropertyInfo>
-            {
-                new LogPropertyInfo() { Key = LogPropertyInfo.UserIDKey, Value = authentication.ID, }
-            };
-            repositoryProvider.CreateRepository(basePath, initPath, comment, props.ToArray());
+            repositoryProvider.CreateRepository(authentication.ID, basePath, initPath, comment, new LogPropertyInfo[] { });
         }
 
         public static void RenameRepository(this IRepositoryProvider repositoryProvider, Authentication authentication, string basePath, string repositoryName, string newRepositoryName, string comment)
         {
-            var props = new List<LogPropertyInfo>
-            {
-                new LogPropertyInfo() { Key = LogPropertyInfo.UserIDKey, Value = authentication.ID, }
-            };
-            repositoryProvider.RenameRepository(basePath, repositoryName, newRepositoryName, comment, props.ToArray());
+            repositoryProvider.RenameRepository(authentication.ID, basePath, repositoryName, newRepositoryName, comment, new LogPropertyInfo[] { });
         }
 
         public static void CopyRepository(this IRepositoryProvider repositoryProvider, Authentication authentication, string basePath, string repositoryName, string newRepositoryName, string comment)
         {
-            var props = new List<LogPropertyInfo>
-            {
-                new LogPropertyInfo() { Key = LogPropertyInfo.UserIDKey, Value = authentication.ID, }
-            };
-            repositoryProvider.CopyRepository(basePath, repositoryName, newRepositoryName, comment, props.ToArray());
+            repositoryProvider.CopyRepository(authentication.ID, basePath, repositoryName, newRepositoryName, comment, new LogPropertyInfo[] { });
         }
 
         public static void DeleteRepository(this IRepositoryProvider repositoryProvider, Authentication authentication, string basePath, string repositoryName, string comment)
         {
-            var props = new List<LogPropertyInfo>
-            {
-                new LogPropertyInfo() { Key = LogPropertyInfo.UserIDKey, Value = authentication.ID, }
-            };
-            repositoryProvider.DeleteRepository(basePath, repositoryName, comment, props.ToArray());
+            repositoryProvider.DeleteRepository(authentication.ID, basePath, repositoryName, comment, new LogPropertyInfo[] { });
         }
     }
 }

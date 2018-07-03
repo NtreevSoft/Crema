@@ -38,18 +38,40 @@ namespace Ntreev.Crema.Repository.Svn
 
         public string Revision { get; private set; }
 
-        public string LastChangeRevision { get; private set; }
+        public string LastChangedRevision { get; private set; }
+
+        public string LastChangedAuthor { get; private set; }
+
+        public DateTime LastChangedDate { get; private set; }
 
         public static SvnInfoEventArgs Run(string path, string revision)
         {
-            var text = SvnClientHost.Run("info", path.ToSvnPath(), "-r", revision, "--xml");
-            return Parse(text);
+            var infoCommand = new SvnCommand("info")
+            {
+                (SvnPath)path,
+                SvnCommandItem.FromRevision(revision),
+                SvnCommandItem.Xml,
+            };
+            return Parse(infoCommand.Run());
         }
 
         public static SvnInfoEventArgs Run(string path)
         {
-            var text = SvnClientHost.Run("info", path.ToSvnPath(), "--xml");
-            return Parse(text);
+            var infoCommand = new SvnCommand("info")
+            {
+                (SvnPath)path,
+                SvnCommandItem.Xml,
+            };
+            var pathUri = new Uri(path);
+            if (Directory.Exists(pathUri.LocalPath) == true)
+            {
+                var updateCommand = new SvnCommand("update")
+                {
+                    (SvnPath)pathUri.LocalPath,
+                };
+                updateCommand.Run();
+            }
+            return Parse(infoCommand.Run());
         }
 
         public static SvnInfoEventArgs Parse(string text)
@@ -63,7 +85,9 @@ namespace Ntreev.Crema.Repository.Svn
                     RepositoryRoot = new Uri(doc.XPathSelectElement("/info/entry/repository/root").Value + "/"),
                     Revision = doc.XPathSelectElement("/info/entry").Attribute("revision").Value,
                     Uri = new Uri(doc.XPathSelectElement("/info/entry/url").Value, UriKind.RelativeOrAbsolute),
-                    LastChangeRevision = doc.XPathSelectElement("/info/entry/commit").Attribute("revision").Value
+                    LastChangedRevision = doc.XPathSelectElement("/info/entry/commit").Attribute("revision").Value,
+                    LastChangedAuthor = doc.XPathSelectElement("/info/entry/commit/author").Value,
+                    LastChangedDate = XmlConvert.ToDateTime(doc.XPathSelectElement("/info/entry/commit/date").Value, XmlDateTimeSerializationMode.Utc)
                 };
 
                 return obj;

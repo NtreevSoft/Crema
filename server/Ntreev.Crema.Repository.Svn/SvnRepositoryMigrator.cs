@@ -31,17 +31,27 @@ namespace Ntreev.Crema.Repository.Svn
             this.PrepareBranches(sourcePath);
             this.MoveTagsToBranches(sourcePath);
             this.DeleteUsers(sourcePath);
+            this.Pack(sourcePath);
             return null;
+        }
+
+        private void Pack(string sourcePath)
+        {
+            var info = SvnInfoEventArgs.Run(sourcePath);
+            var rootPath = info.RepositoryRoot.LocalPath;
+            if (rootPath.EndsWith($"{Path.DirectorySeparatorChar}") == true)
+                rootPath = Path.GetDirectoryName(rootPath);
+            var packCommand = new SvnAdminCommand("pack") { (SvnPath)rootPath };
+            packCommand.Run();
         }
 
         private void MoveTagsToBranches(string dataBasesPath)
         {
-
             var dataBaseUrl = new Uri(dataBasesPath);
             var tagsUrl = UriUtility.Combine(dataBaseUrl, SvnString.Tags);
             var branchesUri = UriUtility.Combine(dataBaseUrl, SvnString.Branches);
-            var text = SvnClientHost.Run($"list \"{tagsUrl}\"");
-            var list = this.GetLines(text);
+            var listCommand = new SvnCommand("list") { (SvnPath)tagsUrl };
+            var list = listCommand.ReadLines();
 
             foreach (var item in list)
             {
@@ -50,11 +60,17 @@ namespace Ntreev.Crema.Repository.Svn
                     var name = item.Remove(item.Length - PathUtility.Separator.Length);
                     var sourceUri = UriUtility.Combine(tagsUrl, name);
                     var destUri = UriUtility.Combine(branchesUri, name);
-
                     var log = SvnLogEventArgs.Run(sourceUri.ToString(), null, 1).First();
-                    var propText = string.Join(" ", log.Properties.Select(i => $"--with-revprop \"{i.Prefix}{i.Key}={i.Value}\""));
-
-                    SvnClientHost.Run($"mv \"{sourceUri}\" \"{destUri}\" -m \"Migrate: move {name} from tags to branches\"", propText);
+                    var moveCommand = new SvnCommand("mv")
+                    {
+                        (SvnPath)sourceUri,
+                        (SvnPath)destUri,
+                        SvnCommandItem.FromMessage($"Migrate: move {name} from tags to branches"),
+                        SvnCommandItem.FromUsername(nameof(SvnRepositoryMigrator)),
+                    };
+                    moveCommand.Run();
+                    //var propText = string.Join(" ", log.Properties.Select(i => $"--with-revprop \"{i.Prefix}{i.Key}={i.Value}\""));
+                    //SvnClientHost.Run($"mv \"{sourceUri}\" \"{destUri}\" -m \"Migrate: move {name} from tags to branches\"", propText, $"--username {nameof(SvnRepositoryMigrator)}");
                 }
             }
         }
@@ -62,19 +78,31 @@ namespace Ntreev.Crema.Repository.Svn
         private void PrepareBranches(string dataBasesPath)
         {
             var dataBaseUrl = new Uri(dataBasesPath);
-            var text = SvnClientHost.Run($"list \"{dataBaseUrl}\"");
-            var list = this.GetLines(text);
+            var listCommand = new SvnCommand("list") { (SvnPath)dataBaseUrl };
+            var list = listCommand.ReadLines();
             if (list.Contains($"{SvnString.Branches}{PathUtility.Separator}") == false)
             {
                 var branchesUrl = UriUtility.Combine(dataBaseUrl, SvnString.Branches);
-                SvnClientHost.Run($"mkdir \"{branchesUrl}\" -m \"Migrate: create branches\"");
+                var mkdirCommand = new SvnCommand("mkdir")
+                {
+                    (SvnPath)branchesUrl,
+                    SvnCommandItem.FromMessage("Migrate: create branches"),
+                    SvnCommandItem.FromUsername(nameof(SvnRepositoryMigrator)),
+                };
+                mkdirCommand.Run();
             }
         }
 
         private void DeleteUsers(string dataBasesPath)
         {
             var usersUrl = UriUtility.Combine(new Uri(dataBasesPath), "users.xml");
-            SvnClientHost.Run($"rm \"{usersUrl}\" -m \"Migrate: delete users\"");
+            var deleteCommand = new SvnCommand("rm")
+            {
+                (SvnPath)usersUrl,
+                SvnCommandItem.FromMessage("Migrate: delete users"),
+                SvnCommandItem.FromUsername(nameof(SvnRepositoryMigrator)),
+            };
+            deleteCommand.Run();
         }
 
         private string[] GetLines(string text)

@@ -26,8 +26,10 @@ using Ntreev.Library.Serialization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Services.Data
 {
@@ -70,7 +72,7 @@ namespace Ntreev.Crema.Services.Data
             foreach (var item in dataBases)
             {
                 var dataBase = CreateDataBase();
-                dataBase.Initialize();
+                // dataBase.Initialize();
                 this.AddBase(item, dataBase);
 
                 DataBase CreateDataBase()
@@ -80,6 +82,24 @@ namespace Ntreev.Crema.Services.Data
                     return new DataBase(this.CremaHost, item, caches[item]);
                 }
             }
+
+            var items = this.ToArray<DataBase>();
+
+            //Parallel.ForEach(items, item =>
+            //{
+            //    Trace.WriteLine("begin: "+item.ToString());
+            //    item.Initialize();
+            //    Trace.WriteLine("end: " + item.ToString());
+            //});
+            var d = DateTime.Now;
+            foreach(var item in items)
+            {
+                Trace.WriteLine("begin: " + item.ToString());
+                item.Initialize();
+                Trace.WriteLine("end: " + item.ToString());
+            }
+            Console.WriteLine(DateTime.Now - d);
+
         }
 
         public void RestoreState(CremaSettings settings)

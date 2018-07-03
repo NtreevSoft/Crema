@@ -1256,27 +1256,27 @@ namespace Ntreev.Crema.Services.Data
         public void Initialize()
         {
             var remotePath = this.CremaHost.GetPath(CremaPath.RepositoryDataBases);
-            var revision = this.repositoryProvider.GetRevision(remotePath, this.Name);
+            var d = DateTime.Now;
+            var revision = this.repositoryProvider.GetRevision(remotePath, base.Name);
+            
 
             if (base.DataBaseInfo.Revision != revision)
             {
                 this.CremaHost.Debug($"initialize database : {base.Name}");
-                var repositoryInfo = this.repositoryProvider.GetRepositoryInfo(remotePath, this.Name);
+                var repositoryInfo = this.repositoryProvider.GetRepositoryInfo(remotePath, base.Name);
                 base.DataBaseInfo = new DataBaseInfo()
                 {
                     ID = repositoryInfo.ID,
                     Name = repositoryInfo.Name,
                     Revision = repositoryInfo.Revision,
                     Comment = repositoryInfo.Comment,
-                    //BranchRevision = repositoryInfo.BranchRevision,
-                    //BranchSource = repositoryInfo.BranchSource,
-                    //BranchSourceRevision = repositoryInfo.BranchSourceRevision,
                     CreationInfo = repositoryInfo.CreationInfo,
                     ModificationInfo = repositoryInfo.ModificationInfo,
                 };
             }
 
             this.ReadAccessInfo();
+            Console.WriteLine(DateTime.Now - d);
         }
 
         private void Users_UsersLoggedOut(object sender, ItemsEventArgs<IUser> e)

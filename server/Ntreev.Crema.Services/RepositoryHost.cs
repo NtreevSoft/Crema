@@ -158,7 +158,6 @@ namespace Ntreev.Crema.Services
             var propList = new List<LogPropertyInfo>
             {
                 new LogPropertyInfo() { Key = LogPropertyInfo.VersionKey, Value = AppUtility.ProductVersion},
-                new LogPropertyInfo() { Key = LogPropertyInfo.UserIDKey, Value = authentication.ID}
             };
 
             if (properties != null)

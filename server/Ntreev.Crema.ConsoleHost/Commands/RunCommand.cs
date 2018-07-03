@@ -73,13 +73,6 @@ namespace Ntreev.Crema.ConsoleHost.Commands
             set;
         }
 
-        //[CommandProperty("repo-name")]
-        //public string RepositoryName
-        //{
-        //    get;
-        //    set;
-        //}
-
         [CommandProperty("repo-module")]
         public string RepositoryModule
         {
@@ -171,9 +164,6 @@ namespace Ntreev.Crema.ConsoleHost.Commands
         {
             CremaLog.Verbose = this.Verbose ? LogVerbose.Debug : LogVerbose.Info;
             this.application.BasePath = this.Path;
-            //this.application.RepositoryName = this.RepositoryName;
-            //this.application.RepositoryModule = this.RepositoryModule;
-            //this.application.FileType = this.FileType;
             this.application.Verbose = this.Verbose ? LogVerbose.Debug : LogVerbose.Info;
             this.application.NoCache = this.NoCache;
             this.application.Culture = this.Culture;
@@ -183,7 +173,7 @@ namespace Ntreev.Crema.ConsoleHost.Commands
 #endif
             this.application.Port = this.Port;
             this.application.Open();
-
+            Console.Title = $"{this.application.BasePath} --port {this.application.Port}";
             var cremaHost = this.application.GetService(typeof(ICremaHost)) as ICremaHost;
             cremaHost.Closed += CremaHost_Closed;
             this.Wait(cremaHost);
