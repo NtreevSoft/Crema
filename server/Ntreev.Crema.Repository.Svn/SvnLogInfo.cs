@@ -27,16 +27,19 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using Ntreev.Crema.ServiceModel;
+using Ntreev.Library.IO;
 
 namespace Ntreev.Crema.Repository.Svn
 {
-    struct SvnLogEventArgs
+    struct SvnLogInfo
     {
+        private const string propertyPrefix = "prop:";
+
         public string Author { get; private set; }
 
         public string Revision { get; internal set; }
 
-        public SvnChangeItem[] ChangedPaths { get; internal set; }
+        public SvnChangeInfo[] ChangedPaths { get; internal set; }
 
         public string Comment { get; private set; }
 
@@ -44,24 +47,24 @@ namespace Ntreev.Crema.Repository.Svn
 
         public SvnPropertyValue[] Properties { get; internal set; }
 
-        public static SvnLogEventArgs[] Read(string text)
+        public static SvnLogInfo[] Read(string text)
         {
-            var logItemList = new List<SvnLogEventArgs>();
+            var logItemList = new List<SvnLogInfo>();
             using (var sr = new StringReader(text))
             {
                 var doc = XDocument.Load(sr);
-                var logItems = doc.XPathSelectElements("/log/logentry").ToArray();
+                var logItems = doc.XPathSelectElements("/log/logentry");
 
                 foreach (var item in logItems)
                 {
-                    var logItem = SvnLogEventArgs.Parse(item);
+                    var logItem = SvnLogInfo.Parse(item);
                     logItemList.Add(logItem);
                 }
             }
             return logItemList.ToArray();
         }
 
-        public static SvnLogEventArgs[] Run(string path, string revision)
+        public static SvnLogInfo[] Run(string path, string revision)
         {
             var logCommand = new SvnCommand("log")
             {
@@ -70,10 +73,10 @@ namespace Ntreev.Crema.Repository.Svn
                 SvnCommandItem.Xml,
                 SvnCommandItem.Verbose,
             };
-            return SvnLogEventArgs.Read(logCommand.Run());
+            return SvnLogInfo.Read(logCommand.Run());
         }
 
-        public static SvnLogEventArgs[] Run(string path, string revision, int count)
+        public static SvnLogInfo[] Run(string path, string revision, int count)
         {
             var logCommand = new SvnCommand("log")
             {
@@ -84,10 +87,10 @@ namespace Ntreev.Crema.Repository.Svn
                 new SvnCommandItem('l', count),
                 new SvnCommandItem("with-all-revprops"),
             };
-            return SvnLogEventArgs.Read(logCommand.Run());
+            return SvnLogInfo.Read(logCommand.Run());
         }
 
-        public static SvnLogEventArgs[] Run(string path, string minRevision, string maxRevision, int count)
+        public static SvnLogInfo[] Run(string path, string minRevision, string maxRevision, int count)
         {
             var logCommand = new SvnCommand("log")
             {
@@ -98,10 +101,10 @@ namespace Ntreev.Crema.Repository.Svn
                 new SvnCommandItem('l', count),
                 new SvnCommandItem("with-all-revprops"),
             };
-            return SvnLogEventArgs.Read(logCommand.Run());
+            return SvnLogInfo.Read(logCommand.Run());
         }
 
-        public static SvnLogEventArgs[] Run(string[] paths, string revision, int count)
+        public static SvnLogInfo[] Run(string[] paths, string revision, int count)
         {
             var logCommand = new SvnCommand("log")
             {
@@ -115,10 +118,10 @@ namespace Ntreev.Crema.Repository.Svn
             {
                 logCommand.Add((SvnPath)item);
             }
-            return SvnLogEventArgs.Read(logCommand.Run());
+            return SvnLogInfo.Read(logCommand.Run());
         }
 
-        public static SvnLogEventArgs[] RunForGetBranch(Uri uri)
+        public static SvnLogInfo[] RunForGetBranch(Uri uri)
         {
             var logCommand = new SvnCommand("log")
             {
@@ -127,10 +130,64 @@ namespace Ntreev.Crema.Repository.Svn
                 SvnCommandItem.Verbose,
                 new SvnCommandItem("stop-on-copy")
             };
-            return SvnLogEventArgs.Read(logCommand.Run());
+            return SvnLogInfo.Read(logCommand.Run());
         }
 
-        public static explicit operator LogInfo(SvnLogEventArgs value)
+        public static SvnLogInfo GetFirstLog(string path)
+        {
+            var info = SvnInfo.Run(path);
+            var revision = info.LastChangedRevision;
+            var localPath = PathUtility.Separator + UriUtility.MakeRelativeOfDirectory(info.RepositoryRoot, info.Uri);
+
+            while (revision != "1")
+            {
+                var logs = SvnLogInfo.Run(info.Uri.ToString(), "1", revision, 100);
+                foreach (var item in logs)
+                {
+                    var renamed = false;
+                    foreach (var changedPath in item.ChangedPaths)
+                    {
+                        if (changedPath.Action == "A" && changedPath.Path == localPath)
+                        {
+                            localPath = changedPath.CopyFromPath;
+                            renamed = true;
+                            break;
+                        }
+                    }
+
+                    var deleted = false;
+                    if (renamed == true)
+                    {
+                        foreach (var changedPath in item.ChangedPaths)
+                        {
+                            if (changedPath.Action == "D" && changedPath.Path == localPath)
+                            {
+                                deleted = true;
+                                break;
+                            }
+                        }
+
+                        if (deleted == false)
+                        {
+                            return item;
+                        }
+                    }
+                }
+                if (logs.Count() == 1)
+                    return logs.First();
+                else
+                    revision = logs.Last().Revision;
+            }
+
+            return SvnLogInfo.Run(info.Uri.ToString(), "1").First();
+        }
+
+        public static SvnLogInfo GetLastLog(string path)
+        {
+            return SvnLogInfo.Run(path, null, 1).First();
+        }
+
+        public static explicit operator LogInfo(SvnLogInfo value)
         {
             var userID = $"svn:{value.Author}";
             foreach (var item in value.Properties)
@@ -166,13 +223,13 @@ namespace Ntreev.Crema.Repository.Svn
             return null;
         }
 
-        private static SvnLogEventArgs Parse(XElement element)
+        private static SvnLogInfo Parse(XElement element)
         {
             var commentValue = element.XPathSelectElement("msg").Value;
             var comment = null as string;
             var props = null as LogPropertyInfo[];
 
-            var obj = new SvnLogEventArgs()
+            var obj = new SvnLogInfo()
             {
                 Author = element.XPathSelectElement("author").Value,
                 Revision = element.Attribute("revision").Value,
@@ -180,10 +237,10 @@ namespace Ntreev.Crema.Repository.Svn
                 DateTime = XmlConvert.ToDateTime(element.XPathSelectElement("date").Value, XmlDateTimeSerializationMode.Utc)
             };
             var pathItems = element.XPathSelectElements("paths/path").ToArray();
-            var changedItemList = new List<SvnChangeItem>();
+            var changedItemList = new List<SvnChangeInfo>();
             foreach (var item in pathItems)
             {
-                var changedItem = SvnChangeItem.Parse(item);
+                var changedItem = SvnChangeInfo.Parse(item);
                 changedItemList.Add(changedItem);
             }
             obj.ChangedPaths = changedItemList.ToArray();
@@ -196,6 +253,11 @@ namespace Ntreev.Crema.Repository.Svn
                 {
                     var propItem = SvnPropertyValue.Parse(item);
                     propItemList.Add(propItem);
+
+                    if (propItem.Prefix == propertyPrefix && propItem.Key == LogPropertyInfo.UserIDKey)
+                    {
+                        obj.Author = propItem.Value;
+                    }
                 }
                 obj.Properties = propItemList.ToArray();
             }

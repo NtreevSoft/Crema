@@ -40,16 +40,7 @@ namespace Ntreev.Crema.Services.Data.Serializations
         public string Revision { get; set; }
 
         [DataMember]
-        public string BranchRevision { get; set; }
-
-        [DataMember]
         public string[] Paths { get; set; }
-
-        [DataMember]
-        public string BranchSource { get; set; }
-
-        [DataMember]
-        public string BranchSourceRevision { get; set; }
 
         [DataMember]
         public SignatureDate CreationInfo { get; set; }
@@ -65,9 +56,6 @@ namespace Ntreev.Crema.Services.Data.Serializations
                 Name = obj.Name,
                 Comment = obj.Comment,
                 Revision = obj.Revision,
-                BranchRevision = obj.BranchRevision,
-                BranchSource = obj.BranchSource,
-                BranchSourceRevision = obj.BranchSourceRevision,
                 Paths = obj.Paths,
                 CreationInfo = obj.CreationInfo,
                 ModificationInfo = obj.ModificationInfo,
@@ -82,9 +70,6 @@ namespace Ntreev.Crema.Services.Data.Serializations
                 Name = obj.Name,
                 Comment = obj.Comment,
                 Revision = obj.Revision,
-                BranchRevision = obj.BranchRevision,
-                BranchSource = obj.BranchSource,
-                BranchSourceRevision = obj.BranchSourceRevision,
                 Paths = obj.Paths,
                 CreationInfo = obj.CreationInfo,
                 ModificationInfo = obj.ModificationInfo,

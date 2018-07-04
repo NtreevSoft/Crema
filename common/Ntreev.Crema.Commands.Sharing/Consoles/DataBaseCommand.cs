@@ -197,9 +197,6 @@ namespace Ntreev.Crema.Commands.Consoles
                 { $"{nameof(dataBaseInfo.Name)}", dataBaseInfo.Name },
                 { $"{nameof(dataBaseInfo.Comment)}", dataBaseInfo.Comment },
                 { $"{nameof(dataBaseInfo.Revision)}", dataBaseInfo.Revision },
-                { $"{nameof(dataBaseInfo.BranchRevision)}", dataBaseInfo.BranchRevision},
-                { $"{nameof(dataBaseInfo.BranchSource)}", dataBaseInfo.BranchSource },
-                { $"{nameof(dataBaseInfo.BranchSourceRevision)}", dataBaseInfo.BranchSourceRevision},
                 { $"{nameof(dataBaseInfo.CreationInfo)}", dataBaseInfo.CreationInfo.ToLocalValue() },
                 { $"{nameof(dataBaseInfo.ModificationInfo)}", dataBaseInfo.ModificationInfo.ToLocalValue() }
             };

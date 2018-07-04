@@ -28,7 +28,7 @@ using System.Xml.XPath;
 
 namespace Ntreev.Crema.Repository.Svn
 {
-    struct SvnInfoEventArgs
+    struct SvnInfo
     {
         public Uri RepositoryRoot { get; private set; }
 
@@ -44,7 +44,7 @@ namespace Ntreev.Crema.Repository.Svn
 
         public DateTime LastChangedDate { get; private set; }
 
-        public static SvnInfoEventArgs Run(string path, string revision)
+        public static SvnInfo Run(string path, string revision)
         {
             var infoCommand = new SvnCommand("info")
             {
@@ -55,7 +55,7 @@ namespace Ntreev.Crema.Repository.Svn
             return Parse(infoCommand.Run());
         }
 
-        public static SvnInfoEventArgs Run(string path)
+        public static SvnInfo Run(string path)
         {
             var infoCommand = new SvnCommand("info")
             {
@@ -74,12 +74,12 @@ namespace Ntreev.Crema.Repository.Svn
             return Parse(infoCommand.Run());
         }
 
-        public static SvnInfoEventArgs Parse(string text)
+        public static SvnInfo Parse(string text)
         {
             using (var sr = new StringReader(text))
             {
                 var doc = XDocument.Load(sr);
-                var obj = new SvnInfoEventArgs()
+                var obj = new SvnInfo()
                 {
                     Path = doc.XPathSelectElement("/info/entry").Attribute("path").Value,
                     RepositoryRoot = new Uri(doc.XPathSelectElement("/info/entry/repository/root").Value + "/"),

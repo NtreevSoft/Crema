@@ -1256,9 +1256,7 @@ namespace Ntreev.Crema.Services.Data
         public void Initialize()
         {
             var remotePath = this.CremaHost.GetPath(CremaPath.RepositoryDataBases);
-            var d = DateTime.Now;
             var revision = this.repositoryProvider.GetRevision(remotePath, base.Name);
-            
 
             if (base.DataBaseInfo.Revision != revision)
             {
@@ -1276,7 +1274,6 @@ namespace Ntreev.Crema.Services.Data
             }
 
             this.ReadAccessInfo();
-            Console.WriteLine(DateTime.Now - d);
         }
 
         private void Users_UsersLoggedOut(object sender, ItemsEventArgs<IUser> e)

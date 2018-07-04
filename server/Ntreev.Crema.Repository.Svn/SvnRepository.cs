@@ -43,7 +43,7 @@ namespace Ntreev.Crema.Repository.Svn
         private Uri repositoryRoot;
         private Uri repositoryUri;
         private RepositoryInfo repositoryInfo;
-        private SvnInfoEventArgs info;
+        private SvnInfo info;
 
         public SvnRepository(SvnRepositoryProvider repositoryProvider, ILogService logService, string repositoryPath, string transactionPath, RepositoryInfo repositoryInfo)
         {
@@ -68,7 +68,7 @@ namespace Ntreev.Crema.Repository.Svn
                 throw new Exception($"{sb}");
             }
 
-            this.info = SvnInfoEventArgs.Run(this.repositoryPath);
+            this.info = SvnInfo.Run(this.repositoryPath);
             this.repositoryRoot = this.info.RepositoryRoot;
             this.repositoryUri = this.info.Uri;
         }
@@ -189,7 +189,7 @@ namespace Ntreev.Crema.Repository.Svn
             {
                 this.logService?.Debug(result);
                 this.logService?.Debug($"repository committed {(SvnPath)this.repositoryPath}");
-                this.info = SvnInfoEventArgs.Run(this.repositoryPath);
+                this.info = SvnInfo.Run(this.repositoryPath);
                 this.repositoryInfo.Revision = this.info.LastChangedRevision;
                 this.repositoryInfo.ModificationInfo = new SignatureDate(this.info.LastChangedAuthor, this.info.LastChangedDate);
             }
@@ -245,27 +245,27 @@ namespace Ntreev.Crema.Repository.Svn
 
         public LogInfo[] GetLog(string[] paths, string revision, int count)
         {
-            var logs = SvnLogEventArgs.Run(paths, revision, count);
+            var logs = SvnLogInfo.Run(paths, revision, count);
             return logs.Select(item => (LogInfo)item).ToArray();
         }
 
         public string GetRevision(string path)
         {
-            var info = SvnInfoEventArgs.Run(path);
-            var repositoryInfo = SvnInfoEventArgs.Run($"{info.Uri}");
+            var info = SvnInfo.Run(path);
+            var repositoryInfo = SvnInfo.Run($"{info.Uri}");
             return repositoryInfo.LastChangedRevision;
         }
 
         public Uri GetUri(string path, string revision)
         {
             var revisionValue = revision ?? this.repositoryInfo.Revision;
-            var info = SvnInfoEventArgs.Run(path, revisionValue);
+            var info = SvnInfo.Run(path, revisionValue);
             return new Uri($"{info.Uri}@{revisionValue}");
         }
 
         public RepositoryItem[] Status(params string[] paths)
         {
-            var args = SvnStatusEventArgs.Run(paths);
+            var args = SvnStatusInfo.Run(paths);
             var itemList = new List<RepositoryItem>(args.Length);
             foreach (var item in args)
             {
@@ -333,7 +333,7 @@ namespace Ntreev.Crema.Repository.Svn
             DirectoryUtility.Delete(this.repositoryPath);
         }
 
-        private string GetOriginPath(Uri repoUri, SvnLogEventArgs[] logs, string revision)
+        private string GetOriginPath(Uri repoUri, SvnLogInfo[] logs, string revision)
         {
             var repoPath = PathUtility.SeparatorChar + repoUri.OriginalString;
 

@@ -34,9 +34,10 @@ namespace Ntreev.Crema.Repository.Git
     {
         private const string commitIDPattern = "commit\\s*(?<commitID>[a-f0-9]{40})";
         private const string mergePattern = "Merge:\\s*(?<mergeFrom>[a-f0-9]{7})\\s(?<mergeTo>[a-f0-9]{7})";
-        private const string authorPattern = "Author:\\s*(?<author>.+)\\s<(?<authorEMail>.+)>";
+        private const string reflogPattern = "Reflog:\\s*(?<reflog>.+)\\s[(](?<author>.+)\\s<(?<authorEMail>.*)[)]";
+        private const string authorPattern = "Author:\\s*(?<author>.+)\\s<(?<authorEMail>.*)>";
         private const string authorDatePattern = "AuthorDate:\\s*(?<authorDate>.+)";
-        private const string commitPattern = "Commit:\\s*(?<commit>.+)\\s<(?<commitEMail>.+)>";
+        private const string commitPattern = "Commit:\\s*(?<commit>.+)\\s<(?<commitEMail>.*)>";
         private const string commitDatePattern = "CommitDate:\\s*(?<commitDate>.+)";
 
         private const string dateTimeFormat = "ddd MMM d HH:mm:ss yyyy K";
@@ -62,11 +63,23 @@ namespace Ntreev.Crema.Repository.Git
 
         public string Comment { get; set; }
 
+        public static GitRefLogInfo[] GetMany(string repositoryPath, string branchName)
+        {
+            var reflogCommand = new GitCommand(repositoryPath, "reflog")
+            {
+                branchName,
+                new GitCommandItem("pretty=fuller"),
+                new GitCommandItem("no-abbrev-commit")
+            };
+            return ParseMany(reflogCommand.Run());
+        }
+
         public static GitRefLogInfo Parse(string text)
         {
             var logInfo = new GitRefLogInfo();
             ParseCommitID(ref text, ref logInfo);
             ParseMerge(ref text, ref logInfo);
+            ParseReflog(ref text, ref logInfo);
             ParseAuthor(ref text, ref logInfo);
             ParseAuthorDate(ref text, ref logInfo);
             ParseCommit(ref text, ref logInfo);
@@ -118,6 +131,20 @@ namespace Ntreev.Crema.Repository.Git
             {
                 logInfo.MergeFrom = match.Groups["mergeFrom"].Value;
                 logInfo.MergeTo = match.Groups["mergeTo"].Value;
+            }
+            else
+            {
+                logInfo.MergeFrom = string.Empty;
+                logInfo.MergeTo = string.Empty;
+            }
+        }
+
+        private static void ParseReflog(ref string text, ref GitRefLogInfo logInfo)
+        {
+            if (Match(ref text, reflogPattern) is Match match)
+            {
+                //logInfo.MergeFrom = match.Groups["mergeFrom"].Value;
+                //logInfo.MergeTo = match.Groups["mergeTo"].Value;
             }
             else
             {

@@ -9,16 +9,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ntreev.Crema.Repository.Svn
+namespace Ntreev.Crema.Repository.Git
 {
-    class SvnAdminCommand : CommandHost
+    class GitCommand : CommandHost
     {
-        private const string svnadmin = "svnadmin";
+        private const string git = "git";
 
-        public SvnAdminCommand(string commandName)
-            : base(svnadmin, null, commandName)
+        public GitCommand(string basePath, string commandName)
+            : base(git, basePath, commandName)
         {
-
+            
         }
 
         public string Run(ILogService logService)

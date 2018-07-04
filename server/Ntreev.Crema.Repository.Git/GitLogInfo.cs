@@ -34,9 +34,11 @@ namespace Ntreev.Crema.Repository.Git
     {
         private const string commitIDPattern = "commit\\s*(?<commitID>[a-f0-9]{40})";
         private const string mergePattern = "Merge:\\s*(?<mergeFrom>[a-f0-9]{7})\\s(?<mergeTo>[a-f0-9]{7})";
-        private const string authorPattern = "Author:\\s*(?<author>.+)\\s<(?<authorEMail>.+)>";
+        private const string reflogPattern = "Reflog:\\s*(?<reflog>.+)\\s[(](?<author>.+)\\s<(?<authorEMail>.*)[)]";
+        private const string reflogMessagePattern = "Reflog message:\\s*(?<message>.*)";
+        private const string authorPattern = "Author:\\s*(?<author>.+)\\s<(?<authorEMail>.*)>";
         private const string authorDatePattern = "AuthorDate:\\s*(?<authorDate>.+)";
-        private const string commitPattern = "Commit:\\s*(?<commit>.+)\\s<(?<commitEMail>.+)>";
+        private const string commitPattern = "Commit:\\s*(?<commit>.+)\\s<(?<commitEMail>.*)>";
         private const string commitDatePattern = "CommitDate:\\s*(?<commitDate>.+)";
 
         private const string dateTimeFormat = "ddd MMM d HH:mm:ss yyyy K";
@@ -51,6 +53,10 @@ namespace Ntreev.Crema.Repository.Git
         public string MergeTo { get; set; }
 
         public string MergeFrom { get; set; }
+
+        public string Reflog { get; set; }
+
+        public string ReflogMessage { get; set; }
 
         public string Author { get; set; }
 
@@ -100,6 +106,8 @@ namespace Ntreev.Crema.Repository.Git
             var logInfo = new GitLogInfo();
             ParseCommitID(ref text, ref logInfo);
             ParseMerge(ref text, ref logInfo);
+            ParseReflog(ref text, ref logInfo);
+            ParseReflogMessage(ref text, ref logInfo);
             ParseAuthor(ref text, ref logInfo);
             ParseAuthorDate(ref text, ref logInfo);
             ParseCommit(ref text, ref logInfo);
@@ -131,6 +139,17 @@ namespace Ntreev.Crema.Repository.Git
             }
 
             return itemList.ToArray();
+        }
+
+        public static GitLogInfo[] GetReflogs(string repositoryPath, string branchName)
+        {
+            var logCommand = new GitCommand(repositoryPath, "log")
+            {
+                new GitCommandItem("pretty=fuller"),
+                new GitCommandItem('g'),
+                branchName,
+            };
+            return ParseMany(logCommand.Run());
         }
 
         public static explicit operator LogInfo(GitLogInfo value)
@@ -179,6 +198,30 @@ namespace Ntreev.Crema.Repository.Git
             {
                 logInfo.MergeFrom = string.Empty;
                 logInfo.MergeTo = string.Empty;
+            }
+        }
+
+        private static void ParseReflog(ref string text, ref GitLogInfo logInfo)
+        {
+            if (Match(ref text, reflogPattern) is Match match)
+            {
+                logInfo.Reflog = match.Groups["reflog"].Value;
+            }
+            else
+            {
+                logInfo.Reflog = string.Empty;
+            }
+        }
+
+        private static void ParseReflogMessage(ref string text, ref GitLogInfo logInfo)
+        {
+            if (Match(ref text, reflogMessagePattern) is Match match)
+            {
+                logInfo.ReflogMessage = match.Groups["message"].Value;
+            }
+            else
+            {
+                logInfo.ReflogMessage = string.Empty;
             }
         }
 
@@ -278,7 +321,7 @@ namespace Ntreev.Crema.Repository.Git
 
         private static Match Match(ref string input, string pattern)
         {
-            var match = Regex.Match(input, pattern + Environment.NewLine, RegexOptions.ExplicitCapture);
+            var match = Regex.Match(input, pattern + Environment.NewLine, RegexOptions.ExplicitCapture | RegexOptions.Multiline);
             if (match.Success == true)
             {
                 input = input.Substring(match.Length);

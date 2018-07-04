@@ -15,19 +15,50 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.ServiceModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Ntreev.Crema.Repository.Svn
 {
-    struct SvnCommentInfo
+    struct SvnChangeInfo
     {
-        public string Comment { get; set; }
+        public string Path { get; internal set; }
 
-        public LogPropertyInfo[] Properties { get; set; }
+        public string CopyFromPath { get; internal set; }
+
+        public string CopyFromRevision { get; private set; }
+
+        public string Action { get; private set; }
+
+        public static SvnChangeInfo Parse(XElement element)
+        {
+            var obj = new SvnChangeInfo()
+            {
+                Action = element.Attribute("action").Value,
+                Path = element.Value,
+            };
+
+            {
+                var attr = element.Attribute("copyfrom-path");
+                if (attr != null)
+                {
+                    obj.CopyFromPath = attr.Value;
+                }
+            }
+            {
+                var attr = element.Attribute("copyfrom-rev");
+                if (attr != null)
+                {
+                    obj.CopyFromRevision = attr.Value;
+                }
+            }
+
+            return obj;
+        }
     }
 }

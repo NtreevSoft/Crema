@@ -37,7 +37,7 @@ namespace Ntreev.Crema.Repository.Svn
 
         private void Pack(string sourcePath)
         {
-            var info = SvnInfoEventArgs.Run(sourcePath);
+            var info = SvnInfo.Run(sourcePath);
             var rootPath = info.RepositoryRoot.LocalPath;
             if (rootPath.EndsWith($"{Path.DirectorySeparatorChar}") == true)
                 rootPath = Path.GetDirectoryName(rootPath);
@@ -60,7 +60,7 @@ namespace Ntreev.Crema.Repository.Svn
                     var name = item.Remove(item.Length - PathUtility.Separator.Length);
                     var sourceUri = UriUtility.Combine(tagsUrl, name);
                     var destUri = UriUtility.Combine(branchesUri, name);
-                    var log = SvnLogEventArgs.Run(sourceUri.ToString(), null, 1).First();
+                    var log = SvnLogInfo.Run(sourceUri.ToString(), null, 1).First();
                     var moveCommand = new SvnCommand("mv")
                     {
                         (SvnPath)sourceUri,

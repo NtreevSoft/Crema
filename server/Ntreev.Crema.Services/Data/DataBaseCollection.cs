@@ -36,7 +36,7 @@ namespace Ntreev.Crema.Services.Data
     class DataBaseCollection : ContainerBase<DataBase>, IDataBaseCollection
     {
         internal const string DataBasesString = "databases";
-        
+
         private readonly IRepositoryProvider repositoryProvider;
         private readonly CremaDispatcher repositoryDispatcher;
         private readonly string cachePath;
@@ -65,43 +65,9 @@ namespace Ntreev.Crema.Services.Data
             this.repositoryDispatcher = cremaHost.RepositoryDispatcher;
             this.remotesPath = cremaHost.GetPath(CremaPath.RepositoryDataBases);
             this.basePath = cremaHost.GetPath(CremaPath.DataBases);
-
-            var caches = this.CremaHost.NoCache == true ? new Dictionary<string, DataBaseSerializationInfo>() : this.ReadCaches();
-            var dataBases = repositoryProvider.GetRepositories(this.remotesPath);
-
-            foreach (var item in dataBases)
-            {
-                var dataBase = CreateDataBase();
-                // dataBase.Initialize();
-                this.AddBase(item, dataBase);
-
-                DataBase CreateDataBase()
-                {
-                    if (caches.ContainsKey(item) == false)
-                        return new DataBase(this.CremaHost, item);
-                    return new DataBase(this.CremaHost, item, caches[item]);
-                }
-            }
-
-            var items = this.ToArray<DataBase>();
-
-            //Parallel.ForEach(items, item =>
-            //{
-            //    Trace.WriteLine("begin: "+item.ToString());
-            //    item.Initialize();
-            //    Trace.WriteLine("end: " + item.ToString());
-            //});
-            var d = DateTime.Now;
-            foreach(var item in items)
-            {
-                Trace.WriteLine("begin: " + item.ToString());
-                item.Initialize();
-                Trace.WriteLine("end: " + item.ToString());
-            }
-            Console.WriteLine(DateTime.Now - d);
-
+            this.Initialize();
         }
-
+        
         public void RestoreState(CremaSettings settings)
         {
             if (settings.NoCache == false)
@@ -857,6 +823,26 @@ namespace Ntreev.Crema.Services.Data
                 var filename = FileUtility.Prepare(this.cachePath, $"{dataBase.ID}");
                 var itemPaths = this.Serializer.Serialize(filename, dataBaseState, DataBaseStateSerializationInfo.Settings);
                 FileUtility.Delete(itemPaths);
+            }
+        }
+
+        private void Initialize()
+        {
+            var caches = this.CremaHost.NoCache == true ? new Dictionary<string, DataBaseSerializationInfo>() : this.ReadCaches();
+            var dataBases = this.repositoryProvider.GetRepositories(this.remotesPath);
+
+            foreach (var item in dataBases)
+            {
+                if (caches.ContainsKey(item) == false)
+                    this.AddBase(item, new DataBase(this.CremaHost, item));
+                else
+                    this.AddBase(item, new DataBase(this.CremaHost, item, caches[item]));
+            }
+
+            var items = this.ToArray<DataBase>();
+            foreach (var item in items)
+            {
+                item.Initialize();
             }
         }
 

@@ -20,15 +20,18 @@ namespace Ntreev.Crema.Repository.Git
 
         public static GitBranchCollection Run(string repositoryPath)
         {
-            var text = GitHost.Run(repositoryPath, "branch", "--list");
-            var matches = Regex.Matches(text, "^(?<current>[*])*\\s*(?<branch>\\S+)", RegexOptions.Multiline);
-            var itemList = new List<string>(matches.Count);
-            var currentBranch = string.Empty;
-            for (var i = 0; i < matches.Count; i++)
+            var listCommand = new GitCommand(repositoryPath, "branch")
             {
-                var item = matches[i];
-                var isCurrent = item.Groups["current"].Value == "*";
-                var branchName = item.Groups["branch"].Value;
+                new GitCommandItem("list")
+            };
+            var lines = listCommand.ReadLines(true);
+            var itemList = new List<string>(lines.Length);
+            var currentBranch = string.Empty;
+            foreach (var line in lines)
+            {
+                var match = Regex.Match(line, "^(?<current>[*])*\\s*(?<branch>\\S+)");
+                var isCurrent = match.Groups["current"].Value == "*";
+                var branchName = match.Groups["branch"].Value;
 
                 if (isCurrent == true)
                     currentBranch = branchName;
@@ -40,18 +43,17 @@ namespace Ntreev.Crema.Repository.Git
 
         public static GitBranchCollection GetRemoteBranches(string repositoryPath)
         {
-            var text = GitHost.Run(repositoryPath, "branch", "-a");
-            var matches = Regex.Matches(text, "remotes/origin/(?<branch>[^/]+)$", RegexOptions.Multiline);
-            var itemList = new List<string>(matches.Count);
-            var currentBranch = string.Empty;
-            for (var i = 0; i < matches.Count; i++)
+            var listCommand = new GitCommand(repositoryPath, "branch")
             {
-                var item = matches[i];
-                //var isCurrent = item.Groups["current"].Value == "*";
-                var branchName = item.Groups["branch"].Value.Trim();
-
-                //if (isCurrent == true)
-                //    currentBranch = branchName;
+                new GitCommandItem('a')
+            };
+            var lines = listCommand.ReadLines(true);
+            var itemList = new List<string>(lines.Length);
+            var currentBranch = string.Empty;
+            foreach (var line in lines)
+            {
+                var match = Regex.Match(line, "remotes/origin/(?<branch>[^/]+)$");
+                var branchName = match.Groups["branch"].Value.Trim();
                 itemList.Add(branchName);
             }
 

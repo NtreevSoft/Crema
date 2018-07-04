@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ntreev.Library;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,53 +7,30 @@ using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Repository.Svn
 {
-    class SvnCommandItem
+    class SvnCommandItem : CommandOption
     {
-        private object key;
-        private object value;
-
         public SvnCommandItem(string name)
+            : base(name)
         {
-            this.key = name;
+            
         }
 
         public SvnCommandItem(char name)
+            : base(name)
         {
-            this.key = name;
+            
         }
 
         public SvnCommandItem(string name, object value)
+            : base(name, value)
         {
-            this.key = name;
-            this.value = value;
+            
         }
 
         public SvnCommandItem(char name, object value)
+            : base(name, value)
         {
-            this.key = name;
-            this.value = value;
-        }
-
-        public override string ToString()
-        {
-            if (this.key is string s)
-            {
-                if (this.value == null)
-                    return $"--{this.key}";
-                else
-                    return $"--{this.key} {this.value}";
-            }
-            else if (this.key is char c)
-            {
-                if (this.value == null)
-                    return $"-{this.key}";
-                else
-                    return $"-{this.key} {this.value}";
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
+            
         }
 
         public static SvnCommandItem FromMessage(string message)

@@ -46,16 +46,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SvnChangeItem.cs" />
+    <Compile Include="SvnChangeInfo.cs" />
     <Compile Include="SvnAdminCommand.cs" />
     <Compile Include="SvnCommand.cs" />
     <Compile Include="SvnCommandItem.cs" />
-    <Compile Include="SvnCommentInfo.cs" />
     <Compile Include="SvnPath.cs" />
     <Compile Include="SvnRepositoryMigrator.cs" />
-    <Compile Include="SvnStatusEventArgs.cs" />
-    <Compile Include="SvnInfoEventArgs.cs" />
-    <Compile Include="SvnLogEventArgs.cs" />
+    <Compile Include="SvnStatusInfo.cs" />
+    <Compile Include="SvnInfo.cs" />
+    <Compile Include="SvnLogInfo.cs" />
     <Compile Include="SvnPropertyValue.cs" />
     <Compile Include="SvnRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -29,7 +29,7 @@ using System.Xml.XPath;
 
 namespace Ntreev.Crema.Repository.Svn
 {
-    struct SvnStatusEventArgs
+    struct SvnStatusInfo
     {
         public string Path { get; set; }
 
@@ -37,7 +37,7 @@ namespace Ntreev.Crema.Repository.Svn
 
         public RepositoryItemStatus Status { get; set; }
 
-        public static SvnStatusEventArgs[] Run(params string[] paths)
+        public static SvnStatusInfo[] Run(params string[] paths)
         {
             var statusCommand = new SvnCommand("status")
             {
@@ -50,19 +50,19 @@ namespace Ntreev.Crema.Repository.Svn
             return Parse(statusCommand.Run());
         }
 
-        public static SvnStatusEventArgs[] Parse(string text)
+        public static SvnStatusInfo[] Parse(string text)
         {
             using (var sr = new StringReader(text))
             {
                 var doc = XDocument.Load(sr);
-                var itemList = new List<SvnStatusEventArgs>();
+                var itemList = new List<SvnStatusInfo>();
 
                 foreach (var element in doc.XPathSelectElements("/status/target/entry"))
                 {
                     var path = element.Attribute("path").Value;
                     var status = element.XPathSelectElement("wc-status").Attribute("item").Value;
 
-                    var item = new SvnStatusEventArgs()
+                    var item = new SvnStatusInfo()
                     {
                         Path = path,
                     };
