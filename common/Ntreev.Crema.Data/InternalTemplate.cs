@@ -447,6 +447,24 @@ namespace Ntreev.Crema.Data
 
                             if (this.targetTable != null && this.IsDiffMode == false)
                                 InternalDataSet.ValidateSetDataTypeName(this.targetTable.DataSet, row.DataTypeName);
+
+                            if (e.Row is InternalTemplateColumn c && c.TargetColumn == null && this.targetTable != null)
+                            {
+                                var dataColumn = new InternalDataColumn()
+                                {
+                                    ColumnName = c.ColumnName,
+
+                                    IsKey = c.IsKey,
+                                    Unique = c.Unique,
+                                    Comment = c.Comment,
+                                    DefaultValue = c.DefaultValue ?? (object)DBNull.Value,
+                                    AutoIncrement = c.AutoIncrement,
+                                    AllowDBNull = c.AllowNull,
+                                    Tags = c.Tags,
+                                    ReadOnly = c.ReadOnly,
+                                };
+                                this.TargetTable.ValidateAddColumn(dataColumn);
+                            }
                         }
                         break;
                 }
