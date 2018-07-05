@@ -58,7 +58,15 @@ namespace Ntreev.Crema.Repository.Git
 
             if (Directory.Exists(settings.WorkingPath) == false)
             {
-                GitServerHost.Run("clone", baseUri.ToString().ToGitPath(), "-b", repositoryName, settings.WorkingPath.ToGitPath(), "--single-branch");
+                var cloneCommand = new GitCommand(null, "clone")
+                {
+                    (GitPath)baseUri,
+                    new GitCommandItem('b'),
+                    repositoryName,
+                    (GitPath)settings.WorkingPath,
+                    new GitCommandItem("single-branch")
+                };
+                cloneCommand.Run();
             }
             else
             {
@@ -74,12 +82,18 @@ namespace Ntreev.Crema.Repository.Git
             var baseUri = new Uri(basePath);
             var repositoryPath = baseUri.LocalPath;
             var repositoryName = Path.GetFileName(initPath);
-            GitHost.Run(repositoryPath, "checkout --orphan", repositoryName);
-            GitHost.Run(repositoryPath, "rm -rf .");
-            //GitHost.Run(repositoryPath, "commit --allow-empty -m \"root commit\" --author", $"\"{author} <>\"");
+            var checkoutCommand = new GitCommand(repositoryPath, "checkout")
+            {
+                new GitCommandItem("orphan"), repositoryName
+            };
+            checkoutCommand.Run();
+            var removeCommand = new GitCommand(repositoryPath, "rm")
+            {
+                "-rf", "."
+            };
+            removeCommand.Run();
 
             DirectoryUtility.Copy(initPath, repositoryPath);
-
             foreach (var item in GetEmptyDirectories(repositoryPath))
             {
                 File.WriteAllText(Path.Combine(item, KeepExtension), string.Empty);
@@ -96,17 +110,14 @@ namespace Ntreev.Crema.Repository.Git
             }
             addCommand.Run();
 
-            //var query = from item in DirectoryUtility.GetAllFiles(repositoryPath, "*", true)
-            //            select item.ToGitPath();
-
-            //var argList = new List<object>()
-            //{
-            //    "add",
-            //};
-            //argList.AddRange(query);
-            //GitHost.Run(repositoryPath, argList.ToArray());
-
-            GitHost.Run(repositoryPath, "commit -m \"first commit\"", "--author", $"\"{author} <>\"");
+            var commitCommand = new GitCommand(repositoryPath, "commit")
+            {
+                GitCommandItem.FromMessage(comment),
+                GitCommandItem.FromAuthor(author),
+            };
+            commitCommand.Run();
+            this.SetID(repositoryPath, repositoryName, Guid.NewGuid());
+            this.SetDescription(repositoryPath, repositoryName, comment);
         }
 
         public void DeleteRepository(string author, string basePath, string repositoryName, string comment, params LogPropertyInfo[] properties)
@@ -124,14 +135,21 @@ namespace Ntreev.Crema.Repository.Git
                 this.CheckoutBranch(repositoryPath, nextBranchName);
             }
 
-            GitHost.Run(repositoryPath, "branch -D", branchName);
+            var deleteCommand = new GitCommand(repositoryPath, "branch")
+            {
+                new GitCommandItem('D'),
+                branchName
+            };
+            deleteCommand.Run();
+            this.UnsetID(repositoryPath, repositoryName);
+            this.UnsetDescription(repositoryPath, repositoryName);
         }
 
         public LogInfo[] GetLog(string basePath, string repositoryName, int count)
         {
             var baseUri = new Uri(basePath);
             var repositoryPath = baseUri.LocalPath;
-            var logs = GitLogInfo.RunOnBranch(repositoryPath, repositoryName, $"--max-count={count}");
+            var logs = GitLogInfo.RunOnBranch(repositoryPath, repositoryName, count);
             return logs.Select(item => (LogInfo)item).ToArray();
         }
 
@@ -139,14 +157,20 @@ namespace Ntreev.Crema.Repository.Git
         {
             var baseUri = new Uri(basePath);
             var repositoryPath = baseUri.LocalPath;
-            var text = GitHost.Run(repositoryPath, "branch", "--list");
-            var matches = Regex.Matches(text, "^[*]*\\s*(\\S+)", RegexOptions.Multiline);
-            var itemList = new List<string>(matches.Count);
-            for (var i = 0; i < matches.Count; i++)
+            var branchCommand = new GitCommand(repositoryPath, "branch")
             {
-                var item = matches[i];
-                var branchName = item.Groups[1].Value;
-                itemList.Add(branchName);
+                new GitCommandItem("list")
+            };
+            var lines = branchCommand.ReadLines();
+            var itemList = new List<string>(lines.Length);
+            foreach (var line in lines)
+            {
+                var match = Regex.Match(line, "^[*]*\\s*(\\S+)");
+                if (match.Success)
+                {
+                    var branchName = match.Groups[1].Value;
+                    itemList.Add(branchName);
+                }
             }
 
             return itemList.ToArray();
@@ -157,8 +181,7 @@ namespace Ntreev.Crema.Repository.Git
             var baseUri = new Uri(basePath);
             var repositoryInfo = new RepositoryInfo();
             var repositoryPath = baseUri.LocalPath;
-            var text = GitHost.Run(repositoryPath, "log", $"{repositoryName}", "--pretty=fuller", "--max-count=1");
-            var logItems = GitLogInfo.ParseMany(text);
+            var logItems = GitLogInfo.RunOnBranch(repositoryPath, $"{repositoryName}", 1);
             var refLogItems = GitLogInfo.GetReflogs(basePath, repositoryName);
 
             var firstLog = refLogItems.Last();
@@ -170,17 +193,24 @@ namespace Ntreev.Crema.Repository.Git
             repositoryInfo.CreationInfo = new SignatureDate(firstLog.Author, firstLog.AuthorDate);
             repositoryInfo.ModificationInfo = new SignatureDate(latestLog.Author, latestLog.AuthorDate);
 
-            try
+            if (this.HasID(repositoryPath, repositoryName) == false)
             {
-                var description = GitHost.Run(repositoryPath, "config", $"branch.{repositoryName}.description");
-                var info = propertyDeserializer.Deserialize<GitBranchDescription>(description);
-                repositoryInfo.ID = info.ID;
+                this.SetID(repositoryPath, repositoryName, Guid.NewGuid());
             }
-            catch
-            {
-                repositoryInfo.ID = Guid.NewGuid();
-                this.SetID(repositoryPath, repositoryName, repositoryInfo.ID);
-            }
+            repositoryInfo.ID = this.GetID(repositoryPath, repositoryName);
+            //try
+            //{
+
+
+            //    var description = GitHost.Run(repositoryPath, "config", $"branch.{repositoryName}.description");
+            //    var info = propertyDeserializer.Deserialize<GitBranchDescription>(description);
+            //    repositoryInfo.ID = info.ID;
+            //}
+            //catch
+            //{
+            //    repositoryInfo.ID = Guid.NewGuid();
+            //    this.SetID(repositoryPath, repositoryName, repositoryInfo.ID);
+            //}
 
             return repositoryInfo;
         }
@@ -272,6 +302,10 @@ namespace Ntreev.Crema.Repository.Git
                 newRepositoryName
             };
             renameCommand.Run();
+            var id = this.GetID(repositoryPath, repositoryName);
+            var description = this.GetDescription(repositoryPath, repositoryName);
+            this.SetID(repositoryPath, newRepositoryName, id);
+            this.SetDescription(repositoryPath, newRepositoryName, description);
         }
 
         public string GenerateComment(string comment, params LogPropertyInfo[] properties)
@@ -324,14 +358,88 @@ namespace Ntreev.Crema.Repository.Git
 
         private void SetID(string repositoryPath, string repositoryName, Guid guid)
         {
-            var info = new GitBranchDescription() { ID = guid, };
-            var props = propertySerializer.Serialize(info);
+            var configCommand = new GitCommand(repositoryPath, "config")
+            {
+                $"branch.{repositoryName}.id",
+                $"{guid}"
+            };
+            configCommand.Run();
+        }
+
+        private void UnsetID(string repositoryPath, string repositoryName)
+        {
+            if (this.HasID(repositoryPath, repositoryName) == false)
+                return;
+            var configCommand = new GitCommand(repositoryPath, "config")
+            {
+                new GitCommandItem("unset"),
+                $"branch.{repositoryName}.id",
+            };
+            configCommand.Run();
+        }
+
+        private bool HasID(string repositoryPath, string repositoryName)
+        {
+            var configCommand = new GitCommand(repositoryPath, "config")
+            {
+                new GitCommandItem("get"),
+                $"branch.{repositoryName}.id",
+            };
+            configCommand.ThrowOnError = false;
+            return configCommand.ReadLine() != null;
+        }
+
+        private Guid GetID(string repositoryPath, string repositoryName)
+        {
+            var configCommand = new GitCommand(repositoryPath, "config")
+            {
+                new GitCommandItem("get"),
+                $"branch.{repositoryName}.id",
+            };
+            return Guid.Parse(configCommand.ReadLine());
+        }
+
+        private void SetDescription(string repositoryPath, string repositoryName, string description)
+        {
             var configCommand = new GitCommand(repositoryPath, "config")
             {
                 $"branch.{repositoryName}.description",
-                (GitString)props,
+                (GitString)description
             };
             configCommand.Run();
+        }
+
+        private void UnsetDescription(string repositoryPath, string repositoryName)
+        {
+            if (this.HasDescription(repositoryPath, repositoryName) == false)
+                return;
+            var configCommand = new GitCommand(repositoryPath, "config")
+            {
+                new GitCommandItem("unset"),
+                $"branch.{repositoryName}.description",
+            };
+            configCommand.Run();
+        }
+
+        private bool HasDescription(string repositoryPath, string repositoryName)
+        {
+            var configCommand = new GitCommand(repositoryPath, "config")
+            {
+                new GitCommandItem("get"),
+                $"branch.{repositoryName}.description",
+            };
+            configCommand.ThrowOnError = false;
+            return configCommand.ReadLine() != null;
+        }
+
+        private string GetDescription(string repositoryPath, string repositoryName)
+        {
+            var configCommand = new GitCommand(repositoryPath, "config")
+            {
+                new GitCommandItem("get"),
+                $"branch.{repositoryName}.description",
+            };
+            return configCommand.ReadLine();
         }
 
         private string[] GetEmptyDirectories(string path)

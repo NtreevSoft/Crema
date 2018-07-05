@@ -35,7 +35,7 @@ namespace Ntreev.Crema.Repository.Git
         private const string commitIDPattern = "commit\\s*(?<commitID>[a-f0-9]{40})";
         private const string mergePattern = "Merge:\\s*(?<mergeFrom>[a-f0-9]{7})\\s(?<mergeTo>[a-f0-9]{7})";
         private const string reflogPattern = "Reflog:\\s*(?<reflog>.+)\\s[(](?<author>.+)\\s<(?<authorEMail>.*)[)]";
-        private const string reflogMessagePattern = "Reflog message:\\s*(?<message>.*)";
+        private const string reflogMessagePattern = "Reflog message:(?<message>.*)";
         private const string authorPattern = "Author:\\s*(?<author>.+)\\s<(?<authorEMail>.*)>";
         private const string authorDatePattern = "AuthorDate:\\s*(?<authorDate>.+)";
         private const string commitPattern = "Commit:\\s*(?<commit>.+)\\s<(?<commitEMail>.*)>";
@@ -70,35 +70,41 @@ namespace Ntreev.Crema.Repository.Git
 
         public GitPropertyValue[] Properties { get; internal set; }
 
-        public static GitLogInfo[] Run(string repositoryPath, params object[] args)
+        public static GitLogInfo[] Run(string repositoryPath, int maxCount)
         {
-            var argList = new List<object>() { "log", "--pretty=fuller", };
-            argList.AddRange(args);
-            var text = GitHost.Run(repositoryPath, argList.ToArray());
-            return ParseMany(text);
+            var logCommand = new GitCommand(repositoryPath, "log")
+            {
+                GitCommandItem.FromPretty("fuller"),
+                GitCommandItem.FromMaxCount(maxCount),
+            };
+            return ParseMany(logCommand.Run());
         }
 
-        public static GitLogInfo[] RunOnBranch(string repositoryPath, string branchName, params object[] args)
+        public static GitLogInfo[] RunOnBranch(string repositoryPath, string branchName, int maxCount)
         {
-            var argList = new List<object>() { "log", $"{branchName}", "--pretty=fuller", };
-            argList.AddRange(args);
-            var text = GitHost.Run(repositoryPath, argList.ToArray());
-            return ParseMany(text);
+            var logCommand = new GitCommand(repositoryPath, "log")
+            {
+                $"{branchName}",
+                GitCommandItem.FromPretty("fuller"),
+                GitCommandItem.FromMaxCount(maxCount),
+            };
+            return ParseMany(logCommand.Run());
         }
 
-        public static GitLogInfo[] RunWithPaths(string repositoryPath, string revision, string[] paths, params object[] args)
+        public static GitLogInfo[] RunWithPaths(string repositoryPath, string revision, string[] paths, int count)
         {
-            var argList = new List<object>() { "log", revision ?? "head", "--pretty=fuller" };
-            if (paths.Length == 1)
-                argList.Add("--follow");
-            argList.AddRange(args);
-            argList.Add("--");
+            var logCommand = new GitCommand(repositoryPath, "log")
+            {
+                revision ?? "head",
+                GitCommandItem.FromPretty("fuller"),
+                GitCommandItem.FromMaxCount(count),
+                new GitCommandItem(string.Empty)
+            };
             foreach (var item in paths)
             {
-                argList.Add(item.ToGitPath());
+                logCommand.Add((GitPath)item);
             }
-            var text = GitHost.Run(repositoryPath, argList.ToArray());
-            return ParseMany(text);
+            return ParseMany(logCommand.Run());
         }
 
         public static GitLogInfo Parse(string text)
@@ -217,7 +223,7 @@ namespace Ntreev.Crema.Repository.Git
         {
             if (Match(ref text, reflogMessagePattern) is Match match)
             {
-                logInfo.ReflogMessage = match.Groups["message"].Value;
+                logInfo.ReflogMessage = match.Groups["message"].Value.TrimStart();
             }
             else
             {

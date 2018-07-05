@@ -58,11 +58,12 @@ namespace Ntreev.Crema.Repository.Git
             return itemList.ToArray();
         }
 
-        public static GitItemInfo[] Run(string repositoryPath, string filename)
-        {
-            var text = GitHost.Run(repositoryPath, "git log --follow --pretty=format:%H --name-status", filename.ToGitPath());
-            return Parse(text);
-        }
+        //public static GitItemInfo[] Run(string repositoryPath, string filename)
+        //{
+        //    var logCommand = new GitCommand()
+        //    var text = GitHost.Run(repositoryPath, "git log --follow --pretty=format:%H --name-status", filename.ToGitPath());
+        //    return Parse(text);
+        //}
 
         public string Status { get; set; }
 

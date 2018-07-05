@@ -30,12 +30,15 @@ namespace Ntreev.Crema.Repository.Git
             foreach (var line in lines)
             {
                 var match = Regex.Match(line, "^(?<current>[*])*\\s*(?<branch>\\S+)");
-                var isCurrent = match.Groups["current"].Value == "*";
-                var branchName = match.Groups["branch"].Value;
+                if (match.Success == true)
+                {
+                    var isCurrent = match.Groups["current"].Value == "*";
+                    var branchName = match.Groups["branch"].Value;
 
-                if (isCurrent == true)
-                    currentBranch = branchName;
-                itemList.Add(branchName);
+                    if (isCurrent == true)
+                        currentBranch = branchName;
+                    itemList.Add(branchName);
+                }
             }
 
             return new GitBranchCollection(itemList, currentBranch);
@@ -53,8 +56,11 @@ namespace Ntreev.Crema.Repository.Git
             foreach (var line in lines)
             {
                 var match = Regex.Match(line, "remotes/origin/(?<branch>[^/]+)$");
-                var branchName = match.Groups["branch"].Value.Trim();
-                itemList.Add(branchName);
+                if (match.Success == true)
+                {
+                    var branchName = match.Groups["branch"].Value.Trim();
+                    itemList.Add(branchName);
+                }
             }
 
             return new GitBranchCollection(itemList, currentBranch);

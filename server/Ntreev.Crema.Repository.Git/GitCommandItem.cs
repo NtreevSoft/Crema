@@ -38,6 +38,23 @@ namespace Ntreev.Crema.Repository.Git
             return new GitCommandItem('m', (GitString)message);
         }
 
+        public static GitCommandItem FromAuthor(string author)
+        {
+            return new GitCommandItem("author", (GitString)$"{(GitAuthor)author}");
+        }
+
+        public static GitCommandItem FromPretty(string format)
+        {
+            return new GitCommandItem($"pretty={format}");
+        }
+
+        public static GitCommandItem FromMaxCount(int count)
+        {
+            return new GitCommandItem($"max-count={count}");
+        }
+
+        public static readonly GitCommandItem Separator = new GitCommandItem(string.Empty);
+
         //public static GitCommandItem FromUsername(string username)
         //{
         //    return new GitCommandItem("username", username);

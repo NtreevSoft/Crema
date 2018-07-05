@@ -47,14 +47,20 @@ namespace Ntreev.Crema.Repository.Git
             this.transactionPath = transactionPath;
             this.repositoryInfo = repositoryInfo;
 
-            var items = GitHost.Run(this.repositoryPath, "status", "-s").Trim();
-
-            if (items != string.Empty)
+            var statusCommand = new GitCommand(this.repositoryPath, "status")
+            {
+                new GitCommandItem('s'),
+            };
+            var items = statusCommand.ReadLines(true);
+            if (items.Length != 0)
             {
                 var sb = new StringBuilder();
                 sb.AppendLine($"Repository is dirty. Please fix the problem before running the service.");
                 sb.AppendLine();
-                sb.AppendLine(items);
+                foreach (var item in items)
+                {
+                    sb.AppendLine(item);
+                }
                 throw new Exception($"{sb}");
             }
         }
@@ -65,19 +71,23 @@ namespace Ntreev.Crema.Repository.Git
 
         public void Add(string path)
         {
+            var addCommand = new GitCommand(this.repositoryPath, "add");
             if (DirectoryUtility.IsDirectory(path) == true)
             {
                 var keepPath = Path.Combine(path, GitRepositoryProvider.KeepExtension);
                 if (File.Exists(keepPath) == false)
                 {
                     File.WriteAllText(keepPath, string.Empty);
-                    GitHost.Run(this.repositoryPath, "add", keepPath.ToGitPath());
+                    addCommand.Add((GitPath)keepPath);
                 }
             }
             else
             {
-                GitHost.Run(this.repositoryPath, "add", path.ToGitPath());
+                addCommand.Add((GitPath)path);
             }
+
+            if (addCommand.Items.Any() == true)
+                addCommand.Run();
         }
 
         public void BeginTransaction(string author, string name)
@@ -104,18 +114,28 @@ namespace Ntreev.Crema.Repository.Git
 
             //var propText = string.Join(" ", properties.Select(item => $"--with-revprop \"{propertyPrefix}{item.Key}={item.Value}\""));
 
-            this.logService?.Debug($"repository committing {this.repositoryPath.ToGitPath()}");
+            this.logService?.Debug($"repository committing {(GitPath)this.repositoryPath}");
             var result = string.Empty;
-            var commentPath = PathUtility.GetTempFileName();
+            //var commentPath = PathUtility.GetTempFileName();
             try
             {
-                var status = GitHost.Run(this.repositoryPath, "status", "-s").Trim();
-                if (status != string.Empty)
+                var statusCommand = new GitCommand(this.repositoryPath, "status")
                 {
-                    File.WriteAllText(commentPath, commentMessage);
-                    result = GitHost.Run(this.repositoryPath, "commit", "-a", "--file", $"\"{commentPath}\"");
-                    GitHost.Run(this.repositoryPath, "pull");
-                    GitHost.Run(this.repositoryPath, "push");
+                    new GitCommandItem('s')
+                };
+                var items = statusCommand.ReadLines(true);
+                if (items.Length != 0)
+                {
+                    var commitCommand = new GitCommand(this.repositoryPath, "commit")
+                    {
+                        new GitCommandItem('a'),
+                        GitCommandItem.FromMessage(comment),
+                    };
+                    result = commitCommand.Run();
+                    var pullCommand = new GitCommand(this.repositoryPath, "pull");
+                    pullCommand.Run();
+                    var pushCommand = new GitCommand(this.repositoryPath, "push");
+                    pushCommand.Run();
                 }
             }
             catch (Exception e)
@@ -124,15 +144,15 @@ namespace Ntreev.Crema.Repository.Git
             }
             finally
             {
-                FileUtility.Delete(commentPath);
+                //FileUtility.Delete(commentPath);
             }
 
             if (result.Trim() != string.Empty)
             {
-                this.logService?.Debug($"repository committed {this.repositoryPath.ToGitPath()}");
+                this.logService?.Debug($"repository committed {(GitPath)this.repositoryPath}");
                 this.logService?.Debug(result);
                 var userID = properties.FirstOrDefault(item => item.Key == LogPropertyInfo.UserIDKey).Value;
-                var log = GitLogInfo.Run(this.repositoryPath, "--max-count=1").First();
+                var log = GitLogInfo.Run(this.repositoryPath, 1).First();
                 this.repositoryInfo.Revision = log.CommitID;
                 this.repositoryInfo.ModificationInfo = new SignatureDate(userID ?? string.Empty, log.CommitDate);
             }
@@ -150,21 +170,26 @@ namespace Ntreev.Crema.Repository.Git
             }
             else
             {
+                var copyCommand = new GitCommand(this.repositoryPath, "add")
+                {
+                    (GitPath)toPath
+                };
                 File.Copy(srcPath, toPath);
-                GitHost.Run(this.repositoryPath, "add", toPath.ToGitPath());
+                copyCommand.Run();
             }
         }
 
         public void Delete(string path)
         {
+            var removeCommand = new GitCommand(this.repositoryPath, "rm")
+            {
+                (GitPath)path,
+            };
             if (Directory.Exists(path) == true)
             {
-                GitHost.Run(this.repositoryPath, "rm", path.ToGitPath(), "-r");
+                removeCommand.Add(new GitCommandItem('r'));
             }
-            else
-            {
-                GitHost.Run(this.repositoryPath, "rm", path.ToGitPath());
-            }
+            removeCommand.Run();
         }
 
         public void Dispose()
@@ -190,7 +215,15 @@ namespace Ntreev.Crema.Repository.Git
                 if (DirectoryUtility.IsEmpty(exportPath) == true)
                     new CremaDataSet().WriteToDirectory(exportPath);
                 var relativePath = UriUtility.MakeRelativeOfDirectory(this.repositoryPath, path);
-                GitHost.Run(this.repositoryPath, "archive", $"--output=\"{tempPath}\"", "--format=zip", revision, "--", path.ToGitPath());
+                var archiveCommand = new GitCommand(this.repositoryPath, "archive")
+                {
+                    new GitCommandItem($"output={(GitPath)tempPath}"),
+                    new GitCommandItem("format=zip"),
+                    revision,
+                    GitCommandItem.Separator,
+                    (GitPath)path,
+                };
+                archiveCommand.Run();
                 ZipFile.ExtractToDirectory(tempPath, exportPath);
                 var exportUri = new Uri(UriUtility.Combine(exportPath, relativePath));
                 return exportUri.LocalPath;
@@ -203,7 +236,7 @@ namespace Ntreev.Crema.Repository.Git
 
         public LogInfo[] GetLog(string[] paths, string revision, int count)
         {
-            var logs = GitLogInfo.RunWithPaths(this.repositoryPath, revision, paths, $"--max-count={count}");
+            var logs = GitLogInfo.RunWithPaths(this.repositoryPath, revision, paths, count);
             return logs.Select(item => (LogInfo)item).ToArray();
         }
 
@@ -221,12 +254,21 @@ namespace Ntreev.Crema.Repository.Git
 
         public void Move(string srcPath, string toPath)
         {
-            GitHost.Run(this.repositoryPath, "mv", srcPath.ToGitPath(), toPath.ToGitPath());
+            var moveCommand = new GitCommand(this.repositoryPath, "mv")
+            {
+                (GitPath)srcPath,
+                (GitPath)toPath,
+            };
+            moveCommand.Run();
         }
 
         public void Revert()
         {
-            GitHost.Run(this.repositoryPath, "reset", "--hard");
+            var resetCommand = new GitCommand(this.repositoryPath, "reset")
+            {
+                new GitCommandItem("hard")
+            };
+            resetCommand.Run();
         }
 
         public void Revert(string revision)

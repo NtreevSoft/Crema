@@ -303,9 +303,9 @@ namespace Ntreev.Crema.Services
             switch (pathType)
             {
                 case CremaPath.RepositoryUsers:
-                    return new Uri(Path.Combine(Path.Combine(basePath, CremaString.Repository, CremaString.Users), Path.Combine(paths))).ToString();
+                    return Path.Combine(Path.Combine(basePath, CremaString.Repository, CremaString.Users), Path.Combine(paths));
                 case CremaPath.RepositoryDataBases:
-                    return new Uri(Path.Combine(Path.Combine(basePath, CremaString.Repository, CremaString.DataBases), Path.Combine(paths))).ToString();
+                    return Path.Combine(Path.Combine(basePath, CremaString.Repository, CremaString.DataBases), Path.Combine(paths));
                 default:
                     return Path.Combine(Path.Combine(basePath, $"{pathType}".ToLower()), Path.Combine(paths));
             }

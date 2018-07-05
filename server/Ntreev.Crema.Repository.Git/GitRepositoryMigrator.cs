@@ -37,54 +37,41 @@ namespace Ntreev.Crema.Repository.Git
                 repositoryUri = Regex.Replace(repositoryUri, "(file:///\\w):(.+)", "$1$2");
             }
 
-            this.Run("svn clone", repositoryUri, repositoryPath2.WrapQuot(), "-T trunk -b branches -b tags");
-
-            var branches = GitBranchCollection.GetRemoteBranches(repositoryPath2);
-            var b = GitBranchCollection.Run(repositoryPath2);
-
-            foreach (var item in branches)
+            var cloneCommand = new GitCommand(null, "svn clone")
             {
-                if (item != "trunk" && b.Contains(item) == false)
+                (GitPath)repositoryUri,
+                (GitPath)repositoryPath2,
+                new GitCommandItem('T', "trunk"),
+                new GitCommandItem('b', "branches"),
+                new GitCommandItem('b', "tags")
+            };
+            cloneCommand.OutputDataReceived += (s, e) => Console.WriteLine(e.Data);
+            cloneCommand.Run();
+
+            var remoteBranches = GitBranchCollection.GetRemoteBranches(repositoryPath2);
+            var branches = GitBranchCollection.Run(repositoryPath2);
+
+            foreach (var item in remoteBranches)
+            {
+                if (item != "trunk" && branches.Contains(item) == false)
                 {
-                    GitHost.Run(repositoryPath2, "checkout", "-b", item, $"remotes/origin/{item}");
+                    var checkoutCommand = new GitCommand(repositoryPath2, "checkout")
+                    {
+                        new GitCommandItem('b'),
+                        item,
+                        $"remotes/origin/{item}"
+                    };
+                    checkoutCommand.Run();
                 }
             }
 
-
-            return repositoryPath2;
-            return repositoryPath2;
-        }
-
-        private string Run(params object[] args)
-        {
-            var outputBuilder = new StringBuilder();
-            var errorBuilder = new StringBuilder();
-            var process = new Process();
-            process.StartInfo.UseShellExecute = false;
-            process.StartInfo.FileName = "git";
-            process.StartInfo.CreateNoWindow = true;
-            process.StartInfo.Arguments = string.Join(" ", args);
-            process.StartInfo.RedirectStandardOutput = true;
-            process.StartInfo.RedirectStandardError = true;
-            process.StartInfo.StandardOutputEncoding = Encoding.UTF8;
-            process.OutputDataReceived += (s, e) =>
+            var configCommand = new GitCommand(repositoryPath2, "config")
             {
-                Console.WriteLine(e.Data);
-                outputBuilder.AppendLine(e.Data);
+                "receive.denyCurrentBranch",
+                "ignore"
             };
-            process.ErrorDataReceived += (s, e) =>
-            {
-                errorBuilder.AppendLine(e.Data);
-            };
-            process.Start();
-            process.BeginOutputReadLine();
-            process.BeginErrorReadLine();
-            process.WaitForExit();
-
-            if (process.ExitCode != 0)
-                throw new Exception(errorBuilder.ToString());
-
-            return outputBuilder.ToString();
+            configCommand.Run();
+            return repositoryPath2;
         }
     }
 }

@@ -58,15 +58,12 @@ namespace Ntreev.Crema.Repository.Git
 
         public static GitItemStatusInfo[] Run(string repositoryPath, params string[] paths)
         {
-            var argList = new List<object>()
+            var statusCommand = new GitCommand(repositoryPath, "status")
             {
-                "status", "-s", "--"
+                new GitCommandItem('s'),
+                new GitCommandItem(string.Empty)
             };
-
-            argList.AddRange(paths.ToArray());
-
-            var text = GitHost.Run(repositoryPath, argList.ToArray());
-            return Parse(text);
+            return Parse(statusCommand.Run());
         }
 
         public string X { get; set; }

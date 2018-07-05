@@ -47,6 +47,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GitAuthor.cs" />
     <Compile Include="GitBranchCollection.cs" />
     <Compile Include="GitBranchDescription.cs" />
     <Compile Include="GitCommand.cs" />
@@ -54,16 +55,12 @@
     <Compile Include="GitItemStatusInfo.cs" />
     <Compile Include="GitItemInfo.cs" />
     <Compile Include="GitPath.cs" />
-    <Compile Include="GitRefLogInfo.cs" />
     <Compile Include="GitRepository.cs" />
-    <Compile Include="GitServerHost.cs" />
     <Compile Include="GitRepositoryProvider.cs" />
     <Compile Include="GitString.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="GitHost.cs" />
     <Compile Include="GitLogInfo.cs" />
     <Compile Include="GitPropertyValue.cs" />
-    <Compile Include="GitPathUtility.cs" />
     <Compile Include="GitRepositoryMigrator.cs" />
   </ItemGroup>
   <ItemGroup>

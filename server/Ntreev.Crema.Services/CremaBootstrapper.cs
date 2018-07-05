@@ -158,18 +158,18 @@ namespace Ntreev.Crema.Services
                 {
                     if (UpgradeRepository(repositoryProvider, serializer, repositorySettings) == true)
                     {
-                        logService.Info($"[{i}/{items.Length}]{item}: upgraded");
+                        logService.Info($"[{i + 1}/{items.Length}]{item}: upgraded");
                     }
                     else
                     {
-                        logService.Info($"[{i}/{items.Length}]{item}: skip");
+                        logService.Info($"[{i + 1}/{items.Length}]{item}: skip");
                     }
                     DirectoryUtility.Delete(tempPath);
                 }
                 catch (Exception e)
                 {
                     logService.Error(e);
-                    logService.Info($"[{i}/{items.Length}]{item}: fail");
+                    logService.Info($"[{i + 1}/{items.Length}]{item}: fail");
                 }
             }
         }
