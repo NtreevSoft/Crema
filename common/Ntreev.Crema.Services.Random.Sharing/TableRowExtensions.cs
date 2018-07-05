@@ -86,7 +86,7 @@ namespace Ntreev.Crema.Services.Random
             if (dataTable.Columns[columnName].Unique == true && value is TimeSpan == false)
             {
                 var text = $"{value}";
-                if (value is string || value is DateTime)
+                if (value is string || value is DateTime || value is Guid)
                     text = $"'{value}'";
                 var items = dataTable.Select($"{columnName}={text}");
                 if (items.Any() == true)

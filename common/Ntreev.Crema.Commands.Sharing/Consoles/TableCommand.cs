@@ -132,6 +132,13 @@ namespace Ntreev.Crema.Commands.Consoles
                     return this.GetTableNames();
                 }
             }
+            else if (methodDescriptor.DescriptorName == nameof(Delete))
+            {
+                if (memberDescriptor.DescriptorName == "tableName")
+                {
+                    return this.GetTableNames();
+                }
+            }
 
             return base.GetCompletions(methodDescriptor, memberDescriptor, find);
         }
@@ -505,12 +512,12 @@ namespace Ntreev.Crema.Commands.Consoles
                 if (contains == false)
                     content.EnterEdit(authentication);
             });
-            domain.Dispatcher.Invoke(()=> domain.UserRemoved += Domain_UserRemoved);
+            domain.Dispatcher.Invoke(() => domain.UserRemoved += Domain_UserRemoved);
 
             this.CommandContext.Category = nameof(ITableContent);
             this.CommandContext.Target = content;
         }
-        
+
         [CommandProperty("force")]
         public bool IsForce
         {

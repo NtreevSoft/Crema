@@ -45,7 +45,7 @@ namespace Ntreev.Crema.Repository.Svn
 
         public static SvnCommandItem FromEncoding(Encoding encoding)
         {
-            return new SvnCommandItem("encoding", encoding.ToString());
+            return new SvnCommandItem("encoding", encoding.HeaderName);
         }
 
         public static SvnCommandItem FromRevision(string revision)

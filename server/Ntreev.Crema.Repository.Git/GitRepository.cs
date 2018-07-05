@@ -130,6 +130,7 @@ namespace Ntreev.Crema.Repository.Git
                     {
                         new GitCommandItem('a'),
                         GitCommandItem.FromMessage(comment),
+                        GitCommandItem.FromAuthor(author),
                     };
                     result = commitCommand.Run();
                     var pullCommand = new GitCommand(this.repositoryPath, "pull");

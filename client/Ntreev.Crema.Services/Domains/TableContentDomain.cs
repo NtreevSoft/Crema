@@ -61,7 +61,7 @@ namespace Ntreev.Crema.Services.Domains
             foreach (var item in this.DataSet.Tables)
             {
                 var view = item.AsDataView();
-                this.views.Add(item.TableName, view);
+                this.views.Add(item.Name, view);
                 this.tables.Add(view, item);
             }
         }
@@ -80,7 +80,7 @@ namespace Ntreev.Crema.Services.Domains
                 //view.AllowDelete = false;
                 //view.AllowEdit = false;
                 //view.AllowNew = false;
-                this.views.Add(item.TableName, view);
+                this.views.Add(item.Name, view);
                 this.tables.Add(view, item);
             }
         }

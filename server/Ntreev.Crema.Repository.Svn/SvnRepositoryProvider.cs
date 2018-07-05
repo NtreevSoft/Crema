@@ -113,7 +113,8 @@ namespace Ntreev.Crema.Repository.Svn
 
         public void CreateRepository(string author, string basePath, string initPath, string comment, params LogPropertyInfo[] properties)
         {
-            var uri = UriUtility.Combine(new Uri(basePath), SvnString.Branches);
+            var repositoryName = Path.GetFileName(initPath);
+            var uri = UriUtility.Combine(new Uri(basePath), SvnString.Branches, repositoryName);
             var props = GeneratePropertiesArgument(properties);
             var importCommand = new SvnCommand("import")
             {

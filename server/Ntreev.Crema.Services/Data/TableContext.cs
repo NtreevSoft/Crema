@@ -360,7 +360,7 @@ namespace Ntreev.Crema.Services.Data
         public string[] GetFiles(string itemPath)
         {
             var directoryName = Path.GetDirectoryName(itemPath);
-            var name = Path.GetFileNameWithoutExtension(itemPath);
+            var name = Path.GetFileName(itemPath);
             var files = Directory.GetFiles(directoryName, $"{name}.*").Where(item => Path.GetFileNameWithoutExtension(item) == name).ToArray();
             return files;
         }

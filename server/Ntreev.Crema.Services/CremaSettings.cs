@@ -28,6 +28,8 @@ namespace Ntreev.Crema.Services
 {
     class CremaSettings
     {
+        private string[] dataBaseList;
+
         public CremaSettings()
         {
 
@@ -119,8 +121,8 @@ namespace Ntreev.Crema.Services
 
         public string[] DataBaseList
         {
-            get;
-            set;
+            get => this.dataBaseList ?? new string[] { };
+            set => this.dataBaseList = value;
         }
 
 #if DEBUG

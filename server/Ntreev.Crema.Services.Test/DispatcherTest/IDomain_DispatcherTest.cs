@@ -170,7 +170,6 @@ namespace Ntreev.Crema.Services.Test.DispatcherTest
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void DomainState()
         {
             Console.Write(domain.DomainState);
