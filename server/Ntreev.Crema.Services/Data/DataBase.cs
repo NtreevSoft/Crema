@@ -236,6 +236,7 @@ namespace Ntreev.Crema.Services.Data
                     BasePath = this.DataBases.RemotePath,
                     RepositoryName = this.Name,
                     WorkingPath = this.BasePath,
+                    TransactionPath = this.CremaHost.GetPath(CremaPath.Transactions, $"{this.ID}"),
                     LogService = this.CremaHost,
                 }));
                 this.Repository.Changed += Repository_Changed;

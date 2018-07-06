@@ -8,7 +8,7 @@ namespace Ntreev.Crema.Repository.Git
 {
     static class GitConfig
     {
-        public static void SetValue(string repositoryPath, string name, object value)
+        public static void SetValue(string repositoryPath, string name, string value)
         {
             if (repositoryPath == null)
                 throw new ArgumentNullException(nameof(repositoryPath));
@@ -20,7 +20,7 @@ namespace Ntreev.Crema.Repository.Git
             var configCommand = new GitCommand(repositoryPath, "config")
             {
                 name,
-                value
+                (GitString)value
             };
             configCommand.Run();
         }
@@ -58,7 +58,7 @@ namespace Ntreev.Crema.Repository.Git
             return configCommand.ReadLine() != null;
         }
 
-        public static object GetValue(string repositoryPath, string name)
+        public static string GetValue(string repositoryPath, string name)
         {
             if (repositoryPath == null)
                 throw new ArgumentNullException(nameof(repositoryPath));
@@ -73,7 +73,12 @@ namespace Ntreev.Crema.Repository.Git
             return configCommand.Run();
         }
 
-        public static void SetValue(string name, object value)
+        public static Guid GetValueAsGuid(string repositoryPath, string name)
+        {
+            return Guid.Parse(GetValue(repositoryPath, name));
+        }
+
+        public static void SetValue(string name, string value)
         {
             if (name == null)
                 throw new ArgumentNullException(nameof(name));
@@ -84,7 +89,7 @@ namespace Ntreev.Crema.Repository.Git
             {
                 GitCommandItem.Global,
                 name,
-                value
+                (GitString)value
             };
             configCommand.Run();
         }
@@ -120,7 +125,7 @@ namespace Ntreev.Crema.Repository.Git
             return configCommand.ReadLine() != null;
         }
 
-        public static object GetValue(string name)
+        public static string GetValue(string name)
         {
             if (name == null)
                 throw new ArgumentNullException(nameof(name));
@@ -132,6 +137,11 @@ namespace Ntreev.Crema.Repository.Git
                 name,
             };
             return configCommand.Run();
+        }
+
+        public static Guid GetValueAsGuid(string name)
+        {
+            return Guid.Parse(GetValue(name));
         }
     }
 }

@@ -158,11 +158,6 @@ namespace Ntreev.Crema.Data.Xml
         private void WriteDataRow(XmlWriter writer, CremaDataRow dataRow)
         {
             var dataTable = dataRow.Table;
-
-            if (dataTable.Name == "StageInfo_DailyEvent.MissionList")
-            {
-                int qwe = 0;
-            }
             writer.WriteStartElement(dataTable.GetXmlName(this.targetNamespace));
 
             foreach (var item in dataTable.Attributes)

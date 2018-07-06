@@ -28,12 +28,11 @@ namespace Ntreev.Crema.Repository.Git
 {
     struct GitItemStatusInfo
     {
-        private const string nameStatusPattern = "(?<X>[ |M|A|D|R|C|U|?|!])(?<Y>[ |M|A|D|R|C|U|?|!])\\s+(?<path1>\\S+)\\s*[-]*[>]*\\s*(?<path2>\\S*)";
-        private static readonly string newLinePattern = Environment.NewLine.Replace("\n", "\\n").Replace("\r", "\\r");
+        private const string nameStatusPattern = "^(?<X>[ |M|A|D|R|C|U|?|!])(?<Y>[ |M|A|D|R|C|U|?|!])\\s+(?<path1>\\S+)\\s*[-]*[>]*\\s*(?<path2>\\S*)$";
 
         public static GitItemStatusInfo[] Parse(string text)
         {
-            var matches = Regex.Matches(text, nameStatusPattern + newLinePattern);
+            var matches = Regex.Matches(text, nameStatusPattern, RegexOptions.Multiline);
             var itemList = new List<GitItemStatusInfo>(matches.Count);
             for (var i = 0; i < matches.Count; i++)
             {
@@ -63,6 +62,10 @@ namespace Ntreev.Crema.Repository.Git
                 new GitCommandItem('s'),
                 new GitCommandItem(string.Empty)
             };
+            foreach (var item in paths)
+            {
+                statusCommand.Add((GitPath)item);
+            }
             return Parse(statusCommand.Run());
         }
 

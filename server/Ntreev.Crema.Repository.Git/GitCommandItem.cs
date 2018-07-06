@@ -45,7 +45,7 @@ namespace Ntreev.Crema.Repository.Git
 
         public static GitCommandItem FromAuthor(GitAuthor author)
         {
-            return new GitCommandItem("author", (GitString)$"author");
+			return new GitCommandItem("author", (GitString)$"{author}");
         }
 
         public static GitCommandItem FromPretty(string format)
@@ -61,30 +61,5 @@ namespace Ntreev.Crema.Repository.Git
         public static readonly GitCommandItem Separator = new GitCommandItem(string.Empty);
 
         public static readonly GitCommandItem Global = new GitCommandItem("global");
-
-        //public static GitCommandItem FromUsername(string username)
-        //{
-        //    return new GitCommandItem("username", username);
-        //}
-
-        //public static GitCommandItem FromEncoding(Encoding encoding)
-        //{
-        //    return new GitCommandItem("encoding", encoding.ToString());
-        //}
-
-        //public static GitCommandItem FromRevision(string revision)
-        //{
-        //    return new GitCommandItem('r', revision);
-        //}
-
-        //public readonly static GitCommandItem Force = new GitCommandItem("force");
-
-        //public readonly static GitCommandItem Recursive = new GitCommandItem("recursive");
-
-        //public readonly static GitCommandItem Quiet = new GitCommandItem("quiet");
-
-        //public readonly static GitCommandItem Xml = new GitCommandItem("xml");
-
-        //public readonly static GitCommandItem Verbose = new GitCommandItem("verbose");
     }
 }

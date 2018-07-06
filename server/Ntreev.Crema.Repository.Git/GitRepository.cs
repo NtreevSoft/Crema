@@ -37,6 +37,9 @@ namespace Ntreev.Crema.Repository.Git
         private readonly string transactionPath;
         private readonly GitRepositoryProvider repositoryProvider;
         private readonly ILogService logService;
+        private string transactionAuthor;
+        private string transactionName;
+        private string transactionMessages;
         private RepositoryInfo repositoryInfo;
 
         public GitRepository(GitRepositoryProvider repositoryProvider, ILogService logService, string repositoryPath, string transactionPath, RepositoryInfo repositoryInfo)
@@ -92,31 +95,79 @@ namespace Ntreev.Crema.Repository.Git
 
         public void BeginTransaction(string author, string name)
         {
-            throw new NotImplementedException();
+            this.transactionAuthor = author;
+            this.transactionName = name;
+            this.transactionMessages = string.Empty;
+        }
+
+        public void EndTransaction()
+        {
+            var resetCommand = new GitCommand(this.repositoryPath, "reset")
+            {
+                new GitCommandItem("hard")
+            };
+            resetCommand.Run();
+            var patchPath = Path.Combine(this.transactionPath, this.transactionName + ".patch");
+            var gitCommand = new GitCommand(this.repositoryPath, "apply")
+            {
+                (GitPath)patchPath,
+            };
+            gitCommand.Run();
+            var items = GitItemStatusInfo.Run(this.repositoryPath);
+            foreach (var item in items)
+            {
+                if (item.Status == RepositoryItemStatus.Untracked)
+                {
+                    this.Add(item.Path);
+                }
+            }
+            var commitCommand = new GitCommand(this.repositoryPath, "commit")
+            {
+                new GitCommandItem('a'),
+                GitCommandItem.FromMessage(this.transactionMessages),
+                GitCommandItem.FromAuthor(this.transactionAuthor),
+            };
+            var result = commitCommand.Run();
+            this.logService?.Debug(result);
+            var log = GitLogInfo.Run(this.repositoryPath, 1).First();
+            this.repositoryInfo.Revision = log.CommitID;
+            this.repositoryInfo.ModificationInfo = new SignatureDate(this.transactionAuthor, log.CommitDate);
+            this.transactionAuthor = null;
+            this.transactionName = null;
+            this.transactionMessages = null;
+            this.Pull();
+            this.Push();
         }
 
         public void CancelTransaction()
         {
-            throw new NotImplementedException();
+            var patchPath = Path.Combine(this.transactionPath, this.transactionName + ".patch");
+            var resetCommand = new GitCommand(this.repositoryPath, "reset")
+            {
+                new GitCommandItem("hard")
+            };
+            this.transactionAuthor = null;
+            this.transactionName = null;
+            this.transactionMessages = null;
+            resetCommand.Run(this.logService);
+            FileUtility.Delete(patchPath);
         }
 
         public void Commit(string author, string comment, params LogPropertyInfo[] properties)
         {
-            var commentMessage = this.repositoryProvider.GenerateComment(comment, properties);
-            //if (this.transactions.ContainsKey(path) == true)
-            //{
-            //    var patchPath = Path.Combine(this.transactionPath, this.transactions[path] + ".patch");
-            //    var text = this.Run("diff", path.ToGitPath(), "--patch-compatible");
-            //    FileUtility.WriteAllText(text, patchPath);
-            //    this.transactionMessages[path] = this.transactionMessages[path] + comment + Environment.NewLine;
-            //    //return DateTime.UtcNow;
-            //}
+            if (this.transactionName != null)
+            {
+                var patchPath = Path.Combine(this.transactionPath, this.transactionName + ".patch");
+                var diffCommand = new GitCommand(this.repositoryPath, "diff")
+                {
+                    new GitCommandItem("cached"),
+                };
+                var text = diffCommand.Run(this.logService);
+                FileUtility.WriteAllText(text, Encoding.UTF8, patchPath);
+                this.transactionMessages = this.transactionMessages + comment + Environment.NewLine;
+                return;
+            }
 
-            //var propText = string.Join(" ", properties.Select(item => $"--with-revprop \"{propertyPrefix}{item.Key}={item.Value}\""));
-
-            this.logService?.Debug($"repository committing {(GitPath)this.repositoryPath}");
-            var result = string.Empty;
-            //var commentPath = PathUtility.GetTempFileName();
             try
             {
                 var statusCommand = new GitCommand(this.repositoryPath, "status")
@@ -132,34 +183,23 @@ namespace Ntreev.Crema.Repository.Git
                         GitCommandItem.FromMessage(comment),
                         GitCommandItem.FromAuthor(author),
                     };
-                    result = commitCommand.Run();
-                    var pullCommand = new GitCommand(this.repositoryPath, "pull");
-                    pullCommand.Run();
-                    var pushCommand = new GitCommand(this.repositoryPath, "push");
-                    pushCommand.Run();
+                    var result = commitCommand.Run();
+                    this.logService?.Debug(result);
+                    var log = GitLogInfo.Run(this.repositoryPath, 1).First();
+                    this.repositoryInfo.Revision = log.CommitID;
+                    this.repositoryInfo.ModificationInfo = new SignatureDate(author, log.CommitDate);
+                    this.Pull();
+                    this.Push();
+                }
+                else
+                {
+                    this.logService?.Debug("repository no changes. \"{0}\"", this.repositoryPath);
                 }
             }
             catch (Exception e)
             {
                 this.logService?.Warn(e);
-            }
-            finally
-            {
-                //FileUtility.Delete(commentPath);
-            }
-
-            if (result.Trim() != string.Empty)
-            {
-                this.logService?.Debug($"repository committed {(GitPath)this.repositoryPath}");
-                this.logService?.Debug(result);
-                var userID = properties.FirstOrDefault(item => item.Key == LogPropertyInfo.UserIDKey).Value;
-                var log = GitLogInfo.Run(this.repositoryPath, 1).First();
-                this.repositoryInfo.Revision = log.CommitID;
-                this.repositoryInfo.ModificationInfo = new SignatureDate(userID ?? string.Empty, log.CommitDate);
-            }
-            else
-            {
-                this.logService?.Debug("repository no changes. \"{0}\"", this.repositoryPath);
+                throw;
             }
         }
 
@@ -196,11 +236,6 @@ namespace Ntreev.Crema.Repository.Git
         public void Dispose()
         {
             DirectoryUtility.Delete(this.repositoryPath);
-        }
-
-        public void EndTransaction()
-        {
-            throw new NotImplementedException();
         }
 
         public string Export(Uri uri, string exportPath)
@@ -293,6 +328,18 @@ namespace Ntreev.Crema.Repository.Git
                 itemList.Add(repositoryItem);
             }
             return itemList.ToArray();
+        }
+
+        private void Pull()
+        {
+            var pullCommand = new GitCommand(this.repositoryPath, "pull");
+            pullCommand.Run();
+        }
+
+        private void Push()
+        {
+            var pushCommand = new GitCommand(this.repositoryPath, "push");
+            pushCommand.Run();
         }
     }
 }

@@ -91,7 +91,6 @@ namespace Ntreev.Crema.Repository.Svn
 
         public void BeginTransaction(string author, string name)
         {
-            this.logService?.Debug("repository begin transaction \"{0}\" \"{1}\"", this.repositoryPath, name);
             this.transactionAuthor = author;
             this.transactionName = name;
             this.transactionMessages = string.Empty;
@@ -99,9 +98,7 @@ namespace Ntreev.Crema.Repository.Svn
 
         public void EndTransaction()
         {
-            this.logService?.Debug("repository end transaction \"{0}\"", this.repositoryPath);
             var patchPath = Path.Combine(this.transactionPath, this.transactionName + patchExtension);
-
             if (File.Exists(patchPath) == true)
             {
                 var patchCommand = new SvnCommand("patch")
@@ -121,7 +118,6 @@ namespace Ntreev.Crema.Repository.Svn
 
         public void CancelTransaction()
         {
-            this.logService?.Debug("repository cancel transaction \"{0}\"", this.repositoryPath);
             var patchPath = Path.Combine(this.transactionPath, this.transactionName + patchExtension);
             var revertCommand = new SvnCommand("revert")
             {
@@ -148,6 +144,7 @@ namespace Ntreev.Crema.Repository.Svn
                 var text = diffCommand.Run(this.logService);
                 FileUtility.WriteAllText(text, Encoding.UTF8, patchPath);
                 this.transactionMessages = this.transactionMessages + comment + Environment.NewLine;
+                return;
             }
 
             this.logService?.Debug($"repository committing {(SvnPath)this.repositoryPath}");
@@ -237,12 +234,6 @@ namespace Ntreev.Crema.Repository.Svn
             return new FileInfo(Path.Combine(exportPath, $"{relativeUri}")).FullName;
         }
 
-        //public void GetBranchInfo(string path, out string revision, out string source, out string sourceRevision)
-        //{
-        //    var info = SvnInfoEventArgs.Run(path);
-        //    this.GetBranchRevision(info.RepositoryRoot, info.Uri, out revision, out source, out sourceRevision);
-        //}
-
         public LogInfo[] GetLog(string[] paths, string revision, int count)
         {
             var logs = SvnLogInfo.Run(paths, revision, count);
@@ -296,36 +287,38 @@ namespace Ntreev.Crema.Repository.Svn
             moveCommand.Run(this.logService);
         }
 
-        public void Revert()
-        {
-            var revertCommand = new SvnCommand("revert")
-            {
-                SvnCommandItem.Recursive,
-                (SvnPath)this.repositoryPath
-            };
-            try
-            {
-                revertCommand.Run(this.logService);
-            }
-            catch
-            {
-                var cleanUpCommand = new SvnCommand("cleanup") { (SvnPath)this.repositoryPath };
-                cleanUpCommand.Run(this.logService);
-                revertCommand.Run(this.logService);
-            }
-        }
-
         public void Revert(string revision)
         {
-            var updateCommand = new SvnCommand("update") { (SvnPath)this.repositoryPath };
-            var mergeCommand = new SvnCommand("merge")
+            if (revision == null)
             {
-                new SvnCommandItem('r',$"head:{revision}"),
-                (SvnPath)this.repositoryPath,
-                (SvnPath)this.repositoryPath,
-            };
-            updateCommand.Run(this.logService);
-            mergeCommand.Run(this.logService);
+                var revertCommand = new SvnCommand("revert")
+                {
+                    SvnCommandItem.Recursive,
+                    (SvnPath)this.repositoryPath
+                };
+                try
+                {
+                    revertCommand.Run(this.logService);
+                }
+                catch
+                {
+                    var cleanUpCommand = new SvnCommand("cleanup") { (SvnPath)this.repositoryPath };
+                    cleanUpCommand.Run(this.logService);
+                    revertCommand.Run(this.logService);
+                }
+            }
+            else
+            {
+                var updateCommand = new SvnCommand("update") { (SvnPath)this.repositoryPath };
+                var mergeCommand = new SvnCommand("merge")
+                {
+                    new SvnCommandItem('r', $"head:{revision}"),
+                    (SvnPath)this.repositoryPath,
+                    (SvnPath)this.repositoryPath,
+                };
+                updateCommand.Run(this.logService);
+                mergeCommand.Run(this.logService);
+            }
         }
 
         public void Dispose()
@@ -356,42 +349,5 @@ namespace Ntreev.Crema.Repository.Svn
 
             return repoPath;
         }
-
-        //private void GetBranchRevision(Uri repositoryRoot, Uri uri, out string revision, out string source, out string sourceRevision)
-        //{
-        //    var log = SvnLogEventArgs.RunForGetBranch(uri).Last();
-        //    var relativeUri = repositoryRoot.MakeRelativeUri(uri);
-
-        //    var localPath = $"/{relativeUri}";
-        //    var oldPath = string.Empty;
-        //    var oldRevision = null as string;
-
-        //    revision = log.Revision;
-        //    source = null;
-        //    sourceRevision = log.Revision;
-        //    foreach (var item in log.ChangedPaths)
-        //    {
-        //        if (item.Action == "A" && item.Path == localPath)
-        //        {
-        //            oldPath = item.CopyFromPath;
-        //            oldRevision = item.CopyFromRevision;
-        //            source = Path.GetFileName(item.CopyFromPath);
-        //            sourceRevision = item.CopyFromRevision;
-        //        }
-        //    }
-
-        //    if (oldPath == string.Empty)
-        //        return;
-
-        //    foreach (var item in log.ChangedPaths)
-        //    {
-        //        if (item.Action == "D" && item.Path == oldPath)
-        //        {
-        //            var url = new Uri(repositoryRoot + item.Path.Substring(1) + "@" + oldRevision);
-        //            GetBranchRevision(repositoryRoot, url, out revision, out source, out sourceRevision);
-        //            return;
-        //        }
-        //    }
-        //}
     }
 }

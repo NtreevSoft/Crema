@@ -107,7 +107,7 @@ namespace Ntreev.Crema.Services
         {
             this.Dispatcher.Invoke(() =>
             {
-                this.Repository.Revert();
+                this.Repository.Revert(null);
             });
         }
 
@@ -179,16 +179,6 @@ namespace Ntreev.Crema.Services
             var pureRepoUri = Regex.Replace(repoUri, pattern, string.Empty);
             var pureItemUri = Regex.Replace(itemUri, pattern, string.Empty);
             var relativeUri = UriUtility.MakeRelativeOfDirectory(pureRepoUri, pureItemUri);
-            //var segments = relativeUri.Split(PathUtility.SeparatorChar);
-            //if (segments[0] == "trunk")
-            //{
-            //    pureRepoUri = $"{UriUtility.Combine(pureRepoUri, segments.Take(1).ToArray())}";
-            //}
-            //else if (segments[0] == "tags")
-            //{
-            //    pureRepoUri = $"{UriUtility.Combine(pureRepoUri, segments.Take(2).ToArray())}";
-            //}
-
             return pureRepoUri;
         }
 

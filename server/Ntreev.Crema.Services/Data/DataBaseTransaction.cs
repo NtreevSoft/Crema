@@ -43,7 +43,7 @@ namespace Ntreev.Crema.Services.Data
             this.tableInfos = dataBase.TableContext.Tables.Select((Table item) => item.TableInfo).ToArray();
             this.transactionPath = dataBase.CremaHost.GetPath(CremaPath.Transactions, $"{dataBase.ID}");
             this.domainPath = dataBase.CremaHost.GetPath(CremaPath.Domains, $"{dataBase.ID}");
-            DirectoryUtility.Copy(this.domainPath, this.transactionPath);
+            this.CopyDomains(authentication);
             this.repository.BeginTransaction(authentication.ID, dataBase.Name);
             this.authentication.Expired += Authentication_Expired;
         }
@@ -114,13 +114,21 @@ namespace Ntreev.Crema.Services.Data
             authentication.Sign();
         }
 
+        private void CopyDomains(Authentication authentication)
+        {
+            DirectoryUtility.Delete(this.transactionPath);
+            if (DirectoryUtility.Exists(this.domainPath) == true)
+                DirectoryUtility.Copy(this.domainPath, this.transactionPath);
+        }
+
         private void RollbackDomains(Authentication authentication)
         {
             this.repository.CancelTransaction();
 
             if (this.dataBase.GetService(typeof(DomainContext)) is DomainContext domainContext)
             {
-                DirectoryUtility.Copy(this.transactionPath, this.domainPath);
+                if (DirectoryUtility.Exists(this.transactionPath) == true)
+                    DirectoryUtility.Copy(this.transactionPath, this.domainPath);
                 domainContext.Restore(authentication, this.dataBase);
                 DirectoryUtility.Delete(this.transactionPath);
             }

@@ -88,8 +88,8 @@ namespace Ntreev.Crema.Services
 
         public static void ValidateRepository(IServiceProvider serviceProvider, string basePath, params string[] dataBaseNames)
         {
-            var repositoryModule = FileUtility.ReadAllText(basePath, CremaString.Repository, CremaString.Repo);
-            var fileType = FileUtility.ReadAllText(basePath, CremaString.Repository, CremaString.File);
+            var repositoryModule = GetRepositoryModule(basePath);
+            var fileType = GetFileType(basePath);
             var repositoryProvider = GetRepositoryProvider(serviceProvider, repositoryModule);
             var serializer = GetSerializer(serviceProvider, fileType);
             var validationPath = Path.Combine(basePath, "validation");
@@ -118,20 +118,20 @@ namespace Ntreev.Crema.Services
                     serializer.Validate(repository.BasePath, typeof(CremaDataSet), ObjectSerializerSettings.Empty);
                     repository.Dispose();
                     DirectoryUtility.Delete(tempPath);
-                    logService.Info($"[{i}/{items.Length}]{item}: OK");
+                    logService.Info($"[{i + 1}/{items.Length}]{item}: OK");
                 }
                 catch (Exception e)
                 {
                     logService.Error(e);
-                    logService.Info($"[{i}/{items.Length}]{item}: Fail");
+                    logService.Info($"[{i + 1}/{items.Length}]{item}: Fail");
                 }
             }
         }
 
         public static void UpgradeRepository(IServiceProvider serviceProvider, string basePath, params string[] dataBaseNames)
         {
-            var repositoryModule = FileUtility.ReadAllText(basePath, CremaString.Repository, CremaString.Repo);
-            var fileType = FileUtility.ReadAllText(basePath, CremaString.Repository, CremaString.File);
+            var repositoryModule = GetRepositoryModule(basePath);
+            var fileType = GetFileType(basePath);
             var repositoryProvider = GetRepositoryProvider(serviceProvider, repositoryModule);
             var serializer = GetSerializer(serviceProvider, fileType);
             var upgradePath = Path.Combine(basePath, "upgrade");
@@ -418,6 +418,16 @@ namespace Ntreev.Crema.Services
             if (repositoryUpgrader == null)
                 throw new InvalidOperationException(Resources.Exception_NoRepositoryModule);
             return repositoryUpgrader;
+        }
+
+        private static string GetRepositoryModule(string basePath)
+        {
+            return FileUtility.ReadAllText(basePath, CremaString.Repository, CremaString.Repo).Trim();
+        }
+
+        private static string GetFileType(string basePath)
+        {
+            return FileUtility.ReadAllText(basePath, CremaString.Repository, CremaString.File).Trim();
         }
 
         private void Initialize()
