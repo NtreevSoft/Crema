@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Blend for Visual Studio 15
+# Visual Studio 15
 VisualStudioVersion = 15.0.27130.2020
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common Library", "Common Library", "{6BD932D9-A567-4BC3-88B0-B7950B6002AD}"
@@ -41,7 +41,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.Client.SmartSe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.ModernUI.Framework", "sub-modules\Ntreev.ModernUI.Framework\Ntreev.ModernUI.Framework\Ntreev.ModernUI.Framework.csproj", "{20C3D3DD-DE99-4126-9449-BCA12E4D255D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Library", "sub-modules\Ntreev.Library\Ntreev.Library\Ntreev.Library.csproj", "{1918437F-4FBF-4731-AC5B-981A4A4CB1F1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Library", "sub-modules\Ntreev.Library\Ntreev.Library.Net45\Ntreev.Library.csproj", "{1918437F-4FBF-4731-AC5B-981A4A4CB1F1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.Client.Users", "client\Ntreev.Crema.Client.Users\Ntreev.Crema.Client.Users.csproj", "{ABC6F21C-0B20-4070-A09A-94990EA0DB2D}"
 EndProject
@@ -49,7 +49,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.Client.Base", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Library.Random", "sub-modules\Ntreev.Library\Ntreev.Library.Random\Ntreev.Library.Random.csproj", "{83F1180F-F170-48CF-BE1E-CA60D6851800}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Library.Commands", "sub-modules\Ntreev.Library.Commands\Ntreev.Library.Commands\Ntreev.Library.Commands.csproj", "{CEB280C0-463F-4E09-A00C-CE3A8326F6FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ntreev.Library.Commands", "sub-modules\Ntreev.Library.Commands\Ntreev.Library.Commands.Net45\Ntreev.Library.Commands.csproj", "{CEB280C0-463F-4E09-A00C-CE3A8326F6FF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.Client.Console", "client\Ntreev.Crema.Client.Console\Ntreev.Crema.Client.Console.csproj", "{A455A6AC-41D0-476C-BB23-E7ADFA5D7D78}"
 EndProject
@@ -101,6 +101,7 @@ Global
 		common\Ntreev.Crema.Commands.Spreadsheet.Sharing\Ntreev.Crema.Commands.Spreadsheet.Sharing.projitems*{05971a74-2d68-4781-9ceb-df2b48f8ba75}*SharedItemsImports = 13
 		common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems*{0eac90ab-7c7e-47e3-9954-148b45521fcb}*SharedItemsImports = 4
 		common\Ntreev.Crema.Services.Sharing\Ntreev.Crema.Services.Sharing.projitems*{0eac90ab-7c7e-47e3-9954-148b45521fcb}*SharedItemsImports = 4
+		sub-modules\Ntreev.Library\Ntreev.Library.AssemblyInfo\Ntreev.Library.AssemblyInfo.projitems*{1918437f-4fbf-4731-ac5b-981a4a4cb1f1}*SharedItemsImports = 4
 		sub-modules\Ntreev.ModernUI.Framework\Ntreev.ModernUI.AssemblyInfo\Ntreev.ModernUI.AssemblyInfo.projitems*{1c55fed2-99eb-469d-9dac-a1f7b9e7c790}*SharedItemsImports = 4
 		common\Ntreev.Crema.Services.Random.Sharing\Ntreev.Crema.Services.Random.Sharing.projitems*{1f4a20ae-f955-4231-8636-27b7a38eb4b3}*SharedItemsImports = 13
 		sub-modules\Ntreev.ModernUI.Framework\Ntreev.ModernUI.AssemblyInfo\Ntreev.ModernUI.AssemblyInfo.projitems*{20c3d3dd-de99-4126-9449-bca12e4d255d}*SharedItemsImports = 4
@@ -506,7 +507,7 @@ Global
 		{99DAB5B1-1EB8-462C-8BA0-837F2A45CC52} = {6BD932D9-A567-4BC3-88B0-B7950B6002AD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {3A345B68-213C-4BA4-8420-8419E3900B67}
 		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.ExceptionHandling.6.0.1304.0\lib\NET45
+		SolutionGuid = {3A345B68-213C-4BA4-8420-8419E3900B67}
 	EndGlobalSection
 EndGlobal

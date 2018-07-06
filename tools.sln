@@ -13,11 +13,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.Runtime.Genera
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.ModernUI.Framework", "sub-modules\Ntreev.ModernUI.Framework\Ntreev.ModernUI.Framework\Ntreev.ModernUI.Framework.csproj", "{20C3D3DD-DE99-4126-9449-BCA12E4D255D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Library", "sub-modules\Ntreev.Library\Ntreev.Library\Ntreev.Library.csproj", "{1918437F-4FBF-4731-AC5B-981A4A4CB1F1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Library", "sub-modules\Ntreev.Library\Ntreev.Library.Net45\Ntreev.Library.csproj", "{1918437F-4FBF-4731-AC5B-981A4A4CB1F1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.Tools.Framework", "tools\Ntreev.Crema.Tools.Framework\Ntreev.Crema.Tools.Framework.csproj", "{AF7FE3F1-E2CC-45CB-A848-198DDF4AEC18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Library.Commands", "sub-modules\Ntreev.Library.Commands\Ntreev.Library.Commands\Ntreev.Library.Commands.csproj", "{CEB280C0-463F-4E09-A00C-CE3A8326F6FF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Library.Commands", "sub-modules\Ntreev.Library.Commands\Ntreev.Library.Commands.Net45\Ntreev.Library.Commands.csproj", "{CEB280C0-463F-4E09-A00C-CE3A8326F6FF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.Validator", "tools\Ntreev.Crema.Validator\Ntreev.Crema.Validator.csproj", "{3171BD1A-A6F9-4A15-85BB-BB71BB81BC47}"
 EndProject

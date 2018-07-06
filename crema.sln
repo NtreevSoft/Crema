@@ -41,7 +41,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{FCEABDD4
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.ModernUI.Framework", "sub-modules\Ntreev.ModernUI.Framework\Ntreev.ModernUI.Framework\Ntreev.ModernUI.Framework.csproj", "{20C3D3DD-DE99-4126-9449-BCA12E4D255D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Library", "sub-modules\Ntreev.Library\Ntreev.Library\Ntreev.Library.csproj", "{1918437F-4FBF-4731-AC5B-981A4A4CB1F1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Library", "sub-modules\Ntreev.Library\Ntreev.Library.Net45\Ntreev.Library.csproj", "{1918437F-4FBF-4731-AC5B-981A4A4CB1F1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.Client.Users", "client\Ntreev.Crema.Client.Users\Ntreev.Crema.Client.Users.csproj", "{ABC6F21C-0B20-4070-A09A-94990EA0DB2D}"
 EndProject
@@ -57,7 +57,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.Client.Console
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Ntreev.Crema.AssemblyInfo", "common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.shproj", "{AD0EBA0C-D167-4722-A2A7-82B17E1FC9AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Library.Commands", "sub-modules\Ntreev.Library.Commands\Ntreev.Library.Commands\Ntreev.Library.Commands.csproj", "{CEB280C0-463F-4E09-A00C-CE3A8326F6FF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Library.Commands", "sub-modules\Ntreev.Library.Commands\Ntreev.Library.Commands.Net45\Ntreev.Library.Commands.csproj", "{CEB280C0-463F-4E09-A00C-CE3A8326F6FF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.Commands", "tools\Ntreev.Crema.Commands\Ntreev.Crema.Commands.csproj", "{ACD0A4DC-21E7-48D0-A67F-88BD9E8A5CEC}"
 EndProject

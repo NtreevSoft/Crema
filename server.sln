@@ -26,8 +26,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.RuntimeService
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.ServiceModel", "common\Ntreev.Crema.ServiceModel\Ntreev.Crema.ServiceModel.csproj", "{6478450A-DFA5-445D-890F-BC5F57C9A148}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ntreev.Library", "sub-modules\Ntreev.Library\Ntreev.Library\Ntreev.Library.csproj", "{1918437F-4FBF-4731-AC5B-981A4A4CB1F1}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Repositories", "Repositories", "{C23811F0-895C-4355-ACAE-A36FD3F9E974}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common Library", "Common Library", "{48F9CF3D-2F99-48CF-BB02-CD91C21EF237}"
@@ -35,8 +33,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{7ABD645F-F487-4A3D-8DC2-F6DD7E887BFA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.Repository.Svn", "server\Ntreev.Crema.Repository.Svn\Ntreev.Crema.Repository.Svn.csproj", "{E0F76B09-4FE3-4A58-B16D-D136441DC1AE}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ntreev.Library.Commands", "sub-modules\Ntreev.Library.Commands\Ntreev.Library.Commands\Ntreev.Library.Commands.csproj", "{CEB280C0-463F-4E09-A00C-CE3A8326F6FF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.Runtime.Serialization", "common\Ntreev.Crema.Runtime.Serialization\Ntreev.Crema.Runtime.Serialization.csproj", "{279D3BBF-10A3-449F-AA73-545BC0B7BAAF}"
 EndProject
@@ -95,6 +91,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.ObjectSerializ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.Data.Json", "common\Ntreev.Crema.Data.Json\Ntreev.Crema.Data.Json.csproj", "{BA258C01-01C2-415D-8D3F-0B1484ECC765}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Library", "sub-modules\Ntreev.Library\Ntreev.Library.Net45\Ntreev.Library.csproj", "{1918437F-4FBF-4731-AC5B-981A4A4CB1F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Library.Commands", "sub-modules\Ntreev.Library.Commands\Ntreev.Library.Commands.Net45\Ntreev.Library.Commands.csproj", "{0D96CC61-6D74-49B4-A558-33AC0DCF8529}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems*{04aeb614-3510-4064-99af-0aa807c7f957}*SharedItemsImports = 4
@@ -126,7 +126,6 @@ Global
 		common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems*{ad0eba0c-d167-4722-a2a7-82b17e1fc9aa}*SharedItemsImports = 13
 		common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems*{b7b4c207-7729-4147-96c4-b55e85647a66}*SharedItemsImports = 4
 		common\Ntreev.Crema.Services.Sharing\Ntreev.Crema.Services.Sharing.projitems*{b7b4c207-7729-4147-96c4-b55e85647a66}*SharedItemsImports = 4
-		sub-modules\Ntreev.Library.Commands\Ntreev.Library.Commands.Sharing.AssemblyInfo\Ntreev.Library.Commands.Sharing.AssemblyInfo.projitems*{ceb280c0-463f-4e09-a00c-ce3a8326f6ff}*SharedItemsImports = 4
 		common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems*{e0f76b09-4fe3-4a58-b16d-d136441dc1ae}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -159,18 +158,10 @@ Global
 		{6478450A-DFA5-445D-890F-BC5F57C9A148}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6478450A-DFA5-445D-890F-BC5F57C9A148}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6478450A-DFA5-445D-890F-BC5F57C9A148}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1918437F-4FBF-4731-AC5B-981A4A4CB1F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1918437F-4FBF-4731-AC5B-981A4A4CB1F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1918437F-4FBF-4731-AC5B-981A4A4CB1F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1918437F-4FBF-4731-AC5B-981A4A4CB1F1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E0F76B09-4FE3-4A58-B16D-D136441DC1AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E0F76B09-4FE3-4A58-B16D-D136441DC1AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0F76B09-4FE3-4A58-B16D-D136441DC1AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0F76B09-4FE3-4A58-B16D-D136441DC1AE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CEB280C0-463F-4E09-A00C-CE3A8326F6FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CEB280C0-463F-4E09-A00C-CE3A8326F6FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CEB280C0-463F-4E09-A00C-CE3A8326F6FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CEB280C0-463F-4E09-A00C-CE3A8326F6FF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{279D3BBF-10A3-449F-AA73-545BC0B7BAAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{279D3BBF-10A3-449F-AA73-545BC0B7BAAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{279D3BBF-10A3-449F-AA73-545BC0B7BAAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -239,6 +230,14 @@ Global
 		{BA258C01-01C2-415D-8D3F-0B1484ECC765}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA258C01-01C2-415D-8D3F-0B1484ECC765}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA258C01-01C2-415D-8D3F-0B1484ECC765}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1918437F-4FBF-4731-AC5B-981A4A4CB1F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1918437F-4FBF-4731-AC5B-981A4A4CB1F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1918437F-4FBF-4731-AC5B-981A4A4CB1F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1918437F-4FBF-4731-AC5B-981A4A4CB1F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D96CC61-6D74-49B4-A558-33AC0DCF8529}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D96CC61-6D74-49B4-A558-33AC0DCF8529}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D96CC61-6D74-49B4-A558-33AC0DCF8529}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D96CC61-6D74-49B4-A558-33AC0DCF8529}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -248,9 +247,7 @@ Global
 		{20DAB068-F188-4EC5-96FA-227C11BBA46D} = {7ABD645F-F487-4A3D-8DC2-F6DD7E887BFA}
 		{3D7847D1-7706-4A64-8846-D8AA3639471C} = {7ABD645F-F487-4A3D-8DC2-F6DD7E887BFA}
 		{6478450A-DFA5-445D-890F-BC5F57C9A148} = {48F9CF3D-2F99-48CF-BB02-CD91C21EF237}
-		{1918437F-4FBF-4731-AC5B-981A4A4CB1F1} = {48F9CF3D-2F99-48CF-BB02-CD91C21EF237}
 		{E0F76B09-4FE3-4A58-B16D-D136441DC1AE} = {C23811F0-895C-4355-ACAE-A36FD3F9E974}
-		{CEB280C0-463F-4E09-A00C-CE3A8326F6FF} = {48F9CF3D-2F99-48CF-BB02-CD91C21EF237}
 		{279D3BBF-10A3-449F-AA73-545BC0B7BAAF} = {48F9CF3D-2F99-48CF-BB02-CD91C21EF237}
 		{AD0EBA0C-D167-4722-A2A7-82B17E1FC9AA} = {F24B626E-02A8-431A-9319-C71D978C7328}
 		{79AEF7D1-93D1-4EEB-B09C-1595C82E7492} = {48F9CF3D-2F99-48CF-BB02-CD91C21EF237}
@@ -275,6 +272,8 @@ Global
 		{4D71A73A-7EAD-4415-B3CD-086E7EB5C083} = {1835FF30-6D5A-400D-BDA9-EE220B21C0A6}
 		{740BD1D4-C859-4920-9A8B-DAA3DF92582A} = {1835FF30-6D5A-400D-BDA9-EE220B21C0A6}
 		{BA258C01-01C2-415D-8D3F-0B1484ECC765} = {48F9CF3D-2F99-48CF-BB02-CD91C21EF237}
+		{1918437F-4FBF-4731-AC5B-981A4A4CB1F1} = {48F9CF3D-2F99-48CF-BB02-CD91C21EF237}
+		{0D96CC61-6D74-49B4-A558-33AC0DCF8529} = {48F9CF3D-2F99-48CF-BB02-CD91C21EF237}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {081892D7-815F-41E8-91E5-C26BA161204B}
