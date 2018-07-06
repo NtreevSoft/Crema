@@ -17,7 +17,7 @@ namespace Ntreev.Crema.Repository.Git
         {
             if (author == null)
                 throw new ArgumentNullException(nameof(author));
-            var match = Regex.Match(author, authorPattern + Environment.NewLine, RegexOptions.ExplicitCapture | RegexOptions.Multiline);
+            var match = Regex.Match(author, authorPattern, RegexOptions.ExplicitCapture);
             if (match.Success == true)
             {
                 this.name = match.Groups["name"].Value;

@@ -282,8 +282,12 @@ namespace Ntreev.Crema.Repository.Git
             }
             addCommand.Run();
 
+            var username = GitConfig.HasValue("user.name") == true ? GitConfig.GetValue("user.name") : Environment.UserName;
+            var useremail = GitConfig.HasValue("user.email") == true ? GitConfig.GetValue("user.email") : string.Empty;
+            var author = new GitAuthor($"{username} <{useremail}>");
             var commitCommand = new GitCommand(basePath, "commit")
             {
+                GitCommandItem.FromAuthor(author),
                 GitCommandItem.FromMessage("first commit"),
             };
             commitCommand.Run();

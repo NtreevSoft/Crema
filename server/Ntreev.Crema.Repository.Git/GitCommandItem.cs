@@ -40,7 +40,12 @@ namespace Ntreev.Crema.Repository.Git
 
         public static GitCommandItem FromAuthor(string author)
         {
-            return new GitCommandItem("author", (GitString)$"{(GitAuthor)author}");
+            return FromAuthor((GitAuthor)author);
+        }
+
+        public static GitCommandItem FromAuthor(GitAuthor author)
+        {
+            return new GitCommandItem("author", (GitString)$"author");
         }
 
         public static GitCommandItem FromPretty(string format)
@@ -54,6 +59,8 @@ namespace Ntreev.Crema.Repository.Git
         }
 
         public static readonly GitCommandItem Separator = new GitCommandItem(string.Empty);
+
+        public static readonly GitCommandItem Global = new GitCommandItem("global");
 
         //public static GitCommandItem FromUsername(string username)
         //{
