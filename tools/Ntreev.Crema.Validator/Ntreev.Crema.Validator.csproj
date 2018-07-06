@@ -57,11 +57,11 @@
       <Project>{04aeb614-3510-4064-99af-0aa807c7f957}</Project>
       <Name>Ntreev.Crema.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\sub-modules\Ntreev.Library.Commands\Ntreev.Library.Commands\Ntreev.Library.Commands.csproj">
+    <ProjectReference Include="..\..\sub-modules\Ntreev.Library.Commands\Ntreev.Library.Commands.Net45\Ntreev.Library.Commands.csproj">
       <Project>{ceb280c0-463f-4e09-a00c-ce3a8326f6ff}</Project>
       <Name>Ntreev.Library.Commands</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\sub-modules\Ntreev.Library\Ntreev.Library\Ntreev.Library.csproj">
+    <ProjectReference Include="..\..\sub-modules\Ntreev.Library\Ntreev.Library.Net45\Ntreev.Library.csproj">
       <Project>{1918437f-4fbf-4731-ac5b-981a4a4cb1f1}</Project>
       <Name>Ntreev.Library</Name>
     </ProjectReference>

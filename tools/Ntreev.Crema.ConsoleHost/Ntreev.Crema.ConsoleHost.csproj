@@ -72,7 +72,7 @@
       <Project>{279d3bbf-10a3-449f-aa73-545bc0b7baaf}</Project>
       <Name>Ntreev.Crema.Runtime.Serialization</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\sub-modules\Ntreev.Library.Commands\Ntreev.Library.Commands\Ntreev.Library.Commands.csproj">
+    <ProjectReference Include="..\..\sub-modules\Ntreev.Library.Commands\Ntreev.Library.Commands.Net45\Ntreev.Library.Commands.csproj">
       <Project>{ceb280c0-463f-4e09-a00c-ce3a8326f6ff}</Project>
       <Name>Ntreev.Library.Commands</Name>
     </ProjectReference>
