@@ -32,7 +32,6 @@ namespace Ntreev.Crema.Commands.Consoles
     class ResetCommand : ConsoleCommandBase
     {
         public ResetCommand()
-            : base("reset")
         {
 
         }

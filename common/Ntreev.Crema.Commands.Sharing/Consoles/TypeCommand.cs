@@ -46,50 +46,8 @@ namespace Ntreev.Crema.Commands.Consoles
 
         [ImportingConstructor]
         public TypeCommand()
-            : base("type")
         {
 
-        }
-
-        public override string[] GetCompletions(CommandMethodDescriptor methodDescriptor, CommandMemberDescriptor memberDescriptor, string find)
-        {
-            if (methodDescriptor.DescriptorName == nameof(View))
-            {
-                if (memberDescriptor.DescriptorName == "typeName")
-                {
-                    return this.GetTypeNames();
-                }
-            }
-            else if (methodDescriptor.DescriptorName == nameof(Info))
-            {
-                if (memberDescriptor.DescriptorName == "typeName")
-                {
-                    return this.GetTypeNames();
-                }
-            }
-            else if (methodDescriptor.DescriptorName == nameof(Log))
-            {
-                if (memberDescriptor.DescriptorName == "typeName")
-                {
-                    return this.GetTypeNames();
-                }
-            }
-            else if (methodDescriptor.DescriptorName == nameof(Edit))
-            {
-                if (memberDescriptor.DescriptorName == "typeName")
-                {
-                    return this.GetTypeNames();
-                }
-            }
-            else if (methodDescriptor.DescriptorName == nameof(Copy))
-            {
-                if (memberDescriptor.DescriptorName == "typeName")
-                {
-                    return this.GetTypeNames();
-                }
-            }
-
-            return base.GetCompletions(methodDescriptor, memberDescriptor, find);
         }
 
         [ConsoleModeOnly]
@@ -140,7 +98,7 @@ namespace Ntreev.Crema.Commands.Consoles
 
         [ConsoleModeOnly]
         [CommandMethod]
-        public void Edit(string typeName)
+        public void Edit([CommandCompletion(nameof(GetTypeNames))]string typeName)
         {
             var type = this.GetType(typeName);
             var template = type.Dispatcher.Invoke(() => type.Template);
@@ -170,38 +128,35 @@ namespace Ntreev.Crema.Commands.Consoles
             }
         }
 
-        //[CommandMethod]
-        //public void Rename(string typeName, string newTypeName)
-        //{
-        //    this.CremaHost.Dispatcher.Invoke(() =>
-        //    {
-        //        var type = this.GetType(typeName);
-        //        type.Rename(authentication, newTypeName);
-        //    });
-        //}
+        [CommandMethod]
+        public void Rename([CommandCompletion(nameof(GetTypeNames))]string typeName, string newTypeName)
+        {
+            var type = this.GetType(typeName);
+            var authentication = this.CommandContext.GetAuthentication(this);
+            type.Dispatcher.Invoke(() => type.Rename(authentication, newTypeName));
+        }
 
-        //[CommandMethod]
-        //public void Move(string typeName, string categoryPath)
-        //{
-        //    this.CremaHost.Dispatcher.Invoke(() =>
-        //    {
-        //        var type = this.GetType(typeName);
-        //        type.Move(authentication, categoryPath);
-        //    });
-        //}
+        [CommandMethod]
+        public void Move([CommandCompletion(nameof(GetTypeNames))]string typeName, [CommandCompletion(nameof(GetCategoryPaths))]string categoryPath)
+        {
+            var type = this.GetType(typeName);
+            var authentication = this.CommandContext.GetAuthentication(this);
+            type.Dispatcher.Invoke(() => type.Move(authentication, categoryPath));
+        }
 
-        //[CommandMethod]
-        //public void Delete(string typeName)
-        //{
-        //    this.CremaHost.Dispatcher.Invoke(() =>
-        //    {
-        //        var type = this.GetType(typeName);
-        //        type.Delete(authentication);
-        //    });
-        //}
+        [CommandMethod]
+        public void Delete([CommandCompletion(nameof(GetTypeNames))]string typeName)
+        {
+            var type = this.GetType(typeName);
+            var authentication = this.CommandContext.GetAuthentication(this);
+            if (this.CommandContext.ConfirmToDelete() == true)
+            {
+                type.Dispatcher.Invoke(() => type.Delete(authentication));
+            }
+        }
 
-        //[CommandMethod]
-        public void SetTags(string typeName, string tags)
+        [CommandMethod]
+        public void SetTags([CommandCompletion(nameof(GetTypeNames))]string typeName, string tags)
         {
             var type = this.GetType(typeName);
             var authentication = this.CommandContext.GetAuthentication(this);
@@ -210,85 +165,42 @@ namespace Ntreev.Crema.Commands.Consoles
 
         [CommandMethod]
         [CommandMethodProperty(nameof(CategoryPath))]
-        public void Copy(string typeName, string newTypeName)
+        public void Copy([CommandCompletion(nameof(GetTypeNames))]string typeName, string newTypeName)
         {
             var type = this.GetType(typeName);
-            type.Dispatcher.Invoke(() =>
-            {
-                var categoryPath = this.CategoryPath ?? this.GetCurrentDirectory();
-                var authentication = this.CommandContext.GetAuthentication(this);
-                type.Copy(authentication, newTypeName, categoryPath);
-            });
-        }
-
-        [CommandMethod]
-        public void View(string typeName, string revision = null)
-        {
-            var type = this.GetType(typeName);
-            var tableData = type.Dispatcher.Invoke(() =>
-            {
-                var authentication = this.CommandContext.GetAuthentication(this);
-                var dataSet = type.GetDataSet(authentication, revision);
-                var dataType = dataSet.Types[type.Name, type.Category.Path];
-                var tableDataBuilder = new TableDataBuilder(CremaSchema.Name, CremaSchema.Value, CremaSchema.Comment);
-                foreach (var item in dataType.Members)
-                {
-                    tableDataBuilder.Add(item.Name, item.Value, item.Comment);
-                }
-                return tableDataBuilder;
-            });
-
-            this.Out.Print(tableData);
-        }
-
-        [CommandMethod]
-        public void ViewCategory(string categoryPath, string revision = null)
-        {
-            var category = this.GetCategory(categoryPath);
-            var builderList = new List<TableDataBuilder>();
+            var categoryPath = this.CategoryPath ?? this.GetCurrentDirectory();
             var authentication = this.CommandContext.GetAuthentication(this);
-            category.Dispatcher.Invoke(() =>
+            type.Dispatcher.Invoke(() => type.Copy(authentication, newTypeName, categoryPath));
+        }
+
+        [CommandMethod]
+        public void View([CommandCompletion(nameof(GetPaths))]string typeItemName, string revision = null)
+        {
+            var typeItem = this.GetTypeItem(typeItemName);
+            var authentication = this.CommandContext.GetAuthentication(this);
+            var dataSet = typeItem.Dispatcher.Invoke(() =>
             {
-                var dataSet = category.GetDataSet(authentication, revision);
-                foreach (var item in dataSet.Types)
-                {
-                    builderList.Add(BuildTableData(item));
-                }
+                return typeItem.GetDataSet(authentication, revision);
             });
 
-            foreach (var item in builderList)
+            foreach (var item in dataSet.Types)
             {
-                this.Out.Print(item);
-            }
-
-            TableDataBuilder BuildTableData(CremaDataType dataType)
-            {
-                var builder = new TableDataBuilder(CremaSchema.Name, CremaSchema.Value, CremaSchema.Comment);
-                foreach (var item in dataType.Members)
+                var typeDataBuilder = new TableDataBuilder(CremaSchema.Name, CremaSchema.Value, CremaSchema.Comment);
+                foreach (var member in item.Members)
                 {
-                    builder.Add(item.Name, item.Value, item.Comment);
+                    typeDataBuilder.Add(member.Name, member.Value, member.Comment);
                 }
-                return builder;
+                this.Out.Print(typeDataBuilder.Data);
             }
         }
 
         [CommandMethod]
         [CommandMethodStaticProperty(typeof(LogProperties))]
-        public void Log(string typeName)
+        public void Log([CommandCompletion(nameof(GetPaths))]string typeItemName)
         {
-            var type = this.GetType(typeName);
+            var typeItem = this.GetTypeItem(typeItemName);
             var authentication = this.CommandContext.GetAuthentication(this);
-            var logs = type.Dispatcher.Invoke(() => type.GetLog(authentication));
-            LogProperties.Print(this.Out, logs);
-        }
-
-        [CommandMethod]
-        [CommandMethodStaticProperty(typeof(LogProperties))]
-        public void LogCategory(string categoryPath)
-        {
-            var category = this.GetCategory(categoryPath);
-            var authentication = this.CommandContext.GetAuthentication(this);
-            var logs = category.Dispatcher.Invoke(() => category.GetLog(authentication));
+            var logs = typeItem.Dispatcher.Invoke(() => typeItem.GetLog(authentication));
             LogProperties.Print(this.Out, logs);
         }
 
@@ -296,42 +208,34 @@ namespace Ntreev.Crema.Commands.Consoles
         [CommandMethodStaticProperty(typeof(FilterProperties))]
         public void List()
         {
-            var typeNames = GetTypeNames();
+            var typeNames = this.CremaHost.Dispatcher.Invoke(GetTypeNames);
             this.Out.Print(typeNames);
 
             string[] GetTypeNames()
             {
-                var dataBaseName = this.Drive.DataBaseName;
-                return this.CremaHost.Dispatcher.Invoke(() =>
-                {
-                    var dataBase = this.CremaHost.DataBases[dataBaseName];
-                    var query = from item in dataBase.TypeContext.Types
-                                where StringUtility.GlobMany(item.Name, FilterProperties.FilterExpression)
-                                select item.Name;
-                    return query.ToArray();
-                });
+                var dataBase = this.CremaHost.DataBases[this.Drive.DataBaseName];
+                var tags = (TagInfo)TagsProperties.Tags;
+                var query = from item in dataBase.TypeContext.Types
+                            where StringUtility.GlobMany(item.Name, FilterProperties.FilterExpression)
+                            where (item.TypeInfo.DerivedTags & tags) == tags
+                            select item.Name;
+
+                return query.ToArray();
             }
         }
 
         [CommandMethod]
-        public void Info(string typeName)
+        public void Info([CommandCompletion(nameof(GetTypeNames))]string typeName)
         {
             var type = this.GetType(typeName);
             var typeInfo = type.Dispatcher.Invoke(() => type.TypeInfo);
-            var items = new Dictionary<string, object>
-            {
-                { $"{nameof(typeInfo.ID)}", typeInfo.ID },
-                { $"{nameof(typeInfo.Name)}", typeInfo.Name },
-                { $"{nameof(typeInfo.CategoryPath)}", typeInfo.CategoryPath },
-                { $"{nameof(typeInfo.Tags)}", typeInfo.Tags},
-                { $"{nameof(typeInfo.Comment)}", typeInfo.Comment },
-                { $"{nameof(typeInfo.CreationInfo)}", typeInfo.CreationInfo.ToLocalValue() },
-                { $"{nameof(typeInfo.ModificationInfo)}", typeInfo.ModificationInfo.ToLocalValue() },
-            };
-            this.Out.Print(items);
+            var props = typeInfo.ToDictionary();
+            var text = TextSerializer.Serialize(props);
+            this.Out.WriteLine(text);
         }
 
         [CommandProperty]
+        [CommandCompletion(nameof(GetCategoryPaths))]
         public string CategoryPath
         {
             get; set;
@@ -374,12 +278,61 @@ namespace Ntreev.Crema.Commands.Consoles
             }
         }
 
+        private ITypeItem GetTypeItem([CommandCompletion(nameof(GetPaths))]string typeItemName)
+        {
+            var typeItem = this.CremaHost.Dispatcher.Invoke(GetTypeItem);
+            if (typeItem == null)
+                throw new TypeNotFoundException(typeItemName);
+            return typeItem;
+
+            ITypeItem GetTypeItem()
+            {
+                var dataBase = this.CremaHost.DataBases[this.Drive.DataBaseName];
+                if (NameValidator.VerifyItemPath(typeItemName) == true || NameValidator.VerifyCategoryPath(typeItemName) == true)
+                    return dataBase.TypeContext[typeItemName];
+                return dataBase.TypeContext.Types[typeItemName] as ITypeItem;
+            }
+        }
+
         private string[] GetTypeNames()
         {
             return this.CremaHost.Dispatcher.Invoke(() =>
             {
                 var dataBase = this.CremaHost.DataBases[this.Drive.DataBaseName];
                 return dataBase.TypeContext.Types.Select(item => item.Name).ToArray();
+            });
+        }
+
+        private string[] GetCategoryPaths()
+        {
+            return this.CremaHost.Dispatcher.Invoke(() =>
+            {
+                var dataBase = this.CremaHost.DataBases[this.Drive.DataBaseName];
+                var query = from item in dataBase.TypeContext.Categories
+                            let path = item.Path
+                            select path;
+                return query.ToArray();
+            });
+        }
+
+        private string[] GetPaths()
+        {
+            return this.CremaHost.Dispatcher.Invoke(() =>
+            {
+                var dataBase = this.CremaHost.DataBases[this.Drive.DataBaseName];
+                var itemList = new List<string>(dataBase.TypeContext.Count());
+                foreach (var item in dataBase.TypeContext)
+                {
+                    if (item is IType type)
+                    {
+                        itemList.Add(type.Name);
+                    }
+                    else if (item is ITypeCategory category)
+                    {
+                        itemList.Add(category.Path);
+                    }
+                }
+                return itemList.ToArray();
             });
         }
 

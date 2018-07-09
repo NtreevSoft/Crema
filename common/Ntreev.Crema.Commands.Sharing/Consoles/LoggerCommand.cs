@@ -44,7 +44,6 @@ namespace Ntreev.Crema.Commands.Consoles
         private string viewerArguments;
 
         public LoggerCommand()
-            : base("logger")
         {
 
         }

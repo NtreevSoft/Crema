@@ -42,109 +42,22 @@ namespace Ntreev.Crema.Commands.Consoles
     [ResourceDescription("Resources", IsShared = true)]
     class TableCommand : ConsoleCommandMethodBase
     {
-        private const string tableNameString = "tableName";
         [Import]
         private Lazy<ICremaHost> cremaHost = null;
 
         [ImportingConstructor]
         public TableCommand()
-            : base("table")
         {
 
         }
 
         public override string[] GetCompletions(CommandMethodDescriptor methodDescriptor, CommandMemberDescriptor memberDescriptor, string find)
         {
-            if (methodDescriptor.DescriptorName == nameof(View))
-            {
-                if (memberDescriptor.DescriptorName == tableNameString)
-                {
-                    return this.GetTableNames();
-                }
-            }
-            else if (methodDescriptor.DescriptorName == nameof(Info))
-            {
-                if (memberDescriptor.DescriptorName == tableNameString)
-                {
-                    return this.GetTableNames();
-                }
-            }
-            else if (methodDescriptor.DescriptorName == nameof(ColumnInfo))
-            {
-                if (memberDescriptor.DescriptorName == tableNameString)
-                {
-                    return this.GetTableNames();
-                }
-            }
-            else if (methodDescriptor.DescriptorName == nameof(ColumnList))
-            {
-                if (memberDescriptor.DescriptorName == tableNameString)
-                {
-                    return this.GetTableNames();
-                }
-            }
-            else if (methodDescriptor.DescriptorName == nameof(Log))
-            {
-                if (memberDescriptor.DescriptorName == tableNameString)
-                {
-                    return this.GetTableNames();
-                }
-            }
-            else if (methodDescriptor.DescriptorName == nameof(EditTemplate))
-            {
-                if (memberDescriptor.DescriptorName == tableNameString)
-                {
-                    return this.GetTableNames();
-                }
-            }
-            else if (methodDescriptor.DescriptorName == nameof(Edit))
-            {
-                if (memberDescriptor.DescriptorName == tableNameString)
-                {
-                    return this.GetTableNames();
-                }
-            }
-            else if (methodDescriptor.DescriptorName == nameof(Create))
-            {
-                if (memberDescriptor.DescriptorName == nameof(CategoryPath))
-                {
-                    return this.GetCategoryPaths();
-                }
-            }
-            else if (methodDescriptor.DescriptorName == nameof(Copy))
-            {
-                if (memberDescriptor.DescriptorName == "tableName")
-                {
-                    return this.GetTableNames();
-                }
-            }
-            else if (methodDescriptor.DescriptorName == nameof(Inherit))
-            {
-                if (memberDescriptor.DescriptorName == "tableName")
-                {
-                    return this.GetTableNames();
-                }
-            }
-            else if (methodDescriptor.DescriptorName == nameof(Rename))
-            {
-                if (memberDescriptor.DescriptorName == "tableName")
-                {
-                    return this.GetTableNames();
-                }
-            }
-            else if (methodDescriptor.DescriptorName == nameof(Delete))
-            {
-                if (memberDescriptor.DescriptorName == "tableName")
-                {
-                    return this.GetTableNames();
-                }
-            }
-
             return base.GetCompletions(methodDescriptor, memberDescriptor, find);
         }
 
         [CommandMethod]
-        public void Rename(string tableName, string newTableName)
+        public void Rename([CommandCompletion(nameof(GetTableNames))]string tableName, string newTableName)
         {
             var table = this.GetTable(tableName);
             var authentication = this.CommandContext.GetAuthentication(this);
@@ -152,7 +65,7 @@ namespace Ntreev.Crema.Commands.Consoles
         }
 
         [CommandMethod]
-        public void Move(string tableName, string categoryPath)
+        public void Move([CommandCompletion(nameof(GetTableNames))]string tableName, [CommandCompletion(nameof(GetCategoryPaths))]string categoryPath)
         {
             var table = this.GetTable(tableName);
             var authentication = this.CommandContext.GetAuthentication(this);
@@ -160,17 +73,18 @@ namespace Ntreev.Crema.Commands.Consoles
         }
 
         [CommandMethod]
-        public void Delete(string tableName, string deleteNow)
+        public void Delete([CommandCompletion(nameof(GetTableNames))]string tableName)
         {
-            if (deleteNow != "DeleteNow")
-                throw new ArgumentException("tpye: 'DeleteNow'", nameof(deleteNow));
             var table = this.GetTable(tableName);
             var authentication = this.CommandContext.GetAuthentication(this);
-            table.Dispatcher.Invoke(() => table.Delete(authentication));
+            if (this.CommandContext.ConfirmToDelete() == true)
+            {
+                table.Dispatcher.Invoke(() => table.Delete(authentication));
+            }
         }
 
         [CommandMethod]
-        public void SetTags(string tableName, string tags)
+        public void SetTags([CommandCompletion(nameof(GetTableNames))]string tableName, string tags)
         {
             var table = this.GetTable(tableName);
             var authentication = this.CommandContext.GetAuthentication(this);
@@ -179,76 +93,55 @@ namespace Ntreev.Crema.Commands.Consoles
 
         [CommandMethod]
         [CommandMethodProperty(nameof(CategoryPath), nameof(CopyContent))]
-        public void Copy(string tableName, string newTableName)
+        public void Copy([CommandCompletion(nameof(GetTableNames))]string tableName, string newTableName)
         {
             var table = this.GetTable(tableName);
             var authentication = this.CommandContext.GetAuthentication(this);
+            var categoryPath = this.CategoryPath ?? this.GetCurrentDirectory();
             table.Dispatcher.Invoke(() =>
             {
-                var categoryPath = this.CategoryPath ?? this.GetCurrentDirectory();
                 table.Copy(authentication, newTableName, categoryPath, this.CopyContent);
             });
         }
 
         [CommandMethod]
         [CommandMethodProperty(nameof(CategoryPath), nameof(CopyContent))]
-        public void Inherit(string tableName, string newTableName)
+        public void Inherit([CommandCompletion(nameof(GetTableNames))]string tableName, string newTableName)
         {
             var table = this.GetTable(tableName);
             var authentication = this.CommandContext.GetAuthentication(this);
+            var categoryPath = this.CategoryPath ?? this.GetCurrentDirectory();
             table.Dispatcher.Invoke(() =>
             {
-                var categoryPath = this.CategoryPath ?? this.GetCurrentDirectory();
                 table.Inherit(authentication, newTableName, categoryPath, this.CopyContent);
             });
         }
 
         [CommandMethod]
         [CommandMethodStaticProperty(typeof(ViewProperties))]
-        public void View(string tableName, string revision = null)
+        public void View([CommandCompletion(nameof(GetPaths))]string tableItemName, string revision = null)
         {
-            var table = this.GetTable(tableName);
+            var tableItem = this.GetTableItem(tableItemName);
             var authentication = this.CommandContext.GetAuthentication(this);
-            var dataTable = table.Dispatcher.Invoke(() =>
+            var dataSet = tableItem.Dispatcher.Invoke(() =>
             {
-                var dataSet = table.GetDataSet(authentication, revision);
-                return dataSet.Tables[table.Name, table.Category.Path];
+                return tableItem.GetDataSet(authentication, revision);
             });
-
-            ViewProperties.View(dataTable, this.Out);
-        }
-
-        [CommandMethod]
-        [CommandMethodStaticProperty(typeof(ViewProperties))]
-        public void ViewCategory(string categoryPath, string revision = null)
-        {
-            var category = this.GetCategory(categoryPath);
-            var authentication = this.CommandContext.GetAuthentication(this);
-            var dataSet = category.Dispatcher.Invoke(() => category.GetDataSet(authentication, revision));
 
             foreach (var item in dataSet.Tables)
             {
+                this.Out.WriteLine(item.Name);
                 ViewProperties.View(item, this.Out);
             }
         }
 
         [CommandMethod]
         [CommandMethodStaticProperty(typeof(LogProperties))]
-        public void Log(string tableName)
+        public void Log([CommandCompletion(nameof(GetPaths))]string tableItemName)
         {
-            var table = this.GetTable(tableName);
+            var tableItem = this.GetTableItem(tableItemName);
             var authentication = this.CommandContext.GetAuthentication(this);
-            var logs = table.Dispatcher.Invoke(() => table.GetLog(authentication));
-            LogProperties.Print(this.Out, logs);
-        }
-
-        [CommandMethod]
-        [CommandMethodStaticProperty(typeof(LogProperties))]
-        public void LogCategory(string categoryPath)
-        {
-            var category = this.GetCategory(categoryPath);
-            var authentication = this.CommandContext.GetAuthentication(this);
-            var logs = category.Dispatcher.Invoke(() => category.GetLog(authentication));
+            var logs = tableItem.Dispatcher.Invoke(() => tableItem.GetLog(authentication));
             LogProperties.Print(this.Out, logs);
         }
 
@@ -274,7 +167,7 @@ namespace Ntreev.Crema.Commands.Consoles
         }
 
         [CommandMethod]
-        public void Info(string tableName)
+        public void Info([CommandCompletion(nameof(GetTableNames))]string tableName)
         {
             var table = this.GetTable(tableName);
             var tableInfo = table.Dispatcher.Invoke(() => table.TableInfo);
@@ -285,11 +178,11 @@ namespace Ntreev.Crema.Commands.Consoles
 
         [CommandMethod]
         [CommandMethodStaticProperty(typeof(ColumnInfoProperties))]
-        public void ColumnList(string tableName)
+        public void ColumnList([CommandCompletion(nameof(GetTableNames))]string tableName)
         {
             var table = this.GetTable(tableName);
             var tableInfo = table.Dispatcher.Invoke(() => table.TableInfo);
-            var headerList = new List<string>(new string[] { "IsKey", CremaSchema.Name, "DataType", CremaSchema.Comment, });
+            var headerList = new List<string>(new string[] { CremaSchema.IsKey, CremaSchema.Name, CremaSchema.DataType, CremaSchema.Comment, });
 
             if (ColumnInfoProperties.ID == true || ColumnInfoProperties.All)
                 headerList.Add(nameof(ColumnInfoProperties.ID));
@@ -345,7 +238,7 @@ namespace Ntreev.Crema.Commands.Consoles
         }
 
         [CommandMethod]
-        public void ColumnInfo(string tableName, string columnName)
+        public void ColumnInfo([CommandCompletion(nameof(GetTableNames))]string tableName, string columnName)
         {
             var table = this.GetTable(tableName);
             var tableInfo = table.Dispatcher.Invoke(() => table.TableInfo);
@@ -377,7 +270,6 @@ namespace Ntreev.Crema.Commands.Consoles
         public void Create()
         {
             var authentication = this.CommandContext.GetAuthentication(this);
-            //var category = this.GetCategory(this.CategoryPath ?? this.GetCurrentDirectory());
             var tableNames = this.GetTableNames();
             var template = CreateTemplate();
 
@@ -458,7 +350,7 @@ namespace Ntreev.Crema.Commands.Consoles
 
         [ConsoleModeOnly]
         [CommandMethod]
-        public void EditTemplate(string tableName)
+        public void EditTemplate([CommandCompletion(nameof(GetTableNames))]string tableName)
         {
             var authentication = this.CommandContext.GetAuthentication(this);
             var table = this.GetTable(tableName);
@@ -495,7 +387,7 @@ namespace Ntreev.Crema.Commands.Consoles
 
         [ConsoleModeOnly]
         [CommandMethod]
-        public void Edit(string tableName)
+        public void Edit([CommandCompletion(nameof(GetTableNames))]string tableName)
         {
             var authentication = this.CommandContext.GetAuthentication(this);
             var table = this.GetTable(tableName);
@@ -525,12 +417,14 @@ namespace Ntreev.Crema.Commands.Consoles
         }
 
         [CommandProperty]
+        [CommandCompletion(nameof(GetCategoryPaths))]
         public string CategoryPath
         {
             get; set;
         }
 
         [CommandProperty("parent")]
+        [CommandCompletion(nameof(GetPaths))]
         [DefaultValue("")]
         public string ParentPath
         {
@@ -577,7 +471,7 @@ namespace Ntreev.Crema.Commands.Consoles
             }
         }
 
-        private ITable GetTable(string tableName)
+        private ITable GetTable([CommandCompletion(nameof(GetTableNames))]string tableName)
         {
             var table = this.CremaHost.Dispatcher.Invoke(GetTable);
             if (table == null)
@@ -607,6 +501,22 @@ namespace Ntreev.Crema.Commands.Consoles
             }
         }
 
+        private ITableItem GetTableItem([CommandCompletion(nameof(GetPaths))]string tableItemName)
+        {
+            var tableItem = this.CremaHost.Dispatcher.Invoke(GetTableItem);
+            if (tableItem == null)
+                throw new TableNotFoundException(tableItemName);
+            return tableItem;
+
+            ITableItem GetTableItem()
+            {
+                var dataBase = this.CremaHost.DataBases[this.Drive.DataBaseName];
+                if (NameValidator.VerifyItemPath(tableItemName) == true || NameValidator.VerifyCategoryPath(tableItemName) == true)
+                    return dataBase.TableContext[tableItemName];
+                return dataBase.TableContext.Tables[tableItemName] as ITableItem;
+            }
+        }
+
         private string[] GetTableNames()
         {
             return this.CremaHost.Dispatcher.Invoke(() =>
@@ -628,6 +538,27 @@ namespace Ntreev.Crema.Commands.Consoles
                             let path = item.Path
                             select path;
                 return query.ToArray();
+            });
+        }
+
+        private string[] GetPaths()
+        {
+            return this.CremaHost.Dispatcher.Invoke(() =>
+            {
+                var dataBase = this.CremaHost.DataBases[this.Drive.DataBaseName];
+                var itemList = new List<string>(dataBase.TableContext.Count());
+                foreach (var item in dataBase.TableContext)
+                {
+                    if (item is ITable table)
+                    {
+                        itemList.Add(table.Name);
+                    }
+                    else if (item is ITableCategory category)
+                    {
+                        itemList.Add(category.Path);
+                    }
+                }
+                return itemList.ToArray();
             });
         }
 

@@ -105,19 +105,19 @@ namespace Ntreev.Crema.Data
         public IDictionary<string, object> ToDictionary()
         {
             var props = new Dictionary<string, object>
-                {
-                    { nameof(this.ID), this.ID },
-                    { nameof(this.Name), this.Name },
-                    { nameof(this.Comment), this.Comment },
-                    { nameof(this.Tags), $"{this.Tags}" },
-                    { nameof(this.IsFlag), this.IsFlag },
-                    { nameof(this.CategoryPath), this.CategoryPath },
-                    { CremaSchema.Creator, this.CreationInfo.ID },
-                    { CremaSchema.CreatedDateTime, this.CreationInfo.DateTime },
-                    { CremaSchema.Modifier, this.ModificationInfo.ID },
-                    { CremaSchema.ModifiedDateTime, this.ModificationInfo.DateTime },
-                    { nameof(this.Members), this.GetMembersInfo(this.Members) }
-                };
+            {
+                { nameof(this.ID), this.ID },
+                { nameof(this.Name), this.Name },
+                { nameof(this.Comment), this.Comment },
+                { nameof(this.Tags), $"{this.Tags}" },
+                { nameof(this.IsFlag), this.IsFlag },
+                { nameof(this.CategoryPath), this.CategoryPath },
+                { CremaSchema.Creator, this.CreationInfo.ID },
+                { CremaSchema.CreatedDateTime, this.CreationInfo.DateTime },
+                { CremaSchema.Modifier, this.ModificationInfo.ID },
+                { CremaSchema.ModifiedDateTime, this.ModificationInfo.DateTime },
+                { nameof(this.Members), this.GetMembersInfo(this.Members) }
+            };
 
             return props;
         }

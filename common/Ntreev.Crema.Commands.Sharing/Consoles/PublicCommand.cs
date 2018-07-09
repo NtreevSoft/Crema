@@ -38,7 +38,6 @@ namespace Ntreev.Crema.Commands.Consoles
     class PublicCommand : AccessCommandBase, IConsoleCommand
     {
         public PublicCommand()
-            : base("public")
         {
 
         }

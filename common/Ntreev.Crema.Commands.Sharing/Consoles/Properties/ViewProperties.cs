@@ -80,7 +80,6 @@ namespace Ntreev.Crema.Commands.Consoles.Properties
                 count++;
             }
 
-            writer.WriteLine();
             writer.PrintTableData(tableDataBuilder.Data, true);
             writer.WriteLine();
 

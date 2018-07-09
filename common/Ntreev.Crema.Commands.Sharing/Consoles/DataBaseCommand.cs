@@ -37,36 +37,21 @@ namespace Ntreev.Crema.Commands.Consoles
     class DataBaseCommand : ConsoleCommandMethodBase, IConsoleCommand
     {
         private const string dataBaseNameParameter = "dataBaseName";
-        [Import]
-        private Lazy<ICremaHost> cremaHost = null;
+
+        private readonly ICremaHost cremaHost;
+        private IDataBaseCollection dataBases;
 
         [ImportingConstructor]
-        public DataBaseCommand()
+        public DataBaseCommand(ICremaHost cremaHost)
             : base("database")
         {
-
+            this.cremaHost = cremaHost;
+            this.cremaHost.Opened += (s, e) => this.dataBases = this.cremaHost.DataBases;
+            this.cremaHost.Closed += (s, e) => this.dataBases = null;
         }
 
         public override string[] GetCompletions(CommandMethodDescriptor methodDescriptor, CommandMemberDescriptor memberDescriptor, string find)
         {
-            switch (methodDescriptor.DescriptorName)
-            {
-                case nameof(Load):
-                case nameof(Unload):
-                case nameof(Rename):
-                case nameof(Delete):
-                case nameof(Copy):
-                case nameof(Info):
-                case nameof(Log):
-                    {
-                        if (memberDescriptor.DescriptorName == dataBaseNameParameter)
-                        {
-                            return this.GetDataBaseNames();
-                        }
-                    }
-                    break;
-            }
-
             return base.GetCompletions(methodDescriptor, memberDescriptor, find);
         }
 
@@ -74,109 +59,84 @@ namespace Ntreev.Crema.Commands.Consoles
         [CommandMethodProperty(nameof(Comment))]
         public void Create(string dataBaseName)
         {
-            this.CremaHost.Dispatcher.Invoke(() =>
+            var authentication = this.CommandContext.GetAuthentication(this);
+            this.dataBases.Dispatcher.Invoke(() =>
             {
-                var authentication = this.CommandContext.GetAuthentication(this);
-                this.CremaHost.DataBases.AddNewDataBase(authentication, dataBaseName, this.Comment);
+                this.dataBases.AddNewDataBase(authentication, dataBaseName, this.Comment);
             });
         }
 
         [CommandMethod]
-        public void Rename(string dataBaseName, string newDataBaseName)
+        public void Rename([CommandCompletion(nameof(GetDataBaseNames))]string dataBaseName, string newDataBaseName)
         {
-            this.CremaHost.Dispatcher.Invoke(() =>
+            var dataBase = this.GetDataBase(dataBaseName);
+            var authentication = this.CommandContext.GetAuthentication(this);
+            dataBase.Dispatcher.Invoke(() =>
             {
-                var dataBase = this.GetDataBase(dataBaseName);
-                var authentication = this.CommandContext.GetAuthentication(this);
                 dataBase.Rename(authentication, newDataBaseName);
             });
         }
 
         [CommandMethod]
-        public void Delete(string dataBaseName)
+        public void Delete([CommandCompletion(nameof(GetDataBaseNames))]string dataBaseName)
         {
-            this.CremaHost.Dispatcher.Invoke(() =>
+            var dataBase = this.GetDataBase(dataBaseName);
+            var authentication = this.CommandContext.GetAuthentication(this);
+            if (this.CommandContext.ConfirmToDelete() == true)
             {
-                var dataBase = this.GetDataBase(dataBaseName);
-                var authentication = this.CommandContext.GetAuthentication(this);
-                if (this.CommandContext.ConfirmToDelete() == true)
-                    dataBase.Delete(authentication);
-            });
+                dataBase.Dispatcher.Invoke(() => dataBase.Delete(authentication));
+            }
         }
 
         [CommandMethod]
         [CommandMethodProperty(nameof(Comment), nameof(CopyForce))]
-        public void Copy(string dataBaseName, string newDataBaseName)
+        public void Copy([CommandCompletion(nameof(GetDataBaseNames))]string dataBaseName, string newDataBaseName)
         {
-            var timer = new System.Timers.Timer(1000);
-            timer.Elapsed += (s, e) => this.Out.Write(".");
-            timer.Start();
-            this.CremaHost.Dispatcher.Invoke(() =>
-            {
-                try
-                {
-                    var dataBase = GetDataBase(dataBaseName);
-                    var authentication = this.CommandContext.GetAuthentication(this);
-                    dataBase.Copy(authentication, newDataBaseName, this.Comment, this.CopyForce);
-                }
-                finally
-                {
-                    timer.Stop();
-                }
-            });
+            var dataBase = GetDataBase(dataBaseName);
+            var authentication = this.CommandContext.GetAuthentication(this);
+            dataBase.Dispatcher.Invoke(() => dataBase.Copy(authentication, newDataBaseName, this.Comment, this.CopyForce));
         }
 
         [CommandMethod]
-        public void Load(string dataBaseName)
+        public void Load([CommandCompletion(nameof(GetDataBaseNames))]string dataBaseName)
         {
-            this.CremaHost.Dispatcher.Invoke(() =>
-            {
-                var dataBase = this.GetDataBase(dataBaseName);
-                var authentication = this.CommandContext.GetAuthentication(this);
-                dataBase.Load(authentication);
-            });
+            var dataBase = this.GetDataBase(dataBaseName);
+            var authentication = this.CommandContext.GetAuthentication(this);
+            dataBase.Dispatcher.Invoke(() => dataBase.Load(authentication));
         }
 
         [CommandMethod]
-        public void Unload(string dataBaseName)
+        public void Unload([CommandCompletion(nameof(GetDataBaseNames))]string dataBaseName)
         {
-            this.CremaHost.Dispatcher.Invoke(() =>
-            {
-                var dataBase = this.GetDataBase(dataBaseName);
-                var authentication = this.CommandContext.GetAuthentication(this);
-                dataBase.Unload(authentication);
-            });
+            var dataBase = this.GetDataBase(dataBaseName);
+            var authentication = this.CommandContext.GetAuthentication(this);
+            dataBase.Dispatcher.Invoke(() => dataBase.Unload(authentication));
         }
 
         [CommandMethod]
-        public void Lock(string dataBaseName, string comment)
+        [CommandMethodProperty(nameof(Comment))]
+        public void Lock([CommandCompletion(nameof(GetDataBaseNames))]string dataBaseName)
         {
-            this.CremaHost.Dispatcher.Invoke(() =>
-            {
-                var dataBase = this.GetDataBase(dataBaseName);
-                var authentication = this.CommandContext.GetAuthentication(this);
-                dataBase.Lock(authentication, comment);
-            });
+            var dataBase = this.GetDataBase(dataBaseName);
+            var authentication = this.CommandContext.GetAuthentication(this);
+            dataBase.Dispatcher.Invoke(() => dataBase.Lock(authentication, this.Comment));
         }
 
         [CommandMethod]
-        public void Unlock(string dataBaseName)
+        public void Unlock([CommandCompletion(nameof(GetDataBaseNames))]string dataBaseName)
         {
-            this.CremaHost.Dispatcher.Invoke(() =>
-            {
-                var dataBase = this.GetDataBase(dataBaseName);
-                var authentication = this.CommandContext.GetAuthentication(this);
-                dataBase.Unlock(authentication);
-            });
+            var dataBase = this.GetDataBase(dataBaseName);
+            var authentication = this.CommandContext.GetAuthentication(this);
+            dataBase.Dispatcher.Invoke(() => dataBase.Unlock(authentication));
         }
 
         [CommandMethod]
         [CommandMethodStaticProperty(typeof(FilterProperties))]
         public void List()
         {
-            var items = this.CremaHost.Dispatcher.Invoke(() =>
+            var items = this.dataBases.Dispatcher.Invoke(() =>
             {
-                var query = from item in this.CremaHost.DataBases
+                var query = from item in this.dataBases
                             where StringUtility.GlobMany(item.Name, FilterProperties.FilterExpression)
                             select new ItemObject(item.Name, item.IsLoaded);
                 return query.ToArray();
@@ -186,7 +146,7 @@ namespace Ntreev.Crema.Commands.Consoles
         }
 
         [CommandMethod]
-        public void Info(string dataBaseName)
+        public void Info([CommandCompletion(nameof(GetDataBaseNames))]string dataBaseName)
         {
             var dataBase = this.GetDataBase(dataBaseName);
             var dataBaseInfo = dataBase.Dispatcher.Invoke(() => dataBase.DataBaseInfo);
@@ -205,19 +165,16 @@ namespace Ntreev.Crema.Commands.Consoles
         }
 
         [CommandMethod]
-        public void Revert(string dataBaseName, string revision)
+        public void Revert([CommandCompletion(nameof(GetDataBaseNames))]string dataBaseName, string revision)
         {
             var dataBase = this.GetDataBase(dataBaseName);
-            this.CremaHost.Dispatcher.Invoke(() =>
-            {
-                var authentication = this.CommandContext.GetAuthentication(this);
-                dataBase.Revert(authentication, revision);
-            });
+            var authentication = this.CommandContext.GetAuthentication(this);
+            dataBase.Dispatcher.Invoke(() => dataBase.Revert(authentication, revision));
         }
 
         [CommandMethod]
         [CommandMethodStaticProperty(typeof(LogProperties))]
-        public void Log(string dataBaseName)
+        public void Log([CommandCompletion(nameof(GetDataBaseNames))]string dataBaseName)
         {
             var dataBase = this.GetDataBase(dataBaseName);
             var authentication = this.CommandContext.GetAuthentication(this);
@@ -225,33 +182,6 @@ namespace Ntreev.Crema.Commands.Consoles
 
             LogProperties.Print(this.Out, logs);
         }
-
-        //[CommandMethod]
-        //public void Export(string dataBaseName)
-        //{
-        //    var dataBase = this.GetDataBase(dataBaseName);
-
-        //    dataBase.Dispatcher.Invoke(() =>
-        //    {
-        //        if (dataBase.IsLoaded == false)
-        //            dataBase.Load(authentication);
-        //        dataBase.Enter(authentication);
-        //    });
-
-        //    using (DataBaseUsing.Set(dataBase, authentication))
-        //    {
-        //        var logs = dataBase.Dispatcher.Invoke(() => dataBase.GetLog(authentication));
-
-        //        var path = @"C:\Users\s2quake\Desktop\새 폴더 (3)";
-        //        foreach (var item in logs)
-        //        {
-        //            var dataSet = dataBase.Dispatcher.Invoke(() => dataBase.Preview(authentication, item.Revision));
-        //            var dir = Path.Combine(path, $"{item.Revision}");
-        //            DirectoryUtility.Prepare(dir);
-        //            dataSet.WriteToDirectory(dir);
-        //        }
-        //    }
-        //}
 
         [CommandProperty('f', true)]
         public bool CopyForce
@@ -272,18 +202,13 @@ namespace Ntreev.Crema.Commands.Consoles
             get; set;
         }
 
-        public ICremaHost CremaHost
-        {
-            get { return this.cremaHost.Value; }
-        }
-
         public override bool IsEnabled => this.CommandContext.Drive is DataBasesConsoleDrive;
 
         private string[] GetDataBaseNames()
         {
-            return this.CremaHost.Dispatcher.Invoke(() =>
+            return this.dataBases.Dispatcher.Invoke(() =>
             {
-                var query = from item in this.CremaHost.DataBases
+                var query = from item in this.dataBases
                             select item.Name;
                 return query.ToArray();
             });
@@ -291,14 +216,14 @@ namespace Ntreev.Crema.Commands.Consoles
 
         private IDataBase GetDataBase(string dataBaseName)
         {
-            var dataBase = this.CremaHost.Dispatcher.Invoke(GetDataBase);
+            var dataBase = this.dataBases.Dispatcher.Invoke(GetDataBase);
             if (dataBase == null)
                 throw new DataBaseNotFoundException(dataBaseName);
             return dataBase;
 
             IDataBase GetDataBase()
             {
-                return this.CremaHost.DataBases[dataBaseName];
+                return this.dataBases[dataBaseName];
             }
         }
 

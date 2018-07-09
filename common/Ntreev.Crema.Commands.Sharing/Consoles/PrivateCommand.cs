@@ -38,7 +38,6 @@ namespace Ntreev.Crema.Commands.Consoles
     class PrivateCommand : AccessCommandBase, IConsoleCommand
     {
         public PrivateCommand()
-            : base("private")
         {
 
         }

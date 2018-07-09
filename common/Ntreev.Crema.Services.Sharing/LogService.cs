@@ -310,8 +310,6 @@ namespace Ntreev.Crema.Services
             }
         }
 
-
-
         private void InitializeVerbose()
         {
 

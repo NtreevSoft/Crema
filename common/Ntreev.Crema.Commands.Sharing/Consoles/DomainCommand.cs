@@ -38,38 +38,13 @@ namespace Ntreev.Crema.Commands.Consoles
 
         [ImportingConstructor]
         public DomainCommand(ICremaHost cremaHost)
-            : base("domain")
         {
             this.cremaHost = cremaHost;
         }
 
-        public override string[] GetCompletions(CommandMethodDescriptor methodDescriptor, CommandMemberDescriptor memberDescriptor, string find)
-        {
-            if (methodDescriptor.DescriptorName == nameof(Delete))
-            {
-                return this.GetDomainIDs();
-            }
-            else if (methodDescriptor.DescriptorName == nameof(DeleteAll))
-            {
-                return this.GetDataBaseNames();
-            }
-            else if (methodDescriptor.DescriptorName == nameof(Info))
-            {
-                return this.GetDomainIDs();
-            }
-            else if (methodDescriptor.DescriptorName == nameof(List))
-            {
-                if (memberDescriptor.DescriptorName == nameof(DataBaseName))
-                {
-                    return this.GetDataBaseNames();
-                }
-            }
-            return base.GetCompletions(methodDescriptor, memberDescriptor, find);
-        }
-
         [CommandMethod]
         [CommandMethodProperty(nameof(IsCancelled), nameof(IsForce))]
-        public void Delete(Guid domainID)
+        public void Delete([CommandCompletion(nameof(GetDomainIDs))]Guid domainID)
         {
             var domain = this.GetDomain(domainID);
             var dataBase = this.cremaHost.Dispatcher.Invoke(() => this.cremaHost.DataBases.FirstOrDefault(item => item.ID == domain.DataBaseID));
@@ -84,7 +59,7 @@ namespace Ntreev.Crema.Commands.Consoles
 
         [CommandMethod]
         [CommandMethodProperty(nameof(IsCancelled), nameof(IsForce))]
-        public void DeleteAll(string dataBaseName)
+        public void DeleteAll([CommandCompletion(nameof(GetDataBaseNames))]string dataBaseName)
         {
             var dataBase = this.cremaHost.Dispatcher.Invoke(() => this.cremaHost.DataBases[dataBaseName]);
             if (dataBase == null)
@@ -147,7 +122,7 @@ namespace Ntreev.Crema.Commands.Consoles
         }
 
         [CommandMethod]
-        public void Info(Guid domainID)
+        public void Info([CommandCompletion(nameof(GetDomainIDs))]Guid domainID)
         {
             var domain = this.GetDomain(domainID);
             var authentication = this.CommandContext.GetAuthentication(this);
@@ -194,6 +169,7 @@ namespace Ntreev.Crema.Commands.Consoles
 
         [CommandProperty("database")]
         [DefaultValue("")]
+        [CommandCompletion(nameof(GetDataBaseNames))]
         public string DataBaseName
         {
             get; set;

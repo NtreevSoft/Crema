@@ -39,7 +39,6 @@ namespace Ntreev.Crema.Commands.Consoles
     {
         [ImportingConstructor]
         public UnlockCommand()
-            : base("unlock")
         {
 
         }

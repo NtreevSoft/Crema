@@ -34,7 +34,6 @@ namespace Ntreev.Crema.Commands.Consoles
         private Lazy<ICremaHost> cremaHost = null;
 
         public NotifyCommand()
-            : base("notify")
         {
             this.Message = string.Empty;
         }

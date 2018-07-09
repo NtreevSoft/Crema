@@ -38,21 +38,12 @@ namespace Ntreev.Crema.Commands.Consoles
     class BanCommand : UserCommandBase, IConsoleCommand
     {
         public BanCommand()
-            : base("ban")
         {
 
-        }
-
-        public override string[] GetCompletions(CommandCompletionContext completionContext)
-        {
-            if (completionContext.MemberDescriptor != null && completionContext.MemberDescriptor.DescriptorName == nameof(this.UserID))
-            {
-                return this.GetUserList();
-            }
-            return base.GetCompletions(completionContext);
         }
 
         [CommandProperty(IsRequired = true)]
+        [CommandCompletion(nameof(GetUserList))]
         public string UserID
         {
             get; set;

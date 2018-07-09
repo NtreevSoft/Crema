@@ -44,161 +44,8 @@ namespace Ntreev.Crema.Commands.Consoles
 
         [ImportingConstructor]
         public UserCommand(ICremaHost cremaHost)
-            : base("user")
         {
             this.cremaHost = cremaHost;
-        }
-
-        public override string[] GetCompletions(CommandMethodDescriptor methodDescriptor, CommandMemberDescriptor memberDescriptor, string find)
-        {
-            switch (methodDescriptor.DescriptorName)
-            {
-                case nameof(Kick):
-                    {
-                        if (memberDescriptor is CommandParameterDescriptor && memberDescriptor.DescriptorName == "userID")
-                        {
-                            return this.UserContext.Dispatcher.Invoke(() =>
-                            {
-                                var query = from item in this.UserContext.Users
-                                            where item.UserState.HasFlag(UserState.Online)
-                                            select item.ID;
-                                return query.ToArray();
-                            });
-                        }
-                    }
-                    break;
-                case nameof(Ban):
-                    {
-                        if (memberDescriptor is CommandParameterDescriptor && memberDescriptor.DescriptorName == "userID")
-                        {
-                            return this.UserContext.Dispatcher.Invoke(() =>
-                            {
-                                var query = from item in this.UserContext.Users
-                                            where item.BanInfo.Path != item.Path
-                                            select item.ID;
-                                return query.ToArray();
-                            });
-                        }
-                    }
-                    break;
-                case nameof(Unban):
-                    {
-                        if (memberDescriptor is CommandParameterDescriptor && memberDescriptor.DescriptorName == "userID")
-                        {
-                            return this.UserContext.Dispatcher.Invoke(() =>
-                            {
-                                var query = from item in this.UserContext.Users
-                                            where item.BanInfo.Path == item.Path
-                                            select item.ID;
-                                return query.ToArray();
-                            });
-                        }
-                    }
-                    break;
-                case nameof(Move):
-                    {
-                        if (memberDescriptor is CommandParameterDescriptor && memberDescriptor.DescriptorName == "userID")
-                        {
-                            if (memberDescriptor.DescriptorName == "userID")
-                            {
-                                return this.UserContext.Dispatcher.Invoke(() =>
-                                {
-                                    var query = from item in this.UserContext.Users
-                                                select item.ID;
-                                    return query.ToArray();
-                                });
-                            }
-                            else if (memberDescriptor.DescriptorName == "categoryPath")
-                            {
-                                return this.UserContext.Dispatcher.Invoke(() =>
-                                {
-                                    var query = from item in this.UserContext.Categories
-                                                select item.Path;
-                                    return query.ToArray();
-                                });
-                            }
-                        }
-                    }
-                    break;
-                case nameof(Create):
-                    {
-                        if (memberDescriptor.DescriptorName == "categoryPath")
-                        {
-                            return this.UserContext.Dispatcher.Invoke(() =>
-                            {
-                                var query = from item in this.UserContext.Categories
-                                            select item.Path;
-                                return query.ToArray();
-                            });
-                        }
-                    }
-                    break;
-                case nameof(Info):
-                    {
-                        if (memberDescriptor is CommandParameterDescriptor && memberDescriptor.DescriptorName == "userID")
-                        {
-                            return this.UserContext.Dispatcher.Invoke(() =>
-                            {
-                                var query = from item in this.UserContext.Users
-                                            select item.ID;
-                                return query.ToArray();
-                            });
-                        }
-                    }
-                    break;
-                case nameof(Rename):
-                case nameof(SetAuthority):
-                case nameof(Delete):
-                case nameof(Message):
-                    {
-                        if (memberDescriptor is CommandParameterDescriptor && memberDescriptor.DescriptorName == "userID")
-                        {
-                            return this.UserContext.Dispatcher.Invoke(() =>
-                            {
-                                var query = from item in this.UserContext.Users
-                                            select item.ID;
-                                return query.ToArray();
-                            });
-                        }
-                    }
-                    break;
-                    //case nameof(CreateCategory):
-                    //    {
-                    //        if (memberDescriptor is CommandParameterDescriptor && memberDescriptor.DescriptorName == "categoryPath")
-                    //        {
-                    //            return this.GetCategoryPaths();
-                    //        }
-                    //    }
-                    //    break;
-                    //case nameof(RenameCategory):
-                    //    {
-                    //        if (memberDescriptor is CommandParameterDescriptor && memberDescriptor.DescriptorName == "categoryPath")
-                    //        {
-                    //            return this.GetCategoryPaths();
-                    //        }
-                    //    }
-                    //    break;
-                    //case nameof(MoveCategory):
-                    //    {
-                    //        if (memberDescriptor is CommandParameterDescriptor)
-                    //        {
-                    //            if (memberDescriptor.DescriptorName == "categoryPath" || memberDescriptor.DescriptorName == "parentPath")
-                    //            {
-                    //                return this.GetCategoryPaths();
-                    //            }
-                    //        }
-                    //    }
-                    //    break;
-                    //case nameof(DeleteCategory):
-                    //    {
-                    //        if (memberDescriptor is CommandParameterDescriptor && memberDescriptor.DescriptorName == "categoryPath")
-                    //        {
-                    //            return this.GetCategoryPaths();
-                    //        }
-                    //    }
-                    //    break;
-            }
-            return null;
         }
 
         [CommandMethod]
@@ -224,174 +71,112 @@ namespace Ntreev.Crema.Commands.Consoles
         }
 
         [CommandMethod]
-        public void ListCategory()
+        [CommandMethodProperty(nameof(Comment))]
+        public void Kick([CommandCompletion(nameof(GetOnlineUserIDs))]string userID)
         {
-            var items = this.UserContext.Dispatcher.Invoke(() =>
-            {
-                var query = from item in this.UserContext.Categories
-                            orderby item.Path
-                            select item.Path;
-
-                return query.ToArray();
-            });
-
-            foreach (var item in items)
-            {
-                this.Out.WriteLine(item);
-            }
+            var user = this.GetUser(userID);
+            var authentication = this.CommandContext.GetAuthentication(this);
+            user.Dispatcher.Invoke(() => user.Kick(authentication, this.Comment));
         }
 
         [CommandMethod]
         [CommandMethodProperty(nameof(Comment))]
-        public void Kick(string userID)
+        public void Ban([CommandCompletion(nameof(GetUnbannedUserIDs))]string userID)
         {
-            this.UserContext.Dispatcher.Invoke(() =>
-            {
-                var user = this.GetUser(userID);
-                var authentication = this.CommandContext.GetAuthentication(this);
-                user.Kick(authentication, this.Comment);
-            });
+            var user = this.GetUser(userID);
+            var authentication = this.CommandContext.GetAuthentication(this);
+            user.Dispatcher.Invoke(() => user.Ban(authentication, this.Comment));
         }
 
         [CommandMethod]
-        [CommandMethodProperty(nameof(Comment))]
-        public void Ban(string userID)
+        public void Unban([CommandCompletion(nameof(GetBannedUserIDs))]string userID)
         {
-            this.UserContext.Dispatcher.Invoke(() =>
-            {
-                var user = this.GetUser(userID);
-                var authentication = this.CommandContext.GetAuthentication(this);
-                user.Ban(authentication, this.Comment);
-            });
+            var user = this.GetUser(userID);
+            var authentication = this.CommandContext.GetAuthentication(this);
+            user.Dispatcher.Invoke(() => user.Unban(authentication));
         }
 
         [CommandMethod]
-        public void Unban(string userID)
+        public void Password([CommandCompletion(nameof(GetUserIDs))]string userID)
         {
-            this.UserContext.Dispatcher.Invoke(() =>
-            {
-                var user = this.GetUser(userID);
-                var authentication = this.CommandContext.GetAuthentication(this);
-                user.Unban(authentication);
-            });
-        }
-
-        [CommandMethod]
-        public void Password(string userID)
-        {
-            var user = this.UserContext.Dispatcher.Invoke(() => this.GetUser(userID));
+            var user = this.GetUser(userID);
             var password1 = this.CommandContext.ReadSecureString("Password1:");
             var password2 = this.CommandContext.ReadSecureString("Password2:");
             ConsoleCommandContextBase.Validate(password1, password2);
-
-            this.UserContext.Dispatcher.Invoke(() =>
-            {
-                var authentication = this.CommandContext.GetAuthentication(this);
-                user.ChangeUserInfo(authentication, null, password1, null, null);
-            });
+            var authentication = this.CommandContext.GetAuthentication(this);
+            user.Dispatcher.Invoke(() => user.ChangeUserInfo(authentication, null, password1, null, null));
         }
 
         [CommandMethod]
-        public void Rename(string userID, string newName = null)
+        public void Rename([CommandCompletion(nameof(GetUser))]string userID, string newName = null)
         {
-            var user = this.UserContext.Dispatcher.Invoke(() => this.GetUser(userID));
+            var user = this.GetUser(userID);
             var authentication = this.CommandContext.GetAuthentication(this);
-
-            if (newName == null)
-                newName = this.CommandContext.ReadString("NewName:");
-
-            this.UserContext.Dispatcher.Invoke(() =>
-            {
-                
-                user.ChangeUserInfo(authentication, null, null, newName, null);
-            });
+            var newValue = newName ?? this.CommandContext.ReadString("NewName:");
+            user.Dispatcher.Invoke(() => user.ChangeUserInfo(authentication, null, null, newValue, null));
         }
 
         [CommandMethod]
-        public void Move(string userID, string categoryPath)
+        public void Move([CommandCompletion(nameof(GetUser))]string userID, string categoryPath)
         {
-            var user = this.UserContext.Dispatcher.Invoke(() => this.GetUser(userID));
+            var user = this.GetUser(userID);
             var authentication = this.CommandContext.GetAuthentication(this);
-
-            this.UserContext.Dispatcher.Invoke(() =>
-            {
-                user.Move(authentication, categoryPath);
-            });
+            user.Dispatcher.Invoke(() => user.Move(authentication, categoryPath));
         }
 
         [CommandMethod("authority")]
-        public void SetAuthority(string userID, Authority authority)
+        public void SetAuthority([CommandCompletion(nameof(GetUser))]string userID, Authority authority)
         {
-            this.UserContext.Dispatcher.Invoke(() =>
-            {
-                var user = this.GetUser(userID);
-                var authentication = this.CommandContext.GetAuthentication(this);
-                user.ChangeUserInfo(authentication, null, null, null, authority);
-            });
+            var user = this.GetUser(userID);
+            var authentication = this.CommandContext.GetAuthentication(this);
+            user.Dispatcher.Invoke(() => user.ChangeUserInfo(authentication, null, null, null, authority));
         }
 
         [CommandMethod]
-        public void Info(string userID)
+        public void Info([CommandCompletion(nameof(GetUser))]string userID)
         {
-            var userInfo = this.UserContext.Dispatcher.Invoke(() =>
-            {
-                var user = this.GetUser(userID);
-                return user.UserInfo;
-            });
-
-            var items = new Dictionary<string, object>
-            {
-                { $"{nameof(userInfo.ID)}", userInfo.ID },
-                { $"{nameof(userInfo.Name)}", userInfo.Name },
-                { $"{nameof(userInfo.CategoryPath)}", userInfo.CategoryPath },
-                { $"{nameof(userInfo.Authority)}", userInfo.Authority },
-                { $"{nameof(userInfo.CreationInfo)}", userInfo.CreationInfo.ToLocalValue() },
-                { $"{nameof(userInfo.ModificationInfo)}", userInfo.ModificationInfo.ToLocalValue() }
-            };
-            this.Out.Print<object>(items);
+            var user = this.GetUser(userID);
+            var userInfo = user.Dispatcher.Invoke(() => user.UserInfo);
+            var props = userInfo.ToDictionary();
+            var text = TextSerializer.Serialize(props);
+            this.Out.WriteLine(text);
         }
 
         [ConsoleModeOnly]
         [CommandMethod]
-        public void Create(string categoryPath = null)
+        [CommandMethodProperty(nameof(CategoryPath))]
+        public void Create()
         {
             var schema = JsonSchemaUtility.CreateSchema(typeof(JsonUserInfo));
             schema.SetEnums(nameof(JsonUserInfo.CategoryPath), this.GetCategoryPaths());
 
             var userInfo = JsonUserInfo.Default;
-            userInfo.CategoryPath = categoryPath;
+            userInfo.CategoryPath = this.CategoryPath;
             if (JsonEditorHost.TryEdit(ref userInfo, schema) == false)
                 return;
 
-            this.UserContext.Dispatcher.Invoke(() =>
-            {
-                categoryPath = userInfo.CategoryPath ?? this.CommandContext.Path;
-                var category = this.UserContext.Dispatcher.Invoke(() => this.GetCategory(categoryPath));
-                var userID = userInfo.UserID;
-                var password = StringUtility.ToSecureString(userInfo.Password);
-                var userName = userInfo.UserName;
-                var authority = (Authority)Enum.Parse(typeof(Authority), userInfo.Authority);
-                var authentication = this.CommandContext.GetAuthentication(this);
-
-                category.AddNewUser(authentication, userID, password, userName, authority);
-            });
-        }
-
-        [CommandMethod]
-        public void Delete(string userID)
-        {
-            var user = this.UserContext.Dispatcher.Invoke(() => this.GetUser(userID));
-            if (this.CommandContext.ConfirmToDelete() == false)
-            {
-                this.Out.WriteLine("deletion has been cancelled.");
-                return;
-            }
+            var category = this.GetCategory(this.CategoryPath ?? this.CommandContext.Path);
+            var userID = userInfo.UserID;
+            var password = StringUtility.ToSecureString(userInfo.Password);
+            var userName = userInfo.UserName;
+            var authority = (Authority)Enum.Parse(typeof(Authority), userInfo.Authority);
             var authentication = this.CommandContext.GetAuthentication(this);
-            this.UserContext.Dispatcher.Invoke(() => user.Delete(authentication));
+            category.Dispatcher.Invoke(() => category.AddNewUser(authentication, userID, password, userName, authority));
         }
 
         [CommandMethod]
-        public void Message(string userID, string message)
+        public void Delete([CommandCompletion(nameof(GetUser))]string userID)
+        {
+            var user = this.GetUser(userID);
+            var authentication = this.CommandContext.GetAuthentication(this);
+            if (this.CommandContext.ConfirmToDelete() == true)
+            {
+                user.Dispatcher.Invoke(() => user.Delete(authentication));
+            }
+        }
+
+        [CommandMethod]
+        public void Message([CommandCompletion(nameof(GetUser))]string userID, string message)
         {
             this.UserContext.Dispatcher.Invoke(() =>
             {
@@ -419,6 +204,13 @@ namespace Ntreev.Crema.Commands.Consoles
             get; set;
         }
 
+        [CommandProperty]
+        [CommandCompletion(nameof(GetCategoryPaths))]
+        public string CategoryPath
+        {
+            get; set;
+        }
+
         public override bool IsEnabled => this.CommandContext.Drive is UsersConsoleDrive;
 
         protected IUserContext UserContext
@@ -428,7 +220,7 @@ namespace Ntreev.Crema.Commands.Consoles
 
         private IUser GetUser(string userID)
         {
-            var user = this.UserContext.Users[userID];
+            var user = this.UserContext.Dispatcher.Invoke(() => this.UserContext.Users[userID]);
             if (user == null)
                 throw new UserNotFoundException(userID);
             return user;
@@ -436,7 +228,7 @@ namespace Ntreev.Crema.Commands.Consoles
 
         private IUserCategory GetCategory(string categoryPath)
         {
-            var category = this.UserContext.Categories[categoryPath];
+            var category = this.UserContext.Dispatcher.Invoke(() => this.UserContext.Categories[categoryPath]);
             if (category == null)
                 throw new CategoryNotFoundException(categoryPath);
             return category;
@@ -494,13 +286,37 @@ namespace Ntreev.Crema.Commands.Consoles
             });
         }
 
-        //private string GetCurrentDirectory()
-        //{
-        //    if (this.CommandContext.Drive is UsersConsoleDrive drive)
-        //    {
-        //        return this.CommandContext.Path;
-        //    }
-        //    return PathUtility.Separator;
-        //}
+        private string[] GetOnlineUserIDs()
+        {
+            return this.UserContext.Dispatcher.Invoke(() =>
+            {
+                var query = from item in this.UserContext.Users
+                            where item.UserState.HasFlag(UserState.Online)
+                            select item.ID;
+                return query.ToArray();
+            });
+        }
+
+        private string[] GetUnbannedUserIDs()
+        {
+            return this.UserContext.Dispatcher.Invoke(() =>
+            {
+                var query = from item in this.UserContext.Users
+                            where item.BanInfo.Path != item.Path
+                            select item.ID;
+                return query.ToArray();
+            });
+        }
+
+        private string[] GetBannedUserIDs()
+        {
+            return this.UserContext.Dispatcher.Invoke(() =>
+            {
+                var query = from item in this.UserContext.Users
+                            where item.BanInfo.Path == item.Path
+                            select item.ID;
+                return query.ToArray();
+            });
+        }
     }
 }
