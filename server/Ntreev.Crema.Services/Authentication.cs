@@ -116,7 +116,7 @@ namespace Ntreev.Crema.Services
                 lock (lockobj)
                 {
                     if (this.Parent != null)
-                        this.expired -= value;
+                        this.Parent.expired -= value;
                     else
                         this.expired -= value;
                 }

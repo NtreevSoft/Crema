@@ -226,6 +226,9 @@ namespace Ntreev.Crema.Services.Data
             });
             this.DeleteCaches(dataBase);
             this.RemoveBase(dataBase.Name);
+
+            FileUtility.Delete(this.cachePath, $"{dataBase.ID}{databaseExtension}");
+            FileUtility.Delete(this.cachePath, $"{dataBase.ID}{stateExtension}");
         }
 
         public DataBaseCollectionMetaData GetMetaData(Authentication authentication)

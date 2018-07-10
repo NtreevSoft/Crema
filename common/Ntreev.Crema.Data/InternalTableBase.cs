@@ -144,7 +144,7 @@ namespace Ntreev.Crema.Data
                 for (var i = this.Rows.Count - 1; i >= 0; i--)
                 {
                     var item = this.Rows[i] as InternalRowBase;
-                    if (item.RowState == DataRowState.Deleted)
+                    if (item.RowState == DataRowState.Deleted || item.RelationID != null)
                         continue;
                     this.RowEventStack.Push(item);
                     if (item.RelationID == null)

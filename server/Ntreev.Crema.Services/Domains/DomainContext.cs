@@ -219,18 +219,12 @@ namespace Ntreev.Crema.Services.Domains
             }
         }
 
-        public new void Clear()
+        public void Dispose()
         {
             foreach (var item in this.Domains.ToArray<Domain>())
             {
-                item.Dispatcher.Invoke(() => item.Dispose(true));
+                item.Dispatcher.Invoke(() => item.Dispose(this));
             }
-            base.Clear();
-        }
-
-        public void Dispose()
-        {
-
         }
 
         protected virtual void OnItemsCreated(ItemsCreatedEventArgs<IDomainItem> e)
@@ -307,6 +301,8 @@ namespace Ntreev.Crema.Services.Domains
                 this.DeleteDomains(item);
                 var category = this.Root.Categories[item.Name];
                 var categoryPath = category.Path;
+                var localPath = Path.Combine(this.BasePath, $"{item.ID}");
+                DirectoryUtility.Delete(localPath);
                 category.Dispose();
                 categoryList.Add(category);
                 categoryPathList.Add(categoryPath);
@@ -317,21 +313,15 @@ namespace Ntreev.Crema.Services.Domains
 
         private void DeleteDomains(IDataBase dataBase)
         {
-            var domainList = new List<Domain>();
-            var domainPathList = new List<string>();
             foreach (var item in this.Domains.ToArray<Domain>())
             {
                 if (item.DataBaseID == dataBase.ID)
                 {
-                    var path = item.Path;
-                    item.Dispatcher.Invoke(() => item.Dispose(false));
-                    domainList.Add(item);
-                    domainPathList.Add(path);
+                    item.Dispatcher.Invoke(() => item.Dispose(this));
                 }
             }
 
             DirectoryUtility.Delete(this.BasePath, dataBase.ID.ToString());
-            Authentication.System.Sign();
         }
 
         #region IDomainContext

@@ -644,5 +644,35 @@ namespace Ntreev.Crema.Data.Test
                 DirectoryUtility.Delete(tempPath);
             }
         }
+
+        // 키 해제시 관계값을 갱신하는데 assert 형태로 코딩되어 있는 부분이 호출되지 않도록 처리함.
+        // if (this.RowState != DataRowState.Detached)
+        //     throw new InvalidOperationException();
+        [TestMethod]
+        public void RemoveKeyTest1()
+        {
+            var dataSet = new CremaDataSet();
+
+            var dataTable = dataSet.Tables.Add();
+            var childTable = dataTable.Childs.Add();
+
+            var c1 = dataTable.Columns.Add();
+            var c2 = dataTable.Columns.Add();
+            var c3 = dataTable.Columns.Add();
+            var c4 = dataTable.Columns.Add();
+
+            c1.IsKey = true;
+            c2.IsKey = true;
+            c3.IsKey = true;
+
+            childTable.Columns.Add();
+            childTable.Columns.Add();
+
+            var r1 = dataTable.AddRow("1", "1", "1");
+            var r2 = dataTable.AddRow("2", "1", "2");
+            var r3 = dataTable.AddRow("3", "1", "3");
+
+            c3.IsKey = false;
+        }
     }
 }

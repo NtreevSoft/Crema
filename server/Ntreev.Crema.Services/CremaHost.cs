@@ -177,12 +177,13 @@ namespace Ntreev.Crema.Services
             {
                 this.UserContext.Dispatcher.Invoke(() => this.UserContext.Clear());
                 this.UserContext.Dispose();
+
                 this.UserContext = null;
-                this.DomainContext.Clear();
                 this.DomainContext.Dispose();
                 this.DomainContext = null;
                 this.DataBases.Dispose();
                 this.DataBases = null;
+
                 foreach (var item in this.plugins.Reverse())
                 {
                     item.Release();
