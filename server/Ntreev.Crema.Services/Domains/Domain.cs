@@ -276,19 +276,14 @@ namespace Ntreev.Crema.Services.Domains
             }
         }
 
-        public void Dispose(bool disposing)
+        public void Dispose(DomainContext domainContext)
         {
             this.dispatcher.VerifyAccess();
-
-            var container = this.Container;
             this.dispatcher.Dispose();
             this.dispatcher = null;
             this.domainLogger?.Dispose(false);
             this.domainLogger = null;
             this.Dispose();
-
-            if (disposing == false)
-                container.InvokeDomainDeletedEvent(Authentication.System, this, false);
         }
 
         public void Dispose(Authentication authentication, bool isCanceled)

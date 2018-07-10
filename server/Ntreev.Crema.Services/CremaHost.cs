@@ -204,7 +204,6 @@ namespace Ntreev.Crema.Services
                 this.userContext.Dispatcher.Invoke(() => this.userContext.Clear());
                 this.UserContext.Dispose();
                 this.userContext = null;
-                this.domainContext.Clear();
                 this.domainContext.Dispose();
                 this.domainContext = null;
                 this.dataBases.Dispose();
