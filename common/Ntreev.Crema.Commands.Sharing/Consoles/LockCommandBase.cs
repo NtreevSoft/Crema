@@ -35,6 +35,11 @@ namespace Ntreev.Crema.Commands.Consoles
 {
     abstract class LockCommandBase : ConsoleCommandBase
     {
+        protected LockCommandBase()
+        {
+
+        }
+
         protected LockCommandBase(string name)
             : base(name)
         {

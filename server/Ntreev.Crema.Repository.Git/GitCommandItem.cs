@@ -38,6 +38,11 @@ namespace Ntreev.Crema.Repository.Git
             return new GitCommandItem('m', (GitString)message);
         }
 
+        public static GitCommandItem FromFile(string path)
+        {
+            return new GitCommandItem("file", (GitPath)path);
+        }
+
         public static GitCommandItem FromAuthor(string author)
         {
             return FromAuthor((GitAuthor)author);

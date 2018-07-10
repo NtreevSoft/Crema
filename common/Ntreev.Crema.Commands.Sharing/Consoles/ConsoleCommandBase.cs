@@ -27,6 +27,11 @@ namespace Ntreev.Crema.Commands.Consoles
 {
     public abstract class ConsoleCommandBase : CommandBase, IConsoleCommand
     {
+        protected ConsoleCommandBase()
+        {
+
+        }
+
         protected ConsoleCommandBase(string name)
             : base(name)
         {

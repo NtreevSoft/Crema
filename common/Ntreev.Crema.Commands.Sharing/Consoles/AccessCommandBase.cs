@@ -35,6 +35,11 @@ namespace Ntreev.Crema.Commands.Consoles
 {
     abstract class AccessCommandBase : ConsoleCommandBase
     {
+        protected AccessCommandBase()
+        {
+
+        }
+
         protected AccessCommandBase(string name)
             : base(name)
         {
