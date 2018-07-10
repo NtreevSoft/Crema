@@ -390,20 +390,13 @@ namespace Ntreev.Crema.Services.Domains
 
         private void DeleteDomains(IDataBase dataBase)
         {
-            var domainList = new List<Domain>();
-            var domainPathList = new List<string>();
             foreach (var item in this.Domains.ToArray<Domain>())
             {
                 if (item.DataBaseID == dataBase.ID)
                 {
-                    var path = item.Path;
                     item.Dispose();
-                    domainList.Add(item);
-                    domainPathList.Add(path);
                 }
             }
-
-            //this.Domains.InvokeDomainsDeletedEvent(Authentication.System, domainList.ToArray(), domainPathList.ToArray());
         }
 
         private void Service_Faulted(object sender, EventArgs e)
