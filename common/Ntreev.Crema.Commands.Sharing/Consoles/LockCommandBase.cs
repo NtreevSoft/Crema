@@ -70,7 +70,7 @@ namespace Ntreev.Crema.Commands.Consoles
 
         protected void Invoke(Authentication authentication, ILockable lockable, Action action)
         {
-            using (UsingDataBase.Set(lockable as IServiceProvider, authentication, true))
+            //using (UsingDataBase.Set(lockable as IServiceProvider, authentication, true))
             {
                 if (lockable is IDispatcherObject dispatcherObject)
                 {
@@ -85,7 +85,7 @@ namespace Ntreev.Crema.Commands.Consoles
 
         protected T Invoke<T>(Authentication authentication, ILockable lockable, Func<T> func)
         {
-            using (UsingDataBase.Set(lockable as IServiceProvider, authentication, true))
+            //using (UsingDataBase.Set(lockable as IServiceProvider, authentication, true))
             {
                 if (lockable is IDispatcherObject dispatcherObject)
                 {

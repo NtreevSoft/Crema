@@ -990,6 +990,10 @@ namespace Ntreev.Crema.Services.Data
             foreach (var item in this.authentications.ToArray())
             {
                 this.DetachUsers(item);
+                if ((Authentication)item is Authentication authentication)
+                {
+                    authentication.Expired -= Authentication_Expired;
+                }
             }
             this.authentications.Clear();
             this.metaData = null;
