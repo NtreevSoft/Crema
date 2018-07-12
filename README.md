@@ -3,6 +3,12 @@
 게임 디자이너에게는 데이터를 생성 및 관리를 할 수 있게 UI를 제공하며
 게임 프로그래머에게는 데이터를 쉽게 사용할 수 있도록 코드와 바이너리 데이터 생성기능을 제공합니다.
 
+    1. Design Data
+    2. Generate Code and BinaryData
+    3. Include Code And BinaryData in your project.
+    4. Add codes to read and use (c#, typescript, c++)
+    5. Compile and Run
+
 ## 문서
 [위키 페이지](https://github.com/NtreevSoft/Crema/wiki)
 
