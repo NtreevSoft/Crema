@@ -64,16 +64,12 @@ namespace Ntreev.Crema.Client.Tables.Dialogs.Views
                 if (gridControl.Columns[CremaSchema.ID] is ColumnBase column)
                     column.Visible = false;
                 this.configs.Update(this);
-                if (this.Settings != null && Keyboard.IsKeyDown(Key.LeftShift) == false)
-                    gridControl.LoadUserSettings(this.Settings, Xceed.Wpf.DataGrid.Settings.UserSettings.All);
             }, System.Windows.Threading.DispatcherPriority.Background);
         }
 
         private void PART_DataGridControl_Unloaded(object sender, RoutedEventArgs e)
         {
             var gridControl = sender as ModernDataGridControl;
-            this.Settings = new Xceed.Wpf.DataGrid.Settings.SettingsRepository();
-            gridControl.SaveUserSettings(this.Settings, Xceed.Wpf.DataGrid.Settings.UserSettings.All);
             this.configs.Commit(this);
         }
 
@@ -98,12 +94,6 @@ namespace Ntreev.Crema.Client.Tables.Dialogs.Views
             {
                 this.buttons.IsEnabled = true;
             }
-        }
-
-        [ConfigurationProperty("settings")]
-        private Xceed.Wpf.DataGrid.Settings.SettingsRepository Settings
-        {
-            get; set;
         }
 
         private async void PART_DataGridControl_RowDrop(object sender, ModernDragEventArgs e)

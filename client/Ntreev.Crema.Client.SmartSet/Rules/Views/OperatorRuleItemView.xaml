@@ -31,7 +31,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
              mc:Ignorable="d" d:DesignWidth="300">
     
     <UserControl.Resources>
-        <Style TargetType="{x:Type xcdg:NumericTextBox}" BasedOn="{StaticResource {x:Type TextBox}}" />
+        <Style TargetType="{x:Type nmgc:NumericTextBox}" BasedOn="{StaticResource {x:Type TextBox}}" />
 
         <DataTemplate x:Key="System.Boolean">
             <CheckBox IsChecked="{Binding DataContext.Value, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}}" />
@@ -42,43 +42,43 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
         </DataTemplate>
 
         <DataTemplate x:Key="System.Single">
-            <xcdg:NumericTextBox Value="{Binding Value, StringFormat={}{0:R}}" />
+            <nmgc:NumericTextBox Value="{Binding Value, StringFormat={}{0:R}}" />
         </DataTemplate>
 
         <DataTemplate x:Key="System.Double">
-            <xcdg:NumericTextBox Value="{Binding Value, StringFormat={}{0:R}}" />
+            <nmgc:NumericTextBox Value="{Binding Value, StringFormat={}{0:R}}" />
         </DataTemplate>
 
         <DataTemplate x:Key="System.SByte">
-            <xcdg:NumericTextBox Value="{Binding Value}" />
+            <nmgc:NumericTextBox Value="{Binding Value}" />
         </DataTemplate>
 
         <DataTemplate x:Key="System.Byte">
-            <xcdg:NumericTextBox Value="{Binding Value}" />
+            <nmgc:NumericTextBox Value="{Binding Value}" />
         </DataTemplate>
 
         <DataTemplate x:Key="System.Int16">
-            <xcdg:NumericTextBox Value="{Binding Value}" />
+            <nmgc:NumericTextBox Value="{Binding Value}" />
         </DataTemplate>
 
         <DataTemplate x:Key="System.UInt16">
-            <xcdg:NumericTextBox Value="{Binding Value}" />
+            <nmgc:NumericTextBox Value="{Binding Value}" />
         </DataTemplate>
 
         <DataTemplate x:Key="System.Int32">
-            <xcdg:NumericTextBox Value="{Binding Value}" ValueDataType="{x:Type sys:Int32}" />
+            <nmgc:NumericTextBox Value="{Binding Value}" ValueDataType="{x:Type sys:Int32}" />
         </DataTemplate>
 
         <DataTemplate x:Key="System.UInt32">
-            <xcdg:NumericTextBox Value="{Binding Value}" />
+            <nmgc:NumericTextBox Value="{Binding Value}" />
         </DataTemplate>
 
         <DataTemplate x:Key="System.Int64">
-            <xcdg:NumericTextBox Value="{Binding Value}" />
+            <nmgc:NumericTextBox Value="{Binding Value}" />
         </DataTemplate>
 
         <DataTemplate x:Key="System.UInt64">
-            <xcdg:NumericTextBox Value="{Binding Value}" />
+            <nmgc:NumericTextBox Value="{Binding Value}" />
         </DataTemplate>
 
         <DataTemplate x:Key="System.DateTime">

@@ -73,7 +73,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
                 <local:TableSourceColumnManagerRow />
             </DataTemplate>
             <DataTemplate>
-                <local:TableSourceInsertionRow />
+                <Label Content="구현" />
             </DataTemplate>
             <DataTemplate>
                 <Grid xcdg:TableView.CanScrollHorizontally="False" Height="3" xcdg:RowSelector.RowSelectorStyle="{DynamicResource EmptyRowSelector_Style}" >
@@ -112,7 +112,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
                 <local:TableSourceColumnManagerRow />
             </DataTemplate>
             <DataTemplate>
-                <local:TableSourceInsertionRow />
+                <Label Content="구현" />
             </DataTemplate>
             <DataTemplate>
                 <Border x:Name="RowSplitter" BorderThickness="0 0 1 1" Height="3" VerticalAlignment="Bottom"
@@ -123,8 +123,6 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
     </xcdg:TableView>
 
     <nmfv:ValueIdentifierConverter x:Key="valueIdentifierConverter" />
-
-    <Style TargetType="{x:Type local:TableSourceInsertionRow}" BasedOn="{StaticResource {x:Type ncfc:DomainInsertionRow}}" />
 
     <Style TargetType="{x:Type local:TableSourceDataGridControl}" BasedOn="{StaticResource {x:Type ncfc:DomainDataGridControl}}" />
 
@@ -173,7 +171,6 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
                                               VirtualizingStackPanel.ScrollUnit="Item"
                                               VirtualizingStackPanel.VirtualizationMode="Recycling"
                                               RowDrop="PART_DataGridControl_RowDrop"
-                                              AutoCreateDetailConfigurations="True" 
                                               DefaultDetailConfiguration="{StaticResource defaultDetailConfiguration1}">
             </local:TableSourceDataGridControl>
         </Grid>

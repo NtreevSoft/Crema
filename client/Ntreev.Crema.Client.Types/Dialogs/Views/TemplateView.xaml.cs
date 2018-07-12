@@ -96,22 +96,11 @@ namespace Ntreev.Crema.Client.Types.Dialogs.Views
             if (gridControl.Columns[CremaSchema.ID] is ColumnBase column)
                 column.Visible = false;
             this.configs.Update(this);
-            if (this.Settings != null)
-                gridControl.LoadUserSettings(this.Settings, Xceed.Wpf.DataGrid.Settings.UserSettings.All);
         }
 
         private void PART_DataGridControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            var gridControl = sender as ModernDataGridControl;
-            this.Settings = new Xceed.Wpf.DataGrid.Settings.SettingsRepository();
-            gridControl.SaveUserSettings(this.Settings, Xceed.Wpf.DataGrid.Settings.UserSettings.All);
             this.configs.Commit(this);
-        }
-
-        [ConfigurationProperty("settings")]
-        private Xceed.Wpf.DataGrid.Settings.SettingsRepository Settings
-        {
-            get; set;
         }
 
         private async void PART_DataGridControl_RowDrop(object sender, ModernDragEventArgs e)

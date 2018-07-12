@@ -62,7 +62,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
                 <xcdg:Column Title="{x:Static p:Resources.Label_Comment}" FieldName="Message" />
             </nmgc:ModernDataGridControl.Columns>
             <nmgc:ModernDataGridControl.View>
-                <xcdg:TableView ShowFixedColumnSplitter="False" Style="{StaticResource TableView_Style}" />
+                <xcdg:TableView Style="{StaticResource TableView_Style}" />
             </nmgc:ModernDataGridControl.View>
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="PreviewMouseDoubleClick">
