@@ -180,7 +180,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
                 <Button x:Name="detailsToggle_Button" Template="{StaticResource detailsExpanderButtonTemplate}" VerticalAlignment="Top" 
                         Margin="2,4,2,0" OverridesDefaultStyle="True" Focusable="False" />
             </Border>
-            <xcdg:FixedCellPanel x:Name="PART_CellsHost" Grid.Column="3" SplitterStyle="{TemplateBinding xcdg:TableView.FixedColumnSplitterStyle}" 
+            <xcdg:FixedCellPanel x:Name="PART_CellsHost" Grid.Column="3" 
                                  Margin="{TemplateBinding Control.BorderThickness}" 
                                  ColumnStretchMinWidth="{Binding RelativeSource={RelativeSource Self}, 
                                                                  Path=(xcdg:DataGridControl.DataGridContext).ColumnStretchMinWidth}" 
@@ -188,10 +188,6 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
                                                              Path=(xcdg:DataGridControl.DataGridContext).ColumnStretchMode}" 
                                  FixedCellCount="{Binding RelativeSource={RelativeSource Self}, Mode=TwoWay, 
                                                           Path=(xcdg:DataGridControl.DataGridContext).FixedColumnCount}" 
-                                 SplitterWidth="{Binding RelativeSource={RelativeSource Self}, 
-                                                         Path=(xcdg:DataGridControl.DataGridContext).FixedColumnSplitterWidth}" 
-                                 ShowSplitter="{Binding RelativeSource={RelativeSource Self}, 
-                                                        Path=(xcdg:DataGridControl.DataGridContext).ShowFixedColumnSplitter}" 
                                  FixedColumnDropMarkPen="{Binding RelativeSource={RelativeSource Self}, 
                                                                   Path=(xcdg:DataGridControl.DataGridContext).FixedColumnDropMarkPen}" />
             <Border x:Name="startSelectionBorder" BorderBrush="{DynamicResource WindowText}" BorderThickness="0 1 0 0" Margin="0 -1 0 0" 
@@ -237,21 +233,6 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
                 </MultiDataTrigger.Conditions>
                 <Setter TargetName="rootBorder" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=InactiveSelectionBackground}" Property="Border.Background" />
                 <Setter TargetName="rootGrid" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=InactiveSelectionForeground}" Property="TextElement.Foreground" />
-            </MultiDataTrigger>
-            <MultiDataTrigger>
-                <MultiDataTrigger.Conditions>
-                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=(xcdg:DataGridControl.DataGridContext).(xcdg:TableView.FixedColumnCount)}" Value="0" />
-                    <Condition Value="True" Binding="{Binding Path=(xcdg:DataGridControl.DataGridContext).GroupLevelDescriptions.Count, Converter={StaticResource greaterThanZeroConverter}, RelativeSource={RelativeSource Self}}" />
-                </MultiDataTrigger.Conditions>
-                <Setter TargetName="PART_CellsHost" Property="xcdg:FixedCellPanel.ShowSplitter" Value="False" />
-            </MultiDataTrigger>
-            <MultiDataTrigger>
-                <MultiDataTrigger.Conditions>
-                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=(xcdg:DataGridControl.DataGridContext).(xcdg:TableView.FixedColumnCount)}" Value="0" />
-                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=(xcdg:DataGridControl.DataGridContext).HasDetails}" Value="True" />
-                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=(xcdg:DataGridControl.DataGridContext).AllowDetailToggle}" Value="True" />
-                </MultiDataTrigger.Conditions>
-                <Setter TargetName="PART_CellsHost" Property="xcdg:FixedCellPanel.ShowSplitter" Value="False" />
             </MultiDataTrigger>
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
