@@ -28,10 +28,14 @@ namespace Ntreev.Crema.Javascript.Methods.User
     [Export(typeof(IScriptMethod))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
     [Category(nameof(User))]
-    class GetUserListMethod : ScriptMethodBase
+    class GetUserListMethod : UserScriptMethodBase
     {
-        [Import]
-        private Lazy<ICremaHost> cremaHost = null;
+        [ImportingConstructor]
+        public GetUserListMethod(ICremaHost cremaHost)
+            : base(cremaHost)
+        {
+
+        }
 
         protected override Delegate CreateDelegate()
         {
@@ -41,12 +45,7 @@ namespace Ntreev.Crema.Javascript.Methods.User
         private string[] GetUserList()
         {
             var userContext = this.CremaHost.GetService(typeof(IUserContext)) as IUserContext;
-            return userContext.Dispatcher.Invoke(() =>
-            {
-                return userContext.Users.Select(item => item.ID).ToArray();
-            });
+            return userContext.Dispatcher.Invoke(() => userContext.Users.Select(item => item.ID).ToArray());
         }
-
-        private ICremaHost CremaHost => this.cremaHost.Value;
     }
 }

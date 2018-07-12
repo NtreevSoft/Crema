@@ -50,7 +50,7 @@ namespace Ntreev.Crema.Javascript.Methods.TableTemplate
             {
                 return new Dictionary<string, object>()
                 {
-                    { nameof(TableProperties.TableName), template.TableName },
+                    { nameof(TableProperties.Name), template.TableName },
                     { nameof(TableProperties.Tags), (string)template.Tags },
                     { nameof(TableProperties.Comment), template.Comment },
                 };

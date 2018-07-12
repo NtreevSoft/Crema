@@ -40,14 +40,19 @@ namespace Ntreev.Crema.Javascript.Methods.DataBase
 
         protected override Delegate CreateDelegate()
         {
-            return new Action<string, string, string>(this.MoveTypeItem);
+            return new Func<string, string, string, string>(this.MoveTypeItem);
         }
 
-        private void MoveTypeItem(string dataBaseName, string typeItemPath, string parentPath)
+        [ReturnParameterName("path")]
+        private string MoveTypeItem(string dataBaseName, string typeItemPath, string parentPath)
         {
             var typeItem = this.GetTypeItem(dataBaseName, typeItemPath);
             var authentication = this.Context.GetAuthentication(this);
-            typeItem.Dispatcher.Invoke(() => typeItem.Move(authentication, parentPath));
+            return typeItem.Dispatcher.Invoke(() =>
+            {
+                typeItem.Move(authentication, parentPath);
+                return typeItem.Path;
+            });
         }
     }
 }

@@ -25,7 +25,7 @@ namespace Ntreev.Crema.Javascript.Methods.TableTemplate
     [Category(nameof(TableTemplate))]
     enum TableProperties
     {
-        TableName,
+        Name,
 
         Tags,
 

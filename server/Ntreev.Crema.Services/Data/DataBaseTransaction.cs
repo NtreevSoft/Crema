@@ -18,6 +18,7 @@
 using Ntreev.Crema.Data;
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services.Domains;
+using Ntreev.Crema.Services.Properties;
 using Ntreev.Library.IO;
 using System;
 using System.Linq;
@@ -33,6 +34,7 @@ namespace Ntreev.Crema.Services.Data
         private readonly TableInfo[] tableInfos;
         private readonly string transactionPath;
         private readonly string domainPath;
+        private bool isDisposed;
 
         public DataBaseTransaction(Authentication authentication, DataBase dataBase, DataBaseRepositoryHost repository)
         {
@@ -57,10 +59,12 @@ namespace Ntreev.Crema.Services.Data
         {
             try
             {
+                this.ValidateCommit(authentication);
                 this.dataBase.VerifyAccess(authentication);
                 this.Sign(authentication);
                 this.repository.EndTransaction();
                 this.authentication.Expired -= Authentication_Expired;
+                this.isDisposed = true;
                 this.OnDisposed(EventArgs.Empty);
             }
             catch (Exception e)
@@ -74,12 +78,14 @@ namespace Ntreev.Crema.Services.Data
         {
             try
             {
+                this.ValidateRollback(authentication);
                 this.dataBase.VerifyAccess(authentication);
                 this.Sign(authentication);
                 this.dataBase.ResettingDataBase(authentication);
                 this.RollbackDomains(authentication);
                 this.dataBase.ResetDataBase(authentication, this.typeInfos, this.tableInfos);
                 this.authentication.Expired -= Authentication_Expired;
+                this.isDisposed = true;
                 this.OnDisposed(EventArgs.Empty);
             }
             catch (Exception e)
@@ -136,6 +142,18 @@ namespace Ntreev.Crema.Services.Data
             {
                 throw new NotImplementedException();
             }
+        }
+
+        private void ValidateCommit(Authentication authentication)
+        {
+            if (this.isDisposed == true)
+                throw new InvalidOperationException(Resources.Exception_Expired);
+        }
+
+        private void ValidateRollback(Authentication authentication)
+        {
+            if (this.isDisposed == true)
+                throw new InvalidOperationException(Resources.Exception_Expired);
         }
     }
 }

@@ -52,7 +52,7 @@ namespace Ntreev.Crema.Javascript.Methods.TableTemplate
             var authentication = this.Context.GetAuthentication(this);
             return template.Dispatcher.Invoke(() =>
             {
-                if (propertyName == TableProperties.TableName)
+                if (propertyName == TableProperties.Name)
                 {
                     return (object)template.TableName;
                 }

@@ -56,6 +56,7 @@ namespace Ntreev.Crema.Javascript.Methods.DataBase
                     var authentication = this.Context.GetAuthentication(this);
                     transaction.Commit(authentication);
                 });
+                this.Context.Properties.Remove(transactionID);
             }
             else
             {

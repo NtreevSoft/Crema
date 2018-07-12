@@ -124,6 +124,28 @@ namespace Ntreev.Crema.Javascript
             });
         }
 
+        protected ITableCategory GetTableCategory(string dataBaseName, string categoryPath)
+        {
+            if (dataBaseName == null)
+                throw new ArgumentNullException(nameof(dataBaseName));
+            if (categoryPath == null)
+                throw new ArgumentNullException(nameof(categoryPath));
+            var dataBase = this.cremaHost.Dispatcher.Invoke(() =>
+            {
+                if (this.cremaHost.DataBases.Contains(dataBaseName) == false)
+                    throw new DataBaseNotFoundException(dataBaseName);
+                return this.cremaHost.DataBases[dataBaseName];
+            });
+
+            return dataBase.Dispatcher.Invoke(() =>
+            {
+                var category = dataBase.TableContext.Categories[categoryPath];
+                if (category == null)
+                    throw new CategoryNotFoundException(categoryPath);
+                return category;
+            });
+        }
+
         protected IType GetType(string dataBaseName, string typeName)
         {
             if (dataBaseName == null)
@@ -165,6 +187,28 @@ namespace Ntreev.Crema.Javascript
                 if (typeItem == null)
                     throw new ItemNotFoundException(typeItemPath);
                 return typeItem;
+            });
+        }
+
+        protected ITypeCategory GetTypeCategory(string dataBaseName, string categoryPath)
+        {
+            if (dataBaseName == null)
+                throw new ArgumentNullException(nameof(dataBaseName));
+            if (categoryPath == null)
+                throw new ArgumentNullException(nameof(categoryPath));
+            var dataBase = this.cremaHost.Dispatcher.Invoke(() =>
+            {
+                if (this.cremaHost.DataBases.Contains(dataBaseName) == false)
+                    throw new DataBaseNotFoundException(dataBaseName);
+                return this.cremaHost.DataBases[dataBaseName];
+            });
+
+            return dataBase.Dispatcher.Invoke(() =>
+            {
+                var category = dataBase.TypeContext.Categories[categoryPath];
+                if (category == null)
+                    throw new CategoryNotFoundException(categoryPath);
+                return category;
             });
         }
 

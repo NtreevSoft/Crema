@@ -16,24 +16,22 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Ntreev.Crema.Services;
-using Ntreev.Library;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.Composition;
 using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace Ntreev.Crema.Javascript.Methods.User
 {
     [Export(typeof(IScriptMethod))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
     [Category(nameof(User))]
-    class CreateUserCategoryMethod : UserScriptMethodBase
+    class GetUserCategoryListMethod : UserScriptMethodBase
     {
         [ImportingConstructor]
-        public CreateUserCategoryMethod(ICremaHost cremaHost)
+        public GetUserCategoryListMethod(ICremaHost cremaHost)
             : base(cremaHost)
         {
 
@@ -41,15 +39,13 @@ namespace Ntreev.Crema.Javascript.Methods.User
 
         protected override Delegate CreateDelegate()
         {
-            return new Func<string, string, string>(this.CreateUserCategory);
+            return new Func<string[]>(this.GetUserCategoryList);
         }
 
-        [ReturnParameterName("categoryPath")]
-        private string CreateUserCategory(string parentPath, string categoryName)
+        private string[] GetUserCategoryList()
         {
-            var category = this.GetUserCategory(parentPath);
-            var authentication = this.Context.GetAuthentication(this);
-            return category.Dispatcher.Invoke(() => category.AddNewCategory(authentication, categoryName).Path);
+            var userContext = this.CremaHost.GetService(typeof(IUserContext)) as IUserContext;
+            return userContext.Dispatcher.Invoke(() => userContext.Categories.Select(item => item.Path).ToArray());
         }
     }
 }

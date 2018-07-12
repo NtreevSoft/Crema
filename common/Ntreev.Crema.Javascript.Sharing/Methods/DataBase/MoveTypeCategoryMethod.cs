@@ -16,24 +16,23 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Ntreev.Crema.Services;
-using Ntreev.Library;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.Composition;
 using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
+using Ntreev.Crema.ServiceModel;
 
-namespace Ntreev.Crema.Javascript.Methods.User
+namespace Ntreev.Crema.Javascript.Methods.DataBase
 {
     [Export(typeof(IScriptMethod))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
-    [Category(nameof(User))]
-    class CreateUserCategoryMethod : UserScriptMethodBase
+    [Category(nameof(DataBase))]
+    class MoveTypeCategoryMethod : DataBaseScriptMethodBase
     {
         [ImportingConstructor]
-        public CreateUserCategoryMethod(ICremaHost cremaHost)
+        public MoveTypeCategoryMethod(ICremaHost cremaHost)
             : base(cremaHost)
         {
 
@@ -41,15 +40,19 @@ namespace Ntreev.Crema.Javascript.Methods.User
 
         protected override Delegate CreateDelegate()
         {
-            return new Func<string, string, string>(this.CreateUserCategory);
+            return new Func<string, string, string, string>(this.MoveTypeCategory);
         }
 
         [ReturnParameterName("categoryPath")]
-        private string CreateUserCategory(string parentPath, string categoryName)
+        private string MoveTypeCategory(string dataBaseName, string categoryPath, string parentPath)
         {
-            var category = this.GetUserCategory(parentPath);
+            var category = this.GetTypeCategory(dataBaseName, categoryPath);
             var authentication = this.Context.GetAuthentication(this);
-            return category.Dispatcher.Invoke(() => category.AddNewCategory(authentication, categoryName).Path);
+            return category.Dispatcher.Invoke(() =>
+            {
+                category.Move(authentication, parentPath);
+                return category.Path;
+            });
         }
     }
 }

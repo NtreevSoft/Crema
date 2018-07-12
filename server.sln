@@ -99,6 +99,7 @@ Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems*{04aeb614-3510-4064-99af-0aa807c7f957}*SharedItemsImports = 4
 		common\Ntreev.Crema.Commands.Spreadsheet.Sharing\Ntreev.Crema.Commands.Spreadsheet.Sharing.projitems*{05971a74-2d68-4781-9ceb-df2b48f8ba75}*SharedItemsImports = 13
+		sub-modules\Ntreev.Library.Commands\Ntreev.Library.Commands.AssemblyInfo\Ntreev.Library.Commands.AssemblyInfo.projitems*{0d96cc61-6d74-49b4-a558-33ac0dcf8529}*SharedItemsImports = 4
 		common\Ntreev.Crema.Services.Random.Sharing\Ntreev.Crema.Services.Random.Sharing.projitems*{138c9b99-d30b-4e3b-89f0-381a03515431}*SharedItemsImports = 4
 		common\Ntreev.Crema.Bot.Sharing\Ntreev.Crema.Bot.Sharing.projitems*{14ba15b4-4b3d-453f-938d-4a23758d35df}*SharedItemsImports = 4
 		sub-modules\Ntreev.Library\Ntreev.Library.AssemblyInfo\Ntreev.Library.AssemblyInfo.projitems*{1918437f-4fbf-4731-ac5b-981a4a4cb1f1}*SharedItemsImports = 4
