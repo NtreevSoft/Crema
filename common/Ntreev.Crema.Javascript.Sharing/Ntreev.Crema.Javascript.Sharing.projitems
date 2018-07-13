@@ -106,8 +106,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Methods\Permission\UnlockTypeItemMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\TableContent\ContainsTableContentRowMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\TableContent\GetTableContentDomainMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\TableTemplate\GetTableTemplateSelectableTypesMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\TableTemplate\GetTableTemplateColumnsMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\TableTemplate\GetTableTemplateDomainMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\TypeTemplate\GetTypeTemplateDomainMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\TypeTemplate\GetTypeTemplateMembersMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\User\DeleteUserCategoryMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\User\DeleteUserMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\User\DeleteUserItemMethod.cs" />
@@ -152,7 +155,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Methods\TableContent\EnterTableContentEditMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\TableContent\EndTableContentEditMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\TableTemplate\AddTableTemplateColumnMethod.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Methods\TableTemplate\BeginChildTableCreateMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\TableTemplate\BeginTableCreateMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\TableTemplate\BeginTableTemplateEditMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\TableTemplate\CancelTableTemplateEditMethod.cs" />

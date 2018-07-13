@@ -15,23 +15,25 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Text;
 
-namespace Ntreev.Crema.Javascript.Methods.TableTemplate
+namespace Ntreev.Crema.Javascript.Methods.TypeTemplate
 {
     [Export(typeof(IScriptMethod))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
-    [Category(nameof(TableTemplate))]
-    class BeginChildTableCreateMethod : DataBaseScriptMethodBase
+    [Category(nameof(TypeTemplate))]
+    class GetTypeTemplateMembersMethod : DomainScriptMethodBase
     {
         [ImportingConstructor]
-        public BeginChildTableCreateMethod(ICremaHost cremaHost)
+        public GetTypeTemplateMembersMethod(ICremaHost cremaHost)
             : base(cremaHost)
         {
 
@@ -39,22 +41,13 @@ namespace Ntreev.Crema.Javascript.Methods.TableTemplate
 
         protected override Delegate CreateDelegate()
         {
-            return new Func<string, string, string>(this.BeginChildTableCreate);
+            return new Func<string, string[]>(this.GetTypeTemplateMembers);
         }
 
-        [ReturnParameterName("domainID")]
-        private string BeginChildTableCreate(string dataBaseName, string tableName)
+        private string[] GetTypeTemplateMembers(string domainID)
         {
-            var dataBase = this.GetDataBase(dataBaseName);
-            return dataBase.Dispatcher.Invoke(() =>
-            {
-                var table = dataBase.TableContext.Tables[tableName];
-                if (table == null)
-                    throw new TableNotFoundException(tableName);
-                var authentication = this.Context.GetAuthentication(this);
-                var template = table.NewTable(authentication);
-                return $"{template.Domain.ID}";
-            });
+            var template = this.GetDomainHost<ITypeTemplate>(domainID);
+            return template.Dispatcher.Invoke(() => template.Select(item => item.Name).ToArray());
         }
     }
 }

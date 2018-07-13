@@ -385,7 +385,7 @@ namespace Ntreev.Crema.Services
 
         public static string MoveTypeCategory(Authentication authentication, string categoryPath, string parentPath, string newParentPath)
         {
-            return string.Join(EventResources.MoveTypeCategory, authentication.ID, authentication.Name, categoryPath, parentPath, newParentPath);
+            return string.Format(EventResources.MoveTypeCategory, authentication.ID, authentication.Name, categoryPath, parentPath, newParentPath);
         }
 
         public static string MoveTypeCategory(Authentication authentication, ITypeCategory[] items, string[] oldCategoryPaths, string[] oldParentPaths)

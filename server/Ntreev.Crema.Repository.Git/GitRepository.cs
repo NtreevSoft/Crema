@@ -43,7 +43,6 @@ namespace Ntreev.Crema.Repository.Git
         private string transactionName;
         private string transactionMessages;
         private string transactionPatchPath;
-        private int transactionIndex;
         private RepositoryInfo repositoryInfo;
 
         public GitRepository(GitRepositoryProvider repositoryProvider, ILogService logService, string repositoryPath, string transactionPath, RepositoryInfo repositoryInfo)
@@ -59,7 +58,8 @@ namespace Ntreev.Crema.Repository.Git
             };
             this.cleanCommand = new GitCommand(this.repositoryPath, "clean")
             {
-                new GitCommandItem('f')
+                new GitCommandItem('f'),
+                new GitCommandItem('d')
             };
 
             var statusCommand = new GitCommand(this.repositoryPath, "status")
@@ -87,6 +87,7 @@ namespace Ntreev.Crema.Repository.Git
         public void Add(string path)
         {
             var addCommand = new GitCommand(this.repositoryPath, "add");
+
             if (DirectoryUtility.IsDirectory(path) == true)
             {
                 var keepPath = Path.Combine(path, GitRepositoryProvider.KeepExtension);
@@ -102,7 +103,7 @@ namespace Ntreev.Crema.Repository.Git
             }
 
             if (addCommand.Items.Any() == true)
-                addCommand.Run();
+                addCommand.Run(this.logService);
         }
 
         public void BeginTransaction(string author, string name)
@@ -124,7 +125,7 @@ namespace Ntreev.Crema.Repository.Git
             };
             try
             {
-                var result = commitCommand.Run();
+                var result = commitCommand.Run(this.logService);
                 this.logService?.Debug(result);
                 var log = GitLogInfo.Run(this.repositoryPath, 1).First();
                 this.repositoryInfo.Revision = log.CommitID;
@@ -191,7 +192,7 @@ namespace Ntreev.Crema.Repository.Git
                         GitCommandItem.FromMessage(comment),
                         GitCommandItem.FromAuthor(author),
                     };
-                    var result = commitCommand.Run();
+                    var result = commitCommand.Run(this.logService);
                     this.logService?.Debug(result);
                     var log = GitLogInfo.Run(this.repositoryPath, 1).First();
                     this.repositoryInfo.Revision = log.CommitID;
@@ -224,7 +225,7 @@ namespace Ntreev.Crema.Repository.Git
                     (GitPath)toPath
                 };
                 File.Copy(srcPath, toPath);
-                copyCommand.Run();
+                copyCommand.Run(this.logService);
             }
         }
 
@@ -238,7 +239,7 @@ namespace Ntreev.Crema.Repository.Git
             {
                 removeCommand.Add(new GitCommandItem('r'));
             }
-            removeCommand.Run();
+            removeCommand.Run(this.logService);
         }
 
         public void Dispose()
@@ -267,7 +268,7 @@ namespace Ntreev.Crema.Repository.Git
                     GitCommandItem.Separator,
                     (GitPath)path,
                 };
-                archiveCommand.Run();
+                archiveCommand.Run(this.logService);
                 ZipFile.ExtractToDirectory(tempPath, exportPath);
                 var exportUri = new Uri(UriUtility.Combine(exportPath, relativePath));
                 return exportUri.LocalPath;
@@ -303,7 +304,7 @@ namespace Ntreev.Crema.Repository.Git
                 (GitPath)srcPath,
                 (GitPath)toPath,
             };
-            moveCommand.Run();
+            moveCommand.Run(this.logService);
         }
 
         public void Revert(string revision)
@@ -350,13 +351,13 @@ namespace Ntreev.Crema.Repository.Git
         private void Pull()
         {
             var pullCommand = new GitCommand(this.repositoryPath, "pull");
-            pullCommand.Run();
+            pullCommand.Run(this.logService);
         }
 
         private void Push()
         {
             var pushCommand = new GitCommand(this.repositoryPath, "push");
-            pushCommand.Run();
+            pushCommand.Run(this.logService);
         }
     }
 }
