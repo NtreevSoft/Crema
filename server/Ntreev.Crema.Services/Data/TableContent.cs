@@ -16,6 +16,7 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Ntreev.Crema.Data;
+using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services.Domains;
 using Ntreev.Crema.Services.Properties;
@@ -63,9 +64,10 @@ namespace Ntreev.Crema.Services.Data
                 this.Sign(authentication);
                 if (this.domain == null)
                 {
-                    this.DataSet = this.table.ReadData(authentication);
-                    this.dataTable = this.DataSet.Tables[this.table.Name, this.table.Category.Path];
-                    this.domain = new TableContentDomain(authentication, this.DataSet, this.table.DataBase, this.table.Path, this.GetType().Name)
+                    var dataSet = this.table.ReadEditableData(authentication);
+                    //this.DataSet = dataSet;
+                    //this.dataTable = this.DataSet.Tables[this.table.Name, this.table.Category.Path];
+                    this.domain = new TableContentDomain(authentication, dataSet, this.table.DataBase, this.GetType().Name)
                     {
                         Host = this
                     };
@@ -227,13 +229,11 @@ namespace Ntreev.Crema.Services.Data
         [EditorBrowsable(EditorBrowsableState.Never)]
         public void ValidateBeginEdit(Authentication authentication)
         {
-            if (this.table.Parent != null)
-                throw new InvalidOperationException(Resources.Exception_ChildTableCannotEdit);
             var isAdmin = authentication.Types.HasFlag(AuthenticationType.Administrator);
-            var items = EnumerableUtility.Friends(this, this.Childs);
+            var items = this.table.GetRelations().Distinct().OrderBy(item => item.Name);
             foreach (var item in items)
             {
-                item.OnValidateBeginEdit(authentication, this);
+                item.Content.OnValidateBeginEdit(authentication, this);
             }
         }
 
@@ -305,6 +305,9 @@ namespace Ntreev.Crema.Services.Data
         public void OnValidateBeginEdit(Authentication authentication, object target)
         {
             this.table.ValidateAccessType(authentication, AccessType.Guest);
+
+            if (this.table.DataBase.Version.Major != CremaSchema.MajorVersion || this.DataBase.Version.Minor != CremaSchema.MinorVersion)
+                throw new InvalidOperationException("database version is low.");
 
             if (this.domain != null)
                 throw new NotImplementedException();

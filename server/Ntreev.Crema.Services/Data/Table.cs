@@ -489,6 +489,17 @@ namespace Ntreev.Crema.Services.Data
             return query.Distinct();
         }
 
+        public IEnumerable<Table> GetRelations()
+        {
+            var table = this;
+            while (table.Parent != null)
+            {
+                table = table.Parent;
+            };
+
+            return EnumerableUtility.FamilyTree(table, item => item.Childs);
+        }
+
         public void ValidateNotBeingEdited()
         {
             if (this.Template.IsBeingEdited == true)
@@ -509,6 +520,17 @@ namespace Ntreev.Crema.Services.Data
                 if (type.IsBeingEdited == true)
                     throw new InvalidOperationException(string.Format(Resources.Exception_TypeIsBeingEdited_Format, type.Name));
             }
+        }
+
+        public CremaDataSet ReadEditableData(Authentication authentication)
+        {
+            var tables = this.GetRelations().Distinct().OrderBy(item => item.Name).ToArray();
+            var types = tables.SelectMany(item => item.GetTypes()).Distinct().ToArray();
+            var typePaths = types.Select(item => item.ItemPath).ToArray();
+            var tablePaths = tables.Select(item => item.ItemPath).ToArray();
+            var props = new CremaDataSetSerializerSettings(authentication, typePaths, tablePaths);
+            var dataSet = this.Serializer.Deserialize(this.ItemPath, typeof(CremaDataSet), props) as CremaDataSet;
+            return dataSet;
         }
 
         public CremaDataSet ReadData(Authentication authentication)

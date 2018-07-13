@@ -31,6 +31,7 @@ namespace Ntreev.Crema.Services.Data
     {
         private readonly DataBase dataBase;
         private readonly CremaSettings settings;
+        private Version version;
 
         public DataBaseRepositoryHost(DataBase dataBase, IRepository repository)
             : base(repository, dataBase.CremaHost.RepositoryDispatcher)
@@ -290,6 +291,26 @@ namespace Ntreev.Crema.Services.Data
         public void Modify(CremaDataSet dataSet)
         {
             DataBaseSet.Modify(dataSet, this.dataBase);
+        }
+
+        public Version Version
+        {
+            get
+            {
+                if (this.version == null)
+                {
+                    var versionPath = Path.Combine(this.RepositoryPath, ".version");
+                    if (File.Exists(versionPath) == true)
+                    {
+                        this.version = new Version(File.ReadAllText(versionPath).Trim());
+                    }
+                    else
+                    {
+                        this.version = new Version(0, 0);
+                    }
+                }
+                return this.version;
+            }
         }
     }
 }

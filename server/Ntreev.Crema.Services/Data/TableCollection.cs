@@ -250,32 +250,6 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        //public void InvokeChildTableCreate(Authentication authentication, Table table, string childName, CremaDataSet dataSet)
-        //{
-        //    var message = EventMessageBuilder.CreateTable(authentication, childName);
-        //    try
-        //    {
-        //        //var query = from item in dataSet.Tables
-        //        //            where item.Name == childName || item.TemplatedParentName == childName
-        //        //            select item;
-        //        //foreach (var item in query)
-        //        //{
-        //        //    var props = new CremaDataTableSerializerSettings(item.Namespace, item.TemplateNamespace);
-        //        //    var itemPath = this.Context.GenerateTablePath(item.CategoryPath, item.Name);
-        //        //    var itemPaths = this.Serializer.Serialize(itemPath, item, props);
-        //        //    this.Repository.AddRange(itemPaths);
-        //        //}
-        //        this.Repository.CreateTable(dataSet, this.DataBase);
-        //        this.Repository.Commit(authentication, message);
-        //        //this.CremaHost.Info(message);
-        //    }
-        //    catch
-        //    {
-        //        this.Repository.Revert();
-        //        throw;
-        //    }
-        //}
-
         public void InvokeTablesCreatedEvent(Authentication authentication, Table[] tables, CremaDataSet dataSet)
         {
             var args = tables.Select(item => (object)item.TableInfo).ToArray();
@@ -516,16 +490,6 @@ namespace Ntreev.Crema.Services.Data
         {
             authentication.Sign();
         }
-
-        //private void ValidateCreate(Authentication authentication, string categoryPath)
-        //{
-        //    var category = this.GetCategory(categoryPath);
-
-        //    if (category == null)
-        //        throw new CategoryNotFoundException(categoryPath);
-
-        //    category.ValidateAccessType(authentication, AccessType.Master);
-        //}
 
         private void ValidateInherit(Authentication authentication, Table table, string newTableName, string categoryPath, bool copyXml)
         {

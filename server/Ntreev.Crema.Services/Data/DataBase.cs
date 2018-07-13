@@ -854,6 +854,8 @@ namespace Ntreev.Crema.Services.Data
 
         public Guid ID => base.DataBaseInfo.ID;
 
+        public Version Version => this.IsLoaded ? this.Repository.Version : null;
+
         public new event EventHandler Renamed
         {
             add
