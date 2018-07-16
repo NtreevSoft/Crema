@@ -26,19 +26,19 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Ntreev.Crema.Services.Domains
 {
     [Serializable]
     abstract class Domain : DomainBase<Domain, DomainCategory, DomainCollection, DomainCategoryCollection, DomainContext>,
-        IDomain, IDomainItem, ISerializable, IInfoProvider, IStateProvider
+        IDomain, IDomainItem, IInfoProvider, IStateProvider
     {
         private const string dataKey = "Data";
         private const string usersKey = "Users";
         private object source;
         private byte[] data;
         private Func<DateTime> dateTimeProvider;
+        private readonly HashSet<string> modifiedTableList = new HashSet<string>();
 
         private EventHandler<DomainUserEventArgs> userAdded;
         private EventHandler<DomainUserEventArgs> userChanged;
@@ -354,6 +354,7 @@ namespace Ntreev.Crema.Services.Domains
                 DomainInfo = base.DomainInfo,
                 Users = this.Users.Select<DomainUser, DomainUserMetaData>(item => item.GetMetaData(authentication)).ToArray(),
                 DomainState = base.DomainState,
+                ModifiedTables = this.modifiedTableList.ToArray(),
             };
 
             if (this.Users.Contains(authentication.ID) == true)
@@ -364,16 +365,6 @@ namespace Ntreev.Crema.Services.Domains
             }
 
             return metaData;
-        }
-
-        public void Write(string filename)
-        {
-            var formatter = new BinaryFormatter();
-            using (var stream = new FileStream(filename, FileMode.Create))
-            {
-                formatter.Serialize(stream, this);
-                stream.Close();
-            }
         }
 
         public void Dispose(DomainContext domainContext)
@@ -520,6 +511,8 @@ namespace Ntreev.Crema.Services.Domains
         }
 
         public CremaHost CremaHost => this.Context.CremaHost;
+
+        public string[] ModifiedTables => this.modifiedTableList.OrderBy(item => item).ToArray();
 
         public event EventHandler<DomainUserEventArgs> UserAdded
         {
@@ -868,6 +861,10 @@ namespace Ntreev.Crema.Services.Domains
         {
             var domainUser = this.GetDomainUser(authentication);
             var result = this.OnNewRow(domainUser, rows, authentication.GetSignatureDateProvider());
+            foreach (var item in rows)
+            {
+                this.modifiedTableList.Add(item.TableName);
+            }
             domainUser.IsModified = true;
             rows = result;
         }
@@ -876,6 +873,10 @@ namespace Ntreev.Crema.Services.Domains
         {
             var domainUser = this.GetDomainUser(authentication);
             var result = this.OnSetRow(domainUser, rows, authentication.GetSignatureDateProvider());
+            foreach (var item in rows)
+            {
+                this.modifiedTableList.Add(item.TableName);
+            }
             domainUser.IsModified = true;
             rows = result;
         }
@@ -884,6 +885,10 @@ namespace Ntreev.Crema.Services.Domains
         {
             var domainUser = this.GetDomainUser(authentication);
             this.OnRemoveRow(domainUser, rows, authentication.GetSignatureDateProvider());
+            foreach (var item in rows)
+            {
+                this.modifiedTableList.Add(item.TableName);
+            }
             domainUser.IsModified = true;
         }
 
@@ -1063,30 +1068,30 @@ namespace Ntreev.Crema.Services.Domains
 
         #endregion
 
-        #region ISerializable
+        //#region ISerializable
 
-        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            var properties = new Dictionary<string, object>();
-            info.AddValue(typeof(DomainInfo).Name, base.DomainInfo);
-            info.AddValue(dataKey, this.SerializeSource(this.Source));
-            info.AddValue(usersKey, GetUsersXml());
+        //void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+        //{
+        //    var properties = new Dictionary<string, object>();
+        //    info.AddValue(typeof(DomainInfo).Name, base.DomainInfo);
+        //    info.AddValue(dataKey, this.SerializeSource(this.Source));
+        //    info.AddValue(usersKey, GetUsersXml());
 
-            this.OnSerializaing(properties);
-            foreach (var item in properties)
-            {
-                info.AddValue(item.Key, item.Value);
-            }
+        //    this.OnSerializaing(properties);
+        //    foreach (var item in properties)
+        //    {
+        //        info.AddValue(item.Key, item.Value);
+        //    }
 
-            string GetUsersXml()
-            {
-                var query = from DomainUser item in this.Users select item.DomainUserInfo;
-                var userInfos = query.ToArray();
-                return XmlSerializerUtility.GetString(userInfos);
-            }
-        }
+        //    string GetUsersXml()
+        //    {
+        //        var query = from DomainUser item in this.Users select item.DomainUserInfo;
+        //        var userInfos = query.ToArray();
+        //        return XmlSerializerUtility.GetString(userInfos);
+        //    }
+        //}
 
-        #endregion
+        //#endregion
 
         #region IServiceProvider
 

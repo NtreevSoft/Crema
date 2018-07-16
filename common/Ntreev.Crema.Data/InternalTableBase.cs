@@ -699,7 +699,13 @@ namespace Ntreev.Crema.Data
                 foreach (var item in derivedTables)
                 {
                     if (item.ParentName != string.Empty)
+                    {
                         item.InternalName = item.ParentName + "." + value;
+                        foreach (var i in item.childItems.ToArray())
+                        {
+                            i.InternalName = item.Name + "." + i.LocalName;
+                        }
+                    }
                 }
             }
         }

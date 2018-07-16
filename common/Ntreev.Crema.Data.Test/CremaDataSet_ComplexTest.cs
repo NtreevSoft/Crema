@@ -674,5 +674,66 @@ namespace Ntreev.Crema.Data.Test
 
             c3.IsKey = false;
         }
+
+        [TestMethod]
+        public void CreateChildOfChild()
+        {
+            var dataSet = new CremaDataSet();
+            var dataTable = dataSet.Tables.Add();
+            var childTable = dataTable.Childs.Add();
+            var ct = childTable.Childs.Add();
+        }
+
+        [TestMethod]
+        public void InheritChildOfChild()
+        {
+            var dataSet = new CremaDataSet();
+            var dataTable1 = dataSet.Tables.Add();
+            var dataTable2 = dataTable1.Childs.Add();
+            var dataTable3 = dataTable2.Childs.Add();
+
+            var derivedTable1 = dataTable1.Inherit();
+            var derivedTable2 = derivedTable1.Childs.First();
+            var derivedTable3 = derivedTable2.Childs.First();
+
+            Assert.AreNotEqual(dataTable1.TableName, derivedTable1.TableName);
+            Assert.AreEqual(dataTable2.TableName, derivedTable2.TableName);
+            Assert.AreEqual(dataTable3.TableName, derivedTable3.TableName);
+
+            Assert.AreEqual(dataTable1.Name, derivedTable1.TemplatedParentName);
+            Assert.AreEqual(dataTable2.Name, derivedTable2.TemplatedParentName);
+            Assert.AreEqual(dataTable3.Name, derivedTable3.TemplatedParentName);
+        }
+
+        [TestMethod]
+        public void InheritChildOfChild2()
+        {
+            var dataSet = new CremaDataSet();
+            var dataTable1 = dataSet.Tables.Add();
+            var dataTable2 = dataTable1.Childs.Add();
+            var dataTable3 = dataTable2.Childs.Add();
+
+            var derivedTable1 = dataTable1.Inherit();
+            var derivedTable2 = derivedTable1.Childs.First();
+            var derivedTable3 = derivedTable2.Childs.First();
+
+            var identifier2 = RandomUtility.NextIdentifier();
+            var identifier3 = RandomUtility.NextIdentifier();
+
+            if (identifier2 == identifier3)
+                return;
+
+            dataTable2.TableName = identifier2;
+            dataTable3.TableName = identifier3;
+
+
+            Assert.AreNotEqual(dataTable1.TableName, derivedTable1.TableName);
+            Assert.AreEqual(dataTable2.TableName, derivedTable2.TableName);
+            Assert.AreEqual(dataTable3.TableName, derivedTable3.TableName);
+
+            Assert.AreEqual(dataTable1.Name, derivedTable1.TemplatedParentName);
+            Assert.AreEqual(dataTable2.Name, derivedTable2.TemplatedParentName);
+            Assert.AreEqual(dataTable3.Name, derivedTable3.TemplatedParentName);
+        }
     }
 }

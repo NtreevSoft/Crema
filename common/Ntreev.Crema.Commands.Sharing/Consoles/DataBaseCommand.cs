@@ -46,6 +46,7 @@ namespace Ntreev.Crema.Commands.Consoles
             : base("database")
         {
             this.cremaHost = cremaHost;
+            this.dataBases = cremaHost.GetService(typeof(IDataBaseCollection)) as IDataBaseCollection;
             this.cremaHost.Opened += (s, e) => this.dataBases = this.cremaHost.DataBases;
             this.cremaHost.Closed += (s, e) => this.dataBases = null;
         }

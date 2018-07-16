@@ -146,7 +146,7 @@ namespace Ntreev.Crema.Data
             this.ValidateInerit(itemName);
 
             var names = StringUtility.Split(itemName.Name, '.');
-            var items = EnumerableUtility.Friends(this, this.Childs);
+            var items = EnumerableUtility.FamilyTree(this, item => item.Childs);
 
             foreach (var item in items)
             {
@@ -165,12 +165,6 @@ namespace Ntreev.Crema.Data
                 copiedTable.SourceTable = item;
             }
 
-            //var schema = this.GetXmlSchema();
-            //var xml = copyData == true ? this.GetXml() : null;
-            //var tableNamespace = this.DataSet.TableNamespace + itemName.Path;
-            //this.DataSet.ReadXmlSchemaString(schema, itemName);
-            //if (xml != null)
-            //    this.DataSet.ReadXmlString(xml, itemName);
             var dataTable = this.DataSet.Tables[itemName.Name, itemName.CategoryPath];
             var signatureDate = this.SignatureDateProvider.Provide();
             dataTable.TemplatedParent = this;

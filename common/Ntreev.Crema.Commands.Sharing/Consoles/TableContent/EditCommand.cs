@@ -117,32 +117,26 @@ namespace Ntreev.Crema.Commands.Consoles.TableContent
             var domain = this.Content.Dispatcher.Invoke(() => this.Content.Domain);
             var tableInfo = this.Content.Dispatcher.Invoke(() => this.Content.Table.TableInfo);
 
-            var fields = completionContext.Properties[nameof(Keys)] as string[];
-
-            var sss = domain.Dispatcher.Invoke(() =>
+            return domain.Dispatcher.Invoke(() =>
             {
                 var dataSet = domain.Source as CremaDataSet;
                 var dataTable = dataSet.Tables[tableInfo.Name];
 
-                if (fields.Length >= dataTable.PrimaryKey.Length)
+                if (completionContext.Arguments.Length >= dataTable.PrimaryKey.Length)
                     return null;
-                var expression = string.Empty;
 
                 var expItems = new List<string>();
-                for (var i = 0; i < fields.Length; i++)
+                for (var i = 0; i < completionContext.Arguments.Length; i++)
                 {
-                    expItems.Add($"{dataTable.PrimaryKey[i].ColumnName}={fields[i]}");
+                    expItems.Add($"{dataTable.PrimaryKey[i].ColumnName}='{completionContext.Arguments[i]}'");
                 }
 
-                expression = string.Join(" AND ", expItems);
-
+                var expression = string.Join(" AND ", expItems);
                 var query = from item in dataTable.Select(expression)
-                            let value = CremaConvert.ChangeType(item[dataTable.PrimaryKey[fields.Length]], typeof(string)) as string
+                            let value = CremaConvert.ChangeType(item[dataTable.PrimaryKey[completionContext.Arguments.Length]], typeof(string)) as string
                             select value;
                 return query.ToArray();
-
             });
-            return sss;
         }
     }
 }

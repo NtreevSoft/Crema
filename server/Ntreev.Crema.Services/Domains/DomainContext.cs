@@ -264,8 +264,8 @@ namespace Ntreev.Crema.Services.Domains
                 var dataBase = e.Items[i];
                 var categoryName = CategoryName.Create(dataBase.Name);
                 var category = this.Categories.AddNew(categoryName);
-                categoryList.Add(category);
                 category.DataBase = dataBase;
+                categoryList.Add(category);
             }
             Authentication.System.Sign();
             this.Categories.InvokeCategoriesCreatedEvent(Authentication.System, categoryList.ToArray());

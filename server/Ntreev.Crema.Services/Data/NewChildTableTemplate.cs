@@ -106,7 +106,7 @@ namespace Ntreev.Crema.Services.Data
         protected override CremaTemplate CreateSource(Authentication authentication)
         {
             var dataSet = this.parent.ReadAll(authentication, true);
-            var dataTable = dataSet.Tables[this.parent.TableName, this.parent.Category.Path];
+            var dataTable = dataSet.Tables[this.parent.Name, this.parent.Category.Path];
             return CremaTemplate.CreateChild(dataTable);
         }
     }

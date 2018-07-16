@@ -413,11 +413,11 @@ namespace Ntreev.Crema.Services
 
         internal static IRepositoryMigrator GetRepositoryMigrator(IServiceProvider serviceProvider, string migrationModule)
         {
-            var repositoryUpgraders = serviceProvider.GetService(typeof(IEnumerable<IRepositoryMigrator>)) as IEnumerable<IRepositoryMigrator>;
-            var repositoryUpgrader = repositoryUpgraders.FirstOrDefault(item => item.Name == migrationModule);
-            if (repositoryUpgrader == null)
-                throw new InvalidOperationException(Resources.Exception_NoRepositoryModule);
-            return repositoryUpgrader;
+            var repositoryMigrators = serviceProvider.GetService(typeof(IEnumerable<IRepositoryMigrator>)) as IEnumerable<IRepositoryMigrator>;
+            var repositoryMigrator = repositoryMigrators.FirstOrDefault(item => item.Name == migrationModule);
+            if (repositoryMigrator == null)
+                throw new InvalidOperationException("no repository migrator");
+            return repositoryMigrator;
         }
 
         private static string GetRepositoryModule(string basePath)

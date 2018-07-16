@@ -26,7 +26,6 @@ using Ntreev.Library.Serialization;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Ntreev.Crema.Services.Data
 {
@@ -34,7 +33,6 @@ namespace Ntreev.Crema.Services.Data
     {
         private readonly CremaDispatcher dispatcher;
         private readonly Authentication authentication;
-        //private readonly BinaryFormatter formatter = new BinaryFormatter();
 
         private readonly List<FindResultInfo> findResults = new List<FindResultInfo>();
 

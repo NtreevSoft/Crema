@@ -34,6 +34,7 @@ namespace Ntreev.Crema.Services.Data
         private readonly Table table;
         private readonly TableContentCollection childs;
         private Domain domain;
+        private CremaDataSet dataSet;
         private CremaDataTable dataTable;
 
         private EventHandler editBegun;
@@ -65,20 +66,14 @@ namespace Ntreev.Crema.Services.Data
                 if (this.domain == null)
                 {
                     var dataSet = this.table.ReadEditableData(authentication);
-                    //this.DataSet = dataSet;
-                    //this.dataTable = this.DataSet.Tables[this.table.Name, this.table.Category.Path];
-                    this.domain = new TableContentDomain(authentication, dataSet, this.table.DataBase, this.GetType().Name)
+                    this.domain = new TableContentDomain(authentication, dataSet, this.table.DataBase, this.table.Path, this.GetType().Name)
                     {
                         Host = this
                     };
                     this.DomainContext.Domains.Add(authentication, this.domain);
-                    this.BeginContent(authentication, this.domain);
-                    this.domain.Dispatcher.Invoke(() =>
-                    {
-                        this.AttachDomainEvent();
-                    });
                 }
                 this.BeginContent(authentication, this.domain);
+                this.domain.Dispatcher.Invoke(this.AttachDomainEvent);
                 this.InvokeEditBegunEvent(EventArgs.Empty);
             }
             catch (Exception e)
@@ -122,7 +117,6 @@ namespace Ntreev.Crema.Services.Data
                 this.Sign(authentication);
                 this.domain.Dispatcher.Invoke(() =>
                 {
-                    this.DetachDomainEvent();
                     this.domain.Dispose(authentication, true);
                 });
                 this.CancelContent(authentication);
@@ -240,8 +234,6 @@ namespace Ntreev.Crema.Services.Data
         [EditorBrowsable(EditorBrowsableState.Never)]
         public void ValidateEndEdit(Authentication authentication)
         {
-            if (this.table.Parent != null)
-                throw new NotImplementedException();
             var isAdmin = authentication.Types.HasFlag(AuthenticationType.Administrator);
             if (this.domain == null)
                 throw new NotImplementedException();
@@ -256,11 +248,7 @@ namespace Ntreev.Crema.Services.Data
         [EditorBrowsable(EditorBrowsableState.Never)]
         public void ValidateEnter(Authentication authentication)
         {
-            if (this.table.Parent != null)
-                throw new NotImplementedException();
-
-            var items = EnumerableUtility.Friends(this, this.Childs);
-            foreach (var item in items)
+            foreach (var item in this.Relations)
             {
                 item.OnValidateEnter(authentication, this);
             }
@@ -269,11 +257,7 @@ namespace Ntreev.Crema.Services.Data
         [EditorBrowsable(EditorBrowsableState.Never)]
         public void ValidateLeave(Authentication authentication)
         {
-            if (this.table.Parent != null)
-                throw new NotImplementedException();
-
-            var items = EnumerableUtility.Friends(this, this.Childs);
-            foreach (var item in items)
+            foreach (var item in this.Relations)
             {
                 item.OnValidateLeave(authentication, this);
             }
@@ -282,9 +266,6 @@ namespace Ntreev.Crema.Services.Data
         [EditorBrowsable(EditorBrowsableState.Never)]
         public void ValidateCancelEdit(Authentication authentication)
         {
-            if (this.table.Parent != null)
-                throw new NotImplementedException();
-
             var isAdmin = authentication.Types.HasFlag(AuthenticationType.Administrator);
             if (this.domain == null)
                 throw new NotImplementedException();
@@ -294,8 +275,7 @@ namespace Ntreev.Crema.Services.Data
                     throw new NotImplementedException();
             });
 
-            var items = EnumerableUtility.Friends(this, this.Childs);
-            foreach (var item in items)
+            foreach (var item in this.Relations)
             {
                 item.OnValidateCancelEdit(authentication, this);
             }
@@ -384,8 +364,6 @@ namespace Ntreev.Crema.Services.Data
                 return this.dataTable.Rows.Count;
             }
         }
-
-        public CremaDataSet DataSet { get; private set; }
 
         public override CremaDataTable DataTable => this.dataTable;
 
@@ -510,20 +488,29 @@ namespace Ntreev.Crema.Services.Data
 
         private void Domain_RowAdded(object sender, DomainRowEventArgs e)
         {
-            this.isModified = this.domain.IsModified;
-            this.Dispatcher.InvokeAsync(() => this.OnChanged(e));
+            if (e.Rows.Any(item => item.TableName == this.dataTable.Name) == true)
+            {
+                this.isModified = true;
+                this.Dispatcher.InvokeAsync(() => this.OnChanged(e));
+            }
         }
 
         private void Domain_RowChanged(object sender, DomainRowEventArgs e)
         {
-            this.isModified = this.domain.IsModified;
-            this.Dispatcher.InvokeAsync(() => this.OnChanged(e));
+            if (e.Rows.Any(item => item.TableName == this.dataTable.Name) == true)
+            {
+                this.isModified = true;
+                this.Dispatcher.InvokeAsync(() => this.OnChanged(e));
+            }
         }
 
         private void Domain_RowRemoved(object sender, DomainRowEventArgs e)
         {
-            this.isModified = this.domain.IsModified;
-            this.Dispatcher.InvokeAsync(() => this.OnChanged(e));
+            if (e.Rows.Any(item => item.TableName == this.dataTable.Name) == true)
+            {
+                this.isModified = true;
+                this.Dispatcher.InvokeAsync(() => this.OnChanged(e));
+            }
         }
 
         private void Domain_PropertyChanged(object sender, DomainPropertyEventArgs e)
@@ -534,26 +521,31 @@ namespace Ntreev.Crema.Services.Data
 
         private void AttachDomainEvent()
         {
-            this.domain.Deleted += Domain_Deleted;
-            this.domain.RowAdded += Domain_RowAdded;
-            this.domain.RowChanged += Domain_RowChanged;
-            this.domain.RowRemoved += Domain_RowRemoved;
-            this.domain.PropertyChanged += Domain_PropertyChanged;
+            foreach (var item in this.Relations)
+            {
+                item.domain.Deleted += item.Domain_Deleted;
+                item.domain.RowAdded += item.Domain_RowAdded;
+                item.domain.RowChanged += item.Domain_RowChanged;
+                item.domain.RowRemoved += item.Domain_RowRemoved;
+                item.domain.PropertyChanged += item.Domain_PropertyChanged;
+            }
         }
 
         private void DetachDomainEvent()
         {
-            this.domain.Deleted -= Domain_Deleted;
-            this.domain.RowAdded -= Domain_RowAdded;
-            this.domain.RowChanged -= Domain_RowChanged;
-            this.domain.RowRemoved -= Domain_RowRemoved;
-            this.domain.PropertyChanged -= Domain_PropertyChanged;
+            foreach (var item in this.Relations)
+            {
+                item.domain.Deleted -= item.Domain_Deleted;
+                item.domain.RowAdded -= item.Domain_RowAdded;
+                item.domain.RowChanged -= item.Domain_RowChanged;
+                item.domain.RowRemoved -= item.Domain_RowRemoved;
+                item.domain.PropertyChanged -= item.Domain_PropertyChanged;
+            }
         }
 
         private void InvokeEditBegunEvent(EventArgs e)
         {
-            var items = EnumerableUtility.Friends(this, this.Childs);
-            foreach (var item in items)
+            foreach (var item in this.Relations)
             {
                 item.OnEditBegun(e);
             }
@@ -561,8 +553,7 @@ namespace Ntreev.Crema.Services.Data
 
         private void InvokeEditEndedEvent(EventArgs e)
         {
-            var items = EnumerableUtility.Friends(this, this.Childs);
-            foreach (var item in items)
+            foreach (var item in this.Relations)
             {
                 item.OnEditEnded(e);
             }
@@ -570,8 +561,7 @@ namespace Ntreev.Crema.Services.Data
 
         private void InvokeEditCanceledEvent(EventArgs e)
         {
-            var items = EnumerableUtility.Friends(this, this.Childs);
-            foreach (var item in items)
+            foreach (var item in this.Relations)
             {
                 item.OnEditCanceled(e);
             }
@@ -579,53 +569,45 @@ namespace Ntreev.Crema.Services.Data
 
         private void BeginContent(Authentication authentication, Domain domain)
         {
-            var items = EnumerableUtility.Friends(this, this.Childs);
-            foreach (var item in items)
+            var dataSet = domain.Source as CremaDataSet;
+            foreach (var item in this.Relations)
             {
                 item.domain = domain;
-                item.DataSet = domain.Source as CremaDataSet;
-                item.dataTable = DataSet.Tables[item.table.Name, item.table.Category.Path];
+                item.dataSet = dataSet;
+                item.dataTable = dataSet.Tables[item.table.Name, item.table.Category.Path];
                 item.table.SetTableState(TableState.IsBeingEdited);
+                item.isModified = domain.ModifiedTables.Contains(item.dataTable.Name);
             }
-
-            this.Container.InvokeTablesStateChangedEvent(authentication, items.Select(i => i.table).ToArray());
+            this.Container.InvokeTablesStateChangedEvent(authentication, this.table.GetRelations().ToArray());
         }
 
         private void EndContent(Authentication authentication, bool isUpdate)
         {
-            if (isUpdate == true)
-                this.Container.InvokeTableEndContentEdit(authentication, this.table, this.DataSet);
-            var isModified = this.domain.IsModified;
-            var dataSet = this.DataSet;
-            var items = EnumerableUtility.Friends(this, this.Childs);
-            foreach (var item in items)
+            this.Container.InvokeTableEndContentEdit(authentication, this.table, this.dataSet);
+            foreach (var item in this.Relations)
             {
-                if (isUpdate == true)
+                if (item.IsModified == true)
                     item.table.UpdateContent(item.dataTable.TableInfo);
                 item.domain = null;
                 item.isModified = false;
-                item.DataSet = null;
+                item.dataSet = null;
                 item.dataTable = null;
                 item.table.SetTableState(TableState.None);
             }
-
-            if (isModified == true)
-                this.Container.InvokeTablesContentChangedEvent(authentication, this, items.Select(i => i.Table).ToArray(), dataSet);
+            this.Container.InvokeTablesContentChangedEvent(authentication, this, this.table.GetRelations().ToArray(), dataSet);
         }
 
         private void CancelContent(Authentication authentication)
         {
-            var items = EnumerableUtility.Friends(this.table, this.table.Childs);
-            foreach (var item in items.Select(i => i.Content))
+            foreach (var item in this.Relations)
             {
                 item.domain = null;
                 item.isModified = false;
-                item.DataSet = null;
+                item.dataSet = null;
                 item.dataTable = null;
                 item.table.SetTableState(TableState.None);
             }
-
-            this.Container.InvokeTablesStateChangedEvent(authentication, items.ToArray());
+            this.Container.InvokeTablesStateChangedEvent(authentication, this.table.GetRelations().ToArray());
         }
 
         private void EnterContent(Authentication authentication)
@@ -653,6 +635,8 @@ namespace Ntreev.Crema.Services.Data
         }
 
         private TableCollection Container => this.table.Container;
+
+        private IEnumerable<TableContent> Relations => this.table.GetRelations().Select(item => item.Content);
 
         #region ITableContent
 
@@ -712,24 +696,19 @@ namespace Ntreev.Crema.Services.Data
 
         void IDomainHost.Restore(Domain domain)
         {
-            this.domain = domain;
             Authentication.System.Sign();
+            this.domain = domain;
             this.BeginContent(Authentication.System, this.domain);
             this.InvokeEditBegunEvent(EventArgs.Empty);
-            this.domain.Dispatcher.Invoke(() =>
-            {
-                this.isModified = this.domain.IsModified;
-                this.AttachDomainEvent();
-            });
+            this.domain.Dispatcher.Invoke(this.AttachDomainEvent);
         }
 
         void IDomainHost.Detach()
         {
-            this.domain.Dispatcher.Invoke(() =>
-            {
-                this.DetachDomainEvent();
-            });
+            this.domain.Dispatcher.Invoke(this.DetachDomainEvent);
             this.domain = null;
+            this.dataTable = null;
+            this.dataSet = null;
         }
 
         void IDomainHost.ValidateDelete(Authentication authentication, bool isCanceled)
@@ -738,8 +717,8 @@ namespace Ntreev.Crema.Services.Data
             {
                 this.Dispatcher.Invoke(() =>
                 {
-                    if (this.table.Parent != null)
-                        throw new NotImplementedException();
+                    //if (this.table.Parent != null)
+                    //    throw new NotImplementedException();
                 });
             }
         }

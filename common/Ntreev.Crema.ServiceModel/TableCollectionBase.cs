@@ -15,6 +15,7 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.Data;
 using Ntreev.Library;
 using Ntreev.Library.ObjectModel;
 using System;
@@ -41,11 +42,10 @@ namespace Ntreev.Crema.ServiceModel
             {
                 foreach (_I item in e.NewItems)
                 {
-                    if (item.Name.Contains('.') == true)
+                    var parentName = CremaDataTable.GetParentName(item.Name);
+                    if (parentName != string.Empty)
                     {
-                        var ss = StringUtility.Split(item.Name, '.');
-                        item.Parent = this[ss[0]];
-                        
+                        item.Parent = this[parentName];
                     }
                 }
             }

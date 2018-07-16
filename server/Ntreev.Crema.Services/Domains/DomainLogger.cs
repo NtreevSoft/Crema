@@ -21,7 +21,6 @@ using Ntreev.Crema.Services.Domains.Serializations;
 using Ntreev.Library.IO;
 using Ntreev.Library.Serialization;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml;
 
 namespace Ntreev.Crema.Services.Domains
@@ -200,15 +199,5 @@ namespace Ntreev.Crema.Services.Domains
         public long ID { get; set; }
 
         public bool IsEnabled { get; set; } = true;
-
-        private void SerializeDomain(Domain domain)
-        {
-            var formatter = new BinaryFormatter();
-            using (var stream = new FileStream(Path.Combine(basePath, DomainLogger.HeaderItemPath), FileMode.Create))
-            {
-                formatter.Serialize(stream, domain);
-                stream.Close();
-            }
-        }
     }
 }

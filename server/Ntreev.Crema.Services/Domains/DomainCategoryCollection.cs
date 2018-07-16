@@ -37,12 +37,10 @@ namespace Ntreev.Crema.Services.Domains
         {
             NameValidator.ValidateCategoryPath(categoryPath);
             var categoryName = new CategoryName(categoryPath);
-
             if (this.ContainsKey(categoryName.ParentPath) == false)
             {
                 this.AddNew(categoryName.ParentPath);
             }
-
             return this.BaseAddNew(categoryName.Name, categoryName.ParentPath, null, null);
         }
 

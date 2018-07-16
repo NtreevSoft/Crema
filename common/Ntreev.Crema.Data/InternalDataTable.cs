@@ -19,6 +19,7 @@ using Ntreev.Crema.Data.Properties;
 using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Library;
 using Ntreev.Library.IO;
+using Ntreev.Library.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -343,7 +344,7 @@ namespace Ntreev.Crema.Data
         public InternalDataTable AddChild()
         {
             var childNames = from item in this.ChildItems select item.LocalName;
-            var childName = NameUtility.GenerateNewName(childNameString, childNames.ToArray());
+            var childName = NameUtility.GenerateNewName(childNameString, EnumerableUtility.Friends(this.LocalName, childNames));
             return this.AddChild(childName);
         }
 

@@ -608,8 +608,8 @@ namespace Ntreev.Crema.Services.Data
 
         public void ValidateNewChild(Authentication authentication)
         {
-            if (this.Parent != null)
-                throw new InvalidOperationException(Resources.Exception_ChildTableCannotCreateChildTable);
+            //if (this.Parent != null)
+            //    throw new InvalidOperationException(Resources.Exception_ChildTableCannotCreateChildTable);
             if (this.TemplatedParent != null)
                 throw new InvalidOperationException(Resources.Exception_InheritedTableCannotNewChild);
             this.ValidateAccessType(authentication, AccessType.Master);

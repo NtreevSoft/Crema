@@ -74,34 +74,17 @@ namespace Ntreev.Crema.Data
 
         public string ParentName
         {
-            get
-            {
-                if (this.Name.Contains('.') == true)
-                {
-                    return StringUtility.Split(this.Name, '.').First();
-                }
-                return string.Empty;
-            }
+            get { return CremaDataTable.GetParentName(this.Name); }
         }
 
         public string CategoryName
         {
-            get
-            {
-                return this.CategoryPath.Trim(PathUtility.SeparatorChar);
-            }
+            get { return this.CategoryPath.Trim(PathUtility.SeparatorChar); }
         }
 
         public string TableName
         {
-            get
-            {
-                if (this.Name.Contains('.') == true)
-                {
-                    return StringUtility.Split(this.Name, '.')[1];
-                }
-                return this.Name;
-            }
+            get { return CremaDataTable.GetTableName(this.Name); }
         }
 
         [DataMember]

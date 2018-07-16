@@ -50,6 +50,9 @@ namespace Ntreev.Crema.ServiceModel
         [DataMember]
         public DomainState DomainState { get; set; }
 
+        [DataMember]
+        public string[] ModifiedTables { get; set; }
+
         public static readonly DomainMetaData Empty = new DomainMetaData();
     }
 }

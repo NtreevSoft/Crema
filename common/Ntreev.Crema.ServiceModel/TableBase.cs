@@ -405,12 +405,12 @@ namespace Ntreev.Crema.ServiceModel
             {
                 if (this.parent == null)
                     return this.Name;
-                return StringUtility.Split(this.Name, '.')[1];
+                return CremaDataTable.GetTableName(this.Name);
             }
             set
             {
                 if (this.parent != null)
-                    this.Name = this.parent.TableName + "." + value;
+                    this.Name = this.parent.Name + "." + value;
                 else
                     this.Name = value;
             }
