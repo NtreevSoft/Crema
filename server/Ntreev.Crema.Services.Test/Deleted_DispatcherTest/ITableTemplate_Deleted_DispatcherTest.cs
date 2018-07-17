@@ -131,13 +131,6 @@ namespace Ntreev.Crema.Services.Test.Deleted_DispatcherTest
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public new void GetType()
-        {
-            template.GetType(string.Empty);
-        }
-
-        [TestMethod]
         public void Domain()
         {
             Console.Write(template.Domain);

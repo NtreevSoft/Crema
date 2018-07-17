@@ -616,7 +616,7 @@ namespace Ntreev.Crema.Services.Random
                 var content = table.Content;
                 content.EnterEdit(authentication);
 
-                var contents = EnumerableUtility.Friends(content, content.Childs);
+                var contents = EnumerableUtility.Friends(table, table.Childs).Select(item => item.Content);
 
                 try
                 {
@@ -681,7 +681,7 @@ namespace Ntreev.Crema.Services.Random
                     return;
 
                 var content = table.Content;
-                var contents = EnumerableUtility.Friends(content, content.Childs);
+                var contents = EnumerableUtility.Friends(table, table.Childs).Select(item => item.Content);
                 contents.Random().EditRandom(authentication, 1);
             });
         }

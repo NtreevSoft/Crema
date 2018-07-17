@@ -99,6 +99,7 @@ Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems*{04aeb614-3510-4064-99af-0aa807c7f957}*SharedItemsImports = 4
 		common\Ntreev.Crema.Commands.Spreadsheet.Sharing\Ntreev.Crema.Commands.Spreadsheet.Sharing.projitems*{05971a74-2d68-4781-9ceb-df2b48f8ba75}*SharedItemsImports = 13
+		sub-modules\Ntreev.Library.Commands\Ntreev.Library.Commands.AssemblyInfo\Ntreev.Library.Commands.AssemblyInfo.projitems*{0d96cc61-6d74-49b4-a558-33ac0dcf8529}*SharedItemsImports = 4
 		common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems*{0eac90ab-7c7e-47e3-9954-148b45521fcb}*SharedItemsImports = 4
 		common\Ntreev.Crema.Services.Sharing\Ntreev.Crema.Services.Sharing.projitems*{0eac90ab-7c7e-47e3-9954-148b45521fcb}*SharedItemsImports = 4
 		sub-modules\Ntreev.Library\Ntreev.Library.AssemblyInfo\Ntreev.Library.AssemblyInfo.projitems*{1918437f-4fbf-4731-ac5b-981a4a4cb1f1}*SharedItemsImports = 4
@@ -509,7 +510,7 @@ Global
 		{0D96CC61-6D74-49B4-A558-33AC0DCF8529} = {6BD932D9-A567-4BC3-88B0-B7950B6002AD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {3A345B68-213C-4BA4-8420-8419E3900B67}
 		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.ExceptionHandling.6.0.1304.0\lib\NET45
+		SolutionGuid = {3A345B68-213C-4BA4-8420-8419E3900B67}
 	EndGlobalSection
 EndGlobal

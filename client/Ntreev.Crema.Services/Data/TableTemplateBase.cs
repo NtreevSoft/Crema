@@ -175,8 +175,6 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public abstract Type GetType(string typeName);
-
         public bool Contains(string columnName)
         {
             this.Dispatcher?.VerifyAccess();
@@ -545,12 +543,6 @@ namespace Ntreev.Crema.Services.Data
 
         #region ITableTemplate
 
-        IType ITableTemplate.GetType(string typeName)
-        {
-            this.Dispatcher?.VerifyAccess();
-            return this.GetType(typeName);
-        }
-
         ITableColumn ITableTemplate.AddNew(Authentication authentication)
         {
             return this.AddNew(authentication);
@@ -577,7 +569,7 @@ namespace Ntreev.Crema.Services.Data
 
         #region IDomainHost
 
-        void IDomainHost.Restore(Domain domain)
+        void IDomainHost.Restore(Authentication authentication, Domain domain)
         {
             this.OnRestore(domain);
             this.OnEditBegun(EventArgs.Empty);

@@ -599,7 +599,7 @@ namespace Ntreev.Crema.Services.Data
 
         #region IDomainHost
 
-        void IDomainHost.Restore(Domain domain)
+        void IDomainHost.Restore(Authentication authentication, Domain domain)
         {
             this.OnRestore(domain);
             this.OnEditBegun(EventArgs.Empty);

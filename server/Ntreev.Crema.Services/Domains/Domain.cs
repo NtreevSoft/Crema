@@ -29,7 +29,6 @@ using System.Runtime.Serialization;
 
 namespace Ntreev.Crema.Services.Domains
 {
-    [Serializable]
     abstract class Domain : DomainBase<Domain, DomainCategory, DomainCollection, DomainCategoryCollection, DomainContext>,
         IDomain, IDomainItem, IInfoProvider, IStateProvider
     {
@@ -1067,31 +1066,6 @@ namespace Ntreev.Crema.Services.Domains
         }
 
         #endregion
-
-        //#region ISerializable
-
-        //void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-        //{
-        //    var properties = new Dictionary<string, object>();
-        //    info.AddValue(typeof(DomainInfo).Name, base.DomainInfo);
-        //    info.AddValue(dataKey, this.SerializeSource(this.Source));
-        //    info.AddValue(usersKey, GetUsersXml());
-
-        //    this.OnSerializaing(properties);
-        //    foreach (var item in properties)
-        //    {
-        //        info.AddValue(item.Key, item.Value);
-        //    }
-
-        //    string GetUsersXml()
-        //    {
-        //        var query = from DomainUser item in this.Users select item.DomainUserInfo;
-        //        var userInfos = query.ToArray();
-        //        return XmlSerializerUtility.GetString(userInfos);
-        //    }
-        //}
-
-        //#endregion
 
         #region IServiceProvider
 

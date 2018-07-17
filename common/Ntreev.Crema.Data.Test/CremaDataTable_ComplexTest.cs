@@ -76,7 +76,7 @@ namespace Ntreev.Crema.Data.Test
         [TestMethod]
         public void CreateWithNameAndCategoryPath()
         {
-            var dataTable = new CremaDataTable(RandomUtility.NextName(), RandomUtility.NextCategoryPath(1));
+            var dataTable = new CremaDataTable(RandomUtility.NextIdentifier(), RandomUtility.NextCategoryPath(1));
 
             Assert.AreNotEqual(string.Empty, dataTable.Name);
             Assert.AreNotEqual(string.Empty, dataTable.TableName);

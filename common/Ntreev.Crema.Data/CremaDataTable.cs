@@ -118,7 +118,7 @@ namespace Ntreev.Crema.Data
         {
             var tables = this.DataSet != null ? this.DataSet.Tables : Enumerable.Empty<CremaDataTable>();
             var tableName = NameUtility.GenerateNewName("DerivedTable", tables.Select(item => item.TableName));
-            return this.Inherit(tableName, false);
+            return this.Inherit(tableName);
         }
 
         public CremaDataTable Inherit(string tableName)
@@ -147,7 +147,6 @@ namespace Ntreev.Crema.Data
 
             var names = StringUtility.Split(itemName.Name, '.');
             var items = EnumerableUtility.FamilyTree(this, item => item.Childs);
-
             foreach (var item in items)
             {
                 var schema = item.GetXmlSchema();
@@ -167,12 +166,12 @@ namespace Ntreev.Crema.Data
 
             var dataTable = this.DataSet.Tables[itemName.Name, itemName.CategoryPath];
             var signatureDate = this.SignatureDateProvider.Provide();
-            dataTable.TemplatedParent = this;
+            dataTable.AttachTemplatedParent(this);
             dataTable.InternalTableID = Guid.NewGuid();
             dataTable.InternalCreationInfo = signatureDate;
-            foreach (var item in dataTable.Childs)
+            var descendants = EnumerableUtility.Descendants(dataTable, item => item.Childs);
+            foreach (var item in descendants)
             {
-                item.TemplatedParent = this.Childs[item.TableName];
                 item.InternalTableID = Guid.NewGuid();
             }
             return dataTable;
@@ -186,6 +185,13 @@ namespace Ntreev.Crema.Data
         public CremaDataTable CopyTo(CremaDataSet dataSet)
         {
             return this.CopyToCore(dataSet, true);
+        }
+
+        public CremaDataTable Copy()
+        {
+            var tables = this.DataSet != null ? this.DataSet.Tables : Enumerable.Empty<CremaDataTable>();
+            var tableName = NameUtility.GenerateNewName("CopiedTable", tables.Select(item => item.TableName));
+            return this.Copy(tableName);
         }
 
         public CremaDataTable Copy(string name)
@@ -215,7 +221,7 @@ namespace Ntreev.Crema.Data
             if (this.DataSet != null)
             {
                 var names = StringUtility.Split(itemName.Name, '.');
-                var items = EnumerableUtility.Friends(this, this.Childs);
+                var items = EnumerableUtility.FamilyTree(this, item => item.Childs);
                 foreach (var item in items)
                 {
                     var schema = item.GetXmlSchema();
@@ -236,10 +242,13 @@ namespace Ntreev.Crema.Data
                 var dataTable = this.DataSet.Tables[itemName.Name, itemName.CategoryPath];
                 var signatureDate = this.SignatureDateProvider.Provide();
                 dataTable.DetachTemplatedParent();
-                foreach (var item in EnumerableUtility.Friends(dataTable, dataTable.Childs))
+                dataTable.InternalTableID = Guid.NewGuid();
+                dataTable.InternalCreationInfo = signatureDate;
+                var descendants = EnumerableUtility.Descendants(dataTable, item => item.Childs);
+                foreach (var item in descendants)
                 {
                     item.InternalTableID = Guid.NewGuid();
-                    item.CreationInfo = signatureDate;
+                    item.InternalCreationInfo = signatureDate;
                 }
                 return dataTable;
             }

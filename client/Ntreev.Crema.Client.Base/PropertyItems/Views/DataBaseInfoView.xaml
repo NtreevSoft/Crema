@@ -46,13 +46,6 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
                                 Content="{Binding DataBaseInfo.ModificationInfo.ID}" />
         <HeaderedContentControl Header="{x:Static p:Resources.Label_ModifiedDateTime}" 
                                 Content="{Binding DataBaseInfo.ModificationInfo.DateTime, Converter={StaticResource contentToStringConverter}}" />
-        <HeaderedContentControl Header="{x:Static p:Resources.Label_BranchRevision}" 
-                                Content="{Binding DataBaseInfo.BranchRevision}" />
-        <HeaderedContentControl Header="{x:Static p:Resources.Label_BranchSource}" 
-                                Content="{Binding DataBaseInfo.BranchSource}" />
-        <HeaderedContentControl Header="{x:Static p:Resources.Label_BranchSourceRevision}" 
-                                Content="{Binding DataBaseInfo.BranchSourceRevision}" />
-        
     </ncpc:HeaderedContentList>
 
 </UserControl>

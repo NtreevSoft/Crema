@@ -103,12 +103,13 @@ namespace Ntreev.Crema.Bot.Tasks
 
         private ITableRow AddNewRow(Authentication authentication, ITableContent content)
         {
-            var parent = content.Parent;
-            if (parent != null)
+            var table = content.Table;
+            var parentContent = table.Parent.Content;
+            if (parentContent != null)
             {
-                if (parent.Any() == false)
+                if (parentContent.Any() == false)
                     return null;
-                var relationID = parent.Random().RelationID;
+                var relationID = parentContent.Random().RelationID;
                 return content.AddNew(authentication, relationID);
             }
             return content.AddNew(authentication, null);

@@ -18,6 +18,7 @@
 using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Library;
 using Ntreev.Library.IO;
+using Ntreev.Library.Linq;
 using Ntreev.Library.ObjectModel;
 using System;
 using System.Collections.Generic;
@@ -597,10 +598,9 @@ namespace Ntreev.Crema.Data
             set
             {
                 this.InternalTemplatedParent = value;
-
                 foreach (var item in this.ChildItems)
                 {
-                    item.InternalTemplatedParent = value?.GetChild(item.LocalName);
+                    item.TemplatedParent = value?.GetChild(item.LocalName);
                 }
             }
         }
@@ -613,7 +613,7 @@ namespace Ntreev.Crema.Data
                 this.templateNamespace = value;
                 foreach (var item in this.ChildItems)
                 {
-                    item.templateNamespace = templateNamespace + "." + item.LocalName;
+                    item.TemplateNamespace = templateNamespace + "." + item.LocalName;
                 }
             }
         }

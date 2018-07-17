@@ -61,13 +61,6 @@ namespace Ntreev.Crema.Services.Data
             this.category.ValidateAccessType(authentication, AccessType.Master);
         }
 
-        public override Type GetType(string typeName)
-        {
-            this.Dispatcher.VerifyAccess();
-            var typeContext = this.category.GetService(typeof(TypeContext)) as TypeContext;
-            return typeContext[typeName] as Type;
-        }
-
         public override ITable Table
         {
             get

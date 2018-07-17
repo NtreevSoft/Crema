@@ -204,7 +204,7 @@ namespace Ntreev.Crema.Services.Data
             this.Context.InvokeItemsChangedEvent(authentication, tables);
         }
 
-        public void InvokeTablesContentChangedEvent(Authentication authentication, TableContent content, Table[] tables)
+        public void InvokeTablesContentChangedEvent(Authentication authentication, Table[] tables)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeTablesContentChangedEvent), tables);
             var message = EventMessageBuilder.ChangeTableContent(authentication, tables);

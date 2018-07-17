@@ -392,12 +392,12 @@ namespace Ntreev.Crema.Services.Random
         public static void CreateRow(this ITableContent content, Authentication authentication)
         {
             var table = content.Table;
-            var parent = content.Parent;
+            var parentContent = table.Parent.Content;
             string relationID = null;
 
-            if (parent != null && parent.Any() == true)
+            if (parentContent != null && parentContent.Any() == true)
             {
-                relationID = parent.Random().RelationID;
+                relationID = parentContent.Random().RelationID;
             }
 
             var row = content.AddNew(authentication, relationID);
@@ -542,9 +542,11 @@ namespace Ntreev.Crema.Services.Random
 
         public static ITableRow NewRandomRow(this ITableContent content, Authentication authentication)
         {
-            if (content.Parent != null)
+            var table = content.Table;
+            var parentContent = table.Parent.Content;
+            if (parentContent != null)
             {
-                var parentRow = content.Parent.Random();
+                var parentRow = parentContent.Random();
                 if (parentRow == null)
                     return null;
                 return content.AddNew(authentication, parentRow.RelationID);

@@ -52,7 +52,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)ITableCollection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ITableColumn.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ITableContent.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ITableContentCollection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ITableContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ITableItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ITableRow.cs" />

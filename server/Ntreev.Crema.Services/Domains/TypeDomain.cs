@@ -32,19 +32,10 @@ using System.Text;
 
 namespace Ntreev.Crema.Services.Domains
 {
-    [Serializable]
     class TypeDomain : Domain
     {
         private CremaDataType dataType;
         private DataView view;
-
-        public TypeDomain(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-            this.IsNew = info.GetBoolean(nameof(this.IsNew));
-            this.dataType = this.Source as CremaDataType;
-            this.view = this.dataType.View;
-        }
 
         public TypeDomain(DomainSerializationInfo serializationInfo, object source)
             : base(serializationInfo, source)

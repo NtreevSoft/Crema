@@ -24,14 +24,10 @@ namespace Ntreev.Crema.Services.Domains
     {
         public DummyDomainHost(Domain domain)
         {
-            this.Domain = domain;
+
         }
 
-        public DomainAccessType AccessType { get; internal set; }
-
-        public Domain Domain { get; }
-
-        public void Restore(Domain domain)
+        public void Restore(Authentication authentication, Domain domain)
         {
             throw new NotImplementedException();
         }

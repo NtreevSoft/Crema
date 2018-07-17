@@ -192,7 +192,12 @@ namespace Ntreev.Crema.Services.Data
 
         public static void ModifyTable(CremaDataSet dataSet, Table table)
         {
-            var dataBaseSet = new DataBaseSet(table.DataBase, dataSet);
+            ModifyTable(dataSet, table.DataBase);
+        }
+
+        public static void ModifyTable(CremaDataSet dataSet, DataBase dataBase)
+        {
+            var dataBaseSet = new DataBaseSet(dataBase, dataSet);
             dataBaseSet.Serialize();
         }
 

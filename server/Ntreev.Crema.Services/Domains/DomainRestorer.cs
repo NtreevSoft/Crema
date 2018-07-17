@@ -168,7 +168,6 @@ namespace Ntreev.Crema.Services.Domains
                         }
                         else if (item is JoinAction joinAction)
                         {
-                            dummyHost.AccessType = joinAction.AccessType;
                             this.domain.AddUser(authentication, joinAction.AccessType);
                         }
                         else if (item is DisjoinAction disjoinAction)

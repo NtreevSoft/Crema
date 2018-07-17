@@ -84,18 +84,16 @@ namespace Ntreev.Crema.Services.Data
             newDataTable.CategoryPath = categoryPath;
 
             this.InvokeTableCreate(authentication, newTableName, dataSet, table);
-            var newTable = this.AddNew(authentication, newTableName, categoryPath);
-            newTable.TemplatedParent = table;
-            newTable.Initialize(newDataTable.TableInfo);
-            foreach (var item in newDataTable.Childs)
+            var items = EnumerableUtility.FamilyTree(newDataTable, item => item.Childs);
+            foreach (var item in items)
             {
-                var childTable = this.AddNew(authentication, item.Name, categoryPath);
-                childTable.TemplatedParent = table.Childs[item.TableName];
-                childTable.Initialize(item.TableInfo);
+                var newTable = this.AddNew(authentication, item.Name, categoryPath);
+                newTable.TemplatedParent = this[item.TemplatedParentName];
+                newTable.Initialize(item.TableInfo);
             }
-            var items = EnumerableUtility.Friends(newTable, newTable.Childs).ToArray();
-            this.InvokeTablesCreatedEvent(authentication, items, dataTable.DataSet);
-            return newTable;
+            var tables = items.Select(item => this[item.Name]).ToArray();
+            this.InvokeTablesCreatedEvent(authentication, tables, dataTable.DataSet);
+            return this[newTableName];
         }
 
         public Table Copy(Authentication authentication, Table table, string newTableName, string categoryPath, bool copyContent)
@@ -111,16 +109,15 @@ namespace Ntreev.Crema.Services.Data
             newDataTable.CategoryPath = categoryPath;
 
             this.InvokeTableCreate(authentication, newTableName, dataSet, table);
-            var newTable = this.AddNew(authentication, newTableName, categoryPath);
-            newTable.Initialize(newDataTable.TableInfo);
-            foreach (var item in newDataTable.Childs)
+            var items = EnumerableUtility.FamilyTree(newDataTable, item => item.Childs);
+            foreach (var item in items)
             {
-                var childTable = this.AddNew(authentication, item.Name, categoryPath);
-                childTable.Initialize(item.TableInfo);
+                var newTable = this.AddNew(authentication, item.Name, categoryPath);
+                newTable.Initialize(item.TableInfo);
             }
-            var items = EnumerableUtility.Friends(newTable, newTable.Childs).ToArray();
-            this.InvokeTablesCreatedEvent(authentication, items, dataTable.DataSet);
-            return newTable;
+            var tables = items.Select(item => this[item.Name]).ToArray();
+            this.InvokeTablesCreatedEvent(authentication, tables, dataTable.DataSet);
+            return this[newTableName];
         }
 
         public object GetService(System.Type serviceType)
@@ -188,12 +185,12 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public void InvokeTableEndContentEdit(Authentication authentication, Table table, CremaDataSet dataSet)
+        public void InvokeTableEndContentEdit(Authentication authentication, Table[] tables, CremaDataSet dataSet)
         {
-            var message = EventMessageBuilder.ChangeTableContent(authentication, table.Name);
+            var message = EventMessageBuilder.ChangeTableContent(authentication, tables);
             try
             {
-                this.Repository.ModifyTable(dataSet, table);
+                this.Repository.ModifyTable(dataSet, this.DataBase);
                 this.Repository.Commit(authentication, message);
             }
             catch
@@ -308,7 +305,7 @@ namespace Ntreev.Crema.Services.Data
             this.Context.InvokeItemsChangedEvent(authentication, tables, dataSet);
         }
 
-        public void InvokeTablesContentChangedEvent(Authentication authentication, TableContent content, Table[] tables, CremaDataSet dataSet)
+        public void InvokeTablesContentChangedEvent(Authentication authentication, Table[] tables, CremaDataSet dataSet)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeTablesContentChangedEvent), tables);
             var message = EventMessageBuilder.ChangeTableContent(authentication, tables);

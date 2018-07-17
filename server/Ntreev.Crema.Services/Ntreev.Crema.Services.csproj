@@ -61,6 +61,7 @@
     <Compile Include="Data\DataServiceItemInfo.cs" />
     <Compile Include="Data\Serializations\DataBaseStateSerializationInfo.cs" />
     <Compile Include="Data\DataBaseSet.cs" />
+    <Compile Include="Data\TableContentDomainHost.cs" />
     <Compile Include="Domains\Serializations\DomainCompleteSerializationInfo.cs" />
     <Compile Include="Domains\Serializations\DomainCompleteItemSerializationInfo.cs" />
     <Compile Include="Domains\Serializations\DomainPostSerializationInfo.cs" />
@@ -90,7 +91,6 @@
     <Compile Include="Domains\DummyDomainHost.cs" />
     <Compile Include="Data\DataServiceBase.cs" />
     <Compile Include="Data\DataServiceItemBase.cs" />
-    <Compile Include="Data\TableContentCollection.cs" />
     <Compile Include="Data\DataBaseRepositoryHost.cs" />
     <Compile Include="Data\Serializations\DataBaseSerializationInfo.cs" />
     <Compile Include="Data\DataBaseTransaction.cs" />

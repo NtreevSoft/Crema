@@ -25,7 +25,7 @@ namespace Ntreev.Crema.Services.Data
 {
     class NewChildTableTemplate : TableTemplateBase
     {
-        private readonly Table parent;
+        private Table parent;
         private Table table;
 
         public NewChildTableTemplate(Table parent)
@@ -34,18 +34,11 @@ namespace Ntreev.Crema.Services.Data
             this.IsNew = true;
         }
 
-        public override Type GetType(string typeName)
-        {
-            this.Dispatcher.VerifyAccess();
-            var typeContext = this.parent.GetService(typeof(TypeContext)) as TypeContext;
-            return typeContext[typeName] as Type;
-        }
-
         public override ITable Table
         {
             get
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 return this.table;
             }
         }
@@ -56,7 +49,7 @@ namespace Ntreev.Crema.Services.Data
 
         public override CremaHost CremaHost => this.parent.CremaHost;
 
-        public override CremaDispatcher Dispatcher => this.parent.Dispatcher;
+        public override CremaDispatcher Dispatcher => this.parent?.Dispatcher;
 
         public override DataBase DataBase => this.parent.DataBase;
 
@@ -73,11 +66,13 @@ namespace Ntreev.Crema.Services.Data
         {
             base.OnEndEdit(authentication, tableInfo);
             this.table = this.parent.AddNew(authentication, tableInfo);
+            this.parent = null;
         }
 
         protected override void OnCancelEdit(Authentication authentication)
         {
             base.OnCancelEdit(authentication);
+            this.parent = null;
         }
 
         protected override ResultBase<DomainMetaData> BeginDomain(Authentication authentication)

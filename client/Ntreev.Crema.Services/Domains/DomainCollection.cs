@@ -223,7 +223,6 @@ namespace Ntreev.Crema.Services.Domains
             if (domain != null)
             {
                 domain.Category = this.Context.Categories.Prepare(domainInfo.CategoryPath);
-
                 foreach (var item in this.CremaHost.DataBases)
                 {
                     var isLoaded = item.Service != null;
@@ -232,7 +231,7 @@ namespace Ntreev.Crema.Services.Domains
                         var target = item.FindDomainHost(domain);
                         if (target != null)
                         {
-                            target.Restore(domain);
+                            target.Restore(authentication, domain);
                             domain.Host = target;
                         }
                     }

@@ -54,8 +54,7 @@ namespace Ntreev.Crema.Client.Tables.Documents.ViewModels
             this.AttachEvent();
             this.DisplayName = descriptor.DisplayName;
             this.Target = descriptor.Target;
-            this.Tables.Add(new TableItemViewModel(this.authentication, this.descriptor, this));
-            foreach (var item in this.descriptor.Childs)
+            foreach (var item in EnumerableUtility.FamilyTree(this.descriptor, item => item.Childs))
             {
                 this.Tables.Add(new TableItemViewModel(this.authentication, item, this));
             }

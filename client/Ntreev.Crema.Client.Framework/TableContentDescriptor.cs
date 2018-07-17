@@ -51,18 +51,6 @@ namespace Ntreev.Crema.Client.Framework
         private DomainAccessType accessType;
         private bool isModified;
 
-        //public TableContentDescriptor(Authentication authentication, ITableContent table)
-        //    : this(authentication, table, DescriptorTypes.All)
-        //{
-
-        //}
-
-        //public TableContentDescriptor(Authentication authentication, ITableContent content, DescriptorTypes descriptorTypes)
-        //    : this(authentication, content, descriptorTypes, null)
-        //{
-
-        //}
-
         public TableContentDescriptor(Authentication authentication, ITableContent content, DescriptorTypes descriptorTypes, object owner)
             : base(authentication, content, descriptorTypes)
         {

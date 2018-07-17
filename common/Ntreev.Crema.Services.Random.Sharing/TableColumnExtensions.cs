@@ -160,7 +160,9 @@ namespace Ntreev.Crema.Services.Random
                 var dataType = tableColumn.DataType;
                 if (CremaDataTypeUtility.IsBaseType(dataType) == false)
                 {
-                    var type = template.GetType(dataType);
+                    var domain = template.Domain;
+                    var typeContext = domain.GetService(typeof(ITypeContext)) as ITypeContext;
+                    var type = typeContext.Types[dataType];
                     return type.GetRandomString();
                 }
                 else

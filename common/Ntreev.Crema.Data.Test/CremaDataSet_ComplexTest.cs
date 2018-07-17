@@ -27,6 +27,7 @@ using Ntreev.Crema.Data.Random;
 using Ntreev.Library.Random;
 using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Library.IO;
+using System.Threading;
 
 namespace Ntreev.Crema.Data.Test
 {
@@ -696,6 +697,8 @@ namespace Ntreev.Crema.Data.Test
             var derivedTable2 = derivedTable1.Childs.First();
             var derivedTable3 = derivedTable2.Childs.First();
 
+            Thread.Sleep(1000);
+
             Assert.AreNotEqual(dataTable1.TableName, derivedTable1.TableName);
             Assert.AreEqual(dataTable2.TableName, derivedTable2.TableName);
             Assert.AreEqual(dataTable3.TableName, derivedTable3.TableName);
@@ -703,6 +706,14 @@ namespace Ntreev.Crema.Data.Test
             Assert.AreEqual(dataTable1.Name, derivedTable1.TemplatedParentName);
             Assert.AreEqual(dataTable2.Name, derivedTable2.TemplatedParentName);
             Assert.AreEqual(dataTable3.Name, derivedTable3.TemplatedParentName);
+
+            Assert.AreNotEqual(dataTable1.TableID, derivedTable1.TableID);
+            Assert.AreNotEqual(dataTable2.TableID, derivedTable2.TableID);
+            Assert.AreNotEqual(dataTable3.TableID, derivedTable3.TableID);
+
+            Assert.AreNotEqual(dataTable1.CreationInfo, derivedTable1.CreationInfo);
+            Assert.AreEqual(dataTable2.CreationInfo, derivedTable2.CreationInfo);
+            Assert.AreEqual(dataTable3.CreationInfo, derivedTable3.CreationInfo);
         }
 
         [TestMethod]
@@ -712,6 +723,8 @@ namespace Ntreev.Crema.Data.Test
             var dataTable1 = dataSet.Tables.Add();
             var dataTable2 = dataTable1.Childs.Add();
             var dataTable3 = dataTable2.Childs.Add();
+
+            Thread.Sleep(1000);
 
             var derivedTable1 = dataTable1.Inherit();
             var derivedTable2 = derivedTable1.Childs.First();
@@ -726,7 +739,6 @@ namespace Ntreev.Crema.Data.Test
             dataTable2.TableName = identifier2;
             dataTable3.TableName = identifier3;
 
-
             Assert.AreNotEqual(dataTable1.TableName, derivedTable1.TableName);
             Assert.AreEqual(dataTable2.TableName, derivedTable2.TableName);
             Assert.AreEqual(dataTable3.TableName, derivedTable3.TableName);
@@ -734,6 +746,37 @@ namespace Ntreev.Crema.Data.Test
             Assert.AreEqual(dataTable1.Name, derivedTable1.TemplatedParentName);
             Assert.AreEqual(dataTable2.Name, derivedTable2.TemplatedParentName);
             Assert.AreEqual(dataTable3.Name, derivedTable3.TemplatedParentName);
+        }
+
+        [TestMethod]
+        public void CopyChildOfChild()
+        {
+            var dataSet = new CremaDataSet();
+            var dataTable1 = dataSet.Tables.Add();
+            var dataTable2 = dataTable1.Childs.Add();
+            var dataTable3 = dataTable2.Childs.Add();
+
+            Thread.Sleep(1000);
+
+            var copiedTable1 = dataTable1.Copy();
+            var copiedTable2 = copiedTable1.Childs.First();
+            var copiedTable3 = copiedTable2.Childs.First();
+
+            Assert.AreNotEqual(dataTable1.TableName, copiedTable1.TableName);
+            Assert.AreEqual(dataTable2.TableName, copiedTable2.TableName);
+            Assert.AreEqual(dataTable3.TableName, copiedTable3.TableName);
+
+            Assert.AreEqual(copiedTable1.TemplatedParentName, string.Empty);
+            Assert.AreEqual(copiedTable2.TemplatedParentName, string.Empty);
+            Assert.AreEqual(copiedTable3.TemplatedParentName, string.Empty);
+
+            Assert.AreNotEqual(dataTable1.TableID, copiedTable1.TableID);
+            Assert.AreNotEqual(dataTable2.TableID, copiedTable2.TableID);
+            Assert.AreNotEqual(dataTable3.TableID, copiedTable3.TableID);
+
+            Assert.AreNotEqual(dataTable1.CreationInfo, copiedTable1.CreationInfo);
+            Assert.AreNotEqual(dataTable2.CreationInfo, copiedTable2.CreationInfo);
+            Assert.AreNotEqual(dataTable3.CreationInfo, copiedTable3.CreationInfo);
         }
     }
 }

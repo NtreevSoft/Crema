@@ -29,12 +29,10 @@ using System.Linq;
 
 namespace Ntreev.Crema.Services.Data
 {
-    class TableContent : TableContentBase, ITableContent, IDomainHost
+    partial class TableContent : TableContentBase, ITableContent
     {
         private readonly Table table;
-        private readonly TableContentCollection childs;
         private Domain domain;
-        private CremaDataSet dataSet;
         private CremaDataTable dataTable;
 
         private EventHandler editBegun;
@@ -47,7 +45,6 @@ namespace Ntreev.Crema.Services.Data
         public TableContent(Table table)
         {
             this.table = table;
-            this.childs = new TableContentCollection(table);
         }
 
         public override string ToString()
@@ -66,15 +63,14 @@ namespace Ntreev.Crema.Services.Data
                 if (this.domain == null)
                 {
                     var dataSet = this.table.ReadEditableData(authentication);
-                    this.domain = new TableContentDomain(authentication, dataSet, this.table.DataBase, this.table.Path, this.GetType().Name)
-                    {
-                        Host = this
-                    };
+                    var tables = this.table.GetRelations();
+                    var itemPath = string.Join("|", tables.Select(item => item.Path));
+                    this.domain = new TableContentDomain(authentication, dataSet, this.table.DataBase, itemPath, this.GetType().Name);
+                    this.domain.Host = new TableContentDomainHost(this.Container, this.domain, itemPath);
                     this.DomainContext.Domains.Add(authentication, this.domain);
                 }
-                this.BeginContent(authentication, this.domain);
-                this.domain.Dispatcher.Invoke(this.AttachDomainEvent);
-                this.InvokeEditBegunEvent(EventArgs.Empty);
+                this.domainHost.BeginContent(authentication);
+                this.domainHost.InvokeEditBegunEvent(EventArgs.Empty);
             }
             catch (Exception e)
             {
@@ -91,14 +87,9 @@ namespace Ntreev.Crema.Services.Data
                 this.CremaHost.DebugMethod(authentication, this, nameof(EndEdit), this.table);
                 this.ValidateEndEdit(authentication);
                 this.Sign(authentication);
-                var isModifeid = this.domain.Dispatcher.Invoke(() =>
-                {
-                    this.DetachDomainEvent();
-                    this.domain.Dispose(authentication, false);
-                    return this.domain.IsModified;
-                });
-                this.EndContent(authentication, isModifeid);
-                this.InvokeEditEndedEvent(EventArgs.Empty);
+                this.domainHost.EndContent(authentication);
+                this.domainHost.InvokeEditEndedEvent(EventArgs.Empty);
+                this.domainHost = null;
             }
             catch (Exception e)
             {
@@ -115,12 +106,9 @@ namespace Ntreev.Crema.Services.Data
                 this.CremaHost.DebugMethod(authentication, this, nameof(CancelEdit), this.table);
                 this.ValidateCancelEdit(authentication);
                 this.Sign(authentication);
-                this.domain.Dispatcher.Invoke(() =>
-                {
-                    this.domain.Dispose(authentication, true);
-                });
-                this.CancelContent(authentication);
-                this.InvokeEditCanceledEvent(EventArgs.Empty);
+                this.domainHost.CancelContent(authentication);
+                this.domainHost.InvokeEditCanceledEvent(EventArgs.Empty);
+                this.domainHost = null;
             }
             catch (Exception e)
             {
@@ -139,7 +127,7 @@ namespace Ntreev.Crema.Services.Data
                 this.Sign(authentication);
                 var accessType = this.GetAccessType(authentication);
                 this.domain.Dispatcher.Invoke(() => this.domain.AddUser(authentication, accessType));
-                this.EnterContent(authentication);
+                this.domainHost.EnterContent(authentication);
             }
             catch (Exception e)
             {
@@ -157,7 +145,7 @@ namespace Ntreev.Crema.Services.Data
                 this.ValidateLeave(authentication);
                 this.Sign(authentication);
                 this.domain.Dispatcher.Invoke(() => this.domain.RemoveUser(authentication));
-                this.LeaveContent(authentication);
+                this.domainHost.LeaveContent(authentication);
             }
             catch (Exception e)
             {
@@ -468,158 +456,6 @@ namespace Ntreev.Crema.Services.Data
             this.changed?.Invoke(this, e);
         }
 
-        private void Domain_Deleted(object sender, DomainDeletedEventArgs e)
-        {
-            var isCanceled = e.IsCanceled;
-            this.Dispatcher?.InvokeAsync(() =>
-            {
-                if (isCanceled == false)
-                {
-                    this.EndContent(e.Authentication, this.isModified);
-                    this.InvokeEditEndedEvent(e);
-                }
-                else
-                {
-                    this.CancelContent(e.Authentication);
-                    this.InvokeEditCanceledEvent(e);
-                }
-            });
-        }
-
-        private void Domain_RowAdded(object sender, DomainRowEventArgs e)
-        {
-            if (e.Rows.Any(item => item.TableName == this.dataTable.Name) == true)
-            {
-                this.isModified = true;
-                this.Dispatcher.InvokeAsync(() => this.OnChanged(e));
-            }
-        }
-
-        private void Domain_RowChanged(object sender, DomainRowEventArgs e)
-        {
-            if (e.Rows.Any(item => item.TableName == this.dataTable.Name) == true)
-            {
-                this.isModified = true;
-                this.Dispatcher.InvokeAsync(() => this.OnChanged(e));
-            }
-        }
-
-        private void Domain_RowRemoved(object sender, DomainRowEventArgs e)
-        {
-            if (e.Rows.Any(item => item.TableName == this.dataTable.Name) == true)
-            {
-                this.isModified = true;
-                this.Dispatcher.InvokeAsync(() => this.OnChanged(e));
-            }
-        }
-
-        private void Domain_PropertyChanged(object sender, DomainPropertyEventArgs e)
-        {
-            this.isModified = this.domain.IsModified;
-            this.Dispatcher.InvokeAsync(() => this.OnChanged(e));
-        }
-
-        private void AttachDomainEvent()
-        {
-            foreach (var item in this.Relations)
-            {
-                item.domain.Deleted += item.Domain_Deleted;
-                item.domain.RowAdded += item.Domain_RowAdded;
-                item.domain.RowChanged += item.Domain_RowChanged;
-                item.domain.RowRemoved += item.Domain_RowRemoved;
-                item.domain.PropertyChanged += item.Domain_PropertyChanged;
-            }
-        }
-
-        private void DetachDomainEvent()
-        {
-            foreach (var item in this.Relations)
-            {
-                item.domain.Deleted -= item.Domain_Deleted;
-                item.domain.RowAdded -= item.Domain_RowAdded;
-                item.domain.RowChanged -= item.Domain_RowChanged;
-                item.domain.RowRemoved -= item.Domain_RowRemoved;
-                item.domain.PropertyChanged -= item.Domain_PropertyChanged;
-            }
-        }
-
-        private void InvokeEditBegunEvent(EventArgs e)
-        {
-            foreach (var item in this.Relations)
-            {
-                item.OnEditBegun(e);
-            }
-        }
-
-        private void InvokeEditEndedEvent(EventArgs e)
-        {
-            foreach (var item in this.Relations)
-            {
-                item.OnEditEnded(e);
-            }
-        }
-
-        private void InvokeEditCanceledEvent(EventArgs e)
-        {
-            foreach (var item in this.Relations)
-            {
-                item.OnEditCanceled(e);
-            }
-        }
-
-        private void BeginContent(Authentication authentication, Domain domain)
-        {
-            var dataSet = domain.Source as CremaDataSet;
-            foreach (var item in this.Relations)
-            {
-                item.domain = domain;
-                item.dataSet = dataSet;
-                item.dataTable = dataSet.Tables[item.table.Name, item.table.Category.Path];
-                item.table.SetTableState(TableState.IsBeingEdited);
-                item.isModified = domain.ModifiedTables.Contains(item.dataTable.Name);
-            }
-            this.Container.InvokeTablesStateChangedEvent(authentication, this.table.GetRelations().ToArray());
-        }
-
-        private void EndContent(Authentication authentication, bool isUpdate)
-        {
-            this.Container.InvokeTableEndContentEdit(authentication, this.table, this.dataSet);
-            foreach (var item in this.Relations)
-            {
-                if (item.IsModified == true)
-                    item.table.UpdateContent(item.dataTable.TableInfo);
-                item.domain = null;
-                item.isModified = false;
-                item.dataSet = null;
-                item.dataTable = null;
-                item.table.SetTableState(TableState.None);
-            }
-            this.Container.InvokeTablesContentChangedEvent(authentication, this, this.table.GetRelations().ToArray(), dataSet);
-        }
-
-        private void CancelContent(Authentication authentication)
-        {
-            foreach (var item in this.Relations)
-            {
-                item.domain = null;
-                item.isModified = false;
-                item.dataSet = null;
-                item.dataTable = null;
-                item.table.SetTableState(TableState.None);
-            }
-            this.Container.InvokeTablesStateChangedEvent(authentication, this.table.GetRelations().ToArray());
-        }
-
-        private void EnterContent(Authentication authentication)
-        {
-
-        }
-
-        private void LeaveContent(Authentication authentication)
-        {
-
-        }
-
         private DomainAccessType GetAccessType(Authentication authentication)
         {
             if (this.table.VerifyAccessType(authentication, AccessType.Editor))
@@ -668,66 +504,13 @@ namespace Ntreev.Crema.Services.Data
 
         ITable ITableContent.Table => this.Table;
 
-        ITableContent ITableContent.Parent
-        {
-            get
-            {
-                this.Dispatcher?.VerifyAccess();
-                if (this.table.Parent != null)
-                {
-                    return this.table.Parent.Content;
-                }
-                return null;
-            }
-        }
-
-        ITableContentCollection ITableContent.Childs
-        {
-            get
-            {
-                this.Dispatcher?.VerifyAccess();
-                return this.childs;
-            }
-        }
-
-        #endregion
-
-        #region IDomainHost
-
-        void IDomainHost.Restore(Domain domain)
-        {
-            Authentication.System.Sign();
-            this.domain = domain;
-            this.BeginContent(Authentication.System, this.domain);
-            this.InvokeEditBegunEvent(EventArgs.Empty);
-            this.domain.Dispatcher.Invoke(this.AttachDomainEvent);
-        }
-
-        void IDomainHost.Detach()
-        {
-            this.domain.Dispatcher.Invoke(this.DetachDomainEvent);
-            this.domain = null;
-            this.dataTable = null;
-            this.dataSet = null;
-        }
-
-        void IDomainHost.ValidateDelete(Authentication authentication, bool isCanceled)
-        {
-            if (isCanceled == false)
-            {
-                this.Dispatcher.Invoke(() =>
-                {
-                    //if (this.table.Parent != null)
-                    //    throw new NotImplementedException();
-                });
-            }
-        }
+        ITable[] ITableContent.Tables => this.domainHost != null ? this.domainHost.Tables : new ITable[] { };
 
         #endregion
 
         #region IEnumerable
 
-        IEnumerator<ITableRow> IEnumerable<ITableRow>.GetEnumerator()
+        IEnumerator <ITableRow> IEnumerable<ITableRow>.GetEnumerator()
         {
             this.Dispatcher?.VerifyAccess();
             return this.GetEnumerator();

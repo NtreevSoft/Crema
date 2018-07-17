@@ -22,6 +22,7 @@ using Ntreev.Crema.Services.Data.Serializations;
 using Ntreev.Crema.Services.Domains;
 using Ntreev.Crema.Services.Properties;
 using Ntreev.Crema.Services.Users;
+using Ntreev.Library;
 using Ntreev.Library.IO;
 using Ntreev.Library.Linq;
 using Ntreev.Library.ObjectModel;
@@ -617,8 +618,7 @@ namespace Ntreev.Crema.Services.Data
 
             if (itemType == nameof(TableContent))
             {
-                var table = this.tableContext[itemPath] as Table;
-                return table.Content;
+                return new TableContent.TableContentDomainHost(this.tableContext.Tables, null, itemPath);
             }
             else if (itemType == nameof(NewTableTemplate))
             {
@@ -1105,12 +1105,13 @@ namespace Ntreev.Crema.Services.Data
             var domains = domainContext.Domains.Where<Domain>(item => item.DataBaseID == this.ID)
                                                .ToArray();
 
+            Authentication.System.Sign();
             foreach (var item in domains)
             {
                 try
                 {
                     var target = this.FindDomainHost(item);
-                    target.Restore(item);
+                    target.Restore(Authentication.System, item);
                     item.SetDomainHost(target);
                 }
                 catch (Exception e)

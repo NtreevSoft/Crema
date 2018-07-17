@@ -51,11 +51,9 @@ namespace Ntreev.Crema.Services
 
         ITable Table { get; }
 
+        ITable[] Tables { get; }
+
         int Count { get; }
-
-        ITableContent Parent { get; }
-
-        ITableContentCollection Childs { get; }
 
         bool IsModified { get; }
 

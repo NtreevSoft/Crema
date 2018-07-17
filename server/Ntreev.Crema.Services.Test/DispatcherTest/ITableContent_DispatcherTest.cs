@@ -134,20 +134,6 @@ namespace Ntreev.Crema.Services.Test.DispatcherTest
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void Parent()
-        {
-            Console.Write(content.Parent);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void Childs()
-        {
-            Console.Write(content.Childs);
-        }
-
-        [TestMethod]
         public void Dispatcher()
         {
             Console.Write(content.Dispatcher);

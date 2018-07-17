@@ -130,18 +130,6 @@ namespace Ntreev.Crema.Services.Test.Deleted_DispatcherTest
         }
 
         [TestMethod]
-        public void Parent()
-        {
-            Console.Write(content.Parent);
-        }
-
-        [TestMethod]
-        public void Childs()
-        {
-            Console.Write(content.Childs);
-        }
-
-        [TestMethod]
         public void Dispatcher()
         {
             Assert.IsNull(content.Dispatcher);

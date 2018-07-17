@@ -35,12 +35,6 @@ namespace Ntreev.Crema.Services.Data
             this.table = table;
         }
 
-        public override Type GetType(string typeName)
-        {
-            var typeContext = this.table.GetService(typeof(TypeContext)) as TypeContext;
-            return typeContext[typeName] as Type;
-        }
-
         public override ITable Table
         {
             get

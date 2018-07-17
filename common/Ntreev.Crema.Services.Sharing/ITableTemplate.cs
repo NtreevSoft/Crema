@@ -47,8 +47,6 @@ namespace Ntreev.Crema.Services
 
         bool Contains(string columnName);
 
-        IType GetType(string typeName);
-
         IDomain Domain { get; }
 
         ITable Table { get; }

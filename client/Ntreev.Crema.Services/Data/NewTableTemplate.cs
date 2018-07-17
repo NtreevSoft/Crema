@@ -17,6 +17,7 @@
 
 using Ntreev.Crema.Data;
 using Ntreev.Crema.ServiceModel;
+using Ntreev.Crema.Services.DataBaseService;
 using Ntreev.Crema.Services.Domains;
 using System;
 
@@ -24,7 +25,7 @@ namespace Ntreev.Crema.Services.Data
 {
     class NewTableTemplate : TableTemplateBase
     {
-        private readonly TableCategory category;
+        private TableCategory category;
         private Table table;
 
         public NewTableTemplate(TableCategory category)
@@ -33,18 +34,11 @@ namespace Ntreev.Crema.Services.Data
             this.IsNew = true;
         }
 
-        public override Type GetType(string typeName)
-        {
-            this.Dispatcher.VerifyAccess();
-            var typeContext = this.category.GetService(typeof(TypeContext)) as TypeContext;
-            return typeContext[typeName] as Type;
-        }
-
         public override ITable Table
         {
             get
             {
-                this.Dispatcher.VerifyAccess();
+                this.Dispatcher?.VerifyAccess();
                 return this.table;
             }
         }
@@ -55,11 +49,13 @@ namespace Ntreev.Crema.Services.Data
 
         public override CremaHost CremaHost => this.category.CremaHost;
 
-        public override CremaDispatcher Dispatcher => this.category.Dispatcher;
+        public override CremaDispatcher Dispatcher => this.category?.Dispatcher;
 
         public override DataBase DataBase => this.category.DataBase;
 
         public override IPermission Permission => this.category;
+
+        public IDataBaseService Service => this.category.Service;
 
         protected override void OnBeginEdit(Authentication authentication, DomainMetaData metaData)
         {
@@ -70,27 +66,28 @@ namespace Ntreev.Crema.Services.Data
         {
             base.OnEndEdit(authentication, tableInfo);
             this.table = this.category.Context.Tables.AddNew(authentication, tableInfo);
-            this.table.Container.InvokeTablesCreatedEvent(authentication, new Table[] { this.table, });
+            this.category = null;
         }
 
         protected override void OnCancelEdit(Authentication authentication)
         {
             base.OnCancelEdit(authentication);
+            this.category = null;
         }
 
         protected override ResultBase<DomainMetaData> BeginDomain(Authentication authentication)
         {
-            return this.category.Service.BeginNewTable(this.category.Path);
+            return this.Service.BeginNewTable(this.category.Path);
         }
 
         protected override ResultBase<TableInfo> EndDomain(Authentication authentication, Guid domainID)
         {
-            return this.category.Service.EndTableTemplateEdit(domainID);
+            return this.Service.EndTableTemplateEdit(domainID);
         }
 
         protected override ResultBase CancelDomain(Authentication authentication, Guid domainID)
         {
-            return this.category.Service.CancelTableTemplateEdit(domainID);
+            return this.Service.CancelTableTemplateEdit(domainID);
         }
     }
 }

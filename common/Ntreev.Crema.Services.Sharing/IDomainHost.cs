@@ -26,7 +26,7 @@ namespace Ntreev.Crema.Services
 {
     interface IDomainHost
     {
-        void Restore(Domain domain);
+        void Restore(Authentication authentication, Domain domain);
 
         void Detach();
 
@@ -34,6 +34,6 @@ namespace Ntreev.Crema.Services
         void ValidateDelete(Authentication authentication, bool isCanceled);
 #endif
 
-        Domain Domain { get; }
+        //Domain Domain { get; }
     }
 }

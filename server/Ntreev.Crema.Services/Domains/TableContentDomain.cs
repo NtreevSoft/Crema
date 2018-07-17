@@ -31,11 +31,8 @@ using System.Text;
 
 namespace Ntreev.Crema.Services.Domains
 {
-    [Serializable]
     class TableContentDomain : Domain
     {
-        public const string TypeName = "Table";
-
         private CremaDataSet dataSet;
         private List<FindResultInfo> findResults = new List<FindResultInfo>(100);
         private Dictionary<string, DataView> views = new Dictionary<string, DataView>();

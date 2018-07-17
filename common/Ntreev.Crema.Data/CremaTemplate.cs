@@ -71,7 +71,7 @@ namespace Ntreev.Crema.Data
             return new CremaTemplate(dataTable);
         }
 
-        public static CremaTemplate CreateChild(CremaDataTable parentTable)
+        public static CremaTemplate Create(CremaDataTable parentTable)
         {
             var dataTable = parentTable.Childs.Add();
             return new CremaTemplate(dataTable);
@@ -123,7 +123,6 @@ namespace Ntreev.Crema.Data
         {
             if (this.TargetTable != null)
             {
-                //this.TargetTable = null;
                 this.DetachEventHandlers();
             }
         }
@@ -131,26 +130,6 @@ namespace Ntreev.Crema.Data
         public void AcceptChanges()
         {
             this.template.AcceptChanges();
-
-            //this.targetTable.PrimaryKey
-
-            //foreach (var item in this.Columns)
-            //{
-            //    var dataColumn = this.targetTable.Columns.Add();
-
-            //    dataColumn.ColumnName = item.InternalColumn.ColumnName;
-            //    dataColumn.Comment = item.InternalColumn.Comment;
-            //    dataColumn.AllowDBNull = item.InternalColumn.AllowNull;
-            //    dataColumn.ReadOnly = item.InternalColumn.ReadOnly;
-            //    dataColumn.DataTypeName = item.InternalColumn.DataTypeName;
-            //    dataColumn.AutoIncrement = item.InternalColumn.AutoIncrement;
-            //    dataColumn.DefaultValue = item.InternalColumn.DefaultValue;
-            //    dataColumn.Tags = item.InternalColumn.Tags;
-            //    dataColumn.CreationInfo = item.CreationInfo;
-            //    dataColumn.ModificationInfo = item.ModificationInfo;
-            //}
-
-            //int qwer = 0;
         }
 
         public void RejectChanges()
@@ -274,9 +253,6 @@ namespace Ntreev.Crema.Data
             internal set
             {
                 this.template.TargetTable = (InternalDataTable)value;
-                //this.targetSet = this.targetTable.DataSet;
-                //this.template.TargetTable = (InternalDataTable)this.targetTable;
-                //this.template.SignatureDateProvider = this.targetTable.SignatureDateProvider;
             }
         }
 

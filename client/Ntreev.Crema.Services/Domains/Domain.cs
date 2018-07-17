@@ -29,6 +29,7 @@ namespace Ntreev.Crema.Services.Domains
         IDomain, IDomainItem, IInfoProvider, IStateProvider
     {
         private bool initialized;
+        private readonly HashSet<string> modifiedTableList = new HashSet<string>();
 
         private EventHandler<DomainUserEventArgs> userAdded;
         private EventHandler<DomainUserEventArgs> userChanged;
@@ -269,9 +270,9 @@ namespace Ntreev.Crema.Services.Domains
             {
                 DomainID = Guid.Parse(this.Name),
                 DomainInfo = base.DomainInfo,
-
                 Users = this.Users.Select<DomainUser, DomainUserMetaData>(item => item.GetMetaData(authentication)).ToArray(),
                 DomainState = this.DomainState,
+                ModifiedTables = this.modifiedTableList.ToArray(),
             };
 
             if (this.Users.Contains(authentication.ID) == true)
@@ -285,6 +286,12 @@ namespace Ntreev.Crema.Services.Domains
         public void Initialize(Authentication authentication, DomainMetaData metaData)
         {
             base.DomainState = metaData.DomainState;
+            this.modifiedTableList.Clear();
+            foreach (var item in metaData.ModifiedTables)
+            {
+                this.modifiedTableList.Add(item);
+            }
+
             if (metaData.Data == null)
             {
                 foreach (var item in metaData.Users)
@@ -422,6 +429,10 @@ namespace Ntreev.Crema.Services.Domains
 
             var domainUser = this.Users[authentication.ID];
             this.OnNewRow(domainUser, rows, authentication.SignatureDate);
+            foreach (var item in rows)
+            {
+                this.modifiedTableList.Add(item.TableName);
+            }
             domainUser.IsModified = true;
             this.IsModified = true;
             this.OnRowAdded(new DomainRowEventArgs(authentication, this, rows));
@@ -437,6 +448,10 @@ namespace Ntreev.Crema.Services.Domains
 
             var domainUser = this.Users[authentication.ID];
             this.OnSetRow(domainUser, rows, authentication.SignatureDate);
+            foreach (var item in rows)
+            {
+                this.modifiedTableList.Add(item.TableName);
+            }
             domainUser.IsModified = true;
             this.IsModified = true;
             this.OnRowChanged(new DomainRowEventArgs(authentication, this, rows));
@@ -452,6 +467,10 @@ namespace Ntreev.Crema.Services.Domains
 
             var domainUser = this.Users[authentication.ID];
             this.OnRemoveRow(domainUser, rows, authentication.SignatureDate);
+            foreach (var item in rows)
+            {
+                this.modifiedTableList.Add(item.TableName);
+            }
             domainUser.IsModified = true;
             this.IsModified = true;
             this.OnRowRemoved(new DomainRowEventArgs(authentication, this, rows));
@@ -488,6 +507,8 @@ namespace Ntreev.Crema.Services.Domains
         public DomainUserCollection Users { get; }
 
         public CremaDispatcher Dispatcher { get; private set; }
+
+        public string[] ModifiedTables => this.modifiedTableList.OrderBy(item => item).ToArray();
 
         public event EventHandler<DomainUserEventArgs> UserAdded
         {
@@ -737,6 +758,10 @@ namespace Ntreev.Crema.Services.Domains
         {
             var domainUser = this.GetDomainUser(authentication);
             this.OnNewRow(domainUser, rows, authentication.SignatureDate);
+            foreach (var item in rows)
+            {
+                this.modifiedTableList.Add(item.TableName);
+            }
             domainUser.IsModified = true;
         }
 
@@ -744,6 +769,10 @@ namespace Ntreev.Crema.Services.Domains
         {
             var domainUser = this.GetDomainUser(authentication);
             this.OnSetRow(domainUser, rows, authentication.SignatureDate);
+            foreach (var item in rows)
+            {
+                this.modifiedTableList.Add(item.TableName);
+            }
             domainUser.IsModified = true;
         }
 
@@ -751,6 +780,10 @@ namespace Ntreev.Crema.Services.Domains
         {
             var domainUser = this.GetDomainUser(authentication);
             this.OnRemoveRow(domainUser, rows, authentication.SignatureDate);
+            foreach (var item in rows)
+            {
+                this.modifiedTableList.Add(item.TableName);
+            }
             domainUser.IsModified = true;
         }
 

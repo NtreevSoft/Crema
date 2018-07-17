@@ -64,7 +64,6 @@
     <Compile Include="Data\DataBaseCollectionServiceFactory.cs" />
     <Compile Include="Data\DataBaseCollection.cs" />
     <Compile Include="Data\DataBaseTransaction.cs" />
-    <Compile Include="Data\TableContentCollection.cs" />
     <Compile Include="Data\DataServiceFactory.cs" />
     <Compile Include="Data\DomainBasedRow.cs" />
     <Compile Include="Data\NewChildTableTemplate.cs" />
@@ -73,6 +72,7 @@
     <Compile Include="Data\TableContent.cs" />
     <Compile Include="Data\NewTableTemplate.cs" />
     <Compile Include="Data\TableContentBase.cs" />
+    <Compile Include="Data\TableContentDomainHost.cs" />
     <Compile Include="Data\TableRow.cs" />
     <Compile Include="Data\TableTemplate.cs" />
     <Compile Include="Data\TableTemplateBase.cs" />

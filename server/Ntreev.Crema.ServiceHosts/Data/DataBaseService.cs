@@ -349,8 +349,8 @@ namespace Ntreev.Crema.ServiceHosts.Data
             {
                 var table = this.GetTable(tableName);
                 var content = table.Content;
+                var tables = content.Tables;
                 content.EndEdit(this.authentication);
-                var tables = EnumerableUtility.Friends(content.Table, content.Table.Childs);
                 return tables.Select(item => item.TableInfo).ToArray();
             });
         }

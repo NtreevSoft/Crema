@@ -273,6 +273,11 @@ namespace Ntreev.Crema.Services.Data
             DataBaseSet.DeleteTable(dataSet, table);
         }
 
+        public void ModifyTable(CremaDataSet dataSet, DataBase dataBase)
+        {
+            DataBaseSet.ModifyTable(dataSet, dataBase);
+        }
+
         public void ModifyTable(CremaDataSet dataSet, Table table)
         {
             DataBaseSet.ModifyTable(dataSet, table);

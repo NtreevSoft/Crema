@@ -43,23 +43,11 @@ namespace Ntreev.Crema.Client.Framework
 {
     public class TableTreeItemBase : DescriptorTreeItemBase<TableDescriptor>, ITableDescriptor, ITableItemDescriptor, ILockableDescriptor, IPermissionDescriptor, IAccessibleDescriptor
     {
-        //public TableTreeItemBase(Authentication authentication, ITable table)
-        //    : this(authentication, table, null)
-        //{
-
-        //}
-
         public TableTreeItemBase(Authentication authentication, ITable table, object owner)
             : this(authentication, new TableDescriptor(authentication, table, DescriptorTypes.All, owner), owner)
         {
 
         }
-
-        //public TableTreeItemBase(Authentication authentication, TableDescriptor descriptor)
-        //    : this(authentication, descriptor, null)
-        //{
-
-        //}
 
         public TableTreeItemBase(Authentication authentication, TableDescriptor descriptor, object owner)
             : base(authentication, descriptor, owner)

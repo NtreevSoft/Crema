@@ -31,21 +31,12 @@ using System.Text;
 
 namespace Ntreev.Crema.Services.Domains
 {
-    [Serializable]
     class TableTemplateDomain : Domain
     {
         public const string TypeName = nameof(TableTemplate);
 
         private CremaTemplate template;
         private DataView view;
-
-        public TableTemplateDomain(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-            this.IsNew = info.GetBoolean(nameof(IsNew));
-            this.template = this.Source as CremaTemplate;
-            this.view = this.template.View;
-        }
 
         public TableTemplateDomain(DomainSerializationInfo serializationInfo, object source)
             : base(serializationInfo, source)
