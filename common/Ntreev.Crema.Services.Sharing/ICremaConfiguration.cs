@@ -30,17 +30,10 @@ namespace Ntreev.Crema.Services
 
         bool TryParse<T>(Type type, string key, out T value);
 
-        object this[Type type, string key]
-        {
-            get;
-            set;
-        }
+        object this[Type type, string key] { get; set; }
 
         void Update(object target);
 
-        ConfigurationPropertyDescriptorCollection Properties
-        {
-            get;
-        }
+        ConfigurationPropertyDescriptorCollection Properties { get; }
     }
 }

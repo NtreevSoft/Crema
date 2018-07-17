@@ -117,26 +117,38 @@ namespace Ntreev.Crema.Repository.Git
         public void EndTransaction()
         {
             var messagePath = FileUtility.WriteAllText(this.transactionMessages, Encoding.UTF8, PathUtility.GetTempFileName());
-            var commitCommand = new GitCommand(this.repositoryPath, "commit")
-            {
-                new GitCommandItem('a'),
-                GitCommandItem.FromFile(messagePath),
-                GitCommandItem.FromAuthor(this.transactionAuthor),
-            };
             try
             {
-                var result = commitCommand.Run(this.logService);
-                this.logService?.Debug(result);
-                var log = GitLogInfo.Run(this.repositoryPath, 1).First();
-                this.repositoryInfo.Revision = log.CommitID;
-                this.repositoryInfo.ModificationInfo = new SignatureDate(this.transactionAuthor, log.CommitDate);
-                FileUtility.Delete(this.transactionPatchPath);
-                this.transactionAuthor = null;
-                this.transactionName = null;
-                this.transactionMessages = null;
-                this.transactionPatchPath = null;
-                this.Pull();
-                this.Push();
+                var statusCommand = new GitCommand(this.repositoryPath, "status")
+                {
+                    new GitCommandItem('s')
+                };
+                var items = statusCommand.ReadLines(true);
+                if (items.Length != 0)
+                {
+                    var commitCommand = new GitCommand(this.repositoryPath, "commit")
+                    {
+                        new GitCommandItem('a'),
+                        GitCommandItem.FromFile(messagePath),
+                        GitCommandItem.FromAuthor(this.transactionAuthor),
+                    };
+                    var result = commitCommand.Run(this.logService);
+                    this.logService?.Debug(result);
+                    var log = GitLogInfo.Run(this.repositoryPath, 1).First();
+                    this.repositoryInfo.Revision = log.CommitID;
+                    this.repositoryInfo.ModificationInfo = new SignatureDate(this.transactionAuthor, log.CommitDate);
+                    FileUtility.Delete(this.transactionPatchPath);
+                    this.transactionAuthor = null;
+                    this.transactionName = null;
+                    this.transactionMessages = null;
+                    this.transactionPatchPath = null;
+                    this.Pull();
+                    this.Push();
+                }
+                else
+                {
+                    this.logService?.Debug("repository no changes. \"{0}\"", this.repositoryPath);
+                }
             }
             finally
             {

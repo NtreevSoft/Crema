@@ -58,7 +58,7 @@ namespace Ntreev.Crema.Javascript.Methods.TableTemplate
                     var template = category.NewTable(authentication);
                     return $"{template.Domain.ID}";
                 }
-                else if (NameValidator.VerifyCategoryPath(parentPath) == true)
+                else if (NameValidator.VerifyItemPath(parentPath) == true)
                 {
                     var table = dataBase.TableContext[parentPath] as ITable;
                     if (table == null)
