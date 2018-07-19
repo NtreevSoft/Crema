@@ -34,7 +34,7 @@ namespace Ntreev.Crema.Commands.Consoles.TableTemplate
 
         public static TemplateTerminal Create(Authentication authentication, ITableTemplate template, string prompt)
         {
-            var serviceProvider = template.Dispatcher.Invoke(() => template.Table as IServiceProvider);
+            var serviceProvider = template.Dispatcher.Invoke(() => template.Target as IServiceProvider);
             var commands = (serviceProvider.GetService(typeof(IEnumerable<ITemplateCommand>)) as IEnumerable<ITemplateCommand>);
 
             var commandContext = new TemplateCommandContext(authentication, template, commands);

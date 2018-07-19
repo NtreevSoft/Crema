@@ -33,7 +33,5 @@ namespace Ntreev.Crema.Services
 #if SERVER
         void ValidateDelete(Authentication authentication, bool isCanceled);
 #endif
-
-        //Domain Domain { get; }
     }
 }

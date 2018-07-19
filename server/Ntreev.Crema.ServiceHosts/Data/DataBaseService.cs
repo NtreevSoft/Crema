@@ -259,15 +259,6 @@ namespace Ntreev.Crema.ServiceHosts.Data
             });
         }
 
-        public ResultBase SetTableItemProperty(string itemPath, string propertyName, string value)
-        {
-            return this.Invoke(() =>
-            {
-                var tableItem = this.GetTableItem(itemPath);
-                tableItem.SetProperty(this.authentication, propertyName, value);
-            });
-        }
-
         public ResultBase<LogInfo[]> GetTableItemLog(string itemPath)
         {
             return this.InvokeImmediately(() =>
@@ -399,14 +390,18 @@ namespace Ntreev.Crema.ServiceHosts.Data
             });
         }
 
-        public ResultBase<TableInfo> EndTableTemplateEdit(Guid domainID)
+        public ResultBase<TableInfo[]> EndTableTemplateEdit(Guid domainID)
         {
             return this.Invoke(() =>
             {
                 var domain = this.domainContext.Domains[domainID];
                 var template = domain.Host as ITableTemplate;
                 template.EndEdit(this.authentication);
-                return template.Table.TableInfo;
+                if (template.Target is ITable table)
+                    return new TableInfo[] { table.TableInfo };
+                else if (template.Target is ITable[] tables)
+                    return tables.Select(item => item.TableInfo).ToArray();
+                throw new NotImplementedException();
             });
         }
 
@@ -592,15 +587,6 @@ namespace Ntreev.Crema.ServiceHosts.Data
             {
                 var typeItem = this.GetTypeItem(itemPath);
                 typeItem.Unlock(this.authentication);
-            });
-        }
-
-        public ResultBase SetTypeItemProperty(string itemPath, string propertyName, string value)
-        {
-            return this.Invoke(() =>
-            {
-                var typeItem = this.GetTypeItem(itemPath);
-                typeItem.SetProperty(this.authentication, propertyName, value);
             });
         }
 

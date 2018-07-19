@@ -56,19 +56,31 @@ namespace Ntreev.Crema.Services.Data
             return this.BaseAddNew(name, categoryPath, authentication);
         }
 
-        public Table AddNew(Authentication authentication, CremaTemplate template)
+        public Table[] AddNew(Authentication authentication, CremaDataSet dataSet)
         {
-            var dataSet = template.TargetTable.DataSet.Copy();
-            var dataTable = dataSet.Tables[template.TableName, template.CategoryPath];
-            var categoryPath = dataTable.CategoryPath;
+            var query = from item in dataSet.Tables
+                        where this.Contains(item.Name) == false
+                        orderby item.Name
+                        orderby item.TemplatedParentName != string.Empty
+                        select item;
+            var tables = query.ToArray();
+            foreach (var item in tables)
+            {
+                this.ValidateAddNew(item.Name, item.CategoryPath, authentication);
+            }
+            var tableList = new List<Table>(tables.Length);
+            this.InvokeTableCreate(authentication, tables.Select(item => item.Name).ToArray(), dataSet, null);
+            foreach (var item in tables)
+            {
+                var table = this.AddNew(authentication, item.Name, item.CategoryPath);
+                if (item.TemplatedParentName != string.Empty)
+                    table.TemplatedParent = this[item.TemplatedParentName];
+                table.Initialize(item.TableInfo);
+                tableList.Add(table);
+            }
 
-            this.ValidateAddNew(dataTable.TableName, categoryPath, authentication);
-            this.Sign(authentication);
-            this.InvokeTableCreate(authentication, dataTable.TableName, dataSet, null);
-            var table = this.AddNew(authentication, dataTable.TableName, categoryPath);
-            table.Initialize(dataTable.TableInfo);
-            this.InvokeTablesCreatedEvent(authentication, new Table[] { table }, dataSet);
-            return table;
+            this.InvokeTablesCreatedEvent(authentication, tableList.ToArray(), dataSet);
+            return tableList.ToArray();
         }
 
         public Table Inherit(Authentication authentication, Table table, string newTableName, string categoryPath, bool copyContent)
@@ -79,20 +91,8 @@ namespace Ntreev.Crema.Services.Data
             var dataTable = dataSet.Tables[table.Name, table.Category.Path];
             var itemName = new ItemName(categoryPath, newTableName);
             var newDataTable = dataTable.Inherit(itemName, copyContent);
-            if (copyContent == false)
-                newDataTable.Clear();
             newDataTable.CategoryPath = categoryPath;
-
-            this.InvokeTableCreate(authentication, newTableName, dataSet, table);
-            var items = EnumerableUtility.FamilyTree(newDataTable, item => item.Childs);
-            foreach (var item in items)
-            {
-                var newTable = this.AddNew(authentication, item.Name, categoryPath);
-                newTable.TemplatedParent = this[item.TemplatedParentName];
-                newTable.Initialize(item.TableInfo);
-            }
-            var tables = items.Select(item => this[item.Name]).ToArray();
-            this.InvokeTablesCreatedEvent(authentication, tables, dataTable.DataSet);
+            this.AddNew(authentication, dataSet);
             return this[newTableName];
         }
 
@@ -104,19 +104,8 @@ namespace Ntreev.Crema.Services.Data
             var dataTable = dataSet.Tables[table.Name, table.Category.Path];
             var itemName = new ItemName(categoryPath, newTableName);
             var newDataTable = dataTable.Copy(itemName, copyContent);
-            if (copyContent == false)
-                newDataTable.Clear();
             newDataTable.CategoryPath = categoryPath;
-
-            this.InvokeTableCreate(authentication, newTableName, dataSet, table);
-            var items = EnumerableUtility.FamilyTree(newDataTable, item => item.Childs);
-            foreach (var item in items)
-            {
-                var newTable = this.AddNew(authentication, item.Name, categoryPath);
-                newTable.Initialize(item.TableInfo);
-            }
-            var tables = items.Select(item => this[item.Name]).ToArray();
-            this.InvokeTablesCreatedEvent(authentication, tables, dataTable.DataSet);
+            this.AddNew(authentication, dataSet);
             return this[newTableName];
         }
 
@@ -125,9 +114,9 @@ namespace Ntreev.Crema.Services.Data
             return this.DataBase.GetService(serviceType);
         }
 
-        public void InvokeTableCreate(Authentication authentication, string tableName, CremaDataSet dataSet, Table sourceTable)
+        public void InvokeTableCreate(Authentication authentication, string[] tableNames, CremaDataSet dataSet, Table sourceTable)
         {
-            var message = EventMessageBuilder.CreateTable(authentication, tableName);
+            var message = EventMessageBuilder.CreateTable(authentication, tableNames);
             try
             {
                 this.Repository.CreateTable(dataSet);
@@ -208,36 +197,6 @@ namespace Ntreev.Crema.Services.Data
             try
             {
                 this.Repository.ModifyTable(dataSet, table);
-                this.Repository.Commit(authentication, message);
-            }
-            catch
-            {
-                this.Repository.Revert();
-                throw;
-            }
-        }
-
-        public void InvokeTableSetTags(Authentication authentication, Table table, TagInfo tags, CremaDataSet dataSet)
-        {
-            var message = EventMessageBuilder.ChangeTableTemplate(authentication, table.Name);
-            try
-            {
-                this.Repository.SetTableTags(dataSet, table, tags);
-                this.Repository.Commit(authentication, message);
-            }
-            catch
-            {
-                this.Repository.Revert();
-                throw;
-            }
-        }
-
-        public void InvokeTableSetComment(Authentication authentication, Table table, string comment, CremaDataSet dataSet)
-        {
-            var message = EventMessageBuilder.ChangeTableTemplate(authentication, table.Name);
-            try
-            {
-                this.Repository.SetTableComment(dataSet, table, comment);
                 this.Repository.Commit(authentication, message);
             }
             catch

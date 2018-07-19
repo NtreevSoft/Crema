@@ -34,7 +34,7 @@ namespace Ntreev.Crema.Services.Data
             this.table = table;
         }
 
-        public override ITable Table
+        public override object Target
         {
             get
             {
@@ -62,10 +62,11 @@ namespace Ntreev.Crema.Services.Data
             this.Container.InvokeTablesStateChangedEvent(authentication, new Table[] { this.table, });
         }
 
-        protected override void OnEndEdit(Authentication authentication, TableInfo tableInfo)
+        protected override void OnEndEdit(Authentication authentication, TableInfo[] tableInfos)
         {
             this.Container.InvokeTableEndTemplateEdit(authentication, this.table);
-            base.OnEndEdit(authentication, tableInfo);
+            base.OnEndEdit(authentication, tableInfos);
+            var tableInfo = tableInfos.First();
             this.table.UpdateTemplate(tableInfo);
             this.table.UpdateTags(tableInfo.Tags);
             this.table.UpdateComment(tableInfo.Comment);
@@ -88,7 +89,7 @@ namespace Ntreev.Crema.Services.Data
             return this.Service.BeginTableTemplateEdit(this.table.Name);
         }
 
-        protected override ResultBase<TableInfo> EndDomain(Authentication authentication, Guid domainID)
+        protected override ResultBase<TableInfo[]> EndDomain(Authentication authentication, Guid domainID)
         {
             return this.Service.EndTableTemplateEdit(domainID);
         }

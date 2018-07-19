@@ -15,9 +15,6 @@
       </xs:appinfo>
     </xs:annotation>
     <xs:sequence>
-      <xs:element minOccurs="0" name="BranchRevision" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="BranchSource" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="BranchSourceRevision" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Comment" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CreationInfo" type="tns:SignatureDate" />
       <xs:element minOccurs="0" name="ID" type="ser:guid" />
@@ -64,7 +61,7 @@
       </xs:appinfo>
     </xs:annotation>
     <xs:sequence>
-      <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Value" nillable="true" type="q2:ArrayOfstring" />
+      <xs:element minOccurs="0" name="Value" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="TagInfo" nillable="true" type="tns:TagInfo" />

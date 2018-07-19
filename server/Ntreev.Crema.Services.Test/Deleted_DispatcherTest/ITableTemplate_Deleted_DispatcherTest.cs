@@ -139,7 +139,7 @@ namespace Ntreev.Crema.Services.Test.Deleted_DispatcherTest
         [TestMethod]
         public void Table()
         {
-            Console.Write(template.Table);
+            Console.Write(template.Target);
         }
 
         [TestMethod]

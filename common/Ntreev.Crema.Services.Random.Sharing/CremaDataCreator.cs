@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Text;
 using Ntreev.Library;
 using Ntreev.Crema.Data;
+using System.Linq;
 
 namespace Ntreev.Crema.Services.Random
 {
@@ -72,12 +73,15 @@ namespace Ntreev.Crema.Services.Random
 
             template.EndEdit(authentication);
 
-            var table = template.Table;
+            if (template.Target is ITable[] tables)
+            {
+                var table = tables.First();
 
-            CreateTable(authentication, table, "child_all", TagInfoUtility.All);
-            CreateTable(authentication, table, "child_server", TagInfoUtility.Server);
-            CreateTable(authentication, table, "child_client", TagInfoUtility.Client);
-            CreateTable(authentication, table, "child_none", TagInfoUtility.Unused);
+                CreateTable(authentication, table, "child_all", TagInfoUtility.All);
+                CreateTable(authentication, table, "child_server", TagInfoUtility.Server);
+                CreateTable(authentication, table, "child_client", TagInfoUtility.Client);
+                CreateTable(authentication, table, "child_none", TagInfoUtility.Unused);
+            }
         }
 
         private static void CreateTable(Authentication authentication, ITable table, string name, TagInfo tags)

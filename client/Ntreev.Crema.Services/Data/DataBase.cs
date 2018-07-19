@@ -496,13 +496,15 @@ namespace Ntreev.Crema.Services.Data
             }
             else if (itemType == nameof(NewTableTemplate))
             {
-                var category = this.tableContext[itemPath] as TableCategory;
-                return new NewTableTemplate(category);
-            }
-            else if (itemType == nameof(NewChildTableTemplate))
-            {
-                var table = this.tableContext[itemPath] as Table;
-                return new NewChildTableTemplate(table);
+                if (this.tableContext[itemPath] is TableCategory category)
+                {
+                    return new NewTableTemplate(category);
+                }
+                else if (this.tableContext[itemPath] is Table table)
+                {
+                    return new NewTableTemplate(table);
+                }
+                throw new NotImplementedException();
             }
             else if (itemType == nameof(TableTemplate))
             {

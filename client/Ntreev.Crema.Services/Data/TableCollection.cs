@@ -52,49 +52,35 @@ namespace Ntreev.Crema.Services.Data
             return this.BaseAddNew(name, categoryPath, authentication);
         }
 
-        public Table AddNew(Authentication authentication, TableInfo tableInfo)
+        public Table[] AddNew(Authentication authentication, TableInfo[] tableInfos)
         {
-            this.InvokeTableCreate(authentication, tableInfo.Name, tableInfo.CategoryPath, null);
-            var table = this.AddNew(authentication, tableInfo.Name, tableInfo.CategoryPath);
-            table.Initialize(tableInfo);
-            this.InvokeTablesCreatedEvent(authentication, new Table[] { table });
-            return table;
+            this.InvokeTableCreate(authentication, tableInfos, null);
+            var tableList = new List<Table>(tableInfos.Length);
+            foreach (var item in tableInfos)
+            {
+                var table = this.AddNew(authentication, item.Name, item.CategoryPath);
+                if (item.TemplatedParent != string.Empty)
+                    table.TemplatedParent = this[item.TemplatedParent];
+                table.Initialize(item);
+            }
+            this.InvokeTablesCreatedEvent(authentication, tableList.ToArray());
+            return tableList.ToArray();
         }
 
         public Table Inherit(Authentication authentication, Table table, string newTableName, string categoryPath, bool copyContent)
         {
             var result = this.Service.InheritTable(table.Name, newTableName, categoryPath, copyContent);
             this.Sign(authentication, result);
-            this.InvokeTableCreate(authentication, newTableName, categoryPath, table);
-            var newTable = this.AddNew(authentication, newTableName, categoryPath);
-            newTable.TemplatedParent = table;
-            newTable.Initialize(result.Value.First());
-            foreach (var item in result.Value.Skip(1))
-            {
-                var childTable = this.AddNew(authentication, item.Name, categoryPath);
-                childTable.TemplatedParent = table.Childs[item.TableName];
-                childTable.Initialize(item);
-            }
-            var items = EnumerableUtility.Friends(newTable, newTable.Childs).ToArray();
-            this.InvokeTablesCreatedEvent(authentication, items);
-            return newTable;
+            this.AddNew(authentication, result.Value);
+            return this[newTableName];
         }
 
         public Table Copy(Authentication authentication, Table table, string newTableName, string categoryPath, bool copyContent)
         {
             var result = this.Service.CopyTable(table.Name, newTableName, categoryPath, copyContent);
             this.Sign(authentication, result);
-            this.InvokeTableCreate(authentication, newTableName, categoryPath, null);
-            var newTable = this.AddNew(authentication, newTableName, categoryPath);
-            newTable.Initialize(result.Value.First());
-            foreach (var item in result.Value.Skip(1))
-            {
-                var childTable = this.AddNew(authentication, item.Name, categoryPath);
-                childTable.Initialize(item);
-            }
-            var items = EnumerableUtility.Friends(newTable, newTable.Childs).ToArray();
-            this.InvokeTablesCreatedEvent(authentication, items);
-            return newTable;
+            this.AddNew(authentication, result.Value);
+            return this[newTableName];
         }
 
         public object GetService(System.Type serviceType)
@@ -102,7 +88,7 @@ namespace Ntreev.Crema.Services.Data
             return this.DataBase.GetService(serviceType);
         }
 
-        public void InvokeTableCreate(Authentication authentication, string tableName, string categoryPath, Table sourceTable)
+        public void InvokeTableCreate(Authentication authentication, TableInfo[] tableInfos, Table sourceTable)
         {
             
         }
@@ -128,21 +114,6 @@ namespace Ntreev.Crema.Services.Data
         }
 
         public void InvokeTableEndTemplateEdit(Authentication authentication, Table table)
-        {
-            
-        }
-
-        public void InvokeTableSetTags(Authentication authentication, Table table, TagInfo tags)
-        {
-            
-        }
-
-        public void InvokeTableSetComment(Authentication authentication, Table table, string comment)
-        {
-            
-        }
-
-        public void InvokeChildTableCreate(Authentication authentication, Table table)
         {
             
         }

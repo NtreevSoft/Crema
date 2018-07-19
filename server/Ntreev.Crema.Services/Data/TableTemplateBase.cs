@@ -153,7 +153,7 @@ namespace Ntreev.Crema.Services.Data
             try
             {
                 this.DataBase.ValidateBeginInDataBase(authentication);
-                this.domain.Dispatcher.Invoke(() => this.domain.SetProperty(authentication, CremaSchema.Tags, value.ToString()));
+                this.domain.Dispatcher.Invoke(() => this.domain.SetProperty(authentication, CremaSchema.Tags, (string)value));
             }
             catch (Exception e)
             {
@@ -214,7 +214,7 @@ namespace Ntreev.Crema.Services.Data
 
         public abstract CremaHost CremaHost { get; }
 
-        public abstract ITable Table { get; }
+        public abstract object Target { get; }
 
         public abstract DataBase DataBase { get; }
 
@@ -616,7 +616,7 @@ namespace Ntreev.Crema.Services.Data
             this.EndNew(authentication, column as TableColumn);
         }
 
-        ITable ITableTemplate.Table => this.Table;
+        object ITableTemplate.Target => this.Target;
 
         IDomain ITableTemplate.Domain => this.Domain;
 

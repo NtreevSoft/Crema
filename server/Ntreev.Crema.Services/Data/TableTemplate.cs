@@ -35,7 +35,7 @@ namespace Ntreev.Crema.Services.Data
             this.table = table;
         }
 
-        public override ITable Table
+        public override object Target
         {
             get
             {

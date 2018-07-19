@@ -88,7 +88,21 @@ namespace Ntreev.Crema.Commands.Consoles
         {
             var table = this.GetTable(tableName);
             var authentication = this.CommandContext.GetAuthentication(this);
-            table.Dispatcher.Invoke(() => table.SetTags(authentication, (TagInfo)tags));
+            table.Dispatcher.Invoke(() =>
+            {
+                var template = table.Template;
+                template.BeginEdit(authentication);
+                try
+                {
+                    template.SetTags(authentication, (TagInfo)tags);
+                    template.EndEdit(authentication);
+                }
+                catch
+                {
+                    template.CancelEdit(authentication);
+                    throw;
+                }
+            });
         }
 
         [CommandMethod]
@@ -160,6 +174,7 @@ namespace Ntreev.Crema.Commands.Consoles
                 var query = from item in dataBase.TableContext.Tables
                             where StringUtility.GlobMany(item.Name, FilterProperties.FilterExpression)
                             where (item.TableInfo.DerivedTags & tags) == tags
+                            orderby item.Name
                             select item.Name;
 
                 return query.ToArray();

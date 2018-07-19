@@ -18,6 +18,7 @@
 using Ntreev.Crema.Data;
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services.DataBaseService;
+using Ntreev.Library;
 using Ntreev.Library.Linq;
 using Ntreev.Library.ObjectModel;
 using System;
@@ -233,22 +234,6 @@ namespace Ntreev.Crema.Services.Data
                 container.InvokeCategoryDelete(authentication, this);
                 base.Delete(authentication);
                 container.InvokeCategoriesDeletedEvent(authentication, items, oldPaths);
-            }
-            catch (Exception e)
-            {
-                this.CremaHost.Error(e);
-                throw;
-            }
-        }
-
-        public void SetProperty(Authentication authentication, string propertyName, string value)
-        {
-            try
-            {
-                this.DataBase.ValidateBeginInDataBase(authentication);
-                this.CremaHost.DebugMethod(authentication, this, nameof(SetProperty), this, propertyName, value);
-                var result = this.Service.SetTableItemProperty(base.Path, propertyName, value);
-                this.Sign(authentication, result);
             }
             catch (Exception e)
             {

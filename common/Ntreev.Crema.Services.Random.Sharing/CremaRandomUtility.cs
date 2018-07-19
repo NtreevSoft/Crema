@@ -190,7 +190,8 @@ namespace Ntreev.Crema.Services.Random
                 template.SetComment(authentication, RandomUtility.NextString());
             template.EndEdit(authentication);
 
-            var table = template.Table;
+            var tables = template.Target as ITable[];
+            var table = tables.First();
 
             while (RandomUtility.Within(10))
             {

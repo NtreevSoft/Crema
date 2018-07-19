@@ -82,10 +82,16 @@ namespace Ntreev.Crema.Data.Test
         public void SetExistedName_Fail()
         {
             var column = this.RandomOrDefault();
-            if (column == null)
-                return;
-            var columnName = this.RandomOrDefault(item => item.Table == column.Table && item != column).ColumnName;
-            column.ColumnName = columnName;
+            if (column != null)
+            {
+                var table = this.RandomOrDefault(item => item.Table == column.Table && item != column);
+                if (table != null)
+                {
+                    var columnName = table.ColumnName;
+                    column.ColumnName = columnName;
+                }
+            }
+            Assert.Inconclusive();
         }
 
         [TestMethod]

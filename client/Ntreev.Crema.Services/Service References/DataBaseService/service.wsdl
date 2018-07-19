@@ -178,15 +178,6 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="SetTableItemProperty">
-      <soap12:operation soapAction="http://www.ntreev.com/IDataBaseService/SetTableItemProperty" style="document" />
-      <wsdl:input>
-        <soap12:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap12:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
     <wsdl:operation name="GetTableItemLog">
       <soap12:operation soapAction="http://www.ntreev.com/IDataBaseService/GetTableItemLog" style="document" />
       <wsdl:input>
@@ -459,15 +450,6 @@
     </wsdl:operation>
     <wsdl:operation name="UnlockTypeItem">
       <soap12:operation soapAction="http://www.ntreev.com/IDataBaseService/UnlockTypeItem" style="document" />
-      <wsdl:input>
-        <soap12:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap12:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="SetTypeItemProperty">
-      <soap12:operation soapAction="http://www.ntreev.com/IDataBaseService/SetTypeItemProperty" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

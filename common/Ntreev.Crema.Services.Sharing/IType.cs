@@ -32,8 +32,6 @@ namespace Ntreev.Crema.Services
 
         void Delete(Authentication authentication);
 
-        void SetTags(Authentication authentication, TagInfo tags);
-
         IType Copy(Authentication authentication, string newTypeName, string categoryPath);
 
         CremaDataSet GetDataSet(Authentication authentication, string revision);
@@ -57,8 +55,6 @@ namespace Ntreev.Crema.Services
         ITypeCategory Category { get; }
 
         ITypeTemplate Template { get; }
-
-        TagInfo Tags { get; }
 
         event EventHandler Renamed;
 

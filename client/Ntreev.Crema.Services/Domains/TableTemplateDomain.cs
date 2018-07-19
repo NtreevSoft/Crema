@@ -35,9 +35,7 @@ namespace Ntreev.Crema.Services.Domains
         public TableTemplateDomain(DomainInfo domainInfo, CremaDispatcher dispatcher)
             : base(domainInfo, dispatcher)
         {
-            if (domainInfo.ItemType == nameof(NewChildTableTemplate))
-                this.IsNew = true;
-            else if (domainInfo.ItemType == nameof(NewTableTemplate))
+            if (domainInfo.ItemType == nameof(NewTableTemplate))
                 this.IsNew = true;
         }
 

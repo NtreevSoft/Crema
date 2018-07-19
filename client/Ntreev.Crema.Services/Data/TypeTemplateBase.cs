@@ -16,9 +16,11 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Ntreev.Crema.Data;
+using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services.Domains;
 using Ntreev.Crema.Services.Properties;
+using Ntreev.Library;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -94,19 +96,25 @@ namespace Ntreev.Crema.Services.Data
         public void SetTypeName(Authentication authentication, string value)
         {
             this.DataBase.ValidateBeginInDataBase(authentication);
-            this.domain.Dispatcher.Invoke(() => this.domain.SetProperty(authentication, "TypeName", value));
+            this.domain.Dispatcher.Invoke(() => this.domain.SetProperty(authentication, CremaSchema.TypeName, value));
+        }
+
+        public void SetTags(Authentication authentication, TagInfo value)
+        {
+            this.DataBase.ValidateBeginInDataBase(authentication);
+            this.domain.Dispatcher.Invoke(() => this.domain.SetProperty(authentication, CremaSchema.Tags, (string)value));
         }
 
         public void SetIsFlag(Authentication authentication, bool value)
         {
             this.DataBase.ValidateBeginInDataBase(authentication);
-            this.domain.Dispatcher.Invoke(() => this.domain.SetProperty(authentication, "IsFlag", value));
+            this.domain.Dispatcher.Invoke(() => this.domain.SetProperty(authentication, CremaSchema.IsFlag, value));
         }
 
         public void SetComment(Authentication authentication, string value)
         {
             this.DataBase.ValidateBeginInDataBase(authentication);
-            this.domain.Dispatcher.Invoke(() => this.domain.SetProperty(authentication, "Comment", value));
+            this.domain.Dispatcher.Invoke(() => this.domain.SetProperty(authentication, CremaSchema.Comment, value));
         }
 
         public bool Contains(string memberName)

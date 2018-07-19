@@ -99,7 +99,6 @@
     <Compile Include="Data\DomainBasedRow.cs" />
     <Compile Include="IRepositoryExtensions.cs" />
     <Compile Include="IRepositoryProvider.cs" />
-    <Compile Include="Data\NewChildTableTemplate.cs" />
     <Compile Include="Data\NewTypeTemplate.cs" />
     <Compile Include="Data\TypeMember.cs" />
     <Compile Include="Data\TableContentBase.cs" />

@@ -240,7 +240,18 @@ namespace Ntreev.Crema.Bot.Tasks
             table.Dispatcher.Invoke(() =>
             {
                 var tags = (TagInfo)TagInfoUtility.Names.Random();
-                table.SetTags(context.Authentication, tags);
+                var template = table.Template;
+                template.BeginEdit(context.Authentication);
+                try
+                {
+                    template.SetTags(context.Authentication, tags);
+                    template.EndEdit(context.Authentication);
+                }
+                catch
+                {
+                    template.CancelEdit(context.Authentication);
+                    throw;
+                }
             });
         }
 

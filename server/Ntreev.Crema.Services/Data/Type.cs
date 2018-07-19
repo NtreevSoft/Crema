@@ -245,49 +245,6 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public void SetProperty(Authentication authentication, string propertyName, string value)
-        {
-            try
-            {
-                this.DataBase.ValidateBeginInDataBase(authentication);
-                this.CremaHost.DebugMethod(authentication, this, nameof(SetProperty), this, propertyName, value);
-                if (propertyName == CremaSchema.Tags)
-                {
-                    this.SetTags(authentication, (TagInfo)value);
-                }
-                else if (propertyName == CremaSchema.Comment)
-                {
-                    //this.SetComment(authentication, value);
-                }
-            }
-            catch (Exception e)
-            {
-                this.CremaHost.Error(e);
-                throw;
-            }
-        }
-
-        public void SetTags(Authentication authentication, TagInfo tags)
-        {
-            try
-            {
-                this.DataBase.ValidateBeginInDataBase(authentication);
-                this.CremaHost.DebugMethod(authentication, this, nameof(SetTags), this, tags);
-                this.Template.ValidateBeginEdit(authentication);
-                this.Sign(authentication);
-                var dataSet = this.ReadData(authentication);
-                var dataType = dataSet.Types[this.Name, this.Category.Path];
-                this.Container.InvokeTypeSetTags(authentication, this, tags, dataSet);
-                this.UpdateTags(tags);
-                this.Container.InvokeTypesChangedEvent(authentication, new Type[] { this }, dataSet);
-            }
-            catch (Exception e)
-            {
-                this.CremaHost.Error(e);
-                throw;
-            }
-        }
-
         public Type Copy(Authentication authentication, string newTypeName, string categoryPath)
         {
             try

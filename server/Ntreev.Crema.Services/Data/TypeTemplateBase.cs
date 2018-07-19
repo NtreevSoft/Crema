@@ -20,6 +20,7 @@ using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services.Domains;
 using Ntreev.Crema.Services.Properties;
+using Ntreev.Library;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -160,6 +161,20 @@ namespace Ntreev.Crema.Services.Data
             {
                 this.DataBase.ValidateBeginInDataBase(authentication);
                 this.domain.Dispatcher.Invoke(() => this.domain.SetProperty(authentication, CremaSchema.TypeName, value));
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
+        }
+
+        public void SetTags(Authentication authentication, TagInfo value)
+        {
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.domain.Dispatcher.Invoke(() => this.domain.SetProperty(authentication, CremaSchema.Tags, (string)value));
             }
             catch (Exception e)
             {

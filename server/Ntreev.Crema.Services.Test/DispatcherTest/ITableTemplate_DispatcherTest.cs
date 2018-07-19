@@ -141,7 +141,7 @@ namespace Ntreev.Crema.Services.Test.DispatcherTest
         [ExpectedException(typeof(InvalidOperationException))]
         public void Table()
         {
-            Console.Write(template.Table);
+            Console.Write(template.Target);
         }
 
         [TestMethod]

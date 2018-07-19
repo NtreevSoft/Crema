@@ -31,7 +31,7 @@ namespace Ntreev.Crema.Services.Random
         public static void InitializeRandom(this ITableColumn tableColumn, Authentication authentication)
         {
             var template = tableColumn.Template;
-            var table = tableColumn.Template.Table;
+            var table = tableColumn.Template.Target;
 
             if (RandomUtility.Within(75) == true)
             {

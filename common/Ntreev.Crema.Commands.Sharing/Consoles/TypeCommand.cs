@@ -160,7 +160,21 @@ namespace Ntreev.Crema.Commands.Consoles
         {
             var type = this.GetType(typeName);
             var authentication = this.CommandContext.GetAuthentication(this);
-            type.Dispatcher.Invoke(() => type.SetTags(authentication, (TagInfo)tags));
+            type.Dispatcher.Invoke(() =>
+            {
+                var template = type.Template;
+                template.BeginEdit(authentication);
+                try
+                {
+                    template.SetTags(authentication, (TagInfo)tags);
+                    template.EndEdit(authentication);
+                }
+                catch
+                {
+                    template.CancelEdit(authentication);
+                    throw;
+                }
+            });
         }
 
         [CommandMethod]

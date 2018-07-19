@@ -69,9 +69,6 @@ namespace Ntreev.Crema.Services.DataBaseService {
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/UnlockTableItem", ReplyAction="http://www.ntreev.com/IDataBaseService/UnlockTableItemResponse")]
         Ntreev.Crema.ServiceModel.ResultBase UnlockTableItem(string itemPath);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/SetTableItemProperty", ReplyAction="http://www.ntreev.com/IDataBaseService/SetTableItemPropertyResponse")]
-        Ntreev.Crema.ServiceModel.ResultBase SetTableItemProperty(string itemPath, string propertyName, string value);
-        
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/GetTableItemLog", ReplyAction="http://www.ntreev.com/IDataBaseService/GetTableItemLogResponse")]
         Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.LogInfo[]> GetTableItemLog(string itemPath);
         
@@ -106,7 +103,7 @@ namespace Ntreev.Crema.Services.DataBaseService {
         Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.DomainMetaData> BeginNewTable(string itemPath);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/EndTableTemplateEdit", ReplyAction="http://www.ntreev.com/IDataBaseService/EndTableTemplateEditResponse")]
-        Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.Data.TableInfo> EndTableTemplateEdit(System.Guid domainID);
+        Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.Data.TableInfo[]> EndTableTemplateEdit(System.Guid domainID);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/CancelTableTemplateEdit", ReplyAction="http://www.ntreev.com/IDataBaseService/CancelTableTemplateEditResponse")]
         Ntreev.Crema.ServiceModel.ResultBase CancelTableTemplateEdit(System.Guid domainID);
@@ -164,9 +161,6 @@ namespace Ntreev.Crema.Services.DataBaseService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/UnlockTypeItem", ReplyAction="http://www.ntreev.com/IDataBaseService/UnlockTypeItemResponse")]
         Ntreev.Crema.ServiceModel.ResultBase UnlockTypeItem(string itemPath);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/SetTypeItemProperty", ReplyAction="http://www.ntreev.com/IDataBaseService/SetTypeItemPropertyResponse")]
-        Ntreev.Crema.ServiceModel.ResultBase SetTypeItemProperty(string itemPath, string propertyName, string value);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/GetTypeItemLog", ReplyAction="http://www.ntreev.com/IDataBaseService/GetTypeItemLogResponse")]
         Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.LogInfo[]> GetTypeItemLog(string itemPath);
@@ -333,10 +327,6 @@ namespace Ntreev.Crema.Services.DataBaseService {
             return base.Channel.UnlockTableItem(itemPath);
         }
         
-        public Ntreev.Crema.ServiceModel.ResultBase SetTableItemProperty(string itemPath, string propertyName, string value) {
-            return base.Channel.SetTableItemProperty(itemPath, propertyName, value);
-        }
-        
         public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.LogInfo[]> GetTableItemLog(string itemPath) {
             return base.Channel.GetTableItemLog(itemPath);
         }
@@ -381,7 +371,7 @@ namespace Ntreev.Crema.Services.DataBaseService {
             return base.Channel.BeginNewTable(itemPath);
         }
         
-        public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.Data.TableInfo> EndTableTemplateEdit(System.Guid domainID) {
+        public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.Data.TableInfo[]> EndTableTemplateEdit(System.Guid domainID) {
             return base.Channel.EndTableTemplateEdit(domainID);
         }
         
@@ -459,10 +449,6 @@ namespace Ntreev.Crema.Services.DataBaseService {
         
         public Ntreev.Crema.ServiceModel.ResultBase UnlockTypeItem(string itemPath) {
             return base.Channel.UnlockTypeItem(itemPath);
-        }
-        
-        public Ntreev.Crema.ServiceModel.ResultBase SetTypeItemProperty(string itemPath, string propertyName, string value) {
-            return base.Channel.SetTypeItemProperty(itemPath, propertyName, value);
         }
         
         public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.LogInfo[]> GetTypeItemLog(string itemPath) {

@@ -21,6 +21,7 @@ using Ntreev.Crema.Services;
 using Ntreev.Library.ObjectModel;
 using Ntreev.Library.Random;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using Ntreev.Library;
@@ -105,9 +106,19 @@ namespace Ntreev.Crema.Services.Random
             var template = category.NewTable(authentication);
             template.InitializeRandom(authentication);
             template.EndEdit(authentication);
-            var table = template.Table;
-            AddRandomRows(table, authentication, RandomUtility.Next(MinRowCount, MaxRowCount));
-            return table;
+
+            if (template.Target is ITable[] tables)
+            {
+                foreach (var item in tables)
+                {
+                    AddRandomRows(item, authentication, RandomUtility.Next(MinRowCount, MaxRowCount));
+                }
+                return tables.First();
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
 
         public static void AddRandomDerivedTables(this ITableContext tableContext, Authentication authentication, int tryCount)
@@ -153,9 +164,18 @@ namespace Ntreev.Crema.Services.Random
             var template = table.NewTable(authentication);
             template.InitializeRandom(authentication);
             template.EndEdit(authentication);
-            var child = template.Table;
-            AddRandomRows(child, authentication, RandomUtility.Next(MinRowCount, MaxRowCount));
-            return child;
+            if (template.Target is ITable[] tables)
+            {
+                foreach (var item in tables)
+                {
+                    AddRandomRows(item, authentication, RandomUtility.Next(MinRowCount, MaxRowCount));
+                }
+                return tables.First();
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
 
         public static void AddRandomRows(this ITable table, Authentication authentication, int tryCount)

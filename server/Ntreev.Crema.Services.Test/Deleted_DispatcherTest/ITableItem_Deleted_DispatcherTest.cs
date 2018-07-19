@@ -86,13 +86,6 @@ namespace Ntreev.Crema.Services.Test.Deleted_DispatcherTest
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void SetProperty()
-        {
-            tableItem.SetProperty(authentication, "Tags", "All");
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void GetLog()
         {
             tableItem.GetLog(authentication);

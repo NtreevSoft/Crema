@@ -666,6 +666,17 @@ namespace Ntreev.Crema.Services
             return string.Format(EventResources.CreateTable, authentication.ID, authentication.Name, tableName);
         }
 
+        public static string CreateTable(Authentication authentication, string[] tableNames)
+        {
+            var messageList = new List<string>(tableNames.Length);
+            for (var i = 0; i < tableNames.Length; i++)
+            {
+                var message = CreateTable(authentication, tableNames[i]);
+                messageList.Add(message);
+            }
+            return string.Join(Environment.NewLine, messageList);
+        }
+
         public static string CreateTable(Authentication authentication, ITable[] items)
         {
             var messageList = new List<string>(items.Length);

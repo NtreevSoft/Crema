@@ -77,160 +77,15 @@
       </xs:appinfo>
     </xs:annotation>
     <xs:sequence>
-      <xs:element minOccurs="0" name="Xml" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Data" nillable="true" type="xs:base64Binary" />
+      <xs:element minOccurs="0" name="DomainID" type="ser:guid" />
+      <xs:element minOccurs="0" name="DomainInfo" type="tns:DomainInfo" />
+      <xs:element minOccurs="0" name="DomainState" type="tns:DomainState" />
+      <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="ModifiedTables" nillable="true" type="q2:ArrayOfstring" />
+      <xs:element minOccurs="0" name="Users" nillable="true" type="tns:ArrayOfDomainUserMetaData" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="DomainMetaData" nillable="true" type="tns:DomainMetaData" />
-  <xs:complexType name="ResultBase">
-    <xs:annotation>
-      <xs:appinfo>
-        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
-      </xs:appinfo>
-    </xs:annotation>
-    <xs:sequence>
-      <xs:element minOccurs="0" name="Fault" nillable="true" type="tns:CremaFault" />
-      <xs:element minOccurs="0" name="SignatureDate" type="tns:SignatureDate" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="ResultBase" nillable="true" type="tns:ResultBase" />
-  <xs:complexType name="DomainLocationInfo">
-    <xs:annotation>
-      <xs:appinfo>
-        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
-      </xs:appinfo>
-    </xs:annotation>
-    <xs:sequence>
-      <xs:element minOccurs="0" name="ColumnName" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="ItemXml" nillable="true" type="xs:string" />
-      <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Keys" nillable="true" type="q2:ArrayOfanyType" />
-      <xs:element minOccurs="0" name="TableName" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="Xml" nillable="true" type="xs:string" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="DomainLocationInfo" nillable="true" type="tns:DomainLocationInfo" />
-  <xs:complexType name="ArrayOfDomainRowInfo">
-    <xs:sequence>
-      <xs:element minOccurs="0" maxOccurs="unbounded" name="DomainRowInfo" type="tns:DomainRowInfo" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="ArrayOfDomainRowInfo" nillable="true" type="tns:ArrayOfDomainRowInfo" />
-  <xs:complexType name="DomainRowInfo">
-    <xs:annotation>
-      <xs:appinfo>
-        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
-      </xs:appinfo>
-    </xs:annotation>
-    <xs:sequence>
-      <xs:element xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Fields" nillable="true" type="q3:ArrayOfanyType" />
-      <xs:element xmlns:q4="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Keys" nillable="true" type="q4:ArrayOfanyType" />
-      <xs:element minOccurs="0" name="TableName" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="Xml" nillable="true" type="xs:string" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="DomainRowInfo" nillable="true" type="tns:DomainRowInfo" />
-  <xs:complexType name="ResultBaseOfArrayOfDomainRowInfoq8erDhHE">
-    <xs:annotation>
-      <xs:appinfo>
-        <GenericType Name="ResultBaseOf{0}{#}" Namespace="http://schemas.ntreev.com" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
-          <GenericParameter Name="ArrayOfDomainRowInfo" Namespace="http://schemas.ntreev.com">
-          </GenericParameter>
-        </GenericType>
-        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
-      </xs:appinfo>
-    </xs:annotation>
-    <xs:sequence>
-      <xs:element minOccurs="0" name="Fault" nillable="true" type="tns:CremaFault" />
-      <xs:element minOccurs="0" name="SignatureDate" type="tns:SignatureDate" />
-      <xs:element minOccurs="0" name="Value" nillable="true" type="tns:ArrayOfDomainRowInfo" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="ResultBaseOfArrayOfDomainRowInfoq8erDhHE" nillable="true" type="tns:ResultBaseOfArrayOfDomainRowInfoq8erDhHE" />
-  <xs:complexType name="ResultBaseOfDomainUserInfoq8erDhHE">
-    <xs:annotation>
-      <xs:appinfo>
-        <GenericType Name="ResultBaseOf{0}{#}" Namespace="http://schemas.ntreev.com" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
-          <GenericParameter Name="DomainUserInfo" Namespace="http://schemas.ntreev.com">
-          </GenericParameter>
-        </GenericType>
-        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
-      </xs:appinfo>
-    </xs:annotation>
-    <xs:sequence>
-      <xs:element minOccurs="0" name="Fault" nillable="true" type="tns:CremaFault" />
-      <xs:element minOccurs="0" name="SignatureDate" type="tns:SignatureDate" />
-      <xs:element minOccurs="0" name="Value" type="tns:DomainUserInfo" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="ResultBaseOfDomainUserInfoq8erDhHE" nillable="true" type="tns:ResultBaseOfDomainUserInfoq8erDhHE" />
-  <xs:complexType name="DomainUserInfo">
-    <xs:annotation>
-      <xs:appinfo>
-        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
-      </xs:appinfo>
-    </xs:annotation>
-    <xs:sequence>
-      <xs:element minOccurs="0" name="AccessType" type="tns:DomainAccessType" />
-      <xs:element minOccurs="0" name="Location" type="tns:DomainLocationInfo" />
-      <xs:element minOccurs="0" name="UserID" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="UserName" nillable="true" type="xs:string" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="DomainUserInfo" nillable="true" type="tns:DomainUserInfo" />
-  <xs:simpleType name="DomainAccessType">
-    <xs:list>
-      <xs:simpleType>
-        <xs:restriction base="xs:string">
-          <xs:enumeration value="None">
-            <xs:annotation>
-              <xs:appinfo>
-                <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">0</EnumerationValue>
-              </xs:appinfo>
-            </xs:annotation>
-          </xs:enumeration>
-          <xs:enumeration value="Read">
-            <xs:annotation>
-              <xs:appinfo>
-                <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">1</EnumerationValue>
-              </xs:appinfo>
-            </xs:annotation>
-          </xs:enumeration>
-          <xs:enumeration value="ReadWrite">
-            <xs:annotation>
-              <xs:appinfo>
-                <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">3</EnumerationValue>
-              </xs:appinfo>
-            </xs:annotation>
-          </xs:enumeration>
-        </xs:restriction>
-      </xs:simpleType>
-    </xs:list>
-  </xs:simpleType>
-  <xs:element name="DomainAccessType" nillable="true" type="tns:DomainAccessType" />
-  <xs:complexType name="CloseInfo">
-    <xs:annotation>
-      <xs:appinfo>
-        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
-      </xs:appinfo>
-    </xs:annotation>
-    <xs:sequence>
-      <xs:element minOccurs="0" name="Message" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="Reason" type="tns:CloseReason" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="CloseInfo" nillable="true" type="tns:CloseInfo" />
-  <xs:simpleType name="CloseReason">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="None" />
-      <xs:enumeration value="Faulted" />
-      <xs:enumeration value="NoResponding" />
-      <xs:enumeration value="Reconnected" />
-      <xs:enumeration value="Kicked" />
-      <xs:enumeration value="Banned" />
-      <xs:enumeration value="Shutdown" />
-      <xs:enumeration value="Restart" />
-    </xs:restriction>
-  </xs:simpleType>
-  <xs:element name="CloseReason" nillable="true" type="tns:CloseReason" />
   <xs:complexType name="DomainInfo">
     <xs:annotation>
       <xs:appinfo>
@@ -279,6 +134,99 @@
     </xs:list>
   </xs:simpleType>
   <xs:element name="DomainState" nillable="true" type="tns:DomainState" />
+  <xs:complexType name="ArrayOfDomainUserMetaData">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="DomainUserMetaData" type="tns:DomainUserMetaData" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfDomainUserMetaData" nillable="true" type="tns:ArrayOfDomainUserMetaData" />
+  <xs:complexType name="DomainUserMetaData">
+    <xs:annotation>
+      <xs:appinfo>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="DomainUserInfo" type="tns:DomainUserInfo" />
+      <xs:element minOccurs="0" name="DomainUserState" type="tns:DomainUserState" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DomainUserMetaData" nillable="true" type="tns:DomainUserMetaData" />
+  <xs:complexType name="DomainUserInfo">
+    <xs:annotation>
+      <xs:appinfo>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="AccessType" type="tns:DomainAccessType" />
+      <xs:element minOccurs="0" name="Location" type="tns:DomainLocationInfo" />
+      <xs:element minOccurs="0" name="UserID" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="UserName" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DomainUserInfo" nillable="true" type="tns:DomainUserInfo" />
+  <xs:simpleType name="DomainAccessType">
+    <xs:list>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="None">
+            <xs:annotation>
+              <xs:appinfo>
+                <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">0</EnumerationValue>
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:enumeration>
+          <xs:enumeration value="Read">
+            <xs:annotation>
+              <xs:appinfo>
+                <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">1</EnumerationValue>
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:enumeration>
+          <xs:enumeration value="ReadWrite">
+            <xs:annotation>
+              <xs:appinfo>
+                <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">3</EnumerationValue>
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:enumeration>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:list>
+  </xs:simpleType>
+  <xs:element name="DomainAccessType" nillable="true" type="tns:DomainAccessType" />
+  <xs:complexType name="DomainLocationInfo">
+    <xs:annotation>
+      <xs:appinfo>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ColumnName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="KeyInfos" nillable="true" type="tns:ArrayOfDomainFieldInfo" />
+      <xs:element minOccurs="0" name="TableName" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DomainLocationInfo" nillable="true" type="tns:DomainLocationInfo" />
+  <xs:complexType name="ArrayOfDomainFieldInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="DomainFieldInfo" type="tns:DomainFieldInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfDomainFieldInfo" nillable="true" type="tns:ArrayOfDomainFieldInfo" />
+  <xs:complexType name="DomainFieldInfo">
+    <xs:annotation>
+      <xs:appinfo>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Type" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Value" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DomainFieldInfo" nillable="true" type="tns:DomainFieldInfo" />
   <xs:simpleType name="DomainUserState">
     <xs:list>
       <xs:simpleType>
@@ -323,6 +271,96 @@
     </xs:list>
   </xs:simpleType>
   <xs:element name="DomainUserState" nillable="true" type="tns:DomainUserState" />
+  <xs:complexType name="ResultBase">
+    <xs:annotation>
+      <xs:appinfo>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Fault" nillable="true" type="tns:CremaFault" />
+      <xs:element minOccurs="0" name="SignatureDate" type="tns:SignatureDate" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ResultBase" nillable="true" type="tns:ResultBase" />
+  <xs:complexType name="ArrayOfDomainRowInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="DomainRowInfo" type="tns:DomainRowInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfDomainRowInfo" nillable="true" type="tns:ArrayOfDomainRowInfo" />
+  <xs:complexType name="DomainRowInfo">
+    <xs:annotation>
+      <xs:appinfo>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="FieldInfos" nillable="true" type="tns:ArrayOfDomainFieldInfo" />
+      <xs:element minOccurs="0" name="KeyInfos" nillable="true" type="tns:ArrayOfDomainFieldInfo" />
+      <xs:element minOccurs="0" name="TableName" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DomainRowInfo" nillable="true" type="tns:DomainRowInfo" />
+  <xs:complexType name="ResultBaseOfArrayOfDomainRowInfoq8erDhHE">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ResultBaseOf{0}{#}" Namespace="http://schemas.ntreev.com" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="ArrayOfDomainRowInfo" Namespace="http://schemas.ntreev.com">
+          </GenericParameter>
+        </GenericType>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Fault" nillable="true" type="tns:CremaFault" />
+      <xs:element minOccurs="0" name="SignatureDate" type="tns:SignatureDate" />
+      <xs:element minOccurs="0" name="Value" nillable="true" type="tns:ArrayOfDomainRowInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ResultBaseOfArrayOfDomainRowInfoq8erDhHE" nillable="true" type="tns:ResultBaseOfArrayOfDomainRowInfoq8erDhHE" />
+  <xs:complexType name="ResultBaseOfDomainUserInfoq8erDhHE">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ResultBaseOf{0}{#}" Namespace="http://schemas.ntreev.com" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="DomainUserInfo" Namespace="http://schemas.ntreev.com">
+          </GenericParameter>
+        </GenericType>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Fault" nillable="true" type="tns:CremaFault" />
+      <xs:element minOccurs="0" name="SignatureDate" type="tns:SignatureDate" />
+      <xs:element minOccurs="0" name="Value" type="tns:DomainUserInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ResultBaseOfDomainUserInfoq8erDhHE" nillable="true" type="tns:ResultBaseOfDomainUserInfoq8erDhHE" />
+  <xs:complexType name="CloseInfo">
+    <xs:annotation>
+      <xs:appinfo>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Message" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Reason" type="tns:CloseReason" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="CloseInfo" nillable="true" type="tns:CloseInfo" />
+  <xs:simpleType name="CloseReason">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="None" />
+      <xs:enumeration value="Faulted" />
+      <xs:enumeration value="NoResponding" />
+      <xs:enumeration value="Reconnected" />
+      <xs:enumeration value="Kicked" />
+      <xs:enumeration value="Banned" />
+      <xs:enumeration value="Shutdown" />
+      <xs:enumeration value="Restart" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="CloseReason" nillable="true" type="tns:CloseReason" />
   <xs:complexType name="RemoveInfo">
     <xs:annotation>
       <xs:appinfo>

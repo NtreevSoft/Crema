@@ -213,7 +213,7 @@ namespace Ntreev.Crema.Services.Data
 
         public abstract CremaHost CremaHost { get; }
 
-        public abstract ITable Table { get; }
+        public abstract object Target { get; }
 
         public abstract DataBase DataBase { get; }
 
@@ -381,7 +381,7 @@ namespace Ntreev.Crema.Services.Data
             this.table.RowChanged += Table_RowChanged;
         }
 
-        protected virtual void OnEndEdit(Authentication authentication, TableInfo tableInfo)
+        protected virtual void OnEndEdit(Authentication authentication, TableInfo[] tableInfos)
         {
             this.domain?.Dispatcher?.Invoke(() =>
             {
@@ -453,7 +453,7 @@ namespace Ntreev.Crema.Services.Data
 
         protected abstract ResultBase<DomainMetaData> BeginDomain(Authentication authentication);
 
-        protected abstract ResultBase<TableInfo> EndDomain(Authentication authentication, Guid domainID);
+        protected abstract ResultBase<TableInfo[]> EndDomain(Authentication authentication, Guid domainID);
 
         protected abstract ResultBase CancelDomain(Authentication authentication, Guid domainID);
 
@@ -488,7 +488,7 @@ namespace Ntreev.Crema.Services.Data
             {
                 if (isCanceled == false)
                 {
-                    this.OnEndEdit(e.Authentication, TableInfo.Empty);
+                    this.OnEndEdit(e.Authentication, new TableInfo[] { });
                     this.OnEditEnded(e);
                 }
                 else
@@ -557,7 +557,7 @@ namespace Ntreev.Crema.Services.Data
             this.EndNew(authentication, column as TableColumn);
         }
 
-        ITable ITableTemplate.Table => this.Table;
+        object ITableTemplate.Target => this.Target;
 
         IDomain ITableTemplate.Domain => this.Domain;
 

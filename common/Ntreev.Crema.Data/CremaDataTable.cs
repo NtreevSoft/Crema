@@ -30,6 +30,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
 using System.Xml;
 
 namespace Ntreev.Crema.Data
@@ -143,36 +144,56 @@ namespace Ntreev.Crema.Data
         {
             this.ValidateInerit(itemName);
 
-            var names = StringUtility.Split(itemName.Name, '.');
             var items = EnumerableUtility.FamilyTree(this, item => item.Childs);
+            var tableList = new List<CremaDataTable>(items.Count());
             foreach (var item in items)
             {
                 var schema = item.GetXmlSchema();
                 var xml = copyData == true ? item.GetXml() : null;
-                var targetNames = StringUtility.Split(item.Name, '.');
-                for (var i = 0; i < names.Length; i++)
-                {
-                    targetNames[i] = names[i];
-                }
-                var targetName = new ItemName(itemName.CategoryPath, string.Join(".", targetNames));
-                this.DataSet.ReadXmlSchemaString(schema, targetName);
+                var newName = new ItemName(itemName.CategoryPath, itemName.Name + item.Name.Substring(this.Name.Length));
+                this.DataSet.ReadXmlSchemaString(schema, newName);
                 if (xml != null)
-                    this.DataSet.ReadXmlString(xml, targetName);
-                var copiedTable = this.DataSet.Tables[targetName.Name];
-                copiedTable.SourceTable = item;
+                    this.DataSet.ReadXmlString(xml, newName);
+                var newTable = this.DataSet.Tables[newName.Name];
+                newTable.SourceTable = item;
+                tableList.Add(newTable);
             }
 
-            var dataTable = this.DataSet.Tables[itemName.Name, itemName.CategoryPath];
             var signatureDate = this.SignatureDateProvider.Provide();
-            dataTable.AttachTemplatedParent(this);
-            dataTable.InternalTableID = Guid.NewGuid();
-            dataTable.InternalCreationInfo = signatureDate;
-            var descendants = EnumerableUtility.Descendants(dataTable, item => item.Childs);
-            foreach (var item in descendants)
+            foreach (var item in tableList)
             {
                 item.InternalTableID = Guid.NewGuid();
+                if (item.Parent == null)
+                    item.InternalCreationInfo = signatureDate;
             }
-            return dataTable;
+
+            return this.DataSet.Tables[itemName.Name, itemName.CategoryPath];
+        }
+
+        public void InheritInternal(ItemName itemName, bool copyData)
+        {
+            var items = EnumerableUtility.FamilyTree(this, item => item.Childs);
+            var tableList = new List<CremaDataTable>(items.Count());
+            foreach (var item in items)
+            {
+                var schema = item.GetXmlSchema();
+                var xml = copyData == true ? item.GetXml() : null;
+                var newName = new ItemName(itemName.CategoryPath, itemName.Name + item.Name.Substring(this.Name.Length));
+                this.DataSet.ReadXmlSchemaString(schema, newName);
+                if (xml != null)
+                    this.DataSet.ReadXmlString(xml, newName);
+                var newTable = this.DataSet.Tables[newName.Name];
+                newTable.SourceTable = item;
+                tableList.Add(newTable);
+            }
+
+            var signatureDate = this.SignatureDateProvider.Provide();
+            foreach (var item in tableList)
+            {
+                item.InternalTableID = Guid.NewGuid();
+                if (item.Parent == null)
+                    item.InternalCreationInfo = signatureDate;
+            }
         }
 
         public CremaDataTable CloneTo(CremaDataSet dataSet)
@@ -187,9 +208,10 @@ namespace Ntreev.Crema.Data
 
         public CremaDataTable Copy()
         {
-            var tables = this.DataSet != null ? this.DataSet.Tables : Enumerable.Empty<CremaDataTable>();
+            var tables = this.Parent != null ? this.Parent.Childs : (this.DataSet != null ? this.DataSet.Tables : Enumerable.Empty<CremaDataTable>());
             var tableName = NameUtility.GenerateNewName("CopiedTable", tables.Select(item => item.TableName));
-            return this.Copy(tableName);
+            var name = CremaDataTable.GenerateName(this.ParentName, tableName);
+            return this.Copy(name);
         }
 
         public CremaDataTable Copy(string name)
@@ -218,36 +240,41 @@ namespace Ntreev.Crema.Data
 
             if (this.DataSet != null)
             {
-                var names = StringUtility.Split(itemName.Name, '.');
-                var items = EnumerableUtility.FamilyTree(this, item => item.Childs);
-                foreach (var item in items)
                 {
-                    var schema = item.GetXmlSchema();
-                    var xml = copyData == true ? item.GetXml() : null;
-                    var targetNames = StringUtility.Split(item.Name, '.');
-                    for (var i = 0; i < names.Length; i++)
+                    var items = EnumerableUtility.FamilyTree(this, item => item.Childs);
+                    var tableList = new List<CremaDataTable>(items.Count());
+                    foreach (var item in items)
                     {
-                        targetNames[i] = names[i];
+                        var schema = item.GetXmlSchema();
+                        var xml = copyData == true ? item.GetXml() : null;
+                        var newName = new ItemName(itemName.CategoryPath, itemName.Name + item.Name.Substring(this.Name.Length));
+                        this.DataSet.ReadXmlSchemaString(schema, newName);
+                        if (xml != null)
+                            this.DataSet.ReadXmlString(xml, newName);
+                        var newTable = this.DataSet.Tables[newName.Name, newName.CategoryPath];
+                        newTable.SourceTable = item;
+                        tableList.Add(newTable);
                     }
-                    var targetName = new ItemName(itemName.CategoryPath, string.Join(".", targetNames));
-                    this.DataSet.ReadXmlSchemaString(schema, targetName);
-                    if (xml != null)
-                        this.DataSet.ReadXmlString(xml, targetName);
-                    var copiedTable = this.DataSet.Tables[targetName.Name];
-                    copiedTable.SourceTable = item;
+
+                    var signatureDate = this.SignatureDateProvider.Provide();
+                    foreach (var item in tableList)
+                    {
+                        item.InternalTemplatedParent = null;
+                        item.InternalTableID = Guid.NewGuid();
+                        item.InternalCreationInfo = signatureDate;
+                    }
                 }
 
                 var dataTable = this.DataSet.Tables[itemName.Name, itemName.CategoryPath];
-                var signatureDate = this.SignatureDateProvider.Provide();
-                dataTable.DetachTemplatedParent();
-                dataTable.InternalTableID = Guid.NewGuid();
-                dataTable.InternalCreationInfo = signatureDate;
-                var descendants = EnumerableUtility.Descendants(dataTable, item => item.Childs);
-                foreach (var item in descendants)
+                if (dataTable.Parent != null)
                 {
-                    item.InternalTableID = Guid.NewGuid();
-                    item.InternalCreationInfo = signatureDate;
+                    foreach (var item in this.DerivedTables.ToArray())
+                    {
+                        var newName = item.ParentName + itemName.Name.Substring(this.ParentName.Length);
+                        dataTable.InheritInternal(new ItemName(item.CategoryPath, newName), copyData);
+                    }
                 }
+
                 return dataTable;
             }
             else
@@ -1333,6 +1360,12 @@ namespace Ntreev.Crema.Data
         {
             get => this.InternalObject.InternalContentsInfo;
             set => this.InternalObject.InternalContentsInfo = value;
+        }
+
+        internal InternalTableBase InternalTemplatedParent
+        {
+            get => this.InternalObject.InternalTemplatedParent;
+            set => this.InternalObject.InternalTemplatedParent = value;
         }
 
         internal Guid InternalTableID

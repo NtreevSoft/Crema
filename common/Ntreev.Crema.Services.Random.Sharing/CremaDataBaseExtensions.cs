@@ -570,7 +570,18 @@ namespace Ntreev.Crema.Services.Random
                 if (table == null || table.TemplatedParent != null || table.TableState != TableState.None)
                     return;
 
-                table.SetTags(authentication, CremaRandomUtility.RandomTags());
+                var template = table.Template;
+                template.BeginEdit(authentication);
+                try
+                {
+                    template.SetTags(authentication, CremaRandomUtility.RandomTags());
+                    template.EndEdit(authentication);
+                }
+                catch
+                {
+                    template.CancelEdit(authentication);
+                    throw;
+                }
             });
         }
 

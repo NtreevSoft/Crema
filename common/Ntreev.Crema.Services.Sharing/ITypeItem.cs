@@ -17,6 +17,7 @@
 
 using Ntreev.Crema.Data;
 using Ntreev.Crema.ServiceModel;
+using Ntreev.Library;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -33,8 +34,6 @@ namespace Ntreev.Crema.Services
         void Move(Authentication authentication, string parentPath);
 
         void Delete(Authentication authentication);
-
-        void SetProperty(Authentication authentication, string propertyName, string value);
 
         LogInfo[] GetLog(Authentication authentication);
 

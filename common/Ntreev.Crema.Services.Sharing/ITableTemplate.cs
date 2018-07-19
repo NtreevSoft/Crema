@@ -49,7 +49,7 @@ namespace Ntreev.Crema.Services
 
         IDomain Domain { get; }
 
-        ITable Table { get; }
+        object Target { get; }
 
         int Count { get; }
 

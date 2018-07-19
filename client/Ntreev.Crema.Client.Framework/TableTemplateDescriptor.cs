@@ -76,7 +76,10 @@ namespace Ntreev.Crema.Client.Framework
                 this.template.EditEnded += Template_EditEnded;
                 this.template.EditCanceled += Template_EditCanceled;
                 this.template.Changed += Template_Changed;
-                this.template.Table.TableInfoChanged += Table_TableInfoChanged;
+                if (this.template.Target is ITable table)
+                {
+                    table.TableInfoChanged += Table_TableInfoChanged;
+                }
             }
         }
 
@@ -157,8 +160,11 @@ namespace Ntreev.Crema.Client.Framework
 
         private async void Table_TableInfoChanged(object sender, EventArgs e)
         {
-            this.tableInfo = this.template.Table.TableInfo;
-            await this.RefreshAsync();
+            if (this.template.Target is ITable table)
+            {
+                this.tableInfo = table.TableInfo;
+                await this.RefreshAsync();
+            }
         }
 
         #region ITableTemplateDescriptor

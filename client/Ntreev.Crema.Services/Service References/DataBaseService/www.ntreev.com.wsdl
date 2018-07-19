@@ -118,12 +118,6 @@
   <wsdl:message name="IDataBaseService_UnlockTableItem_OutputMessage">
     <wsdl:part name="parameters" element="tns:UnlockTableItemResponse" />
   </wsdl:message>
-  <wsdl:message name="IDataBaseService_SetTableItemProperty_InputMessage">
-    <wsdl:part name="parameters" element="tns:SetTableItemProperty" />
-  </wsdl:message>
-  <wsdl:message name="IDataBaseService_SetTableItemProperty_OutputMessage">
-    <wsdl:part name="parameters" element="tns:SetTableItemPropertyResponse" />
-  </wsdl:message>
   <wsdl:message name="IDataBaseService_GetTableItemLog_InputMessage">
     <wsdl:part name="parameters" element="tns:GetTableItemLog" />
   </wsdl:message>
@@ -310,12 +304,6 @@
   <wsdl:message name="IDataBaseService_UnlockTypeItem_OutputMessage">
     <wsdl:part name="parameters" element="tns:UnlockTypeItemResponse" />
   </wsdl:message>
-  <wsdl:message name="IDataBaseService_SetTypeItemProperty_InputMessage">
-    <wsdl:part name="parameters" element="tns:SetTypeItemProperty" />
-  </wsdl:message>
-  <wsdl:message name="IDataBaseService_SetTypeItemProperty_OutputMessage">
-    <wsdl:part name="parameters" element="tns:SetTypeItemPropertyResponse" />
-  </wsdl:message>
   <wsdl:message name="IDataBaseService_GetTypeItemLog_InputMessage">
     <wsdl:part name="parameters" element="tns:GetTypeItemLog" />
   </wsdl:message>
@@ -458,10 +446,6 @@
       <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseService/UnlockTableItem" message="tns:IDataBaseService_UnlockTableItem_InputMessage" />
       <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseService/UnlockTableItemResponse" message="tns:IDataBaseService_UnlockTableItem_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="SetTableItemProperty">
-      <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseService/SetTableItemProperty" message="tns:IDataBaseService_SetTableItemProperty_InputMessage" />
-      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseService/SetTableItemPropertyResponse" message="tns:IDataBaseService_SetTableItemProperty_OutputMessage" />
-    </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetTableItemLog">
       <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseService/GetTableItemLog" message="tns:IDataBaseService_GetTableItemLog_InputMessage" />
       <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseService/GetTableItemLogResponse" message="tns:IDataBaseService_GetTableItemLog_OutputMessage" />
@@ -585,10 +569,6 @@
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UnlockTypeItem">
       <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseService/UnlockTypeItem" message="tns:IDataBaseService_UnlockTypeItem_InputMessage" />
       <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseService/UnlockTypeItemResponse" message="tns:IDataBaseService_UnlockTypeItem_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="SetTypeItemProperty">
-      <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseService/SetTypeItemProperty" message="tns:IDataBaseService_SetTypeItemProperty_InputMessage" />
-      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseService/SetTypeItemPropertyResponse" message="tns:IDataBaseService_SetTypeItemProperty_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetTypeItemLog">
       <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseService/GetTypeItemLog" message="tns:IDataBaseService_GetTypeItemLog_InputMessage" />

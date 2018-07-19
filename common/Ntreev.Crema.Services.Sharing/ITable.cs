@@ -35,8 +35,6 @@ namespace Ntreev.Crema.Services
 
         void Delete(Authentication authentication);
 
-        void SetTags(Authentication authentication, TagInfo tags);
-
         ITable Copy(Authentication authentication, string newTableName, string categoryPath, bool copyContent);
 
         ITable Inherit(Authentication authentication, string newTableName, string categoryPath, bool copyContent);
@@ -76,8 +74,6 @@ namespace Ntreev.Crema.Services
         ITableTemplate Template { get; }
 
         ITableContent Content { get; }
-
-        TagInfo Tags { get; }
 
         event EventHandler Renamed;
 

@@ -778,5 +778,30 @@ namespace Ntreev.Crema.Data.Test
             Assert.AreNotEqual(dataTable2.CreationInfo, copiedTable2.CreationInfo);
             Assert.AreNotEqual(dataTable3.CreationInfo, copiedTable3.CreationInfo);
         }
+
+        [TestMethod]
+        public void CopyChildTable()
+        {
+            var dataSet = new CremaDataSet();
+            var dataTable = dataSet.Tables.Add();
+            var childTable1 = dataTable.Childs.Add();
+            var derivedTable = dataTable.Inherit();
+            derivedTable.CategoryPath = RandomUtility.NextCategoryPath();
+            var childTable2 = childTable1.Copy();
+
+            var derivedChild1 = derivedTable.Childs[childTable1.TableName];
+            var derivedChild2 = derivedTable.Childs[childTable2.TableName];
+
+            Assert.AreEqual(derivedTable.CategoryPath, derivedChild1.CategoryPath);
+            Assert.AreEqual(derivedTable.CategoryPath, derivedChild2.CategoryPath);
+
+            Assert.AreEqual(dataTable.Childs.Count, derivedTable.Childs.Count);
+
+            Assert.AreEqual(childTable1.TableName, derivedChild1.TableName);
+            Assert.AreEqual(childTable2.TableName, derivedChild2.TableName);
+
+            Assert.AreEqual(childTable1.Name, derivedChild1.TemplatedParentName);
+            Assert.AreEqual(childTable2.Name, derivedChild2.TemplatedParentName);
+        }
     }
 }

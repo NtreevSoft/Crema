@@ -34,43 +34,12 @@ namespace Ntreev.Crema.Services.Data
     class Table : TableBase<Table, TableCategory, TableCollection, TableCategoryCollection, TableContext>,
         ITable, ITableItem, IInfoProvider, IStateProvider
     {
-        private readonly List<NewChildTableTemplate> templateList = new List<NewChildTableTemplate>();
+        private readonly List<NewTableTemplate> templateList = new List<NewTableTemplate>();
 
         public Table()
         {
             this.Template = new TableTemplate(this);
             this.Content = new TableContent(this);
-        }
-
-        public Table AddNew(Authentication authentication, CremaTemplate template)
-        {
-            try
-            {
-                this.DataBase.ValidateBeginInDataBase(authentication);
-
-                var dataSet = template.TargetTable.DataSet.Copy();
-                var name = template.Name;
-                var tableName = template.TableName;
-                var childName = CremaDataTable.GenerateName(base.Name, tableName);
-                this.Container.InvokeTableCreate(authentication, name, dataSet, null);
-                var childTable = this.Container.AddNew(authentication, childName, template.CategoryPath);
-                childTable.Initialize(dataSet.Tables[childTable.Name, childTable.Category.Path].TableInfo);
-                foreach (var item in this.DerivedTables)
-                {
-                    var derivedChild = this.Container.AddNew(authentication, CremaDataTable.GenerateName(item.Name, tableName), item.Category.Path);
-                    derivedChild.TemplatedParent = childTable;
-                    derivedChild.Initialize(dataSet.Tables[derivedChild.Name, derivedChild.Category.Path].TableInfo);
-                }
-                this.Sign(authentication);
-                var items = EnumerableUtility.Friends(childTable, childTable.DerivedTables).ToArray();
-                this.Container.InvokeTablesCreatedEvent(authentication, items, dataSet);
-                return childTable;
-            }
-            catch (Exception e)
-            {
-                this.CremaHost.Error(e);
-                throw;
-            }
         }
 
         public AccessType GetAccessType(Authentication authentication)
@@ -281,70 +250,6 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public void SetProperty(Authentication authentication, string propertyName, string value)
-        {
-            try
-            {
-                this.DataBase.ValidateBeginInDataBase(authentication);
-                this.CremaHost.DebugMethod(authentication, this, nameof(SetProperty), this, propertyName, value);
-                if (propertyName == CremaSchema.Tags)
-                {
-                    this.SetTags(authentication, (TagInfo)value);
-                }
-                else if (propertyName == CremaSchema.Comment)
-                {
-                    this.SetComment(authentication, value);
-                }
-            }
-            catch (Exception e)
-            {
-                this.CremaHost.Error(e);
-                throw;
-            }
-        }
-
-        public void SetTags(Authentication authentication, TagInfo tags)
-        {
-            try
-            {
-                this.DataBase.ValidateBeginInDataBase(authentication);
-                this.CremaHost.DebugMethod(authentication, this, nameof(SetTags), this, tags);
-                this.ValidateSetTags(authentication, tags);
-                this.Sign(authentication);
-                var items = EnumerableUtility.Friends(this, this.Childs).SelectMany(item => item.DerivedTables).ToArray();
-                var dataSet = this.ReadAll(authentication);
-                this.Container.InvokeTableSetTags(authentication, this, tags, dataSet);
-                this.UpdateTags(tags);
-                this.Container.InvokeTablesTemplateChangedEvent(authentication, items, dataSet);
-            }
-            catch (Exception e)
-            {
-                this.CremaHost.Error(e);
-                throw;
-            }
-        }
-
-        public void SetComment(Authentication authentication, string comment)
-        {
-            try
-            {
-                this.DataBase.ValidateBeginInDataBase(authentication);
-                this.CremaHost.DebugMethod(authentication, this, nameof(SetComment), this, comment);
-                this.ValidateSetComment(authentication, comment);
-                this.Sign(authentication);
-                var items = EnumerableUtility.Friends(this, this.Childs).SelectMany(item => item.DerivedTables).ToArray();
-                var dataSet = this.ReadAll(authentication);
-                this.Container.InvokeTableSetComment(authentication, this, comment, dataSet);
-                this.UpdateComment(comment);
-                this.Container.InvokeTablesTemplateChangedEvent(authentication, items, dataSet);
-            }
-            catch (Exception e)
-            {
-                this.CremaHost.Error(e);
-                throw;
-            }
-        }
-
         public Table Copy(Authentication authentication, string newTableName, string categoryPath, bool copyContent)
         {
             try
@@ -375,14 +280,14 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public NewChildTableTemplate NewChild(Authentication authentication)
+        public NewTableTemplate NewChild(Authentication authentication)
         {
             try
             {
                 this.DataBase.ValidateBeginInDataBase(authentication);
                 this.CremaHost.DebugMethod(authentication, this, nameof(NewChild), this);
                 this.ValidateNewChild(authentication);
-                var template = new NewChildTableTemplate(this);
+                var template = new NewTableTemplate(this);
                 template.BeginEdit(authentication);
                 return template;
             }
@@ -592,20 +497,6 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public void ValidateSetTags(Authentication authentication, TagInfo tags)
-        {
-            if (this.TemplatedParent != null)
-                throw new InvalidOperationException(Resources.Exception_InheritedTableCannotSetTags);
-            this.Template.ValidateBeginEdit(authentication);
-        }
-
-        public void ValidateSetComment(Authentication authentication, string comment)
-        {
-            if (this.TemplatedParent != null)
-                throw new InvalidOperationException(Resources.Exception_InheritedTableCannotSetComment);
-            this.Template.ValidateBeginEdit(authentication);
-        }
-
         public void ValidateNewChild(Authentication authentication)
         {
             //if (this.Parent != null)
@@ -631,7 +522,7 @@ namespace Ntreev.Crema.Services.Data
             base.Unlock(authentication);
         }
 
-        public void Attach(NewChildTableTemplate template)
+        public void Attach(NewTableTemplate template)
         {
             template.EditCanceled += Template_EditCanceled;
             template.EditEnded += Template_EditEnded;
@@ -842,12 +733,12 @@ namespace Ntreev.Crema.Services.Data
 
         private void Template_EditEnded(object sender, EventArgs e)
         {
-            this.templateList.Remove(sender as NewChildTableTemplate);
+            this.templateList.Remove(sender as NewTableTemplate);
         }
 
         private void Template_EditCanceled(object sender, EventArgs e)
         {
-            this.templateList.Remove(sender as NewChildTableTemplate);
+            this.templateList.Remove(sender as NewTableTemplate);
         }
 
         private void Sign(Authentication authentication)

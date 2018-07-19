@@ -51,7 +51,21 @@ namespace Ntreev.Crema.Client.Tables.MenuItems.TreeViewItems.TagMenus
             {
                 if (parameter is ITableDescriptor descriptor && descriptor.Target is ITable table)
                 {
-                    await table.Dispatcher.InvokeAsync(() => table.SetTags(this.authenticator, TagInfoUtility.Client));
+                    await table.Dispatcher.InvokeAsync(() =>
+                    {
+                        var template = table.Template;
+                        template.BeginEdit(authenticator);
+                        try
+                        {
+                            template.SetTags(authenticator, TagInfoUtility.Client);
+                            template.EndEdit(authenticator);
+                        }
+                        catch
+                        {
+                            template.CancelEdit(authenticator);
+                            throw;
+                        }
+                    });
                 }
             }
             catch (Exception e)

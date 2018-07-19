@@ -16,6 +16,7 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Ntreev.Crema.ServiceModel;
+using Ntreev.Library;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +35,8 @@ namespace Ntreev.Crema.Services
         void SetTypeName(Authentication authentication, string value);
 
         void SetIsFlag(Authentication authentication, bool value);
+
+        void SetTags(Authentication authentication, TagInfo tags);
 
         void SetComment(Authentication authentication, string value);
 
@@ -68,5 +71,7 @@ namespace Ntreev.Crema.Services
         event EventHandler EditCanceled;
 
         event EventHandler Changed;
+
+        
     }
 }

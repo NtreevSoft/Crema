@@ -26,6 +26,7 @@ namespace Ntreev.Crema.Services.Data
     class NewChildTableTemplate : TableTemplateBase
     {
         private Table parent;
+        private TableCategory category;
         private Table table;
 
         public NewChildTableTemplate(Table parent)
@@ -34,7 +35,7 @@ namespace Ntreev.Crema.Services.Data
             this.IsNew = true;
         }
 
-        public override ITable Table
+        public override ITable Target
         {
             get
             {

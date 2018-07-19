@@ -25,62 +25,91 @@ namespace Ntreev.Crema.Services.Data
 {
     class NewTableTemplate : TableTemplateBase
     {
-        private TableCategory category;
-        private Table table;
+        private object parent;
+        private Table[] tables;
 
         public NewTableTemplate(TableCategory category)
         {
-            this.category = category;
+            this.parent = category ?? throw new ArgumentNullException(nameof(category));
+            this.DomainContext = category.GetService(typeof(DomainContext)) as DomainContext;
+            this.ItemPath = category.Path;
+            this.CremaHost = category.CremaHost;
+            this.Dispatcher = category?.Dispatcher;
+            this.DataBase = category.DataBase;
+            this.Permission = category;
+            this.Service = category.Service;
             this.IsNew = true;
         }
 
-        public override ITable Table
+        public NewTableTemplate(Table parent)
+        {
+            this.parent = parent ?? throw new ArgumentNullException(nameof(parent));
+            this.DomainContext = parent.GetService(typeof(DomainContext)) as DomainContext;
+            this.ItemPath = parent.Path;
+            this.CremaHost = parent.CremaHost;
+            this.Dispatcher = parent?.Dispatcher;
+            this.DataBase = parent.DataBase;
+            this.Permission = parent;
+            this.Service = parent.Service;
+            this.IsNew = true;
+        }
+
+        public override object Target
         {
             get
             {
                 this.Dispatcher?.VerifyAccess();
-                return this.table;
+                return this.tables;
             }
         }
 
-        public override DomainContext DomainContext => this.category.GetService(typeof(DomainContext)) as DomainContext;
+        public override DomainContext DomainContext { get; }
 
-        public override string ItemPath => this.category.Path;
+        public override string ItemPath { get; }
 
-        public override CremaHost CremaHost => this.category.CremaHost;
+        public override CremaHost CremaHost { get; }
 
-        public override CremaDispatcher Dispatcher => this.category?.Dispatcher;
+        public override CremaDispatcher Dispatcher { get; }
 
-        public override DataBase DataBase => this.category.DataBase;
+        public override DataBase DataBase { get; }
 
-        public override IPermission Permission => this.category;
+        public override IPermission Permission { get; }
 
-        public IDataBaseService Service => this.category.Service;
+        public IDataBaseService Service { get; }
 
         protected override void OnBeginEdit(Authentication authentication, DomainMetaData metaData)
         {
             base.OnBeginEdit(authentication, metaData);
         }
 
-        protected override void OnEndEdit(Authentication authentication, TableInfo tableInfo)
+        protected override void OnEndEdit(Authentication authentication, TableInfo[] tableInfos)
         {
-            base.OnEndEdit(authentication, tableInfo);
-            this.table = this.category.Context.Tables.AddNew(authentication, tableInfo);
-            this.category = null;
+            base.OnEndEdit(authentication, tableInfos);
+            if (this.parent is TableCategory category)
+            {
+                var tables = category.GetService(typeof(TableCollection)) as TableCollection;
+                this.tables = tables.AddNew(authentication, tableInfos);
+            }
+            else if (this.parent is Table table)
+            {
+                var tables = table.GetService(typeof(TableCollection)) as TableCollection;
+                this.tables = tables.AddNew(authentication, tableInfos);
+            }
+            this.parent = null;
         }
 
         protected override void OnCancelEdit(Authentication authentication)
         {
             base.OnCancelEdit(authentication);
-            this.category = null;
+            this.parent = null;
         }
 
         protected override ResultBase<DomainMetaData> BeginDomain(Authentication authentication)
         {
-            return this.Service.BeginNewTable(this.category.Path);
+            return this.Service.BeginNewTable(this.ItemPath);
         }
 
-        protected override ResultBase<TableInfo> EndDomain(Authentication authentication, Guid domainID)
+        protected override ResultBase<TableInfo[]> EndDomain(Authentication authentication, Guid domainID)
         {
             return this.Service.EndTableTemplateEdit(domainID);
         }

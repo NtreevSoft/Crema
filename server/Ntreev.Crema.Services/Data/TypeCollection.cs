@@ -178,21 +178,6 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public void InvokeTypeSetTags(Authentication authentication, Type type, TagInfo tags, CremaDataSet dataSet)
-        {
-            var message = EventMessageBuilder.ChangeTypeTemplate(authentication, type.Name);
-            try
-            {
-                this.Repository.SetTypeTags(dataSet, type, tags);
-                this.Repository.Commit(authentication, message);
-            }
-            catch
-            {
-                this.Repository.Revert();
-                throw;
-            }
-        }
-
         public void InvokeTypesCreatedEvent(Authentication authentication, Type[] types, CremaDataSet dataSet)
         {
             var args = types.Select(item => (object)item.TypeInfo).ToArray();

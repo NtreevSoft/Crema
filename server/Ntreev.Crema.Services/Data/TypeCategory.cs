@@ -18,6 +18,7 @@
 using Ntreev.Crema.Data;
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services.Properties;
+using Ntreev.Library;
 using Ntreev.Library.Linq;
 using Ntreev.Library.ObjectModel;
 using System;
@@ -337,21 +338,6 @@ namespace Ntreev.Crema.Services.Data
                 var service = this.GetService(typeof(DataFindService)) as DataFindService;
                 var result = service.Dispatcher.Invoke(() => service.FindFromType(this.DataBase.ID, items, text, options));
                 return result;
-            }
-            catch (Exception e)
-            {
-                this.CremaHost.Error(e);
-                throw;
-            }
-        }
-
-        public void SetProperty(Authentication authentication, string propertyName, string value)
-        {
-            try
-            {
-                this.DataBase.ValidateBeginInDataBase(authentication);
-                this.CremaHost.DebugMethod(authentication, this, nameof(SetProperty), this, propertyName, value);
-                this.Sign(authentication);
             }
             catch (Exception e)
             {

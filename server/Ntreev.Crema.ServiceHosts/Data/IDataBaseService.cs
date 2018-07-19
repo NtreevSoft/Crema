@@ -89,9 +89,6 @@ namespace Ntreev.Crema.ServiceHosts.Data
         ResultBase UnlockTableItem(string itemPath);
 
         [OperationContract]
-        ResultBase SetTableItemProperty(string itemPath, string propertyName, string value);
-
-        [OperationContract]
         ResultBase<LogInfo[]> GetTableItemLog(string itemPath);
 
         [OperationContract]
@@ -125,7 +122,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
         ResultBase<DomainMetaData> BeginNewTable(string itemPath);
 
         [OperationContract(IsInitiating = true)]
-        ResultBase<TableInfo> EndTableTemplateEdit(Guid domainID);
+        ResultBase<TableInfo[]> EndTableTemplateEdit(Guid domainID);
 
         [OperationContract]
         ResultBase CancelTableTemplateEdit(Guid domainID);
@@ -183,9 +180,6 @@ namespace Ntreev.Crema.ServiceHosts.Data
 
         [OperationContract]
         ResultBase UnlockTypeItem(string itemPath);
-
-        [OperationContract]
-        ResultBase SetTypeItemProperty(string itemPath, string propertyName, string value);
 
         [OperationContract]
         ResultBase<LogInfo[]> GetTypeItemLog(string itemPath);

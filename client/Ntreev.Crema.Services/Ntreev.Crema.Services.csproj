@@ -66,7 +66,7 @@
     <Compile Include="Data\DataBaseTransaction.cs" />
     <Compile Include="Data\DataServiceFactory.cs" />
     <Compile Include="Data\DomainBasedRow.cs" />
-    <Compile Include="Data\NewChildTableTemplate.cs" />
+    <None Include="Data\NewChildTableTemplate.cs" />
     <Compile Include="Data\NewTypeTemplate.cs" />
     <Compile Include="Data\TableColumn.cs" />
     <Compile Include="Data\TableContent.cs" />
@@ -324,6 +324,9 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\DataSources\" />
   </ItemGroup>
   <Import Project="..\..\common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems" Label="Shared" />
   <Import Project="..\..\common\Ntreev.Crema.Services.Sharing\Ntreev.Crema.Services.Sharing.projitems" Label="Shared" />

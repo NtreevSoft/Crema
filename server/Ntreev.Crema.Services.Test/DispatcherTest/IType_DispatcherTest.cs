@@ -85,13 +85,6 @@ namespace Ntreev.Crema.Services.Test.DispatcherTest
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void SetTags()
-        {
-            type.SetTags(authentication, TagInfo.All);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Copy()
         {
             type.Copy(authentication, RandomUtility.NextIdentifier(), PathUtility.Separator);
@@ -177,13 +170,6 @@ namespace Ntreev.Crema.Services.Test.DispatcherTest
         public void Template()
         {
             Console.Write(type.Template);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void Tags()
-        {
-            Console.Write(type.Tags);
         }
 
         [TestMethod]
