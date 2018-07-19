@@ -66,7 +66,6 @@
     <Compile Include="Data\DataBaseTransaction.cs" />
     <Compile Include="Data\DataServiceFactory.cs" />
     <Compile Include="Data\DomainBasedRow.cs" />
-    <None Include="Data\NewChildTableTemplate.cs" />
     <Compile Include="Data\NewTypeTemplate.cs" />
     <Compile Include="Data\TableColumn.cs" />
     <Compile Include="Data\TableContent.cs" />
