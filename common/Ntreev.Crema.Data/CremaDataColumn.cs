@@ -18,21 +18,14 @@
 using Ntreev.Crema.Data.Properties;
 using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Library;
-using Ntreev.Library.ObjectModel;
 using System;
-using System.Linq;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Xml;
-using Ntreev.Crema.Data.Xml;
 
 namespace Ntreev.Crema.Data
 {
     public class CremaDataColumn : INotifyPropertyChanged
     {
-        private readonly InternalDataColumn column;
-
         public CremaDataColumn()
             : this(string.Empty, typeof(string))
         {
@@ -47,37 +40,37 @@ namespace Ntreev.Crema.Data
 
         public CremaDataColumn(string columnName, Type dataType)
         {
-            this.column = new InternalDataColumn(this, columnName, dataType);
+            this.InternalObject = new InternalDataColumn(this, columnName, dataType);
         }
 
         public CremaDataColumn(string columnName, CremaDataType dataType)
         {
-            this.column = new InternalDataColumn(this, columnName, (InternalDataType)dataType);
+            this.InternalObject = new InternalDataColumn(this, columnName, (InternalDataType)dataType);
         }
 
         internal CremaDataColumn(InternalDataColumn dataColumn)
         {
-            this.column = dataColumn;
+            this.InternalObject = dataColumn;
         }
 
         public override string ToString()
         {
-            return this.column.ToString();
+            return this.InternalObject.ToString();
         }
 
         public bool VerifyUnique()
         {
-            return this.column.VerifyUnique();
+            return this.InternalObject.VerifyUnique();
         }
 
         public bool VerifyNotAllowNull()
         {
-            return this.column.VerifyNotAllowNull();
+            return this.InternalObject.VerifyNotAllowNull();
         }
 
         public object ConvertFromString(string textValue)
         {
-            return this.column.ConvertFromString(textValue);
+            return this.InternalObject.ConvertFromString(textValue);
         }
 
         public static void ValidateColumnName(string columnName)
@@ -104,7 +97,7 @@ namespace Ntreev.Crema.Data
 
         public bool AllowDBNull
         {
-            get { return this.InternalObject.AllowDBNull; }
+            get => this.InternalObject.AllowDBNull;
             set
             {
                 this.InternalObject.AllowDBNull = value;
@@ -114,7 +107,7 @@ namespace Ntreev.Crema.Data
 
         public bool AutoIncrement
         {
-            get { return this.InternalObject.AutoIncrement; }
+            get => this.InternalObject.AutoIncrement;
             set
             {
                 this.InternalObject.AutoIncrement = value;
@@ -124,7 +117,7 @@ namespace Ntreev.Crema.Data
 
         public string ColumnName
         {
-            get { return this.InternalObject.ColumnName; }
+            get => this.InternalObject.ColumnName;
             set
             {
                 this.InternalObject.ColumnName = value;
@@ -134,7 +127,7 @@ namespace Ntreev.Crema.Data
 
         public Type DataType
         {
-            get { return this.InternalObject.DataType; }
+            get => this.InternalObject.DataType;
             set
             {
                 this.InternalObject.DataType = value;
@@ -146,7 +139,7 @@ namespace Ntreev.Crema.Data
 
         public CremaDataType CremaType
         {
-            get { return (CremaDataType)this.InternalObject.CremaType; }
+            get => (CremaDataType)this.InternalObject.CremaType;
             set
             {
                 this.InternalObject.CremaType = (InternalDataType)value;
@@ -158,7 +151,7 @@ namespace Ntreev.Crema.Data
 
         public object DefaultValue
         {
-            get { return this.InternalObject.DefaultValue; }
+            get => this.InternalObject.DefaultValue;
             set
             {
                 this.InternalObject.DefaultValue = value;
@@ -168,7 +161,7 @@ namespace Ntreev.Crema.Data
 
         public string Expression
         {
-            get { return this.InternalObject.Expression; }
+            get => this.InternalObject.Expression;
             set
             {
                 this.InternalObject.Expression = value;
@@ -178,7 +171,7 @@ namespace Ntreev.Crema.Data
 
         public string Validation
         {
-            get { return this.InternalObject.Validation; }
+            get => this.InternalObject.Validation;
             set
             {
                 this.InternalObject.Validation = value;
@@ -186,14 +179,11 @@ namespace Ntreev.Crema.Data
             }
         }
 
-        public PropertyCollection ExtendedProperties
-        {
-            get { return this.column.ExtendedProperties; }
-        }
+        public PropertyCollection ExtendedProperties => this.InternalObject.ExtendedProperties;
 
         public bool Unique
         {
-            get { return this.InternalObject.Unique; }
+            get => this.InternalObject.Unique;
             set
             {
                 this.InternalObject.Unique = value;
@@ -203,7 +193,7 @@ namespace Ntreev.Crema.Data
 
         public bool ReadOnly
         {
-            get { return this.InternalObject.ReadOnly; }
+            get => this.InternalObject.ReadOnly;
             set
             {
                 this.InternalObject.ReadOnly = value;
@@ -213,7 +203,7 @@ namespace Ntreev.Crema.Data
 
         public string Comment
         {
-            get { return this.InternalObject.Comment; }
+            get => this.InternalObject.Comment;
             set
             {
                 this.InternalObject.Comment = value;
@@ -223,7 +213,7 @@ namespace Ntreev.Crema.Data
 
         public bool IsKey
         {
-            get { return this.InternalObject.IsKey; }
+            get => this.InternalObject.IsKey;
             set
             {
                 this.InternalObject.IsKey = value;
@@ -235,24 +225,21 @@ namespace Ntreev.Crema.Data
         {
             get
             {
-                if (this.column.Table == null)
+                if (this.InternalObject.Table == null)
                     return null;
-                return (this.column.Table as InternalDataTable).Target;
+                return (this.InternalObject.Table as InternalDataTable).Target;
             }
         }
 
         public SignatureDate CreationInfo
         {
-            get { return this.InternalObject.CreationInfo; }
-            internal set
-            {
-                this.InternalObject.CreationInfo = value;
-            }
+            get => this.InternalObject.CreationInfo;
+            internal set => this.InternalObject.CreationInfo = value;
         }
 
         public SignatureDate ModificationInfo
         {
-            get { return this.InternalObject.ModificationInfo; }
+            get => this.InternalObject.ModificationInfo;
             internal set
             {
                 if (this.Table != null)
@@ -265,13 +252,13 @@ namespace Ntreev.Crema.Data
 
         public Guid ColumnID
         {
-            get { return this.InternalObject.ColumnID; }
-            internal set { this.InternalObject.ColumnID = value; }
+            get => this.InternalObject.ColumnID;
+            internal set => this.InternalObject.ColumnID = value;
         }
 
         public TagInfo Tags
         {
-            get { return this.InternalObject.Tags; }
+            get => this.InternalObject.Tags;
             set
             {
                 this.InternalObject.Tags = value;
@@ -296,29 +283,23 @@ namespace Ntreev.Crema.Data
             }
         }
 
-        public string DefaultValueString
-        {
-            get { return this.column.DefaultString; }
-        }
+        public string DefaultValueString => this.InternalObject.DefaultString;
 
         public string Namespace
         {
             get
             {
-                if (this.Table != null && this.Table.Namespace != this.column.Namespace)
+                if (this.Table != null && this.Table.Namespace != this.InternalObject.Namespace)
                     throw new CremaDataException();
-                return this.column.Namespace;
+                return this.InternalObject.Namespace;
             }
         }
 
-        public ColumnInfo ColumnInfo
-        {
-            get { return this.column.ColumnInfo; }
-        }
+        public ColumnInfo ColumnInfo => this.InternalObject.ColumnInfo;
 
         public int Index
         {
-            get { return this.InternalObject.Index; }
+            get => this.InternalObject.Index;
             set
             {
                 this.InternalObject.Index = value;
@@ -328,7 +309,7 @@ namespace Ntreev.Crema.Data
 
         public string DataTypeName
         {
-            get { return this.InternalObject.DataTypeName; }
+            get => this.InternalObject.DataTypeName;
             set
             {
                 this.InternalObject.DataTypeName = value;
@@ -370,115 +351,112 @@ namespace Ntreev.Crema.Data
 
         internal Guid InternalColumnID
         {
-            get { return this.InternalObject.InternalColumnID; }
-            set { this.InternalObject.InternalColumnID = value; }
+            get => this.InternalObject.InternalColumnID;
+            set => this.InternalObject.InternalColumnID = value;
         }
 
         internal bool InternalAllowDBNull
         {
-            get { return this.InternalObject.InternalAllowDBNull; }
-            set { this.InternalObject.InternalAllowDBNull = value; }
+            get => this.InternalObject.InternalAllowDBNull;
+            set => this.InternalObject.InternalAllowDBNull = value;
         }
 
         internal bool InternalAutoIncrement
         {
-            get { return this.InternalObject.InternalAutoIncrement; }
-            set { this.InternalObject.InternalAutoIncrement = value; }
+            get => this.InternalObject.InternalAutoIncrement;
+            set => this.InternalObject.InternalAutoIncrement = value;
         }
 
         internal string InternalColumnName
         {
-            get { return this.InternalObject.InternalColumnName; }
-            set { this.InternalObject.InternalColumnName = value; }
+            get => this.InternalObject.InternalColumnName;
+            set => this.InternalObject.InternalColumnName = value;
         }
 
         internal Type InternalDataType
         {
-            get { return this.InternalObject.InternalDataType; }
-            set { this.InternalObject.InternalDataType = value; }
+            get => this.InternalObject.InternalDataType;
+            set => this.InternalObject.InternalDataType = value;
         }
 
         internal InternalDataType InternalCremaType
         {
-            get { return this.InternalObject.InternalCremaType; }
-            set { this.InternalObject.InternalCremaType = value; }
+            get => this.InternalObject.InternalCremaType;
+            set => this.InternalObject.InternalCremaType = value;
         }
 
         internal bool InternalIsKey
         {
-            get { return this.InternalObject.InternalIsKey; }
-            set { this.InternalObject.InternalIsKey = value; }
+            get => this.InternalObject.InternalIsKey;
+            set => this.InternalObject.InternalIsKey = value;
         }
 
         internal bool InternalUnique
         {
-            get { return this.InternalObject.InternalUnique; }
-            set { this.InternalObject.InternalUnique = value; }
+            get => this.InternalObject.InternalUnique;
+            set => this.InternalObject.InternalUnique = value;
         }
 
         internal string InternalExpression
         {
-            get { return this.InternalObject.InternalExpression; }
-            set { this.InternalObject.InternalExpression = value; }
+            get => this.InternalObject.InternalExpression;
+            set => this.InternalObject.InternalExpression = value;
         }
 
         internal object InternalDefaultValue
         {
-            get { return this.InternalObject.InternalDefaultValue; }
-            set { this.InternalObject.InternalDefaultValue = value; }
+            get => this.InternalObject.InternalDefaultValue;
+            set => this.InternalObject.InternalDefaultValue = value;
         }
 
         internal string InternalComment
         {
-            get { return this.InternalObject.InternalComment; }
-            set { this.InternalObject.InternalComment = value; }
+            get => this.InternalObject.InternalComment;
+            set => this.InternalObject.InternalComment = value;
         }
 
         internal string InternalValidation
         {
-            get { return this.InternalObject.InternalValidation; }
-            set { this.InternalObject.InternalValidation = value; }
+            get => this.InternalObject.InternalValidation;
+            set => this.InternalObject.InternalValidation = value;
         }
 
         internal bool InternalReadOnly
         {
-            get { return this.InternalObject.InternalReadOnly; }
-            set { this.InternalObject.InternalReadOnly = value; }
+            get => this.InternalObject.InternalReadOnly;
+            set => this.InternalObject.InternalReadOnly = value;
         }
 
         internal int InternalIndex
         {
-            get { return this.InternalObject.InternalIndex; }
-            set { this.InternalObject.InternalIndex = value; }
+            get => this.InternalObject.InternalIndex;
+            set => this.InternalObject.InternalIndex = value;
         }
 
         internal TagInfo InternalTags
         {
-            get { return this.InternalObject.InternalTags; }
-            set { this.InternalObject.InternalTags = value; }
+            get => this.InternalObject.InternalTags;
+            set => this.InternalObject.InternalTags = value;
         }
 
         internal string InternalDataTypeName
         {
-            get { return this.InternalObject.InternalDataTypeName; }
-            set { this.InternalObject.InternalDataTypeName = value; }
+            get => this.InternalObject.InternalDataTypeName;
+            set => this.InternalObject.InternalDataTypeName = value;
         }
 
         internal SignatureDate InternalCreationInfo
         {
-            get { return this.InternalObject.InternalCreationInfo; }
-            set { this.InternalObject.InternalCreationInfo = value; }
+            get => this.InternalObject.InternalCreationInfo;
+            set => this.InternalObject.InternalCreationInfo = value;
         }
 
         internal SignatureDate InternalModificationInfo
         {
-            get { return this.InternalObject.InternalModificationInfo; }
-            set { this.InternalObject.InternalModificationInfo = value; }
+            get => this.InternalObject.InternalModificationInfo;
+            set => this.InternalObject.InternalModificationInfo = value;
         }
 
-        internal InternalDataColumn InternalObject
-        {
-            get { return this.column; }
-        }
+        internal InternalDataColumn InternalObject { get; }
     }
 }

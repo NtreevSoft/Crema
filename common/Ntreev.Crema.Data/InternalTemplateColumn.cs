@@ -15,21 +15,15 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Library;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Data
 {
     class InternalTemplateColumn : InternalRowBase<InternalTemplate, InternalTemplateColumn>
     {
         private readonly InternalTemplate table;
-        private InternalDataColumn targetColumn;
 
         public InternalTemplateColumn(CremaTemplateColumnBuilder builder, InternalTemplate table)
             : base(table, builder.InternalBuilder)
@@ -53,7 +47,7 @@ namespace Ntreev.Crema.Data
             this.Tags = targetColumn.Tags;
             this.CreationInfo = targetColumn.CreationInfo;
             this.ModificationInfo = targetColumn.ModificationInfo;
-            this.targetColumn = targetColumn;
+            this.TargetColumn = targetColumn;
         }
 
         public static explicit operator CremaTemplateColumn(InternalTemplateColumn column)
@@ -70,32 +64,29 @@ namespace Ntreev.Crema.Data
             return column.InternalObject;
         }
 
-        public new CremaTemplateColumn Target
-        {
-            get { return base.Target as CremaTemplateColumn; }
-        }
+        public new CremaTemplateColumn Target => base.Target as CremaTemplateColumn;
 
         public Guid ColumnID
         {
-            get { return this.InternalColumnID; }
-            set { this.InternalColumnID = value; }
+            get => this.InternalColumnID;
+            set => this.InternalColumnID = value;
         }
 
         public bool IsKey
         {
-            get { return this.InternalIsKey; }
-            set { this.InternalIsKey = value; }
+            get => this.InternalIsKey;
+            set => this.InternalIsKey = value;
         }
 
         public bool Unique
         {
-            get { return this.InternalUnique; }
-            set { this.InternalUnique = value; }
+            get => this.InternalUnique;
+            set => this.InternalUnique = value;
         }
 
         public string ColumnName
         {
-            get { return this.InternalColumnName ?? string.Empty; }
+            get => this.InternalColumnName ?? string.Empty;
             set
             {
                 if (this.RowState != DataRowState.Detached && value == null)
@@ -108,7 +99,7 @@ namespace Ntreev.Crema.Data
 
         public string DataTypeName
         {
-            get { return this.InternalDataTypeName; }
+            get => this.InternalDataTypeName;
             set
             {
                 if (value == null)
@@ -130,126 +121,117 @@ namespace Ntreev.Crema.Data
                     return CremaConvert.ChangeType(value, CremaDataTypeUtility.GetType(this.InternalDataTypeName));
                 return value;
             }
-            set
-            {
-                this.InternalDefaultValue = CremaConvert.ToString(value);
-            }
+            set => this.InternalDefaultValue = CremaConvert.ToString(value);
         }
 
         public bool AutoIncrement
         {
-            get { return this.InternalAutoIncrement; }
-            set { this.InternalAutoIncrement = value; }
+            get => this.InternalAutoIncrement;
+            set => this.InternalAutoIncrement = value;
         }
 
         public string Comment
         {
-            get { return this.InternalComment ?? string.Empty; }
-            set { this.InternalComment = value; }
+            get => this.InternalComment ?? string.Empty;
+            set => this.InternalComment = value;
         }
 
         public TagInfo Tags
         {
-            get { return this.InternalTags; }
-            set { this.InternalTags = value; }
+            get => this.InternalTags;
+            set => this.InternalTags = value;
         }
 
         public bool AllowNull
         {
-            get { return this.InternalAllowNull; }
-            set { this.InternalAllowNull = value; }
+            get => this.InternalAllowNull;
+            set => this.InternalAllowNull = value;
         }
 
         public bool ReadOnly
         {
-            get { return this.InternalReadOnly; }
-            set { this.InternalReadOnly = value; }
+            get => this.InternalReadOnly;
+            set => this.InternalReadOnly = value;
         }
 
-        public InternalDataColumn TargetColumn
-        {
-            get { return this.targetColumn; }
-            set { this.targetColumn = value; }
-        }
+        public InternalDataColumn TargetColumn { get; set; }
 
         public bool CanDelete
         {
             get
             {
-                if (this.targetColumn == null)
+                if (this.TargetColumn == null)
                     return false;
-                if (this.targetColumn.Table == null)
+                if (this.TargetColumn.Table == null)
                     return false;
-                return this.targetColumn.Table.Columns.CanRemove(this.targetColumn);
+                return this.TargetColumn.Table.Columns.CanRemove(this.TargetColumn);
             }
         }
 
         public Guid InternalColumnID
         {
-            get { return this.Field<Guid>(this.table.columnID); }
-            internal set { this.SetField(this.table.columnID, value); }
+            get => this.Field<Guid>(this.table.columnID);
+            internal set => this.SetField(this.table.columnID, value);
         }
-
-       
 
         public bool InternalIsKey
         {
-            get { return this.Field<bool>(this.table.columnIsKey); }
-            set { this.SetField(this.table.columnIsKey, value); }
+            get => this.Field<bool>(this.table.columnIsKey);
+            set => this.SetField(this.table.columnIsKey, value);
         }
 
         public bool InternalUnique
         {
-            get { return this.Field<bool>(this.table.columnIsUnique); }
-            set { this.SetField(this.table.columnIsUnique, value); }
+            get => this.Field<bool>(this.table.columnIsUnique);
+            set => this.SetField(this.table.columnIsUnique, value);
         }
 
         public string InternalColumnName
         {
-            get { return this.Field<string>(this.table.columnColumnName); }
-            set { this.SetField(this.table.columnColumnName, value); }
+            get => this.Field<string>(this.table.columnColumnName);
+            set => this.SetField(this.table.columnColumnName, value);
         }
 
         public string InternalDataTypeName
         {
-            get { return this.Field<string>(this.table.columnDataType); }
-            set { this.SetField(this.table.columnDataType, value); }
+            get => this.Field<string>(this.table.columnDataType);
+            set => this.SetField(this.table.columnDataType, value);
         }
 
         public object InternalDefaultValue
         {
-            get { return this[this.table.columnDefaultValue]; }
-            set { this[this.table.columnDefaultValue] = value; }
+            get => this[this.table.columnDefaultValue];
+            set => this[this.table.columnDefaultValue] = value;
         }
 
         public bool InternalAutoIncrement
         {
-            get { return this.Field<bool>(this.table.columnAutoIncrement); }
-            set { this.SetField(this.table.columnAutoIncrement, value); }
+            get => this.Field<bool>(this.table.columnAutoIncrement);
+            set => this.SetField(this.table.columnAutoIncrement, value);
         }
 
         public string InternalComment
         {
-            get { return this.Field<string>(this.table.columnComment); }
-            set { this.SetField(this.table.columnComment, value); }
+            get => this.Field<string>(this.table.columnComment);
+            set => this.SetField(this.table.columnComment, value);
         }
 
         public TagInfo InternalTags
         {
-            get { return new TagInfo(this.Field<string>(this.table.columnTags)); }
-            set { this.SetField(this.table.columnTags, value.ToString()); }
+            get => new TagInfo(this.Field<string>(this.table.columnTags));
+            set => this.SetField(this.table.columnTags, value.ToString());
         }
 
         public bool InternalAllowNull
         {
-            get { return this.Field<bool>(this.table.columnAllowNull); }
-            set { this.SetField(this.table.columnAllowNull, value); }
+            get => this.Field<bool>(this.table.columnAllowNull);
+            set => this.SetField(this.table.columnAllowNull, value);
         }
 
         public bool InternalReadOnly
         {
-            get { return this.Field<bool>(this.table.columnReadOnly); }
-            set { this.SetField(this.table.columnReadOnly, value); }
+            get => this.Field<bool>(this.table.columnReadOnly);
+            set => this.SetField(this.table.columnReadOnly, value);
         }
     }
 }

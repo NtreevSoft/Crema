@@ -34,27 +34,20 @@ namespace Ntreev.Crema.Data.Xml
 {
     public class CremaXmlReadInfo
     {
-        private readonly string xmlPath;
-        private readonly string xsdPath;
-        private readonly string relativeXsdPath;
-        private readonly ItemName itemName;
-        private readonly long xmlSize;
-        private readonly bool isInherited;
-
         private Version version = new Version(2, 0);
 
         public CremaXmlReadInfo(string xmlPath)
         {
             if (FileUtility.IsAbsolute(xmlPath) == false)
-                throw new ArgumentException("\"${xmlPath}\" 은(는) 절대 경로가 아닙니다.", nameof(xmlPath));
+                throw new ArgumentException($"\"{xmlPath}\" 은(는) 절대 경로가 아닙니다.", nameof(xmlPath));
             if (File.Exists(xmlPath) == false)
                 throw new FileNotFoundException($"\"{xmlPath}\" 경로를 찾을 수 없습니다.");
 
-            this.xmlPath = xmlPath;
-            this.xsdPath = Path.ChangeExtension(xmlPath, CremaSchema.SchemaExtension);
-            this.xmlSize = new FileInfo(xmlPath).Length;
+            this.XmlPath = xmlPath;
+            this.SchemaPath = Path.ChangeExtension(xmlPath, CremaSchema.SchemaExtension);
+            this.XmlSize = new FileInfo(xmlPath).Length;
 
-            using (var reader = XmlReader.Create(this.xmlPath))
+            using (var reader = XmlReader.Create(this.XmlPath))
             {
                 reader.MoveToContent();
                 var text = reader.GetAttribute(CremaSchema.Version);
@@ -64,7 +57,7 @@ namespace Ntreev.Crema.Data.Xml
                 }
             }
 
-            if (File.Exists(this.xsdPath) == false)
+            if (File.Exists(this.SchemaPath) == false)
             {
                 using (var reader = XmlReader.Create(xmlPath))
                 {
@@ -76,23 +69,26 @@ namespace Ntreev.Crema.Data.Xml
 
                     if (version.Major >= 3)
                     {
-                        FindSchemaLocation(reader, xmlPath, out this.xsdPath, out string tableNamespace);
+
+                        FindSchemaLocation(reader, xmlPath, out var schemaPath, out string tableNamespace);
                         var categoryPath = CremaDataSet.GetTableCategoryPath(CremaSchema.TableNamespace, tableNamespace);
                         var tableName = CremaDataSet.GetTableName(CremaSchema.TableNamespace, tableNamespace);
-                        this.itemName = new ItemName(categoryPath, tableName);
+                        this.SchemaPath = schemaPath;
+                        this.ItemName = new ItemName(categoryPath, tableName);
                     }
                     else
                     {
-                        FindSchemaLocationVersion2(reader, xmlPath, out this.xsdPath, out string tableNamespace);
+                        FindSchemaLocationVersion2(reader, xmlPath, out var schemaPath, out string tableNamespace);
                         var categoryPath = CremaDataSet.GetTableCategoryPath(CremaSchemaObsolete.TableNamespaceObsolete, tableNamespace);
                         var tableName = CremaDataSet.GetTableName(CremaSchemaObsolete.TableNamespaceObsolete, tableNamespace);
-                        this.itemName = new ItemName(categoryPath, tableName);
+                        this.SchemaPath = schemaPath;
+                        this.ItemName = new ItemName(categoryPath, tableName);
                     }
                 }
-                this.isInherited = true;
+                this.IsInherited = true;
             }
 
-            this.relativeXsdPath = UriUtility.MakeRelative(this.xmlPath, this.xsdPath);
+            this.RelativeSchemaPath = UriUtility.MakeRelative(this.XmlPath, this.SchemaPath);
         }
 
         public string[] GetTypePaths()
@@ -110,40 +106,19 @@ namespace Ntreev.Crema.Data.Xml
             return query.ToArray();
         }
 
-        public string XmlPath
-        {
-            get { return this.xmlPath; }
-        }
+        public string XmlPath { get; }
 
-        public string SchemaPath
-        {
-            get { return this.xsdPath; }
-        }
+        public string SchemaPath { get; }
 
-        public string RelativeSchemaPath
-        {
-            get { return this.relativeXsdPath; }
-        }
+        public string RelativeSchemaPath { get; }
 
-        public ItemName ItemName
-        {
-            get { return this.itemName; }
-        }
+        public ItemName ItemName { get; }
 
-        public bool IsInherited
-        {
-            get { return this.isInherited; }
-        }
+        public bool IsInherited { get; }
 
-        public long XmlSize
-        {
-            get { return this.xmlSize; }
-        }
+        public long XmlSize { get; }
 
-        public Version Version
-        {
-            get { return this.version; }
-        }
+        public Version Version => this.version;
 
         private static void FindSchemaLocation(XmlReader reader, string xmlPath, out string xsdPath, out string tableNamespace)
         {

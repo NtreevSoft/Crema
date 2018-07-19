@@ -15,20 +15,15 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.Data;
-using Ntreev.Crema.Data.Xml;
 using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Library;
-using Ntreev.Library.IO;
 using Ntreev.Library.ObjectModel;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace Ntreev.Crema.Data
 {
@@ -46,10 +41,7 @@ namespace Ntreev.Crema.Data
             this.dataSet.PropertyChanged += InternalDataSet_PropertyChanged;
         }
 
-        public CremaDataTable this[int index]
-        {
-            get { return this.itemList[index].Target; }
-        }
+        public CremaDataTable this[int index] => this.itemList[index].Target;
 
         public CremaDataTable this[string name]
         {
@@ -218,10 +210,7 @@ namespace Ntreev.Crema.Data
             this.dataSet.RemoveTable(item);
         }
 
-        public int Count
-        {
-            get { return this.itemList.Count; }
-        }
+        public int Count => this.itemList.Count;
 
         public event CollectionChangeEventHandler CollectionChanged;
 

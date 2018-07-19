@@ -15,21 +15,15 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Library;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Data
 {
     abstract class InternalRowBase : DataRow
     {
         private readonly InternalTableBase table;
-        private object target;
 
         protected InternalRowBase(InternalTableBase table, DataRowBuilder builder)
             : base(builder)
@@ -43,10 +37,7 @@ namespace Ntreev.Crema.Data
 
         public SignatureDate CreationInfo
         {
-            get
-            {
-                return new SignatureDate(this.Field<string>(this.table.attributeCreator) ?? string.Empty, this.Field<DateTime>(this.table.attributeCreatedDateTime));
-            }
+            get => new SignatureDate(this.Field<string>(this.table.attributeCreator) ?? string.Empty, this.Field<DateTime>(this.table.attributeCreatedDateTime));
             internal set
             {
                 if (this.table.attributeCreator.ReadOnly == false)
@@ -71,10 +62,7 @@ namespace Ntreev.Crema.Data
 
         public SignatureDate ModificationInfo
         {
-            get
-            {
-                return new SignatureDate(this.Field<string>(this.table.attributeModifier) ?? string.Empty, this.Field<DateTime>(this.table.attributeModifiedDateTime));
-            }
+            get => new SignatureDate(this.Field<string>(this.table.attributeModifier) ?? string.Empty, this.Field<DateTime>(this.table.attributeModifiedDateTime));
             internal set
             {
                 if (this.table.attributeModifier.ReadOnly == false)
@@ -97,11 +85,7 @@ namespace Ntreev.Crema.Data
             }
         }
 
-        public object Target
-        {
-            get { return this.target; }
-            set { this.target = value; }
-        }
+        public object Target { get; set; }
 
         public string RelationID
         {
@@ -148,10 +132,7 @@ namespace Ntreev.Crema.Data
             }
         }
 
-        public abstract int Index
-        {
-            get; set;
-        }
+        public abstract int Index { get; set; }
 
         private void Table_RowDeleted(object sender, DataRowChangeEventArgs e)
         {
@@ -188,8 +169,8 @@ namespace Ntreev.Crema.Data
 
         public override int Index
         {
-            get { return this.InternalIndex; }
-            set { this.InternalIndex = value; }
+            get => this.InternalIndex;
+            set => this.InternalIndex = value;
         }
 
         public int InternalIndex

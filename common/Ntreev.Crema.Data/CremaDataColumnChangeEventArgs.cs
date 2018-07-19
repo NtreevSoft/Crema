@@ -16,12 +16,7 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Linq;
-using System.Text;
 
 namespace Ntreev.Crema.Data
 {
@@ -29,28 +24,18 @@ namespace Ntreev.Crema.Data
     {
         private readonly InternalDataRow dataRow;
         private readonly InternalDataColumn dataColumn;
-        private readonly object proposedValue;
 
         internal CremaDataColumnChangeEventArgs(DataColumnChangeEventArgs e)
         {
             this.dataRow = e.Row as InternalDataRow;
             this.dataColumn = e.Column as InternalDataColumn;
-            this.proposedValue = e.ProposedValue;
+            this.ProposedValue = e.ProposedValue;
         }
 
-        public CremaDataRow Row
-        {
-            get { return this.dataRow.Target; }
-        }
+        public CremaDataRow Row => this.dataRow.Target;
 
-        public CremaDataColumn Column
-        {
-            get { return this.dataColumn.Target; }
-        }
+        public CremaDataColumn Column => this.dataColumn.Target;
 
-        public object ProposedValue
-        {
-            get { return this.proposedValue; }
-        }
+        public object ProposedValue { get; }
     }
 }

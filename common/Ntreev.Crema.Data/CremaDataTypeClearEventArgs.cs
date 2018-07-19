@@ -16,10 +16,7 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
 
 namespace Ntreev.Crema.Data
 {
@@ -32,19 +29,10 @@ namespace Ntreev.Crema.Data
             this.type = e.Table as InternalDataType;
         }
 
-        public CremaDataType Type
-        {
-            get { return (CremaDataType)this.type; }
-        }
+        public CremaDataType Type => (CremaDataType)this.type;
 
-        public string TypeName
-        {
-            get { return this.type.LocalName; }
-        }
+        public string TypeName => this.type.LocalName;
 
-        public string TypeNamespace
-        {
-            get { return this.type.Namespace; }
-        }
+        public string TypeNamespace => this.type.Namespace;
     }
 }

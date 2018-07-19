@@ -16,60 +16,34 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Linq;
-using System.Text;
 
 namespace Ntreev.Crema.Data
 {
     public class CremaTemplateColumnChangeEventArgs : EventArgs
     {
-        private readonly CremaTemplateColumn item;
-        private readonly DataRowAction action;
         private readonly string propertyName;
-        private readonly object proposedValue;
 
         internal CremaTemplateColumnChangeEventArgs(DataRowChangeEventArgs e)
         {
-            this.item = (e.Row as InternalTemplateColumn).Target;
-            this.action = e.Action;
+            this.Item = (e.Row as InternalTemplateColumn).Target;
+            this.Action = e.Action;
         }
 
         internal CremaTemplateColumnChangeEventArgs(DataColumnChangeEventArgs e)
         {
-            this.item = (e.Row as InternalTemplateColumn).Target;
-            this.action = DataRowAction.Nothing; 
+            this.Item = (e.Row as InternalTemplateColumn).Target;
+            this.Action = DataRowAction.Nothing;
             this.propertyName = e.Column.ColumnName;
-            this.proposedValue = e.ProposedValue;
+            this.ProposedValue = e.ProposedValue;
         }
 
-        [Obsolete]
-        public CremaTemplateColumn Column
-        {
-            get { return this.item; }
-        }
+        public CremaTemplateColumn Item { get; }
 
-        public CremaTemplateColumn Item
-        {
-            get { return this.item; }
-        }
+        public DataRowAction Action { get; }
 
-        public DataRowAction Action
-        {
-            get { return this.action; }
-        }
+        public string PropertyName => this.propertyName ?? string.Empty;
 
-        public string PropertyName
-        {
-            get { return this.propertyName ?? string.Empty; }
-        }
-
-        public object ProposedValue
-        {
-            get { return this.proposedValue; }
-        }
+        public object ProposedValue { get; }
     }
 }

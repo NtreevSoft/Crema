@@ -15,28 +15,21 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Ntreev.Library;
-using System.Data;
-using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Crema.Data.Properties;
+using Ntreev.Library;
+using System;
+using System.Data;
 
 namespace Ntreev.Crema.Data
 {
     public class CremaDataTypeMember
     {
-        private readonly CremaDataType type;
-        private readonly InternalDataTypeMember member;
-
         public CremaDataTypeMember(CremaDataTypeMemberBuilder builder)
         {
             if (builder == null)
                 throw new ArgumentNullException();
-            this.type = builder.Type;
-            this.member = builder.DataRow;
+            this.Type = builder.Type;
+            this.InternalObject = builder.DataRow;
         }
 
         public override string ToString()
@@ -46,155 +39,131 @@ namespace Ntreev.Crema.Data
 
         public void AcceptChanges()
         {
-            this.member.AcceptChanges();
+            this.InternalObject.AcceptChanges();
         }
 
         public void BeginEdit()
         {
-            this.member.BeginEdit();
+            this.InternalObject.BeginEdit();
         }
 
         public void EndEdit()
         {
-            this.member.EndEdit();
+            this.InternalObject.EndEdit();
         }
 
         public void CancelEdit()
         {
-            this.member.CancelEdit();
+            this.InternalObject.CancelEdit();
         }
 
         public void Delete()
         {
-            this.member.Delete();
+            this.InternalObject.Delete();
         }
 
         public void RejectChanges()
         {
-            this.member.RejectChanges();
+            this.InternalObject.RejectChanges();
         }
 
         public void SetAdded()
         {
-            this.member.SetAdded();
+            this.InternalObject.SetAdded();
         }
 
         public void SetModified()
         {
-            this.member.SetModified();
+            this.InternalObject.SetModified();
         }
 
         public int Index
         {
-            get { return this.member.Index; }
-            set { this.member.Index = value; }
+            get => this.InternalObject.Index;
+            set => this.InternalObject.Index = value;
         }
 
         public TagInfo Tags
         {
-            get { return this.member.Tags; }
-            set { this.member.Tags = value; }
+            get => this.InternalObject.Tags;
+            set => this.InternalObject.Tags = value;
         }
 
-        public TagInfo DerivedTags
-        {
-            get { return this.member.DerivedTags; }
-        }
+        public TagInfo DerivedTags => this.InternalObject.DerivedTags;
 
         public bool IsEnabled
         {
-            get { return this.member.IsEnabled; }
-            set { this.member.IsEnabled = value; }
+            get => this.InternalObject.IsEnabled;
+            set => this.InternalObject.IsEnabled = value;
         }
 
         public string Name
         {
-            get { return this.member.Name; }
-            set { this.member.Name = value; }
+            get => this.InternalObject.Name;
+            set => this.InternalObject.Name = value;
         }
 
         public long Value
         {
-            get { return this.member.Value; }
-            set { this.member.Value = value; }
+            get => this.InternalObject.Value;
+            set => this.InternalObject.Value = value;
         }
 
         public string Comment
         {
-            get { return this.member.Comment; }
-            set { this.member.Comment = value; }
+            get => this.InternalObject.Comment;
+            set => this.InternalObject.Comment = value;
         }
 
         [Obsolete]
-        public DataRowState MemberState
-        {
-            get { return this.member.RowState; }
-        }
+        public DataRowState MemberState => this.InternalObject.RowState;
 
-        public DataRowState ItemState
-        {
-            get { return this.member.RowState; }
-        }
+        public DataRowState ItemState => this.InternalObject.RowState;
 
         public SignatureDate CreationInfo
         {
-            get { return this.member.CreationInfo; }
-            internal set { this.member.CreationInfo = value; }
+            get => this.InternalObject.CreationInfo;
+            internal set => this.InternalObject.CreationInfo = value;
         }
 
         public SignatureDate ModificationInfo
         {
-            get { return this.member.ModificationInfo; }
-            internal set { this.member.ModificationInfo = value; }
+            get => this.InternalObject.ModificationInfo;
+            internal set => this.InternalObject.ModificationInfo = value;
         }
 
         public Guid MemberID
         {
-            get { return this.member.ID; }
-            internal set { this.member.ID = value; }
+            get => this.InternalObject.ID;
+            internal set => this.InternalObject.ID = value;
         }
 
-        public TypeMemberInfo TypeMemberInfo
-        {
-            get { return this.member.TypeMemberInfo; }
-        }
+        public TypeMemberInfo TypeMemberInfo => this.InternalObject.TypeMemberInfo;
 
-        public CremaDataType Type
-        {
-            get { return this.type; }
-        }
+        public CremaDataType Type { get; }
 
         [Obsolete]
-        public bool IsValid
-        {
-            get
-            {
-                return this.member.RowState != DataRowState.Deleted && this.member.RowState != DataRowState.Detached;
-            }
-        }
+        public bool IsValid => this.InternalObject.RowState != DataRowState.Deleted && this.InternalObject.RowState != DataRowState.Detached;
 
         public object GetAttribute(string attributeName)
         {
             if (this.Type.Attributes.Contains(attributeName) == false)
                 throw new CremaDataException(string.Format(Resources.Exception_NotFoundAttribute_Format, attributeName));
-            return this.member[attributeName];
+            return this.InternalObject[attributeName];
         }
 
         public void SetAttribute(string attributeName, object value)
         {
             if (this.Type.Attributes.Contains(attributeName) == false)
                 throw new CremaDataException(string.Format(Resources.Exception_NotFoundAttribute_Format, attributeName));
-            this.member[attributeName] = value;
+            this.InternalObject[attributeName] = value;
         }
 
         public void SetFieldError(string fieldName, string error)
         {
-            this.member.SetColumnError(fieldName, error);
+            this.InternalObject.SetColumnError(fieldName, error);
         }
 
-        internal InternalDataTypeMember InternalObject
-        {
-            get { return this.member; }
-        }
+        internal InternalDataTypeMember InternalObject { get; }
     }
 }

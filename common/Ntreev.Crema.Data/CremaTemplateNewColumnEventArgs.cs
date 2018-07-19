@@ -16,31 +16,22 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Data
 {
     public sealed class CremaTemplateNewColumnEventArgs : EventArgs
     {
-        private readonly CremaTemplateColumn column;
-
         internal CremaTemplateNewColumnEventArgs(DataTableNewRowEventArgs e)
         {
-            this.column = (e.Row as InternalTemplateColumn).Target;
+            this.Column = (e.Row as InternalTemplateColumn).Target;
         }
 
         public CremaTemplateNewColumnEventArgs(CremaTemplateColumn column)
         {
-            this.column = column;
+            this.Column = column;
         }
 
-        public CremaTemplateColumn Column
-        {
-            get { return this.column; }
-        }
+        public CremaTemplateColumn Column { get; }
     }
 }

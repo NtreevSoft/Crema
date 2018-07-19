@@ -18,27 +18,23 @@
 //#if !DEBUG
 #define USE_PARALLEL
 //#endif
+using Ntreev.Crema.Data.Properties;
+using Ntreev.Crema.Data.Xml;
+using Ntreev.Crema.Data.Xml.Schema;
+using Ntreev.Library;
+using Ntreev.Library.IO;
+using Ntreev.Library.ObjectModel;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Xml;
-using System.Xml.Serialization;
-using Ntreev.Crema.Data.Xml;
-using Ntreev.Crema.Data;
-using Ntreev.Crema.Data.Xml.Schema;
-using System.ComponentModel;
-using Ntreev.Library.IO;
 using System.Threading.Tasks;
-using Ntreev.Library;
-using System.Collections.Concurrent;
-using Ntreev.Library.ObjectModel;
-using Ntreev.Crema.Data.Properties;
-using System.CodeDom.Compiler;
+using System.Xml;
 using System.Xml.Schema;
+using System.Xml.Serialization;
 
 namespace Ntreev.Crema.Data
 {
@@ -46,9 +42,6 @@ namespace Ntreev.Crema.Data
     public class CremaDataSet : IListSource, IDisposable, IXmlSerializable, ISerializable
     {
         public const string DefaultDataSetName = "Content";
-        private readonly InternalDataSet dataSet;
-        private readonly CremaDataTableCollection tables;
-        private readonly CremaDataTypeCollection types;
 
         static CremaDataSet()
         {
@@ -57,9 +50,9 @@ namespace Ntreev.Crema.Data
 
         public CremaDataSet()
         {
-            this.dataSet = new InternalDataSet(this, CremaDataSet.DefaultDataSetName);
-            this.tables = new CremaDataTableCollection(this.dataSet);
-            this.types = new CremaDataTypeCollection(this.dataSet);
+            this.InternalObject = new InternalDataSet(this, CremaDataSet.DefaultDataSetName);
+            this.Tables = new CremaDataTableCollection(this.InternalObject);
+            this.Types = new CremaDataTypeCollection(this.InternalObject);
         }
 
         private CremaDataSet(SerializationInfo info, StreamingContext context)
@@ -130,13 +123,12 @@ namespace Ntreev.Crema.Data
                 this.ReadXmlString(xml, new ItemName(categoryPath, tableName));
             });
             this.EndLoad();
-            //this.AcceptChanges();
         }
 
         private CremaDataSet(SignatureDateProvider modificationProvider)
             : this()
         {
-            this.dataSet.SignatureDateProvider = modificationProvider;
+            this.InternalObject.SignatureDateProvider = modificationProvider;
         }
 
         public static string GenerateHashValue(params TypeInfo[] types)
@@ -156,13 +148,13 @@ namespace Ntreev.Crema.Data
 
         public override string ToString()
         {
-            return this.dataSet.ToString();
+            return this.InternalObject.ToString();
         }
 
         public event EventHandler Disposed
         {
-            add { this.dataSet.Disposed += value; }
-            remove { this.dataSet.Disposed -= value; }
+            add { this.InternalObject.Disposed += value; }
+            remove { this.InternalObject.Disposed -= value; }
         }
 
         public static CremaDataSet ReadSchema(string filename)
@@ -281,17 +273,17 @@ namespace Ntreev.Crema.Data
 
         public void Dispose()
         {
-            this.dataSet.Dispose();
+            this.InternalObject.Dispose();
         }
 
         public void AcceptChanges()
         {
-            Parallel.ForEach(this.tables, item =>
+            Parallel.ForEach(this.Tables, item =>
             {
                 item.AcceptChanges();
             });
 
-            Parallel.ForEach(this.types, item =>
+            Parallel.ForEach(this.Types, item =>
             {
                 item.AcceptChanges();
             });
@@ -299,7 +291,7 @@ namespace Ntreev.Crema.Data
 
         public void Clear()
         {
-            this.dataSet.Clear();
+            this.InternalObject.Clear();
         }
 
         /// <summary>
@@ -336,8 +328,8 @@ namespace Ntreev.Crema.Data
 
         public void RejectChanges()
         {
-            this.dataSet.RejectChanges();
-            foreach (var item in this.types)
+            this.InternalObject.RejectChanges();
+            foreach (var item in this.Types)
             {
                 item.RejectChanges();
             }
@@ -345,12 +337,12 @@ namespace Ntreev.Crema.Data
 
         public bool HasChanges()
         {
-            return this.dataSet.HasChanges();
+            return this.InternalObject.HasChanges();
         }
 
         public bool HasChanges(DataRowState rowStates)
         {
-            return this.dataSet.HasChanges(rowStates);
+            return this.InternalObject.HasChanges(rowStates);
         }
 
         public void ReadXmlString(string xml)
@@ -600,7 +592,7 @@ namespace Ntreev.Crema.Data
             schemaReader.Read(filename);
             lock (this)
             {
-                this.types.Add(dataType);
+                this.Types.Add(dataType);
             }
         }
 
@@ -614,7 +606,7 @@ namespace Ntreev.Crema.Data
             var dataType = new CremaDataType();
             var schemaReader = new CremaSchemaReader(dataType, itemName);
             schemaReader.Read(reader);
-            this.types.Add(dataType);
+            this.Types.Add(dataType);
         }
 
         public void ReadType(Stream reader)
@@ -627,7 +619,7 @@ namespace Ntreev.Crema.Data
             var dataType = new CremaDataType();
             var schemaReader = new CremaSchemaReader(dataType, itemName);
             schemaReader.Read(stream);
-            this.types.Add(dataType);
+            this.Types.Add(dataType);
         }
 
         public void ReadType(XmlReader reader)
@@ -640,7 +632,7 @@ namespace Ntreev.Crema.Data
             var dataType = new CremaDataType();
             var schemaReader = new CremaSchemaReader(dataType, itemName);
             schemaReader.Read(reader);
-            this.types.Add(dataType);
+            this.Types.Add(dataType);
         }
 
         public void ReadXmlSchema(string filename)
@@ -780,7 +772,7 @@ namespace Ntreev.Crema.Data
 
             foreach (var item in this.Types)
             {
-                var relativePath = UriUtility.MakeRelativeOfDirectory(this.dataSet.Namespace, item.Namespace);
+                var relativePath = UriUtility.MakeRelativeOfDirectory(this.InternalObject.Namespace, item.Namespace);
                 var filename = Path.Combine(path, relativePath + CremaSchema.SchemaExtension);
                 FileUtility.Prepare(filename);
                 item.Write(filename);
@@ -794,7 +786,7 @@ namespace Ntreev.Crema.Data
                 }
                 else
                 {
-                    var relativePath = UriUtility.MakeRelativeOfDirectory(this.dataSet.Namespace, item.Namespace);
+                    var relativePath = UriUtility.MakeRelativeOfDirectory(this.InternalObject.Namespace, item.Namespace);
                     var filename = Path.Combine(path, relativePath + CremaSchema.SchemaExtension);
                     FileUtility.Prepare(filename);
                     item.WriteXmlSchema(filename);
@@ -803,7 +795,7 @@ namespace Ntreev.Crema.Data
 
             foreach (var item in this.Tables)
             {
-                var relativePath = UriUtility.MakeRelativeOfDirectory(this.dataSet.Namespace, item.Namespace);
+                var relativePath = UriUtility.MakeRelativeOfDirectory(this.InternalObject.Namespace, item.Namespace);
                 var filename = Path.Combine(path, relativePath + CremaSchema.XmlExtension);
                 FileUtility.Prepare(filename);
                 item.WriteXml(filename);
@@ -831,34 +823,25 @@ namespace Ntreev.Crema.Data
         [DefaultValue(false)]
         public bool CaseSensitive
         {
-            get { return this.dataSet.CaseSensitive; }
-            set { this.dataSet.CaseSensitive = value; }
+            get => this.InternalObject.CaseSensitive;
+            set => this.InternalObject.CaseSensitive = value;
         }
 
         [DefaultValue("")]
-        public string DataSetName
-        {
-            get { return this.dataSet.DataSetName; }
-        }
+        public string DataSetName => this.InternalObject.DataSetName;
 
         [Browsable(false)]
-        public DataViewManager DefaultViewManager
-        {
-            get { return this.dataSet.DefaultViewManager; }
-        }
+        public DataViewManager DefaultViewManager => this.InternalObject.DefaultViewManager;
 
         [Browsable(false)]
-        public PropertyCollection ExtendedProperties
-        {
-            get { return this.dataSet.ExtendedProperties; }
-        }
+        public PropertyCollection ExtendedProperties => this.InternalObject.ExtendedProperties;
 
         [Browsable(false)]
         public bool HasErrors
         {
             get
             {
-                if (this.dataSet.HasErrors == true)
+                if (this.InternalObject.HasErrors == true)
                     return true;
 
                 var query = from item in this.Tables
@@ -872,36 +855,24 @@ namespace Ntreev.Crema.Data
         [DefaultValue("")]
         public string Namespace
         {
-            get { return this.dataSet.Namespace; }
-            set { this.dataSet.Namespace = value; }
+            get => this.InternalObject.Namespace;
+            set => this.InternalObject.Namespace = value;
         }
 
-        public string TableNamespace
-        {
-            get { return this.dataSet.TableNamespace; }
-        }
+        public string TableNamespace => this.InternalObject.TableNamespace;
 
-        public string TypeNamespace
-        {
-            get { return this.dataSet.TypeNamespace; }
-        }
+        public string TypeNamespace => this.InternalObject.TypeNamespace;
 
         public SignatureDateProvider SignatureDateProvider
         {
-            get { return this.dataSet.SignatureDateProvider; }
-            set { this.dataSet.SignatureDateProvider = value; }
+            get => this.InternalObject.SignatureDateProvider;
+            set => this.InternalObject.SignatureDateProvider = value;
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        public CremaDataTableCollection Tables
-        {
-            get { return this.tables; }
-        }
+        public CremaDataTableCollection Tables { get; }
 
-        public CremaDataTypeCollection Types
-        {
-            get { return this.types; }
-        }
+        public CremaDataTypeCollection Types { get; }
 
         public static void ValidateName(string name)
         {
@@ -1040,7 +1011,7 @@ namespace Ntreev.Crema.Data
 
         private void GetSerializableData(IDictionary<string, string> items)
         {
-            var relativeType = UriUtility.MakeRelativeOfDirectory(this.dataSet.Namespace, this.TypeNamespace);
+            var relativeType = UriUtility.MakeRelativeOfDirectory(this.InternalObject.Namespace, this.TypeNamespace);
             var lockobj = new object();
 
             Parallel.ForEach(this.Types, item =>
@@ -1133,7 +1104,7 @@ namespace Ntreev.Crema.Data
 
         internal string GetTableCategoryPath(string tableNamespace)
         {
-            return this.dataSet.GetTableCategoryPath(tableNamespace);
+            return this.InternalObject.GetTableCategoryPath(tableNamespace);
         }
 
         internal static string GetTableCategoryPath(CremaDataSet dataSet, string tableNamespace)
@@ -1148,7 +1119,7 @@ namespace Ntreev.Crema.Data
 
         internal string GetTableName(string tableNamespace)
         {
-            return this.dataSet.GetTableName(tableNamespace);
+            return this.InternalObject.GetTableName(tableNamespace);
         }
 
         internal static string GetTableName(CremaDataSet dataSet, string tableNamespace)
@@ -1163,7 +1134,7 @@ namespace Ntreev.Crema.Data
 
         internal string GetTypeCategoryPath(string typeNamespace)
         {
-            return this.dataSet.GetTypeCategoryPath(typeNamespace);
+            return this.InternalObject.GetTypeCategoryPath(typeNamespace);
         }
 
         internal static string GetTypeCategoryPath(CremaDataSet dataSet, string typeNamespace)
@@ -1178,7 +1149,7 @@ namespace Ntreev.Crema.Data
 
         internal string GetTypeName(string typeNamespace)
         {
-            return this.dataSet.GetTypeName(typeNamespace);
+            return this.InternalObject.GetTypeName(typeNamespace);
         }
 
         internal static string GetTypeName(CremaDataSet dataSet, string typeNamespace)
@@ -1191,21 +1162,15 @@ namespace Ntreev.Crema.Data
             return InternalDataSet.GetTypeName(baseNamespace, typeNamespace);
         }
 
-        internal InternalDataSet InternalObject
-        {
-            get { return this.dataSet; }
-        }
+        internal InternalDataSet InternalObject { get; }
 
         #region IListSource
 
-        bool IListSource.ContainsListCollection
-        {
-            get { return (this.dataSet as IListSource).ContainsListCollection; }
-        }
+        bool IListSource.ContainsListCollection => (this.InternalObject as IListSource).ContainsListCollection;
 
         System.Collections.IList IListSource.GetList()
         {
-            return (this.dataSet as IListSource).GetList();
+            return (this.InternalObject as IListSource).GetList();
         }
 
         #endregion

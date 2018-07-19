@@ -23,8 +23,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Data
 {
@@ -185,14 +183,11 @@ namespace Ntreev.Crema.Data
             }
         }
 
-        public new CremaDataColumn Target
-        {
-            get { return base.Target as CremaDataColumn; }
-        }
+        public new CremaDataColumn Target => base.Target as CremaDataColumn;
 
         public Guid ColumnID
         {
-            get { return this.InternalColumnID; }
+            get => this.InternalColumnID;
             set
             {
                 if (this.InternalColumnID == value)
@@ -207,7 +202,7 @@ namespace Ntreev.Crema.Data
 
         public new Type DataType
         {
-            get { return this.InternalDataType; }
+            get => this.InternalDataType;
             set
             {
                 if (this.InternalCremaType == null && this.InternalDataType == value)
@@ -223,7 +218,7 @@ namespace Ntreev.Crema.Data
 
         public InternalDataType CremaType
         {
-            get { return this.InternalCremaType; }
+            get => this.InternalCremaType;
             set
             {
                 if (this.InternalCremaType == value)
@@ -238,7 +233,7 @@ namespace Ntreev.Crema.Data
 
         public new object DefaultValue
         {
-            get { return this.InternalDefaultValue; }
+            get => this.InternalDefaultValue;
             set
             {
                 if (this.InternalDefaultValue == value)
@@ -269,7 +264,7 @@ namespace Ntreev.Crema.Data
 
         public int Index
         {
-            get { return this.InternalIndex; }
+            get => this.InternalIndex;
             set
             {
                 if (this.InternalIndex == value)
@@ -285,7 +280,7 @@ namespace Ntreev.Crema.Data
 
         public string Comment
         {
-            get { return this.InternalComment ?? string.Empty; }
+            get => this.InternalComment ?? string.Empty;
             set
             {
                 if (this.InternalComment == value)
@@ -300,7 +295,7 @@ namespace Ntreev.Crema.Data
 
         public string Validation
         {
-            get { return this.InternalValidation ?? string.Empty; }
+            get => this.InternalValidation ?? string.Empty;
             set
             {
                 if (this.InternalValidation == value)
@@ -315,7 +310,7 @@ namespace Ntreev.Crema.Data
 
         public TagInfo Tags
         {
-            get { return this.InternalTags; }
+            get => this.InternalTags;
             set
             {
                 if (this.InternalTags == value)
@@ -330,7 +325,7 @@ namespace Ntreev.Crema.Data
 
         public string DataTypeName
         {
-            get { return this.InternalDataTypeName; }
+            get => this.InternalDataTypeName;
             set
             {
                 if (this.InternalDataTypeName == value)
@@ -345,7 +340,7 @@ namespace Ntreev.Crema.Data
 
         public SignatureDate CreationInfo
         {
-            get { return this.InternalCreationInfo; }
+            get => this.InternalCreationInfo;
             set
             {
                 if (this.InternalCreationInfo == value)
@@ -359,7 +354,7 @@ namespace Ntreev.Crema.Data
 
         public SignatureDate ModificationInfo
         {
-            get { return this.InternalModificationInfo; }
+            get => this.InternalModificationInfo;
             set
             {
                 this.InternalModificationInfo = value;
@@ -372,10 +367,7 @@ namespace Ntreev.Crema.Data
             }
         }
 
-        public new InternalDataTable Table
-        {
-            get { return base.Table as InternalDataTable; }
-        }
+        public new InternalDataTable Table => base.Table as InternalDataTable;
 
         public string DefaultString
         {
@@ -389,7 +381,7 @@ namespace Ntreev.Crema.Data
 
         public Guid InternalColumnID
         {
-            get { return this.columnID; }
+            get => this.columnID;
             set
             {
                 this.columnID = value;
@@ -399,7 +391,7 @@ namespace Ntreev.Crema.Data
 
         public int InternalIndex
         {
-            get { return this.index; }
+            get => this.index;
             set
             {
                 this.index = value;
@@ -409,7 +401,7 @@ namespace Ntreev.Crema.Data
 
         public InternalDataType InternalCremaType
         {
-            get { return this.cremaType; }
+            get => this.cremaType;
             set
             {
                 if (this.Table != null && this.cremaType != null)
@@ -439,7 +431,7 @@ namespace Ntreev.Crema.Data
 
         public TagInfo InternalTags
         {
-            get { return this.tags; }
+            get => this.tags;
             set
             {
                 this.tags = value;
@@ -449,7 +441,7 @@ namespace Ntreev.Crema.Data
 
         public string InternalValidation
         {
-            get { return this.validation; }
+            get => this.validation;
             set
             {
                 this.validation = value;
@@ -459,7 +451,7 @@ namespace Ntreev.Crema.Data
 
         public string InternalComment
         {
-            get { return this.comment; }
+            get => this.comment;
             set
             {
                 this.comment = value;
@@ -507,7 +499,7 @@ namespace Ntreev.Crema.Data
 
         public SignatureDate InternalCreationInfo
         {
-            get { return this.creationInfo; }
+            get => this.creationInfo;
             set
             {
                 this.creationInfo = value;
@@ -517,7 +509,7 @@ namespace Ntreev.Crema.Data
 
         public SignatureDate InternalModificationInfo
         {
-            get { return this.modificationInfo; }
+            get => this.modificationInfo;
             set
             {
                 this.modificationInfo = value;
@@ -587,10 +579,7 @@ namespace Ntreev.Crema.Data
             }
         }
 
-        public object Editor
-        {
-            get; set;
-        }
+        public object Editor { get; set; }
 
         public static explicit operator CremaDataColumn(InternalDataColumn dataColumn)
         {

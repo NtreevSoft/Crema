@@ -15,26 +15,22 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.Data.Properties;
 using Ntreev.Crema.Data.Xml.Schema;
+using Ntreev.Library;
+using Ntreev.Library.IO;
+using Ntreev.Library.ObjectModel;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel;
-using Ntreev.Library;
-using Ntreev.Library.ObjectModel;
-using Ntreev.Crema.Data.Properties;
-using Ntreev.Library.IO;
 using System.Security.Cryptography;
 
 namespace Ntreev.Crema.Data
 {
     class InternalDataSet : InternalSetBase, INotifyPropertyChanged
     {
-        private string tableNamespace;
-        private string typeNamespace;
         private int loadingCount;
 
         public InternalDataSet(CremaDataSet target, string dataSetName)
@@ -239,27 +235,24 @@ namespace Ntreev.Crema.Data
             return dataSet.InternalObject;
         }
 
-        public new CremaDataSet Target
-        {
-            get { return base.Target as CremaDataSet; }
-        }
+        public new CremaDataSet Target => base.Target as CremaDataSet;
 
         public new string Namespace
         {
-            get { return base.Namespace; }
+            get => base.Namespace;
             set
             {
                 base.Namespace = value;
 
                 if (base.Namespace == CremaSchemaObsolete.BaseNamespaceObsolete)
                 {
-                    this.tableNamespace = UriUtility.Combine(base.Namespace, CremaSchemaObsolete.TableDirectoryObsolete);
-                    this.typeNamespace = UriUtility.Combine(base.Namespace, CremaSchemaObsolete.TypeDirectoryObsolete);
+                    this.TableNamespace = UriUtility.Combine(base.Namespace, CremaSchemaObsolete.TableDirectoryObsolete);
+                    this.TypeNamespace = UriUtility.Combine(base.Namespace, CremaSchemaObsolete.TypeDirectoryObsolete);
                 }
                 else
                 {
-                    this.tableNamespace = UriUtility.Combine(base.Namespace, CremaSchema.TableDirectory);
-                    this.typeNamespace = UriUtility.Combine(base.Namespace, CremaSchema.TypeDirectory);
+                    this.TableNamespace = UriUtility.Combine(base.Namespace, CremaSchema.TableDirectory);
+                    this.TypeNamespace = UriUtility.Combine(base.Namespace, CremaSchema.TypeDirectory);
                 }
 
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.Namespace)));
@@ -268,20 +261,11 @@ namespace Ntreev.Crema.Data
             }
         }
 
-        public string TableNamespace
-        {
-            get { return this.tableNamespace; }
-        }
+        public string TableNamespace { get; private set; }
 
-        public string TypeNamespace
-        {
-            get { return this.typeNamespace; }
-        }
+        public string TypeNamespace { get; private set; }
 
-        public bool IsLoading
-        {
-            get { return this.loadingCount > 0; }
-        }
+        public bool IsLoading => this.loadingCount > 0;
 
         public event PropertyChangedEventHandler PropertyChanged;
 

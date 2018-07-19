@@ -15,23 +15,14 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.Data.Properties;
-using Ntreev.Crema.Data.Xml.Schema;
-using Ntreev.Library.ObjectModel;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Data
 {
     public class CremaAttribute
     {
-        private readonly InternalAttribute attribute;
-
         public CremaAttribute()
             : this(string.Empty, typeof(string))
         {
@@ -46,82 +37,76 @@ namespace Ntreev.Crema.Data
 
         public CremaAttribute(string attributeName, Type dataType)
         {
-            this.attribute = new InternalAttribute(this, attributeName, dataType);
+            this.InternalAttribute = new InternalAttribute(this, attributeName, dataType);
         }
 
         internal CremaAttribute(InternalAttribute attribute)
         {
-            this.attribute = attribute;
+            this.InternalAttribute = attribute;
         }
 
         public override string ToString()
         {
-            return this.attribute.ToString();
+            return this.InternalAttribute.ToString();
         }
 
         [DefaultValue("")]
         public string AttributeName
         {
-            get { return this.attribute.AttributeName; }
-            set { this.attribute.AttributeName = value; }
+            get => this.InternalAttribute.AttributeName;
+            set => this.InternalAttribute.AttributeName = value;
         }
 
         public bool ReadOnly
         {
-            get { return this.attribute.ReadOnly; }
-            set { this.attribute.ReadOnly = value; }
+            get => this.InternalAttribute.ReadOnly;
+            set => this.InternalAttribute.ReadOnly = value;
         }
 
         public bool IsVisible
         {
-            get { return this.attribute.IsVisible; }
-            set { this.attribute.IsVisible = value; }
+            get => this.InternalAttribute.IsVisible;
+            set => this.InternalAttribute.IsVisible = value;
         }
 
         public Type DataType
         {
-            get { return this.attribute.DataType; }
-            set { this.attribute.DataType = value; }
+            get => this.InternalAttribute.DataType;
+            set => this.InternalAttribute.DataType = value;
         }
 
         public object DefaultValue
         {
-            get { return this.attribute.DefaultValue; }
-            set { this.attribute.DefaultValue = value; }
+            get => this.InternalAttribute.DefaultValue;
+            set => this.InternalAttribute.DefaultValue = value;
         }
 
         public bool AllowDBNull
         {
-            get { return this.attribute.AllowDBNull; }
-            set { this.attribute.AllowDBNull = value; }
+            get => this.InternalAttribute.AllowDBNull;
+            set => this.InternalAttribute.AllowDBNull = value;
         }
 
         public bool Unique
         {
-            get { return this.attribute.Unique; }
-            set { this.attribute.Unique = value; }
+            get => this.InternalAttribute.Unique;
+            set => this.InternalAttribute.Unique = value;
         }
 
         public bool AutoIncrement
         {
-            get { return this.attribute.AutoIncrement; }
-            set { this.attribute.AutoIncrement = value; }
+            get => this.InternalAttribute.AutoIncrement;
+            set => this.InternalAttribute.AutoIncrement = value;
         }
 
         public string Comment
         {
-            get { return this.attribute.Comment; }
-            set { this.attribute.Comment = value; }
+            get => this.InternalAttribute.Comment;
+            set => this.InternalAttribute.Comment = value;
         }
 
-        public PropertyCollection ExtendedProperties
-        {
-            get { return this.attribute.ExtendedProperties; }
-        }
+        public PropertyCollection ExtendedProperties => this.InternalAttribute.ExtendedProperties;
 
-        internal InternalAttribute InternalAttribute
-        {
-            get { return this.attribute; }
-        }
+        internal InternalAttribute InternalAttribute { get; }
     }
 }

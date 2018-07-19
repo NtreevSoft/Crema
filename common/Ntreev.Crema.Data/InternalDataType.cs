@@ -19,17 +19,13 @@ using Ntreev.Crema.Data.Properties;
 using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Library;
 using Ntreev.Library.IO;
-using Ntreev.Library.ObjectModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Data
 {
@@ -41,27 +37,15 @@ namespace Ntreev.Crema.Data
         internal readonly DataColumn columnName;
         internal readonly DataColumn columnValue;
         internal readonly DataColumn columnComment;
-
-        private string comment;
-        private Guid typeID = Guid.NewGuid();
-        private bool isFlag;
-        private TagInfo tags = TagInfo.All;
-
         private string oldNameCache;
         private long? oldValueCache;
 
         private string[] namesCache;
         private ulong[] valuesCache;
         private KeyValuePair<string, long> deletedMember;
-
-        private List<InternalDataColumn> referenceList = new List<InternalDataColumn>();
-
-        private SignatureDate creationInfo = SignatureDate.Empty;
-        private SignatureDate modificationInfo = SignatureDate.Empty;
         private SignatureDate? modificationInfoCurrent;
 
         private readonly ObservableCollection<InternalDataType> childList = new ObservableCollection<InternalDataType>();
-        private readonly ReadOnlyObservableCollection<InternalDataType> childList2;
 
         public InternalDataType()
             : this(null, null, null)
@@ -84,7 +68,7 @@ namespace Ntreev.Crema.Data
         public InternalDataType(CremaDataType target, string name, string categoryPath)
             : base(name, categoryPath)
         {
-            this.childList2 = new ReadOnlyObservableCollection<InternalDataType>(this.childList);
+            this.ChildItems = new ReadOnlyObservableCollection<InternalDataType>(this.childList);
             if (base.ChildItems is INotifyCollectionChanged childTables)
             {
                 childTables.CollectionChanged += ChildTables_CollectionChanged;
@@ -136,7 +120,7 @@ namespace Ntreev.Crema.Data
             base.Target = target ?? new CremaDataType(this);
             this.PrimaryKey = new DataColumn[] { this.columnName };
             this.DefaultView.Sort = $"{this.attributeIndex.AttributeName} ASC";
-            this.creationInfo = this.modificationInfo = SignatureDateProvider.Default.Provide();
+            this.CreationInfo = this.ModificationInfo = SignatureDateProvider.Default.Provide();
         }
 
         public static string GenerateHashValue(params TypeMemberInfo[] members)
@@ -213,7 +197,7 @@ namespace Ntreev.Crema.Data
             this.columnName.DefaultValue = this.GenerateMemberName();
             this.columnValue.DefaultValue = this.GenerateMemberValue();
 
-            var tables = this.referenceList.Select(item => item.Table).Distinct().ToArray();
+            var tables = this.ReferenceList.Select(item => item.Table).Distinct().ToArray();
             foreach (var item in tables)
             {
                 lock (item)
@@ -230,7 +214,7 @@ namespace Ntreev.Crema.Data
             base.RejectChanges();
             base.EndLoadData();
 
-            var tables = this.referenceList.Select(item => item.Table).Distinct().ToArray();
+            var tables = this.ReferenceList.Select(item => item.Table).Distinct().ToArray();
             foreach (var item in tables)
             {
                 item.RejectChanges();
@@ -315,7 +299,7 @@ namespace Ntreev.Crema.Data
 
         public void ValidateClearMembers()
         {
-            foreach (var item in this.referenceList)
+            foreach (var item in this.ReferenceList)
             {
                 this.ValidateClearMembers(item);
             }
@@ -466,9 +450,9 @@ namespace Ntreev.Crema.Data
         {
             lock (this)
             {
-                if (this.referenceList.Contains(column) == true)
+                if (this.ReferenceList.Contains(column) == true)
                     throw new CremaDataException();
-                this.referenceList.Add(column);
+                this.ReferenceList.Add(column);
             }
         }
 
@@ -476,26 +460,17 @@ namespace Ntreev.Crema.Data
         {
             lock (this)
             {
-                if (this.referenceList.Contains(column) == false)
+                if (this.ReferenceList.Contains(column) == false)
                     throw new CremaDataException();
-                this.referenceList.Remove(column);
+                this.ReferenceList.Remove(column);
             }
         }
 
-        public new CremaDataType Target
-        {
-            get { return base.Target as CremaDataType; }
-        }
+        public new CremaDataType Target => base.Target as CremaDataType;
 
-        public List<InternalDataColumn> ReferenceList
-        {
-            get { return this.referenceList; }
-        }
+        public List<InternalDataColumn> ReferenceList { get; } = new List<InternalDataColumn>();
 
-        public new ReadOnlyObservableCollection<InternalDataType> ChildItems
-        {
-            get { return this.childList2; }
-        }
+        public new ReadOnlyObservableCollection<InternalDataType> ChildItems { get; }
 
         public new IEnumerable<InternalDataType> FamilyItems
         {
@@ -533,14 +508,11 @@ namespace Ntreev.Crema.Data
             }
         }
 
-        public Guid TypeID
-        {
-            get { return this.InternalTypeID; }
-        }
+        public Guid TypeID => this.InternalTypeID;
 
         public bool IsFlag
         {
-            get { return this.InternalIsFlag; }
+            get => this.InternalIsFlag;
             set
             {
                 if (this.InternalIsFlag == value)
@@ -552,7 +524,7 @@ namespace Ntreev.Crema.Data
 
         public string Comment
         {
-            get { return this.InternalComment ?? string.Empty; }
+            get => this.InternalComment ?? string.Empty;
             set
             {
                 if (this.InternalComment == value)
@@ -562,34 +534,19 @@ namespace Ntreev.Crema.Data
             }
         }
 
-        public TagInfo Tags
-        {
-            get { return this.tags; }
-            set { this.tags = value; }
-        }
+        public TagInfo Tags { get; set; } = TagInfo.All;
 
         public TagInfo DerivedTags
         {
-            get { return this.tags; }
-            set { this.tags = value; }
+            get => this.Tags;
+            set => this.Tags = value;
         }
 
-        public new InternalDataSet DataSet
-        {
-            get { return base.DataSet as InternalDataSet; }
-        }
+        public new InternalDataSet DataSet => base.DataSet as InternalDataSet;
 
-        public SignatureDate CreationInfo
-        {
-            get { return this.creationInfo; }
-            set { this.creationInfo = value; }
-        }
+        public SignatureDate CreationInfo { get; set; } = SignatureDate.Empty;
 
-        public SignatureDate ModificationInfo
-        {
-            get { return this.modificationInfo; }
-            set { this.modificationInfo = value; }
-        }
+        public SignatureDate ModificationInfo { get; set; } = SignatureDate.Empty;
 
         public TypeInfo TypeInfo
         {
@@ -622,44 +579,32 @@ namespace Ntreev.Crema.Data
             }
         }
 
-        public bool InternalIsFlag
-        {
-            get { return this.isFlag; }
-            set { this.isFlag = value; }
-        }
+        public bool InternalIsFlag { get; set; }
 
         public TagInfo InternalTags
         {
-            get { return this.tags; }
+            get => this.Tags;
             set
             {
-                this.tags = value;
+                this.Tags = value;
                 this.attributeTag.DefaultValue = (string)value;
             }
         }
 
-        public string InternalComment
-        {
-            get { return this.comment; }
-            set { this.comment = value; }
-        }
+        public string InternalComment { get; set; }
 
-        public Guid InternalTypeID
-        {
-            get { return this.typeID; }
-            set { this.typeID = value; }
-        }
+        public Guid InternalTypeID { get; set; } = Guid.NewGuid();
 
         public SignatureDate InternalCreationInfo
         {
-            get { return this.creationInfo; }
-            set { this.creationInfo = value; }
+            get => this.CreationInfo;
+            set => this.CreationInfo = value;
         }
 
         public SignatureDate InternalModificationInfo
         {
-            get { return this.modificationInfo; }
-            set { this.modificationInfo = value; }
+            get => this.ModificationInfo;
+            set => this.ModificationInfo = value;
         }
 
         public static explicit operator CremaDataType(InternalDataType dataType)
@@ -690,7 +635,7 @@ namespace Ntreev.Crema.Data
             this.ValidateChangeName(e);
             this.ValidateChangeID(e);
 
-            foreach (var item in this.referenceList)
+            foreach (var item in this.ReferenceList)
             {
                 var table = item.Table;
                 if (table.Editor == null && table.HasChanges == true)
@@ -718,7 +663,7 @@ namespace Ntreev.Crema.Data
                     this.oldValueCache = null;
             }
 
-            foreach (var item in this.referenceList)
+            foreach (var item in this.ReferenceList)
             {
                 item.Table.Editor = this;
             }
@@ -827,7 +772,7 @@ namespace Ntreev.Crema.Data
         protected override void OnTableCleared(DataTableClearEventArgs e)
         {
             this.attributeIndex.DefaultValue = (int)0;
-            this.modificationInfo = this.SignatureDateProvider.Provide();
+            this.ModificationInfo = this.SignatureDateProvider.Provide();
             this.modificationInfoCurrent = null;
             base.OnTableCleared(e);
             this.ClearTableData();
@@ -1169,7 +1114,7 @@ namespace Ntreev.Crema.Data
             }
             EnumUtility.GetEnumData(members, item => item.Name, item => (ulong)item.Value, out string[] names, out ulong[] values);
 
-            foreach (var item in this.referenceList)
+            foreach (var item in this.ReferenceList)
             {
                 this.DeleteMember(item, name, value, names, values);
             }
@@ -1220,7 +1165,7 @@ namespace Ntreev.Crema.Data
 
         private void ClearTableData()
         {
-            foreach (var item in this.referenceList)
+            foreach (var item in this.ReferenceList)
             {
                 this.ClearTableData(item);
             }
@@ -1243,7 +1188,7 @@ namespace Ntreev.Crema.Data
         {
             if (value == false)
             {
-                foreach (var column in this.referenceList)
+                foreach (var column in this.ReferenceList)
                 {
                     ValidateRows(column);
                 }
@@ -1305,7 +1250,7 @@ namespace Ntreev.Crema.Data
 
             EnumUtility.GetEnumData(members, item => item.Name, item => (ulong)item.Value, out string[] names, out ulong[] values);
 
-            foreach (var item in this.referenceList)
+            foreach (var item in this.ReferenceList)
             {
                 this.ValidateDeleteMember(item, name, value, names, values);
             }

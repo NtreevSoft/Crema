@@ -15,28 +15,21 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Ntreev.Library;
-using System.Data;
-using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Crema.Data.Properties;
+using Ntreev.Library;
+using System;
+using System.Data;
 
 namespace Ntreev.Crema.Data
 {
     public class CremaTemplateColumn
     {
-        private readonly CremaTemplate template;
-        private readonly InternalTemplateColumn row;
-
         public CremaTemplateColumn(CremaTemplateColumnBuilder builder)
         {
             if (builder == null)
                 throw new ArgumentNullException();
-            this.template = builder.Template;
-            this.row = builder.DataRow;
+            this.Template = builder.Template;
+            this.InternalObject = builder.DataRow;
         }
 
         public override string ToString()
@@ -67,7 +60,7 @@ namespace Ntreev.Crema.Data
 
         public void Delete()
         {
-            this.row.Delete();
+            this.InternalObject.Delete();
         }
 
         public void SetDataType(Type dataType)
@@ -77,105 +70,96 @@ namespace Ntreev.Crema.Data
 
         public object GetAttribute(string attributeName)
         {
-            if (this.template.Attributes.Contains(attributeName) == false)
+            if (this.Template.Attributes.Contains(attributeName) == false)
                 throw new CremaDataException(string.Format(Resources.Exception_NotFoundAttribute_Format, attributeName));
-            return this.row[attributeName];
+            return this.InternalObject[attributeName];
         }
 
         public void SetAttribute(string attributeName, object value)
         {
-            if (this.template.Attributes.Contains(attributeName) == false)
+            if (this.Template.Attributes.Contains(attributeName) == false)
                 throw new CremaDataException(string.Format(Resources.Exception_NotFoundAttribute_Format, attributeName));
-            this.row[attributeName] = value;
+            this.InternalObject[attributeName] = value;
         }
 
         public int Index
         {
-            get { return this.row.Index; }
-            set { this.row.Index = value; }
+            get => this.InternalObject.Index;
+            set => this.InternalObject.Index = value;
         }
 
         public Guid ColumnID
         {
-            get { return this.row.ColumnID; }
-            set { this.row.ColumnID = value; }
+            get => this.InternalObject.ColumnID;
+            set => this.InternalObject.ColumnID = value;
         }
 
         public string Name
         {
-            get { return this.row.ColumnName; }
-            set { this.row.ColumnName = value; }
+            get => this.InternalObject.ColumnName;
+            set => this.InternalObject.ColumnName = value;
         }
 
         public bool IsKey
         {
-            get { return this.row.IsKey; }
-            set { this.row.IsKey = value; }
+            get => this.InternalObject.IsKey;
+            set => this.InternalObject.IsKey = value;
         }
 
         public bool Unique
         {
-            get { return this.row.Unique; }
-            set { this.row.Unique = value; }
+            get => this.InternalObject.Unique;
+            set => this.InternalObject.Unique = value;
         }
 
         public bool AutoIncrement
         {
-            get { return this.row.AutoIncrement; }
-            set { this.row.AutoIncrement = value; }
+            get => this.InternalObject.AutoIncrement;
+            set => this.InternalObject.AutoIncrement = value;
         }
 
         public string DataTypeName
         {
-            get { return this.row.DataTypeName; }
-            set { this.row.DataTypeName = value; }
+            get => this.InternalObject.DataTypeName;
+            set => this.InternalObject.DataTypeName = value;
         }
 
         public object DefaultValue
         {
-            get { return this.row.DefaultValue; }
-            set { this.row.DefaultValue = value; }
+            get => this.InternalObject.DefaultValue;
+            set => this.InternalObject.DefaultValue = value;
         }
 
         public string Comment
         {
-            get { return this.row.Comment ?? string.Empty; }
-            set { this.row.Comment = value; }
+            get => this.InternalObject.Comment ?? string.Empty;
+            set => this.InternalObject.Comment = value;
         }
 
         [Obsolete]
-        public DataRowState ColumnState
-        {
-            get { return this.row.RowState; }
-        }
+        public DataRowState ColumnState => this.InternalObject.RowState;
 
-        public DataRowState ItemState
-        {
-            get { return this.row.RowState; }
-        }
+        public DataRowState ItemState => this.InternalObject.RowState;
 
         public TagInfo Tags
         {
-            get { return this.row.Tags; }
-            set { this.row.Tags = value; }
+            get => this.InternalObject.Tags;
+            set => this.InternalObject.Tags = value;
         }
 
         public bool ReadOnly
         {
-            get { return this.row.ReadOnly; }
-            set { this.row.ReadOnly = value; }
+            get => this.InternalObject.ReadOnly;
+            set => this.InternalObject.ReadOnly = value;
         }
 
         public bool AllowNull
         {
-            get { return this.row.AllowNull; }
-            set { this.row.AllowNull = value; }
+            get => this.InternalObject.AllowNull;
+            set => this.InternalObject.AllowNull = value;
         }
 
-        public bool IsDeleted
-        {
-            get { return this.row.RowState == DataRowState.Deleted || this.row.RowState == DataRowState.Detached; }
-        }
+        public bool IsDeleted => this.InternalObject.RowState == DataRowState.Deleted || this.InternalObject.RowState == DataRowState.Detached;
 
         public bool CanDelete
         {
@@ -183,41 +167,32 @@ namespace Ntreev.Crema.Data
             {
                 if (this.IsDeleted == true)
                     return false;
-                return this.row.CanDelete;
+                return this.InternalObject.CanDelete;
             }
         }
 
-        public DataRowState State
-        {
-            get { return this.row.RowState; }
-        }
+        public DataRowState State => this.InternalObject.RowState;
 
-        public CremaTemplate Template
-        {
-            get { return this.template; }
-        }
+        public CremaTemplate Template { get; }
 
         public SignatureDate CreationInfo
         {
-            get { return this.row.CreationInfo; }
-            internal set { this.row.CreationInfo = value; }
+            get => this.InternalObject.CreationInfo;
+            internal set => this.InternalObject.CreationInfo = value;
         }
 
         public SignatureDate ModificationInfo
         {
-            get { return this.row.ModificationInfo; }
-            internal set { this.row.ModificationInfo = value; }
+            get => this.InternalObject.ModificationInfo;
+            internal set => this.InternalObject.ModificationInfo = value;
         }
-        
-        internal InternalTemplateColumn InternalObject
-        {
-            get { return this.row; }
-        }
+
+        internal InternalTemplateColumn InternalObject { get; }
 
         internal CremaDataColumn TargetColumn
         {
-            get { return (CremaDataColumn)this.row.TargetColumn; }
-            set { this.row.TargetColumn = (InternalDataColumn)value; }
+            get => (CremaDataColumn)this.InternalObject.TargetColumn;
+            set => this.InternalObject.TargetColumn = (InternalDataColumn)value;
         }
     }
 }

@@ -15,15 +15,12 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.Data.Xml.Schema;
-using Ntreev.Library;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
-using System.Text;
 
 namespace Ntreev.Crema.Data
 {
@@ -41,10 +38,7 @@ namespace Ntreev.Crema.Data
             this.columns.CollectionChanged += Columns_CollectionChanged;
         }
 
-        public CremaDataColumn this[int index]
-        {
-            get { return this.itemList[index].Target; }
-        }
+        public CremaDataColumn this[int index] => this.itemList[index].Target;
 
         public CremaDataColumn this[string columnName]
         {
@@ -57,10 +51,7 @@ namespace Ntreev.Crema.Data
             }
         }
 
-        public CremaDataColumn this[Guid columnID]
-        {
-            get { return (CremaDataColumn)this.itemList.SingleOrDefault(item => item.ColumnID == columnID); }
-        }
+        public CremaDataColumn this[Guid columnID] => (CremaDataColumn)this.itemList.SingleOrDefault(item => item.ColumnID == columnID);
 
         public void Add(CremaDataColumn column)
         {
@@ -196,10 +187,7 @@ namespace Ntreev.Crema.Data
             this.table.RemoveColumn(item);
         }
 
-        public int Count
-        {
-            get { return this.itemList.Count; }
-        }
+        public int Count => this.itemList.Count;
 
         public event CollectionChangeEventHandler CollectionChanged;
 

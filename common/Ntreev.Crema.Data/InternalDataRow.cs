@@ -15,16 +15,9 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Library;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Data
 {
@@ -60,7 +53,7 @@ namespace Ntreev.Crema.Data
 
         public new CremaDataRow Target
         {
-            get { return base.Target as CremaDataRow; }
+            get => base.Target as CremaDataRow;
             set
             {
                 if (base.Target != null)
@@ -69,21 +62,18 @@ namespace Ntreev.Crema.Data
             }
         }
 
-        public new InternalDataTable Table
-        {
-            get { return base.Table as InternalDataTable; }
-        }
+        public new InternalDataTable Table => base.Table as InternalDataTable;
 
         public bool IsEnabled
         {
-            get { return this.Field<bool>(this.table.attributeEnable); }
-            set { this.SetField<bool>(this.table.attributeEnable, value); }
+            get => this.Field<bool>(this.table.attributeEnable);
+            set => this.SetField(this.table.attributeEnable, value);
         }
 
         public TagInfo Tags
         {
-            get { return new TagInfo(this.Field<string>(this.table.attributeTag)); }
-            set { this.SetField<string>(this.table.attributeTag, value.ToString()); }
+            get => new TagInfo(this.Field<string>(this.table.attributeTag));
+            set => this.SetField(this.table.attributeTag, value.ToString());
         }
     }
 }

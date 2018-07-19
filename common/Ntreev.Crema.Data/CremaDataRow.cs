@@ -15,60 +15,52 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Data;
-using System.ComponentModel;
-using System.Xml;
-using System.IO;
 using Ntreev.Crema.Data.Properties;
-using Ntreev.Crema.Data.Xml;
 using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Library;
+using System;
+using System.Data;
+using System.Linq;
 
 namespace Ntreev.Crema.Data
 {
     public class CremaDataRow
     {
-        private readonly InternalDataRow row;
-
         public CremaDataRow(CremaDataRowBuilder builder)
         {
             if (builder == null)
                 throw new ArgumentNullException();
-            this.row = builder.DataRow;
+            this.InternalObject = builder.DataRow;
         }
 
         public void AcceptChanges()
         {
-            this.row.AcceptChanges();
+            this.InternalObject.AcceptChanges();
         }
 
         public void BeginEdit()
         {
-            this.row.BeginEdit();
+            this.InternalObject.BeginEdit();
         }
 
         public void CancelEdit()
         {
-            this.row.CancelEdit();
+            this.InternalObject.CancelEdit();
         }
 
         public void ClearErrors()
         {
-            this.row.ClearErrors();
+            this.InternalObject.ClearErrors();
         }
 
         public void Delete()
         {
-            this.row.Delete();
+            this.InternalObject.Delete();
         }
 
         public void EndEdit()
         {
-            this.row.EndEdit();
+            this.InternalObject.EndEdit();
         }
 
         public CremaDataRow[] GetChildRows(CremaDataTable childTable)
@@ -78,34 +70,34 @@ namespace Ntreev.Crema.Data
 
             var relationName = InternalSetBase.GenerateRelationName(this.Table.TableName, childTable.TableName, this.Table.Namespace);
 
-            return this.row.GetChildRows(relationName).Select(item => (item as InternalDataRow).Target).ToArray();
+            return this.InternalObject.GetChildRows(relationName).Select(item => (item as InternalDataRow).Target).ToArray();
         }
 
         public CremaDataRow[] GetChildRows(string childTableName)
         {
             var relationName = InternalSetBase.GenerateRelationName(this.Table.TableName, childTableName, this.Table.Namespace);
 
-            return this.row.GetChildRows(relationName).Select(item => (item as InternalDataRow).Target).ToArray();
+            return this.InternalObject.GetChildRows(relationName).Select(item => (item as InternalDataRow).Target).ToArray();
         }
 
         public string GetColumnError(CremaDataColumn cremaColumn)
         {
-            return this.row.GetColumnError(cremaColumn.InternalObject);
+            return this.InternalObject.GetColumnError(cremaColumn.InternalObject);
         }
 
         public string GetColumnError(int columnIndex)
         {
-            return this.row.GetColumnError(columnIndex);
+            return this.InternalObject.GetColumnError(columnIndex);
         }
 
         public string GetColumnError(string columnName)
         {
-            return this.row.GetColumnError(columnName);
+            return this.InternalObject.GetColumnError(columnName);
         }
 
         public CremaDataColumn[] GetColumnsInError()
         {
-            return this.row.GetColumnsInError().Select(item =>
+            return this.InternalObject.GetColumnsInError().Select(item =>
             {
                 var column = item as InternalColumnBase;
                 return column.Target as CremaDataColumn;
@@ -114,90 +106,84 @@ namespace Ntreev.Crema.Data
 
         public bool HasVersion(DataRowVersion version)
         {
-            return this.row.HasVersion(version);
+            return this.InternalObject.HasVersion(version);
         }
 
         public bool IsNull(CremaDataColumn column)
         {
-            return this.row.IsNull(column.InternalObject);
+            return this.InternalObject.IsNull(column.InternalObject);
         }
 
         public bool IsNull(int columnIndex)
         {
-            return this.row.IsNull(columnIndex);
+            return this.InternalObject.IsNull(columnIndex);
         }
 
         public bool IsNull(string columnName)
         {
-            return this.row.IsNull(columnName);
+            return this.InternalObject.IsNull(columnName);
         }
 
         public bool IsNull(CremaDataColumn column, DataRowVersion version)
         {
-            return this.row.IsNull(column.InternalObject, version);
+            return this.InternalObject.IsNull(column.InternalObject, version);
         }
 
         public void RejectChanges()
         {
-            this.row.RejectChanges();
+            this.InternalObject.RejectChanges();
         }
 
         public void SetAdded()
         {
-            this.row.SetAdded();
+            this.InternalObject.SetAdded();
         }
 
         public void SetColumnError(CremaDataColumn column, string error)
         {
-            this.row.SetColumnError(column.InternalObject, error);
+            this.InternalObject.SetColumnError(column.InternalObject, error);
         }
 
         public void SetColumnError(int columnIndex, string error)
         {
-            this.row.SetColumnError(columnIndex, error);
+            this.InternalObject.SetColumnError(columnIndex, error);
         }
 
         public void SetColumnError(string columnName, string error)
         {
-            this.row.SetColumnError(columnName, error);
+            this.InternalObject.SetColumnError(columnName, error);
         }
 
         public void SetAttributeError(CremaAttribute attribute, string error)
         {
-            this.row.SetColumnError(attribute.InternalAttribute, error);
+            this.InternalObject.SetColumnError(attribute.InternalAttribute, error);
         }
 
         public void SetAttributeError(string attributeName, string error)
         {
-            this.row.SetColumnError(attributeName, error);
+            this.InternalObject.SetColumnError(attributeName, error);
         }
 
         public void SetModified()
         {
-            this.row.SetModified();
+            this.InternalObject.SetModified();
         }
 
         public object this[CremaDataColumn column]
         {
-            get { return this.row[column.InternalObject]; }
-            set { this.row[column.InternalObject] = value; }
+            get => this.InternalObject[column.InternalObject];
+            set => this.InternalObject[column.InternalObject] = value;
         }
 
-        public object this[CremaDataColumn column, DataRowVersion version]
-        {
-            get { return this.row[column.InternalObject, version]; }
-        }
+        public object this[CremaDataColumn column, DataRowVersion version] => this.InternalObject[column.InternalObject, version];
 
         public object this[int columnIndex]
         {
-            get { return this.row[this.Table.Columns[columnIndex].InternalObject]; }
-            set { this.row[this.Table.Columns[columnIndex].InternalObject] = value; }
+            get => this.InternalObject[this.Table.Columns[columnIndex].InternalObject];
+            set => this.InternalObject[this.Table.Columns[columnIndex].InternalObject] = value;
         }
 
-        public object this[int columnIndex, DataRowVersion version]
-        {
-            get { return this.row[this.Table.Columns[columnIndex].InternalObject, version]; }
-        }
+        public object this[int columnIndex, DataRowVersion version] => this.InternalObject[this.Table.Columns[columnIndex].InternalObject, version];
 
         public object this[string columnName]
         {
@@ -205,13 +191,13 @@ namespace Ntreev.Crema.Data
             {
                 if (this.Table.Columns.Contains(columnName) == false)
                     throw new CremaDataException(string.Format(Resources.Exception_NotFoundColumn_Format, columnName));
-                return this.row[columnName];
+                return this.InternalObject[columnName];
             }
             set
             {
                 if (this.Table.Columns.Contains(columnName) == false)
                     throw new CremaDataException(string.Format(Resources.Exception_NotFoundColumn_Format, columnName));
-                this.row[columnName] = value;
+                this.InternalObject[columnName] = value;
             }
         }
 
@@ -221,7 +207,7 @@ namespace Ntreev.Crema.Data
             {
                 if (this.Table.Columns.Contains(columnName) == false)
                     throw new CremaDataException(string.Format(Resources.Exception_NotFoundColumn_Format, columnName));
-                return this.row[columnName, version];
+                return this.InternalObject[columnName, version];
             }
         }
 
@@ -229,32 +215,31 @@ namespace Ntreev.Crema.Data
         {
             if (this.Table.Attributes.Contains(attributeName) == false)
                 throw new CremaDataException(string.Format(Resources.Exception_NotFoundAttribute_Format, attributeName));
-            return this.row[attributeName];
+            return this.InternalObject[attributeName];
         }
 
         public void SetAttribute(string attributeName, object value)
         {
             if (this.Table.Attributes.Contains(attributeName) == false)
                 throw new CremaDataException(string.Format(Resources.Exception_NotFoundAttribute_Format, attributeName));
-            this.row[attributeName] = value;
+            this.InternalObject[attributeName] = value;
         }
 
         public TagInfo Tags
         {
-            get { return this.row.Tags; }
-            set { this.row.Tags = value; }
+            get => this.InternalObject.Tags;
+            set => this.InternalObject.Tags = value;
         }
 
         public TagInfo DerivedTags
         {
             get
             {
-                var tags = new TagInfo(this.row.Field<string>(CremaSchema.Tags));
-
-                var cremaTable = this.Table;
-                if (cremaTable != null)
+                var tags = new TagInfo(this.InternalObject.Field<string>(CremaSchema.Tags));
+                var dataTable = this.Table;
+                if (dataTable != null)
                 {
-                    tags &= cremaTable.DerivedTags;
+                    tags &= dataTable.DerivedTags;
                 }
 
                 var parentRow = this.Parent;
@@ -269,8 +254,8 @@ namespace Ntreev.Crema.Data
 
         public bool IsEnabled
         {
-            get { return this.row.IsEnabled; }
-            set { this.row.IsEnabled = value; }
+            get => this.InternalObject.IsEnabled;
+            set => this.InternalObject.IsEnabled = value;
         }
 
         public bool IsDerivedEnabled
@@ -284,55 +269,49 @@ namespace Ntreev.Crema.Data
                         return false;
                 }
 
-                return this.row.Field<bool>(CremaSchema.Enable);
+                return this.InternalObject.Field<bool>(CremaSchema.Enable);
             }
         }
 
         public SignatureDate CreationInfo
         {
-            get { return this.row.CreationInfo; }
-            internal set { this.row.CreationInfo = value; }
+            get => this.InternalObject.CreationInfo;
+            internal set => this.InternalObject.CreationInfo = value;
         }
 
         public SignatureDate ModificationInfo
         {
-            get { return this.row.ModificationInfo; }
-            internal set { this.row.ModificationInfo = value; }
+            get => this.InternalObject.ModificationInfo;
+            internal set => this.InternalObject.ModificationInfo = value;
         }
 
         public string RelationID
         {
-            get { return this.row.RelationID; }
-            set { this.row.RelationID = value; }
+            get => this.InternalObject.RelationID;
+            set => this.InternalObject.RelationID = value;
         }
 
         public string ParentID
         {
-            get { return this.row.ParentID; }
-            set { this.row.ParentID = value; }
+            get => this.InternalObject.ParentID;
+            set => this.InternalObject.ParentID = value;
         }
 
         public int Index
         {
-            get { return this.row.Index; }
-            set { this.row.Index = value; }
+            get => this.InternalObject.Index;
+            set => this.InternalObject.Index = value;
         }
 
-        public bool HasErrors
-        {
-            get { return this.row.HasErrors; }
-        }
+        public bool HasErrors => this.InternalObject.HasErrors;
 
         public string RowError
         {
-            get { return this.row.RowError; }
-            set { this.row.RowError = value; }
+            get => this.InternalObject.RowError;
+            set => this.InternalObject.RowError = value;
         }
 
-        public DataRowState RowState
-        {
-            get { return this.row.RowState; }
-        }
+        public DataRowState RowState => this.InternalObject.RowState;
 
         public CremaDataRow Parent
         {
@@ -341,32 +320,23 @@ namespace Ntreev.Crema.Data
                 if (this.Table.Parent == null)
                     return null;
 
-                var relationName = InternalSetBase.GenerateRelationName(this.row.Table.Parent, this.row.Table);
-                if (this.row.GetParentRow(relationName) is InternalDataRow parentRow)
+                var relationName = InternalSetBase.GenerateRelationName(this.InternalObject.Table.Parent, this.InternalObject.Table);
+                if (this.InternalObject.GetParentRow(relationName) is InternalDataRow parentRow)
                 {
                     return parentRow.Target;
                 }
                 return null;
             }
-            set
-            {
-                this.row.SetParentRow(value.InternalObject);
-            }
+            set => this.InternalObject.SetParentRow(value.InternalObject);
         }
 
-        public CremaDataTable Table
-        {
-            get { return this.row.Table.Target; }
-        }
+        public CremaDataTable Table => this.InternalObject.Table.Target;
 
         protected void SetNull(CremaDataColumn column)
         {
-            this.row.SetNull(column.InternalObject);
+            this.InternalObject.SetNull(column.InternalObject);
         }
 
-        internal InternalDataRow InternalObject
-        {
-            get { return this.row; }
-        }
+        internal InternalDataRow InternalObject { get; }
     }
 }

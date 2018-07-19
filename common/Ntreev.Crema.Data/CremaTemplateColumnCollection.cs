@@ -19,12 +19,8 @@ using Ntreev.Crema.Data.Xml.Schema;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Xml;
 
 namespace Ntreev.Crema.Data
 {
@@ -107,15 +103,9 @@ namespace Ntreev.Crema.Data
             this.template.RemoveColumn(item);
         }
 
-        public int Count
-        {
-            get { return this.itemList.Count; }
-        }
+        public int Count => this.itemList.Count;
 
-        public CremaTemplateColumn this[int index]
-        {
-            get { return this.itemList[index].Target; }
-        }
+        public CremaTemplateColumn this[int index] => this.itemList[index].Target;
 
         public CremaTemplateColumn this[string columnName]
         {

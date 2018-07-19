@@ -15,14 +15,8 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.Data.Properties;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Data
 {
@@ -32,19 +26,15 @@ namespace Ntreev.Crema.Data
             : base(columnName, dataType)
         {
             this.ColumnMapping = MappingType.Hidden;
-            //this.ReadOnly = true;
         }
 
         [Obsolete]
-        public new string ColumnName
-        {
-            get { return base.ColumnName; }
-        }
+        public new string ColumnName => base.ColumnName;
 
         public string RelationName
         {
-            get { return base.InternalColumnName; }
-            set { base.InternalColumnName = value; }
+            get => base.InternalColumnName;
+            set => base.InternalColumnName = value;
         }
     }
 }

@@ -19,11 +19,8 @@ using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Library;
 using Ntreev.Library.IO;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Data
 {
@@ -43,9 +40,6 @@ namespace Ntreev.Crema.Data
         internal readonly DataColumn columnReadOnly;
         internal readonly DataColumn columnIsUnique;
         internal readonly DataColumn columnAutoIncrement;
-
-        private InternalDataTable targetTable;
-        private string[] types;
 
         public InternalTemplate(CremaTemplate template, CremaTemplateColumnBuilder builder)
             : base("TableTemplate", PathUtility.Separator)
@@ -225,7 +219,7 @@ namespace Ntreev.Crema.Data
             get { return this.InternalTargetTable; }
             set
             {
-                this.types = null;
+                this.InternalTypes = null;
                 this.InternalTargetTable = value;
 
                 if (this.InternalTargetTable != null)
@@ -253,9 +247,9 @@ namespace Ntreev.Crema.Data
         {
             get
             {
-                if (this.targetTable == null)
+                if (this.InternalTargetTable == null)
                     return null;
-                return this.targetTable.DataSet;
+                return this.InternalTargetTable.DataSet;
             }
         }
 
@@ -263,7 +257,7 @@ namespace Ntreev.Crema.Data
         {
             get
             {
-                if (this.types == null)
+                if (this.InternalTypes == null)
                 {
                     if (this.TargetSet != null)
                     {
@@ -274,28 +268,20 @@ namespace Ntreev.Crema.Data
                                      orderby type.Name
                                      select type.CategoryPath + type.Name;
 
-                        this.types = types1.Concat(types2).ToArray();
+                        this.InternalTypes = types1.Concat(types2).ToArray();
                     }
                     else
                     {
-                        this.types = CremaDataTypeUtility.GetBaseTypeNames().OrderBy(item => item).ToArray();
+                        this.InternalTypes = CremaDataTypeUtility.GetBaseTypeNames().OrderBy(item => item).ToArray();
                     }
                 }
-                return this.types;
+                return this.InternalTypes;
             }
         }
 
-        public InternalDataTable InternalTargetTable
-        {
-            get { return this.targetTable; }
-            set { this.targetTable = value; }
-        }
+        public InternalDataTable InternalTargetTable { get; set; }
 
-        public string[] InternalTypes
-        {
-            get { return this.types; }
-            set { this.types = value; }
-        }
+        public string[] InternalTypes { get; set; }
 
         protected override DataRow NewRowFromBuilder(DataRowBuilder builder)
         {
@@ -305,17 +291,11 @@ namespace Ntreev.Crema.Data
 
         protected override void OnColumnChanging(DataColumnChangeEventArgs e)
         {
-            //this.ValidateIndex(e);
-
             base.OnColumnChanging(e);
 
             if (e.Row is InternalTemplateColumn columnItem && columnItem.TargetColumn != null && this.RowEventStack.Any() == false && this.IsDiffMode == false)
             {
                 var targetColumn = columnItem.TargetColumn;
-
-                //if(e.Column.AllowDBNull == false && object.Equals(e.ProposedValue, DBNull.Value) == true)
-                //        throw new ArgumentException("value");
-
                 if (e.Column == this.attributeIndex)
                 {
                     targetColumn.ValidateSetIndex((int)e.ProposedValue);
@@ -361,8 +341,6 @@ namespace Ntreev.Crema.Data
                     targetColumn.ValidateSetAutoIncrement((bool)e.ProposedValue);
                 }
             }
-
-            //this.ValidateSetAutoIncrement(e.Row, e.Column, e.ProposedValue);
         }
 
         protected override void OnColumnChanged(DataColumnChangeEventArgs e)
@@ -372,14 +350,6 @@ namespace Ntreev.Crema.Data
             if (e.Row is InternalTemplateColumn columnItem && columnItem.TargetColumn != null && this.RowEventStack.Any() == false)
             {
                 var targetColumn = columnItem.TargetColumn;
-
-                //if (e.Column == this.columnIndex)
-                //{
-                //    if (this.updateIndex == false)
-                //    {
-                //        this.updateIndex = true;
-                //    }
-                //}
                 if (this.IsDiffMode == false)
                 {
                     if (e.Column == this.columnTags)
@@ -445,10 +415,10 @@ namespace Ntreev.Crema.Data
                             if (this.IsLoading == false)
                                 CremaDataSet.ValidateName(row.ColumnName);
 
-                            if (this.targetTable != null && this.IsDiffMode == false)
-                                InternalDataSet.ValidateSetDataTypeName(this.targetTable.DataSet, row.DataTypeName);
+                            if (this.InternalTargetTable != null && this.IsDiffMode == false)
+                                InternalDataSet.ValidateSetDataTypeName(this.InternalTargetTable.DataSet, row.DataTypeName);
 
-                            if (e.Row is InternalTemplateColumn c && c.TargetColumn == null && this.targetTable != null)
+                            if (e.Row is InternalTemplateColumn c && c.TargetColumn == null && this.InternalTargetTable != null)
                             {
                                 var dataColumn = new InternalDataColumn()
                                 {
@@ -474,18 +444,12 @@ namespace Ntreev.Crema.Data
 
         protected override void OnRowChanged(DataRowChangeEventArgs e)
         {
-            //if (this.updateIndex == true && this.RowChangedStack == 0)
-            //{
-            //    this.UpdateIndex(e.Row);
-            //    this.updateIndex = false;
-            //}
-
             if (this.RowEventStack.Any() == false)
             {
                 base.OnRowChanged(e);
                 if (e.Action == DataRowAction.Add)
                 {
-                    if (e.Row is InternalTemplateColumn c && c.TargetColumn == null && this.targetTable != null)
+                    if (e.Row is InternalTemplateColumn c && c.TargetColumn == null && this.InternalTargetTable != null)
                     {
                         var dataColumn = new InternalDataColumn()
                         {
@@ -506,10 +470,8 @@ namespace Ntreev.Crema.Data
                         dataColumn.CreationInfo = c.CreationInfo;
                         dataColumn.ModificationInfo = c.ModificationInfo;
                         c.TargetColumn = dataColumn;
-                        //c.TargetColumn.CreationInfo = c.CreationInfo;
                         this.UpdateRow(e.Row);
                     }
-                    //this.UpdateIsUnique();
                 }
                 else if (e.Action == DataRowAction.Change)
                 {
@@ -529,7 +491,6 @@ namespace Ntreev.Crema.Data
                     this.columnColumnName.DefaultValue = this.GenerateColumnName();
                     this.columnID.DefaultValue = Guid.NewGuid();
                 }
-                //this.columnIndex.DefaultValue = this.GenerateMemberIndex();
             }
             else
             {
@@ -555,14 +516,11 @@ namespace Ntreev.Crema.Data
             {
                 this.TargetTable.RemoveColumn(column.TargetColumn);
             }
-
-            //this.UpdateIndex(null);
         }
 
         protected override void OnTableCleared(DataTableClearEventArgs e)
         {
             base.OnTableCleared(e);
-            //this.columnIndex.DefaultValue = (int)0;
         }
 
         protected override void OnSetNormalMode()
@@ -638,10 +596,7 @@ namespace Ntreev.Crema.Data
             this.PrimaryKey = null;
         }
 
-        protected override string BaseNamespace
-        {
-            get { return CremaSchema.TemplateNamespace1; }
-        }
+        protected override string BaseNamespace => CremaSchema.TemplateNamespace1;
 
         private string GenerateColumnName()
         {

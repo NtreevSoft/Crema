@@ -15,20 +15,13 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.Data;
-using Ntreev.Crema.Data.Xml;
-using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Crema.Data.Properties;
 using Ntreev.Library;
-using Ntreev.Library.IO;
-using Ntreev.Library.ObjectModel;
 using Ntreev.Library.Serialization;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -36,12 +29,7 @@ namespace Ntreev.Crema.Data
 {
     public sealed class CremaTemplate : IListSource, IXmlSerializable, INotifyPropertyChanged, IDisposable
     {
-        private readonly InternalTemplate template;
         private readonly CremaTemplateColumnBuilder builder;
-        private readonly CremaTemplateColumnCollection columns;
-        private readonly CremaAttributeCollection attributes;
-
-        private bool isModified;
         private bool isEventsAttached;
 
         public CremaTemplate()
@@ -58,9 +46,9 @@ namespace Ntreev.Crema.Data
                 throw new ArgumentException(Resources.Exception_CannotEditInheritedTable, nameof(targetTable));
 
             this.builder = new CremaTemplateColumnBuilder(this);
-            this.template = new InternalTemplate(this, this.builder) { TargetTable = (InternalDataTable)targetTable };
-            this.attributes = new CremaAttributeCollection(this.template);
-            this.columns = new CremaTemplateColumnCollection(this.template);
+            this.InternalObject = new InternalTemplate(this, this.builder) { TargetTable = (InternalDataTable)targetTable };
+            this.Attributes = new CremaAttributeCollection(this.InternalObject);
+            this.Columns = new CremaTemplateColumnCollection(this.InternalObject);
 
             this.AttachEventHandlers();
         }
@@ -79,7 +67,7 @@ namespace Ntreev.Crema.Data
 
         public CremaTemplateColumn NewColumn()
         {
-            var dataRow = this.template.NewRow() as InternalTemplateColumn;
+            var dataRow = this.InternalObject.NewRow() as InternalTemplateColumn;
             return dataRow.Target;
         }
 
@@ -105,18 +93,18 @@ namespace Ntreev.Crema.Data
 
         public CremaTemplateColumn AddColumn(string columnName, string dataTypeName, string comment)
         {
-            var column = (this.template.NewRow() as InternalTemplateColumn).Target;
+            var column = (this.InternalObject.NewRow() as InternalTemplateColumn).Target;
             column.Name = columnName;
             column.DataTypeName = dataTypeName;
             column.Comment = comment;
 
-            this.columns.Add(column);
+            this.Columns.Add(column);
             return column;
         }
 
         public void ImportColumn(CremaTemplateColumn column)
         {
-            this.template.ImportRow((InternalTemplateColumn)column);
+            this.InternalObject.ImportRow((InternalTemplateColumn)column);
         }
 
         public void Dispose()
@@ -129,12 +117,12 @@ namespace Ntreev.Crema.Data
 
         public void AcceptChanges()
         {
-            this.template.AcceptChanges();
+            this.InternalObject.AcceptChanges();
         }
 
         public void RejectChanges()
         {
-            this.template.RejectChanges();
+            this.InternalObject.RejectChanges();
         }
 
         public bool HasChanges()
@@ -144,9 +132,9 @@ namespace Ntreev.Crema.Data
 
         public bool HasChanges(bool isComparable)
         {
-            for (var i = 0; i < this.template.Rows.Count; i++)
+            for (var i = 0; i < this.InternalObject.Rows.Count; i++)
             {
-                var dataRow = this.template.Rows[i];
+                var dataRow = this.InternalObject.Rows[i];
                 if (dataRow.RowState == DataRowState.Unchanged)
                     continue;
                 if (isComparable == false)
@@ -173,26 +161,26 @@ namespace Ntreev.Crema.Data
 
         internal void BeginLoadData()
         {
-            this.template.BeginLoadData();
+            this.InternalObject.BeginLoadData();
         }
 
         public void EndLoadData()
         {
-            this.template.EndLoadData();
+            this.InternalObject.EndLoadData();
         }
 
         public void Validate()
         {
-            if (this.columns.Any() == false)
+            if (this.Columns.Any() == false)
                 throw new CremaDataException(Resources.Exception_AtLeastOneColumn);
-            if (this.columns.Any(item => item.IsKey) == false)
+            if (this.Columns.Any(item => item.IsKey) == false)
                 throw new CremaDataException(Resources.Exception_AtLeastOneKey);
         }
 
         public string Comment
         {
-            get { return this.TargetTable.Comment; }
-            set { this.TargetTable.Comment = value; }
+            get => this.TargetTable.Comment;
+            set => this.TargetTable.Comment = value;
         }
 
         public string ParentName
@@ -207,7 +195,7 @@ namespace Ntreev.Crema.Data
 
         public string TableName
         {
-            get { return this.TargetTable.TableName; }
+            get => this.TargetTable.TableName;
             set
             {
                 this.TargetTable.TableName = value;
@@ -215,81 +203,48 @@ namespace Ntreev.Crema.Data
             }
         }
 
-        public string Name
-        {
-            get { return this.TargetTable.Name; }
-        }
+        public string Name => this.TargetTable.Name;
 
-        public string Namespace
-        {
-            get { return this.TargetTable.Namespace; }
-        }
+        public string Namespace => this.TargetTable.Namespace;
 
         public string CategoryPath
         {
-            get { return this.TargetTable.CategoryPath; }
-            set { this.TargetTable.CategoryPath = value; }
+            get => this.TargetTable.CategoryPath;
+            set => this.TargetTable.CategoryPath = value;
         }
 
         public TagInfo Tags
         {
-            get { return this.TargetTable.Tags; }
-            set { this.TargetTable.Tags = value; }
+            get => this.TargetTable.Tags;
+            set => this.TargetTable.Tags = value;
         }
 
-        public TagInfo DerivedTags
-        {
-            get { return this.TargetTable.DerivedTags; }
-        }
+        public TagInfo DerivedTags => this.TargetTable.DerivedTags;
 
-        public Guid TableID
-        {
-            get { return this.TargetTable.TableID; }
-        }
+        public Guid TableID => this.TargetTable.TableID;
 
         public CremaDataTable TargetTable
         {
-            get { return (CremaDataTable)this.template.TargetTable; }
-            internal set
-            {
-                this.template.TargetTable = (InternalDataTable)value;
-            }
+            get => (CremaDataTable)this.InternalObject.TargetTable;
+            internal set => this.InternalObject.TargetTable = (InternalDataTable)value;
         }
 
-        public bool IsModified
-        {
-            get { return this.isModified; }
-        }
+        public bool IsModified { get; private set; }
 
-        public CremaAttributeCollection Attributes
-        {
-            get { return this.attributes; }
-        }
+        public CremaAttributeCollection Attributes { get; }
 
-        public CremaTemplateColumnCollection Columns
-        {
-            get { return this.columns; }
-        }
+        public CremaTemplateColumnCollection Columns { get; }
 
-        public string[] Types
-        {
-            get { return this.template.Types; }
-        }
+        public string[] Types => this.InternalObject.Types;
 
-        public DataView View
-        {
-            get { return this.template.DefaultView; }
-        }
+        public DataView View => this.InternalObject.DefaultView;
 
-        public SignatureDate ModificationInfo
-        {
-            get { return this.TargetTable.ModificationInfo; }
-        }
+        public SignatureDate ModificationInfo => this.TargetTable.ModificationInfo;
 
         public SignatureDateProvider SignatureDateProvider
         {
-            get { return this.template.SignatureDateProvider; }
-            set { this.template.SignatureDateProvider = value; }
+            get => this.InternalObject.SignatureDateProvider;
+            set => this.InternalObject.SignatureDateProvider = value;
         }
 
         public TagInfo ParentTags
@@ -302,22 +257,16 @@ namespace Ntreev.Crema.Data
             }
         }
 
-        public TableInfo TableInfo
-        {
-            get { return this.TargetTable.TableInfo; }
-        }
+        public TableInfo TableInfo => this.TargetTable.TableInfo;
 
-        public PropertyCollection ExtendedProperties
-        {
-            get { return this.InternalObject.ExtendedProperties; }
-        }
+        public PropertyCollection ExtendedProperties => this.InternalObject.ExtendedProperties;
 
         public bool ReadOnly
         {
-            get { return this.template.ReadOnly; }
+            get => this.InternalObject.ReadOnly;
             set
             {
-                this.template.ReadOnly = value;
+                this.InternalObject.ReadOnly = value;
                 this.InvokePropertyChangedEvent(nameof(this.ReadOnly));
             }
         }
@@ -390,7 +339,7 @@ namespace Ntreev.Crema.Data
 
         private void Table_RowChanged(object sender, DataRowChangeEventArgs e)
         {
-            this.isModified = true;
+            this.IsModified = true;
             this.OnColumnChanged(new CremaTemplateColumnChangeEventArgs(e));
         }
 
@@ -401,7 +350,7 @@ namespace Ntreev.Crema.Data
 
         private void Table_RowDeleted(object sender, DataRowChangeEventArgs e)
         {
-            this.isModified = true;
+            this.IsModified = true;
             this.OnColumnDeleted(new CremaTemplateColumnChangeEventArgs(e));
         }
 
@@ -412,7 +361,7 @@ namespace Ntreev.Crema.Data
 
         private void Table_TableCleared(object sender, DataTableClearEventArgs e)
         {
-            this.isModified = true;
+            this.IsModified = true;
             this.OnCleared(new CremaTemplateClearEventArgs(e));
         }
 
@@ -448,15 +397,15 @@ namespace Ntreev.Crema.Data
         {
             if (this.isEventsAttached == true)
                 throw new Exception();
-            this.template.ColumnChanging += Table_ColumnChanging;
-            this.template.ColumnChanged += Table_ColumnChanged;
-            this.template.RowChanging += Table_RowChanging;
-            this.template.RowChanged += Table_RowChanged;
-            this.template.RowDeleted += Table_RowDeleted;
-            this.template.RowDeleting += Table_RowDeleting;
-            this.template.TableCleared += Table_TableCleared;
-            this.template.TableClearing += Table_TableClearing;
-            this.template.TableNewRow += Table_TableNewRow;
+            this.InternalObject.ColumnChanging += Table_ColumnChanging;
+            this.InternalObject.ColumnChanged += Table_ColumnChanged;
+            this.InternalObject.RowChanging += Table_RowChanging;
+            this.InternalObject.RowChanged += Table_RowChanged;
+            this.InternalObject.RowDeleted += Table_RowDeleted;
+            this.InternalObject.RowDeleting += Table_RowDeleting;
+            this.InternalObject.TableCleared += Table_TableCleared;
+            this.InternalObject.TableClearing += Table_TableClearing;
+            this.InternalObject.TableNewRow += Table_TableNewRow;
             this.isEventsAttached = true;
         }
 
@@ -464,44 +413,38 @@ namespace Ntreev.Crema.Data
         {
             if (this.isEventsAttached == false)
                 throw new Exception();
-            this.template.ColumnChanging -= Table_ColumnChanging;
-            this.template.ColumnChanged -= Table_ColumnChanged;
-            this.template.RowChanging -= Table_RowChanging;
-            this.template.RowChanged -= Table_RowChanged;
-            this.template.RowDeleted -= Table_RowDeleted;
-            this.template.RowDeleting -= Table_RowDeleting;
-            this.template.TableCleared -= Table_TableCleared;
-            this.template.TableClearing -= Table_TableClearing;
-            this.template.TableNewRow -= Table_TableNewRow;
+            this.InternalObject.ColumnChanging -= Table_ColumnChanging;
+            this.InternalObject.ColumnChanged -= Table_ColumnChanged;
+            this.InternalObject.RowChanging -= Table_RowChanging;
+            this.InternalObject.RowChanged -= Table_RowChanged;
+            this.InternalObject.RowDeleted -= Table_RowDeleted;
+            this.InternalObject.RowDeleting -= Table_RowDeleting;
+            this.InternalObject.TableCleared -= Table_TableCleared;
+            this.InternalObject.TableClearing -= Table_TableClearing;
+            this.InternalObject.TableNewRow -= Table_TableNewRow;
             this.isEventsAttached = false;
         }
 
-        internal InternalTemplate InternalObject
-        {
-            get { return this.template; }
-        }
+        internal InternalTemplate InternalObject { get; }
 
         internal bool IsDiffMode
         {
-            get { return this.template.IsDiffMode; }
-            set { this.template.IsDiffMode = value; }
+            get => this.InternalObject.IsDiffMode;
+            set => this.InternalObject.IsDiffMode = value;
         }
 
-        internal CremaTemplateColumnCollection Items
-        {
-            get { return this.columns; }
-        }
+        internal CremaTemplateColumnCollection Items => this.Columns;
 
         #region IListSource
 
         bool IListSource.ContainsListCollection
         {
-            get { return (this.template as IListSource).ContainsListCollection; }
+            get { return (this.InternalObject as IListSource).ContainsListCollection; }
         }
 
         System.Collections.IList IListSource.GetList()
         {
-            return (this.template as IListSource).GetList();
+            return (this.InternalObject as IListSource).GetList();
         }
 
         #endregion
@@ -525,28 +468,28 @@ namespace Ntreev.Crema.Data
 
             reader.ReadStartElement();
             reader.MoveToContent();
-            this.template.TargetTable = null;
-            this.template.OmitSignatureDate = true;
-            this.template.ReadXml(reader);
-            this.template.OmitSignatureDate = false;
+            this.InternalObject.TargetTable = null;
+            this.InternalObject.OmitSignatureDate = true;
+            this.InternalObject.ReadXml(reader);
+            this.InternalObject.OmitSignatureDate = false;
             reader.MoveToContent();
             dataSet.ReadXmlSchema(reader);
             reader.MoveToContent();
             dataSet.ReadXml(reader);
             reader.MoveToContent();
-            this.template.InternalTypes = XmlSerializerUtility.Read<string[]>(reader);
+            this.InternalObject.InternalTypes = XmlSerializerUtility.Read<string[]>(reader);
             reader.MoveToContent();
             reader.ReadEndElement();
 
-            this.template.InternalTargetTable = (InternalDataTable)dataSet.Tables[name, categoryPath];
+            this.InternalObject.InternalTargetTable = (InternalDataTable)dataSet.Tables[name, categoryPath];
 
-            foreach (var item in this.template.Rows)
+            foreach (var item in this.InternalObject.Rows)
             {
                 if (item is InternalTemplateColumn rowItem)
                 {
                     if (rowItem.RowState == DataRowState.Deleted)
                         continue;
-                    rowItem.TargetColumn = (InternalDataColumn)this.template.InternalTargetTable.Columns[rowItem.ColumnName];
+                    rowItem.TargetColumn = (InternalDataColumn)this.InternalObject.InternalTargetTable.Columns[rowItem.ColumnName];
                 }
             }
         }
@@ -556,7 +499,7 @@ namespace Ntreev.Crema.Data
             writer.WriteAttributeString("Name", this.TargetTable.Name);
             writer.WriteAttributeString("CategoryPath", this.TargetTable.CategoryPath);
             writer.WriteAttributeString("BaseNamespace", this.TargetTable.DataSet.Namespace);
-            this.template.WriteXml(writer, XmlWriteMode.DiffGram);
+            this.InternalObject.WriteXml(writer, XmlWriteMode.DiffGram);
             this.TargetTable.DataSet.WriteXmlSchema(writer);
             this.TargetTable.DataSet.WriteXml(writer);
             XmlSerializerUtility.Write(writer, this.Types);

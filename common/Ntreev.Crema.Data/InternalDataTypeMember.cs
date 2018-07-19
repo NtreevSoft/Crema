@@ -18,22 +18,16 @@
 using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Library;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Data
 {
     class InternalDataTypeMember : InternalRowBase<InternalDataType, InternalDataTypeMember>
     {
-        private readonly InternalDataType table;
-
         public InternalDataTypeMember(CremaDataTypeMemberBuilder builder, InternalDataType table)
             : base(table, builder.InternalBuilder)
         {
-            this.table = table;
+            this.Table = table;
             base.Target = builder.NewMember(this);
         }
 
@@ -60,61 +54,52 @@ namespace Ntreev.Crema.Data
 
         public new void AcceptChanges()
         {
-            using (this.table.AcceptChangesStack.Set(true))
+            using (this.Table.AcceptChangesStack.Set(true))
             {
                 base.AcceptChanges();
             }
         }
 
-        public new CremaDataTypeMember Target
-        {
-            get { return base.Target as CremaDataTypeMember; }
-        }
+        public new CremaDataTypeMember Target => base.Target as CremaDataTypeMember;
 
-        public new InternalDataType Table
-        {
-            get { return this.table; }
-        }
+        public new InternalDataType Table { get; }
 
         public Guid ID
         {
-            get { return this.Field<Guid>(this.table.attributeID); }
-            set { this.SetField<Guid>(this.table.attributeID, value); }
+            get => this.Field<Guid>(this.Table.attributeID);
+            set => this.SetField<Guid>(this.Table.attributeID, value);
         }
 
         public TagInfo Tags
         {
-            get { return new TagInfo(this.Field<string>(CremaSchema.Tags)); }
-            set { this.SetField<string>(CremaSchema.Tags, value.ToString()); }
+            get => new TagInfo(this.Field<string>(CremaSchema.Tags));
+            set => this.SetField<string>(CremaSchema.Tags, value.ToString());
         }
 
-        public TagInfo DerivedTags
-        {
-            get { return this.Tags & this.Table.Tags; }
-        }
+        public TagInfo DerivedTags => this.Tags & this.Table.Tags;
 
         public bool IsEnabled
         {
-            get { return this.Field<bool>(CremaSchema.Enable); }
-            set { this.SetField(CremaSchema.Enable, value); }
+            get => this.Field<bool>(CremaSchema.Enable);
+            set => this.SetField(CremaSchema.Enable, value);
         }
 
         public string Name
         {
-            get { return this.Field<string>(this.table.columnName) ?? string.Empty; }
-            set { this.SetField(this.table.columnName, value); }
+            get => this.Field<string>(this.Table.columnName) ?? string.Empty;
+            set => this.SetField(this.Table.columnName, value);
         }
 
         public long Value
         {
-            get { return this.Field<long>(this.table.columnValue); }
-            set { this.SetField(this.table.columnValue, value); }
+            get => this.Field<long>(this.Table.columnValue);
+            set => this.SetField(this.Table.columnValue, value);
         }
 
         public string Comment
         {
-            get { return this.Field<string>(this.table.columnComment) ?? string.Empty; }
-            set { this.SetField(this.table.columnComment, value); }
+            get => this.Field<string>(this.Table.columnComment) ?? string.Empty;
+            set => this.SetField(this.Table.columnComment, value);
         }
 
         public TypeMemberInfo TypeMemberInfo
@@ -135,6 +120,5 @@ namespace Ntreev.Crema.Data
                 };
             }
         }
-
     }
 }

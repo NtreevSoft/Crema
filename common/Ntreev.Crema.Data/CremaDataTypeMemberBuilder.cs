@@ -15,45 +15,27 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Data
 {
     public sealed class CremaDataTypeMemberBuilder
     {
-        private readonly CremaDataType type;
-        private InternalDataTypeMember internalRow;
-
         internal CremaDataTypeMemberBuilder(CremaDataType type)
         {
-            this.type = type;
+            this.Type = type;
         }
 
         internal CremaDataTypeMember NewMember(InternalDataTypeMember row)
         {
-            this.internalRow = row;
-            return this.type.InvokeNewTypeMemberFromBuilder(this);
+            this.DataRow = row;
+            return this.Type.InvokeNewTypeMemberFromBuilder(this);
         }
 
-        internal DataRowBuilder InternalBuilder
-        {
-            get;
-            set;
-        }
+        internal DataRowBuilder InternalBuilder { get; set; }
 
-        internal CremaDataType Type
-        {
-            get { return this.type; }
-        }
+        internal CremaDataType Type { get; }
 
-        internal InternalDataTypeMember DataRow
-        {
-            get { return this.internalRow; }
-        }
+        internal InternalDataTypeMember DataRow { get; private set; }
     }
 }

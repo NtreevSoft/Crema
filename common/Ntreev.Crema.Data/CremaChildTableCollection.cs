@@ -45,10 +45,7 @@ namespace Ntreev.Crema.Data
             }
         }
 
-        public CremaDataTable this[int index]
-        {
-            get { return this.itemList[index].Target; }
-        }
+        public CremaDataTable this[int index] => this.itemList[index].Target;
 
         public CremaDataTable this[string tableName]
         {
@@ -61,10 +58,7 @@ namespace Ntreev.Crema.Data
             }
         }
 
-        public CremaDataTable this[Guid tableID]
-        {
-            get { return (CremaDataTable)this.itemList.SingleOrDefault(item => item.TableID == tableID); }
-        }
+        public CremaDataTable this[Guid tableID] => (CremaDataTable)this.itemList.SingleOrDefault(item => item.TableID == tableID);
 
         public CremaDataTable Add()
         {
@@ -169,10 +163,7 @@ namespace Ntreev.Crema.Data
             this.table.RemoveChild(item);
         }
 
-        public int Count
-        {
-            get { return this.itemList.Count; }
-        }
+        public int Count => this.itemList.Count;
 
         public event CollectionChangeEventHandler CollectionChanged;
 

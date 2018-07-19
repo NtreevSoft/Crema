@@ -16,25 +16,17 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
 
 namespace Ntreev.Crema.Data
 {
     public class CremaTemplateClearEventArgs : EventArgs
     {
-        private readonly CremaTemplate template;
-
         public CremaTemplateClearEventArgs(DataTableClearEventArgs e)
         {
-            this.template = (e.Table as InternalTemplate).Target;
+            this.Template = (e.Table as InternalTemplate).Target;
         }
 
-        public CremaTemplate Template
-        {
-            get { return this.template; }
-        }
+        public CremaTemplate Template { get; }
     }
 }

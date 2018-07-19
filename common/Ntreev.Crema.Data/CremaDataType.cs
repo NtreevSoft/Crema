@@ -15,30 +15,21 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.Data.Properties;
+using Ntreev.Crema.Data.Xml;
+using Ntreev.Crema.Data.Xml.Schema;
+using Ntreev.Library;
+using Ntreev.Library.IO;
+using Ntreev.Library.ObjectModel;
 using System;
-using System.Linq;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Reflection;
-using System.Reflection.Emit;
+using System.Data;
+using System.IO;
+using System.Linq;
+using System.Runtime.Serialization;
 using System.Xml;
 using System.Xml.Schema;
-using System.Threading;
-using Ntreev.Crema.Data.Xml.Schema;
-using Ntreev.Crema.Data.Xml;
-using Ntreev.Crema.Data;
-using Ntreev.Library;
-using Ntreev.Crema.Data.Properties;
-using System.IO;
-using Ntreev.Library.IO;
-using System.Data;
 using System.Xml.Serialization;
-using System.Runtime.Serialization;
-using Ntreev.Library.ObjectModel;
-using System.Text;
-using System.Collections;
-using Ntreev.Library.Linq;
-using System.Security.Cryptography;
 
 namespace Ntreev.Crema.Data
 {
@@ -48,11 +39,7 @@ namespace Ntreev.Crema.Data
         private static readonly CremaDataTypeMember[] emptyMembers = new CremaDataTypeMember[] { };
 
         private bool isEventsAttached;
-
-        private readonly InternalDataType type;
         internal readonly CremaDataTypeMemberBuilder builder;
-        private readonly CremaDataTypeMemberCollection members;
-        private readonly CremaAttributeCollection attributes;
 
         public CremaDataType()
             : this(string.Empty)
@@ -69,9 +56,9 @@ namespace Ntreev.Crema.Data
         public CremaDataType(string name, string categoryPath)
         {
             this.builder = new CremaDataTypeMemberBuilder(this);
-            this.type = new InternalDataType(this, name, categoryPath);
-            this.attributes = new CremaAttributeCollection(this.type);
-            this.members = new CremaDataTypeMemberCollection(this.type);
+            this.InternalObject = new InternalDataType(this, name, categoryPath);
+            this.Attributes = new CremaAttributeCollection(this.InternalObject);
+            this.Members = new CremaDataTypeMemberCollection(this.InternalObject);
 
             this.AttachEventHandlers();
         }
@@ -84,10 +71,10 @@ namespace Ntreev.Crema.Data
 
         internal CremaDataType(InternalDataType type)
         {
-            this.type = type;
+            this.InternalObject = type;
             this.builder = new CremaDataTypeMemberBuilder(this);
-            this.attributes = new CremaAttributeCollection(this.type);
-            this.members = new CremaDataTypeMemberCollection(this.type);
+            this.Attributes = new CremaAttributeCollection(this.InternalObject);
+            this.Members = new CremaDataTypeMemberCollection(this.InternalObject);
 
             this.AttachEventHandlers();
         }
@@ -95,16 +82,16 @@ namespace Ntreev.Crema.Data
         private CremaDataType(TypeInfo typeInfo)
         {
             this.builder = new CremaDataTypeMemberBuilder(this);
-            this.type = new InternalDataType(this, typeInfo.Name, typeInfo.CategoryPath)
+            this.InternalObject = new InternalDataType(this, typeInfo.Name, typeInfo.CategoryPath)
             {
                 IsFlag = typeInfo.IsFlag,
                 Comment = typeInfo.Comment,
                 Tags = typeInfo.Tags,
             };
-            this.attributes = new CremaAttributeCollection(this.type);
-            this.members = new CremaDataTypeMemberCollection(this.type);
-            this.type.CreationInfo = typeInfo.CreationInfo;
-            this.type.ModificationInfo = typeInfo.ModificationInfo;
+            this.Attributes = new CremaAttributeCollection(this.InternalObject);
+            this.Members = new CremaDataTypeMemberCollection(this.InternalObject);
+            this.InternalObject.CreationInfo = typeInfo.CreationInfo;
+            this.InternalObject.ModificationInfo = typeInfo.ModificationInfo;
 
             foreach (var item in typeInfo.Members)
             {
@@ -116,7 +103,7 @@ namespace Ntreev.Crema.Data
                 member.Tags = item.Tags;
                 this.Members.Add(member);
             }
-            this.type.AcceptChanges();
+            this.InternalObject.AcceptChanges();
             this.AttachEventHandlers();
         }
 
@@ -143,17 +130,17 @@ namespace Ntreev.Crema.Data
 
         public override string ToString()
         {
-            return this.type.ToString();
+            return this.InternalObject.ToString();
         }
 
         public void Clear()
         {
-            this.type.Clear();
+            this.InternalObject.Clear();
         }
 
         public CremaDataTypeMember NewMember()
         {
-            var dataRow = this.type.NewRow() as InternalDataTypeMember;
+            var dataRow = this.InternalObject.NewRow() as InternalDataTypeMember;
             return dataRow.Target;
         }
 
@@ -164,28 +151,28 @@ namespace Ntreev.Crema.Data
 
         public CremaDataTypeMember AddMember(string name, long value, string comment)
         {
-            var member = (this.type.NewRow() as InternalDataTypeMember).Target;
+            var member = (this.InternalObject.NewRow() as InternalDataTypeMember).Target;
             member.Name = name;
             member.Value = value;
             member.Comment = comment;
 
-            this.members.Add(member);
+            this.Members.Add(member);
             return member;
         }
 
         public void ImportMember(CremaDataTypeMember member)
         {
-            this.type.ImportRow((InternalDataTypeMember)member);
+            this.InternalObject.ImportRow((InternalDataTypeMember)member);
         }
 
         public void AcceptChanges()
         {
-            this.type.AcceptChanges();
+            this.InternalObject.AcceptChanges();
         }
 
         public void RejectChanges()
         {
-            this.type.RejectChanges();
+            this.InternalObject.RejectChanges();
         }
 
         public bool HasChanges()
@@ -195,9 +182,9 @@ namespace Ntreev.Crema.Data
 
         public bool HasChanges(bool isComparable)
         {
-            for (var i = 0; i < this.type.Rows.Count; i++)
+            for (var i = 0; i < this.InternalObject.Rows.Count; i++)
             {
-                var dataRow = this.type.Rows[i];
+                var dataRow = this.InternalObject.Rows[i];
                 if (dataRow.RowState == DataRowState.Unchanged)
                     continue;
                 if (isComparable == false)
@@ -224,12 +211,12 @@ namespace Ntreev.Crema.Data
 
         public string ConvertToString(long value)
         {
-            return this.type.ConvertToString(value);
+            return this.InternalObject.ConvertToString(value);
         }
 
         public long ConvertFromString(string textValue)
         {
-            return this.type.ConvertFromString(textValue);
+            return this.InternalObject.ConvertFromString(textValue);
         }
 
         public bool VerifyValue(string textValue)
@@ -239,13 +226,13 @@ namespace Ntreev.Crema.Data
                 var items = StringUtility.Split(textValue);
                 foreach (var item in items)
                 {
-                    if (this.members.Contains(item) == false)
+                    if (this.Members.Contains(item) == false)
                         return false;
                 }
             }
             else
             {
-                if (this.members.Contains(textValue) == false)
+                if (this.Members.Contains(textValue) == false)
                     return false;
             }
             return true;
@@ -259,35 +246,35 @@ namespace Ntreev.Crema.Data
 
                 foreach (var item in items)
                 {
-                    if (this.members.Contains(item) == false)
+                    if (this.Members.Contains(item) == false)
                         throw new FormatException(string.Format(Resources.Exception_CannotParseEnum_Format, item, this.TypeName));
                 }
             }
             else
             {
-                if (this.type.columnName.AllowDBNull == false && this.members.Contains(textValue) == false)
+                if (this.InternalObject.columnName.AllowDBNull == false && this.Members.Contains(textValue) == false)
                     throw new FormatException(string.Format(Resources.Exception_CannotParseEnum_Format, textValue, this.TypeName));
             }
         }
 
         public CremaDataTypeMember[] Select()
         {
-            return this.type.Select().Cast<InternalDataTypeMember>().Select(item => item.Target).ToArray();
+            return this.InternalObject.Select().Cast<InternalDataTypeMember>().Select(item => item.Target).ToArray();
         }
 
         public CremaDataTypeMember[] Select(string filterExpression)
         {
-            return this.type.Select(filterExpression).Cast<InternalDataTypeMember>().Select(item => item.Target).ToArray();
+            return this.InternalObject.Select(filterExpression).Cast<InternalDataTypeMember>().Select(item => item.Target).ToArray();
         }
 
         public CremaDataTypeMember[] Select(string filterExpression, string sort)
         {
-            return this.type.Select(filterExpression, sort).Cast<InternalDataTypeMember>().Select(item => item.Target).ToArray();
+            return this.InternalObject.Select(filterExpression, sort).Cast<InternalDataTypeMember>().Select(item => item.Target).ToArray();
         }
 
         public CremaDataTypeMember[] Select(string filterExpression, string sort, DataViewRowState recordStates)
         {
-            return this.type.Select(filterExpression, sort, recordStates).Cast<InternalDataTypeMember>().Select(item => item.Target).ToArray();
+            return this.InternalObject.Select(filterExpression, sort, recordStates).Cast<InternalDataTypeMember>().Select(item => item.Target).ToArray();
         }
 
         public void Write(Stream stream)
@@ -335,7 +322,7 @@ namespace Ntreev.Crema.Data
         {
             return this.Copy(name, categoryPath);
         }
-        
+
         public CremaDataType Copy(ItemName itemName)
         {
             this.ValidateCopy(itemName);
@@ -406,128 +393,110 @@ namespace Ntreev.Crema.Data
 
         public void BeginLoadData()
         {
-            this.type.BeginLoadData();
+            this.InternalObject.BeginLoadData();
         }
 
         public void EndLoadData()
         {
-            this.type.ValidateName();
-            this.type.EndLoadData();
+            this.InternalObject.ValidateName();
+            this.InternalObject.EndLoadData();
         }
 
         public bool IsFlag
         {
-            get { return this.type.IsFlag; }
-            set { this.type.IsFlag = value; }
+            get => this.InternalObject.IsFlag;
+            set => this.InternalObject.IsFlag = value;
         }
 
         public bool ReadOnly
         {
-            get { return this.type.ReadOnly; }
+            get => this.InternalObject.ReadOnly;
             set
             {
-                this.type.ReadOnly = value;
+                this.InternalObject.ReadOnly = value;
                 this.InvokePropertyChangedEvent(nameof(this.ReadOnly));
             }
         }
 
         public TagInfo Tags
         {
-            get { return this.type.Tags; }
-            set { this.type.Tags = value; }
+            get => this.InternalObject.Tags;
+            set => this.InternalObject.Tags = value;
         }
 
         public TagInfo DerivedTags
         {
-            get { return this.type.DerivedTags; }
-            set { this.type.DerivedTags = value; }
+            get => this.InternalObject.DerivedTags;
+            set => this.InternalObject.DerivedTags = value;
         }
 
-        public string Name
-        {
-            get { return this.TypeName; }
-        }
+        public string Name => this.TypeName;
 
         public string TypeName
         {
-            get { return this.type.LocalName; }
+            get => this.InternalObject.LocalName;
             set
             {
-                this.type.LocalName = value;
+                this.InternalObject.LocalName = value;
                 this.InvokePropertyChangedEvent(nameof(this.TypeName), nameof(this.Name), nameof(this.CategoryPath), nameof(this.Namespace));
             }
         }
 
-        public CremaAttributeCollection Attributes
-        {
-            get { return this.attributes; }
-        }
+        public CremaAttributeCollection Attributes { get; }
 
-        public CremaDataTypeMemberCollection Members
-        {
-            get { return this.members; }
-        }
+        public CremaDataTypeMemberCollection Members { get; }
 
         public string Comment
         {
-            get { return this.type.Comment; }
+            get => this.InternalObject.Comment;
             set
             {
-                this.type.Comment = value;
+                this.InternalObject.Comment = value;
                 this.InvokePropertyChangedEvent(nameof(this.Comment));
             }
         }
 
         public SignatureDate CreationInfo
         {
-            get { return this.type.CreationInfo; }
+            get => this.InternalObject.CreationInfo;
             set
             {
-                this.type.CreationInfo = value;
+                this.InternalObject.CreationInfo = value;
                 this.InvokePropertyChangedEvent(nameof(this.CreationInfo));
             }
         }
 
         public SignatureDate ModificationInfo
         {
-            get { return this.type.ModificationInfo; }
+            get => this.InternalObject.ModificationInfo;
             set
             {
-                this.type.ModificationInfo = value;
+                this.InternalObject.ModificationInfo = value;
                 this.InvokePropertyChangedEvent(nameof(this.ModificationInfo));
             }
         }
 
         public string CategoryPath
         {
-            get { return this.type.CategoryPath; }
+            get => this.InternalObject.CategoryPath;
             set
             {
-                this.type.CategoryPath = value;
+                this.InternalObject.CategoryPath = value;
                 this.InvokePropertyChangedEvent(nameof(this.CategoryPath), nameof(this.Path), nameof(this.Namespace));
             }
         }
 
-        public string Path
-        {
-            get { return this.CategoryPath + this.TypeName; }
-        }
+        public string Path => this.CategoryPath + this.TypeName;
 
-        public string Namespace
-        {
-            get { return this.type.Namespace; }
-        }
+        public string Namespace => this.InternalObject.Namespace;
 
-        public TypeInfo TypeInfo
-        {
-            get { return this.type.TypeInfo; }
-        }
+        public TypeInfo TypeInfo => this.InternalObject.TypeInfo;
 
         public CremaDataSet DataSet
         {
             get
             {
-                if (this.type.DataSet is InternalDataSet dataSet)
+                if (this.InternalObject.DataSet is InternalDataSet dataSet)
                     return dataSet.Target;
                 return null;
             }
@@ -535,20 +504,17 @@ namespace Ntreev.Crema.Data
 
         public SignatureDateProvider SignatureDateProvider
         {
-            get { return this.type.SignatureDateProvider; }
-            set { this.type.SignatureDateProvider = value; }
+            get => this.InternalObject.SignatureDateProvider;
+            set => this.InternalObject.SignatureDateProvider = value;
         }
 
-        public CremaDataColumn[] ReferencedColumns
-        {
-            get { return this.type.ReferenceList.Select(item => item.Target).ToArray(); }
-        }
+        public CremaDataColumn[] ReferencedColumns => this.InternalObject.ReferenceList.Select(item => item.Target).ToArray();
 
         public bool IsDirty
         {
             get
             {
-                foreach (var item in this.members)
+                foreach (var item in this.Members)
                 {
                     if (item.InternalObject.RowState != DataRowState.Unchanged)
                         return true;
@@ -558,28 +524,16 @@ namespace Ntreev.Crema.Data
         }
 
         [Browsable(false)]
-        public DataView View
-        {
-            get { return this.type.DefaultView; }
-        }
+        public DataView View => this.InternalObject.DefaultView;
 
         [Browsable(false)]
-        public PropertyCollection ExtendedProperties
-        {
-            get { return this.type.ExtendedProperties; }
-        }
+        public PropertyCollection ExtendedProperties => this.InternalObject.ExtendedProperties;
 
-        public Guid TypeID
-        {
-            get { return this.InternalTypeID; }
-        }
+        public Guid TypeID => this.InternalTypeID;
 
         public string HashValue { get; internal set; }
 
-        public CremaDataType SourceType
-        {
-            get; private set;
-        }
+        public CremaDataType SourceType { get; private set; }
 
         public static readonly string[] FieldNames = new string[] { CremaSchema.Name, CremaSchema.Value, CremaSchema.Comment };
 
@@ -729,14 +683,14 @@ namespace Ntreev.Crema.Data
         {
             if (this.isEventsAttached == true)
                 throw new Exception();
-            this.type.ColumnChanging += Table_ColumnChanging;
-            this.type.ColumnChanged += Table_ColumnChanged;
-            this.type.RowChanging += Table_RowChanging;
-            this.type.RowChanged += Table_RowChanged;
-            this.type.RowDeleted += Table_RowDeleted;
-            this.type.RowDeleting += Table_RowDeleting;
-            this.type.TableCleared += Table_TableCleared;
-            this.type.TableClearing += Table_TableClearing;
+            this.InternalObject.ColumnChanging += Table_ColumnChanging;
+            this.InternalObject.ColumnChanged += Table_ColumnChanged;
+            this.InternalObject.RowChanging += Table_RowChanging;
+            this.InternalObject.RowChanged += Table_RowChanged;
+            this.InternalObject.RowDeleted += Table_RowDeleted;
+            this.InternalObject.RowDeleting += Table_RowDeleting;
+            this.InternalObject.TableCleared += Table_TableCleared;
+            this.InternalObject.TableClearing += Table_TableClearing;
             this.isEventsAttached = true;
         }
 
@@ -744,106 +698,94 @@ namespace Ntreev.Crema.Data
         {
             if (this.isEventsAttached == false)
                 throw new Exception();
-            this.type.ColumnChanging -= Table_ColumnChanging;
-            this.type.ColumnChanged -= Table_ColumnChanged;
-            this.type.RowChanging -= Table_RowChanging;
-            this.type.RowChanged -= Table_RowChanged;
-            this.type.RowDeleted -= Table_RowDeleted;
-            this.type.RowDeleting -= Table_RowDeleting;
-            this.type.TableCleared -= Table_TableCleared;
-            this.type.TableClearing -= Table_TableClearing;
+            this.InternalObject.ColumnChanging -= Table_ColumnChanging;
+            this.InternalObject.ColumnChanged -= Table_ColumnChanged;
+            this.InternalObject.RowChanging -= Table_RowChanging;
+            this.InternalObject.RowChanged -= Table_RowChanged;
+            this.InternalObject.RowDeleted -= Table_RowDeleted;
+            this.InternalObject.RowDeleting -= Table_RowDeleting;
+            this.InternalObject.TableCleared -= Table_TableCleared;
+            this.InternalObject.TableClearing -= Table_TableClearing;
             this.isEventsAttached = false;
         }
 
-        internal bool HasReference
-        {
-            get { return this.type.ReferenceList.Any(); }
-        }
+        internal bool HasReference => this.InternalObject.ReferenceList.Any();
 
-        internal string FlagTypeName
-        {
-            get { return CremaSchema.GenerateFlagTypeName(this.TypeName); }
-        }
+        internal string FlagTypeName => CremaSchema.GenerateFlagTypeName(this.TypeName);
 
         internal CremaDataTypeMember InvokeNewTypeMemberFromBuilder(CremaDataTypeMemberBuilder builder)
         {
             return this.NewTypeMemberFromBuilder(builder);
         }
 
-        internal InternalDataType InternalObject
-        {
-            get { return this.type; }
-        }
+        internal InternalDataType InternalObject { get; }
 
         internal string InternalName
         {
-            get { return this.type.InternalName; }
-            set { this.type.InternalName = value; }
+            get => this.InternalObject.InternalName;
+            set => this.InternalObject.InternalName = value;
         }
 
         internal TagInfo InternalTags
         {
-            get { return this.type.InternalTags; }
-            set { this.type.Tags = value; }
+            get => this.InternalObject.InternalTags;
+            set => this.InternalObject.Tags = value;
         }
 
         internal bool InternalIsFlag
         {
-            get { return this.type.InternalIsFlag; }
-            set { this.type.InternalIsFlag = value; }
+            get => this.InternalObject.InternalIsFlag;
+            set => this.InternalObject.InternalIsFlag = value;
         }
 
         internal string InternalComment
         {
-            get { return this.type.InternalComment; }
-            set { this.type.InternalComment = value; }
+            get => this.InternalObject.InternalComment;
+            set => this.InternalObject.InternalComment = value;
         }
 
         internal string InternalCategoryPath
         {
-            get { return this.type.InternalCategoryPath; }
-            set { this.type.InternalCategoryPath = value; }
+            get => this.InternalObject.InternalCategoryPath;
+            set => this.InternalObject.InternalCategoryPath = value;
         }
 
         internal SignatureDate InternalCreationInfo
         {
-            get { return this.type.InternalCreationInfo; }
-            set { this.type.InternalCreationInfo = value; }
+            get => this.InternalObject.InternalCreationInfo;
+            set => this.InternalObject.InternalCreationInfo = value;
         }
 
         internal SignatureDate InternalModificationInfo
         {
-            get { return this.type.InternalModificationInfo; }
-            set { this.type.InternalModificationInfo = value; }
+            get => this.InternalObject.InternalModificationInfo;
+            set => this.InternalObject.InternalModificationInfo = value;
         }
 
         internal Guid InternalTypeID
         {
-            get { return this.type.InternalTypeID; }
-            set { this.type.InternalTypeID = value; }
+            get => this.InternalObject.InternalTypeID;
+            set => this.InternalObject.InternalTypeID = value;
         }
 
         internal bool IsDiffMode
         {
-            get { return this.type.IsDiffMode; }
-            set { this.type.IsDiffMode = value; }
+            get => this.InternalObject.IsDiffMode;
+            set => this.InternalObject.IsDiffMode = value;
         }
 
-        internal CremaDataTypeMemberCollection Items
-        {
-            get { return this.members; }
-        }
+        internal CremaDataTypeMemberCollection Items => this.Members;
 
         #region IListSource
 
         bool IListSource.ContainsListCollection
         {
-            get { return (this.type as IListSource).ContainsListCollection; }
+            get { return (this.InternalObject as IListSource).ContainsListCollection; }
         }
 
         System.Collections.IList IListSource.GetList()
         {
-            return (this.type as IListSource).GetList();
+            return (this.InternalObject as IListSource).GetList();
         }
 
         #endregion
@@ -858,7 +800,7 @@ namespace Ntreev.Crema.Data
         void IXmlSerializable.ReadXml(XmlReader reader)
         {
             this.DetachEventHandlers();
-            this.type.BeginLoadData();
+            this.InternalObject.BeginLoadData();
             this.InternalTypeID = Guid.Parse(reader.GetAttribute(CremaSchema.ID));
             this.InternalName = reader.GetAttribute(CremaSchema.Name);
             this.InternalCategoryPath = reader.GetAttribute(CremaSchema.CategoryPath);
@@ -893,7 +835,7 @@ namespace Ntreev.Crema.Data
                     reader.ReadEndElement();
                     reader.MoveToContent();
 
-                    this.members.Add(member);
+                    this.Members.Add(member);
                 }
 
                 reader.MoveToContent();
@@ -907,8 +849,8 @@ namespace Ntreev.Crema.Data
             reader.MoveToContent();
             reader.ReadEndElement();
 
-            this.type.EndLoadData();
-            this.type.AcceptChanges();
+            this.InternalObject.EndLoadData();
+            this.InternalObject.AcceptChanges();
             this.AttachEventHandlers();
         }
 
@@ -926,7 +868,7 @@ namespace Ntreev.Crema.Data
             writer.WriteAttribute(CremaSchema.ModifiedDateTime, this.ModificationInfo.DateTime);
 
             writer.WriteStartElement("Members");
-            foreach (var item in this.members)
+            foreach (var item in this.Members)
             {
                 writer.WriteStartElement("Member");
                 writer.WriteAttribute(CremaSchema.Creator, CremaSchema.CreatedDateTime, item.CreationInfo);
@@ -947,7 +889,6 @@ namespace Ntreev.Crema.Data
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
             throw new NotImplementedException();
-            //info.AddValue("Info", this.TypeInfo);
         }
 
         #endregion

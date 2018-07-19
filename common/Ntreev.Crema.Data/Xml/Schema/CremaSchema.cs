@@ -16,20 +16,14 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma warning disable 0612
+using Ntreev.Library;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml.Schema;
-using System.Diagnostics;
-using System.IO;
-using Ntreev.Crema.Data.Properties;
-using Ntreev.Crema.Data;
-using System.Xml;
-using System.ComponentModel;
-using System.Collections;
 using System.Data;
-using Ntreev.Library;
+using System.Diagnostics;
+using System.Linq;
+using System.Xml;
+using System.Xml.Schema;
 
 namespace Ntreev.Crema.Data.Xml.Schema
 {
@@ -98,12 +92,6 @@ namespace Ntreev.Crema.Data.Xml.Schema
         private readonly static string[] reservedNames = new string[]
         {
             CremaSchemaObsolete.DataLocation ,
-            //CremaSchema.Tags ,
-            //CremaSchema.Enable ,
-            //CremaSchema.Creator ,
-            //CremaSchema.CreatedDateTime ,
-            //CremaSchema.Modifier ,
-            //CremaSchema.ModifiedDateTime ,
             CremaSchema.RelationID,
         };
 

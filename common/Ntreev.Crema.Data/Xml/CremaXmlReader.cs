@@ -278,27 +278,14 @@ namespace Ntreev.Crema.Data.Xml
                 var dataTable = this.dataTable ?? this.dataSet.Tables[this.itemName.Name, this.itemName.CategoryPath];
                 if (reader.NamespaceURI != tableNamespace)
                 {
-                    //if (this.dataSet != null)
-                    //{
-                    //    var name = dataTable.Name;
-                    //    var user = name + CremaSchema.CreatorExtension;
-                    //    var dateTime = name + CremaSchema.CreatedDateTimeExtension;
-                    //    if (reader.TryGetAttributeAsModificationInfo(user, dateTime, out var dateTimeValue) == true)
-                    //    {
-                    //        dataTable.InternalCreationInfo = dateTimeValue;
-                    //    }
-                    //}
-                    //else
+                    var name = dataTable.TemplatedParentName;
+                    var user = name + CremaSchema.CreatorExtension;
+                    var dateTime = name + CremaSchema.CreatedDateTimeExtension;
+                    if (reader.TryGetAttributeAsModificationInfo(user, dateTime, out var dateTimeValue) == true)
                     {
-                        var name = dataTable.TemplatedParentName;
-                        var user = name + CremaSchema.CreatorExtension;
-                        var dateTime = name + CremaSchema.CreatedDateTimeExtension;
-                        if (reader.TryGetAttributeAsModificationInfo(user, dateTime, out var dateTimeValue) == true)
-                        {
-                            dataTable.InternalCreationInfo = dateTimeValue;
-                        }
+                        dataTable.InternalCreationInfo = dateTimeValue;
                     }
-                    
+
                 }
                 var items = this.version < new Version(4, 0) ? EnumerableUtility.Friends(dataTable, dataTable.Childs) : Enumerable.Repeat(dataTable, 1);
                 foreach (var item in items)

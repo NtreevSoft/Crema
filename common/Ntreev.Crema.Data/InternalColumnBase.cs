@@ -21,14 +21,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Data
 {
     abstract class InternalColumnBase : DataColumn, INotifyPropertyChanged
     {
-        private object target;
         private bool isKey;
 
         public InternalColumnBase(string columnName)
@@ -129,11 +126,7 @@ namespace Ntreev.Crema.Data
             }
         }
 
-        public object Target
-        {
-            get { return this.target; }
-            protected set { this.target = value; }
-        }
+        public object Target { get; protected set; }
 
         public bool IsDiffMode
         {
@@ -147,7 +140,7 @@ namespace Ntreev.Crema.Data
 
         public bool IsKey
         {
-            get { return this.InternalIsKey; }
+            get => this.InternalIsKey;
             set
             {
                 if (this.InternalIsKey == value)
@@ -162,7 +155,7 @@ namespace Ntreev.Crema.Data
 
         public new bool ReadOnly
         {
-            get { return this.InternalReadOnly; }
+            get => this.InternalReadOnly;
             set
             {
                 if (this.InternalReadOnly == value)
@@ -177,7 +170,7 @@ namespace Ntreev.Crema.Data
 
         public new string Expression
         {
-            get { return this.InternalExpression; }
+            get => this.InternalExpression;
             set
             {
                 if (this.InternalExpression == value)
@@ -192,7 +185,7 @@ namespace Ntreev.Crema.Data
 
         public new object DefaultValue
         {
-            get { return this.InternalDefaultValue; }
+            get => this.InternalDefaultValue;
             set
             {
                 if (this.InternalDefaultValue == value)
@@ -209,7 +202,7 @@ namespace Ntreev.Crema.Data
 
         public new Type DataType
         {
-            get { return this.InternalDataType; }
+            get => this.InternalDataType;
             set
             {
                 if (this.InternalDataType == value)
@@ -224,7 +217,7 @@ namespace Ntreev.Crema.Data
 
         public new bool Unique
         {
-            get { return this.InternalUnique; }
+            get => this.InternalUnique;
             set
             {
                 if (this.InternalUnique == value)
@@ -239,7 +232,7 @@ namespace Ntreev.Crema.Data
 
         public new bool AutoIncrement
         {
-            get { return this.InternalAutoIncrement; }
+            get => this.InternalAutoIncrement;
             set
             {
                 if (this.InternalAutoIncrement == value)
@@ -254,7 +247,7 @@ namespace Ntreev.Crema.Data
 
         public new bool AllowDBNull
         {
-            get { return this.InternalAllowDBNull; }
+            get => this.InternalAllowDBNull;
             set
             {
                 if (this.InternalAllowDBNull == value)
@@ -269,7 +262,7 @@ namespace Ntreev.Crema.Data
 
         public new string ColumnName
         {
-            get { return this.InternalColumnName; }
+            get => this.InternalColumnName;
             set
             {
                 if (this.InternalColumnName == value)
@@ -282,10 +275,7 @@ namespace Ntreev.Crema.Data
             }
         }
 
-        public new InternalTableBase Table
-        {
-            get { return base.Table as InternalTableBase; }
-        }
+        public new InternalTableBase Table => base.Table as InternalTableBase;
 
         public IEnumerable<InternalColumnBase> DerivedColumns
         {
@@ -318,7 +308,7 @@ namespace Ntreev.Crema.Data
 
         public bool InternalIsKey
         {
-            get { return this.isKey; }
+            get => this.isKey;
             set
             {
                 if (this.Table != null)
@@ -335,7 +325,7 @@ namespace Ntreev.Crema.Data
 
         public bool InternalReadOnly
         {
-            get { return base.ReadOnly; }
+            get => base.ReadOnly;
             set
             {
                 base.ReadOnly = value;
@@ -345,7 +335,7 @@ namespace Ntreev.Crema.Data
 
         public string InternalExpression
         {
-            get { return base.Expression; }
+            get => base.Expression;
             set
             {
                 base.Expression = value;
@@ -355,7 +345,7 @@ namespace Ntreev.Crema.Data
 
         public object InternalDefaultValue
         {
-            get { return base.DefaultValue; }
+            get => base.DefaultValue;
             set
             {
                 if (value != null && value != DBNull.Value && value.GetType() != base.DataType)
@@ -367,10 +357,10 @@ namespace Ntreev.Crema.Data
 
         public Type InternalDataType
         {
-            get { return base.DataType; }
+            get => base.DataType;
             set
             {
-                var prop = typeof(DataColumn).GetProperty("HasData", System.Reflection.BindingFlags.NonPublic| System.Reflection.BindingFlags.Instance);
+                var prop = typeof(DataColumn).GetProperty("HasData", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                 var hasData = (bool)prop.GetValue(this);
 
                 if (this.Table != null && hasData == false)
@@ -443,7 +433,7 @@ namespace Ntreev.Crema.Data
 
         public bool InternalUnique
         {
-            get { return base.Unique; }
+            get => base.Unique;
             set
             {
                 base.Unique = value;
@@ -453,7 +443,7 @@ namespace Ntreev.Crema.Data
 
         public bool InternalAutoIncrement
         {
-            get { return base.AutoIncrement; }
+            get => base.AutoIncrement;
             set
             {
                 base.AutoIncrement = value;
@@ -463,7 +453,7 @@ namespace Ntreev.Crema.Data
 
         public bool InternalAllowDBNull
         {
-            get { return base.AllowDBNull; }
+            get => base.AllowDBNull;
             set
             {
                 base.AllowDBNull = value;
@@ -473,7 +463,7 @@ namespace Ntreev.Crema.Data
 
         public string InternalColumnName
         {
-            get { return base.ColumnName; }
+            get => base.ColumnName;
             set
             {
                 base.ColumnName = value;
@@ -481,11 +471,7 @@ namespace Ntreev.Crema.Data
             }
         }
 
-        public bool IsInternalAction
-        {
-            get;
-            private set;
-        }
+        public bool IsInternalAction { get; private set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

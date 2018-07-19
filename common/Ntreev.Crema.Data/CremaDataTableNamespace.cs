@@ -17,20 +17,11 @@
 
 using Ntreev.Library;
 using Ntreev.Library.ObjectModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Data
 {
     public class CremaDataTableNamespace
     {
-        private string name;
-        private string tableName;
-        private string tableNamespace;
-
         public CremaDataTableNamespace(string name, string categoryPath, string baseNamespace)
         {
             NameValidator.ValidateName(name);
@@ -39,24 +30,15 @@ namespace Ntreev.Crema.Data
             var tableName = NameUtility.GetName(name);
             var parentName = NameUtility.GetParentName(name);
 
-            this.name = name;
-            this.tableName = tableName;
-            this.tableNamespace = baseNamespace + categoryPath + name;
+            this.Name = name;
+            this.TableName = tableName;
+            this.TableNamespace = baseNamespace + categoryPath + name;
         }
 
-        public string Name
-        {
-            get { return this.name; }
-        }
+        public string Name { get; }
 
-        public string TableName
-        {
-            get { return this.tableName; }
-        }
+        public string TableName { get; }
 
-        public string TableNamespace
-        {
-            get { return this.tableNamespace; }
-        }
+        public string TableNamespace { get; }
     }
 }

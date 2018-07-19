@@ -16,31 +16,24 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma warning disable 0612
+using Ntreev.Library;
+using Ntreev.Library.IO;
+using Ntreev.Library.ObjectModel;
 using System;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Threading;
-using System.Xml.Schema;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.IO;
-using System.ComponentModel;
-using System.Collections.Generic;
-using System.Xml;
-using System.Diagnostics;
-using Ntreev.Crema.Data;
+using System.Linq;
 using System.Text.RegularExpressions;
-using Ntreev.Library;
-using System.Collections;
-using Ntreev.Library.IO;
-using Ntreev.Library.Linq;
-using Ntreev.Library.ObjectModel;
+using System.Xml;
+using System.Xml.Schema;
 
 namespace Ntreev.Crema.Data.Xml.Schema
 {
     public class CremaSchemaReader
     {
-        private readonly CremaDataSet dataSet;
         private readonly CremaDataTable dataTable;
         private readonly CremaDataType dataType;
         private readonly ItemName itemName;
@@ -57,7 +50,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
 
         public CremaSchemaReader(CremaDataSet dataSet, ItemName itemName)
         {
-            this.dataSet = dataSet ?? throw new ArgumentNullException();
+            this.DataSet = dataSet ?? throw new ArgumentNullException();
             this.itemName = itemName;
         }
 
@@ -66,7 +59,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
             if (dataTable == null)
                 throw new ArgumentNullException();
             if (dataTable.DataSet != null)
-                this.dataSet = dataTable.DataSet;
+                this.DataSet = dataTable.DataSet;
             else
                 this.dataTable = dataTable;
             this.itemName = itemName;
@@ -108,7 +101,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
 
         public void Read(TextReader reader)
         {
-            this.Read(reader, new CremaXmlResolver(this.dataSet));
+            this.Read(reader, new CremaXmlResolver(this.DataSet));
         }
 
         public void Read(Stream stream)
@@ -118,12 +111,12 @@ namespace Ntreev.Crema.Data.Xml.Schema
                 this.hashValue = HashUtility.GetHashValue(stream);
                 stream.Seek(0, SeekOrigin.Begin);
             }
-            this.Read(stream, new CremaXmlResolver(this.dataSet));
+            this.Read(stream, new CremaXmlResolver(this.DataSet));
         }
 
         public void Read(XmlReader reader)
         {
-            this.Read(reader, new CremaXmlResolver(this.dataSet));
+            this.Read(reader, new CremaXmlResolver(this.DataSet));
         }
 
         public void Read(Stream stream, XmlResolver resolver)
@@ -152,10 +145,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
                 reader.ReadEndElement();
         }
 
-        public CremaDataSet DataSet
-        {
-            get { return this.dataSet; }
-        }
+        public CremaDataSet DataSet { get; }
 
         private void Read(XmlSchema schema, XmlResolver resolver)
         {
@@ -182,7 +172,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
                     throw new CremaDataException();
                 this.ReadDataTable(element);
             }
-            else if (this.dataSet != null)
+            else if (this.DataSet != null)
             {
                 var element = schema.Elements.Values.OfType<XmlSchemaElement>().First();
                 if (element.Name != CremaDataSet.DefaultDataSetName)
@@ -456,12 +446,12 @@ namespace Ntreev.Crema.Data.Xml.Schema
                         if (this.version >= new Version(4, 0))
                         {
                             dataTable.InternalName = element.Name;
-                            dataTable.InternalCategoryPath = CremaDataSet.GetTableCategoryPath(this.dataSet, element.QualifiedName.Namespace);
+                            dataTable.InternalCategoryPath = CremaDataSet.GetTableCategoryPath(this.DataSet, element.QualifiedName.Namespace);
                         }
                         else
                         {
-                            dataTable.InternalName = CremaDataSet.GetTableName(this.dataSet, element.QualifiedName.Namespace);
-                            dataTable.InternalCategoryPath = CremaDataSet.GetTableCategoryPath(this.dataSet, element.QualifiedName.Namespace);
+                            dataTable.InternalName = CremaDataSet.GetTableName(this.DataSet, element.QualifiedName.Namespace);
+                            dataTable.InternalCategoryPath = CremaDataSet.GetTableCategoryPath(this.DataSet, element.QualifiedName.Namespace);
                         }
                     }
                     else if (this.version == new Version(3, 0))
@@ -479,8 +469,8 @@ namespace Ntreev.Crema.Data.Xml.Schema
                 }
                 else
                 {
-                    dataTable.InternalName = CremaDataSet.GetTableName(this.dataSet, element.QualifiedName.Namespace);
-                    dataTable.InternalCategoryPath = CremaDataSet.GetTableCategoryPath(this.dataSet, element.QualifiedName.Namespace);
+                    dataTable.InternalName = CremaDataSet.GetTableName(this.DataSet, element.QualifiedName.Namespace);
+                    dataTable.InternalCategoryPath = CremaDataSet.GetTableCategoryPath(this.DataSet, element.QualifiedName.Namespace);
                 }
             }
 
@@ -506,18 +496,18 @@ namespace Ntreev.Crema.Data.Xml.Schema
                 dataTable.Parent = this.tables[dataTable.ParentName];
             }
 
-            if (this.dataSet != null)
+            if (this.DataSet != null)
             {
                 lock (CremaSchema.lockobj)
                 {
-                    this.dataSet.Tables.Add(dataTable);
+                    this.DataSet.Tables.Add(dataTable);
 
-                    if (dataTable.ParentName != string.Empty && dataTable.Parent == null && this.dataSet.Tables.Contains(dataTable.ParentName))
+                    if (dataTable.ParentName != string.Empty && dataTable.Parent == null && this.DataSet.Tables.Contains(dataTable.ParentName))
                     {
-                        dataTable.Parent = this.dataSet.Tables[dataTable.ParentName];
+                        dataTable.Parent = this.DataSet.Tables[dataTable.ParentName];
                     }
 
-                    foreach (var item in this.dataSet.Tables)
+                    foreach (var item in this.DataSet.Tables)
                     {
                         if (item.ParentName == dataTable.Name && item.Parent == null)
                         {
@@ -536,9 +526,9 @@ namespace Ntreev.Crema.Data.Xml.Schema
                             templateCategoryPath = (baseComplexType.ReadAppInfoAsString(CremaSchema.TableInfo, CremaSchema.Category) ?? string.Empty).Wrap(PathUtility.SeparatorChar);
                         else
                             templateCategoryPath = baseComplexType.ReadAppInfoAsString(CremaSchema.TableInfo, CremaSchema.CategoryPath) ?? PathUtility.Separator;
-                        var templateNamespace = this.dataSet.TableNamespace + templateCategoryPath + templatedParentName;
+                        var templateNamespace = this.DataSet.TableNamespace + templateCategoryPath + templatedParentName;
 
-                        var templatedParent = this.dataSet.Tables[templatedParentName, templateCategoryPath];
+                        var templatedParent = this.DataSet.Tables[templatedParentName, templateCategoryPath];
                         if (templatedParent != null)
                         {
                             dataTable.AttachTemplatedParent(templatedParent);
@@ -550,9 +540,9 @@ namespace Ntreev.Crema.Data.Xml.Schema
                     }
                     else if (this.itemName != null)
                     {
-                        var tableName = this.dataSet.GetTableName(element.QualifiedName.Namespace);
-                        var categoryPath = this.dataSet.GetTableCategoryPath(element.QualifiedName.Namespace);
-                        var templatedParent = this.dataSet.Tables[tableName, categoryPath];
+                        var tableName = this.DataSet.GetTableName(element.QualifiedName.Namespace);
+                        var categoryPath = this.DataSet.GetTableCategoryPath(element.QualifiedName.Namespace);
+                        var templatedParent = this.DataSet.Tables[tableName, categoryPath];
 
                         if (dataTable != templatedParent)
                         {
@@ -573,7 +563,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
                     }
                     else
                     {
-                        var query = from item in this.dataSet.Tables
+                        var query = from item in this.DataSet.Tables
                                     where item.Parent == null
                                     where item != dataTable
                                     where item.TemplateNamespace == dataTable.Namespace
@@ -707,7 +697,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
                 {
                     if (this.version >= new Version(3, 0))
                     {
-                        categoryPath = this.dataSet.GetTypeCategoryPath(simpleType.QualifiedName.Namespace);
+                        categoryPath = this.DataSet.GetTypeCategoryPath(simpleType.QualifiedName.Namespace);
                     }
                     else
                     {
@@ -715,18 +705,18 @@ namespace Ntreev.Crema.Data.Xml.Schema
                     }
                 }
 
-                if (this.dataSet.Types.Contains(typeName, categoryPath) == false)
+                if (this.DataSet.Types.Contains(typeName, categoryPath) == false)
                 {
                     this.ReadType(simpleType);
                 }
 
-                column.InternalCremaType = (InternalDataType)this.dataSet.Types[typeName, categoryPath];
+                column.InternalCremaType = (InternalDataType)this.DataSet.Types[typeName, categoryPath];
             }
         }
 
         private void ReadType(XmlSchemaSimpleType simpleType)
         {
-            if (this.dataSet != null && this.dataSet.Types.Contains(simpleType.Name) == true)
+            if (this.DataSet != null && this.DataSet.Types.Contains(simpleType.Name) == true)
                 return;
 
             var contentType = simpleType;
@@ -761,9 +751,9 @@ namespace Ntreev.Crema.Data.Xml.Schema
                 dataType.HashValue = this.hashValue;
             }
 
-            if (this.dataSet != null)
+            if (this.DataSet != null)
             {
-                this.dataSet.Types.Add(dataType);
+                this.DataSet.Types.Add(dataType);
             }
         }
 
@@ -848,7 +838,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
                 }
                 else
                 {
-                    var tableName = CremaDataSet.GetTableName(this.dataSet, constraint.QualifiedName.Namespace);
+                    var tableName = CremaDataSet.GetTableName(this.DataSet, constraint.QualifiedName.Namespace);
 
                     if (keyName == tableName)
                     {
@@ -871,11 +861,11 @@ namespace Ntreev.Crema.Data.Xml.Schema
                     var categoryPath = CremaDataSet.GetTableCategoryPath(CremaSchemaObsolete.TableNamespaceObsolete, constraint.QualifiedName.Namespace);
                     if (keyName == tableName)
                     {
-                        return this.dataSet.Tables[tableName, categoryPath];
+                        return this.DataSet.Tables[tableName, categoryPath];
                     }
                     else
                     {
-                        return this.dataSet.Tables[tableName + "." + keyName, categoryPath];
+                        return this.DataSet.Tables[tableName + "." + keyName, categoryPath];
                     }
                 }
                 else
@@ -884,11 +874,11 @@ namespace Ntreev.Crema.Data.Xml.Schema
                     var categoryPath = CremaDataSet.GetTableCategoryPath(CremaSchemaObsolete.TableNamespaceObsolete, constraint.QualifiedName.Namespace);
                     if (keyName == tableName)
                     {
-                        return this.dataSet.Tables[itemName.Name, itemName.CategoryPath];
+                        return this.DataSet.Tables[itemName.Name, itemName.CategoryPath];
                     }
                     else
                     {
-                        return this.dataSet.Tables[itemName.Name + "." + keyName, itemName.CategoryPath];
+                        return this.DataSet.Tables[itemName.Name + "." + keyName, itemName.CategoryPath];
                     }
                 }
             }
@@ -912,7 +902,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
                 }
                 else
                 {
-                    var tableName = CremaDataSet.GetTableName(this.dataSet, constraint.QualifiedName.Namespace);
+                    var tableName = CremaDataSet.GetTableName(this.DataSet, constraint.QualifiedName.Namespace);
 
                     if (keyName == tableName)
                     {
@@ -935,11 +925,11 @@ namespace Ntreev.Crema.Data.Xml.Schema
                     var categoryPath = CremaDataSet.GetTableCategoryPath(CremaSchemaObsolete.TableNamespaceObsolete, constraint.QualifiedName.Namespace);
                     if (keyName == tableName)
                     {
-                        return this.dataSet.Tables[tableName, categoryPath];
+                        return this.DataSet.Tables[tableName, categoryPath];
                     }
                     else
                     {
-                        return this.dataSet.Tables[tableName + "." + keyName, categoryPath];
+                        return this.DataSet.Tables[tableName + "." + keyName, categoryPath];
                     }
                 }
                 else
@@ -948,11 +938,11 @@ namespace Ntreev.Crema.Data.Xml.Schema
                     var categoryPath = CremaDataSet.GetTableCategoryPath(CremaSchemaObsolete.TableNamespaceObsolete, constraint.QualifiedName.Namespace);
                     if (keyName == tableName)
                     {
-                        return this.dataSet.Tables[itemName.Name, itemName.CategoryPath];
+                        return this.DataSet.Tables[itemName.Name, itemName.CategoryPath];
                     }
                     else
                     {
-                        return this.dataSet.Tables[itemName.Name + "." + keyName, itemName.CategoryPath];
+                        return this.DataSet.Tables[itemName.Name + "." + keyName, itemName.CategoryPath];
                     }
                 }
             }

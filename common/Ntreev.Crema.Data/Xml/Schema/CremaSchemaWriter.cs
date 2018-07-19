@@ -16,23 +16,18 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Ntreev.Library;
-using Ntreev.Crema.Data;
 using Ntreev.Library.IO;
+using Ntreev.Library.Linq;
+using Ntreev.Library.ObjectModel;
 using System;
-using System.ComponentModel;
+using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Xml;
 using System.Xml.Schema;
-using System.Collections;
-using Ntreev.Crema.Data.Properties;
-using Ntreev.Library.Linq;
-using Ntreev.Library.ObjectModel;
 
 namespace Ntreev.Crema.Data.Xml.Schema
 {
@@ -257,7 +252,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
             }
             else if (string.IsNullOrEmpty(dataColumn.Validation) == false)
             {
-                return new XmlQualifiedName(dataColumn.GetXmlSchemaTypeName(), schema.TargetNamespace);
+                return new XmlQualifiedName(CremaSchema.GenerateColumnTypeName(dataColumn.ColumnName), schema.TargetNamespace);
             }
             else if (dataColumn.DataType == typeof(Guid))
             {
@@ -459,7 +454,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
             {
                 var simpleType = new XmlSchemaSimpleType()
                 {
-                    Name = dataColumn.GetXmlSchemaTypeName(),
+                    Name = CremaSchema.GenerateColumnTypeName(dataColumn.ColumnName),
                 };
                 {
                     var simpleTypeRestriction = new XmlSchemaSimpleTypeRestriction()

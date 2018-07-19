@@ -21,15 +21,11 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Data
 {
     class InternalAttribute : InternalColumnBase
     {
-        private string comment;
-
         public InternalAttribute()
         {
             base.Target = new CremaAttribute(this);
@@ -71,15 +67,9 @@ namespace Ntreev.Crema.Data
             dest.InternalDataType = this.InternalDataType;
             dest.InternalDefaultValue = this.InternalDefaultValue;
             dest.InternalExpression = this.InternalExpression;
-            //dest.InternalValidation = this.InternalValidation;
             dest.InternalUnique = this.InternalUnique;
             dest.InternalReadOnly = this.InternalReadOnly;
             dest.InternalComment = this.InternalComment;
-            //dest.InternalIsKey = this.InternalIsKey;
-            //dest.InternalCreationInfo = this.InternalCreationInfo;
-            //dest.InternalModificationInfo = this.InternalModificationInfo;
-            //dest.InternalTags = this.InternalTags;
-            //dest.InternalColumnID = this.InternalColumnID;
         }
 
         public void ValidateSetIsVisible(bool value)
@@ -111,20 +101,17 @@ namespace Ntreev.Crema.Data
         }
 
         [Obsolete]
-        public new string ColumnName
-        {
-            get { return base.ColumnName; }
-        }
+        public new string ColumnName => base.ColumnName;
 
         public string AttributeName
         {
-            get { return base.ColumnName; }
-            set { base.ColumnName = value; }
+            get => base.ColumnName;
+            set => base.ColumnName = value;
         }
 
         public bool IsVisible
         {
-            get { return this.InternalIsVisible; }
+            get => this.InternalIsVisible;
             set
             {
                 if (this.InternalIsVisible == value)
@@ -139,7 +126,7 @@ namespace Ntreev.Crema.Data
 
         public string Comment
         {
-            get { return this.InternalComment ?? string.Empty; }
+            get => this.InternalComment ?? string.Empty;
             set
             {
                 if (this.InternalComment == value)
@@ -154,18 +141,11 @@ namespace Ntreev.Crema.Data
 
         public bool InternalIsVisible
         {
-            get { return this.ColumnMapping == MappingType.Attribute; }
-            set
-            {
-                this.ColumnMapping = value == true ? MappingType.Attribute : MappingType.Hidden;
-            }
+            get => this.ColumnMapping == MappingType.Attribute;
+            set => this.ColumnMapping = value == true ? MappingType.Attribute : MappingType.Hidden;
         }
 
-        public string InternalComment
-        {
-            get { return this.comment; }
-            set { this.comment = value; }
-        }
+        public string InternalComment { get; set; }
 
         public new IEnumerable<InternalAttribute> DerivedColumns
         {

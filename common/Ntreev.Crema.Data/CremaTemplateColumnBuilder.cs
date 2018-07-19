@@ -15,45 +15,27 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Data
 {
     public sealed class CremaTemplateColumnBuilder
     {
-        private readonly CremaTemplate template;
-        private InternalTemplateColumn internalRow;
-
         internal CremaTemplateColumnBuilder(CremaTemplate template)
         {
-            this.template = template;
+            this.Template = template;
         }
 
         internal CremaTemplateColumn NewColumn(InternalTemplateColumn row)
         {
-            this.internalRow = row;
-            return this.template.InvokeNewTemplateColumnFromBuilder(this);
+            this.DataRow = row;
+            return this.Template.InvokeNewTemplateColumnFromBuilder(this);
         }
 
-        internal DataRowBuilder InternalBuilder
-        {
-            get;
-            set;
-        }
+        internal DataRowBuilder InternalBuilder { get; set; }
 
-        internal CremaTemplate Template
-        {
-            get { return this.template; }
-        }
+        internal CremaTemplate Template { get; }
 
-        internal InternalTemplateColumn DataRow
-        {
-            get { return this.internalRow; }
-        }
+        internal InternalTemplateColumn DataRow { get; private set; }
     }
 }

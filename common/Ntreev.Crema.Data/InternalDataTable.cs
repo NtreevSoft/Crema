@@ -26,10 +26,8 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data;
-using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace Ntreev.Crema.Data
 {
@@ -43,18 +41,9 @@ namespace Ntreev.Crema.Data
         internal readonly InternalAttribute attributeEnable;
 
         private TagInfo tags = TagInfo.All;
-
-        private string comment;
-        private Guid tableID = Guid.NewGuid();
-
-        private SignatureDate creationInfo = SignatureDate.Empty;
-        private SignatureDate modificationInfo = SignatureDate.Empty;
-        private SignatureDate contentsInfo = SignatureDate.Empty;
-
         private bool[] autoIncrements;
         private readonly List<InternalDataColumn> columnList = new List<InternalDataColumn>();
         private readonly ObservableCollection<InternalDataTable> childList = new ObservableCollection<InternalDataTable>();
-        private readonly ReadOnlyObservableCollection<InternalDataTable> childList2;
 
         public InternalDataTable()
             : this(null, null, null)
@@ -77,7 +66,7 @@ namespace Ntreev.Crema.Data
         public InternalDataTable(CremaDataTable target, string name, string categoryPath)
             : base(name, categoryPath)
         {
-            this.childList2 = new ReadOnlyObservableCollection<InternalDataTable>(this.childList);
+            this.ChildItems = new ReadOnlyObservableCollection<InternalDataTable>(this.childList);
             if (base.ChildItems is INotifyCollectionChanged childTables)
             {
                 childTables.CollectionChanged += ChildTables_CollectionChanged;
@@ -100,7 +89,7 @@ namespace Ntreev.Crema.Data
             base.Target = target ?? new CremaDataTable(this);
             this.Columns.CollectionChanged += Columns_CollectionChanged;
             this.Constraints.CollectionChanged += Constraints_CollectionChanged;
-            this.creationInfo = this.modificationInfo = this.SignatureDateProvider.Provide();
+            this.InternalCreationInfo = this.InternalModificationInfo = this.SignatureDateProvider.Provide();
         }
 
         public static string GenerateHashValue(params ColumnInfo[] columns)
@@ -614,25 +603,13 @@ namespace Ntreev.Crema.Data
             return dataTable.InternalObject;
         }
 
-        public new CremaDataTable Target
-        {
-            get { return base.Target as CremaDataTable; }
-        }
+        public new CremaDataTable Target => base.Target as CremaDataTable;
 
-        public new InternalDataSet DataSet
-        {
-            get { return base.DataSet as InternalDataSet; }
-        }
+        public new InternalDataSet DataSet => base.DataSet as InternalDataSet;
 
-        public IList<InternalDataColumn> ColumnList
-        {
-            get { return this.columnList; }
-        }
+        public IList<InternalDataColumn> ColumnList => this.columnList;
 
-        public new ReadOnlyObservableCollection<InternalDataTable> ChildItems
-        {
-            get { return this.childList2; }
-        }
+        public new ReadOnlyObservableCollection<InternalDataTable> ChildItems { get; }
 
         public new IEnumerable<InternalDataTable> FamilyItems
         {
@@ -673,7 +650,7 @@ namespace Ntreev.Crema.Data
 
         public TagInfo Tags
         {
-            get { return this.InternalTags; }
+            get => this.InternalTags;
             set
             {
                 if (this.InternalTags == value)
@@ -728,29 +705,6 @@ namespace Ntreev.Crema.Data
             }
         }
 
-        //public TableInfo DiffTableInfo
-        //{
-        //    get
-        //    {
-        //        var tableInfo = new TableInfo()
-        //        {
-        //            ID = this.TableID,
-        //            Name = Diff.DiffUtility.GetOriginalName(this.Name),
-        //            CategoryPath = this.CategoryPath,
-        //            Tags = this.Tags,
-        //            DerivedTags = this.DerivedTags,
-        //            Comment = this.Comment,
-        //            CreationInfo = this.InternalCreationInfo,
-        //            ModificationInfo = this.InternalModificationInfo,
-        //            ContentsInfo = this.InternalContentsInfo,
-        //            Columns = this.columnList.Select(item => item.DiffColumnInfo).ToArray(),
-        //            TemplatedParent = this.TemplatedParentName,
-        //        };
-        //        tableInfo.HashValue = GenerateHashValue(tableInfo.Columns);
-        //        return tableInfo;
-        //    }
-        //}
-
         public string HashValue
         {
             get
@@ -760,14 +714,11 @@ namespace Ntreev.Crema.Data
             }
         }
 
-        public Guid TableID
-        {
-            get { return this.tableID; }
-        }
+        public Guid TableID { get; private set; } = Guid.NewGuid();
 
         public string Comment
         {
-            get { return this.InternalComment ?? string.Empty; }
+            get => this.InternalComment ?? string.Empty;
             set
             {
                 if (this.InternalComment == value)
@@ -783,24 +734,15 @@ namespace Ntreev.Crema.Data
             }
         }
 
-        public SignatureDate CreationInfo
-        {
-            get { return this.InternalCreationInfo; }
-        }
+        public SignatureDate CreationInfo => this.InternalCreationInfo;
 
-        public SignatureDate ModificationInfo
-        {
-            get { return this.InternalModificationInfo; }
-        }
+        public SignatureDate ModificationInfo => this.InternalModificationInfo;
 
-        public SignatureDate ContentsInfo
-        {
-            get { return this.InternalContentsInfo; }
-        }
+        public SignatureDate ContentsInfo => this.InternalContentsInfo;
 
         public TagInfo InternalTags
         {
-            get { return this.tags; }
+            get => this.tags;
             set
             {
                 this.tags = value;
@@ -808,35 +750,19 @@ namespace Ntreev.Crema.Data
             }
         }
 
-        public string InternalComment
-        {
-            get { return this.comment; }
-            set { this.comment = value; }
-        }
+        public string InternalComment { get; set; }
 
         public Guid InternalTableID
         {
-            get { return this.tableID; }
-            set { this.tableID = value; }
+            get => this.TableID;
+            set => this.TableID = value;
         }
 
-        public SignatureDate InternalCreationInfo
-        {
-            get { return this.creationInfo; }
-            set { this.creationInfo = value; }
-        }
+        public SignatureDate InternalCreationInfo { get; set; } = SignatureDate.Empty;
 
-        public SignatureDate InternalModificationInfo
-        {
-            get { return this.modificationInfo; }
-            set { this.modificationInfo = value; }
-        }
+        public SignatureDate InternalModificationInfo { get; set; } = SignatureDate.Empty;
 
-        public SignatureDate InternalContentsInfo
-        {
-            get { return this.contentsInfo; }
-            set { this.contentsInfo = value; }
-        }
+        public SignatureDate InternalContentsInfo { get; set; } = SignatureDate.Empty;
 
         protected override DataRow NewRowFromBuilder(DataRowBuilder builder)
         {
@@ -912,7 +838,7 @@ namespace Ntreev.Crema.Data
             base.OnRowDeleted(e);
             if (this.IsLoading == false)
             {
-                this.contentsInfo = this.SignatureDate;
+                this.InternalContentsInfo = this.SignatureDate;
             }
         }
 
@@ -921,19 +847,13 @@ namespace Ntreev.Crema.Data
             base.OnTableCleared(e);
             if (this.IsLoading == false)
             {
-                this.contentsInfo = this.SignatureDate;
+                this.InternalContentsInfo = this.SignatureDate;
             }
         }
 
         protected override void OnPropertyChanged(PropertyChangedEventArgs e)
         {
             base.OnPropertyChanged(e);
-
-            //if (e.PropertyName == nameof(this.CategoryPath))
-            //{
-            //    if (this.OmitSignatureDate == false)
-            //        this.InternalModificationInfo = this.SignatureDate;
-            //}
         }
 
         protected override void OnSetNormalMode()

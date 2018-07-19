@@ -17,11 +17,8 @@
 
 using Ntreev.Library;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
@@ -31,43 +28,25 @@ namespace Ntreev.Crema.Data.Xml.Schema
 {
     public class CremaSchemaReadInfo
     {
-        private readonly string xsdPath = null;
-        private string[] typePaths;
-        private string[] relativeTypePaths;
-
         public CremaSchemaReadInfo(string schemaPath)
         {
-            XmlNamespaceManager xnm = new XmlNamespaceManager(new NameTable());
+            var xnm = new XmlNamespaceManager(new NameTable());
             xnm.AddNamespace("xs", XmlSchema.Namespace);
             var doc = XDocument.Load(schemaPath);
-
             var query = from item in doc.XPathSelectElements("/xs:schema/xs:import[@schemaLocation]", xnm).ToArray()
                         let attr = item.Attribute(XName.Get("schemaLocation", string.Empty))
                         select attr.Value;
 
-            this.relativeTypePaths = query.ToArray();
-
-            this.typePaths = this.relativeTypePaths.Select(item => UriUtility.Combine(Path.GetDirectoryName(schemaPath), item)).ToArray();
+            this.RelativeTypePaths = query.ToArray();
+            this.TypePaths = this.RelativeTypePaths.Select(item => UriUtility.Combine(Path.GetDirectoryName(schemaPath), item)).ToArray();
         }
 
-        public string SchemaPath
-        {
-            get { return this.xsdPath; }
-        }
+        public string SchemaPath { get; } = null;
 
-        public string[] TypePaths
-        {
-            get { return this.typePaths; }
-        }
+        public string[] TypePaths { get; }
 
-        public string[] LocalTypePaths
-        {
-            get { return this.typePaths.Select(item => new Uri(item).LocalPath).ToArray(); }
-        }
+        public string[] LocalTypePaths => this.TypePaths.Select(item => new Uri(item).LocalPath).ToArray();
 
-        public string[] RelativeTypePaths
-        {
-            get { return this.relativeTypePaths; }
-        }
+        public string[] RelativeTypePaths { get; }
     }
 }

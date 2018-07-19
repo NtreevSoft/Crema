@@ -15,28 +15,16 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.Data;
-using Ntreev.Crema.Data.Xml;
-using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Crema.Data.Properties;
+using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Library;
-using Ntreev.Library.IO;
 using Ntreev.Library.ObjectModel;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Runtime.Serialization;
-using System.Threading;
-using System.Xml;
-using System.Xml.Schema;
-using System.Xml.Serialization;
 
 namespace Ntreev.Crema.Data
 {
@@ -55,10 +43,7 @@ namespace Ntreev.Crema.Data
             this.dataSet.PropertyChanged += InternalDataSet_PropertyChanged;
         }
 
-        public CremaDataType this[int index]
-        {
-            get { return this.itemList[index].Target; }
-        }
+        public CremaDataType this[int index] => this.itemList[index].Target;
 
         public CremaDataType this[string name]
         {
@@ -115,10 +100,7 @@ namespace Ntreev.Crema.Data
             }
         }
 
-        public CremaDataType this[Guid typeID]
-        {
-            get { return this.SingleOrDefault(item => item.TypeID == typeID); }
-        }
+        public CremaDataType this[Guid typeID] => this.SingleOrDefault(item => item.TypeID == typeID);
 
         public CremaDataType Add()
         {
@@ -329,10 +311,7 @@ namespace Ntreev.Crema.Data
             arrayList.CopyTo(array, index);
         }
 
-        public int Count
-        {
-            get { return this.itemList.Count; }
-        }
+        public int Count => this.itemList.Count;
 
         public event CollectionChangeEventHandler CollectionChanged;
 

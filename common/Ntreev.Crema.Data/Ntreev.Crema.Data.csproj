@@ -147,10 +147,8 @@
     <Compile Include="Xml\CremaXmlReader.cs" />
     <Compile Include="Xml\CremaXmlReadInfo.cs" />
     <Compile Include="Xml\CremaXmlResolver.cs" />
-    <Compile Include="Xml\CremaXmlString.cs" />
     <Compile Include="Xml\CremaXmlWriter.cs" />
     <Compile Include="Xml\Schema\CremaSchema.cs" />
-    <Compile Include="Xml\Schema\CremaSchemaExtension.cs" />
     <Compile Include="Xml\Schema\CremaSchemaObsolete.cs" />
     <Compile Include="Xml\Schema\CremaSchemaReader.cs" />
     <Compile Include="Xml\Schema\CremaSchemaReadInfo.cs" />
