@@ -152,6 +152,7 @@
     <Compile Include="Xml\Schema\CremaSchemaObsolete.cs" />
     <Compile Include="Xml\Schema\CremaSchemaReader.cs" />
     <Compile Include="Xml\Schema\CremaSchemaReadInfo.cs" />
+    <Compile Include="Xml\Schema\CremaSchemaTypeUtility.cs" />
     <Compile Include="Xml\Schema\CremaSchemaWriter.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -117,38 +117,36 @@ namespace Ntreev.Crema.Runtime.Generation.CSharp
 
         public static string GetMethodName(this ColumnInfo columnInfo)
         {
-            if (columnInfo.DataType == "boolean")
+            if (columnInfo.DataType == CremaDataTypeUtility.booleanType)
                 return "ToBoolean";
-            else if (columnInfo.DataType == "string")
+            else if (columnInfo.DataType == CremaDataTypeUtility.stringType)
                 return "ToString";
-            else if (columnInfo.DataType == "float")
+            else if (columnInfo.DataType == "float" || columnInfo.DataType == CremaDataTypeUtility.singleType)
                 return "ToSingle";
-            else if (columnInfo.DataType == "double")
+            else if (columnInfo.DataType == CremaDataTypeUtility.doubleType)
                 return "ToDouble";
-            else if (columnInfo.DataType == "byte")
+            else if (columnInfo.DataType == "byte" || columnInfo.DataType == CremaDataTypeUtility.int8Type)
                 return "ToInt8";
-            else if (columnInfo.DataType == "unsignedByte")
+            else if (columnInfo.DataType == "unsignedByte" || columnInfo.DataType == CremaDataTypeUtility.uint8Type)
                 return "ToUInt8";
-            else if (columnInfo.DataType == "short")
+            else if (columnInfo.DataType == "short" || columnInfo.DataType == CremaDataTypeUtility.int16Type)
                 return "ToInt16";
-            else if (columnInfo.DataType == "unsignedShort")
+            else if (columnInfo.DataType == "unsignedShort" || columnInfo.DataType == CremaDataTypeUtility.uint16Type)
                 return "ToUInt16";
-            else if (columnInfo.DataType == "int")
+            else if (columnInfo.DataType == "int" || columnInfo.DataType == CremaDataTypeUtility.int32Type)
                 return "ToInt32";
-            else if (columnInfo.DataType == "unsignedInt")
+            else if (columnInfo.DataType == "unsignedInt" || columnInfo.DataType == CremaDataTypeUtility.uint32Type)
                 return "ToUInt32";
-            else if (columnInfo.DataType == "long")
+            else if (columnInfo.DataType == "long" || columnInfo.DataType == CremaDataTypeUtility.int64Type)
                 return "ToInt64";
-            else if (columnInfo.DataType == "unsignedLong")
+            else if (columnInfo.DataType == "unsignedLong" || columnInfo.DataType == CremaDataTypeUtility.uint64Type)
                 return "ToUInt64";
-            else if (columnInfo.DataType == "dateTime")
+            else if (columnInfo.DataType == "dateTime" || columnInfo.DataType == CremaDataTypeUtility.datetimeType)
                 return "ToDateTime";
-            else if (columnInfo.DataType == "duration")
+            else if (columnInfo.DataType == CremaDataTypeUtility.durationType)
                 return "ToDuration";
-            else if (columnInfo.DataType == "dictionary")
-                return "ToString";
-            else if (columnInfo.DataType == "table")
-                return "ToString";
+            else if (columnInfo.DataType == CremaDataTypeUtility.guidType)
+                return "ToGuid";
 
             return "ToInt32";
         }

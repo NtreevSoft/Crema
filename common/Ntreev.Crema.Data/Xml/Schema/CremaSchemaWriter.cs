@@ -125,7 +125,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
                 {
                     var columns = tables.SelectMany(item => item.Columns).Distinct();
                     var query = from item in this.dataTable.DataSet.Types
-                                join column in columns on item.TypeName equals column.DataType.GetTypeName()
+                                join column in columns on item.TypeName equals column.DataType.GetSchemaTypeName()
                                 select item;
 
                     var index = 0;
@@ -256,7 +256,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
             }
             else if (dataColumn.DataType == typeof(Guid))
             {
-                return new XmlQualifiedName(typeof(Guid).GetTypeName(), schema.TargetNamespace);
+                return new XmlQualifiedName(typeof(Guid).GetSchemaTypeName(), schema.TargetNamespace);
             }
             else
             {
@@ -611,7 +611,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
 
             var simpleType = new XmlSchemaSimpleType()
             {
-                Name = typeof(Guid).GetTypeName(),
+                Name = typeof(Guid).GetSchemaTypeName(),
                 Content = restriction,
             };
 
@@ -633,13 +633,13 @@ namespace Ntreev.Crema.Data.Xml.Schema
 
         internal static XmlQualifiedName GetSystemQualifiedName(Type type)
         {
-            return new XmlQualifiedName(type.GetTypeName(), XmlSchema.Namespace);
+            return new XmlQualifiedName(type.GetSchemaTypeName(), XmlSchema.Namespace);
         }
 
         internal static XmlQualifiedName GetSystemQualifiedName(Type type, string targetNamespace)
         {
             if (type == typeof(Guid))
-                return new XmlQualifiedName(type.GetTypeName(), targetNamespace);
+                return new XmlQualifiedName(type.GetSchemaTypeName(), targetNamespace);
             return GetSystemQualifiedName(type);
         }
     }

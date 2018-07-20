@@ -16,6 +16,7 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Ntreev.Crema.Data;
+using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services.Data.Serializations;
 using Ntreev.Crema.Services.Domains;
@@ -145,7 +146,9 @@ namespace Ntreev.Crema.Services.Data
 
                 try
                 {
+                    FileUtility.WriteAllText($"{CremaSchema.MajorVersion}.{CremaSchema.MinorVersion}", dataBasePath, ".version");
                     dataSet.WriteToDirectory(dataBasePath);
+
                     this.repositoryDispatcher.Invoke(() =>
                     {
                         this.repositoryProvider.CreateRepository(authentication, this.remotesPath, dataBasePath, message);

@@ -474,7 +474,7 @@ namespace Ntreev.Crema.Javascript
                     {
                         if (parameter.GetCustomAttribute<DescriptionAttribute>() is DescriptionAttribute descAttr)
                         {
-                            sb.AppendLine($"/** @param {this.GetTypeString(parameter.ParameterType)} {descAttr.Description} */");
+                            sb.AppendLine($"/** @param {parameter.Name} {descAttr.Description} */");
                         }
                     }
 

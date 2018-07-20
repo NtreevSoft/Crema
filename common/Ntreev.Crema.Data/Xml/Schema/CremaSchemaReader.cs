@@ -231,7 +231,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
 
                 foreach (var item in query)
                 {
-                    if (item.QualifiedName.Name == typeof(Guid).GetTypeName() && item.QualifiedName.Namespace == schema.TargetNamespace)
+                    if (item.QualifiedName.Name == typeof(Guid).GetSchemaTypeName() && item.QualifiedName.Namespace == schema.TargetNamespace)
                         continue;
                     this.ReadType(item);
                 }
@@ -663,9 +663,9 @@ namespace Ntreev.Crema.Data.Xml.Schema
 
             if (simpleType.QualifiedName.Namespace == XmlSchema.Namespace)
             {
-                column.InternalDataType = CremaDataTypeUtility.GetType(typeName) ?? typeof(string);
+                column.InternalDataType = CremaSchemaTypeUtility.GetType(typeName) ?? typeof(string);
             }
-            else if (simpleType.QualifiedName.Name == typeof(Guid).GetTypeName() && simpleType.QualifiedName.Namespace == simpleType.GetSchema().TargetNamespace)
+            else if (simpleType.QualifiedName.Name == typeof(Guid).GetSchemaTypeName() && simpleType.QualifiedName.Namespace == simpleType.GetSchema().TargetNamespace)
             {
                 column.InternalDataType = typeof(Guid);
             }

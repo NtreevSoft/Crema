@@ -15,6 +15,7 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.Data;
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services;
 using System;
@@ -60,7 +61,10 @@ namespace Ntreev.Crema.Javascript.Methods.TableContent
                 var row = content.AddNew(authentication, null);
                 foreach (var item in fields)
                 {
-                    row.SetField(authentication, item.Key, item.Value);
+                    var typeName = tableInfo.Columns.First(i => i.DataType == item.Key).DataType;
+                    var type = CremaDataTypeUtility.GetType(typeName);
+                    var value = CremaConvert.ChangeType(item.Value, type);
+                    row.SetField(authentication, item.Key, value);
                 }
                 content.EndNew(authentication, row);
                 return tableInfo.Columns.Select(item => row[item.Name]).ToArray();

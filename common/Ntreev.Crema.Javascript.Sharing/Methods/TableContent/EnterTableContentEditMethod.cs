@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Text;
 
 namespace Ntreev.Crema.Javascript.Methods.TableContent
@@ -44,8 +45,9 @@ namespace Ntreev.Crema.Javascript.Methods.TableContent
 
         private void EnterTableContentEdit(string domainID)
         {
-            var content = this.GetDomainHost<ITableContent>(domainID);
+            var contents = this.GetDomainHost<IEnumerable<ITableContent>>(domainID);
             var authentication = this.Context.GetAuthentication(this);
+            var content = contents.First();
             content.Dispatcher.Invoke(() => content.EnterEdit(authentication));
         }
     }

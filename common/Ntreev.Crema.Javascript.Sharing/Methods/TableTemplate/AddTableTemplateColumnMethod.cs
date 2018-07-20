@@ -15,6 +15,7 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.Data;
 using Ntreev.Crema.Services;
 using System;
 using System.Collections.Generic;
@@ -29,8 +30,6 @@ namespace Ntreev.Crema.Javascript.Methods.TableTemplate
     [Category(nameof(TableTemplate))]
     class AddTableTemplateColumnMethod : DomainScriptMethodBase
     {
-        private const string typeNameDescription = "boolean, string, int, float, double, dateTime, unsignedInt, long, short, unsignedLong, unsignedByte, duration, unsignedShort, byte, guid or typePath(e.g., /categoryPath/typeName)";
-
         [ImportingConstructor]
         public AddTableTemplateColumnMethod(ICremaHost cremaHost)
             : base(cremaHost)
@@ -44,7 +43,7 @@ namespace Ntreev.Crema.Javascript.Methods.TableTemplate
         }
 
         private void AddTableTemplateColumn(string domainID, string columnName,
-            [Description(typeNameDescription)]
+            [TypeNamesDescriptionAttribute]
             string typeName, string comment, bool? isKey)
         {
             if (columnName == null)
@@ -65,6 +64,15 @@ namespace Ntreev.Crema.Javascript.Methods.TableTemplate
                     column.SetIsKey(authentication, isKey.Value);
                 template.EndNew(authentication, column);
             });
+        }
+
+        class TypeNamesDescriptionAttribute : DescriptionAttribute
+        {
+            public TypeNamesDescriptionAttribute()
+                : base(string.Join(", ", CremaDataTypeUtility.GetBaseTypeNames()) + " or typePath(e.g., /categoryPath/typeName)")
+            {
+                
+            }
         }
     }
 }

@@ -43,11 +43,17 @@ namespace Ntreev.Crema.Data
                 textValue = ((TimeSpan)value).TotalSeconds.ToString();
             }
             else if (value is float)
+            {
                 textValue = ((float)value).ToString("R");
+            }
             else if (value is double)
+            {
                 textValue = ((double)value).ToString("R");
+            }
             else
+            {
                 textValue = value.ToString();
+            }
 
             try
             {
@@ -89,11 +95,25 @@ namespace Ntreev.Crema.Data
                 }
                 else if (dataType == typeof(long))
                 {
-                    return long.Parse(textValue);
+                    if (double.TryParse(textValue, out var d) == true)
+                    {
+                        return (long)d;
+                    }
+                    else
+                    {
+                        return long.Parse(textValue);
+                    }
                 }
                 else if (dataType == typeof(ulong))
                 {
-                    return ulong.Parse(textValue);
+                    if (double.TryParse(textValue, out var d) == true)
+                    {
+                        return (ulong)d;
+                    }
+                    else
+                    {
+                        return ulong.Parse(textValue);
+                    }
                 }
                 else if (dataType == typeof(DateTime))
                 {
