@@ -15,11 +15,13 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Text;
 
 namespace Ntreev.Crema.Javascript.Methods.TableContent
@@ -38,15 +40,18 @@ namespace Ntreev.Crema.Javascript.Methods.TableContent
 
         protected override Delegate CreateDelegate()
         {
-            return new Func<string, object[], string, object>(this.GetTableContentRowCount);
+            return new Func<string, string, object[], string, object>(this.GetTableContentRowCount);
         }
 
-        private object GetTableContentRowCount(string domainID, object[] keys, string columnName)
+        private object GetTableContentRowCount(string domainID, string tableName, object[] keys, string columnName)
         {
             if (keys == null)
                 throw new ArgumentNullException(nameof(keys));
 
-            var content = this.GetDomainHost<ITableContent>(domainID);
+            var contents = this.GetDomainHost<IEnumerable<ITableContent>>(domainID);
+            var content = contents.FirstOrDefault(item => item.Dispatcher.Invoke(() => item.Table.Name) == tableName);
+            if (content == null)
+                throw new TableNotFoundException(tableName);
             var authentication = this.Context.GetAuthentication(this);
             return content.Dispatcher.Invoke(() => content.Count);
         }

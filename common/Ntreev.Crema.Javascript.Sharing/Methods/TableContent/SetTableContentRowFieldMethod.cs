@@ -15,11 +15,13 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Text;
 
 namespace Ntreev.Crema.Javascript.Methods.TableContent
@@ -38,17 +40,20 @@ namespace Ntreev.Crema.Javascript.Methods.TableContent
 
         protected override Delegate CreateDelegate()
         {
-            return new Action<string, object[], string, object>(this.SetTableContentRowField);
+            return new Action<string, string, object[], string, object>(this.SetTableContentRowField);
         }
 
-        private void SetTableContentRowField(string domainID, object[] keys, string columnName, object value)
+        private void SetTableContentRowField(string domainID, string tableName, object[] keys, string columnName, object value)
         {
             if (keys == null)
                 throw new ArgumentNullException(nameof(keys));
             if (columnName == null)
                 throw new ArgumentNullException(nameof(columnName));
 
-            var content = this.GetDomainHost<ITableContent>(domainID);
+            var contents = this.GetDomainHost<IEnumerable<ITableContent>>(domainID);
+            var content = contents.FirstOrDefault(item => item.Dispatcher.Invoke(() => item.Table.Name) == tableName);
+            if (content == null)
+                throw new TableNotFoundException(tableName);
             var authentication = this.Context.GetAuthentication(this);
             content.Dispatcher.Invoke(() =>
             {

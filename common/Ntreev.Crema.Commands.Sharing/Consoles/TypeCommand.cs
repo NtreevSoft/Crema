@@ -222,20 +222,8 @@ namespace Ntreev.Crema.Commands.Consoles
         [CommandMethodStaticProperty(typeof(FilterProperties))]
         public void List()
         {
-            var typeNames = this.CremaHost.Dispatcher.Invoke(GetTypeNames);
+            var typeNames = this.GetTypeNames((TagInfo)TagsProperties.Tags, FilterProperties.FilterExpression);
             this.Out.Print(typeNames);
-
-            string[] GetTypeNames()
-            {
-                var dataBase = this.CremaHost.DataBases[this.Drive.DataBaseName];
-                var tags = (TagInfo)TagsProperties.Tags;
-                var query = from item in dataBase.TypeContext.Types
-                            where StringUtility.GlobMany(item.Name, FilterProperties.FilterExpression)
-                            where (item.TypeInfo.DerivedTags & tags) == tags
-                            select item.Name;
-
-                return query.ToArray();
-            }
         }
 
         [CommandMethod]
@@ -253,11 +241,6 @@ namespace Ntreev.Crema.Commands.Consoles
         public string CategoryPath
         {
             get; set;
-        }
-
-        public ICremaHost CremaHost
-        {
-            get { return this.cremaHost.Value; }
         }
 
         public override bool IsEnabled => this.CommandContext.Drive is DataBasesConsoleDrive drive && drive.DataBaseName != string.Empty;
@@ -310,10 +293,21 @@ namespace Ntreev.Crema.Commands.Consoles
 
         private string[] GetTypeNames()
         {
+            return GetTypeNames(TagInfo.All, null);
+        }
+
+        private string[] GetTypeNames(TagInfo tags, string filterExpress)
+        {
             return this.CremaHost.Dispatcher.Invoke(() =>
             {
                 var dataBase = this.CremaHost.DataBases[this.Drive.DataBaseName];
-                return dataBase.TypeContext.Types.Select(item => item.Name).ToArray();
+                var query = from item in dataBase.TypeContext.Types
+                            where StringUtility.GlobMany(item.Name, filterExpress)
+                            where (item.TypeInfo.DerivedTags & tags) == tags
+                            orderby item.Name
+                            select item.Name;
+
+                return query.ToArray();
             });
         }
 
@@ -323,8 +317,8 @@ namespace Ntreev.Crema.Commands.Consoles
             {
                 var dataBase = this.CremaHost.DataBases[this.Drive.DataBaseName];
                 var query = from item in dataBase.TypeContext.Categories
-                            let path = item.Path
-                            select path;
+                            orderby item.Path
+                            select item.Path;
                 return query.ToArray();
             });
         }
@@ -334,17 +328,15 @@ namespace Ntreev.Crema.Commands.Consoles
             return this.CremaHost.Dispatcher.Invoke(() =>
             {
                 var dataBase = this.CremaHost.DataBases[this.Drive.DataBaseName];
+                var query = from item in dataBase.TypeContext.Categories
+                            orderby item.Path
+                            select item;
+
                 var itemList = new List<string>(dataBase.TypeContext.Count());
-                foreach (var item in dataBase.TypeContext)
+                foreach (var item in query)
                 {
-                    if (item is IType type)
-                    {
-                        itemList.Add(type.Name);
-                    }
-                    else if (item is ITypeCategory category)
-                    {
-                        itemList.Add(category.Path);
-                    }
+                    itemList.Add(item.Path);
+                    itemList.AddRange(from type in item.Types orderby type.Name select type.Name);
                 }
                 return itemList.ToArray();
             });
@@ -355,11 +347,14 @@ namespace Ntreev.Crema.Commands.Consoles
             if (this.CommandContext.Drive is DataBasesConsoleDrive root)
             {
                 var dataBasePath = new DataBasePath(this.CommandContext.Path);
-                return dataBasePath.ItemPath;
+                if (dataBasePath.ItemPath != string.Empty)
+                    return dataBasePath.ItemPath;
             }
             return PathUtility.Separator;
         }
 
         private DataBasesConsoleDrive Drive => this.CommandContext.Drive as DataBasesConsoleDrive;
+
+        private ICremaHost CremaHost => this.cremaHost.Value;
     }
 }

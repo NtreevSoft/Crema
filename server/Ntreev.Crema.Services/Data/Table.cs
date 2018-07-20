@@ -837,6 +837,8 @@ namespace Ntreev.Crema.Services.Data
 
             if (this.IsBaseTemplate == true && this.Parent == null && target == this)
                 throw new InvalidOperationException(Resources.Exception_CannotDeleteBaseTemplateTable);
+            if (this.Childs.Any() == true)
+                throw new InvalidOperationException("Cannot delete table with childs");
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]

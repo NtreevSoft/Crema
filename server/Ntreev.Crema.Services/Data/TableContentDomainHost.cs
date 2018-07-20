@@ -20,6 +20,7 @@ using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services.Domains;
 using Ntreev.Library;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -29,7 +30,7 @@ namespace Ntreev.Crema.Services.Data
     {
         private TableContentDomainHost domainHost;
 
-        public class TableContentDomainHost : IDomainHost
+        public class TableContentDomainHost : IDomainHost, IEnumerable<ITableContent>
         {
             private readonly TableCollection container;
             private readonly TableContent[] contents;
@@ -272,6 +273,26 @@ namespace Ntreev.Crema.Services.Data
             void IDomainHost.ValidateDelete(Authentication authentication, bool isCanceled)
             {
                 //throw new NotImplementedException();
+            }
+
+            #endregion
+
+            #region IEnumerable
+
+            IEnumerator<ITableContent> IEnumerable<ITableContent>.GetEnumerator()
+            {
+                foreach (var item in this.contents)
+                {
+                    yield return item;
+                }
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                foreach (var item in this.contents)
+                {
+                    yield return item;
+                }
             }
 
             #endregion

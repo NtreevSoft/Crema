@@ -29,10 +29,10 @@ namespace Ntreev.Crema.Javascript.Methods.TableContent
     [Export(typeof(IScriptMethod))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
     [Category(nameof(TableContent))]
-    class GetTableContentRowFieldsMethod : DomainScriptMethodBase
+    class GetTableContentTablesMethod : DomainScriptMethodBase
     {
         [ImportingConstructor]
-        public GetTableContentRowFieldsMethod(ICremaHost cremaHost)
+        public GetTableContentTablesMethod(ICremaHost cremaHost)
             : base(cremaHost)
         {
 
@@ -40,30 +40,13 @@ namespace Ntreev.Crema.Javascript.Methods.TableContent
 
         protected override Delegate CreateDelegate()
         {
-            return new Func<string, string, object[], IDictionary<string, object>>(this.GetTableContentRowFields);
+            return new Func<string, string[]>(this.GetTableContentTables);
         }
 
-        private IDictionary<string, object> GetTableContentRowFields(string domainID, string tableName, object[] keys)
+        private string[] GetTableContentTables(string domainID)
         {
-            if (keys == null)
-                throw new ArgumentNullException(nameof(keys));
-
             var contents = this.GetDomainHost<IEnumerable<ITableContent>>(domainID);
-            var content = contents.FirstOrDefault(item => item.Dispatcher.Invoke(() => item.Table.Name) == tableName);
-            if (content == null)
-                throw new TableNotFoundException(tableName);
-            var authentication = this.Context.GetAuthentication(this);
-            return content.Dispatcher.Invoke(() =>
-            {
-                var row = content.Find(authentication, keys);
-                var tableInfo = content.Table.TableInfo;
-                var fields = new Dictionary<string, object>(tableInfo.Columns.Length);
-                foreach (var item in tableInfo.Columns)
-                {
-                    fields.Add(item.Name, row[item.Name]);
-                }
-                return fields;
-            });
+            return contents.Select(item => item.Dispatcher.Invoke(() => item.Table.Name)).ToArray();
         }
     }
 }

@@ -127,7 +127,7 @@ namespace Ntreev.Crema.Commands.Consoles
             try
             {
                 this.Terminal.IsCommandMode = false;
-                return this.Terminal.ReadString("type 'delete' to delete:") == "delete";
+                return this.Terminal.ReadString("type 'delete': ") == "delete";
             }
             catch (OperationCanceledException)
             {

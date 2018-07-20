@@ -15,6 +15,7 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services;
 using System;
 using System.Collections.Generic;
@@ -39,16 +40,19 @@ namespace Ntreev.Crema.Javascript.Methods.TableContent
 
         protected override Delegate CreateDelegate()
         {
-            return new Func<string, IDictionary<string, object>, object[]>(this.AddTableContentRow);
+            return new Func<string, string, IDictionary<string, object>, object[]>(this.AddTableContentRow);
         }
 
         [ReturnParameterName("keys")]
-        private object[] AddTableContentRow(string domainID, IDictionary<string, object> fields)
+        private object[] AddTableContentRow(string domainID, string tableName, IDictionary<string, object> fields)
         {
             if (fields == null)
                 throw new ArgumentNullException(nameof(fields));
 
-            var content = this.GetDomainHost<ITableContent>(domainID);
+            var contents = this.GetDomainHost<IEnumerable<ITableContent>>(domainID);
+            var content = contents.FirstOrDefault(item => item.Dispatcher.Invoke(() => item.Table.Name) == tableName);
+            if (content == null)
+                throw new TableNotFoundException(tableName);
             var authentication = this.Context.GetAuthentication(this);
             return content.Dispatcher.Invoke(() =>
             {

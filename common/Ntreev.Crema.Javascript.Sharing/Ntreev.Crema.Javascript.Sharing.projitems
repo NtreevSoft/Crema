@@ -106,6 +106,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Methods\Permission\UnlockTypeItemMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\TableContent\ContainsTableContentRowMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\TableContent\GetTableContentDomainMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\TableContent\GetTableContentTablesMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\TableTemplate\GetTableTemplateSelectableTypesMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\TableTemplate\GetTableTemplateColumnsMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\TableTemplate\GetTableTemplateDomainMethod.cs" />

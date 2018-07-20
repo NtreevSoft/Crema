@@ -28,6 +28,21 @@ namespace Ntreev.Crema.Data
 
         static CremaDataTypeUtility()
         {
+//boolean
+//string
+//single
+//double
+//int8
+//uint8
+//int16
+//uint16
+//int32
+//uint32
+//int64
+//uint64
+//datetime
+//duration
+//guid
             baseTypes.Add("boolean", typeof(System.Boolean));
             baseTypes.Add("string", typeof(System.String));
             baseTypes.Add("int", typeof(System.Int32));

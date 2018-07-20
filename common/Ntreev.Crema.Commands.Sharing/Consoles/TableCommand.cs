@@ -17,7 +17,6 @@
 
 using Ntreev.Crema.Commands.Consoles.Properties;
 using Ntreev.Crema.Commands.Consoles.Serializations;
-using Ntreev.Crema.Commands.Consoles.TableContent;
 using Ntreev.Crema.Commands.Consoles.TableTemplate;
 using Ntreev.Crema.Data;
 using Ntreev.Crema.Data.Xml.Schema;
@@ -31,10 +30,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Commands.Consoles
 {
@@ -112,10 +108,7 @@ namespace Ntreev.Crema.Commands.Consoles
             var table = this.GetTable(tableName);
             var authentication = this.CommandContext.GetAuthentication(this);
             var categoryPath = this.CategoryPath ?? this.GetCurrentDirectory();
-            table.Dispatcher.Invoke(() =>
-            {
-                table.Copy(authentication, newTableName, categoryPath, this.CopyContent);
-            });
+            table.Dispatcher.Invoke(() => table.Copy(authentication, newTableName, categoryPath, this.CopyContent));
         }
 
         [CommandMethod]
@@ -125,10 +118,7 @@ namespace Ntreev.Crema.Commands.Consoles
             var table = this.GetTable(tableName);
             var authentication = this.CommandContext.GetAuthentication(this);
             var categoryPath = this.CategoryPath ?? this.GetCurrentDirectory();
-            table.Dispatcher.Invoke(() =>
-            {
-                table.Inherit(authentication, newTableName, categoryPath, this.CopyContent);
-            });
+            table.Dispatcher.Invoke(() => table.Inherit(authentication, newTableName, categoryPath, this.CopyContent));
         }
 
         [CommandMethod]
@@ -137,10 +127,7 @@ namespace Ntreev.Crema.Commands.Consoles
         {
             var tableItem = this.GetTableItem(tableItemName);
             var authentication = this.CommandContext.GetAuthentication(this);
-            var dataSet = tableItem.Dispatcher.Invoke(() =>
-            {
-                return tableItem.GetDataSet(authentication, revision);
-            });
+            var dataSet = tableItem.Dispatcher.Invoke(() => tableItem.GetDataSet(authentication, revision));
 
             foreach (var item in dataSet.Tables)
             {
@@ -164,21 +151,8 @@ namespace Ntreev.Crema.Commands.Consoles
         [CommandMethodStaticProperty(typeof(TagsProperties))]
         public void List()
         {
-            var tableNames = this.CremaHost.Dispatcher.Invoke(GetTableNames);
+            var tableNames = this.GetTableNames((TagInfo)TagsProperties.Tags, FilterProperties.FilterExpression);
             this.Out.Print(tableNames);
-
-            string[] GetTableNames()
-            {
-                var dataBase = this.CremaHost.DataBases[this.Drive.DataBaseName];
-                var tags = (TagInfo)TagsProperties.Tags;
-                var query = from item in dataBase.TableContext.Tables
-                            where StringUtility.GlobMany(item.Name, FilterProperties.FilterExpression)
-                            where (item.TableInfo.DerivedTags & tags) == tags
-                            orderby item.Name
-                            select item.Name;
-
-                return query.ToArray();
-            }
         }
 
         [CommandMethod]
@@ -464,11 +438,6 @@ namespace Ntreev.Crema.Commands.Consoles
             get; set;
         }
 
-        public ICremaHost CremaHost
-        {
-            get { return this.cremaHost.Value; }
-        }
-
         public override bool IsEnabled => this.CommandContext.Drive is DataBasesConsoleDrive drive && drive.DataBaseName != string.Empty;
 
         protected override bool IsMethodEnabled(CommandMethodDescriptor descriptor)
@@ -534,12 +503,20 @@ namespace Ntreev.Crema.Commands.Consoles
 
         private string[] GetTableNames()
         {
+            return GetTableNames(TagInfo.All, null);
+        }
+
+        private string[] GetTableNames(TagInfo tags, string filterExpress)
+        {
             return this.CremaHost.Dispatcher.Invoke(() =>
             {
                 var dataBase = this.CremaHost.DataBases[this.Drive.DataBaseName];
                 var query = from item in dataBase.TableContext.Tables
-                            let name = item.Name
-                            select name;
+                            where StringUtility.GlobMany(item.Name, filterExpress)
+                            where (item.TableInfo.DerivedTags & tags) == tags
+                            orderby item.Name
+                            select item.Name;
+
                 return query.ToArray();
             });
         }
@@ -550,8 +527,8 @@ namespace Ntreev.Crema.Commands.Consoles
             {
                 var dataBase = this.CremaHost.DataBases[this.Drive.DataBaseName];
                 var query = from item in dataBase.TableContext.Categories
-                            let path = item.Path
-                            select path;
+                            orderby item.Path
+                            select item.Path;
                 return query.ToArray();
             });
         }
@@ -561,17 +538,15 @@ namespace Ntreev.Crema.Commands.Consoles
             return this.CremaHost.Dispatcher.Invoke(() =>
             {
                 var dataBase = this.CremaHost.DataBases[this.Drive.DataBaseName];
+                var query = from item in dataBase.TableContext.Categories
+                            orderby item.Path
+                            select item;
+
                 var itemList = new List<string>(dataBase.TableContext.Count());
-                foreach (var item in dataBase.TableContext)
+                foreach (var item in query)
                 {
-                    if (item is ITable table)
-                    {
-                        itemList.Add(table.Name);
-                    }
-                    else if (item is ITableCategory category)
-                    {
-                        itemList.Add(category.Path);
-                    }
+                    itemList.Add(item.Path);
+                    itemList.AddRange(from table in item.Tables orderby table.Name select table.Name);
                 }
                 return itemList.ToArray();
             });
@@ -582,11 +557,14 @@ namespace Ntreev.Crema.Commands.Consoles
             if (this.CommandContext.Drive is DataBasesConsoleDrive root)
             {
                 var dataBasePath = new DataBasePath(this.CommandContext.Path);
-                return dataBasePath.ItemPath;
+                if (dataBasePath.ItemPath != string.Empty)
+                    return dataBasePath.ItemPath;
             }
             return PathUtility.Separator;
         }
 
         private DataBasesConsoleDrive Drive => this.CommandContext.Drive as DataBasesConsoleDrive;
+
+        private ICremaHost CremaHost => this.cremaHost.Value;
     }
 }
