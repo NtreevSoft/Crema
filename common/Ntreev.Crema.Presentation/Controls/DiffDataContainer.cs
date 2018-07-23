@@ -59,13 +59,7 @@ namespace Ntreev.Crema.Presentation.Controls
 
         public DiffDataContainer()
         {
-            foreach (CommandBinding item in this.CommandBindings)
-            {
-                if (item.Command == Xceed.Wpf.DataGrid.DataGridCommands.ToggleDetailExpansion)
-                {
-                    item.Executed += ToggleDetailExpansionCommand_Executed;
-                }
-            }
+
         }
 
         public bool Contains(string fieldName)
@@ -110,15 +104,7 @@ namespace Ntreev.Crema.Presentation.Controls
                 }
                 else
                 {
-                    var parentIndex = gridContext.ParentDataGridContext.Items.IndexOf(gridContext.ParentItem);
-                    if (parentIndex < 0)
-                        return null;
-                    var parentItem = destControl.Items.GetItemAt(parentIndex);
-                    var index = gridContext.Items.IndexOf(this.DataContext);
-                    var relationName = gridContext.SourceDetailConfiguration.RelationName;
-                    var destContext = destControl.GetChildContext(parentItem, relationName);
-                    var destItem = destContext.Items.GetItemAt(index);
-                    return destContext.GetContainerFromItem(destItem) as DiffDataContainer;
+                    throw new NotImplementedException();
                 }
             }
         }
@@ -142,14 +128,7 @@ namespace Ntreev.Crema.Presentation.Controls
                 }
                 else
                 {
-                    var parentIndex = gridContext.ParentDataGridContext.Items.IndexOf(gridContext.ParentItem);
-                    if (parentIndex < 0)
-                        return null;
-                    var parentItem = destControl.Items.GetItemAt(parentIndex);
-                    var index = gridContext.Items.IndexOf(this.DataContext);
-                    var relationName = gridContext.SourceDetailConfiguration.RelationName;
-                    var destContext = destControl.GetChildContext(parentItem, relationName);
-                    return destContext.Items.GetItemAt(index);
+                    throw new NotImplementedException();
                 }
             }
         }
@@ -291,27 +270,6 @@ namespace Ntreev.Crema.Presentation.Controls
                     return;
                 destContainer.Height = this.Height;
             }
-        }
-
-        private void ToggleDetailExpansionCommand_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            var gridContext = DataGridControl.GetDataGridContext(this);
-            var destContext = DataGridControl.GetDataGridContext(this.DestContainer);
-            var destItem = this.DestContainer.DataContext;
-
-            var isExpanded = gridContext.AreDetailsExpanded(this.DataContext);
-            if (isExpanded == true)
-                destContext.ExpandDetails(destItem);
-            else
-                destContext.CollapseDetails(destItem);
-            (gridContext.DataGridControl as DiffDataGridControl).InvokeDetailsToggledEvent();
-            (destContext.DataGridControl as DiffDataGridControl).InvokeDetailsToggledEvent();
-
-            if (DiffUndoService.GetUndoService(this) is IUndoService undoService)
-            {
-                undoService.Push(new DetailsToggledAction(gridContext, this.DataContext, destContext, destItem, isExpanded));
-            }
-            this.Dispatcher.InvokeAsync(this.SetSelectionProperty, DispatcherPriority.Render);
         }
 
         private void RefreshError()

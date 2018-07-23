@@ -142,7 +142,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
                 <nmgc:ModernColumnManagerRow />
             </DataTemplate>
             <DataTemplate>
-                <nmgc:ModernInsertionRow Visibility="{Binding Path=(xcdg:DataGridControl.DataGridContext).DataGridControl.ReadOnly, RelativeSource={RelativeSource Self}, Converter={StaticResource falseToVisible}, TargetNullValue=Collapsed}" />
+                <Label Content="구현" />
             </DataTemplate>
             <DataTemplate>
                 <Grid xcdg:TableView.CanScrollHorizontally="False" Height="3" VerticalAlignment="Bottom" 
@@ -164,7 +164,6 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
     <Style x:Key="ModernDataGridControl_Style" TargetType="{x:Type nmgc:ModernDataGridControl}" BasedOn="{StaticResource {x:Type nmgc:ModernDataGridControl}}">
         <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="AutoCreateDetailConfigurations" Value="True" />
         <Setter Property="DefaultDetailConfiguration" Value="{StaticResource defaultDetailConfiguration}" />
         <Setter Property="View" Value="{StaticResource view}" />
     </Style>
@@ -185,7 +184,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
                             <nmgc:ModernColumnManagerRow />
                         </DataTemplate>
                         <DataTemplate>
-                            <nmgc:ModernInsertionRow Visibility="{Binding Path=(xcdg:DataGridControl.DataGridContext).DataGridControl.ReadOnly, RelativeSource={RelativeSource Self}, Converter={StaticResource falseToVisible}, TargetNullValue=Collapsed}" />
+                            <Label Content="구현" Visibility="{Binding Path=(xcdg:DataGridControl.DataGridContext).DataGridControl.ReadOnly, RelativeSource={RelativeSource Self}, Converter={StaticResource falseToVisible}, TargetNullValue=Collapsed}" />
                         </DataTemplate>
                         <DataTemplate>
                             <Border x:Name="RowSplitter" Style="{StaticResource RowSplitterBorder_Style}" xcdg:RowSelector.RowSelectorStyle="{DynamicResource EmptyRowSelector_Style}" />

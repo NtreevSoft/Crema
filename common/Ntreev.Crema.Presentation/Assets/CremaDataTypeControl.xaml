@@ -58,14 +58,13 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
             <nmgc:ModernDataGridControl.View>
                 <xcdg:TableView RowSelectorPaneWidth="50" AllowDrop="True" 
                                 FixedColumnCount="2"
-                                ShowFixedColumnSplitter="False"
                                 ColumnVirtualizationMode="Recycling"
                                 VerticalGridLineBrush="{DynamicResource DataGridGridLines}" 
                                 HorizontalGridLineBrush="{DynamicResource DataGridGridLines}" 
                                 IsAlternatingRowStyleEnabled="False" AllowRowResize="True">
                     <xcdg:TableView.FixedHeaders>
                         <DataTemplate>
-                            <nmgc:ModernInsertionRow x:Name="InsertionRow" />
+                            <Label x:Name="InsertionRow" Content="구현" />
                             <DataTemplate.Triggers>
                                 <DataTrigger Binding="{Binding Path=ReadOnly, RelativeSource={RelativeSource AncestorType={x:Type xcdg:DataGridControl}}}" Value="True">
                                     <Setter TargetName="InsertionRow" Property="Visibility" Value="Collapsed" />

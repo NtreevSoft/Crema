@@ -163,16 +163,6 @@ namespace Ntreev.Crema.Presentation.Controls
             obj.SetValue(ReferenceProperty, value);
         }
 
-        public static object GetReference(DetailConfiguration obj)
-        {
-            return (object)obj.GetValue(ReferenceProperty);
-        }
-
-        public static void SetReference(DetailConfiguration obj, object value)
-        {
-            obj.SetValue(ReferenceProperty, value);
-        }
-
         public static IEnumerable GetCremaTypeMembers(ColumnBase obj)
         {
             return (IEnumerable)obj.GetValue(CremaTypeMembersProperty);
@@ -333,30 +323,10 @@ namespace Ntreev.Crema.Presentation.Controls
 
                 this.InitializeColumn(item, column);
             }
-#if DEBUG
-            if (this.dataGridControl.DetailConfigurations.Any() == true)
-            {
-                this.dataGridControl.Columns.Add(new Column() { FieldName = CremaSchema.__RelationID__, ReadOnly = true, });
-            }
-#endif
-
-            foreach (var item in this.dataGridControl.DetailConfigurations)
-            {
-                var childName = CremaSchema.GetChildNameFromRelationName(item.RelationName);
-                item.Title = childName;
-                item.TitleTemplate = this.FindResource("DetailConfiguration_Title_Template") as DataTemplate;
-                var childTable = this.Source.Childs[childName];
-                this.FillColumns(item, childTable);
-                SetReference(item, childTable);
-            }
 
             var index = 0;
 #if DEBUG
             this.dataGridControl.Columns[CremaSchema.Index].VisiblePosition = index++;
-            if (this.dataGridControl.DetailConfigurations.Any() == true)
-            {
-                this.dataGridControl.Columns[CremaSchema.__RelationID__].VisiblePosition = index++;
-            }
 #endif
             this.dataGridControl.Columns[CremaSchema.Tags].VisiblePosition = index++;
             this.dataGridControl.Columns[CremaSchema.Enable].VisiblePosition = index++;
@@ -433,37 +403,6 @@ namespace Ntreev.Crema.Presentation.Controls
             {
                 CremaDataTableItemControl.SetHasTagColor(column, true);
                 column.SetValue(TextElement.ForegroundProperty, new BrushConverter().ConvertFrom(dataColumn.DerivedTags.Color));
-            }
-        }
-
-        private void FillColumns(DetailConfiguration detail, CremaDataTable table)
-        {
-            try
-            {
-#if DEBUG
-                detail.Columns.Add(new Column() { FieldName = CremaSchema.Index, ReadOnly = true });
-                detail.Columns.Add(new Column() { FieldName = CremaSchema.__ParentID__, ReadOnly = true, });
-#endif
-                detail.Columns.Add(this.FindResource("tagColumn") as ColumnBase);
-                detail.Columns.Add(this.FindResource("enableColumn") as ColumnBase);
-
-                foreach (var item in table.Columns)
-                {
-                    var column = new Column() { FieldName = item.ColumnName, };
-                    this.InitializeColumn(item, column);
-                    detail.Columns.Add(column);
-                }
-
-                detail.Columns.Add(this.FindResource("modifierColumn") as ColumnBase);
-                detail.Columns.Add(this.FindResource("modifiedDateTimeColumn") as ColumnBase);
-                detail.Columns.Add(this.FindResource("creatorColumn") as ColumnBase);
-                detail.Columns.Add(this.FindResource("createdDateTimeColumn") as ColumnBase);
-
-                detail.SetValue(TableView.FixedColumnCountProperty, 2 + table.PrimaryKey.Length);
-            }
-            catch
-            {
-                throw new InvalidOperationException();
             }
         }
 
