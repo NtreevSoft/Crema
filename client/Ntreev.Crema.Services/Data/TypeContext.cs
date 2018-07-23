@@ -26,7 +26,7 @@ using System.Linq;
 
 namespace Ntreev.Crema.Services.Data
 {
-    class TypeContext : TypeContextBase<Type, TypeCategory, TypeCollection, TypeCategoryCollection, TypeContext>, 
+    class TypeContext : TypeContextBase<Type, TypeCategory, TypeCollection, TypeCategoryCollection, TypeContext>,
         ITypeContext
     {
         private DataBase dataBase;
@@ -60,37 +60,37 @@ namespace Ntreev.Crema.Services.Data
 
         public void InvokeTypeItemLock(Authentication authentication, ITypeItem typeItem, string comment)
         {
-            
+
         }
 
         public void InvokeTypeItemUnlock(Authentication authentication, ITypeItem typeItem)
         {
-            
+
         }
 
         public void InvokeTypeItemSetPrivate(Authentication authentication, ITypeItem typeItem, AccessInfo accessInfo)
         {
-            
+
         }
 
         public void InvokeTypeItemSetPublic(Authentication authentication, ITypeItem typeItem, AccessInfo accessInfo)
         {
-            
+
         }
 
         public void InvokeTypeItemAddAccessMember(Authentication authentication, ITypeItem typeItem, AccessInfo accessInfo, string memberID, AccessType accessType)
         {
-            
+
         }
 
         public void InvokeTypeItemSetAccessMember(Authentication authentication, ITypeItem typeItem, AccessInfo accessInfo, string memberID, AccessType accessType)
         {
-            
+
         }
 
         public void InvokeTypeItemRemoveAccessMember(Authentication authentication, ITypeItem typeItem, AccessInfo accessInfo, string memberID)
         {
-            
+
         }
 
         public void InvokeItemsSetPublicEvent(Authentication authentication, ITypeItem[] items)

@@ -30,7 +30,7 @@ using System.Linq;
 
 namespace Ntreev.Crema.Services.Data
 {
-    class TableCollection : TableCollectionBase<Table, TableCategory, TableCollection, TableCategoryCollection, TableContext>, 
+    class TableCollection : TableCollectionBase<Table, TableCategory, TableCollection, TableCategoryCollection, TableContext>,
         ITableCollection
     {
         private ItemsCreatedEventHandler<ITable> tablesCreated;
@@ -42,7 +42,7 @@ namespace Ntreev.Crema.Services.Data
 
         public TableCollection()
         {
-            
+
         }
 
         public Table AddNew(Authentication authentication, string name, string categoryPath)
@@ -90,32 +90,32 @@ namespace Ntreev.Crema.Services.Data
 
         public void InvokeTableCreate(Authentication authentication, TableInfo[] tableInfos, Table sourceTable)
         {
-            
+
         }
 
         public void InvokeTableRename(Authentication authentication, Table table, string newName)
         {
-            
+
         }
 
         public void InvokeTableMove(Authentication authentication, Table table, string newCategoryPath)
         {
-            
+
         }
 
         public void InvokeTableDelete(Authentication authentication, Table table)
         {
-            
+
         }
 
         public void InvokeEndContentEdit(Authentication authentication, Table table)
         {
-            
+
         }
 
         public void InvokeTableEndTemplateEdit(Authentication authentication, Table table)
         {
-            
+
         }
 
         public void InvokeTablesCreatedEvent(Authentication authentication, Table[] tables)

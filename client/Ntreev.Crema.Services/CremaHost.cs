@@ -193,35 +193,67 @@ namespace Ntreev.Crema.Services
 
         public void SaveConfigs()
         {
-            this.configs.Commit();
+            try
+            {
+                this.configs.Commit();
+            }
+            catch (Exception e)
+            {
+                CremaLog.Error(e);
+                throw;
+            }
         }
 
         public void Close(Guid token)
         {
-            if (this.token != token)
-                throw new ArgumentException(Resources.Exception_InvalidToken, nameof(token));
-            if (this.IsOpened == false)
-                throw new InvalidOperationException(Resources.Exception_NotConnected);
-
-            this.Dispatcher.Invoke(() =>
+            try
             {
-                this.Close(CloseInfo.Empty);
-                this.token = Guid.Empty;
-            });
+                if (this.token != token)
+                    throw new ArgumentException(Resources.Exception_InvalidToken, nameof(token));
+                if (this.IsOpened == false)
+                    throw new InvalidOperationException(Resources.Exception_NotConnected);
+
+                this.Dispatcher.Invoke(() =>
+                {
+                    this.Close(CloseInfo.Empty);
+                    this.token = Guid.Empty;
+                });
+            }
+            catch (Exception e)
+            {
+                CremaLog.Error(e);
+                throw;
+            }
         }
 
         public void Shutdown(Authentication authentication, int milliseconds, ShutdownType shutdownType, string message)
         {
-            this.DebugMethod(authentication, this, nameof(Shutdown), this, milliseconds, shutdownType, message);
-            var result = this.UserContext.Service.Shutdown(milliseconds, shutdownType, message);
-            result.Validate();
+            try
+            {
+                this.DebugMethod(authentication, this, nameof(Shutdown), this, milliseconds, shutdownType, message);
+                var result = this.UserContext.Service.Shutdown(milliseconds, shutdownType, message);
+                result.Validate();
+            }
+            catch (Exception e)
+            {
+                CremaLog.Error(e);
+                throw;
+            }
         }
 
         public void CancelShutdown(Authentication authentication)
         {
-            this.DebugMethod(authentication, this, nameof(CancelShutdown));
-            var result = this.UserContext.Service.CancelShutdown();
-            result.Validate();
+            try
+            {
+                this.DebugMethod(authentication, this, nameof(CancelShutdown));
+                var result = this.UserContext.Service.CancelShutdown();
+                result.Validate();
+            }
+            catch (Exception e)
+            {
+                CremaLog.Error(e);
+                throw;
+            }
         }
 
         public void Dispose()

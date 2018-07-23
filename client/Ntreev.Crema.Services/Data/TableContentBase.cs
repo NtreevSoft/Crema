@@ -72,12 +72,12 @@ namespace Ntreev.Crema.Services.Data
             this.Dispatcher?.VerifyAccess();
             if (this.DataTable != null)
             {
-            foreach (DataRow item in this.DataTable.DefaultView.Table.Rows)
-            {
-                if (this.rows.ContainsKey(item) == false)
+                foreach (DataRow item in this.DataTable.DefaultView.Table.Rows)
                 {
-                    this.rows.Add(item, new TableRow(this, item));
-                }
+                    if (this.rows.ContainsKey(item) == false)
+                    {
+                        this.rows.Add(item, new TableRow(this, item));
+                    }
 
                     yield return this.rows[item];
                 }

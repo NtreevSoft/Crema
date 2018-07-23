@@ -509,7 +509,7 @@ namespace Ntreev.Crema.Services.Data
 
         #region IEnumerable
 
-        IEnumerator <ITableRow> IEnumerable<ITableRow>.GetEnumerator()
+        IEnumerator<ITableRow> IEnumerable<ITableRow>.GetEnumerator()
         {
             this.Dispatcher?.VerifyAccess();
             return this.GetEnumerator();

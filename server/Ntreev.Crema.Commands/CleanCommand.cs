@@ -48,13 +48,6 @@ namespace Ntreev.Crema.Commands
             set;
         }
 
-        //[Description("로그 폴더와 working 폴더 그리고 관리되지 않는 폴더와 파일을 모두 삭제합니다.")]
-        //[CommandProperty("all")]
-        //public bool IsAll
-        //{
-        //    get; set;
-        //}
-
         protected override void OnExecute()
         {
             CremaBootstrapper.CleanRepository(this.boot, this.Path);

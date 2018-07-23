@@ -37,8 +37,8 @@ namespace Ntreev.Crema.Services.Data
             this.Dispatcher = category?.Dispatcher;
             this.DataBase = category.DataBase;
             this.Permission = category;
-            this.Service = category.Service;
             this.IsNew = true;
+            this.Service = category.Service;
         }
 
         public NewTableTemplate(Table parent)
@@ -50,8 +50,8 @@ namespace Ntreev.Crema.Services.Data
             this.Dispatcher = parent?.Dispatcher;
             this.DataBase = parent.DataBase;
             this.Permission = parent;
-            this.Service = parent.Service;
             this.IsNew = true;
+            this.Service = parent.Service;
         }
 
         public override object Target

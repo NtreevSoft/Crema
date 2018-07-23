@@ -57,14 +57,14 @@ namespace Ntreev.Crema.Services.Data
         {
             try
             {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            if (this.Row == null)
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                if (this.Row == null)
                     throw new InvalidOperationException();
-            this.domain.Dispatcher.Invoke(() =>
-            {
-                var keys = this.Row.GetKeys();
-                this.domain.RemoveRow(authentication, this.table.TableName, keys);
-            });
+                this.domain.Dispatcher.Invoke(() =>
+                {
+                    var keys = this.Row.GetKeys();
+                    this.domain.RemoveRow(authentication, this.table.TableName, keys);
+                });
             }
             catch (Exception e)
             {
@@ -76,14 +76,14 @@ namespace Ntreev.Crema.Services.Data
         public void EndNew(Authentication authentication)
         {
             try
-        {
-            if (this.Row != null)
-                throw new InvalidOperationException();
+            {
+                if (this.Row != null)
+                    throw new InvalidOperationException();
 
-            var fields = this.fields.Values.ToArray();
-            var keys = this.domain.Dispatcher.Invoke(() => this.domain.NewRow(authentication, this.table.TableName, fields));
-            this.Row = this.table.Rows.Find(keys);
-            this.fields = null;
+                var fields = this.fields.Values.ToArray();
+                var keys = this.domain.Dispatcher.Invoke(() => this.domain.NewRow(authentication, this.table.TableName, fields));
+                this.Row = this.table.Rows.Find(keys);
+                this.fields = null;
             }
             catch (Exception e)
             {

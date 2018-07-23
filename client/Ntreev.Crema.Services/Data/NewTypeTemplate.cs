@@ -37,7 +37,7 @@ namespace Ntreev.Crema.Services.Data
 
         public override DomainContext DomainContext => this.category.GetService(typeof(DomainContext)) as DomainContext;
 
-        public override CremaDispatcher Dispatcher => this.category.Dispatcher;
+        public override CremaDispatcher Dispatcher => this.category?.Dispatcher;
 
         public override CremaHost CremaHost => this.category.CremaHost;
 

@@ -40,37 +40,6 @@ namespace Ntreev.Crema.Services.Data
             this.Content = new TableContent(this);
         }
 
-        public Table AddNew(Authentication authentication, TableInfo tableInfo)
-        {
-            try
-            {
-                this.DataBase.ValidateBeginInDataBase(authentication);
-                var tableName = tableInfo.TableName;
-                var childTable = this.Container.AddNew(authentication, tableInfo.Name, tableInfo.CategoryPath);
-                childTable.Initialize(tableInfo);
-                foreach (var item in this.DerivedTables)
-                {
-                    var derivedInfo = tableInfo;
-                    derivedInfo.Name = CremaDataTable.GenerateName(item.Name, tableName);
-                    derivedInfo.CategoryPath = item.Category.Path;
-                    derivedInfo.TemplatedParent = childTable.Name;
-
-                    var derivedChild = this.Container.AddNew(authentication, derivedInfo.Name, derivedInfo.CategoryPath);
-                    derivedChild.TemplatedParent = childTable;
-                    derivedChild.Initialize(derivedInfo);
-                }
-
-                var items = EnumerableUtility.Friends(childTable, childTable.DerivedTables).ToArray();
-                this.Container.InvokeTablesCreatedEvent(authentication, items);
-                return childTable;
-            }
-            catch (Exception e)
-            {
-                this.CremaHost.Error(e);
-                throw;
-            }
-        }
-
         public AccessType GetAccessType(Authentication authentication)
         {
             this.DataBase.ValidateBeginInDataBase(authentication);

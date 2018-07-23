@@ -27,7 +27,7 @@ using System.Linq;
 
 namespace Ntreev.Crema.Services.Data
 {
-    class TypeCategoryCollection : CategoryContainer<Type, TypeCategory, TypeCollection, TypeCategoryCollection, TypeContext>, 
+    class TypeCategoryCollection : CategoryContainer<Type, TypeCategory, TypeCollection, TypeCategoryCollection, TypeContext>,
         ITypeCategoryCollection
     {
         private ItemsCreatedEventHandler<ITypeCategory> categoriesCreated;
@@ -59,22 +59,22 @@ namespace Ntreev.Crema.Services.Data
 
         public void InvokeCategoryCreate(Authentication authentication, string name, string parentPath)
         {
-            
+
         }
 
         public void InvokeCategoryRename(Authentication authentication, TypeCategory category, string name)
         {
-            
+
         }
 
         public void InvokeCategoryMove(Authentication authentication, TypeCategory category, string parentPath)
         {
-            
+
         }
 
         public void InvokeCategoryDelete(Authentication authentication, TypeCategory category)
         {
-            
+
         }
 
         public void InvokeCategoriesCreatedEvent(Authentication authentication, TypeCategory[] categories)

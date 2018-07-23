@@ -60,8 +60,8 @@ namespace Ntreev.Crema.Services.Data
         {
             try
             {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            base.SetField(authentication, columnName, value);
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                base.SetField(authentication, columnName, value);
             }
             catch (Exception e)
             {

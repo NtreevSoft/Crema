@@ -41,7 +41,6 @@ namespace Ntreev.Crema.Services.Data
             this.DataBase = category.DataBase;
             this.Permission = category;
             this.IsNew = true;
-
             category.Attach(this);
         }
 
@@ -55,7 +54,6 @@ namespace Ntreev.Crema.Services.Data
             this.DataBase = parent.DataBase;
             this.Permission = parent;
             this.IsNew = true;
-
             parent.Attach(this);
         }
 

@@ -55,13 +55,13 @@ namespace Ntreev.Crema.Services.Data
         {
             try
             {
-            this.CremaHost.DebugMethod(authentication, this, nameof(AddNew), typeInfo.Name, typeInfo.CategoryPath);
-            this.InvokeTypeCreate(authentication, typeInfo.Name, typeInfo.CategoryPath);
-            var type = this.BaseAddNew(typeInfo.Name, typeInfo.CategoryPath, authentication);
-            type.Initialize(typeInfo);
-            var items = EnumerableUtility.One(type).ToArray();
-            this.InvokeTypesCreatedEvent(authentication, items);
-            return type;
+                this.CremaHost.DebugMethod(authentication, this, nameof(AddNew), typeInfo.Name, typeInfo.CategoryPath);
+                this.InvokeTypeCreate(authentication, typeInfo.Name, typeInfo.CategoryPath);
+                var type = this.BaseAddNew(typeInfo.Name, typeInfo.CategoryPath, authentication);
+                type.Initialize(typeInfo);
+                var items = EnumerableUtility.One(type).ToArray();
+                this.InvokeTypesCreatedEvent(authentication, items);
+                return type;
             }
             catch (Exception e)
             {
@@ -84,32 +84,32 @@ namespace Ntreev.Crema.Services.Data
 
         public void InvokeTypeCreate(Authentication authentication, string typeName, string categoryPath)
         {
-            
+
         }
 
         public void InvokeTypeRename(Authentication authentication, Type type, string newName)
         {
-            
+
         }
 
         public void InvokeTypeMove(Authentication authentication, Type type, string newCategoryPath)
         {
-            
+
         }
 
         public void InvokeTypeDelete(Authentication authentication, Type type)
         {
-          
+
         }
 
         public void InvokeTypeBeginTemplateEdit(Authentication authentication, Type type)
         {
-            
+
         }
 
         public void InvokeTypeEndTemplateEdit(Authentication authentication, Type type, TypeInfo typeInfo)
         {
-            
+
         }
 
         public void InvokeTypeSetTags(Authentication authentication, Type type, TagInfo tags)
@@ -272,7 +272,7 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        
+
 
         public event ItemsEventHandler<IType> TypesChanged
         {
@@ -301,7 +301,7 @@ namespace Ntreev.Crema.Services.Data
                 base.CollectionChanged -= value;
             }
         }
-        
+
         protected virtual void OnTypesCreated(ItemsCreatedEventArgs<IType> e)
         {
             this.typesCreated?.Invoke(this, e);

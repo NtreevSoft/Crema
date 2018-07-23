@@ -216,10 +216,6 @@ namespace Ntreev.Crema.Services
             this.container.Compose(batch);
         }
 
-        internal static TimeSpan DefaultInactivityTimeout
-        {
-            get;
-            set;
-        }
+        internal static TimeSpan DefaultInactivityTimeout { get; set; }
     }
 }
