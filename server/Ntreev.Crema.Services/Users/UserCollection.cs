@@ -283,7 +283,7 @@ namespace Ntreev.Crema.Services.Users
             var comment = EventMessageBuilder.SendMessage(authentication, user, message);
             this.CremaHost.Debug(eventLog);
             this.CremaHost.Info(comment);
-            this.OnMessageReceived(new MessageEventArgs(authentication, new IUser[] { user, }, message, MessageType.None));
+            this.OnMessageReceived(new MessageEventArgs(authentication, new IUser[] { user }, message, MessageType.None));
         }
 
         public void InvokeNotifyMessageEvent(Authentication authentication, User[] users, string message)

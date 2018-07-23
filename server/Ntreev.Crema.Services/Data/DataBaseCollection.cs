@@ -138,7 +138,7 @@ namespace Ntreev.Crema.Services.Data
                 this.Dispatcher.VerifyAccess();
                 this.CremaHost.DebugMethod(authentication, this, nameof(CreateDataBase), dataBaseName, comment);
                 this.ValidateCreateDataBase(authentication, dataBaseName);
-
+                this.Sign(authentication);
                 var dataSet = new CremaDataSet();
                 var tempPath = PathUtility.GetTempPath(true);
                 var dataBasePath = Path.Combine(tempPath, dataBaseName);
@@ -160,10 +160,7 @@ namespace Ntreev.Crema.Services.Data
                 }
                 var dataBase = new DataBase(this.CremaHost, dataBaseName);
                 this.AddBase(dataBase.Name, dataBase);
-                dataBase.Initialize();
-                authentication.Sign();
-
-                this.InvokeItemsCreateEvent(authentication, new DataBase[] { dataBase, }, comment);
+                this.InvokeItemsCreateEvent(authentication, new DataBase[] { dataBase }, comment);
                 return dataBase;
             }
             catch (Exception e)
@@ -180,7 +177,7 @@ namespace Ntreev.Crema.Services.Data
                 this.Dispatcher.VerifyAccess();
                 this.CremaHost.DebugMethod(authentication, this, nameof(CopyDataBase), dataBase, newDataBaseName, comment);
                 this.ValidateCopyDataBase(authentication, dataBase, newDataBaseName, force);
-
+                this.Sign(authentication);
                 var dataBaseName = dataBase.Name;
                 var message = EventMessageBuilder.CreateDataBase(authentication, newDataBaseName) + ": " + comment;
                 this.repositoryDispatcher.Invoke(() =>
@@ -189,9 +186,7 @@ namespace Ntreev.Crema.Services.Data
                 });
                 var newDataBase = new DataBase(this.CremaHost, newDataBaseName);
                 this.AddBase(newDataBase.Name, newDataBase);
-                newDataBase.Initialize();
-                authentication.Sign();
-                this.InvokeItemsCreateEvent(authentication, new DataBase[] { newDataBase, }, comment);
+                this.InvokeItemsCreateEvent(authentication, new DataBase[] { newDataBase }, comment);
                 return newDataBase;
             }
             catch (Exception e)
@@ -743,9 +738,6 @@ namespace Ntreev.Crema.Services.Data
             if (authentication.Types.HasFlag(AuthenticationType.Administrator) == false)
                 throw new PermissionDeniedException();
 
-            if (dataBase.ID == DataBase.defaultID)
-                throw new PermissionDeniedException(Resources.Exception_DefaultDataBaseCannotRename);
-
             if (dataBase.IsLoaded == true)
                 throw new InvalidOperationException(Resources.Exception_DataBaseHasBeenLoaded);
 
@@ -761,9 +753,6 @@ namespace Ntreev.Crema.Services.Data
         {
             if (authentication.Types.HasFlag(AuthenticationType.Administrator) == false)
                 throw new PermissionDeniedException();
-
-            if (dataBase.ID == DataBase.defaultID)
-                throw new PermissionDeniedException(Resources.Exception_DefaultDataBaseCannotDelete);
 
             if (dataBase.IsLoaded == true)
                 throw new InvalidOperationException(Resources.Exception_DataBaseHasBeenLoaded);
@@ -841,12 +830,11 @@ namespace Ntreev.Crema.Services.Data
                 else
                     this.AddBase(item, new DataBase(this.CremaHost, item, caches[item]));
             }
+        }
 
-            var items = this.ToArray<DataBase>();
-            foreach (var item in items)
-            {
-                item.Initialize();
-            }
+        private void Sign(Authentication authentication)
+        {
+            authentication.Sign();
         }
 
         #region IDataBaseCollection

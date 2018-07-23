@@ -96,7 +96,7 @@ namespace Ntreev.Crema.Services.Data
 
         protected override CremaDataType CreateSource(Authentication authentication)
         {
-            var typeName = NameUtility.GenerateNewName("Type", this.Types.Select((Type item) => item.Name).ToArray());
+            var typeName = NameUtility.GenerateNewName(nameof(Type), this.Types.Select((Type item) => item.Name).ToArray());
             var dataSet = CremaDataSet.Create(new SignatureDateProvider(authentication.ID));
             var dataType = dataSet.Types.Add();
             dataType.TypeName = typeName;

@@ -60,7 +60,7 @@ namespace Ntreev.Crema.Services.Data
         {
             base.OnBeginEdit(authentication);
             this.table.SetTableState(TableState.IsBeingSetup);
-            this.Container.InvokeTablesStateChangedEvent(authentication, new Table[] { this.table, });
+            this.Container.InvokeTablesStateChangedEvent(authentication, new Table[] { this.table });
         }
 
         protected override void OnEndEdit(Authentication authentication, CremaTemplate template)

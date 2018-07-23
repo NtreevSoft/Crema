@@ -59,7 +59,7 @@ namespace Ntreev.Crema.Services.Data
                 this.InvokeTypeCreate(authentication, dataType.Name, dataType.DataSet);
                 var type = this.BaseAddNew(dataType.Name, dataType.CategoryPath, authentication);
                 type.Initialize(dataType.TypeInfo);
-                this.InvokeTypesCreatedEvent(authentication, new Type[] { type, }, dataType.DataSet);
+                this.InvokeTypesCreatedEvent(authentication, new Type[] { type }, dataType.DataSet);
                 return type;
             }
             catch (Exception e)
@@ -83,7 +83,7 @@ namespace Ntreev.Crema.Services.Data
                 this.InvokeTypeCreate(authentication, newTypeName, dataSet);
                 var newType = this.BaseAddNew(newTypeName, categoryPath, authentication);
                 newType.Initialize(newDataType.TypeInfo);
-                this.InvokeTypesCreatedEvent(authentication, new Type[] { newType, }, dataSet);
+                this.InvokeTypesCreatedEvent(authentication, new Type[] { newType }, dataSet);
                 return newType;
             }
             catch (Exception e)

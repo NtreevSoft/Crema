@@ -68,7 +68,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
                     this.authentication = this.userContext.Authenticate(authenticationToken);
                     this.authentication.AddRef(this);
                     this.OwnerID = this.authentication.ID;
-                    this.userContext.UsersLoggedOut += UserContext_UsersLoggedOut;
+                    this.userContext.Users.UsersLoggedOut += Users_UsersLoggedOut;
                 });
                 result.Value = this.cremaHost.Dispatcher.Invoke(() =>
                 {
@@ -96,7 +96,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
                 });
                 this.userContext.Dispatcher.Invoke(() =>
                 {
-                    this.userContext.UsersLoggedOut -= UserContext_UsersLoggedOut;
+                    this.userContext.Users.UsersLoggedOut -= Users_UsersLoggedOut;
                     this.authentication.RemoveRef(this);
                     this.authentication = null;
                 });
@@ -301,7 +301,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
             });
             this.userContext.Dispatcher.Invoke(() =>
             {
-                this.userContext.UsersLoggedOut -= UserContext_UsersLoggedOut;
+                this.userContext.Users.UsersLoggedOut -= Users_UsersLoggedOut;
                 if (this.authentication != null)
                 {
                     if (this.authentication.RemoveRef(this) == 0)
@@ -318,7 +318,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
             this.Callback.OnServiceClosed(signatureDate, closeInfo);
         }
 
-        private void UserContext_UsersLoggedOut(object sender, ItemsEventArgs<IUser> e)
+        private void Users_UsersLoggedOut(object sender, ItemsEventArgs<IUser> e)
         {
             var actionUserID = e.UserID;
             var contains = e.Items.Any(item => item.ID == this.authentication.ID);
@@ -573,7 +573,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
             });
             this.userContext.Dispatcher.Invoke(() =>
             {
-                this.userContext.UsersLoggedOut -= UserContext_UsersLoggedOut;
+                this.userContext.Users.UsersLoggedOut -= Users_UsersLoggedOut;
                 this.authentication = null;
             });
             CremaService.Dispatcher.Invoke(() =>

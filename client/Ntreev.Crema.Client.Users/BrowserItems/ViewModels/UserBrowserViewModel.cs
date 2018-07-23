@@ -107,7 +107,7 @@ namespace Ntreev.Crema.Client.Users.BrowserItems.ViewModels
             {
                 var viewModel = await userContext.Dispatcher.InvokeAsync(() =>
                 {
-                    userContext.MessageReceived += UserContext_MessageReceived;
+                    userContext.Users.MessageReceived += Users_MessageReceived;
                     return new UserCategoryTreeViewItemViewModel(this.authenticator, userContext.Root, this);
                 });
 
@@ -118,7 +118,7 @@ namespace Ntreev.Crema.Client.Users.BrowserItems.ViewModels
             }
         }
 
-        private async void UserContext_MessageReceived(object sender, MessageEventArgs e)
+        private async void Users_MessageReceived(object sender, MessageEventArgs e)
         {
             var message = e.Message;
             var messageType = e.MessageType;

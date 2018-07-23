@@ -44,11 +44,6 @@ namespace Ntreev.Crema.Services.Users
         private ItemsMovedEventHandler<IUserItem> itemsMoved;
         private ItemsDeletedEventHandler<IUserItem> itemsDeleted;
         private ItemsEventHandler<IUserItem> itemsChanged;
-        private EventHandler<MessageEventArgs> messageReceived;
-        private ItemsEventHandler<IUser> usersLoggedIn;
-        private ItemsEventHandler<IUser> usersLoggedOut;
-        private ItemsEventHandler<IUser> usersKicked;
-        private ItemsEventHandler<IUser> usersBanChanged;
 
         private readonly Dictionary<string, Authentication> customAuthentications = new Dictionary<string, Authentication>();
 
@@ -91,11 +86,6 @@ namespace Ntreev.Crema.Services.Users
 
             this.AuthenticationToken = metaData.AuthenticationToken;
             this.Initialize(metaData);
-            this.Items.MessageReceived += Users_MessageReceived;
-            this.Items.UsersLoggedIn += Users_UsersLoggedIn;
-            this.Items.UsersLoggedOut += Users_UsersLoggedOut;
-            this.Items.UsersKicked += Users_UsersKicked;
-            this.Items.UsersBanChanged += Users_UsersBanChanged;
             this.CremaHost.AddService(this);
         }
 
@@ -335,76 +325,6 @@ namespace Ntreev.Crema.Services.Users
             }
         }
 
-        public event EventHandler<MessageEventArgs> MessageReceived
-        {
-            add
-            {
-                this.Dispatcher.VerifyAccess();
-                this.messageReceived += value;
-            }
-            remove
-            {
-                this.Dispatcher.VerifyAccess();
-                this.messageReceived -= value;
-            }
-        }
-
-        public event ItemsEventHandler<IUser> UsersLoggedIn
-        {
-            add
-            {
-                this.Dispatcher.VerifyAccess();
-                this.usersLoggedIn += value;
-            }
-            remove
-            {
-                this.Dispatcher.VerifyAccess();
-                this.usersLoggedIn -= value;
-            }
-        }
-
-        public event ItemsEventHandler<IUser> UsersLoggedOut
-        {
-            add
-            {
-                this.Dispatcher.VerifyAccess();
-                this.usersLoggedOut += value;
-            }
-            remove
-            {
-                this.Dispatcher.VerifyAccess();
-                this.usersLoggedOut -= value;
-            }
-        }
-
-        public event ItemsEventHandler<IUser> UsersKicked
-        {
-            add
-            {
-                this.Dispatcher.VerifyAccess();
-                this.usersKicked += value;
-            }
-            remove
-            {
-                this.Dispatcher.VerifyAccess();
-                this.usersKicked -= value;
-            }
-        }
-
-        public event ItemsEventHandler<IUser> UsersBanChanged
-        {
-            add
-            {
-                this.Dispatcher.VerifyAccess();
-                this.usersBanChanged += value;
-            }
-            remove
-            {
-                this.Dispatcher.VerifyAccess();
-                this.usersBanChanged -= value;
-            }
-        }
-
         protected virtual void OnItemsCreated(ItemsCreatedEventArgs<IUserItem> e)
         {
             this.itemsCreated?.Invoke(this, e);
@@ -500,31 +420,6 @@ namespace Ntreev.Crema.Services.Users
                     this.CremaHost.InvokeClose(new CloseInfo(CloseReason.NoResponding, "서버가 응답하질 않습니다."));
                 });
             }
-        }
-
-        private void Users_MessageReceived(object sender, MessageEventArgs e)
-        {
-            this.messageReceived?.Invoke(this, e);
-        }
-
-        private void Users_UsersLoggedIn(object sender, ItemsEventArgs<IUser> e)
-        {
-            this.usersLoggedIn?.Invoke(this, e);
-        }
-
-        private void Users_UsersLoggedOut(object sender, ItemsEventArgs<IUser> e)
-        {
-            this.usersLoggedOut?.Invoke(this, e);
-        }
-
-        private void Users_UsersKicked(object sender, ItemsEventArgs<IUser> e)
-        {
-            this.usersKicked?.Invoke(this, e);
-        }
-
-        private void Users_UsersBanChanged(object sender, ItemsEventArgs<IUser> e)
-        {
-            this.usersBanChanged?.Invoke(this, e);
         }
 
         #region IUserServiceCallback

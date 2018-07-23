@@ -235,7 +235,7 @@ namespace Ntreev.Crema.Services
         {
             var schemaPath = itemPath + CremaSchema.SchemaExtension;
             File.WriteAllText(schemaPath, dataType.GetXmlSchema(), Encoding.UTF8);
-            return new string[] { schemaPath, };
+            return new string[] { schemaPath };
         }
 
         private string[] SerializeObject(object obj, string itemPath, ObjectSerializerSettings settings)

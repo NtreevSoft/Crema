@@ -39,8 +39,6 @@ namespace Ntreev.Crema.Services.Data
     class DataBase : DataBaseBase<Type, TypeCategory, TypeCollection, TypeCategoryCollection, TypeContext, Table, TableCategory, TableCollection, TableCategoryCollection, TableContext>,
         IDataBase, IInfoProvider, IStateProvider
     {
-        public static readonly Guid defaultID = Guid.Parse("9CAC6195-1F14-40D6-B56E-4747A67F5C8A");
-
         private readonly IRepositoryProvider repositoryProvider;
         private readonly IObjectSerializer serializer;
         private readonly string cachePath;
@@ -65,6 +63,7 @@ namespace Ntreev.Crema.Services.Data
             this.cachePath = cremaHost.GetPath(CremaPath.Caches, DataBaseCollection.DataBasesString);
             this.userContext = this.CremaHost.UserContext;
             this.userContext.Dispatcher.Invoke(() => this.userContext.Users.UsersLoggedOut += Users_UsersLoggedOut);
+            this.Initialize();
         }
 
         public DataBase(CremaHost cremaHost, string name, DataBaseSerializationInfo dataBaseInfo)
@@ -135,7 +134,7 @@ namespace Ntreev.Crema.Services.Data
                 this.InvokeDataBaseAddAccessMember(authentication, memberID, accessType);
                 base.AddAccessMember(authentication, memberID, accessType);
                 this.metaData = null;
-                this.DataBases.InvokeItemsAddAccessMemberEvent(authentication, this.BasePath, new IDataBase[] { this }, new string[] { memberID, }, new AccessType[] { accessType, });
+                this.DataBases.InvokeItemsAddAccessMemberEvent(authentication, this.BasePath, new IDataBase[] { this }, new string[] { memberID }, new AccessType[] { accessType });
             }
             catch (Exception e)
             {
@@ -155,7 +154,7 @@ namespace Ntreev.Crema.Services.Data
                 base.SetAccessMember(authentication, memberID, accessType);
                 this.Sign(authentication);
                 this.metaData = null;
-                this.DataBases.InvokeItemsSetAccessMemberEvent(authentication, this.BasePath, new IDataBase[] { this }, new string[] { memberID, }, new AccessType[] { accessType, });
+                this.DataBases.InvokeItemsSetAccessMemberEvent(authentication, this.BasePath, new IDataBase[] { this }, new string[] { memberID }, new AccessType[] { accessType });
             }
             catch (Exception e)
             {
@@ -175,7 +174,7 @@ namespace Ntreev.Crema.Services.Data
                 base.RemoveAccessMember(authentication, memberID);
                 this.Sign(authentication);
                 this.metaData = null;
-                this.DataBases.InvokeItemsRemoveAccessMemberEvent(authentication, this.BasePath, new IDataBase[] { this }, new string[] { memberID, });
+                this.DataBases.InvokeItemsRemoveAccessMemberEvent(authentication, this.BasePath, new IDataBase[] { this }, new string[] { memberID });
             }
             catch (Exception e)
             {
@@ -195,7 +194,7 @@ namespace Ntreev.Crema.Services.Data
                 base.Lock(authentication, comment);
                 this.Sign(authentication);
                 this.metaData = null;
-                this.DataBases.InvokeItemsLockedEvent(authentication, new IDataBase[] { this }, new string[] { comment, });
+                this.DataBases.InvokeItemsLockedEvent(authentication, new IDataBase[] { this }, new string[] { comment });
             }
             catch (Exception e)
             {
@@ -333,7 +332,7 @@ namespace Ntreev.Crema.Services.Data
                 var oldName = base.Name;
                 base.Name = name;
                 this.Sign(authentication);
-                this.DataBases.InvokeItemsRenamedEvent(authentication, new DataBase[] { this }, new string[] { oldName, });
+                this.DataBases.InvokeItemsRenamedEvent(authentication, new DataBase[] { this }, new string[] { oldName });
             }
             catch (Exception e)
             {
@@ -356,7 +355,7 @@ namespace Ntreev.Crema.Services.Data
                 this.tableContext = null;
                 this.typeContext = null;
                 this.Sign(authentication);
-                this.DataBases.InvokeItemsDeletedEvent(authentication, new DataBase[] { this }, new string[] { base.Name, });
+                this.DataBases.InvokeItemsDeletedEvent(authentication, new DataBase[] { this }, new string[] { base.Name });
             }
             catch (Exception e)
             {
@@ -1085,9 +1084,6 @@ namespace Ntreev.Crema.Services.Data
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override void OnValidateDelete(IAuthentication authentication, object target)
         {
-            if (this.ID == DataBase.defaultID)
-                throw new PermissionDeniedException(Resources.Exception_DefaultDataBaseCannotDelete);
-
             if (this.IsLoaded == true)
                 throw new InvalidOperationException(Resources.Exception_DataBaseHasBeenLoaded);
 
@@ -1263,7 +1259,7 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public void Initialize()
+        private void Initialize()
         {
             var remotePath = this.CremaHost.GetPath(CremaPath.RepositoryDataBases);
             var revision = this.repositoryProvider.GetRevision(remotePath, base.Name);

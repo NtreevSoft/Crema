@@ -40,7 +40,7 @@ namespace Ntreev.Crema.Javascript.Methods.ListenerHosts.Users
         {
             if (this.cremaHost.GetService(typeof(IUserContext)) is IUserContext userContext)
             {
-                userContext.Dispatcher.Invoke(() => userContext.UsersBanChanged += UserContext_UsersBanChanged);
+                userContext.Dispatcher.Invoke(() => userContext.Users.UsersBanChanged += Users_UsersBanChanged);
             }
         }
 
@@ -48,11 +48,11 @@ namespace Ntreev.Crema.Javascript.Methods.ListenerHosts.Users
         {
             if (this.cremaHost.GetService(typeof(IUserContext)) is IUserContext userContext)
             {
-                userContext.Dispatcher.Invoke(() => userContext.UsersBanChanged -= UserContext_UsersBanChanged);
+                userContext.Dispatcher.Invoke(() => userContext.Users.UsersBanChanged -= Users_UsersBanChanged);
             }
         }
 
-        private void UserContext_UsersBanChanged(object sender, ItemsEventArgs<IUser> e)
+        private void Users_UsersBanChanged(object sender, ItemsEventArgs<IUser> e)
         {
             this.Invoke(null);
         }

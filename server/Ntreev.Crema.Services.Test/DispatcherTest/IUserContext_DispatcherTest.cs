@@ -141,41 +141,6 @@ namespace Ntreev.Crema.Services.Test.DispatcherTest
             userContext.ItemsChanged += (s, e) => Assert.Inconclusive();
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void UsersLoggedIn()
-        {
-            userContext.UsersLoggedIn += (s, e) => Assert.Inconclusive();
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void UsersLoggedOut()
-        {
-            userContext.UsersLoggedOut += (s, e) => Assert.Inconclusive();
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void UsersKicked()
-        {
-            userContext.UsersKicked += (s, e) => Assert.Inconclusive();
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void UsersBanChanged()
-        {
-            userContext.UsersBanChanged += (s, e) => Assert.Inconclusive();
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void MessageReceived()
-        {
-            userContext.MessageReceived += (s, e) => Assert.Inconclusive();
-        }
-
 #if SERVER
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]

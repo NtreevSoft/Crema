@@ -128,8 +128,8 @@ namespace Ntreev.Crema.ApplicationHost.Views
         private void CremaHost_Opened(object sender, EventArgs e)
         {
             var userContext = this.cremaHost.GetService(typeof(IUserContext)) as IUserContext;
-            userContext.UsersKicked += UserContext_UsersKicked;
-            userContext.UsersBanChanged += UserContext_UsersBanChanged;
+            userContext.Users.UsersKicked += Users_UsersKicked;
+            userContext.Users.UsersBanChanged += Users_UsersBanChanged;
 
             var logService = this.cremaHost.GetService(typeof(ILogService)) as ILogService;
             logService.RedirectionWriter = new LogWriter() { TextBox = this.logView, };
@@ -161,7 +161,7 @@ namespace Ntreev.Crema.ApplicationHost.Views
             var i = Application.Current.Windows.Count;
         }
 
-        private void UserContext_UsersKicked(object sender, ItemsEventArgs<IUser> e)
+        private void Users_UsersKicked(object sender, ItemsEventArgs<IUser> e)
         {
             var userID = this.cremaHost.UserID;
             var userIDs = e.Items.Select(item => item.ID).ToArray();
@@ -184,7 +184,7 @@ namespace Ntreev.Crema.ApplicationHost.Views
             });
         }
 
-        private async void UserContext_UsersBanChanged(object sender, ItemsEventArgs<IUser> e)
+        private async void Users_UsersBanChanged(object sender, ItemsEventArgs<IUser> e)
         {
             foreach (var item in e.Items)
             {

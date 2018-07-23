@@ -304,11 +304,11 @@ namespace Ntreev.Crema.ServiceHosts.Users
             this.userContext.ItemsRenamed += UserContext_ItemsRenamed;
             this.userContext.ItemsMoved += UserContext_ItemsMoved;
             this.userContext.ItemsDeleted += UserContext_ItemsDeleted;
-            this.userContext.UsersLoggedIn += UserContext_UsersLoggedIn;
-            this.userContext.UsersLoggedOut += UserContext_UsersLoggedOut;
-            this.userContext.UsersKicked += UserContext_UsersKicked;
-            this.userContext.UsersBanChanged += UserContext_UsersBanChanged;
-            this.userContext.MessageReceived += UserContext_MessageReceived;
+            this.userContext.Users.UsersLoggedIn += Users_UsersLoggedIn;
+            this.userContext.Users.UsersLoggedOut += Users_UsersLoggedOut;
+            this.userContext.Users.UsersKicked += Users_UsersKicked;
+            this.userContext.Users.UsersBanChanged += Users_UsersBanChanged;
+            this.userContext.Users.MessageReceived += UserContext_MessageReceived;
 
             this.logService.Debug($"[{this.OwnerID}] {nameof(UserService)} {nameof(AttachEventHandlers)}");
         }
@@ -323,11 +323,11 @@ namespace Ntreev.Crema.ServiceHosts.Users
             this.userContext.ItemsRenamed -= UserContext_ItemsRenamed;
             this.userContext.ItemsMoved -= UserContext_ItemsMoved;
             this.userContext.ItemsDeleted -= UserContext_ItemsDeleted;
-            this.userContext.UsersLoggedIn -= UserContext_UsersLoggedIn;
-            this.userContext.UsersLoggedOut -= UserContext_UsersLoggedOut;
-            this.userContext.UsersKicked -= UserContext_UsersKicked;
-            this.userContext.UsersBanChanged -= UserContext_UsersBanChanged;
-            this.userContext.MessageReceived -= UserContext_MessageReceived;
+            this.userContext.Users.UsersLoggedIn -= Users_UsersLoggedIn;
+            this.userContext.Users.UsersLoggedOut -= Users_UsersLoggedOut;
+            this.userContext.Users.UsersKicked -= Users_UsersKicked;
+            this.userContext.Users.UsersBanChanged -= Users_UsersBanChanged;
+            this.userContext.Users.MessageReceived -= UserContext_MessageReceived;
 
             this.logService.Debug($"[{this.OwnerID}] {nameof(UserService)} {nameof(DetachEventHandlers)}");
         }
@@ -402,7 +402,7 @@ namespace Ntreev.Crema.ServiceHosts.Users
             this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnMessageReceived(signatureDate, userIDs, message, messageType));
         }
 
-        private void UserContext_UsersLoggedIn(object sender, Services.ItemsEventArgs<IUser> e)
+        private void Users_UsersLoggedIn(object sender, Services.ItemsEventArgs<IUser> e)
         {
             var userID = this.authentication.ID;
             var exceptionUserID = e.UserID;
@@ -411,7 +411,7 @@ namespace Ntreev.Crema.ServiceHosts.Users
             this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnUsersLoggedIn(signatureDate, userIDs));
         }
 
-        private void UserContext_UsersLoggedOut(object sender, Services.ItemsEventArgs<IUser> e)
+        private void Users_UsersLoggedOut(object sender, Services.ItemsEventArgs<IUser> e)
         {
             var actionUserID = e.UserID;
             var contains = e.Items.Any(item => item.ID == this.authentication.ID);
@@ -432,7 +432,7 @@ namespace Ntreev.Crema.ServiceHosts.Users
             }
         }
 
-        private void UserContext_UsersKicked(object sender, ItemsEventArgs<IUser> e)
+        private void Users_UsersKicked(object sender, ItemsEventArgs<IUser> e)
         {
             var userID = this.authentication.ID;
             var exceptionUserID = e.UserID;
@@ -442,7 +442,7 @@ namespace Ntreev.Crema.ServiceHosts.Users
             this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnUsersKicked(signatureDate, userIDs, comments));
         }
 
-        private void UserContext_UsersBanChanged(object sender, ItemsEventArgs<IUser> e)
+        private void Users_UsersBanChanged(object sender, ItemsEventArgs<IUser> e)
         {
             var userID = this.authentication.ID;
             var exceptionUserID = e.UserID;

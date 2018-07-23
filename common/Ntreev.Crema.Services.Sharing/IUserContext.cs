@@ -50,16 +50,6 @@ namespace Ntreev.Crema.Services
 
         event ItemsEventHandler<IUserItem> ItemsChanged;
 
-        event ItemsEventHandler<IUser> UsersLoggedIn;
-
-        event ItemsEventHandler<IUser> UsersLoggedOut;
-
-        event ItemsEventHandler<IUser> UsersKicked;
-
-        event ItemsEventHandler<IUser> UsersBanChanged;
-
-        event EventHandler<MessageEventArgs> MessageReceived;
-
 #if SERVER
         Authentication Login(string userID, SecureString password);
 

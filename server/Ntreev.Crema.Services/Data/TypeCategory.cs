@@ -56,7 +56,7 @@ namespace Ntreev.Crema.Services.Data
                 this.Sign(authentication);
                 this.Context.InvokeTypeItemSetPublic(authentication, this);
                 base.SetPublic(authentication);
-                this.Context.InvokeItemsSetPublicEvent(authentication, new ITypeItem[] { this, });
+                this.Context.InvokeItemsSetPublicEvent(authentication, new ITypeItem[] { this });
             }
             catch (Exception e)
             {
@@ -75,7 +75,7 @@ namespace Ntreev.Crema.Services.Data
                 this.Sign(authentication);
                 this.Context.InvokeTypeItemSetPrivate(authentication, this, AccessInfo.Empty);
                 base.SetPrivate(authentication);
-                this.Context.InvokeItemsSetPrivateEvent(authentication, new ITypeItem[] { this, });
+                this.Context.InvokeItemsSetPrivateEvent(authentication, new ITypeItem[] { this });
             }
             catch (Exception e)
             {
@@ -94,7 +94,7 @@ namespace Ntreev.Crema.Services.Data
                 this.Sign(authentication);
                 this.Context.InvokeTypeItemAddAccessMember(authentication, this, this.AccessInfo, memberID, accessType);
                 base.AddAccessMember(authentication, memberID, accessType);
-                this.Context.InvokeItemsAddAccessMemberEvent(authentication, new ITypeItem[] { this, }, new string[] { memberID, }, new AccessType[] { accessType, });
+                this.Context.InvokeItemsAddAccessMemberEvent(authentication, new ITypeItem[] { this }, new string[] { memberID }, new AccessType[] { accessType });
             }
             catch (Exception e)
             {
@@ -113,7 +113,7 @@ namespace Ntreev.Crema.Services.Data
                 this.Sign(authentication);
                 this.Context.InvokeTypeItemSetAccessMember(authentication, this, this.AccessInfo, memberID, accessType);
                 base.SetAccessMember(authentication, memberID, accessType);
-                this.Context.InvokeItemsSetAccessMemberEvent(authentication, new ITypeItem[] { this, }, new string[] { memberID, }, new AccessType[] { accessType, });
+                this.Context.InvokeItemsSetAccessMemberEvent(authentication, new ITypeItem[] { this }, new string[] { memberID }, new AccessType[] { accessType });
             }
             catch (Exception e)
             {
@@ -132,7 +132,7 @@ namespace Ntreev.Crema.Services.Data
                 this.Sign(authentication);
                 this.Context.InvokeTypeItemRemoveAccessMember(authentication, this, this.AccessInfo, memberID);
                 base.RemoveAccessMember(authentication, memberID);
-                this.Context.InvokeItemsRemoveAccessMemberEvent(authentication, new ITypeItem[] { this, }, new string[] { memberID, });
+                this.Context.InvokeItemsRemoveAccessMemberEvent(authentication, new ITypeItem[] { this }, new string[] { memberID });
             }
             catch (Exception e)
             {
@@ -170,7 +170,7 @@ namespace Ntreev.Crema.Services.Data
                 this.Sign(authentication);
                 this.Context.InvokeTypeItemUnlock(authentication, this);
                 base.Unlock(authentication);
-                this.Context.InvokeItemsUnlockedEvent(authentication, new ITypeItem[] { this, });
+                this.Context.InvokeItemsUnlockedEvent(authentication, new ITypeItem[] { this });
             }
             catch (Exception e)
             {

@@ -44,11 +44,6 @@ namespace Ntreev.Crema.Services.Users
         private ItemsMovedEventHandler<IUserItem> itemsMoved;
         private ItemsDeletedEventHandler<IUserItem> itemsDeleted;
         private ItemsEventHandler<IUserItem> itemsChanged;
-        private EventHandler<MessageEventArgs> messageReceived;
-        private ItemsEventHandler<IUser> usersLoggedIn;
-        private ItemsEventHandler<IUser> usersLoggedOut;
-        private ItemsEventHandler<IUser> usersKicked;
-        private ItemsEventHandler<IUser> usersBanChanged;
 
         public UserContext(CremaHost cremaHost)
         {
@@ -68,14 +63,6 @@ namespace Ntreev.Crema.Services.Users
             }));
 
             this.Dispatcher = new CremaDispatcher(this);
-            this.Dispatcher.Invoke(() =>
-            {
-                this.Items.MessageReceived += Users_MessageReceived;
-                this.Items.UsersLoggedIn += Users_UsersLoggedIn;
-                this.Items.UsersLoggedOut += Users_UsersLoggedOut;
-                this.Items.UsersKicked += Users_UsersKicked;
-                this.Items.UsersBanChanged += Users_UsersBanChanged;
-            });
             this.CremaHost.Debug(Resources.Message_UserContextIsCreated);
         }
 
@@ -238,86 +225,86 @@ namespace Ntreev.Crema.Services.Users
             return metaData;
         }
 
-        public static UserContextSerializationInfo GenerateDefaultUserInfos()
-        {
-            var designedInfo = new SignatureDate(Authentication.SystemID, DateTime.UtcNow);
-            var administrator = new UserSerializationInfo()
-            {
-                ID = Authentication.AdminID,
-                Name = Authentication.AdminName,
-                CategoryName = string.Empty,
-                Authority = Authority.Admin,
-                Password = Authentication.AdminID.Encrypt(),
-                CreationInfo = designedInfo,
-                ModificationInfo = designedInfo,
-                BanInfo = (BanSerializationInfo)BanInfo.Empty,
-            };
+//        public static UserContextSerializationInfo GenerateDefaultUserInfos()
+//        {
+//            var designedInfo = new SignatureDate(Authentication.SystemID, DateTime.UtcNow);
+//            var administrator = new UserSerializationInfo()
+//            {
+//                ID = Authentication.AdminID,
+//                Name = Authentication.AdminName,
+//                CategoryName = string.Empty,
+//                Authority = Authority.Admin,
+//                Password = Authentication.AdminID.Encrypt(),
+//                CreationInfo = designedInfo,
+//                ModificationInfo = designedInfo,
+//                BanInfo = (BanSerializationInfo)BanInfo.Empty,
+//            };
 
-#if DEBUG
-            var users = new List<UserSerializationInfo>
-            {
-                administrator
-            };
-            for (var i = 0; i < 0; i++)
-            {
-                var admin = new UserSerializationInfo()
-                {
-                    ID = "admin" + i,
-                    Name = "관리자" + i,
-                    CategoryName = "Administrators",
-                    Authority = Authority.Admin,
-                    Password = "admin".Encrypt(),
-                    CreationInfo = designedInfo,
-                    ModificationInfo = designedInfo,
-                    BanInfo = (BanSerializationInfo)BanInfo.Empty,
-                };
+//#if DEBUG
+//            var users = new List<UserSerializationInfo>
+//            {
+//                administrator
+//            };
+//            for (var i = 0; i < 0; i++)
+//            {
+//                var admin = new UserSerializationInfo()
+//                {
+//                    ID = "admin" + i,
+//                    Name = "관리자" + i,
+//                    CategoryName = "Administrators",
+//                    Authority = Authority.Admin,
+//                    Password = "admin".Encrypt(),
+//                    CreationInfo = designedInfo,
+//                    ModificationInfo = designedInfo,
+//                    BanInfo = (BanSerializationInfo)BanInfo.Empty,
+//                };
 
-                var member = new UserSerializationInfo()
-                {
-                    ID = "member" + i,
-                    Name = "구성원" + i,
-                    CategoryName = "Members",
-                    Authority = Authority.Member,
-                    Password = "member".Encrypt(),
-                    CreationInfo = designedInfo,
-                    ModificationInfo = designedInfo,
-                    BanInfo = (BanSerializationInfo)BanInfo.Empty,
-                };
+//                var member = new UserSerializationInfo()
+//                {
+//                    ID = "member" + i,
+//                    Name = "구성원" + i,
+//                    CategoryName = "Members",
+//                    Authority = Authority.Member,
+//                    Password = "member".Encrypt(),
+//                    CreationInfo = designedInfo,
+//                    ModificationInfo = designedInfo,
+//                    BanInfo = (BanSerializationInfo)BanInfo.Empty,
+//                };
 
-                var guest = new UserSerializationInfo()
-                {
-                    ID = "guest" + i,
-                    Name = "손님" + i,
-                    CategoryName = "Guests",
-                    Authority = Authority.Guest,
-                    Password = "guest".Encrypt(),
-                    CreationInfo = designedInfo,
-                    ModificationInfo = designedInfo,
-                    BanInfo = (BanSerializationInfo)BanInfo.Empty,
-                };
+//                var guest = new UserSerializationInfo()
+//                {
+//                    ID = "guest" + i,
+//                    Name = "손님" + i,
+//                    CategoryName = "Guests",
+//                    Authority = Authority.Guest,
+//                    Password = "guest".Encrypt(),
+//                    CreationInfo = designedInfo,
+//                    ModificationInfo = designedInfo,
+//                    BanInfo = (BanSerializationInfo)BanInfo.Empty,
+//                };
 
-                users.Add(admin);
-                users.Add(member);
-                users.Add(guest);
-            }
+//                users.Add(admin);
+//                users.Add(member);
+//                users.Add(guest);
+//            }
 
-            var serializationInfo = new UserContextSerializationInfo()
-            {
-                Version = CremaSchema.VersionValue,
-                Categories = new string[] { "/Administrators/", "/Members/", "/Guests/" },
-                Users = users.ToArray(),
-            };
-#else
-            var serializationInfo = new UserContextSerializationInfo()
-            {
-                Version = CremaSchema.VersionValue,
-                Categories = new string[] { },
-                Users = new UserSerializationInfo[] { administrator},
-            };
-#endif
+//            var serializationInfo = new UserContextSerializationInfo()
+//            {
+//                Version = CremaSchema.VersionValue,
+//                Categories = new string[] { "/Administrators/", "/Members/", "/Guests/" },
+//                Users = users.ToArray(),
+//            };
+//#else
+//            var serializationInfo = new UserContextSerializationInfo()
+//            {
+//                Version = CremaSchema.VersionValue,
+//                Categories = new string[] { },
+//                Users = new UserSerializationInfo[] { administrator},
+//            };
+//#endif
 
-            return serializationInfo;
-        }
+//            return serializationInfo;
+//        }
 
         public static void GenerateDefaultUserInfos(string repositoryPath, IObjectSerializer serializer)
         {
@@ -396,23 +383,7 @@ namespace Ntreev.Crema.Services.Users
                 Users = new UserSerializationInfo[] { administrator},
             };
 #endif
-            //foreach (var item in serializationInfo.Categories)
-            //{
-            //    var basePath = Path.Combine(Path.GetDirectoryName(filename), "users");
-            //    var localPath = PathUtility.ConvertFromUri(basePath + item);
-            //    DirectoryUtility.Prepare(localPath);
-            //}
-
-            //foreach (var item in serializationInfo.Users)
-            //{
-            //    var basePath = Path.Combine(Path.GetDirectoryName(filename), "users");
-            //    var localPath = PathUtility.ConvertFromUri(basePath + item.CategoryPath + item.ID + ".xml");
-            //    FileUtility.WriteAllText(DataContractSerializerUtility.GetString(item), localPath);
-            //}
-
             serializationInfo.WriteToDirectory(repositoryPath, serializer);
-
-            //DataContractSerializerUtility.Write(filename, serializationInfo, true);
         }
 
         public static string SecureStringToString(SecureString value)
@@ -602,76 +573,6 @@ namespace Ntreev.Crema.Services.Users
             }
         }
 
-        public event EventHandler<MessageEventArgs> MessageReceived
-        {
-            add
-            {
-                this.Dispatcher.VerifyAccess();
-                this.messageReceived += value;
-            }
-            remove
-            {
-                this.Dispatcher.VerifyAccess();
-                this.messageReceived -= value;
-            }
-        }
-
-        public event ItemsEventHandler<IUser> UsersLoggedIn
-        {
-            add
-            {
-                this.Dispatcher.VerifyAccess();
-                this.usersLoggedIn += value;
-            }
-            remove
-            {
-                this.Dispatcher.VerifyAccess();
-                this.usersLoggedIn -= value;
-            }
-        }
-
-        public event ItemsEventHandler<IUser> UsersLoggedOut
-        {
-            add
-            {
-                this.Dispatcher.VerifyAccess();
-                this.usersLoggedOut += value;
-            }
-            remove
-            {
-                this.Dispatcher.VerifyAccess();
-                this.usersLoggedOut -= value;
-            }
-        }
-
-        public event ItemsEventHandler<IUser> UsersKicked
-        {
-            add
-            {
-                this.Dispatcher.VerifyAccess();
-                this.usersKicked += value;
-            }
-            remove
-            {
-                this.Dispatcher.VerifyAccess();
-                this.usersKicked -= value;
-            }
-        }
-
-        public event ItemsEventHandler<IUser> UsersBanChanged
-        {
-            add
-            {
-                this.Dispatcher.VerifyAccess();
-                this.usersBanChanged += value;
-            }
-            remove
-            {
-                this.Dispatcher.VerifyAccess();
-                this.usersBanChanged -= value;
-            }
-        }
-
         protected virtual void OnItemsCreated(ItemsCreatedEventArgs<IUserItem> e)
         {
             this.itemsCreated?.Invoke(this, e);
@@ -737,31 +638,6 @@ namespace Ntreev.Crema.Services.Users
             };
 
             var xml = DataContractSerializerUtility.GetString(serializationInfo, true);
-        }
-
-        private void Users_MessageReceived(object sender, MessageEventArgs e)
-        {
-            this.messageReceived?.Invoke(this, e);
-        }
-
-        private void Users_UsersLoggedIn(object sender, ItemsEventArgs<IUser> e)
-        {
-            this.usersLoggedIn?.Invoke(this, e);
-        }
-
-        private void Users_UsersLoggedOut(object sender, ItemsEventArgs<IUser> e)
-        {
-            this.usersLoggedOut?.Invoke(this, e);
-        }
-
-        private void Users_UsersKicked(object sender, ItemsEventArgs<IUser> e)
-        {
-            this.usersKicked?.Invoke(this, e);
-        }
-
-        private void Users_UsersBanChanged(object sender, ItemsEventArgs<IUser> e)
-        {
-            this.usersBanChanged?.Invoke(this, e);
         }
 
         #region IUserContext
