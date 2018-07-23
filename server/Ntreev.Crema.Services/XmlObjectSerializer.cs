@@ -18,11 +18,9 @@
 using Ntreev.Crema.Data;
 using Ntreev.Crema.Data.Xml;
 using Ntreev.Crema.Data.Xml.Schema;
-using Ntreev.Library;
 using Ntreev.Library.IO;
 using Ntreev.Library.Serialization;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Data;

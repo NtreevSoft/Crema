@@ -47,10 +47,7 @@ namespace Ntreev.Crema.Services
 
         public string Name => this.logService.Name;
 
-        public string FileName
-        {
-            get => this.logService.FileName;
-        }
+        public string FileName => this.logService.FileName;
 
         public bool IsEnabled => true;
 

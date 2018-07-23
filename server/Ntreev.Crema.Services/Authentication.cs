@@ -161,22 +161,13 @@ namespace Ntreev.Crema.Services
                 throw new InvalidOperationException(Resources.Exception_Commissioned);
         }
 
-        internal AuthenticationType Types
-        {
-            get { return this.provider.AuthenticationTypes; }
-        }
+        internal AuthenticationType Types => this.provider.AuthenticationTypes;
 
         internal Authentication Parent { get; private set; }
 
-        internal bool IsAdmin
-        {
-            get { return this.Types.HasFlag(AuthenticationType.Administrator); }
-        }
+        internal bool IsAdmin => this.Types.HasFlag(AuthenticationType.Administrator);
 
-        internal bool IsSystem
-        {
-            get { return this.Types.HasFlag(AuthenticationType.System); }
-        }
+        internal bool IsSystem => this.Types.HasFlag(AuthenticationType.System);
 
         internal readonly static Authentication System = new Authentication(new SystemAuthenticationProvider(), Guid.Parse("62E5A6E9-D4BE-438F-A188-D5842C0ED65E"));
 

@@ -18,11 +18,7 @@
 using Ntreev.Library;
 using Ntreev.Library.IO;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Services
 {
@@ -35,27 +31,13 @@ namespace Ntreev.Crema.Services
 
         }
 
-        public string BasePath
-        {
-            get;
-            set;
-        }
+        public string BasePath { get; set; }
 
-        public bool MultiThreading
-        {
-            get;
-            set;
-        }
+        public bool MultiThreading { get; set; }
 
-        public string RepositoryModule
-        {
-            get => FileUtility.ReadAllText(this.BasePath, CremaString.Repository, CremaString.Repo);
-        }
+        public string RepositoryModule => FileUtility.ReadAllText(this.BasePath, CremaString.Repository, CremaString.Repo);
 
-        public string FileType
-        {
-            get => FileUtility.ReadAllText(this.BasePath, CremaString.Repository, CremaString.File);
-        }
+        public string FileType => FileUtility.ReadAllText(this.BasePath, CremaString.Repository, CremaString.File);
 
         public string RepositoryDataBasesUrl
         {
@@ -107,17 +89,9 @@ namespace Ntreev.Crema.Services
             }
         }
 
-        public LogVerbose Verbose
-        {
-            get;
-            set;
-        }
+        public LogVerbose Verbose { get; set; }
 
-        public bool NoCache
-        {
-            get;
-            set;
-        }
+        public bool NoCache { get; set; }
 
         public string[] DataBaseList
         {
@@ -126,11 +100,7 @@ namespace Ntreev.Crema.Services
         }
 
 #if DEBUG
-        public bool ValidationMode
-        {
-            get;
-            set;
-        }
+        public bool ValidationMode { get; set; }
 #endif
     }
 }

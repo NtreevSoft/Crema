@@ -110,14 +110,14 @@ namespace Ntreev.Crema.Services
 
         public static TextWriter RedirectionWriter
         {
-            get { return LogService.RedirectionWriter; }
-            set { LogService.RedirectionWriter = value; }
+            get => LogService.RedirectionWriter;
+            set => LogService.RedirectionWriter = value;
         }
 
         public static LogVerbose Verbose
         {
-            get { return LogService.Verbose; }
-            set { LogService.Verbose = value; }
+            get => LogService.Verbose;
+            set => LogService.Verbose = value;
         }
 
         internal static LogService LogService

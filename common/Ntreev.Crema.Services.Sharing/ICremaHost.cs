@@ -43,6 +43,7 @@ namespace Ntreev.Crema.Services
         void Logout(Authentication authentication);
 
         string GetPath(CremaPath pathType, params string[] paths);
+
 #endif
         event EventHandler Opening;
 
@@ -67,7 +68,5 @@ namespace Ntreev.Crema.Services
         IDataBaseCollection DataBases { get; }
 
         ICremaConfiguration Configs { get; }
-
-        LogVerbose Verbose { get; set; }
     }
 }

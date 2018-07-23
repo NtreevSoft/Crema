@@ -125,115 +125,147 @@ namespace Ntreev.Crema.Services
 
         public void Open()
         {
-            this.OnOpening(EventArgs.Empty);
-            this.Dispatcher.Invoke(() =>
+            try
             {
-                this.Info(Resources.Message_ProgramInfo, AppUtility.ProductName, AppUtility.ProductVersion);
-
-                this.Info("Repository module : {0}", this.settings.RepositoryModule);
-                this.Info(Resources.Message_ServiceStart);
-
-                this.configs = new CremaConfiguration(Path.Combine(this.BasePath, "configs.xml"), this.propertiesProvider);
-
-                this.UserContext = new UserContext(this);
-                this.UserContext.Dispatcher.Invoke(() => this.UserContext.Initialize());
-                this.DataBases = new DataBaseCollection(this, this.repositoryProvider);
-                this.DomainContext = new DomainContext(this, this.UserContext);
-
-                if (this.settings.NoCache == false)
+                this.OnOpening(EventArgs.Empty);
+                this.Dispatcher.Invoke(() =>
                 {
-                    foreach (var item in this.DataBases)
+                    this.Info(Resources.Message_ProgramInfo, AppUtility.ProductName, AppUtility.ProductVersion);
+                    this.Info("Repository module : {0}", this.settings.RepositoryModule);
+                    this.Info(Resources.Message_ServiceStart);
+                    this.configs = new CremaConfiguration(Path.Combine(this.BasePath, "configs.xml"), this.propertiesProvider);
+                    this.UserContext = new UserContext(this);
+                    this.UserContext.Dispatcher.Invoke(() => this.UserContext.Initialize());
+                    this.DataBases = new DataBaseCollection(this, this.repositoryProvider);
+                    this.DomainContext = new DomainContext(this, this.UserContext);
+
+                    if (this.settings.NoCache == false)
                     {
-                        this.DomainContext.Restore(Authentication.System, item);
+                        foreach (var item in this.DataBases)
+                        {
+                            this.DomainContext.Restore(Authentication.System, item);
+                        }
                     }
-                }
 
-                this.plugins = this.container.GetService(typeof(IEnumerable<IPlugin>)) as IEnumerable<IPlugin>;
-                this.plugins = this.plugins.TopologicalSort();
-                foreach (var item in this.plugins)
-                {
-                    var authentication = new Authentication(new AuthenticationProvider(item), item.ID);
-                    item.Initialize(authentication);
-                    this.Info("Plugin : {0}", item.Name);
-                }
+                    this.plugins = this.container.GetService(typeof(IEnumerable<IPlugin>)) as IEnumerable<IPlugin>;
+                    this.plugins = this.plugins.TopologicalSort();
+                    foreach (var item in this.plugins)
+                    {
+                        var authentication = new Authentication(new AuthenticationProvider(item), item.ID);
+                        item.Initialize(authentication);
+                        this.Info("Plugin : {0}", item.Name);
+                    }
 
-                this.Dispatcher.InvokeAsync(() => this.DataBases.RestoreState(this.settings));
+                    this.Dispatcher.InvokeAsync(() => this.DataBases.RestoreState(this.settings));
 
-                GC.Collect();
-                this.Info("Crema module has been started.");
-                this.OnOpened(EventArgs.Empty);
-            });
+                    GC.Collect();
+                    this.Info("Crema module has been started.");
+                    this.OnOpened(EventArgs.Empty);
+                });
+            }
+            catch (Exception e)
+            {
+                this.log.Error(e);
+                throw;
+            }
         }
 
         public void SaveConfigs()
         {
-            this.configs.Commit();
+            try
+            {
+                this.configs.Commit();
+            }
+            catch (Exception e)
+            {
+                this.log.Error(e);
+                throw;
+            }
         }
 
         public void Close(CloseReason reason, string message)
         {
-            this.OnClosing(EventArgs.Empty);
-            this.Dispatcher.Invoke(() =>
+            try
             {
-                this.UserContext.Dispatcher.Invoke(() => this.UserContext.Clear());
-                this.UserContext.Dispose();
-
-                this.UserContext = null;
-                this.DomainContext.Dispose();
-                this.DomainContext = null;
-                this.DataBases.Dispose();
-                this.DataBases = null;
-
-                foreach (var item in this.plugins.Reverse())
+                this.OnClosing(EventArgs.Empty);
+                this.Dispatcher.Invoke(() =>
                 {
-                    item.Release();
-                }
-                this.Info("Crema module has been stopped.");
-                this.OnClosed(new ClosedEventArgs(reason, message));
-            });
+                    foreach (var item in this.plugins.Reverse())
+                    {
+                        item.Release();
+                    }
+                    this.UserContext.Dispatcher.Invoke(() => this.UserContext.Clear());
+                    this.UserContext.Dispose();
+                    this.UserContext = null;
+                    this.DomainContext.Dispose();
+                    this.DomainContext = null;
+                    this.DataBases.Dispose();
+                    this.DataBases = null;
+
+                    this.Info("Crema module has been stopped.");
+                    this.OnClosed(new ClosedEventArgs(reason, message));
+                });
+            }
+            catch (Exception e)
+            {
+                this.log.Error(e);
+                throw;
+            }
         }
 
         public void Shutdown(Authentication authentication, int milliseconds, ShutdownType shutdownType, string message)
         {
             this.DebugMethod(authentication, this, nameof(Shutdown), this, milliseconds, shutdownType, message);
-            if (authentication.Types.HasFlag(AuthenticationType.Administrator) == false)
-                throw new PermissionDeniedException();
-            if (milliseconds < 0)
-                throw new ArgumentOutOfRangeException(nameof(milliseconds), "invalid milliseconds value");
+            this.ValidateShutdown(authentication, milliseconds);
 
-            if (string.IsNullOrEmpty(message) == false)
-                this.UserContext.Dispatcher.InvokeAsync(() => this.UserContext.NotifyMessage(Authentication.System, message));
-
-            if (this.shutdownTimer == null)
+            try
             {
-                this.shutdownTimer = new ShutdownTimer()
-                {
-                    Interval = 1000,
-                };
-                this.shutdownTimer.Elapsed += ShutdownTimer_Elapsed;
-            }
+                if (string.IsNullOrEmpty(message) == false)
+                    this.UserContext.Dispatcher.InvokeAsync(() => this.UserContext.NotifyMessage(Authentication.System, message));
 
-            var dateTime = DateTime.Now.AddMilliseconds(milliseconds);
-            this.shutdownTimer.DateTime = dateTime;
-            this.shutdownTimer.ShutdownType = shutdownType;
-            this.shutdownTimer.Start();
-            if (milliseconds >= 1000)
-                this.SendShutdownMessage((dateTime - DateTime.Now) + new TimeSpan(0, 0, 0, 0, 500), true);
+                if (this.shutdownTimer == null)
+                {
+                    this.shutdownTimer = new ShutdownTimer()
+                    {
+                        Interval = 1000,
+                    };
+                    this.shutdownTimer.Elapsed += ShutdownTimer_Elapsed;
+                }
+
+                var dateTime = DateTime.Now.AddMilliseconds(milliseconds);
+                this.shutdownTimer.DateTime = dateTime;
+                this.shutdownTimer.ShutdownType = shutdownType;
+                this.shutdownTimer.Start();
+                if (milliseconds >= 1000)
+                    this.SendShutdownMessage((dateTime - DateTime.Now) + new TimeSpan(0, 0, 0, 0, 500), true);
+            }
+            catch (Exception e)
+            {
+                this.log.Error(e);
+                throw;
+            }
         }
 
         public void CancelShutdown(Authentication authentication)
         {
             this.DebugMethod(authentication, this, nameof(CancelShutdown), this);
-            if (authentication.Types.HasFlag(AuthenticationType.Administrator) == false)
-                throw new PermissionDeniedException();
+            this.ValidateCancelShutdown(authentication);
 
-            if (this.shutdownTimer != null)
+            try
             {
-                this.shutdownTimer.Elapsed -= ShutdownTimer_Elapsed;
-                this.shutdownTimer.Stop();
-                this.shutdownTimer.Dispose();
-                this.shutdownTimer = null;
-                this.Info($"[{authentication}] Shutdown cancelled.");
+                if (this.shutdownTimer != null)
+                {
+                    this.shutdownTimer.Elapsed -= ShutdownTimer_Elapsed;
+                    this.shutdownTimer.Stop();
+                    this.shutdownTimer.Dispose();
+                    this.shutdownTimer = null;
+                    this.Info($"[{authentication}] Shutdown cancelled.");
+                }
+            }
+            catch (Exception e)
+            {
+                this.log.Error(e);
+                throw;
             }
         }
 
@@ -441,19 +473,27 @@ namespace Ntreev.Crema.Services
             }
         }
 
+        private void ValidateShutdown(Authentication authentication, int milliseconds)
+        {
+            if (authentication.Types.HasFlag(AuthenticationType.Administrator) == false)
+                throw new PermissionDeniedException();
+            if (milliseconds < 0)
+                throw new ArgumentOutOfRangeException(nameof(milliseconds), "invalid milliseconds value");
+        }
+
+        private void ValidateCancelShutdown(Authentication authentication)
+        {
+            if (authentication.Types.HasFlag(AuthenticationType.Administrator) == false)
+                throw new PermissionDeniedException();
+        }
+
         #region classes
 
         class ShutdownTimer : Timer
         {
-            public DateTime DateTime
-            {
-                get; set;
-            }
+            public DateTime DateTime { get; set; }
 
-            public ShutdownType ShutdownType
-            {
-                get; set;
-            }
+            public ShutdownType ShutdownType { get; set; }
         }
 
         #endregion
