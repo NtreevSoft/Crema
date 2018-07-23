@@ -17,6 +17,21 @@ namespace Ntreev.Crema.Services.Domains.Serializations
             this.DateTime = DateTime.Now;
         }
 
+        public override string ToString()
+        {
+            return $"{this.ID}\t{this.DateTime:o}";
+        }
+
+        public static DomainCompleteItemSerializationInfo Parse(string text)
+        {
+            var items = StringUtility.Split(text, '\t');
+            return new DomainCompleteItemSerializationInfo()
+            {
+                ID = long.Parse(items[0]),
+                DateTime = DateTime.Parse(items[1])
+            };
+        }
+
         [DataMember]
         public long ID { get; set; }
 

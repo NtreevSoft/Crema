@@ -121,7 +121,7 @@ namespace Ntreev.Crema.Runtime.Generation.CSharp
                 return "ToBoolean";
             else if (columnInfo.DataType == CremaDataTypeUtility.stringType)
                 return "ToString";
-            else if (columnInfo.DataType == "float" || columnInfo.DataType == CremaDataTypeUtility.singleType)
+            else if (columnInfo.DataType == "float" || columnInfo.DataType == CremaDataTypeUtility.floatType)
                 return "ToSingle";
             else if (columnInfo.DataType == CremaDataTypeUtility.doubleType)
                 return "ToDouble";

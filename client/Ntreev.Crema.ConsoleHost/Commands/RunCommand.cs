@@ -100,7 +100,10 @@ namespace Ntreev.Crema.ConsoleHost.Commands
         protected override void OnExecute()
         {
             CremaLog.Verbose = LogVerbose.Fatal;
-            this.cremaHost.Verbose = LogVerbose.Fatal;
+            if (this.cremaHost.GetService(typeof(ILogService)) is ILogService logService)
+            {
+                logService.Verbose = LogVerbose.Fatal;
+            }
             this.application.Culture = this.Culture;
 
             if (this.List == true)

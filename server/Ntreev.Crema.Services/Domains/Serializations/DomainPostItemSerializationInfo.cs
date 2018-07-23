@@ -18,6 +18,22 @@ namespace Ntreev.Crema.Services.Domains.Serializations
             this.DateTime = DateTime.Now;
         }
 
+        public override string ToString()
+        {
+            return $"{this.ID}\t{this.DateTime:o}\t{this.Type}";
+        }
+
+        public static DomainPostItemSerializationInfo Parse(string text)
+        {
+            var items = StringUtility.Split(text, '\t');
+            return new DomainPostItemSerializationInfo()
+            {
+                ID = long.Parse(items[0]),
+                DateTime = DateTime.Parse(items[1]),
+                Type = items[2],
+            };
+        }
+
         [DataMember]
         public long ID { get; set; }
 

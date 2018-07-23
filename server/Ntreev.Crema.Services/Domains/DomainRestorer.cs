@@ -73,30 +73,28 @@ namespace Ntreev.Crema.Services.Domains
         private void CollectCompletedActions()
         {
             var itemPath = Path.Combine(this.workingPath, DomainLogger.CompletedItemPath);
-            var completedList = (DomainCompleteSerializationInfo)this.Serializer.Deserialize(itemPath, typeof(DomainCompleteSerializationInfo), ObjectSerializerSettings.Empty);
-
-            foreach (var item in completedList.Items)
+            var items = File.ReadAllLines(itemPath);
+            foreach (var item in items)
             {
-                this.completedList.Add(item.ID, item);
+                var info = DomainCompleteItemSerializationInfo.Parse(item);
+                this.completedList.Add(info.ID, info);
             }
         }
 
         private void CollectPostedActions()
         {
             var itemPath = Path.Combine(this.workingPath, DomainLogger.PostedItemPath);
-            var postedList = (DomainPostSerializationInfo)this.Serializer.Deserialize(itemPath, typeof(DomainPostSerializationInfo), ObjectSerializerSettings.Empty);
-
-            foreach (var item in postedList.Items)
+            var items = File.ReadAllLines(itemPath);
+            foreach (var item in items)
             {
-                if (this.completedList.ContainsKey(item.ID) == true)
+                var info = DomainPostItemSerializationInfo.Parse(item);
+                if (this.completedList.ContainsKey(info.ID) == true)
                 {
-                    var type = Type.GetType(item.Type);
-                    var path = Path.Combine(this.workingPath, $"{item.ID}");
+                    var type = Type.GetType(info.Type);
+                    var path = Path.Combine(this.workingPath, $"{info.ID}");
                     var action = (DomainActionBase)this.Serializer.Deserialize(path, type, ObjectSerializerSettings.Empty);
                     this.actionList.Add(action);
                 }
-
-                this.lastID = item.ID;
             }
         }
 

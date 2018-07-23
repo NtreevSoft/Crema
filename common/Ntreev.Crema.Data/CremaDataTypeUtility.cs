@@ -28,7 +28,7 @@ namespace Ntreev.Crema.Data
 
         public const string booleanType = "boolean";
         public const string stringType = "string";
-        public const string singleType = "single";
+        public const string floatType = "float";
         public const string doubleType = "double";
         public const string int8Type = "int8";
         public const string uint8Type = "uint8";
@@ -46,7 +46,7 @@ namespace Ntreev.Crema.Data
         {
             baseTypes.Add(booleanType, typeof(System.Boolean));
             baseTypes.Add(stringType, typeof(System.String));
-            baseTypes.Add(singleType, typeof(System.Single));
+            baseTypes.Add(floatType, typeof(System.Single));
             baseTypes.Add(doubleType, typeof(System.Double));
             baseTypes.Add(int8Type, typeof(System.SByte));
             baseTypes.Add(uint8Type, typeof(System.Byte));
@@ -62,7 +62,7 @@ namespace Ntreev.Crema.Data
 
             typeToName.Add(typeof(System.Boolean), booleanType);
             typeToName.Add(typeof(System.String), stringType);
-            typeToName.Add(typeof(System.Single), singleType);
+            typeToName.Add(typeof(System.Single), floatType);
             typeToName.Add(typeof(System.Double), doubleType);
             typeToName.Add(typeof(System.SByte), int8Type);
             typeToName.Add(typeof(System.Byte), uint8Type);
@@ -75,38 +75,6 @@ namespace Ntreev.Crema.Data
             typeToName.Add(typeof(System.DateTime), datetimeType);
             typeToName.Add(typeof(System.TimeSpan), durationType);
             typeToName.Add(typeof(System.Guid), guidType);
-
-            //baseTypes.Add("boolean", typeof(System.Boolean));
-            //baseTypes.Add("string", typeof(System.String));
-            //baseTypes.Add("int", typeof(System.Int32));
-            //baseTypes.Add("float", typeof(System.Single));
-            //baseTypes.Add("double", typeof(System.Double));
-            //baseTypes.Add("dateTime", typeof(System.DateTime));
-            //baseTypes.Add("unsignedInt", typeof(System.UInt32));
-            //baseTypes.Add("long", typeof(System.Int64));
-            //baseTypes.Add("short", typeof(System.Int16));
-            //baseTypes.Add("unsignedLong", typeof(System.UInt64));
-            //baseTypes.Add("unsignedByte", typeof(System.Byte));
-            //baseTypes.Add("duration", typeof(System.TimeSpan));
-            //baseTypes.Add("unsignedShort", typeof(System.UInt16));
-            //baseTypes.Add("byte", typeof(System.SByte));
-            //baseTypes.Add("guid", typeof(System.Guid));
-
-            //typeToName.Add(typeof(System.Boolean), "boolean");
-            //typeToName.Add(typeof(System.String), "string");
-            //typeToName.Add(typeof(System.Int32), "int");
-            //typeToName.Add(typeof(System.Single), "float");
-            //typeToName.Add(typeof(System.Double), "double");
-            //typeToName.Add(typeof(System.DateTime), "dateTime");
-            //typeToName.Add(typeof(System.UInt32), "unsignedInt");
-            //typeToName.Add(typeof(System.Int64), "long");
-            //typeToName.Add(typeof(System.Int16), "short");
-            //typeToName.Add(typeof(System.UInt64), "unsignedLong");
-            //typeToName.Add(typeof(System.Byte), "unsignedByte");
-            //typeToName.Add(typeof(System.TimeSpan), "duration");
-            //typeToName.Add(typeof(System.UInt16), "unsignedShort");
-            //typeToName.Add(typeof(System.SByte), "byte");
-            //typeToName.Add(typeof(System.Guid), "guid");
         }
 
         public static Type GetType(string typeName)

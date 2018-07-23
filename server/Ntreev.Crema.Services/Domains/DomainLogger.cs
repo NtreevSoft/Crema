@@ -20,6 +20,7 @@ using Ntreev.Crema.Services.Domains.Actions;
 using Ntreev.Crema.Services.Domains.Serializations;
 using Ntreev.Library.IO;
 using Ntreev.Library.Serialization;
+using System;
 using System.IO;
 using System.Xml;
 
@@ -184,7 +185,7 @@ namespace Ntreev.Crema.Services.Domains
             this.currentPost = new DomainPostItemSerializationInfo(id, action.GetType());
             this.postedList.Items.Add(this.currentPost);
             this.serializer.Serialize(itemPath, action, ObjectSerializerSettings.Empty);
-            this.serializer.Serialize(this.postedPath, this.postedList, ObjectSerializerSettings.Empty);
+            File.AppendAllText(this.postedPath, $"{this.currentPost}{Environment.NewLine}");
         }
 
         public void Complete()
@@ -193,7 +194,7 @@ namespace Ntreev.Crema.Services.Domains
                 return;
 
             this.completedList.Items.Add(new DomainCompleteItemSerializationInfo(this.currentPost.ID));
-            this.serializer.Serialize(this.completedPath, this.completedList, ObjectSerializerSettings.Empty);
+            File.AppendAllText(this.completedPath, $"{new DomainCompleteItemSerializationInfo(this.currentPost.ID)}{Environment.NewLine}");
         }
 
         public long ID { get; set; }

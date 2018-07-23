@@ -16,7 +16,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
                     return "boolean";
                 case CremaDataTypeUtility.stringType:
                     return "string";
-                case CremaDataTypeUtility.singleType:
+                case CremaDataTypeUtility.floatType:
                     return "float";
                 case CremaDataTypeUtility.doubleType:
                     return "double";
