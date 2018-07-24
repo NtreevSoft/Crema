@@ -33,7 +33,7 @@ using System.Threading.Tasks;
 namespace Ntreev.Crema.Client.Converters.MenuItems.Tables
 {
     [Export(typeof(IMenuItem))]
-    [ParentType("Ntreev.Crema.Client.Tables.BrowserItems.ViewModels.TableTreeViewItemViewModel, Ntreev.Crema.Client.Tables, Version=3.6.0.0, Culture=neutral, PublicKeyToken=null")]
+    [ParentType("Ntreev.Crema.Client.Tables.BrowserItems.ViewModels.TableTreeViewItemViewModel, Ntreev.Crema.Client.Tables, Version=4.0.0.0, Culture=neutral, PublicKeyToken=null")]
     class TableExportMenuItem : MenuItemBase
     {
         private readonly ICremaAppHost cremaAppHost;

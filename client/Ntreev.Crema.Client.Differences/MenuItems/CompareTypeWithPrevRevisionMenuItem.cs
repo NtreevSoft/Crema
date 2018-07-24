@@ -33,7 +33,7 @@ using System.Threading.Tasks;
 namespace Ntreev.Crema.Client.Differences.MenuItems
 {
     [Export(typeof(IMenuItem))]
-    [ParentType("Ntreev.Crema.Client.Types.BrowserItems.ViewModels.TypeTreeViewItemViewModel, Ntreev.Crema.Client.Types, Version=3.6.0.0, Culture=neutral, PublicKeyToken=null")]
+    [ParentType("Ntreev.Crema.Client.Types.BrowserItems.ViewModels.TypeTreeViewItemViewModel, Ntreev.Crema.Client.Types, Version=4.0.0.0, Culture=neutral, PublicKeyToken=null")]
     class CompareTypeWithPrevRevisionMenuItem : MenuItemBase
     {
         [Import]

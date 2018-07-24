@@ -31,8 +31,8 @@ namespace Ntreev.Crema.Client.Users.PropertyItems.ViewModels
 {
     [Export(typeof(IPropertyItem))]
     [RequiredAuthority(Authority.Guest)]
-    [Dependency("Ntreev.Crema.Client.Types.PropertyItems.ViewModels.TypeInfoViewModel, Ntreev.Crema.Client.Types, Version=3.6.0.0, Culture=neutral, PublicKeyToken=null")]
-    [ParentType("Ntreev.Crema.Client.Types.IPropertyService, Ntreev.Crema.Client.Types, Version=3.6.0.0, Culture=neutral, PublicKeyToken=null")]
+    [Dependency("Ntreev.Crema.Client.Types.PropertyItems.ViewModels.TypeInfoViewModel, Ntreev.Crema.Client.Types, Version=4.0.0.0, Culture=neutral, PublicKeyToken=null")]
+    [ParentType("Ntreev.Crema.Client.Types.IPropertyService, Ntreev.Crema.Client.Types, Version=4.0.0.0, Culture=neutral, PublicKeyToken=null")]
     public class BanInfoViewModelOfTypes : BanInfoViewModel
     {
 

@@ -27,7 +27,7 @@ if ($content -match $pattern3) {
     $content = $content -replace $pattern3, "`${1}$fileVersion`$2"
 }
 else {
-    throw "AssemblyFileVersion not found."
+    throw "AssemblyInformationalVersion not found."
 }
 
 Set-Content $sourcePath $content -Encoding UTF8

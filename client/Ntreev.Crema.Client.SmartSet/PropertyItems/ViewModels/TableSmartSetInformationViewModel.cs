@@ -34,7 +34,7 @@
 //    [Export(typeof(IPropertyItem))]
 //    [RequiredAuthority(Authority.Guest)]
 //    [View(typeof(SmartSetInformationView))]
-//    [ParentType("Ntreev.Crema.Client.Tables.IPropertyService, Ntreev.Crema.Client.Tables, Version=3.6.0.0, Culture=neutral, PublicKeyToken=null")]
+//    [ParentType("Ntreev.Crema.Client.Tables.IPropertyService, Ntreev.Crema.Client.Tables, Version=4.0.0.0, Culture=neutral, PublicKeyToken=null")]
 //    class TableSmartSetInformationViewModel : PropertyItemBase
 //    {
 //        private readonly ICremaHost cremaHost;
