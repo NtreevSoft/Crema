@@ -91,9 +91,12 @@ namespace Ntreev.Crema.Services.Data
         {
             this.Container.InvokeTableEndTemplateEdit(authentication, this.table);
             base.OnEndEdit(authentication, tableInfo);
-            this.table.UpdateTemplate(tableInfo);
-            this.table.UpdateTags(tableInfo.Tags);
-            this.table.UpdateComment(tableInfo.Comment);
+            if (tableInfo != TableInfo.Empty)
+            {
+                this.table.UpdateTemplate(tableInfo);
+                this.table.UpdateTags(tableInfo.Tags);
+                this.table.UpdateComment(tableInfo.Comment);
+            }
             this.table.SetTableState(TableState.None);
 
             var items = EnumerableUtility.One(this.table).ToArray();
