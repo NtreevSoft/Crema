@@ -151,7 +151,7 @@ namespace Ntreev.Crema.Services.Data
 
                     this.repositoryDispatcher.Invoke(() =>
                     {
-                        this.repositoryProvider.CreateRepository(authentication, this.remotesPath, dataBasePath, message);
+                        this.repositoryProvider.CreateRepository(authentication, this.remotesPath, dataBasePath, comment);
                     });
                 }
                 finally
@@ -182,7 +182,7 @@ namespace Ntreev.Crema.Services.Data
                 var message = EventMessageBuilder.CreateDataBase(authentication, newDataBaseName) + ": " + comment;
                 this.repositoryDispatcher.Invoke(() =>
                 {
-                    this.repositoryProvider.CopyRepository(authentication, this.remotesPath, dataBaseName, newDataBaseName, message);
+                    this.repositoryProvider.CopyRepository(authentication, this.remotesPath, dataBaseName, newDataBaseName, comment);
                 });
                 var newDataBase = new DataBase(this.CremaHost, newDataBaseName);
                 this.AddBase(newDataBase.Name, newDataBase);

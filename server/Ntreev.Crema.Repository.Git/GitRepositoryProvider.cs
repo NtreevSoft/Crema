@@ -43,12 +43,18 @@ namespace Ntreev.Crema.Repository.Git
 
         private readonly Dictionary<Uri, string> cacheRepositories = new Dictionary<Uri, string>();
 
-        [Import]
-        private Lazy<ICremaHost> cremaHost = null;
-
         public void CopyRepository(string author, string basePath, string repositoryName, string newRepositoryName, string comment, params LogPropertyInfo[] properties)
         {
-            throw new NotImplementedException();
+            var baseUri = new Uri(basePath);
+            var repositoryPath = baseUri.LocalPath;
+            var branchCommand = new GitCommand(repositoryPath, "branch")
+            {
+                newRepositoryName,
+                repositoryName,
+            };
+            branchCommand.Run();
+            this.SetID(repositoryPath, newRepositoryName, Guid.NewGuid());
+            this.SetDescription(repositoryPath, newRepositoryName, comment);
         }
 
         public IRepository CreateInstance(RepositorySettings settings)
@@ -198,19 +204,6 @@ namespace Ntreev.Crema.Repository.Git
                 this.SetID(repositoryPath, repositoryName, Guid.NewGuid());
             }
             repositoryInfo.ID = this.GetID(repositoryPath, repositoryName);
-            //try
-            //{
-
-
-            //    var description = GitHost.Run(repositoryPath, "config", $"branch.{repositoryName}.description");
-            //    var info = propertyDeserializer.Deserialize<GitBranchDescription>(description);
-            //    repositoryInfo.ID = info.ID;
-            //}
-            //catch
-            //{
-            //    repositoryInfo.ID = Guid.NewGuid();
-            //    this.SetID(repositoryPath, repositoryName, repositoryInfo.ID);
-            //}
 
             return repositoryInfo;
         }
@@ -431,7 +424,5 @@ namespace Ntreev.Crema.Repository.Git
             };
             checkoutCommand.Run();
         }
-
-        private ICremaHost CremaHost => this.cremaHost.Value;
     }
 }
