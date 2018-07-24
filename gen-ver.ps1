@@ -10,15 +10,24 @@ $pattern1 = "(AssemblyVersion[(]`").+(`"[)]])"
 if ($content -match $pattern1) {
     $content = $content -replace $pattern1, "`${1}$version`$2"
 }
+else {
+    throw "AssemblyVersion not found."
+}
 
 $pattern2 = "(AssemblyFileVersion[(]`").+(`"[)]])"
 if ($content -match $pattern2) {
     $content = $content -replace $pattern2, "`${1}$fileVersion`$2"
 }
+else {
+    throw "AssemblyFileVersion not found."
+}
 
 $pattern3 = "(AssemblyInformationalVersion[(]`").+(`"[)]])"
 if ($content -match $pattern3) {
     $content = $content -replace $pattern3, "`${1}$fileVersion`$2"
+}
+else {
+    throw "AssemblyFileVersion not found."
 }
 
 Set-Content $sourcePath $content -Encoding UTF8
