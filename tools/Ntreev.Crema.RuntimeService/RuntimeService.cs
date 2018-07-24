@@ -30,7 +30,7 @@ namespace Ntreev.Crema.RuntimeService
     [Export(typeof(IRuntimeService))]
     class RuntimeService : IRuntimeService
     {
-        public GenerationSet GetCodeGenerationData(string address, string dataBaseName, string tags, string filterExpression, long revision)
+        public GenerationSet GetCodeGenerationData(string address, string dataBaseName, string tags, string filterExpression, string revision)
         {
             var service = RuntimeServiceFactory.CreateServiceClient(address);
             service.Open();
@@ -46,7 +46,7 @@ namespace Ntreev.Crema.RuntimeService
             }
         }
 
-        public SerializationSet GetDataGenerationData(string address, string dataBaseName, string tags, string filterExpression, bool isDevmode, long revision)
+        public SerializationSet GetDataGenerationData(string address, string dataBaseName, string tags, string filterExpression, bool isDevmode, string revision)
         {
             var service = RuntimeServiceFactory.CreateServiceClient(address);
             service.Open();
@@ -62,7 +62,7 @@ namespace Ntreev.Crema.RuntimeService
             }
         }
 
-        public Tuple<GenerationSet, SerializationSet> GetMetaData(string address, string dataBaseName, string tags, string filterExpression, bool isDevmode, long revision)
+        public Tuple<GenerationSet, SerializationSet> GetMetaData(string address, string dataBaseName, string tags, string filterExpression, bool isDevmode, string revision)
         {
             var service = RuntimeServiceFactory.CreateServiceClient(address);
             service.Open();
@@ -93,7 +93,7 @@ namespace Ntreev.Crema.RuntimeService
             }
         }
 
-        public long GetRevision(string address, string dataBaseName)
+        public string GetRevision(string address, string dataBaseName)
         {
             var service = RuntimeServiceFactory.CreateServiceClient(address);
             service.Open();

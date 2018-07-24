@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Library", "sub-modul
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.Tools.Framework", "tools\Ntreev.Crema.Tools.Framework\Ntreev.Crema.Tools.Framework.csproj", "{AF7FE3F1-E2CC-45CB-A848-198DDF4AEC18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Library.Commands", "sub-modules\Ntreev.Library.Commands\Ntreev.Library.Commands.Net45\Ntreev.Library.Commands.csproj", "{CEB280C0-463F-4E09-A00C-CE3A8326F6FF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Library.Commands", "sub-modules\Ntreev.Library.Commands\Ntreev.Library.Commands.Net45\Ntreev.Library.Commands.csproj", "{0D96CC61-6D74-49B4-A558-33AC0DCF8529}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.Validator", "tools\Ntreev.Crema.Validator\Ntreev.Crema.Validator.csproj", "{3171BD1A-A6F9-4A15-85BB-BB71BB81BC47}"
 EndProject
@@ -68,6 +68,7 @@ EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems*{04aeb614-3510-4064-99af-0aa807c7f957}*SharedItemsImports = 4
+		sub-modules\Ntreev.Library.Commands\Ntreev.Library.Commands.AssemblyInfo\Ntreev.Library.Commands.AssemblyInfo.projitems*{0d96cc61-6d74-49b4-a558-33ac0dcf8529}*SharedItemsImports = 4
 		common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems*{0fc60f01-a2ce-4e41-bed0-af56ad18ca39}*SharedItemsImports = 4
 		sub-modules\Ntreev.Library\Ntreev.Library.AssemblyInfo\Ntreev.Library.AssemblyInfo.projitems*{1918437f-4fbf-4731-ac5b-981a4a4cb1f1}*SharedItemsImports = 4
 		sub-modules\Ntreev.ModernUI.Framework\Ntreev.ModernUI.AssemblyInfo\Ntreev.ModernUI.AssemblyInfo.projitems*{1c55fed2-99eb-469d-9dac-a1f7b9e7c790}*SharedItemsImports = 4
@@ -85,7 +86,6 @@ Global
 		common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems*{acd0a4dc-21e7-48d0-a67f-88bd9e8a5cec}*SharedItemsImports = 4
 		common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems*{ad0eba0c-d167-4722-a2a7-82b17e1fc9aa}*SharedItemsImports = 13
 		common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems*{bdb528b8-1482-4fcb-8caa-dadc8fad5243}*SharedItemsImports = 4
-		sub-modules\Ntreev.Library.Commands\Ntreev.Library.Commands.Sharing.AssemblyInfo\Ntreev.Library.Commands.Sharing.AssemblyInfo.projitems*{ceb280c0-463f-4e09-a00c-ce3a8326f6ff}*SharedItemsImports = 4
 		common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems*{d8f5b983-c45e-4230-96f5-e2c494d5ff5c}*SharedItemsImports = 4
 		common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems*{ea40ac57-d041-44f4-bd03-5e81d0572625}*SharedItemsImports = 4
 		common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems*{edbc5495-35f7-4ce5-a1c6-57018043dcf0}*SharedItemsImports = 4
@@ -120,10 +120,10 @@ Global
 		{AF7FE3F1-E2CC-45CB-A848-198DDF4AEC18}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF7FE3F1-E2CC-45CB-A848-198DDF4AEC18}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF7FE3F1-E2CC-45CB-A848-198DDF4AEC18}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CEB280C0-463F-4E09-A00C-CE3A8326F6FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CEB280C0-463F-4E09-A00C-CE3A8326F6FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CEB280C0-463F-4E09-A00C-CE3A8326F6FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CEB280C0-463F-4E09-A00C-CE3A8326F6FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D96CC61-6D74-49B4-A558-33AC0DCF8529}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D96CC61-6D74-49B4-A558-33AC0DCF8529}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D96CC61-6D74-49B4-A558-33AC0DCF8529}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D96CC61-6D74-49B4-A558-33AC0DCF8529}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3171BD1A-A6F9-4A15-85BB-BB71BB81BC47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3171BD1A-A6F9-4A15-85BB-BB71BB81BC47}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3171BD1A-A6F9-4A15-85BB-BB71BB81BC47}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -207,7 +207,7 @@ Global
 		{20C3D3DD-DE99-4126-9449-BCA12E4D255D} = {3EE26F25-842C-4633-AF9F-34847F643EDF}
 		{1918437F-4FBF-4731-AC5B-981A4A4CB1F1} = {3EE26F25-842C-4633-AF9F-34847F643EDF}
 		{AF7FE3F1-E2CC-45CB-A848-198DDF4AEC18} = {DDF60E41-53CA-4CC9-A9A3-7478E67C1CFA}
-		{CEB280C0-463F-4E09-A00C-CE3A8326F6FF} = {3EE26F25-842C-4633-AF9F-34847F643EDF}
+		{0D96CC61-6D74-49B4-A558-33AC0DCF8529} = {3EE26F25-842C-4633-AF9F-34847F643EDF}
 		{BDB528B8-1482-4FCB-8CAA-DADC8FAD5243} = {3EE26F25-842C-4633-AF9F-34847F643EDF}
 		{279D3BBF-10A3-449F-AA73-545BC0B7BAAF} = {3EE26F25-842C-4633-AF9F-34847F643EDF}
 		{79AEF7D1-93D1-4EEB-B09C-1595C82E7492} = {3EE26F25-842C-4633-AF9F-34847F643EDF}

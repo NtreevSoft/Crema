@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<xs:schema xmlns:tns="http://schemas.ntreev.com" elementFormDefault="qualified" targetNamespace="http://schemas.ntreev.com" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://schemas.ntreev.com" elementFormDefault="qualified" targetNamespace="http://schemas.ntreev.com" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
   <xs:complexType name="ArrayOfDataBaseInfo">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="DataBaseInfo" type="tns:DataBaseInfo" />
@@ -14,10 +15,56 @@
       </xs:appinfo>
     </xs:annotation>
     <xs:sequence>
-      <xs:element minOccurs="0" name="Xml" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Comment" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CreationInfo" type="tns:SignatureDate" />
+      <xs:element minOccurs="0" name="ID" type="ser:guid" />
+      <xs:element minOccurs="0" name="ModificationInfo" type="tns:SignatureDate" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Paths" nillable="true" type="q1:ArrayOfstring" />
+      <xs:element minOccurs="0" name="Revision" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TablesHashValue" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Tags" type="tns:TagInfo" />
+      <xs:element minOccurs="0" name="TypesHashValue" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="DataBaseInfo" nillable="true" type="tns:DataBaseInfo" />
+  <xs:complexType name="SignatureDate">
+    <xs:annotation>
+      <xs:appinfo>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="DateTime" type="xs:dateTime">
+        <xs:annotation>
+          <xs:appinfo>
+            <DefaultValue EmitDefaultValue="false" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+            </DefaultValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="ID" nillable="true" type="xs:string">
+        <xs:annotation>
+          <xs:appinfo>
+            <DefaultValue EmitDefaultValue="false" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+            </DefaultValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SignatureDate" nillable="true" type="tns:SignatureDate" />
+  <xs:complexType name="TagInfo">
+    <xs:annotation>
+      <xs:appinfo>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Value" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="TagInfo" nillable="true" type="tns:TagInfo" />
   <xs:complexType name="ArrayOfServiceInfo">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="ServiceInfo" type="tns:ServiceInfo" />
@@ -31,8 +78,11 @@
       </xs:appinfo>
     </xs:annotation>
     <xs:sequence>
+      <xs:element minOccurs="0" name="Culture" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="PlatformID" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Port" type="xs:int" />
+      <xs:element minOccurs="0" name="Version" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ServiceInfo" nillable="true" type="tns:ServiceInfo" />

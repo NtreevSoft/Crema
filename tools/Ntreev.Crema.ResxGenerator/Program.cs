@@ -58,7 +58,7 @@ namespace Ntreev.Crema.ResxGenerator
         static void Write(Settings settings)
         {
             var runtimeService = Container.Get<IRuntimeService>();
-            var data = runtimeService.GetDataGenerationData(settings.Address, settings.DataBaseName, "all", null, false, -1);
+            var data = runtimeService.GetDataGenerationData(settings.Address, settings.DataBaseName, "all", null, false, null);
             var dataSet = SerializationUtility.Create(data);
 
             var projectInfoTable = dataSet.Tables[settings.ExportName];

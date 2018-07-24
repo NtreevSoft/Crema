@@ -164,7 +164,7 @@ namespace Ntreev.Crema.Designer.Tables.ViewModels
 
             var dataSet = new CremaDataSet();
             var dataTable = this.dataTable.CopyTo(dataSet);
-            var tempalte = CremaTemplate.CreateChild(dataTable);
+            var tempalte = CremaTemplate.Create(dataTable);
             var dialog = new NewChildTableViewModel(dataTable, tempalte);
             if (dialog != null)
                 dialog.ShowDialog();

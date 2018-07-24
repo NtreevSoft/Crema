@@ -65,6 +65,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Service References\DescriptorService\Arrays.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\DescriptorService\schemas.ntreev.com.xsd">
       <SubType>Designer</SubType>
     </None>

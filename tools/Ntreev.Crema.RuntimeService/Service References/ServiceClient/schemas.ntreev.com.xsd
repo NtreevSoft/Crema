@@ -1,53 +1,387 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<xs:schema xmlns:tns="http://schemas.ntreev.com" elementFormDefault="qualified" targetNamespace="http://schemas.ntreev.com" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://schemas.ntreev.com" elementFormDefault="qualified" targetNamespace="http://schemas.ntreev.com" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
-  <xs:complexType name="ResultBaseOfGenerationSete_P1K94QQ">
+  <xs:complexType name="ResultBaseOfGenerationSetq8erDhHE">
     <xs:annotation>
       <xs:appinfo>
         <GenericType Name="ResultBaseOf{0}{#}" Namespace="http://schemas.ntreev.com" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
-          <GenericParameter Name="GenerationSet" Namespace="http://schemas.datacontract.org/2004/07/Ntreev.Crema.Runtime.Generation">
+          <GenericParameter Name="GenerationSet" Namespace="http://schemas.ntreev.com">
           </GenericParameter>
         </GenericType>
         <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
       </xs:appinfo>
     </xs:annotation>
     <xs:sequence>
-      <xs:element minOccurs="0" name="Xml" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Fault" nillable="true" type="tns:CremaFault" />
+      <xs:element minOccurs="0" name="SignatureDate" type="tns:SignatureDate" />
+      <xs:element minOccurs="0" name="Value" type="tns:GenerationSet" />
     </xs:sequence>
   </xs:complexType>
-  <xs:element name="ResultBaseOfGenerationSete_P1K94QQ" nillable="true" type="tns:ResultBaseOfGenerationSete_P1K94QQ" />
-  <xs:complexType name="ResultBaseOfSerializationSetPXjF_S884">
+  <xs:element name="ResultBaseOfGenerationSetq8erDhHE" nillable="true" type="tns:ResultBaseOfGenerationSetq8erDhHE" />
+  <xs:complexType name="CremaFault">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ExceptionType" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Message" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="CremaFault" nillable="true" type="tns:CremaFault" />
+  <xs:complexType name="SignatureDate">
+    <xs:annotation>
+      <xs:appinfo>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="DateTime" type="xs:dateTime">
+        <xs:annotation>
+          <xs:appinfo>
+            <DefaultValue EmitDefaultValue="false" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+            </DefaultValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="ID" nillable="true" type="xs:string">
+        <xs:annotation>
+          <xs:appinfo>
+            <DefaultValue EmitDefaultValue="false" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+            </DefaultValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SignatureDate" nillable="true" type="tns:SignatureDate" />
+  <xs:complexType name="GenerationSet">
+    <xs:annotation>
+      <xs:appinfo>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="HashValue" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Revision" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Tables" nillable="true" type="tns:ArrayOfTableInfo" />
+      <xs:element minOccurs="0" name="TablesHashValue" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Tags" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Types" nillable="true" type="tns:ArrayOfTypeInfo" />
+      <xs:element minOccurs="0" name="TypesHashValue" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="GenerationSet" nillable="true" type="tns:GenerationSet" />
+  <xs:complexType name="ArrayOfTableInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="TableInfo" type="tns:TableInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfTableInfo" nillable="true" type="tns:ArrayOfTableInfo" />
+  <xs:complexType name="TableInfo">
+    <xs:annotation>
+      <xs:appinfo>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CategoryPath" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Columns" nillable="true" type="tns:ArrayOfColumnInfo" />
+      <xs:element minOccurs="0" name="Comment" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ContentsInfo" type="tns:SignatureDate" />
+      <xs:element minOccurs="0" name="CreationInfo" type="tns:SignatureDate" />
+      <xs:element minOccurs="0" name="DerivedTags" type="tns:TagInfo" />
+      <xs:element minOccurs="0" name="HashValue" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ID" type="ser:guid" />
+      <xs:element minOccurs="0" name="ModificationInfo" type="tns:SignatureDate" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Tags" type="tns:TagInfo" />
+      <xs:element minOccurs="0" name="TemplatedParent" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="TableInfo" nillable="true" type="tns:TableInfo" />
+  <xs:complexType name="ArrayOfColumnInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ColumnInfo" type="tns:ColumnInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfColumnInfo" nillable="true" type="tns:ArrayOfColumnInfo" />
+  <xs:complexType name="ColumnInfo">
+    <xs:annotation>
+      <xs:appinfo>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="AllowNull" type="xs:boolean" />
+      <xs:element minOccurs="0" name="AutoIncrement" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Comment" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CreationInfo" type="tns:SignatureDate" />
+      <xs:element minOccurs="0" name="DataType" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DefaultValue" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DerivedTags" type="tns:TagInfo" />
+      <xs:element minOccurs="0" name="ID" type="ser:guid" />
+      <xs:element minOccurs="0" name="IsKey" type="xs:boolean" />
+      <xs:element minOccurs="0" name="IsUnique" type="xs:boolean" />
+      <xs:element minOccurs="0" name="ModificationInfo" type="tns:SignatureDate" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ReadOnly" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Tags" type="tns:TagInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ColumnInfo" nillable="true" type="tns:ColumnInfo" />
+  <xs:complexType name="TagInfo">
+    <xs:annotation>
+      <xs:appinfo>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Value" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="TagInfo" nillable="true" type="tns:TagInfo" />
+  <xs:complexType name="ArrayOfTypeInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="TypeInfo" type="tns:TypeInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfTypeInfo" nillable="true" type="tns:ArrayOfTypeInfo" />
+  <xs:complexType name="TypeInfo">
+    <xs:annotation>
+      <xs:appinfo>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CategoryPath" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Comment" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CreationInfo" type="tns:SignatureDate" />
+      <xs:element minOccurs="0" name="DerivedTags" type="tns:TagInfo" />
+      <xs:element minOccurs="0" name="HashValue" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ID" type="ser:guid" />
+      <xs:element minOccurs="0" name="IsFlag" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Members" nillable="true" type="tns:ArrayOfTypeMemberInfo" />
+      <xs:element minOccurs="0" name="ModificationInfo" type="tns:SignatureDate" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Tags" type="tns:TagInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="TypeInfo" nillable="true" type="tns:TypeInfo" />
+  <xs:complexType name="ArrayOfTypeMemberInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="TypeMemberInfo" type="tns:TypeMemberInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfTypeMemberInfo" nillable="true" type="tns:ArrayOfTypeMemberInfo" />
+  <xs:complexType name="TypeMemberInfo">
+    <xs:annotation>
+      <xs:appinfo>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Comment" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CreationInfo" type="tns:SignatureDate" />
+      <xs:element minOccurs="0" name="DerivedTags" type="tns:TagInfo" />
+      <xs:element minOccurs="0" name="ID" type="ser:guid" />
+      <xs:element minOccurs="0" name="IsEnabled" type="xs:boolean" />
+      <xs:element minOccurs="0" name="ModificationInfo" type="tns:SignatureDate" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Tags" type="tns:TagInfo" />
+      <xs:element minOccurs="0" name="Value" type="xs:long" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="TypeMemberInfo" nillable="true" type="tns:TypeMemberInfo" />
+  <xs:complexType name="ResultBaseOfSerializationSetq8erDhHE">
     <xs:annotation>
       <xs:appinfo>
         <GenericType Name="ResultBaseOf{0}{#}" Namespace="http://schemas.ntreev.com" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
-          <GenericParameter Name="SerializationSet" Namespace="http://schemas.datacontract.org/2004/07/Ntreev.Crema.Runtime.Serialization">
+          <GenericParameter Name="SerializationSet" Namespace="http://schemas.ntreev.com">
           </GenericParameter>
         </GenericType>
         <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
       </xs:appinfo>
     </xs:annotation>
     <xs:sequence>
-      <xs:element minOccurs="0" name="Xml" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Fault" nillable="true" type="tns:CremaFault" />
+      <xs:element minOccurs="0" name="SignatureDate" type="tns:SignatureDate" />
+      <xs:element minOccurs="0" name="Value" type="tns:SerializationSet" />
     </xs:sequence>
   </xs:complexType>
-  <xs:element name="ResultBaseOfSerializationSetPXjF_S884" nillable="true" type="tns:ResultBaseOfSerializationSetPXjF_S884" />
-  <xs:complexType name="ResultBaseOfGenerationSetSerializationSetNekzTzjl">
+  <xs:element name="ResultBaseOfSerializationSetq8erDhHE" nillable="true" type="tns:ResultBaseOfSerializationSetq8erDhHE" />
+  <xs:complexType name="SerializationSet">
+    <xs:annotation>
+      <xs:appinfo>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Revision" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Tables" nillable="true" type="tns:ArrayOfSerializationTable" />
+      <xs:element minOccurs="0" name="TablesHashValue" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Tags" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Types" nillable="true" type="tns:ArrayOfSerializationType" />
+      <xs:element minOccurs="0" name="TypesHashValue" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SerializationSet" nillable="true" type="tns:SerializationSet" />
+  <xs:complexType name="ArrayOfSerializationTable">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="SerializationTable" type="tns:SerializationTable" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfSerializationTable" nillable="true" type="tns:ArrayOfSerializationTable" />
+  <xs:complexType name="SerializationTable">
+    <xs:annotation>
+      <xs:appinfo>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CategoryPath" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Columns" nillable="true" type="tns:ArrayOfSerializationColumn" />
+      <xs:element minOccurs="0" name="Comment" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DerivedTags" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="HashValue" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Parent" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Rows" nillable="true" type="tns:ArrayOfSerializationRow" />
+      <xs:element minOccurs="0" name="TableName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Tags" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TemplatedParent" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SerializationTable" nillable="true" type="tns:SerializationTable" />
+  <xs:complexType name="ArrayOfSerializationColumn">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="SerializationColumn" type="tns:SerializationColumn" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfSerializationColumn" nillable="true" type="tns:ArrayOfSerializationColumn" />
+  <xs:complexType name="SerializationColumn">
+    <xs:annotation>
+      <xs:appinfo>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="AllowNull" type="xs:boolean" />
+      <xs:element minOccurs="0" name="AutoIncrement" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Comment" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DataType" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DerivedTags" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Index" type="xs:int" />
+      <xs:element minOccurs="0" name="IsKey" type="xs:boolean" />
+      <xs:element minOccurs="0" name="IsUnique" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ReadOnly" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Tags" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SerializationColumn" nillable="true" type="tns:SerializationColumn" />
+  <xs:complexType name="ArrayOfSerializationRow">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="SerializationRow" type="tns:SerializationRow" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfSerializationRow" nillable="true" type="tns:ArrayOfSerializationRow" />
+  <xs:complexType name="SerializationRow">
+    <xs:annotation>
+      <xs:appinfo>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="DerivedTags" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Fields" nillable="true" type="tns:ArrayOfSerializationField" />
+      <xs:element minOccurs="0" name="ParentID" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="RelationID" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Tags" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SerializationRow" nillable="true" type="tns:SerializationRow" />
+  <xs:complexType name="ArrayOfSerializationField">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="SerializationField" type="tns:SerializationField" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfSerializationField" nillable="true" type="tns:ArrayOfSerializationField" />
+  <xs:complexType name="SerializationField">
+    <xs:annotation>
+      <xs:appinfo>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Type" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Value" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SerializationField" nillable="true" type="tns:SerializationField" />
+  <xs:complexType name="ArrayOfSerializationType">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="SerializationType" type="tns:SerializationType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfSerializationType" nillable="true" type="tns:ArrayOfSerializationType" />
+  <xs:complexType name="SerializationType">
+    <xs:annotation>
+      <xs:appinfo>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CategoryPath" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Comment" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DerivedTags" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="HashValue" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="IsFlag" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Members" nillable="true" type="tns:ArrayOfSerializationTypeMember" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Tags" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SerializationType" nillable="true" type="tns:SerializationType" />
+  <xs:complexType name="ArrayOfSerializationTypeMember">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="SerializationTypeMember" type="tns:SerializationTypeMember" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfSerializationTypeMember" nillable="true" type="tns:ArrayOfSerializationTypeMember" />
+  <xs:complexType name="SerializationTypeMember">
+    <xs:annotation>
+      <xs:appinfo>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Comment" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DerivedTags" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Tags" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Value" type="xs:long" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SerializationTypeMember" nillable="true" type="tns:SerializationTypeMember" />
+  <xs:complexType name="ResultBaseOfGenerationSetSerializationSet45wWDu_Sb">
     <xs:annotation>
       <xs:appinfo>
         <GenericType Name="ResultBaseOf{0}{1}{#}" Namespace="http://schemas.ntreev.com" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
-          <GenericParameter Name="GenerationSet" Namespace="http://schemas.datacontract.org/2004/07/Ntreev.Crema.Runtime.Generation">
+          <GenericParameter Name="GenerationSet" Namespace="http://schemas.ntreev.com">
           </GenericParameter>
-          <GenericParameter Name="SerializationSet" Namespace="http://schemas.datacontract.org/2004/07/Ntreev.Crema.Runtime.Serialization">
+          <GenericParameter Name="SerializationSet" Namespace="http://schemas.ntreev.com">
           </GenericParameter>
         </GenericType>
         <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
       </xs:appinfo>
     </xs:annotation>
     <xs:sequence>
-      <xs:element minOccurs="0" name="Xml" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Fault" nillable="true" type="tns:CremaFault" />
+      <xs:element minOccurs="0" name="SignatureDate" type="tns:SignatureDate" />
+      <xs:element minOccurs="0" name="Value1" type="tns:GenerationSet" />
+      <xs:element minOccurs="0" name="Value2" type="tns:SerializationSet" />
     </xs:sequence>
   </xs:complexType>
-  <xs:element name="ResultBaseOfGenerationSetSerializationSetNekzTzjl" nillable="true" type="tns:ResultBaseOfGenerationSetSerializationSetNekzTzjl" />
+  <xs:element name="ResultBaseOfGenerationSetSerializationSet45wWDu_Sb" nillable="true" type="tns:ResultBaseOfGenerationSetSerializationSet45wWDu_Sb" />
   <xs:complexType name="ResultBase">
     <xs:annotation>
       <xs:appinfo>
@@ -55,23 +389,26 @@
       </xs:appinfo>
     </xs:annotation>
     <xs:sequence>
-      <xs:element minOccurs="0" name="Xml" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Fault" nillable="true" type="tns:CremaFault" />
+      <xs:element minOccurs="0" name="SignatureDate" type="tns:SignatureDate" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ResultBase" nillable="true" type="tns:ResultBase" />
-  <xs:complexType name="ResultBaseOflong">
+  <xs:complexType name="ResultBaseOfstring">
     <xs:annotation>
       <xs:appinfo>
         <GenericType Name="ResultBaseOf{0}{#}" Namespace="http://schemas.ntreev.com" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
-          <GenericParameter Name="long" Namespace="http://www.w3.org/2001/XMLSchema">
+          <GenericParameter Name="string" Namespace="http://www.w3.org/2001/XMLSchema">
           </GenericParameter>
         </GenericType>
         <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
       </xs:appinfo>
     </xs:annotation>
     <xs:sequence>
-      <xs:element minOccurs="0" name="Xml" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Fault" nillable="true" type="tns:CremaFault" />
+      <xs:element minOccurs="0" name="SignatureDate" type="tns:SignatureDate" />
+      <xs:element minOccurs="0" name="Value" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
-  <xs:element name="ResultBaseOflong" nillable="true" type="tns:ResultBaseOflong" />
+  <xs:element name="ResultBaseOfstring" nillable="true" type="tns:ResultBaseOfstring" />
 </xs:schema>
