@@ -167,6 +167,8 @@ namespace Ntreev.Crema.Client.Users.PropertyItems.ViewModels
             if (sender is IDomainCollection domainCollection)
             {
                 var domain = e.Domain;
+                if (domain.Dispatcher == null)
+                    return;
                 var viewModel = domain.Dispatcher.Invoke(() => new DomainTreeItemBase(this.authenticator, domain, true, this));
                 this.Dispatcher.InvokeAsync(() =>
                 {
