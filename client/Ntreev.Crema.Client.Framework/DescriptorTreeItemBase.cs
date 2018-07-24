@@ -63,7 +63,7 @@ namespace Ntreev.Crema.Client.Framework
         private async void Descriptor_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (this.isDescriptorDisposed == true)
-                throw new NotImplementedException("this object was disposed.");
+                return;
             if (e.PropertyName == nameof(this.DisplayName) && this.Parent != null)
             {
                 this.Parent.Items.Reposition(this);
