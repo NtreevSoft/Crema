@@ -9,5 +9,5 @@
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyVersion("3.6")]
-[assembly: AssemblyFileVersion("3.6.18205.1720")]
-[assembly: AssemblyInformationalVersion("3.6.18205.1720")]
+[assembly: AssemblyFileVersion("3.6.18206.1129")]
+[assembly: AssemblyInformationalVersion("3.6.18206.1129")]
