@@ -34,23 +34,23 @@ namespace Ntreev.Crema.Reader.Internal
                 return typeof(float);
             else if (typeName == "double")
                 return typeof(double);
-            else if (typeName == "byte")
+            else if (typeName == "int8")
                 return typeof(sbyte);
-            else if (typeName == "unsignedByte")
+            else if (typeName == "uint8")
                 return typeof(byte);
-            else if (typeName == "short")
+            else if (typeName == "int16")
                 return typeof(short);
-            else if (typeName == "unsignedShort")
+            else if (typeName == "uint16")
                 return typeof(ushort);
-            else if (typeName == "int")
+            else if (typeName == "int32")
                 return typeof(int);
-            else if (typeName == "unsignedInt")
+            else if (typeName == "uint32")
                 return typeof(uint);
-            else if (typeName == "long")
+            else if (typeName == "int64")
                 return typeof(long);
-            else if (typeName == "unsignedLong")
+            else if (typeName == "uint64")
                 return typeof(ulong);
-            else if (typeName == "dateTime")
+            else if (typeName == "datetime")
                 return typeof(DateTime);
             else if (typeName == "duration")
                 return typeof(TimeSpan);

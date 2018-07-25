@@ -33,7 +33,7 @@ namespace Ntreev.Crema.Reader.Binary
         private ReadOptions options;
         private CremaBinaryTableCollection tables;
         private int version;
-        private int revision;
+        private string revision;
         private string name;
         private string typesHashValue;
         private string tablesHashValue;
@@ -59,7 +59,7 @@ namespace Ntreev.Crema.Reader.Binary
             get { return (this.options & ReadOptions.CaseSensitive) == ReadOptions.CaseSensitive; }
         }
 
-        public int Revision
+        public string Revision
         {
             get { return this.revision; }
         }
@@ -136,10 +136,10 @@ namespace Ntreev.Crema.Reader.Binary
             var fileHeader = reader.ReadValue<FileHeader>();
             this.tableIndexes = reader.ReadValues<TableIndex>(fileHeader.TableCount);
             this.version = fileHeader.MagicValue;
-            this.revision = fileHeader.Revision;
             
             stream.Seek(fileHeader.StringResourcesOffset, SeekOrigin.Begin);
             StringResource.Read(reader);
+            this.revision = StringResource.GetString(fileHeader.Revision);
             this.name = StringResource.GetString(fileHeader.Name);
             this.tables = new CremaBinaryTableCollection(this, this.tableIndexes);
             this.typesHashValue = StringResource.GetString(fileHeader.TypesHashValue);

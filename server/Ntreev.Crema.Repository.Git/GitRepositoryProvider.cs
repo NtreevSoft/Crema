@@ -148,7 +148,6 @@ namespace Ntreev.Crema.Repository.Git
             };
             deleteCommand.Run();
             this.UnsetID(repositoryPath, repositoryName);
-            this.UnsetDescription(repositoryPath, repositoryName);
         }
 
         public LogInfo[] GetLog(string basePath, string repositoryName, int count)
@@ -194,7 +193,6 @@ namespace Ntreev.Crema.Repository.Git
             var latestLog = logItems.First();
 
             repositoryInfo.Name = repositoryName;
-            repositoryInfo.Comment = latestLog.Comment;
             repositoryInfo.Revision = latestLog.CommitID;
             repositoryInfo.CreationInfo = new SignatureDate(firstLog.Author, firstLog.AuthorDate);
             repositoryInfo.ModificationInfo = new SignatureDate(latestLog.Author, latestLog.AuthorDate);
@@ -202,6 +200,15 @@ namespace Ntreev.Crema.Repository.Git
             if (this.HasID(repositoryPath, repositoryName) == false)
             {
                 this.SetID(repositoryPath, repositoryName, Guid.NewGuid());
+            }
+
+            if (this.HasDescription(repositoryPath, repositoryName) == true)
+            {
+                repositoryInfo.Comment = this.GetDescription(repositoryPath, repositoryName);
+            }
+            else
+            {
+                repositoryInfo.Comment = string.Empty;
             }
             repositoryInfo.ID = this.GetID(repositoryPath, repositoryName);
 
@@ -302,11 +309,10 @@ namespace Ntreev.Crema.Repository.Git
                 repositoryName,
                 newRepositoryName
             };
+
+            var repositoryID = this.GetID(repositoryPath, repositoryName);
             renameCommand.Run();
-            var id = this.GetID(repositoryPath, repositoryName);
-            var description = this.GetDescription(repositoryPath, repositoryName);
-            this.SetID(repositoryPath, newRepositoryName, id);
-            this.SetDescription(repositoryPath, newRepositoryName, description);
+            this.SetID(repositoryPath, newRepositoryName, repositoryID);
         }
 
         public string GenerateComment(string comment, params LogPropertyInfo[] properties)

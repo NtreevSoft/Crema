@@ -55,7 +55,14 @@ namespace Ntreev.Crema.Repository.Git
                 name,
             };
             configCommand.ThrowOnError = false;
-            return configCommand.ReadLine() != null;
+            try
+            {
+                return configCommand.ReadLine() != null;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public static string GetValue(string repositoryPath, string name)

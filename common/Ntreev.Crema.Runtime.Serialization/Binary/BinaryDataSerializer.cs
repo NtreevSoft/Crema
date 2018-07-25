@@ -75,7 +75,7 @@ namespace Ntreev.Crema.Runtime.Serialization.Binary
             fileHeader.Tags = this.GetStringID((string)dataSet.Tags);
             fileHeader.TablesOffset = stream.Position;
             fileHeader.TableCount = tables.Length;
-            fileHeader.Revision = dataSet.Revision.GetHashCode();
+            fileHeader.Revision = this.GetStringID(dataSet.Revision);
             fileHeader.Name = this.GetStringID(dataSet.Name);
 
             var t = new Dictionary<string, Stream>();

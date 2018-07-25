@@ -95,7 +95,7 @@ namespace Ntreev.Crema.Reader
             var reader = new BinaryReader(stream);
             var magicValue = reader.ReadUInt32();
 
-            if (magicValue == FileHeader.defaultMagicValueObsolete || magicValue == FileHeader.defaultMagicValue)
+            if (magicValue == FileHeader.defaultMagicValue)
             {
                 var binaryReader = new CremaBinaryReader();
                 binaryReader.Read(stream, options);
