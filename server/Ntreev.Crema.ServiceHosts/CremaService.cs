@@ -195,7 +195,7 @@ namespace Ntreev.Crema.ServiceHosts
             var providers = this.GetService(typeof(IEnumerable<IServiceHostProvider>)) as IEnumerable<IServiceHostProvider>;
             var items = providers.TopologicalSort().ToArray();
             var port = this.port;
-            var version = new Version(FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly().Location).FileVersion);
+            var version = new Version(FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly().Location).ProductVersion);
 
             CremaService.Dispatcher.Invoke(() =>
             {
