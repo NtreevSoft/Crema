@@ -226,6 +226,18 @@ namespace Ntreev.Crema.Services.Data
             this.RemoveBase(dataBase.Name);
         }
 
+        public void InvokeDataBaseRevert(Authentication authentication, DataBase dataBase, string revision)
+        {
+            this.CremaHost.DebugMethod(authentication, this, nameof(InvokeDataBaseRevert), dataBase, revision);
+            this.ValidateRevertDataBase(authentication, dataBase, revision);
+
+            var dataBaseName = dataBase.Name;
+            this.repositoryDispatcher.Invoke(() =>
+            {
+                this.repositoryProvider.RevertRepository(authentication.ID, this.remotesPath, dataBaseName, revision);
+            });
+        }
+
         public DataBaseCollectionMetaData GetMetaData(Authentication authentication)
         {
             if (authentication == null)
@@ -756,6 +768,14 @@ namespace Ntreev.Crema.Services.Data
 
             if (dataBase.IsLoaded == true)
                 throw new InvalidOperationException(Resources.Exception_DataBaseHasBeenLoaded);
+        }
+
+        private void ValidateRevertDataBase(Authentication authentication, DataBase dataBase, string revision)
+        {
+            if (authentication.IsSystem == false && authentication.IsAdmin == false)
+                throw new PermissionDeniedException();
+            if (dataBase.IsLoaded == true)
+                throw new InvalidOperationException(Resources.Exception_LoadedDataBaseCannotRevert);
         }
 
         private Dictionary<string, DataBaseSerializationInfo> ReadCaches()

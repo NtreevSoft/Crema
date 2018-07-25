@@ -150,6 +150,67 @@ namespace Ntreev.Crema.Repository.Git
             this.UnsetID(repositoryPath, repositoryName);
         }
 
+        public void RevertRepository(string author, string basePath, string repositoryName, string revision)
+        {
+            var baseUri = new Uri(basePath);
+            var repositoryPath = baseUri.LocalPath;
+            //var branchName = repositoryName;
+            //var branchCollection = GitBranchCollection.Run(repositoryPath);
+            //if (branchCollection.Count <= 1)
+            //    throw new InvalidOperationException();
+
+            //if (branchCollection.CurrentBranch != branchName)
+            {
+                this.CheckoutBranch(repositoryPath, repositoryName);
+            }
+
+            try
+            {
+                var revisionsCommand = new GitCommand(repositoryPath, "log")
+                {
+                    GitCommandItem.FromPretty("format:%H"),
+                };
+                var revisions = revisionsCommand.ReadLines();
+                foreach (var item in revisions)
+                {
+                    if (item == revision)
+                        break;
+                    var revertCommand = new GitCommand(repositoryPath, "revert")
+                    {
+                        new GitCommandItem('n'),
+                        item,
+                    };
+                    revertCommand.Run();
+                }
+                var statusCommand = new GitCommand(repositoryPath, "status")
+                {
+                    new GitCommandItem('s')
+                };
+                var items = statusCommand.ReadLines(true);
+                if (items.Length != 0)
+                {
+                    var commitCommand = new GitCommand(basePath, "commit")
+                    {
+                        GitCommandItem.FromMessage($"revert to {revision}"),
+                    };
+                    commitCommand.Run();
+                }
+                else
+                {
+
+                }
+            }
+            catch
+            {
+                var abortCommand = new GitCommand(repositoryPath, "revert")
+                {
+                    new GitCommandItem("abort"),
+                };
+                abortCommand.Run();
+                throw;
+            }
+        }
+
         public LogInfo[] GetLog(string basePath, string repositoryName, int count)
         {
             var baseUri = new Uri(basePath);

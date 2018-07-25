@@ -329,9 +329,9 @@ namespace Ntreev.Crema.Services.Data
                 this.ValidateDispatcher();
                 this.CremaHost.DebugMethod(authentication, this, nameof(Rename), this, name);
                 this.DataBases.InvokeDataBaseRename(authentication, this, name);
+                this.Sign(authentication);
                 var oldName = base.Name;
                 base.Name = name;
-                this.Sign(authentication);
                 this.DataBases.InvokeItemsRenamedEvent(authentication, new DataBase[] { this }, new string[] { oldName });
             }
             catch (Exception e)
@@ -390,26 +390,20 @@ namespace Ntreev.Crema.Services.Data
             try
             {
                 this.ValidateDispatcher();
-                this.ValidateRevert(authentication, revision);
-                var eventLog = EventLogBuilder.Build(authentication, this, nameof(Revert), this, revision);
-                var message = EventMessageBuilder.RevertDataBase(authentication, this, revision);
-                var dataBaseInfo = base.DataBaseInfo;
-
-                try
+                this.CremaHost.DebugMethod(authentication, this, nameof(Revert), this, revision);
+                this.DataBases.InvokeDataBaseRevert(authentication, this, revision);
+                this.Sign(authentication);
+                var repositoryInfo = this.repositoryProvider.GetRepositoryInfo(this.CremaHost.GetPath(CremaPath.RepositoryDataBases), base.Name);
+                base.DataBaseInfo = new DataBaseInfo()
                 {
-                    this.Repository.Revert(revision);
-                    this.Repository.Commit(authentication, message);
-                }
-                catch
-                {
-                    this.Repository.Revert();
-                    throw;
-                }
-
-                this.CremaHost.Debug(eventLog);
-                this.CremaHost.Info(message);
-                dataBaseInfo.Revision = this.Repository.RepositoryInfo.Revision;
-                base.DataBaseInfo = dataBaseInfo;
+                    ID = repositoryInfo.ID,
+                    Name = repositoryInfo.Name,
+                    Revision = repositoryInfo.Revision,
+                    Comment = repositoryInfo.Comment,
+                    CreationInfo = repositoryInfo.CreationInfo,
+                    ModificationInfo = repositoryInfo.ModificationInfo,
+                };
+                this.DataBases.InvokeItemsChangedEvent(authentication, new IDataBase[] { this });
             }
             catch (Exception e)
             {
@@ -1467,16 +1461,16 @@ namespace Ntreev.Crema.Services.Data
                 throw new PermissionDeniedException();
         }
 
-        private void ValidateRevert(Authentication authentication, string revision)
-        {
-            if (authentication.IsSystem == false && authentication.IsAdmin == false)
-                throw new PermissionDeniedException();
-            if (this.IsLoaded == true)
-                throw new InvalidOperationException(Resources.Exception_LoadedDataBaseCannotRevert);
-            var logs = this.Repository.GetLog(new string[] { this.BasePath }, this.Repository.RepositoryInfo.Revision, 100);
-            if (logs.Any(item => item.Revision == revision) == false)
-                throw new ArgumentException(string.Format(Resources.Exception_NotFoundRevision_Format, revision), nameof(revision));
-        }
+        //private void ValidateRevert(Authentication authentication, string revision)
+        //{
+        //    if (authentication.IsSystem == false && authentication.IsAdmin == false)
+        //        throw new PermissionDeniedException();
+        //    if (this.IsLoaded == true)
+        //        throw new InvalidOperationException(Resources.Exception_LoadedDataBaseCannotRevert);
+        //    var logs = this.Repository.GetLog(new string[] { this.BasePath }, this.Repository.RepositoryInfo.Revision, 100);
+        //    if (logs.Any(item => item.Revision == revision) == false)
+        //        throw new ArgumentException(string.Format(Resources.Exception_NotFoundRevision_Format, revision), nameof(revision));
+        //}
 
         private void ValidateBeginTransaction(Authentication authentication)
         {

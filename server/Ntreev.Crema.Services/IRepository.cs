@@ -36,7 +36,7 @@ namespace Ntreev.Crema.Services
 
         void Commit(string author, string comment, params LogPropertyInfo[] properties);
 
-        void Revert(string revision);
+        void Revert();
 
         void BeginTransaction(string author, string name);
 

@@ -107,17 +107,17 @@ namespace Ntreev.Crema.Services
         {
             this.Dispatcher.Invoke(() =>
             {
-                this.Repository.Revert(null);
+                this.Repository.Revert();
             });
         }
 
-        public void Revert(string revision)
-        {
-            this.Dispatcher.Invoke(() =>
-            {
-                this.Repository.Revert(revision);
-            });
-        }
+        //public void Revert(string revision)
+        //{
+        //    this.Dispatcher.Invoke(() =>
+        //    {
+        //        this.Repository.Revert(revision);
+        //    });
+        //}
 
         public void BeginTransaction(string author, string name)
         {

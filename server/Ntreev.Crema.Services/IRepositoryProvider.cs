@@ -37,6 +37,8 @@ namespace Ntreev.Crema.Services
 
         void DeleteRepository(string author, string basePath, string repositoryName, string comment, params LogPropertyInfo[] properties);
 
+        void RevertRepository(string author, string basePath, string repositoryName, string revision);
+
         IRepository CreateInstance(RepositorySettings settings);
 
         string[] GetRepositories(string basePath);

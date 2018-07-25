@@ -174,13 +174,18 @@ namespace Ntreev.Crema.Repository.Svn
             deleteCommand.Run();
         }
 
-        public void ValidateRepository(string basePath, string repositoryPath)
+        public void RevertRepository(string author, string basePath, string repositoryName, string revision)
         {
-            if (DirectoryUtility.Exists(basePath) == false)
-                throw new DirectoryNotFoundException($"base path does not exists :\"{basePath}\"");
-            if (DirectoryUtility.Exists(repositoryPath) == false)
-                throw new DirectoryNotFoundException($"repository path does not exists :\"{repositoryPath}\"");
+            throw new NotImplementedException();
         }
+
+        //public void ValidateRepository(string basePath, string repositoryPath)
+        //{
+        //    if (DirectoryUtility.Exists(basePath) == false)
+        //        throw new DirectoryNotFoundException($"base path does not exists :\"{basePath}\"");
+        //    if (DirectoryUtility.Exists(repositoryPath) == false)
+        //        throw new DirectoryNotFoundException($"repository path does not exists :\"{repositoryPath}\"");
+        //}
 
         public string[] GetRepositories(string basePath)
         {

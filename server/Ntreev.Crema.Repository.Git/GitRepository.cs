@@ -319,26 +319,19 @@ namespace Ntreev.Crema.Repository.Git
             moveCommand.Run(this.logService);
         }
 
-        public void Revert(string revision)
+        public void Revert()
         {
-            if (revision == null)
-            {
-                this.resetCommand.Run(this.logService);
-                this.cleanCommand.Run(this.logService);
+            this.resetCommand.Run(this.logService);
+            this.cleanCommand.Run(this.logService);
 
-                if (File.Exists(this.transactionPatchPath) == true)
-                {
-                    var applyCommand = new GitCommand(this.repositoryPath, "apply")
-                    {
-                        (GitPath)transactionPatchPath,
-                        new GitCommandItem("index")
-                    };
-                    applyCommand.Run(this.logService);
-                }
-            }
-            else
+            if (File.Exists(this.transactionPatchPath) == true)
             {
-                throw new NotImplementedException();
+                var applyCommand = new GitCommand(this.repositoryPath, "apply")
+                {
+                    (GitPath)transactionPatchPath,
+                    new GitCommandItem("index")
+                };
+                applyCommand.Run(this.logService);
             }
         }
 

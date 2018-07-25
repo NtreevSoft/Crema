@@ -287,38 +287,40 @@ namespace Ntreev.Crema.Repository.Svn
             moveCommand.Run(this.logService);
         }
 
-        public void Revert(string revision)
+        public void Revert()
         {
-            if (revision == null)
+            var revertCommand = new SvnCommand("revert")
             {
-                var revertCommand = new SvnCommand("revert")
-                {
-                    SvnCommandItem.Recursive,
-                    (SvnPath)this.repositoryPath
-                };
-                try
-                {
-                    revertCommand.Run(this.logService);
-                }
-                catch
-                {
-                    var cleanUpCommand = new SvnCommand("cleanup") { (SvnPath)this.repositoryPath };
-                    cleanUpCommand.Run(this.logService);
-                    revertCommand.Run(this.logService);
-                }
-            }
-            else
+                SvnCommandItem.Recursive,
+                (SvnPath)this.repositoryPath
+            };
+            try
             {
-                var updateCommand = new SvnCommand("update") { (SvnPath)this.repositoryPath };
-                var mergeCommand = new SvnCommand("merge")
-                {
-                    new SvnCommandItem('r', $"head:{revision}"),
-                    (SvnPath)this.repositoryPath,
-                    (SvnPath)this.repositoryPath,
-                };
-                updateCommand.Run(this.logService);
-                mergeCommand.Run(this.logService);
+                revertCommand.Run(this.logService);
             }
+            catch
+            {
+                var cleanUpCommand = new SvnCommand("cleanup") { (SvnPath)this.repositoryPath };
+                cleanUpCommand.Run(this.logService);
+                revertCommand.Run(this.logService);
+            }
+
+            //if (revision == null)
+            //{
+                
+            //}
+            //else
+            //{
+            //    var updateCommand = new SvnCommand("update") { (SvnPath)this.repositoryPath };
+            //    var mergeCommand = new SvnCommand("merge")
+            //    {
+            //        new SvnCommandItem('r', $"head:{revision}"),
+            //        (SvnPath)this.repositoryPath,
+            //        (SvnPath)this.repositoryPath,
+            //    };
+            //    updateCommand.Run(this.logService);
+            //    mergeCommand.Run(this.logService);
+            //}
         }
 
         public void Dispose()
