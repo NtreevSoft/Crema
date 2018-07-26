@@ -80,11 +80,6 @@ namespace Ntreev.Crema.Repository.Git
             return configCommand.Run();
         }
 
-        public static Guid GetValueAsGuid(string repositoryPath, string name)
-        {
-            return Guid.Parse(GetValue(repositoryPath, name));
-        }
-
         public static void SetValue(string name, string value)
         {
             if (name == null)

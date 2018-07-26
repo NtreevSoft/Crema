@@ -38,6 +38,11 @@ namespace Ntreev.Crema.Repository.Svn
             return new SvnCommandItem('m', (SvnString)message);
         }
 
+        public static SvnCommandItem FromFile(string path)
+        {
+            return new SvnCommandItem("file", (SvnPath)path);
+        }
+
         public static SvnCommandItem FromUsername(string username)
         {
             return new SvnCommandItem("username", username);

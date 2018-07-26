@@ -232,9 +232,10 @@ namespace Ntreev.Crema.Services.Data
             this.ValidateRevertDataBase(authentication, dataBase, revision);
 
             var dataBaseName = dataBase.Name;
+            var comment = $"revert to {revision}";
             this.repositoryDispatcher.Invoke(() =>
             {
-                this.repositoryProvider.RevertRepository(authentication.ID, this.remotesPath, dataBaseName, revision);
+                this.repositoryProvider.RevertRepository(authentication.ID, this.remotesPath, dataBaseName, revision, comment);
             });
         }
 
@@ -275,6 +276,15 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.Debug(eventLog);
             this.CremaHost.Info(message);
             this.OnItemsDeleted(new ItemsDeletedEventArgs<IDataBase>(authentication, items, paths));
+        }
+
+        public void InvokeItemsRevertedEvent(Authentication authentication, IDataBase[] items, string[] revisions)
+        {
+            var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsRevertedEvent), items, revisions);
+            var message = EventMessageBuilder.RevertDataBase(authentication, items, revisions);
+            this.CremaHost.Debug(eventLog);
+            this.CremaHost.Info(message);
+            this.OnItemsInfoChanged(new ItemsEventArgs<IDataBase>(authentication, items));
         }
 
         public void InvokeItemsLoadedEvent(Authentication authentication, IDataBase[] items)

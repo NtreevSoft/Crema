@@ -86,7 +86,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
         ResultBase<LogInfo[]> GetLog(string dataBaseName);
 
         [OperationContract]
-        ResultBase Revert(string dataBaseName, string revision);
+        ResultBase<DataBaseInfo> Revert(string dataBaseName, string revision);
 
         [OperationContract]
         ResultBase BeginTransaction(string dataBaseName);

@@ -67,7 +67,7 @@ namespace Ntreev.Crema.Services.DataBaseCollectionService {
         Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.LogInfo[]> GetLog(string dataBaseName);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseCollectionService/Revert", ReplyAction="http://www.ntreev.com/IDataBaseCollectionService/RevertResponse")]
-        Ntreev.Crema.ServiceModel.ResultBase Revert(string dataBaseName, string revision);
+        Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.DataBaseInfo> Revert(string dataBaseName, string revision);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseCollectionService/BeginTransaction", ReplyAction="http://www.ntreev.com/IDataBaseCollectionService/BeginTransactionResponse")]
         Ntreev.Crema.ServiceModel.ResultBase BeginTransaction(string dataBaseName);
@@ -225,7 +225,7 @@ namespace Ntreev.Crema.Services.DataBaseCollectionService {
             return base.Channel.GetLog(dataBaseName);
         }
         
-        public Ntreev.Crema.ServiceModel.ResultBase Revert(string dataBaseName, string revision) {
+        public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.DataBaseInfo> Revert(string dataBaseName, string revision) {
             return base.Channel.Revert(dataBaseName, revision);
         }
         

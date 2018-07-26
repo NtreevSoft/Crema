@@ -266,12 +266,12 @@ namespace Ntreev.Crema.Services.Data
 
         public LogInfo[] GetLog(string[] itemPaths)
         {
-            return this.Repository.GetLog(itemPaths, null, 100);
+            return this.Repository.GetLog(itemPaths, null);
         }
 
         public LogInfo[] GetCategoryLog(string localPath)
         {
-            return this.Repository.GetLog(new string[] { localPath }, null, 100);
+            return this.Repository.GetLog(new string[] { localPath }, null);
         }
 
         public string GenerateCategoryPath(string parentPath, string name)

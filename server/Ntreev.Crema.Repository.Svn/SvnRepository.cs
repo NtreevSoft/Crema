@@ -36,9 +36,14 @@ namespace Ntreev.Crema.Repository.Svn
         private readonly string transactionPath;
         private readonly SvnRepositoryProvider repositoryProvider;
         private readonly ILogService logService;
+        private readonly SvnCommand revertCommand;
+        private readonly SvnCommand cleanupCommand;
+        private readonly SvnCommand statCommand;
         private string transactionAuthor;
         private string transactionName;
-        private string transactionMessages;
+        private List<string> transactionMessageList;
+        private List<LogPropertyInfo> transactionPropertyList;
+        private string transactionPatchPath;
         private bool needToUpdate;
         private Uri repositoryRoot;
         private Uri repositoryUri;
@@ -52,13 +57,20 @@ namespace Ntreev.Crema.Repository.Svn
             this.repositoryPath = repositoryPath;
             this.transactionPath = transactionPath;
             this.repositoryInfo = repositoryInfo;
+            this.revertCommand = new SvnCommand("revert")
+            {
+                (SvnPath)this.repositoryPath,
+                SvnCommandItem.Recursive,
+            };
 
-            var statCommand = new SvnCommand("stat")
+            this.cleanupCommand = new SvnCommand("cleanup") { (SvnPath)this.repositoryPath };
+
+            this.statCommand = new SvnCommand("stat")
             {
                 (SvnPath)this.repositoryPath,
                 SvnCommandItem.Quiet
             };
-            var items = statCommand.ReadLines(true);
+            var items = this.statCommand.ReadLines(true);
             if (items.Length != 0)
             {
                 var sb = new StringBuilder();
@@ -93,57 +105,73 @@ namespace Ntreev.Crema.Repository.Svn
         {
             this.transactionAuthor = author;
             this.transactionName = name;
-            this.transactionMessages = string.Empty;
+            this.transactionMessageList = new List<string>();
+            this.transactionPropertyList = new List<LogPropertyInfo>();
+            this.transactionPatchPath = Path.Combine(this.transactionPath, this.transactionName + ".patch");
         }
 
         public void EndTransaction()
         {
-            var patchPath = Path.Combine(this.transactionPath, this.transactionName + patchExtension);
-            if (File.Exists(patchPath) == true)
+            var transactionMessage = string.Join(Environment.NewLine, this.transactionMessageList);
+            var messagePath = FileUtility.WriteAllText(transactionMessage, Encoding.UTF8, PathUtility.GetTempFileName());
+            try
             {
-                var patchCommand = new SvnCommand("patch")
+                var items = this.statCommand.ReadLines(true);
+                if (items.Length != 0)
                 {
-                    (SvnPath)patchPath,
-                    (SvnPath)this.repositoryPath,
-                };
-                patchCommand.Run(this.logService);
-                this.Commit(this.transactionAuthor, "Transaction" + Environment.NewLine + this.transactionMessages, new LogPropertyInfo[] { });
-                FileUtility.Delete(patchPath);
+                    var propText = SvnRepositoryProvider.GeneratePropertiesArgument(this.transactionPropertyList.ToArray());
+                    var updateCommand = new SvnCommand("update") { (SvnPath)this.repositoryPath };
+                    var commitCommand = new SvnCommand("commit")
+                    {
+                        (SvnPath)this.repositoryPath,
+                        SvnCommandItem.FromFile(messagePath),
+                        propText,
+                        SvnCommandItem.FromEncoding(Encoding.UTF8),
+                        SvnCommandItem.FromUsername(this.transactionAuthor),
+                    };
+                    updateCommand.Run(this.logService);
+                    commitCommand.Run(this.logService);
+                    FileUtility.Delete(this.transactionPatchPath);
+                    this.transactionAuthor = null;
+                    this.transactionName = null;
+                    this.transactionMessageList = null;
+                    this.transactionPropertyList = null;
+                    this.transactionPatchPath = null;
+                }
+                else
+                {
+                    this.logService?.Debug("repository has no changes.");
+                }
             }
-
-            this.transactionAuthor = null;
-            this.transactionName = null;
-            this.transactionMessages = null;
+            finally
+            {
+                FileUtility.Delete(messagePath);
+            }
         }
 
         public void CancelTransaction()
         {
-            var patchPath = Path.Combine(this.transactionPath, this.transactionName + patchExtension);
-            var revertCommand = new SvnCommand("revert")
-            {
-                (SvnPath)this.repositoryPath,
-                SvnCommandItem.Recursive,
-            };
+            this.revertCommand.Run(this.logService);
+            FileUtility.Delete(this.transactionPatchPath);
             this.transactionAuthor = null;
             this.transactionName = null;
-            this.transactionMessages = null;
-            revertCommand.Run(this.logService);
-            FileUtility.Delete(patchPath);
+            this.transactionMessageList = null;
+            this.transactionPropertyList = null;
+            this.transactionPatchPath = null;
         }
 
         public void Commit(string author, string comment, params LogPropertyInfo[] properties)
         {
             if (this.transactionName != null)
             {
-                var patchPath = Path.Combine(this.transactionPath, this.transactionName + ".patch");
                 var diffCommand = new SvnCommand("diff")
                 {
                     (SvnPath)this.repositoryPath,
                     new SvnCommandItem("patch-compatible")
                 };
-                var text = diffCommand.Run(this.logService);
-                FileUtility.WriteAllText(text, Encoding.UTF8, patchPath);
-                this.transactionMessages = this.transactionMessages + comment + Environment.NewLine;
+                diffCommand.WriteAllText(this.transactionPatchPath);
+                this.transactionMessageList.Add(comment);
+                this.transactionPropertyList.AddRange(properties);
                 return;
             }
 
@@ -234,9 +262,9 @@ namespace Ntreev.Crema.Repository.Svn
             return new FileInfo(Path.Combine(exportPath, $"{relativeUri}")).FullName;
         }
 
-        public LogInfo[] GetLog(string[] paths, string revision, int count)
+        public LogInfo[] GetLog(string[] paths, string revision)
         {
-            var logs = SvnLogInfo.Run(paths, revision, count);
+            var logs = SvnLogInfo.Run(paths, revision, 100);
             return logs.Select(item => (LogInfo)item).ToArray();
         }
 
@@ -289,38 +317,18 @@ namespace Ntreev.Crema.Repository.Svn
 
         public void Revert()
         {
-            var revertCommand = new SvnCommand("revert")
-            {
-                SvnCommandItem.Recursive,
-                (SvnPath)this.repositoryPath
-            };
-            try
-            {
-                revertCommand.Run(this.logService);
-            }
-            catch
-            {
-                var cleanUpCommand = new SvnCommand("cleanup") { (SvnPath)this.repositoryPath };
-                cleanUpCommand.Run(this.logService);
-                revertCommand.Run(this.logService);
-            }
+            this.revertCommand.Run(this.logService);
+            this.cleanupCommand.Run(this.logService);
 
-            //if (revision == null)
-            //{
-                
-            //}
-            //else
-            //{
-            //    var updateCommand = new SvnCommand("update") { (SvnPath)this.repositoryPath };
-            //    var mergeCommand = new SvnCommand("merge")
-            //    {
-            //        new SvnCommandItem('r', $"head:{revision}"),
-            //        (SvnPath)this.repositoryPath,
-            //        (SvnPath)this.repositoryPath,
-            //    };
-            //    updateCommand.Run(this.logService);
-            //    mergeCommand.Run(this.logService);
-            //}
+            if (File.Exists(this.transactionPatchPath) == true)
+            {
+                var patchCommand = new SvnCommand("patch")
+                {
+                    (SvnPath)this.transactionPatchPath,
+                    (SvnPath)this.repositoryPath,
+                };
+                patchCommand.Run(this.logService);
+            }
         }
 
         public void Dispose()

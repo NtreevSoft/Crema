@@ -181,7 +181,13 @@ namespace Ntreev.Crema.Commands.Consoles
             var authentication = this.CommandContext.GetAuthentication(this);
             var logs = dataBase.Dispatcher.Invoke(() => dataBase.GetLog(authentication));
 
-            LogProperties.Print(this.Out, logs);
+            foreach (var item in logs)
+            {
+                var props = item.ToDictionary();
+                var text = TextSerializer.Serialize(props);
+                this.Out.WriteLine(text);
+                this.Out.WriteLine();
+            }
         }
 
         [CommandProperty('f', true)]

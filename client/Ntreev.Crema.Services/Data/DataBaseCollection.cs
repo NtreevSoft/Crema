@@ -227,6 +227,8 @@ namespace Ntreev.Crema.Services.Data
 
             var result = this.service.Revert(dataBase.Name, revision);
             result.Validate(authentication);
+            dataBase.SetDataBaseInfo(result.Value);
+            this.InvokeItemsRevertedEvent(authentication, new DataBase[] { dataBase }, new string[] { revision });
         }
 
         public DataBaseCollectionMetaData GetMetaData(Authentication authentication)
@@ -266,6 +268,15 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.Debug(eventLog);
             this.CremaHost.Info(message);
             this.OnItemsDeleted(new ItemsDeletedEventArgs<IDataBase>(authentication, items, paths));
+        }
+
+        public void InvokeItemsRevertedEvent(Authentication authentication, IDataBase[] items, string[] revisions)
+        {
+            var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsRevertedEvent), items, revisions);
+            var message = EventMessageBuilder.RevertDataBase(authentication, items, revisions);
+            this.CremaHost.Debug(eventLog);
+            this.CremaHost.Info(message);
+            this.OnItemsInfoChanged(new ItemsEventArgs<IDataBase>(authentication, items));
         }
 
         public void InvokeItemsLoadedEvent(Authentication authentication, IDataBase[] items)

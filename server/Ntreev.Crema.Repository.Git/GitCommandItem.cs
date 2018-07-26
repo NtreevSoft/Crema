@@ -66,5 +66,7 @@ namespace Ntreev.Crema.Repository.Git
         public static readonly GitCommandItem Separator = new GitCommandItem(string.Empty);
 
         public static readonly GitCommandItem Global = new GitCommandItem("global");
+
+        public static readonly GitCommandItem ShowNotes = new GitCommandItem("show-notes");
     }
 }

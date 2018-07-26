@@ -149,6 +149,13 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\Ntreev.Crema.ServiceModel.AccessInfo.datasource" />
+    <None Include="Properties\DataSources\Ntreev.Crema.ServiceModel.AccessMemberInfo.datasource" />
+    <None Include="Properties\DataSources\Ntreev.Crema.ServiceModel.DataBaseCollectionMetaData.datasource" />
+    <None Include="Properties\DataSources\Ntreev.Crema.ServiceModel.DataBaseInfo.datasource" />
+    <None Include="Properties\DataSources\Ntreev.Crema.ServiceModel.LockInfo.datasource" />
+    <None Include="Properties\DataSources\Ntreev.Crema.ServiceModel.LogInfo.datasource" />
+    <None Include="Properties\DataSources\Ntreev.Crema.ServiceModel.ResultBase.datasource" />
     <None Include="Service References\DataBaseCollectionService\Arrays.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -324,9 +331,7 @@
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\DataSources\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="..\..\common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems" Label="Shared" />
   <Import Project="..\..\common\Ntreev.Crema.Services.Sharing\Ntreev.Crema.Services.Sharing.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

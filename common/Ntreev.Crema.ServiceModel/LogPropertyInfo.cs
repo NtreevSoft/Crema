@@ -48,5 +48,15 @@ namespace Ntreev.Crema.ServiceModel
 
         [DataMember]
         public string Value { get; set; }
+
+        public IDictionary<string, object> ToDictionary()
+        {
+            var props = new Dictionary<string, object>
+            {
+                { nameof(this.Key), this.Key },
+                { nameof(this.Value), this.Value },
+            };
+            return props;
+        }
     }
 }

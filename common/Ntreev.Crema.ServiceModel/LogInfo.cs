@@ -33,19 +33,31 @@ namespace Ntreev.Crema.ServiceModel
     public struct LogInfo
     {
         [DataMember]
-        public string UserID { get; set; }
-
-        [DataMember]
         public string Revision { get; set; }
 
         [DataMember]
-        public string Comment { get; set; }
+        public string UserID { get; set; }
 
         [DataMember]
         public DateTime DateTime { get; set; }
 
         [DataMember]
+        public string Comment { get; set; }
+
+        [DataMember]
         public LogPropertyInfo[] Properties { get; set; }
+
+        public IDictionary<string, object> ToDictionary()
+        {
+            var props = new Dictionary<string, object>
+            {
+                { nameof(this.Revision), this.Revision },
+                { nameof(this.UserID), this.UserID },
+                { nameof(this.DateTime), $"{this.DateTime}" },
+                { nameof(this.Comment), this.Comment },
+            };
+            return props;
+        }
 
         internal bool ContainsProperty(string key)
         {

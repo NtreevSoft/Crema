@@ -376,7 +376,7 @@ namespace Ntreev.Crema.Services.Data
                 this.ValidateDispatcher();
                 var remotePath = this.CremaHost.GetPath(CremaPath.RepositoryDataBases);
                 var logs = this.repositoryProvider.GetLog(remotePath, this.Name, 100);
-                return logs.OrderByDescending(item => item.Revision).Take(100).ToArray();
+                return logs.ToArray();
             }
             catch (Exception e)
             {
@@ -403,7 +403,7 @@ namespace Ntreev.Crema.Services.Data
                     CreationInfo = repositoryInfo.CreationInfo,
                     ModificationInfo = repositoryInfo.ModificationInfo,
                 };
-                this.DataBases.InvokeItemsChangedEvent(authentication, new IDataBase[] { this });
+                this.DataBases.InvokeItemsRevertedEvent(authentication, new IDataBase[] { this }, new string[] { revision });
             }
             catch (Exception e)
             {

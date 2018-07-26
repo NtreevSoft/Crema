@@ -174,18 +174,44 @@ namespace Ntreev.Crema.Repository.Svn
             deleteCommand.Run();
         }
 
-        public void RevertRepository(string author, string basePath, string repositoryName, string revision)
+        public void RevertRepository(string author, string basePath, string repositoryName, string revision, string comment)
         {
-            throw new NotImplementedException();
+            var baseUri = new Uri(basePath);
+            var url = repositoryName == SvnString.Default ? UriUtility.Combine(baseUri, SvnString.Trunk) : UriUtility.Combine(baseUri, SvnString.Branches, repositoryName);
+            var tempPath = PathUtility.GetTempPath(false);
+            try
+            {
+                var checkoutCommand = new SvnCommand("checkout")
+                {
+                    (SvnPath)url,
+                    (SvnPath)tempPath,
+                };
+                checkoutCommand.Run();
+                var mergeCommand = new SvnCommand("merge")
+                {
+                    new SvnCommandItem('r', $"head:{revision}"),
+                    (SvnPath)tempPath,
+                    (SvnPath)tempPath,
+                };
+                mergeCommand.Run();
+                var commitCommand = new SvnCommand("commit")
+                {
+                    (SvnPath)tempPath,
+                    SvnCommandItem.FromMessage(comment),
+                    SvnCommandItem.FromEncoding(Encoding.UTF8),
+                    SvnCommandItem.FromUsername(author),
+                };
+                commitCommand.Run();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            finally
+            {
+                DirectoryUtility.Delete(tempPath);
+            }
         }
-
-        //public void ValidateRepository(string basePath, string repositoryPath)
-        //{
-        //    if (DirectoryUtility.Exists(basePath) == false)
-        //        throw new DirectoryNotFoundException($"base path does not exists :\"{basePath}\"");
-        //    if (DirectoryUtility.Exists(repositoryPath) == false)
-        //        throw new DirectoryNotFoundException($"repository path does not exists :\"{repositoryPath}\"");
-        //}
 
         public string[] GetRepositories(string basePath)
         {

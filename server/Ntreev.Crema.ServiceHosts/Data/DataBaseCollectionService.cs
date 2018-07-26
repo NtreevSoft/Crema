@@ -241,12 +241,13 @@ namespace Ntreev.Crema.ServiceHosts.Data
             });
         }
 
-        public ResultBase Revert(string dataBaseName, string revision)
+        public ResultBase<DataBaseInfo> Revert(string dataBaseName, string revision)
         {
             return this.Invoke(() =>
             {
                 var dataBase = GetDataBase(dataBaseName);
                 dataBase.Revert(this.authentication, revision);
+                return dataBase.DataBaseInfo;
             });
         }
 
