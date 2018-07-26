@@ -154,15 +154,8 @@ namespace Ntreev.Crema.Repository.Git
         {
             var baseUri = new Uri(basePath);
             var repositoryPath = baseUri.LocalPath;
-            //var branchName = repositoryName;
-            //var branchCollection = GitBranchCollection.Run(repositoryPath);
-            //if (branchCollection.Count <= 1)
-            //    throw new InvalidOperationException();
-
-            //if (branchCollection.CurrentBranch != branchName)
-            {
-                this.CheckoutBranch(repositoryPath, repositoryName);
-            }
+            
+            this.CheckoutBranch(repositoryPath, repositoryName);
 
             try
             {
@@ -197,7 +190,7 @@ namespace Ntreev.Crema.Repository.Git
                 }
                 else
                 {
-
+                    throw new InvalidOperationException("nothing to revert.");
                 }
             }
             catch
