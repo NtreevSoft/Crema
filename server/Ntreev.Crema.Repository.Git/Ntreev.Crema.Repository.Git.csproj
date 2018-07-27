@@ -52,6 +52,7 @@
     <Compile Include="GitBranchDescription.cs" />
     <Compile Include="GitCommand.cs" />
     <Compile Include="GitCommandItem.cs" />
+    <Compile Include="GitCommitCommand.cs" />
     <Compile Include="GitConfig.cs" />
     <Compile Include="GitItemStatusInfo.cs" />
     <Compile Include="GitItemInfo.cs" />

@@ -123,46 +123,33 @@ namespace Ntreev.Crema.Repository.Git
         public void EndTransaction()
         {
             var transactionMessage = string.Join(Environment.NewLine, this.transactionMessageList);
-            var messagePath = FileUtility.WriteAllText(transactionMessage, Encoding.UTF8, PathUtility.GetTempFileName());
-            try
+            var statusCommand = new GitCommand(this.repositoryPath, "status")
             {
-                var statusCommand = new GitCommand(this.repositoryPath, "status")
-                {
-                    new GitCommandItem('s')
-                };
-                var items = statusCommand.ReadLines(true);
-                if (items.Length != 0)
-                {
-                    var commitCommand = new GitCommand(this.repositoryPath, "commit")
-                    {
-                        new GitCommandItem('a'),
-                        GitCommandItem.FromFile(messagePath),
-                        GitCommandItem.FromAuthor(this.transactionAuthor),
-                    };
-                    var result = commitCommand.Run(this.logService);
-                    this.logService?.Debug(result);
-                    var log = GitLogInfo.Run(this.repositoryPath, 1).First();
-                    this.repositoryInfo.Revision = log.CommitID;
-                    this.repositoryInfo.ModificationInfo = new SignatureDate(this.transactionAuthor, log.CommitDate);
-                    this.SetNotes(this.transactionPropertyList.ToArray());
-                    FileUtility.Delete(this.transactionPatchPath);
-                    this.transactionAuthor = null;
-                    this.transactionName = null;
-                    this.transactionMessageList = null;
-                    this.transactionPropertyList = null;
-                    this.transactionPatchPath = null;
-                    this.Pull();
-                    this.Push();
-                    this.PushNotes();
-                }
-                else
-                {
-                    this.logService?.Debug("repository has no changes.");
-                }
+                new GitCommandItem('s')
+            };
+            var items = statusCommand.ReadLines(true);
+            if (items.Length != 0)
+            {
+                var commitCommand = new GitCommitCommand(this.repositoryPath, this.transactionAuthor, transactionMessage);
+                var result = commitCommand.Run(this.logService);
+                this.logService?.Debug(result);
+                var log = GitLogInfo.Run(this.repositoryPath, 1).First();
+                this.repositoryInfo.Revision = log.CommitID;
+                this.repositoryInfo.ModificationInfo = new SignatureDate(this.transactionAuthor, log.CommitDate);
+                this.SetNotes(this.transactionPropertyList.ToArray());
+                FileUtility.Delete(this.transactionPatchPath);
+                this.transactionAuthor = null;
+                this.transactionName = null;
+                this.transactionMessageList = null;
+                this.transactionPropertyList = null;
+                this.transactionPatchPath = null;
+                this.Pull();
+                this.Push();
+                this.PushNotes();
             }
-            finally
+            else
             {
-                FileUtility.Delete(messagePath);
+                this.logService?.Debug("repository has no changes.");
             }
         }
 
@@ -203,12 +190,11 @@ namespace Ntreev.Crema.Repository.Git
                 var items = statusCommand.ReadLines(true);
                 if (items.Length != 0)
                 {
-                    var commitCommand = new GitCommand(this.repositoryPath, "commit")
-                    {
-                        new GitCommandItem('a'),
-                        GitCommandItem.FromMessage(comment),
-                        GitCommandItem.FromAuthor(author),
-                    };
+                    var authorValue = new GitAuthor(author);
+                    GitConfig.SetValue("user.email", authorValue.Email == string.Empty ? "<>" : authorValue.Email);
+                    GitConfig.SetValue("user.name", authorValue.Name);
+
+                    var commitCommand = new GitCommitCommand(this.repositoryPath, author, comment);
                     var result = commitCommand.Run(this.logService);
                     this.logService?.Debug(result);
                     var log = GitLogInfo.Run(this.repositoryPath, 1).First();

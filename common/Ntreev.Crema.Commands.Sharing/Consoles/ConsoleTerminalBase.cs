@@ -86,7 +86,7 @@ namespace Ntreev.Crema.Commands.Consoles
                     writer.Write("@");
                     using (TerminalColor.SetForeground(ConsoleColor.Cyan))
                     {
-                        writer.Write(uri.Host);
+                        writer.Write(uri.Authority);
                     }
                     Console.ResetColor();
                     writer.Write(uri.LocalPath);

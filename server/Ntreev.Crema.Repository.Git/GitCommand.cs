@@ -23,7 +23,7 @@ namespace Ntreev.Crema.Repository.Git
 
         public string Run(ILogService logService)
         {
-            logService.Debug(this);
+            logService.Debug(this.ToString());
             return this.Run();
         }
     }

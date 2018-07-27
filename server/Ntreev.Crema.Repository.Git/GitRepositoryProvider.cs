@@ -124,11 +124,7 @@ namespace Ntreev.Crema.Repository.Git
             }
             addCommand.Run();
 
-            var commitCommand = new GitCommand(repositoryPath, "commit")
-            {
-                GitCommandItem.FromMessage(comment),
-                GitCommandItem.FromAuthor(author),
-            };
+            var commitCommand = new GitCommitCommand(repositoryPath, author, comment);
             commitCommand.Run();
             this.SetID(repositoryPath, repositoryName, Guid.NewGuid());
             this.SetDescription(repositoryPath, repositoryName, comment);
@@ -206,10 +202,7 @@ namespace Ntreev.Crema.Repository.Git
                 var items = statusCommand.ReadLines(true);
                 if (items.Length != 0)
                 {
-                    var commitCommand = new GitCommand(basePath, "commit")
-                    {
-                        GitCommandItem.FromMessage(comment),
-                    };
+                    var commitCommand = new GitCommitCommand(basePath, author, comment);
                     commitCommand.Run();
                 }
                 else
@@ -365,18 +358,7 @@ namespace Ntreev.Crema.Repository.Git
             }
             addCommand.Run();
 
-            if (GitConfig.HasValue("user.name") == false)
-            {
-                GitConfig.SetValue(basePath, "user.name", Environment.UserName);
-            }
-            if (GitConfig.HasValue("user.email") == false)
-            {
-                GitConfig.SetValue(basePath, "user.email", "<>");
-            }
-            var commitCommand = new GitCommand(basePath, "commit")
-            {
-                GitCommandItem.FromMessage("first commit"),
-            };
+            var commitCommand = new GitCommitCommand(basePath, Environment.UserName, "first commit");
             commitCommand.Run();
 
             this.SetID(basePath, "master", Guid.NewGuid());
