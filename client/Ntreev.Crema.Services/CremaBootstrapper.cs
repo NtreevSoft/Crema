@@ -37,6 +37,7 @@ namespace Ntreev.Crema.Services
         public const string DefaultDataBase = "default";
         private const string pluginsString = "plugins";
 
+        private CremaSettings settings = new CremaSettings();
         private CompositionContainer container;
 
         static CremaBootstrapper()
@@ -115,12 +116,19 @@ namespace Ntreev.Crema.Services
             this.OnDisposed(EventArgs.Empty);
         }
 
+        public LogVerbose Verbose
+        {
+            get => this.settings.Verbose;
+            set => this.settings.Verbose = value;
+        }
+
         public event EventHandler Disposed;
 
         public virtual IEnumerable<Tuple<System.Type, object>> GetParts()
         {
             yield return new Tuple<System.Type, object>(typeof(CremaBootstrapper), this);
             yield return new Tuple<System.Type, object>(typeof(IServiceProvider), this);
+            yield return new Tuple<System.Type, object>(typeof(CremaSettings), this.settings);
         }
 
         public virtual IEnumerable<Assembly> GetAssemblies()
@@ -200,6 +208,7 @@ namespace Ntreev.Crema.Services
             this.container = new CompositionContainer(catalog);
 
             var batch = new CompositionBatch();
+            batch.AddPart(this.settings);
             foreach (var item in this.GetParts())
             {
                 var contractName = AttributedModelServices.GetContractName(item.Item1);

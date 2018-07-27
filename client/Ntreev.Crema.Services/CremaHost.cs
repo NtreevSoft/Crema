@@ -47,13 +47,14 @@ namespace Ntreev.Crema.Services
 
         [Import]
         private IServiceProvider container = null;
+        private CremaSettings settings;
         private LogService log;
         private Guid token;
-        private LogVerbose verbose;
 
         [ImportingConstructor]
-        public CremaHost()
+        public CremaHost(CremaSettings settings)
         {
+            this.settings = settings;
             this.Dispatcher = new CremaDispatcher(this);
             CremaLog.Debug($"available tags : {string.Join(",", TagInfoUtility.Names)}");
             CremaLog.Debug("Crema created.");
@@ -148,7 +149,7 @@ namespace Ntreev.Crema.Services
                         this.Address = AddressUtility.GetDisplayAddress(address);
                         this.log = new LogService(this.Address.Replace(':', '_'), userID, AppUtility.UserAppDataPath)
                         {
-                            Verbose = this.verbose
+                            Verbose = this.settings.Verbose
                         };
                         this.UserContext = new UserContext(this, this.IPAddress, ServiceInfos[nameof(UserService)], userID, password);
                         var user = this.UserContext.Users[userID];
@@ -170,7 +171,7 @@ namespace Ntreev.Crema.Services
 
                         this.OnOpened(EventArgs.Empty);
                         this.token = Guid.NewGuid();
-                        CremaLog.Info($"Crema opened : {address} {userID}");
+                        CremaLog.Debug($"Crema opened : {address} {userID}");
                         return token;
                     }
                     catch
@@ -268,7 +269,7 @@ namespace Ntreev.Crema.Services
             this.Dispatcher.Dispose(false);
             this.Dispatcher = null;
             this.OnDisposed(EventArgs.Empty);
-            CremaLog.Info("Crema disposed.");
+            CremaLog.Debug("Crema disposed.");
         }
 
         public void Debug(object message)
@@ -345,21 +346,21 @@ namespace Ntreev.Crema.Services
 
         public bool IsOpened { get; private set; }
 
-        public LogVerbose Verbose
-        {
-            get
-            {
-                if (this.log != null)
-                    return this.log.Verbose;
-                return this.verbose;
-            }
-            set
-            {
-                this.verbose = value;
-                if (this.log != null)
-                    this.log.Verbose = value;
-            }
-        }
+        //public LogVerbose Verbose
+        //{
+        //    get
+        //    {
+        //        if (this.log != null)
+        //            return this.log.Verbose;
+        //        return this.verbose;
+        //    }
+        //    set
+        //    {
+        //        this.verbose = value;
+        //        if (this.log != null)
+        //            this.log.Verbose = value;
+        //    }
+        //}
 
         public DataBaseCollection DataBases { get; private set; }
 
@@ -444,7 +445,7 @@ namespace Ntreev.Crema.Services
             this.UserID = null;
             this.IsOpened = false;
             this.OnClosed(new ClosedEventArgs(closeInfo.Reason, closeInfo.Message));
-            CremaLog.Info("Crema closed.");
+            CremaLog.Debug("Crema closed.");
         }
 
         private static ServiceInfo[] GetServiceInfo(string address)
@@ -490,11 +491,7 @@ namespace Ntreev.Crema.Services
         LogVerbose ILogService.Verbose
         {
             get => this.Log.Verbose;
-            set
-            {
-                this.Log.Verbose = value;
-                this.verbose = value;
-            }
+            set => this.Log.Verbose = value;
         }
 
         TextWriter ILogService.RedirectionWriter

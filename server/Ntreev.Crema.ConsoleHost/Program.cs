@@ -79,24 +79,24 @@ namespace Ntreev.Crema.ConsoleHost
                 Console.WriteLine("Type '{0} help' for usage.", excecuteName.ToLower());
                 return;
             }
-
-            using (var application = new CremaApplication())
+            try
             {
-                var configs = application.GetService(typeof(ConsoleConfiguration)) as ConsoleConfiguration;
-                var commandContext = application.GetService(typeof(CommandContext)) as CommandContext;
-#if DEBUG
-                commandContext.VerifyName = false;
-#endif
-                try
+                using (var application = new CremaApplication())
                 {
+                    var configs = application.GetService(typeof(ConsoleConfiguration)) as ConsoleConfiguration;
+                    var commandContext = application.GetService(typeof(CommandContext)) as CommandContext;
+#if DEBUG
+                    commandContext.VerifyName = false;
+#endif
+
                     commandContext.Execute(Environment.CommandLine);
                     configs.Commit();
                 }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                    Environment.Exit(1);
-                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Environment.Exit(1);
             }
         }
     }
