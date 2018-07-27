@@ -753,6 +753,12 @@ namespace Ntreev.Crema.Data
 
                     this.CreateParentColumn();
 
+                    var relationName = InternalSetBase.GenerateRelationName(this);
+                    if (this.DataSet?.Relations.Contains(relationName) == false)
+                    {
+                        InternalSetBase.AddRelation(this.DataSet, this.parent, this);
+                    }
+
                     if (this.parent.TemplatedParent != null)
                         this.InternalTemplatedParent = this.parent.TemplatedParent.GetChild(this.LocalName);
                 }

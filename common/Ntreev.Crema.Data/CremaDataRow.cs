@@ -68,14 +68,14 @@ namespace Ntreev.Crema.Data
             if (childTable.Parent != this.Table)
                 return null;
 
-            var relationName = InternalSetBase.GenerateRelationName(this.Table.TableName, childTable.TableName, this.Table.Namespace);
+            var relationName = InternalSetBase.GenerateRelationName(childTable.InternalObject);
 
             return this.InternalObject.GetChildRows(relationName).Select(item => (item as InternalDataRow).Target).ToArray();
         }
 
         public CremaDataRow[] GetChildRows(string childTableName)
         {
-            var relationName = InternalSetBase.GenerateRelationName(this.Table.TableName, childTableName, this.Table.Namespace);
+            var relationName = InternalSetBase.GenerateRelationName(childTableName, this.Table.Namespace);
 
             return this.InternalObject.GetChildRows(relationName).Select(item => (item as InternalDataRow).Target).ToArray();
         }
@@ -320,7 +320,7 @@ namespace Ntreev.Crema.Data
                 if (this.Table.Parent == null)
                     return null;
 
-                var relationName = InternalSetBase.GenerateRelationName(this.InternalObject.Table.Parent, this.InternalObject.Table);
+                var relationName = InternalSetBase.GenerateRelationName(this.InternalObject.Table);
                 if (this.InternalObject.GetParentRow(relationName) is InternalDataRow parentRow)
                 {
                     return parentRow.Target;

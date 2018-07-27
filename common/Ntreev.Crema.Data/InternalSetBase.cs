@@ -37,17 +37,20 @@ namespace Ntreev.Crema.Data
 
         public static void AddRelation(InternalSetBase dataSet, InternalTableBase parent, InternalTableBase table)
         {
-            var relationName = InternalSetBase.GenerateRelationName(parent.LocalName, table.LocalName, parent.Namespace);
-
+            var relationName = InternalSetBase.GenerateRelationName(table);
             if (dataSet != null)
             {
                 dataSet.Relations.Add(relationName, parent.ColumnRelation, table.ParentRelation);
+            }
+            else
+            {
+
             }
         }
 
         public static void RemoveRelation(InternalSetBase dataSet, InternalTableBase parent, InternalTableBase table)
         {
-            var relationName = InternalSetBase.GenerateRelationName(parent.LocalName, table.LocalName, parent.Namespace);
+            var relationName = InternalSetBase.GenerateRelationName(table);
             if (dataSet != null)
             {
                 dataSet.Relations.Remove(relationName);
@@ -63,20 +66,20 @@ namespace Ntreev.Crema.Data
                 {
                     if (item.ParentTable is InternalTableBase parentTable && item.ChildTable is InternalTableBase childTable)
                     {
-                        item.RelationName = InternalSetBase.GenerateRelationName(parentTable.LocalName, childTable.LocalName, parentTable.Namespace);
+                        item.RelationName = InternalSetBase.GenerateRelationName(childTable);
                     }
                 }
             }
         }
 
-        public static string GenerateRelationName(string parentName, string childName, string parentNamespace)
+        public static string GenerateRelationName(string name, string parentNamespace)
         {
-            return System.Xml.Linq.XName.Get(string.Format("{0}.{1}", parentName, childName), parentNamespace).ToString();
+            return System.Xml.Linq.XName.Get(name, parentNamespace).ToString();
         }
 
-        public static string GenerateRelationName(InternalTableBase parent, InternalTableBase table)
+        public static string GenerateRelationName(InternalTableBase table)
         {
-            return GenerateRelationName(parent.LocalName, table.LocalName, parent.Namespace);
+            return GenerateRelationName(table.Name, table.ParentNamespace);
         }
 
         public static void ValidateSetLocalName(InternalSetBase dataSet, string localName)
@@ -134,7 +137,7 @@ namespace Ntreev.Crema.Data
                             if (dataTable.Parent != null)
                             {
                                 var parentTable = dataTable.Parent;
-                                var relationName = InternalSetBase.GenerateRelationName(parentTable.LocalName, dataTable.LocalName, parentTable.Namespace);
+                                var relationName = InternalSetBase.GenerateRelationName(dataTable);
                                 dataTable.Constraints.Remove(relationName);
                                 this.Relations.Remove(relationName);
                             }
@@ -161,8 +164,11 @@ namespace Ntreev.Crema.Data
                             if (dataTable.Parent != null)
                             {
                                 var parentTable = dataTable.Parent;
-                                var relationName = InternalSetBase.GenerateRelationName(parentTable.LocalName, dataTable.LocalName, parentTable.Namespace);
-                                this.Relations.Add(relationName, parentTable.ColumnRelation, dataTable.ParentRelation);
+                                var relationName = InternalSetBase.GenerateRelationName(dataTable);
+                                if (this.Relations.Contains(relationName) == false)
+                                {
+                                    this.Relations.Add(relationName, parentTable.ColumnRelation, dataTable.ParentRelation);
+                                }
                             }
                             dataTable.PropertyChanged += DataTable_PropertyChanged;
                         }
