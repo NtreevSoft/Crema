@@ -193,7 +193,7 @@ namespace Ntreev.Crema.Services.Domains
                     }
                 }
 
-                this.domain.Logger.ID = this.lastID + 1;
+                this.domain.Logger.ID = this.postedList.Count;
                 this.domain.Logger.IsEnabled = true;
             });
             this.domain.Host = null;
