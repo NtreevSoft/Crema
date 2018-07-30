@@ -190,6 +190,18 @@ namespace Ntreev.Crema.Commands.Consoles
             }
         }
 
+        [CommandMethod]
+        [CommandMethodStaticProperty(typeof(FilterProperties))]
+        [CommandMethodStaticProperty(typeof(FormatProperties))]
+        public void View([CommandCompletion(nameof(GetDataBaseNames))]string dataBaseName, string revision = null)
+        {
+            var dataBase = this.GetDataBase(dataBaseName);
+            var authentication = this.CommandContext.GetAuthentication(this);
+            var dataSet = dataBase.GetDataSet(authentication, revision, FilterProperties.FilterExpression);
+            var text = TextSerializer.Serialize(dataSet.ToDictionary(), FormatProperties.Format);
+            this.Out.WriteLine(text);
+        }
+
         [CommandProperty('f', true)]
         public bool CopyForce
         {

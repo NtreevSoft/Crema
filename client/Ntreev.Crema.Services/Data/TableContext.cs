@@ -55,6 +55,29 @@ namespace Ntreev.Crema.Services.Data
             this.Initialize(metaData);
         }
 
+        public CremaDataSet GetDataSet(Authentication authentication, string revision, string filterExpression)
+        {
+            this.DataBase.ValidateGetDataSet(authentication);
+            this.CremaHost.DebugMethod(authentication, this, nameof(GetDataSet), revision, filterExpression);
+            var result = this.Service.GetTableDataSet(revision, filterExpression);
+            this.Sign(authentication, result);
+            return result.Value;
+        }
+
+        public void Import(Authentication authentication, CremaDataSet dataSet, string comment)
+        {
+            this.Dispatcher?.VerifyAccess();
+            this.CremaHost.DebugMethod(authentication, this, nameof(Import), comment);
+
+            var result = this.Service.ImportTables(dataSet, comment);
+            result.Validate(authentication);
+        }
+
+        public void Dispose()
+        {
+            this.dataBase = null;
+        }
+
         public void InvokeTableItemLock(Authentication authentication, ITableItem tableItem, string comment)
         {
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeTableItemLock), tableItem, comment);
@@ -113,20 +136,6 @@ namespace Ntreev.Crema.Services.Data
         public void InvokeTableItemChange(Authentication authentication, ITableItem tableItem)
         {
 
-        }
-
-        public void Import(Authentication authentication, CremaDataSet dataSet, string comment)
-        {
-            this.Dispatcher?.VerifyAccess();
-            this.CremaHost.DebugMethod(authentication, this, nameof(Import), comment);
-
-            var result = this.Service.ImportTables(dataSet, comment);
-            result.Validate(authentication);
-        }
-
-        public void Dispose()
-        {
-            this.dataBase = null;
         }
 
         public void InvokeItemsSetPublicEvent(Authentication authentication, ITableItem[] items)
@@ -375,6 +384,16 @@ namespace Ntreev.Crema.Services.Data
         protected virtual void OnItemsLockChanged(ItemsEventArgs<ITableItem> e)
         {
             this.itemsLockChanged?.Invoke(this, e);
+        }
+
+        private void Sign(Authentication authentication, ResultBase result)
+        {
+            result.Validate(authentication);
+        }
+
+        private void Sign<T>(Authentication authentication, ResultBase<T> result)
+        {
+            result.Validate(authentication);
         }
 
         private void Initialize(DataBaseMetaData metaData)

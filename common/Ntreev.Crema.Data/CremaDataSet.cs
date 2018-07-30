@@ -848,6 +848,25 @@ namespace Ntreev.Crema.Data
             }
         }
 
+        public IDictionary<string, object> ToDictionary()
+        {
+            return this.ToDictionary(null);
+        }
+
+        public IDictionary<string, object> ToDictionary(string filterExpression)
+        {
+            var props = new Dictionary<string, object>();
+            var tables = this.Tables.OrderBy(item => item.Name);
+            foreach (var item in tables)
+            {
+                if (StringUtility.GlobMany(item.Name, filterExpression) == true)
+                {
+                    props.Add(item.Name, item.ToDictionary());
+                }
+            }
+            return props;
+        }
+
         [DefaultValue(false)]
         public bool CaseSensitive
         {

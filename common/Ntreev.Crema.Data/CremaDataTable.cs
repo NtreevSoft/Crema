@@ -652,6 +652,17 @@ namespace Ntreev.Crema.Data
             return this.Name;
         }
 
+        public IDictionary<int, object> ToDictionary()
+        {
+            var props = new Dictionary<int, object>();
+            for (var i = 0; i < this.Rows.Count; i++)
+            {
+                var dataRow = this.Rows[i];
+                props.Add(i, dataRow.ToDictionary());
+            }
+            return props;
+        }
+
         public static CremaDataTable ReadSchema(XmlReader reader)
         {
             var dataTable = new CremaDataTable();

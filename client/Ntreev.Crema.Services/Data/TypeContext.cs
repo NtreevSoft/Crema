@@ -45,6 +45,15 @@ namespace Ntreev.Crema.Services.Data
             this.Initialize(metaData);
         }
 
+        public CremaDataSet GetDataSet(Authentication authentication, string revision, string filterExpression)
+        {
+            this.DataBase.ValidateGetDataSet(authentication);
+            this.CremaHost.DebugMethod(authentication, this, nameof(GetDataSet), revision, filterExpression);
+            var result = this.Service.GetTypeDataSet(revision, filterExpression);
+            this.Sign(authentication, result);
+            return result.Value;
+        }
+
         public void Import(Authentication authentication, CremaDataSet dataSet, string comment)
         {
             this.Dispatcher?.VerifyAccess();
@@ -361,6 +370,16 @@ namespace Ntreev.Crema.Services.Data
         protected override IEnumerable<ITableInfoProvider> GetTables()
         {
             return this.DataBase.TableContext.Tables;
+        }
+
+        private void Sign(Authentication authentication, ResultBase result)
+        {
+            result.Validate(authentication);
+        }
+
+        private void Sign<T>(Authentication authentication, ResultBase<T> result)
+        {
+            result.Validate(authentication);
         }
 
         private void Initialize(DataBaseMetaData metaData)

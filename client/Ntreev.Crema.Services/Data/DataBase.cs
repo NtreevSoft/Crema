@@ -209,11 +209,12 @@ namespace Ntreev.Crema.Services.Data
             this.DataBases.Revert(authentication, this, revision);
         }
 
-        public CremaDataSet GetDataSet(Authentication authentication, string revision)
+        public CremaDataSet GetDataSet(Authentication authentication, string revision, string filterExpression)
         {
-            this.ValidateAsyncBeginInDataBase(authentication);
-            var result = this.Service.GetDataSet(revision);
-            result.Validate(authentication);
+            this.ValidateGetDataSet(authentication);
+            this.CremaHost.DebugMethod(authentication, this, nameof(GetDataSet), this, revision, filterExpression);
+            var result = this.Service.GetDataSet(revision, filterExpression);
+            this.Sign(authentication, result);
             return result.Value;
         }
 
@@ -253,11 +254,16 @@ namespace Ntreev.Crema.Services.Data
         {
             if (this.Dispatcher == null)
                 throw new InvalidOperationException(Resources.Exception_InvalidObject);
-            this.Dispatcher.Invoke(() =>
-            {
-                if (authentication != Authentication.System && this.authentications.Contains(authentication) == false)
-                    throw new InvalidOperationException(Resources.Exception_NotInDataBase);
-            });
+            if (authentication != Authentication.System && this.authentications.Contains(authentication) == false)
+                throw new InvalidOperationException(Resources.Exception_NotInDataBase);
+        }
+
+        public void ValidateGetDataSet(Authentication authentication)
+        {
+            if (this.IsLoaded == false)
+                throw new NotImplementedException();
+            this.VerifyAccessType(authentication, AccessType.Guest);
+            this.ValidateAsyncBeginInDataBase(authentication);
         }
 
         public bool VerifyAccess(Authentication authentication)

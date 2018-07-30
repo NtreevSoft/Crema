@@ -54,6 +54,29 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.Debug("TypeContext is created.");
         }
 
+        public CremaDataSet GetDataSet(Authentication authentication, string revision, string filterExpression)
+        {
+            this.DataBase.ValidateGetDataSet(authentication);
+            this.CremaHost.DebugMethod(authentication, this, nameof(GetDataSet), this, revision, filterExpression);
+            this.Sign(authentication);
+            return this.DataBase.GetDataSet(authentication, revision, filterExpression, ReadOptions.TypeOnly);
+        }
+
+        public void Import(Authentication authentication, CremaDataSet dataSet, string comment)
+        {
+            this.Dispatcher?.VerifyAccess();
+            this.CremaHost.DebugMethod(authentication, this, nameof(Import), comment);
+            throw new NotImplementedException();
+        }
+
+        public void Dispose()
+        {
+            var userContext = this.CremaHost.UserContext;
+            this.dataBase = null;
+            userContext.Dispatcher.Invoke(() => userContext.Users.UsersLoggedOut -= Users_UsersLoggedOut);
+        }
+
+
         public void InvokeTypeItemLock(Authentication authentication, ITypeItem typeItem, string comment)
         {
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeTypeItemLock), typeItem, comment);
@@ -154,30 +177,7 @@ namespace Ntreev.Crema.Services.Data
                 throw;
             }
         }
-
-        public CremaDataSet GetDataSet(Authentication authentication, string revision, string filterExpression)
-        {
-            this.DataBase.ValidateAsyncBeginInDataBase(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(GetDataSet), this, revision);
-            this.DataBase.ValidateAccessType(authentication, AccessType.Guest);
-            this.Sign(authentication);
-            return this.DataBase.GetDataSet(authentication, revision, filterExpression, ReadOptions.TypeOnly);
-        }
-
-        public void Import(Authentication authentication, CremaDataSet dataSet, string comment)
-        {
-            this.Dispatcher?.VerifyAccess();
-            this.CremaHost.DebugMethod(authentication, this, nameof(Import), comment);
-            throw new NotImplementedException();
-        }
-
-        public void Dispose()
-        {
-            var userContext = this.CremaHost.UserContext;
-            this.dataBase = null;
-            userContext.Dispatcher.Invoke(() => userContext.Users.UsersLoggedOut -= Users_UsersLoggedOut);
-        }
-
+        
         public void InvokeItemsSetPublicEvent(Authentication authentication, ITypeItem[] items)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsSetPublicEvent), items);

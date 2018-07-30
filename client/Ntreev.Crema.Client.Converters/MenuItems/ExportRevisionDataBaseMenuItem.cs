@@ -70,7 +70,7 @@ namespace Ntreev.Crema.Client.Converters.MenuItems
 
                         if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
                         {
-                            var dataSet = await dataBase.Dispatcher.InvokeAsync(() => dataBase.GetDataSet(this.authenticator, revision));
+                            var dataSet = await dataBase.Dispatcher.InvokeAsync(() => dataBase.GetDataSet(this.authenticator, revision, null));
                             var writer = new SpreadsheetWriter(dataSet);
                             writer.Write(dialog.FileName);
                             AppMessageBox.Show(Resources.Message_Exported);

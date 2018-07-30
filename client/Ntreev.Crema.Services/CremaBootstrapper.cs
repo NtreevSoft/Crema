@@ -37,7 +37,7 @@ namespace Ntreev.Crema.Services
         public const string DefaultDataBase = "default";
         private const string pluginsString = "plugins";
 
-        private CremaSettings settings = new CremaSettings();
+        private CremaSettings settings;
         private CompositionContainer container;
 
         static CremaBootstrapper()
@@ -128,7 +128,6 @@ namespace Ntreev.Crema.Services
         {
             yield return new Tuple<System.Type, object>(typeof(CremaBootstrapper), this);
             yield return new Tuple<System.Type, object>(typeof(IServiceProvider), this);
-            yield return new Tuple<System.Type, object>(typeof(CremaSettings), this.settings);
         }
 
         public virtual IEnumerable<Assembly> GetAssemblies()
@@ -208,7 +207,6 @@ namespace Ntreev.Crema.Services
             this.container = new CompositionContainer(catalog);
 
             var batch = new CompositionBatch();
-            batch.AddPart(this.settings);
             foreach (var item in this.GetParts())
             {
                 var contractName = AttributedModelServices.GetContractName(item.Item1);
@@ -223,6 +221,7 @@ namespace Ntreev.Crema.Services
             }
 
             this.container.Compose(batch);
+            this.settings = this.container.GetExportedValue<CremaSettings>();
         }
 
         internal static TimeSpan DefaultInactivityTimeout { get; set; }

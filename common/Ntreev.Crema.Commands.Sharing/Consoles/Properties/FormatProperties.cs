@@ -24,30 +24,13 @@ using System.Text;
 namespace Ntreev.Crema.Commands.Consoles.Properties
 {
     [ResourceDescription("../Resources", IsShared = true)]
-    public static class FilterProperties
+    static class FormatProperties
     {
-        [CommandProperty("filter")]
-        [CommandPropertyTrigger(nameof(FilterFile), null)]
-        [DefaultValue(null)]
-        public static string Filter
+        [CommandProperty("format")]
+        [DefaultValue(TextSerializerType.Yaml)]
+        public static TextSerializerType Format
         {
             get; set;
-        }
-
-        [CommandProperty]
-        [CommandPropertyTrigger(nameof(Filter), null)]
-        [DefaultValue(null)]
-        public static string FilterFile
-        {
-            get; set;
-        }
-
-        public static string FilterExpression
-        {
-            get
-            {
-                return Filter;
-            }
         }
     }
 }

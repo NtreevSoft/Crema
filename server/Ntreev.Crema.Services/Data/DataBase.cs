@@ -458,6 +458,14 @@ namespace Ntreev.Crema.Services.Data
                 throw new InvalidOperationException(Resources.Exception_NotInDataBase);
         }
 
+        public void ValidateGetDataSet(Authentication authentication)
+        {
+            if (this.IsLoaded == false)
+                throw new NotImplementedException();
+            this.VerifyAccessType(authentication, AccessType.Guest);
+            this.ValidateAsyncBeginInDataBase(authentication);
+        }
+
         public bool VerifyAccess(Authentication authentication)
         {
             return this.authentications.Contains(authentication);
@@ -662,13 +670,13 @@ namespace Ntreev.Crema.Services.Data
 
         public CremaDataSet GetDataSet(Authentication authentication, string revision, string filterExpression)
         {
+            this.ValidateGetDataSet(authentication);
+            this.CremaHost.DebugMethod(authentication, this, nameof(GetDataSet), this, revision, filterExpression);
             return this.GetDataSet(authentication, revision, filterExpression, ReadOptions.None);
         }
 
         public CremaDataSet GetDataSet(Authentication authentication, string revision, string filterExpression, ReadOptions options)
         {
-            this.ValidateGetDataSet(authentication);
-
             var tempPath = PathUtility.GetTempPath(false);
             var uri = this.Repository.GetUri(this.BasePath, revision);
             try
@@ -1410,14 +1418,6 @@ namespace Ntreev.Crema.Services.Data
             this.Dispatcher?.VerifyAccess();
         }
 
-        private void ValidateGetDataSet(Authentication authentication)
-        {
-            if (this.IsLoaded == false)
-                throw new NotImplementedException();
-            this.VerifyAccessType(authentication, AccessType.Guest);
-            this.ValidateBeginInDataBase(authentication);
-        }
-
         private void ValidateEnter(Authentication authentication)
         {
             if (this.IsLoaded == false)
@@ -1453,17 +1453,6 @@ namespace Ntreev.Crema.Services.Data
             if (this.VerifyAccessType(authentication, AccessType.Master) == false)
                 throw new PermissionDeniedException();
         }
-
-        //private void ValidateRevert(Authentication authentication, string revision)
-        //{
-        //    if (authentication.IsSystem == false && authentication.IsAdmin == false)
-        //        throw new PermissionDeniedException();
-        //    if (this.IsLoaded == true)
-        //        throw new InvalidOperationException(Resources.Exception_LoadedDataBaseCannotRevert);
-        //    var logs = this.Repository.GetLog(new string[] { this.BasePath }, this.Repository.RepositoryInfo.Revision, 100);
-        //    if (logs.Any(item => item.Revision == revision) == false)
-        //        throw new ArgumentException(string.Format(Resources.Exception_NotFoundRevision_Format, revision), nameof(revision));
-        //}
 
         private void ValidateBeginTransaction(Authentication authentication)
         {

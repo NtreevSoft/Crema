@@ -55,6 +55,83 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.Debug(Resources.Message_TableContextIsCreated);
         }
 
+        public CremaDataSet GetDataSet(Authentication authentication, string revision, string filterExpression)
+        {
+            this.DataBase.ValidateGetDataSet(authentication);
+            this.CremaHost.DebugMethod(authentication, this, nameof(GetDataSet), this, revision, filterExpression);
+            this.Sign(authentication);
+            return this.DataBase.GetDataSet(authentication, revision, filterExpression, ReadOptions.None);
+        }
+
+        public void Import(Authentication authentication, CremaDataSet dataSet, string comment)
+        {
+            this.Dispatcher?.VerifyAccess();
+            this.CremaHost.DebugMethod(authentication, this, nameof(Import), comment);
+            this.ValidateImport(authentication, dataSet, comment);
+            var query = from item in dataSet.Tables
+                        let table = this.Tables[item.Name]
+                        where table.LockInfo.Path != table.Path
+                        select table;
+
+            var items = query.ToArray();
+            var comments = Enumerable.Repeat(comment, items.Length).ToArray();
+            foreach (var item in items)
+            {
+                item.LockInternal(Authentication.System, comment);
+            }
+            this.InvokeItemsLockedEvent(authentication, items, comments);
+
+            try
+            {
+                var targetSet = this.DataBase.GetDataSet(authentication, items, true);
+                foreach (var item in targetSet.Tables)
+                {
+                    var dataTable = dataSet.Tables[item.Name];
+                    if (dataTable == null)
+                        continue;
+
+                    foreach (var row in dataTable.Rows)
+                    {
+                        item.ImportRow(row);
+                    }
+                    item.ContentsInfo = dataTable.ContentsInfo;
+                }
+                try
+                {
+                    this.Repository.Modify(targetSet);
+                    this.Repository.Commit(authentication, comment);
+                }
+                catch
+                {
+                    this.Repository.Revert();
+                }
+
+                foreach (var item in items)
+                {
+                    var dataTable = targetSet.Tables[item.Name, item.Category.Path];
+                    item.UpdateContent(dataTable.TableInfo);
+                }
+
+                var eventLog = EventLogBuilder.Build(authentication, this, nameof(Import), comment);
+                this.OnItemsChanged(new ItemsEventArgs<ITableItem>(Authentication.System, items, targetSet));
+            }
+            finally
+            {
+                foreach (var item in items)
+                {
+                    item.UnlockInternal(Authentication.System);
+                }
+                this.InvokeItemsUnlockedEvent(authentication, items);
+            }
+        }
+
+        public void Dispose()
+        {
+            var userContext = this.CremaHost.UserContext;
+            this.dataBase = null;
+            userContext.Dispatcher.Invoke(() => userContext.Users.UsersLoggedOut -= Users_UsersLoggedOut);
+        }
+
         public void InvokeTableItemLock(Authentication authentication, ITableItem tableItem, string comment)
         {
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeTableItemLock), tableItem, comment);
@@ -155,85 +232,7 @@ namespace Ntreev.Crema.Services.Data
                 throw;
             }
         }
-
-        public CremaDataSet GetDataSet(Authentication authentication, string revision, string filterExpression)
-        {
-            this.DataBase.ValidateAsyncBeginInDataBase(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(GetDataSet), this, revision);
-            this.DataBase.ValidateAccessType(authentication, AccessType.Guest);
-            this.Sign(authentication);
-            return this.DataBase.GetDataSet(authentication, revision, filterExpression, ReadOptions.None);
-        }
-
-        public void Import(Authentication authentication, CremaDataSet dataSet, string comment)
-        {
-            this.Dispatcher?.VerifyAccess();
-            this.CremaHost.DebugMethod(authentication, this, nameof(Import), comment);
-            this.ValidateImport(authentication, dataSet, comment);
-            var query = from item in dataSet.Tables
-                        let table = this.Tables[item.Name]
-                        where table.LockInfo.Path != table.Path
-                        select table;
-
-            var items = query.ToArray();
-            var comments = Enumerable.Repeat(comment, items.Length).ToArray();
-            foreach (var item in items)
-            {
-                item.LockInternal(Authentication.System, comment);
-            }
-            this.InvokeItemsLockedEvent(authentication, items, comments);
-
-            try
-            {
-                var targetSet = this.DataBase.GetDataSet(authentication, items, true);
-                foreach (var item in targetSet.Tables)
-                {
-                    var dataTable = dataSet.Tables[item.Name];
-                    if (dataTable == null)
-                        continue;
-
-                    foreach (var row in dataTable.Rows)
-                    {
-                        item.ImportRow(row);
-                    }
-                    item.ContentsInfo = dataTable.ContentsInfo;
-                }
-                try
-                {
-                    this.Repository.Modify(targetSet);
-                    this.Repository.Commit(authentication, comment);
-                }
-                catch
-                {
-                    this.Repository.Revert();
-                }
-
-                foreach (var item in items)
-                {
-                    var dataTable = targetSet.Tables[item.Name, item.Category.Path];
-                    item.UpdateContent(dataTable.TableInfo);
-                }
-
-                var eventLog = EventLogBuilder.Build(authentication, this, nameof(Import), comment);
-                this.OnItemsChanged(new ItemsEventArgs<ITableItem>(Authentication.System, items, targetSet));
-            }
-            finally
-            {
-                foreach (var item in items)
-                {
-                    item.UnlockInternal(Authentication.System);
-                }
-                this.InvokeItemsUnlockedEvent(authentication, items);
-            }
-        }
-
-        public void Dispose()
-        {
-            var userContext = this.CremaHost.UserContext;
-            this.dataBase = null;
-            userContext.Dispatcher.Invoke(() => userContext.Users.UsersLoggedOut -= Users_UsersLoggedOut);
-        }
-
+        
         public void InvokeItemsSetPublicEvent(Authentication authentication, ITableItem[] items)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsSetPublicEvent), items);

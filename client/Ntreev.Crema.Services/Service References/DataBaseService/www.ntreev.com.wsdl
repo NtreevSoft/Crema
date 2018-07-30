@@ -52,6 +52,12 @@
   <wsdl:message name="IDataBaseService_GetTableItemDataSet_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetTableItemDataSetResponse" />
   </wsdl:message>
+  <wsdl:message name="IDataBaseService_GetTableDataSet_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetTableDataSet" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseService_GetTableDataSet_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetTableDataSetResponse" />
+  </wsdl:message>
   <wsdl:message name="IDataBaseService_ImportTables_InputMessage">
     <wsdl:part name="parameters" element="tns:ImportTables" />
   </wsdl:message>
@@ -207,6 +213,12 @@
   </wsdl:message>
   <wsdl:message name="IDataBaseService_GetTypeItemDataSet_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetTypeItemDataSetResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseService_GetTypeDataSet_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetTypeDataSet" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseService_GetTypeDataSet_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetTypeDataSetResponse" />
   </wsdl:message>
   <wsdl:message name="IDataBaseService_ImportTypes_InputMessage">
     <wsdl:part name="parameters" element="tns:ImportTypes" />
@@ -402,6 +414,10 @@
       <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseService/GetTableItemDataSet" message="tns:IDataBaseService_GetTableItemDataSet_InputMessage" />
       <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseService/GetTableItemDataSetResponse" message="tns:IDataBaseService_GetTableItemDataSet_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetTableDataSet">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseService/GetTableDataSet" message="tns:IDataBaseService_GetTableDataSet_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseService/GetTableDataSetResponse" message="tns:IDataBaseService_GetTableDataSet_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ImportTables">
       <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseService/ImportTables" message="tns:IDataBaseService_ImportTables_InputMessage" />
       <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseService/ImportTablesResponse" message="tns:IDataBaseService_ImportTables_OutputMessage" />
@@ -505,6 +521,10 @@
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetTypeItemDataSet">
       <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseService/GetTypeItemDataSet" message="tns:IDataBaseService_GetTypeItemDataSet_InputMessage" />
       <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseService/GetTypeItemDataSetResponse" message="tns:IDataBaseService_GetTypeItemDataSet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetTypeDataSet">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseService/GetTypeDataSet" message="tns:IDataBaseService_GetTypeDataSet_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseService/GetTypeDataSetResponse" message="tns:IDataBaseService_GetTypeDataSet_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ImportTypes">
       <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseService/ImportTypes" message="tns:IDataBaseService_ImportTypes_InputMessage" />

@@ -19,6 +19,7 @@ using Ntreev.Crema.Data.Properties;
 using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Library;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
@@ -223,6 +224,25 @@ namespace Ntreev.Crema.Data
             if (this.Table.Attributes.Contains(attributeName) == false)
                 throw new CremaDataException(string.Format(Resources.Exception_NotFoundAttribute_Format, attributeName));
             this.InternalObject[attributeName] = value;
+        }
+
+        public IDictionary<string, object> ToDictionary()
+        {
+            var dataTable = this.Table;
+            var props = new Dictionary<string, object>();
+            foreach (var item in dataTable.Columns)
+            {
+                var value = this[item];
+                if (value == DBNull.Value)
+                    props.Add(item.ColumnName, null);
+                else
+                    props.Add(item.ColumnName, value);
+            }
+            if (this.ParentID != null)
+                props.Add(CremaSchema.__ParentID__, this.ParentID);
+            if (this.RelationID != null)
+                props.Add(CremaSchema.__RelationID__, this.RelationID);
+            return props;
         }
 
         public TagInfo Tags
