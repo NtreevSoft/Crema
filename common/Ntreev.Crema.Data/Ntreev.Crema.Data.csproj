@@ -137,6 +137,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="ReadOptions.cs" />
     <Compile Include="TableInfo.cs" />
     <Compile Include="TagInfoUtility.cs" />
     <Compile Include="TypeInfo.cs" />

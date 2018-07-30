@@ -156,6 +156,15 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
+        public CremaDataSet GetDataSet(Authentication authentication, string revision, string filterExpression)
+        {
+            this.DataBase.ValidateAsyncBeginInDataBase(authentication);
+            this.CremaHost.DebugMethod(authentication, this, nameof(GetDataSet), this, revision);
+            this.DataBase.ValidateAccessType(authentication, AccessType.Guest);
+            this.Sign(authentication);
+            return this.DataBase.GetDataSet(authentication, revision, filterExpression, ReadOptions.None);
+        }
+
         public void Import(Authentication authentication, CremaDataSet dataSet, string comment)
         {
             this.Dispatcher?.VerifyAccess();
@@ -320,9 +329,10 @@ namespace Ntreev.Crema.Services.Data
             this.OnItemsChanged(new ItemsEventArgs<ITableItem>(authentication, items, metaData));
         }
 
-        public LogInfo[] GetLog(string[] itemPaths)
+        public LogInfo[] GetTableLog(string itemPath)
         {
-            return this.Repository.GetLog(itemPaths, null);
+            var files = this.GetFiles(itemPath);
+            return this.Repository.GetLog(files, null);
         }
 
         public LogInfo[] GetCategoryLog(string localPath)

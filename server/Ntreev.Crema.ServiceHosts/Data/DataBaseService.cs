@@ -134,7 +134,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
         {
             return this.InvokeImmediately(() =>
             {
-                return this.cremaHost.Dispatcher.Invoke(() => this.dataBase.GetDataSet(this.authentication, revision));
+                return this.cremaHost.Dispatcher.Invoke(() => this.dataBase.GetDataSet(this.authentication, revision, null));
             });
         }
 

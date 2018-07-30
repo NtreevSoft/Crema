@@ -260,21 +260,32 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
+        public CremaDataSet GetDataSet(Authentication authentication, string revision)
+        {
+            try
+            {
+                this.DataBase.ValidateAsyncBeginInDataBase(authentication);
+                this.CremaHost.DebugMethod(authentication, this, nameof(GetDataSet), this, revision);
+                this.ValidateAccessType(authentication, AccessType.Guest);
+                this.Sign(authentication);
+                return this.Repository.GetTypeData(this.Serializer, this.ItemPath, revision);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
+        }
+
         public LogInfo[] GetLog(Authentication authentication)
         {
             try
             {
                 this.DataBase.ValidateAsyncBeginInDataBase(authentication);
                 this.CremaHost.DebugMethod(authentication, this, nameof(GetLog), this);
-                var itemPath = this.Dispatcher.Invoke(() =>
-                {
-                    this.ValidateAccessType(authentication, AccessType.Guest);
-                    this.Sign(authentication);
-                    return this.ItemPath;
-                });
-                var files = this.Context.GetFiles(itemPath);
-                var result = this.Context.GetLog(files);
-                return result;
+                this.ValidateAccessType(authentication, AccessType.Guest);
+                this.Sign(authentication);
+                return this.Context.GetTypeLog(this.ItemPath);
             }
             catch (Exception e)
             {
@@ -289,37 +300,13 @@ namespace Ntreev.Crema.Services.Data
             {
                 this.DataBase.ValidateAsyncBeginInDataBase(authentication);
                 this.CremaHost.DebugMethod(authentication, this, nameof(Find), this, text, options);
-                var items = this.Dispatcher.Invoke(() =>
+                this.ValidateAccessType(authentication, AccessType.Guest);
+                this.Sign(authentication);
+                if (this.GetService(typeof(DataFindService)) is DataFindService service)
                 {
-                    this.ValidateAccessType(authentication, AccessType.Guest);
-                    this.Sign(authentication);
-                    var descendants = EnumerableUtility.Descendants<ITypeItem>(this, item => item.Childs);
-                    return EnumerableUtility.Friends(this, descendants).Select(item => item.Path).ToArray();
-                });
-                var service = this.GetService(typeof(DataFindService)) as DataFindService;
-                var result = service.Dispatcher.Invoke(() => service.FindFromType(this.DataBase.ID, items, text, options));
-                return result;
-            }
-            catch (Exception e)
-            {
-                this.CremaHost.Error(e);
-                throw;
-            }
-        }
-
-        public CremaDataSet GetDataSet(Authentication authentication, string revision)
-        {
-            try
-            {
-                this.DataBase.ValidateAsyncBeginInDataBase(authentication);
-                this.CremaHost.DebugMethod(authentication, this, nameof(GetDataSet), this, revision);
-                var itemPath = this.Dispatcher.Invoke(() =>
-                {
-                    this.ValidateAccessType(authentication, AccessType.Guest);
-                    this.Sign(authentication);
-                    return this.ItemPath;
-                });
-                return this.Repository.GetTypeData(this.Serializer, itemPath, revision);
+                    return service.Dispatcher.Invoke(() => service.FindFromType(this.DataBase.ID, new string[] { base.Path }, text, options));
+                }
+                throw new NotImplementedException();
             }
             catch (Exception e)
             {

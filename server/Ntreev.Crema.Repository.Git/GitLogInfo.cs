@@ -85,16 +85,26 @@ namespace Ntreev.Crema.Repository.Git
             return ParseMany(logCommand.Run());
         }
 
-        public static GitLogInfo[] RunOnBranch(string repositoryPath, string branchName, int maxCount)
+        public static GitLogInfo[] GetBranchLogs(string repositoryPath, string branchName)
         {
             var logCommand = new GitCommand(repositoryPath, "log")
             {
                 $"{branchName}",
                 GitCommandItem.FromPretty("fuller"),
-                GitCommandItem.FromMaxCount(maxCount),
                 GitCommandItem.ShowNotes
             };
             return ParseMany(logCommand.Run());
+        }
+
+        public static GitLogInfo GetBranchLog(string repositoryPath, string branchName)
+        {
+            var logCommand = new GitCommand(repositoryPath, "log")
+            {
+                $"{branchName}",
+                GitCommandItem.FromPretty("fuller"),
+                GitCommandItem.ShowNotes
+            };
+            return ParseMany(logCommand.Run()).First();
         }
 
         public static GitLogInfo[] RunWithPaths(string repositoryPath, string revision, string[] paths)

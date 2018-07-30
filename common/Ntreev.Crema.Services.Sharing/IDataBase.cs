@@ -43,7 +43,7 @@ namespace Ntreev.Crema.Services
 
         void Revert(Authentication authentication, string revision);
 
-        CremaDataSet GetDataSet(Authentication authentication, string revision);
+        CremaDataSet GetDataSet(Authentication authentication, string revision, string filterExpression);
 
         ITransaction BeginTransaction(Authentication authentication);
 

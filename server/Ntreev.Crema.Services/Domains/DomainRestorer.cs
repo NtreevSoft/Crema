@@ -49,8 +49,6 @@ namespace Ntreev.Crema.Services.Domains
         private Domain domain;
         private DateTime dateTime;
 
-        private long lastID;
-
         private DomainRestorer(Authentication authentication, DomainContext domainContext, string workingPath)
         {
             this.authentication = authentication;

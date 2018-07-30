@@ -49,7 +49,7 @@ namespace Ntreev.Crema.Services
 
         string[] GetRepositoryItemList(string basePath, string repositoryName);
 
-        LogInfo[] GetLog(string basePath, string repositoryName, int count);
+        LogInfo[] GetLog(string basePath, string repositoryName);
 
         string Name { get; }
     }

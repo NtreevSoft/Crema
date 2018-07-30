@@ -109,8 +109,8 @@ namespace Ntreev.Crema.Data.Xml.Schema
             {
                 this.WriteSchemaAttribute(schema, this.dataSet.Namespace);
                 this.WriteGuidType(schema);
-                this.WriteDataTypes(schema, dataSet.Types);
-                this.WriteTables(schema, dataSet.DataSetName, dataSet.Tables);
+                this.WriteDataTypes(schema, dataSet.Types.OrderBy(item => item.Name));
+                this.WriteTables(schema, dataSet.DataSetName, dataSet.Tables.OrderBy(item => item.Name));
             }
             else if (this.dataTable != null)
             {
@@ -147,7 +147,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
                     }
                 }
 
-                this.WriteTables(schema, contentName, tables);
+                this.WriteTables(schema, contentName, tables.OrderBy(item => item.Name));
             }
             else if (this.dataType != null)
             {

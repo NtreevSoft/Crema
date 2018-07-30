@@ -373,9 +373,8 @@ namespace Ntreev.Crema.Services.Data
         {
             try
             {
-                this.ValidateDispatcher();
                 var remotePath = this.CremaHost.GetPath(CremaPath.RepositoryDataBases);
-                var logs = this.repositoryProvider.GetLog(remotePath, this.Name, 100);
+                var logs = this.repositoryProvider.GetLog(remotePath, this.Name);
                 return logs.ToArray();
             }
             catch (Exception e)
@@ -455,11 +454,8 @@ namespace Ntreev.Crema.Services.Data
         {
             if (this.Dispatcher == null)
                 throw new InvalidOperationException(Resources.Exception_InvalidObject);
-            this.Dispatcher.Invoke(() =>
-            {
-                if (authentication != Authentication.System && this.authentications.Contains(authentication) == false)
-                    throw new InvalidOperationException(Resources.Exception_NotInDataBase);
-            });
+            if (authentication != Authentication.System && this.authentications.Contains(authentication) == false)
+                throw new InvalidOperationException(Resources.Exception_NotInDataBase);
         }
 
         public bool VerifyAccess(Authentication authentication)
@@ -664,31 +660,25 @@ namespace Ntreev.Crema.Services.Data
                 return this.CremaHost.GetService(serviceType);
         }
 
-        public CremaDataSet GetDataSet(Authentication authentication, string revision)
+        public CremaDataSet GetDataSet(Authentication authentication, string revision, string filterExpression)
         {
-            this.Dispatcher.Invoke(() => this.ValidatePreview(authentication));
+            return this.GetDataSet(authentication, revision, filterExpression, ReadOptions.None);
+        }
 
-            if (revision == base.DataBaseInfo.Revision || revision == null)
+        public CremaDataSet GetDataSet(Authentication authentication, string revision, string filterExpression, ReadOptions options)
+        {
+            this.ValidateGetDataSet(authentication);
+
+            var tempPath = PathUtility.GetTempPath(false);
+            var uri = this.Repository.GetUri(this.BasePath, revision);
+            try
             {
-                if (this.dataSetCache == null)
-                {
-                    this.dataSetCache = this.Dispatcher.Invoke(() => CremaDataSet.ReadFromDirectory(this.BasePath));
-                }
-                return this.dataSetCache;
+                var exportPath = this.Repository.Export(uri, tempPath);
+                return CremaDataSet.ReadFromDirectory(exportPath, filterExpression, options);
             }
-            else
+            finally
             {
-                var tempPath = PathUtility.GetTempPath(false);
-                var uri = this.Repository.GetUri(this.BasePath, revision);
-                try
-                {
-                    var exportPath = this.Repository.Export(uri, tempPath);
-                    return CremaDataSet.ReadFromDirectory(exportPath);
-                }
-                finally
-                {
-                    DirectoryUtility.Delete(tempPath);
-                }
+                DirectoryUtility.Delete(tempPath);
             }
         }
 
@@ -776,8 +766,10 @@ namespace Ntreev.Crema.Services.Data
         {
             get
             {
-                this.Dispatcher?.VerifyAccess();
-                return base.DataBaseState;
+                lock ((object)this.Dispatcher ?? this)
+                {
+                    return base.DataBaseState;
+                }
             }
         }
 
@@ -1418,10 +1410,11 @@ namespace Ntreev.Crema.Services.Data
             this.Dispatcher?.VerifyAccess();
         }
 
-        private void ValidatePreview(Authentication authentication)
+        private void ValidateGetDataSet(Authentication authentication)
         {
             if (this.IsLoaded == false)
                 throw new NotImplementedException();
+            this.VerifyAccessType(authentication, AccessType.Guest);
             this.ValidateBeginInDataBase(authentication);
         }
 

@@ -208,10 +208,19 @@ namespace Ntreev.Crema.Data
 
         public static CremaDataSet ReadFromDirectory(string path)
         {
-            return ReadFromDirectory(path, null);
+            return ReadFromDirectory(path, null, ReadOptions.None);
         }
 
-        public static CremaDataSet ReadFromDirectory(string path, string readPattern)
+        /// <summary>
+        /// 경로내에 타입과 테이블을 읽어들입니다.
+        /// </summary>
+        /// <param name="path">데이터를 읽어들일 경로입니다.</param>
+        /// <param name="filterExpression">필터 표현식입니다. glob 형태를 사용하며 여러개일 경우 구분자 ; 를 사용합니다.
+        /// options 값이 TypeOnly 일경우에는 필터가 타입에 영향을 미칩니다.
+        /// </param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public static CremaDataSet ReadFromDirectory(string path, string filterExpression, ReadOptions options)
         {
             ValidateReadFromDirectory(path);
 
@@ -231,27 +240,46 @@ namespace Ntreev.Crema.Data
                 typePath = Path.Combine(fullPath, CremaSchema.TypeDirectory);
             }
 
-            if (readPattern == null)
-            {
-                var typeFiles = DirectoryUtility.Exists(typePath) ? DirectoryUtility.GetAllFiles(typePath, "*" + CremaSchema.SchemaExtension) : new string[] { };
-                var tableFiles = DirectoryUtility.Exists(tablePath) ? DirectoryUtility.GetAllFiles(tablePath, "*" + CremaSchema.XmlExtension) : new string[] { };
-                dataSet.ReadMany(typeFiles, tableFiles);
-            }
-            else
-            {
-                var query1 = from item in DirectoryUtility.Exists(tablePath) ? DirectoryUtility.GetAllFiles(tablePath, "*" + CremaSchema.XmlExtension) : new string[] { }
-                             where StringUtility.GlobMany(Path.GetFileNameWithoutExtension(item), readPattern)
-                             select item;
+            var typeFiles = DirectoryUtility.Exists(typePath) ? DirectoryUtility.GetAllFiles(typePath, "*" + CremaSchema.SchemaExtension) : new string[] { };
+            var tableFiles = DirectoryUtility.Exists(tablePath) ? DirectoryUtility.GetAllFiles(tablePath, "*" + CremaSchema.XmlExtension) : new string[] { };
 
-                var query2 = from item in query1
-                             let readInfo = new CremaXmlReadInfo(item)
-                             from item2 in readInfo.GetTypePaths()
-                             select item2;
+            switch (options)
+            {
+                case ReadOptions.None:
+                case ReadOptions.OmitContent:
+                    {
+                        if (filterExpression != null)
+                        {
+                            var query1 = from item in tableFiles
+                                         where StringUtility.GlobMany(Path.GetFileNameWithoutExtension(item), filterExpression)
+                                         select item;
 
-                var tableFiles = query1.ToArray();
-                var typeFiles = query2.Distinct().ToArray();
-                dataSet.ReadMany(typeFiles, tableFiles);
+                            var query2 = from item in query1
+                                         let readInfo = new CremaXmlReadInfo(item)
+                                         from item2 in readInfo.GetTypePaths()
+                                         select item2;
+                            tableFiles = query1.ToArray();
+                            typeFiles = query2.Distinct().ToArray();
+                        }
+                    }
+                    break;
+                case ReadOptions.TypeOnly:
+                    {
+                        if (filterExpression != null)
+                        {
+                            var query1 = from item in DirectoryUtility.Exists(typePath) ? DirectoryUtility.GetAllFiles(typePath, "*" + CremaSchema.SchemaExtension) : new string[] { }
+                                         where StringUtility.GlobMany(Path.GetFileNameWithoutExtension(item), filterExpression)
+                                         select item;
+                        }
+                        else
+                        {
+                            tableFiles = new string[] { };
+                        }
+                    }
+                    break;
             }
+
+            dataSet.ReadMany(typeFiles, tableFiles, options == ReadOptions.OmitContent);
 
             if (dataSet.Namespace == CremaSchemaObsolete.BaseNamespaceObsolete)
             {
