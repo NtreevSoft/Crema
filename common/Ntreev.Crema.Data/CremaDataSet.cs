@@ -208,7 +208,7 @@ namespace Ntreev.Crema.Data
 
         public static CremaDataSet ReadFromDirectory(string path)
         {
-            return ReadFromDirectory(path, null, ReadOptions.None);
+            return ReadFromDirectory(path, null, ReadTypes.All);
         }
 
         /// <summary>
@@ -218,9 +218,9 @@ namespace Ntreev.Crema.Data
         /// <param name="filterExpression">필터 표현식입니다. glob 형태를 사용하며 여러개일 경우 구분자 ; 를 사용합니다.
         /// options 값이 TypeOnly 일경우에는 필터가 타입에 영향을 미칩니다.
         /// </param>
-        /// <param name="options"></param>
+        /// <param name="readType"></param>
         /// <returns></returns>
-        public static CremaDataSet ReadFromDirectory(string path, string filterExpression, ReadOptions options)
+        public static CremaDataSet ReadFromDirectory(string path, string filterExpression, ReadTypes readType)
         {
             ValidateReadFromDirectory(path);
 
@@ -243,10 +243,10 @@ namespace Ntreev.Crema.Data
             var typeFiles = DirectoryUtility.Exists(typePath) ? DirectoryUtility.GetAllFiles(typePath, "*" + CremaSchema.SchemaExtension) : new string[] { };
             var tableFiles = DirectoryUtility.Exists(tablePath) ? DirectoryUtility.GetAllFiles(tablePath, "*" + CremaSchema.XmlExtension) : new string[] { };
 
-            switch (options)
+            switch (readType)
             {
-                case ReadOptions.None:
-                case ReadOptions.OmitContent:
+                case ReadTypes.All:
+                case ReadTypes.OmitContent:
                     {
                         if (filterExpression != null)
                         {
@@ -263,7 +263,7 @@ namespace Ntreev.Crema.Data
                         }
                     }
                     break;
-                case ReadOptions.TypeOnly:
+                case ReadTypes.TypeOnly:
                     {
                         if (filterExpression != null)
                         {
@@ -279,7 +279,7 @@ namespace Ntreev.Crema.Data
                     break;
             }
 
-            dataSet.ReadMany(typeFiles, tableFiles, options == ReadOptions.OmitContent);
+            dataSet.ReadMany(typeFiles, tableFiles, readType == ReadTypes.OmitContent);
 
             if (dataSet.Namespace == CremaSchemaObsolete.BaseNamespaceObsolete)
             {
@@ -850,21 +850,23 @@ namespace Ntreev.Crema.Data
 
         public IDictionary<string, object> ToDictionary()
         {
-            return this.ToDictionary(null);
-        }
-
-        public IDictionary<string, object> ToDictionary(string filterExpression)
-        {
-            var props = new Dictionary<string, object>();
-            var tables = this.Tables.OrderBy(item => item.Name);
-            foreach (var item in tables)
+            var types = new Dictionary<string, object>(this.Types.Count);
+            foreach (var item in this.Types.OrderBy(item => item.Name))
             {
-                if (StringUtility.GlobMany(item.Name, filterExpression) == true)
-                {
-                    props.Add(item.Name, item.ToDictionary());
-                }
+                types.Add(item.Name, item.ToDictionary());
             }
-            return props;
+
+            var tables = new Dictionary<string, object>(this.Tables.Count);
+            foreach (var item in this.Tables.OrderBy(item => item.Name))
+            {
+                tables.Add(item.Name, item.ToDictionary());
+            }
+
+            return new Dictionary<string, object>()
+            {
+                {CremaSchema.TypeDirectory, types },
+                {CremaSchema.TableDirectory, tables }
+            };
         }
 
         [DefaultValue(false)]

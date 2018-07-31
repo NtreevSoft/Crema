@@ -16,8 +16,10 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Ntreev.Crema.Data.Properties;
+using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Library;
 using System;
+using System.Collections.Generic;
 using System.Data;
 
 namespace Ntreev.Crema.Data
@@ -35,6 +37,25 @@ namespace Ntreev.Crema.Data
         public override string ToString()
         {
             return string.Format("{0}, {1}", this.Name ?? "(null)", this.Value);
+        }
+
+        public IDictionary<string, object> ToDictionary()
+        {
+            var props = new Dictionary<string, object>
+            {
+                { nameof(this.MemberID), this.MemberID },
+                { nameof(this.Name), this.Name },
+                { nameof(this.Value), this.Value },
+                { nameof(this.Comment), this.Comment },
+                { nameof(this.Tags), $"{this.Tags}" },
+                { nameof(this.DerivedTags), $"{this.DerivedTags}" },
+                { nameof(this.IsEnabled), this.IsEnabled },
+                { CremaSchema.Creator, this.CreationInfo.ID },
+                { CremaSchema.CreatedDateTime, this.CreationInfo.DateTime },
+                { CremaSchema.Modifier, this.ModificationInfo.ID },
+                { CremaSchema.ModifiedDateTime, this.ModificationInfo.DateTime }
+            };
+            return props;
         }
 
         public void AcceptChanges()

@@ -25,8 +25,6 @@ namespace Ntreev.Crema.Services
 {
     public interface ITypeContext : IEnumerable<ITypeItem>, IServiceProvider
     {
-        CremaDataSet GetDataSet(Authentication authentication, string revision, string filterExpression);
-
         void Import(Authentication authentication, CremaDataSet dataSet, string comment);
 
         bool Contains(string itemPath);

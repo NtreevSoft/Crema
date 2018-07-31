@@ -654,7 +654,7 @@ namespace Ntreev.Crema.Data
 
         public IDictionary<int, object> ToDictionary()
         {
-            var props = new Dictionary<int, object>();
+            var props = new Dictionary<int, object>(this.Rows.Count);
             for (var i = 0; i < this.Rows.Count; i++)
             {
                 var dataRow = this.Rows[i];

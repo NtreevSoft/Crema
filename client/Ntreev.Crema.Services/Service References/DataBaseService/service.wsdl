@@ -79,15 +79,6 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="GetTableDataSet">
-      <soap12:operation soapAction="http://www.ntreev.com/IDataBaseService/GetTableDataSet" style="document" />
-      <wsdl:input>
-        <soap12:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap12:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
     <wsdl:operation name="ImportTables">
       <soap12:operation soapAction="http://www.ntreev.com/IDataBaseService/ImportTables" style="document" />
       <wsdl:input>
@@ -315,15 +306,6 @@
     </wsdl:operation>
     <wsdl:operation name="GetTypeItemDataSet">
       <soap12:operation soapAction="http://www.ntreev.com/IDataBaseService/GetTypeItemDataSet" style="document" />
-      <wsdl:input>
-        <soap12:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap12:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="GetTypeDataSet">
-      <soap12:operation soapAction="http://www.ntreev.com/IDataBaseService/GetTypeDataSet" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

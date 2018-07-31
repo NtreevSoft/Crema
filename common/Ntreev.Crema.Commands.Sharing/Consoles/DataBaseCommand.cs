@@ -16,6 +16,7 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Ntreev.Crema.Commands.Consoles.Properties;
+using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services;
 using Ntreev.Library;
@@ -175,6 +176,7 @@ namespace Ntreev.Crema.Commands.Consoles
 
         [CommandMethod]
         [CommandMethodStaticProperty(typeof(LogProperties))]
+        [CommandMethodStaticProperty(typeof(FormatProperties))]
         public void Log([CommandCompletion(nameof(GetDataBaseNames))]string dataBaseName)
         {
             var dataBase = this.GetDataBase(dataBaseName);
@@ -184,7 +186,7 @@ namespace Ntreev.Crema.Commands.Consoles
             foreach (var item in logs)
             {
                 var props = item.ToDictionary();
-                var text = TextSerializer.Serialize(props);
+                var text = TextSerializer.Serialize(props, FormatProperties.Format);
                 this.Out.WriteLine(text);
                 this.Out.WriteLine();
             }
@@ -193,12 +195,24 @@ namespace Ntreev.Crema.Commands.Consoles
         [CommandMethod]
         [CommandMethodStaticProperty(typeof(FilterProperties))]
         [CommandMethodStaticProperty(typeof(FormatProperties))]
+        [CommandMethodStaticProperty(typeof(DataSetTypeProperties))]
         public void View([CommandCompletion(nameof(GetDataBaseNames))]string dataBaseName, string revision = null)
         {
             var dataBase = this.GetDataBase(dataBaseName);
             var authentication = this.CommandContext.GetAuthentication(this);
-            var dataSet = dataBase.GetDataSet(authentication, revision, FilterProperties.FilterExpression);
-            var text = TextSerializer.Serialize(dataSet.ToDictionary(), FormatProperties.Format);
+            var dataSet = dataBase.GetDataSet(authentication, DataSetTypeProperties.DataSetType, FilterProperties.FilterExpression, revision);
+            var props = dataSet.ToDictionary();
+
+            if (DataSetTypeProperties.OmitTable == true)
+            {
+                props.Remove(CremaSchema.TableDirectory);
+            }
+            else if (DataSetTypeProperties.OmitType == true)
+            {
+                props.Remove(CremaSchema.TypeDirectory);
+            }
+
+            var text = TextSerializer.Serialize(props, FormatProperties.Format);
             this.Out.WriteLine(text);
         }
 

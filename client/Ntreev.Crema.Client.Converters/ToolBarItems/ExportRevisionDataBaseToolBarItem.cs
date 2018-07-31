@@ -17,6 +17,7 @@
 
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Ntreev.Crema.Client.Converters.Properties;
+using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services;
 using Ntreev.Crema.Spreadsheet;
 using Ntreev.ModernUI.Framework;
@@ -71,7 +72,7 @@ namespace Ntreev.Crema.Client.Converters.ToolBarItems
 
                         if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
                         {
-                            var dataSet = await dataBase.Dispatcher.InvokeAsync(() => dataBase.GetDataSet(this.authenticator, revision, null));
+                            var dataSet = await dataBase.Dispatcher.InvokeAsync(() => dataBase.GetDataSet(this.authenticator, DataSetType.All, null, revision));
                             var writer = new SpreadsheetWriter(dataSet);
                             writer.Write(dialog.FileName);
                             AppMessageBox.Show(Resources.Message_Exported);

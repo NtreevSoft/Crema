@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Data
 {
-    public enum ReadOptions
+    public enum ReadTypes
     {
         /// <summary>
         /// 모든 내용을 읽어들입니다.
         /// </summary>
-        None,
+        All,
 
         /// <summary>
         /// 테이블의 내용을 읽지 않습니다.

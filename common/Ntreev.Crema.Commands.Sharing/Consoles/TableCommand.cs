@@ -144,8 +144,14 @@ namespace Ntreev.Crema.Commands.Consoles
             var tableItem = this.GetTableItem(tableItemName);
             var authentication = this.CommandContext.GetAuthentication(this);
             var logs = tableItem.Dispatcher.Invoke(() => tableItem.GetLog(authentication));
-            var text = TextSerializer.Serialize(logs, FormatProperties.Format);
-            this.Out.WriteLine(text);
+
+            foreach (var item in logs)
+            {
+                var props = item.ToDictionary();
+                var text = TextSerializer.Serialize(props, FormatProperties.Format);
+                this.Out.WriteLine(text);
+                this.Out.WriteLine();
+            }
         }
 
         [CommandMethod]

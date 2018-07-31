@@ -130,11 +130,11 @@ namespace Ntreev.Crema.ServiceHosts.Data
             });
         }
 
-        public ResultBase<CremaDataSet> GetDataSet(string revision, string filterExpression)
+        public ResultBase<CremaDataSet> GetDataSet(DataSetType dataSetType, string filterExpression, string revision)
         {
             return this.InvokeImmediately(() =>
             {
-                return this.dataBase.Dispatcher.Invoke(() => this.dataBase.GetDataSet(this.authentication, revision, filterExpression));
+                return this.dataBase.Dispatcher.Invoke(() => this.dataBase.GetDataSet(this.authentication, dataSetType, filterExpression, revision));
             });
         }
 
@@ -154,14 +154,6 @@ namespace Ntreev.Crema.ServiceHosts.Data
             {
                 var tableItem = this.dataBase.Dispatcher.Invoke(() => this.GetTableItem(itemPath));
                 return tableItem.GetDataSet(this.authentication, revision);
-            });
-        }
-
-        public ResultBase<CremaDataSet> GetTableDataSet(string revision, string filterExpression)
-        {
-            return this.InvokeImmediately(() =>
-            {
-                return this.TableContext.GetDataSet(authentication, revision, filterExpression);
             });
         }
 
@@ -439,14 +431,6 @@ namespace Ntreev.Crema.ServiceHosts.Data
             {
                 var typeItem = this.cremaHost.Dispatcher.Invoke(() => this.GetTypeItem(itemPath));
                 return typeItem.GetDataSet(this.authentication, revision);
-            });
-        }
-
-        public ResultBase<CremaDataSet> GetTypeDataSet(string revision, string filterExpression)
-        {
-            return this.InvokeImmediately(() =>
-            {
-                return this.TypeContext.GetDataSet(this.authentication, revision, filterExpression);
             });
         }
 

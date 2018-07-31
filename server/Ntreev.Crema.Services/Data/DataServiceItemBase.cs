@@ -132,7 +132,7 @@ namespace Ntreev.Crema.Services.Data
                     this.DataBase.Enter(this.Authentication);
                 try
                 {
-                    return this.DataBase.GetDataSet(this.Authentication, null, null);
+                    return this.DataBase.GetDataSet(this.Authentication, DataSetType.All, null, null);
                 }
                 finally
                 {
@@ -583,7 +583,7 @@ namespace Ntreev.Crema.Services.Data
                     var contains = this.DataBase.Contains(this.Authentication);
                     if (contains == false)
                         this.DataBase.Enter(this.Authentication);
-                    var dataSet = this.DataBase.GetDataSet(this.Authentication, null, null);
+                    var dataSet = this.DataBase.GetDataSet(this.Authentication, DataSetType.All, null, null);
                     if (contains == false)
                         this.DataBase.Leave(this.Authentication);
                     return new Tuple<string, CremaDataSet>(revision, dataSet);

@@ -22,6 +22,7 @@ using Ntreev.Library;
 using Ntreev.Library.IO;
 using Ntreev.Library.ObjectModel;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.IO;
@@ -131,6 +132,35 @@ namespace Ntreev.Crema.Data
         public override string ToString()
         {
             return this.InternalObject.ToString();
+        }
+
+        public IDictionary<string, object> ToDictionary()
+        {
+            var props = new Dictionary<string, object>
+            {
+                { nameof(this.TypeID), this.TypeID },
+                { nameof(this.Name), this.Name },
+                { nameof(this.Comment), this.Comment },
+                { nameof(this.Tags), $"{this.Tags}" },
+                { nameof(this.IsFlag), this.IsFlag },
+                { nameof(this.CategoryPath), this.CategoryPath },
+                { CremaSchema.Creator, this.CreationInfo.ID },
+                { CremaSchema.CreatedDateTime, this.CreationInfo.DateTime },
+                { CremaSchema.Modifier, this.ModificationInfo.ID },
+                { CremaSchema.ModifiedDateTime, this.ModificationInfo.DateTime },
+                { nameof(this.Members), GetMembersInfo() }
+            };
+            return props;
+
+            IDictionary<string, object> GetMembersInfo()
+            {
+                var members = new Dictionary<string, object>(this.Members.Count);
+                foreach (var item in this.Members)
+                {
+                    members.Add(item.Name, item.ToDictionary());
+                }
+                return members;
+            }
         }
 
         public void Clear()

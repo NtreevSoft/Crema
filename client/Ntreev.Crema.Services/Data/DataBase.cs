@@ -209,11 +209,11 @@ namespace Ntreev.Crema.Services.Data
             this.DataBases.Revert(authentication, this, revision);
         }
 
-        public CremaDataSet GetDataSet(Authentication authentication, string revision, string filterExpression)
+        public CremaDataSet GetDataSet(Authentication authentication, DataSetType dataSetType, string filterExpression, string revision)
         {
             this.ValidateGetDataSet(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(GetDataSet), this, revision, filterExpression);
-            var result = this.Service.GetDataSet(revision, filterExpression);
+            this.CremaHost.DebugMethod(authentication, this, nameof(GetDataSet), this, dataSetType, filterExpression, revision);
+            var result = this.Service.GetDataSet(dataSetType, filterExpression, revision);
             this.Sign(authentication, result);
             return result.Value;
         }

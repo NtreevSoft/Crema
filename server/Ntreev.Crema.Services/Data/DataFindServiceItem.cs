@@ -92,26 +92,6 @@ namespace Ntreev.Crema.Services.Data
             return this.BuildCache(dataType);
         }
 
-        //protected override void OnSerializeTable(Stream stream, object tableData)
-        //{
-        //    this.formatter.Serialize(stream, tableData);
-        //}
-
-        //protected override void OnSerializeType(Stream stream, object typeData)
-        //{
-        //    this.formatter.Serialize(stream, typeData);
-        //}
-
-        //protected override object OnDeserializeTable(Stream stream)
-        //{
-        //    return this.formatter.Deserialize(stream);
-        //}
-
-        //protected override object OnDeserializeType(Stream stream)
-        //{
-        //    return this.formatter.Deserialize(stream);
-        //}
-
         protected override System.Type TableDataType => typeof(FindTableSerializationInfo);
 
         protected override System.Type TypeDataType => typeof(FindTableSerializationInfo);

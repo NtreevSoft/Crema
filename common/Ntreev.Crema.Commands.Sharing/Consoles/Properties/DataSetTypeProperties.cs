@@ -15,41 +15,54 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Library.ObjectModel;
-using Ntreev.Crema.ServiceModel;
-using System;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using Ntreev.Crema.Data;
+using Ntreev.Crema.ServiceModel;
+using Ntreev.Library.Commands;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Text;
 
-namespace Ntreev.Crema.Services
+namespace Ntreev.Crema.Commands.Consoles.Properties
 {
-    public interface ITableContext : IEnumerable<ITableItem>, IServiceProvider
+    [ResourceDescription("../Resources", IsShared = true)]
+    static class DataSetTypeProperties
     {
-        void Import(Authentication authentication, CremaDataSet dataSet, string comment);
+        [CommandProperty]
+        [CommandPropertyTrigger(nameof(OmitTable), false)]
+        [DefaultValue(false)]
+        public static bool OmitType
+        {
+            get; set;
+        }
 
-        bool Contains(string itemPath);
+        [CommandProperty]
+        [CommandPropertyTrigger(nameof(OmitType), false)]
+        [CommandPropertyTrigger(nameof(OmitContent), false)]
+        [DefaultValue(false)]
+        public static bool OmitTable
+        {
+            get; set;
+        }
 
-        ITableCollection Tables { get; }
+        [CommandProperty]
+        [DefaultValue(false)]
+        [CommandPropertyTrigger(nameof(OmitTable), false)]
+        public static bool OmitContent
+        {
+            get; set;
+        }
 
-        ITableCategoryCollection Categories { get; }
-
-        ITableCategory Root { get; }
-
-        ITableItem this[string itemPath] { get; }
-
-        event ItemsCreatedEventHandler<ITableItem> ItemsCreated;
-
-        event ItemsRenamedEventHandler<ITableItem> ItemsRenamed;
-
-        event ItemsMovedEventHandler<ITableItem> ItemsMoved;
-
-        event ItemsDeletedEventHandler<ITableItem> ItemsDeleted;
-
-        event ItemsEventHandler<ITableItem> ItemsChanged;
-
-        event ItemsEventHandler<ITableItem> ItemsAccessChanged;
-
-        event ItemsEventHandler<ITableItem> ItemsLockChanged;
+        public static DataSetType DataSetType
+        {
+            get
+            {
+                if (OmitContent == true)
+                    return DataSetType.OmitContent;
+                else if (OmitTable == true)
+                    return DataSetType.TypeOnly;
+                return DataSetType.All;
+            }
+        }
     }
 }

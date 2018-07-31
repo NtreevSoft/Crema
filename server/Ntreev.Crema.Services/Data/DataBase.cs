@@ -669,21 +669,31 @@ namespace Ntreev.Crema.Services.Data
                 return this.CremaHost.GetService(serviceType);
         }
 
-        public CremaDataSet GetDataSet(Authentication authentication, string revision, string filterExpression)
+        public CremaDataSet GetDataSet(Authentication authentication, DataSetType dataSetType, string filterExpression, string revision)
         {
             this.ValidateGetDataSet(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(GetDataSet), this, revision, filterExpression);
-            return this.GetDataSet(authentication, revision, filterExpression, ReadOptions.None);
+            this.CremaHost.DebugMethod(authentication, this, nameof(GetDataSet), this, dataSetType, filterExpression, revision);
+            switch(dataSetType)
+            {
+                case DataSetType.All:
+                    return this.GetDataSet(authentication, revision, filterExpression, ReadTypes.All);
+                case DataSetType.OmitContent:
+                    return this.GetDataSet(authentication, revision, filterExpression, ReadTypes.OmitContent);
+                case DataSetType.TypeOnly:
+                    return this.GetDataSet(authentication, revision, filterExpression, ReadTypes.TypeOnly);
+                default:
+                    throw new NotImplementedException();
+            }
         }
 
-        public CremaDataSet GetDataSet(Authentication authentication, string revision, string filterExpression, ReadOptions options)
+        public CremaDataSet GetDataSet(Authentication authentication, string revision, string filterExpression, ReadTypes readType)
         {
             var tempPath = PathUtility.GetTempPath(false);
             var uri = this.Repository.GetUri(this.BasePath, revision);
             try
             {
                 var exportPath = this.Repository.Export(uri, tempPath);
-                return CremaDataSet.ReadFromDirectory(exportPath, filterExpression, options);
+                return CremaDataSet.ReadFromDirectory(exportPath, filterExpression, readType);
             }
             finally
             {

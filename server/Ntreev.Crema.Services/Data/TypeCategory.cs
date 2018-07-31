@@ -414,6 +414,8 @@ namespace Ntreev.Crema.Services.Data
 
         public DataBaseRepositoryHost Repository => this.DataBase.Repository;
 
+        public string BasePath => base.Path;
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override void OnValidateRename(IAuthentication authentication, object target, string oldPath, string newPath)
         {

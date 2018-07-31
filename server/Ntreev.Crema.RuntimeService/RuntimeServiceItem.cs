@@ -82,7 +82,7 @@ namespace Ntreev.Crema.RuntimeService
             }
             else
             {
-                var dataSet = this.DataBase.GetDataSet(this.authentication, revision, filterExpression);
+                var dataSet = this.DataBase.GetDataSet(this.authentication, DataSetType.All, filterExpression, revision);
                 var tables = dataSet.Tables.Select(item => item.TableInfo).ToArray();
                 var types = dataSet.Types.Select(item => item.TypeInfo).ToArray();
                 var codeSet = new GenerationSet(types, tables)
@@ -138,7 +138,7 @@ namespace Ntreev.Crema.RuntimeService
             }
             else
             {
-                var dataSet = this.DataBase.GetDataSet(this.authentication, revision, filterExpression);
+                var dataSet = this.DataBase.GetDataSet(this.authentication, DataSetType.All, filterExpression, revision);
                 var serializedSet = new SerializationSet(dataSet)
                 {
                     Name = this.DataBaseName,

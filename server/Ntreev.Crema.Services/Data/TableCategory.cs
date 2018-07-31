@@ -414,6 +414,8 @@ namespace Ntreev.Crema.Services.Data
 
         public DataBaseRepositoryHost Repository => this.DataBase.Repository;
 
+        public string BasePath => base.Path;
+
         public new string Name
         {
             get

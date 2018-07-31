@@ -344,7 +344,7 @@ namespace Ntreev.Crema.Services.Data
             return this.DataBase.GetService(serviceType);
         }
 
-        public string ItemPath => this.Context.GenerateTypePath(this.Category.Path, base.Name);
+        public string ItemPath => this.Context.GenerateTypePath(this.Category.BasePath, base.Name);
 
         public IEnumerable<Table> ReferencedTables
         {

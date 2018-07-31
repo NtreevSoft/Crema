@@ -24,7 +24,9 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YamlDotNet.Core;
 using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.EventEmitters;
 
 namespace Ntreev.Crema.Commands
 {
@@ -34,7 +36,7 @@ namespace Ntreev.Crema.Commands
 
         static TextSerializer()
         {
-            yamlSerializer = new SerializerBuilder().Build();
+            yamlSerializer = new SerializerBuilder().DisableAliases().Build();
         }
 
         public static string Serialize(object obj)

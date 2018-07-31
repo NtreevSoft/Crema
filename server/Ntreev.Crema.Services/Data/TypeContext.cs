@@ -54,14 +54,6 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.Debug("TypeContext is created.");
         }
 
-        public CremaDataSet GetDataSet(Authentication authentication, string revision, string filterExpression)
-        {
-            this.DataBase.ValidateGetDataSet(authentication);
-            this.CremaHost.DebugMethod(authentication, this, nameof(GetDataSet), this, revision, filterExpression);
-            this.Sign(authentication);
-            return this.DataBase.GetDataSet(authentication, revision, filterExpression, ReadOptions.TypeOnly);
-        }
-
         public void Import(Authentication authentication, CremaDataSet dataSet, string comment)
         {
             this.Dispatcher?.VerifyAccess();
