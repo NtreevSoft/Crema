@@ -21,6 +21,7 @@ using Ntreev.Crema.Services.Domains.Serializations;
 using Ntreev.Library.IO;
 using Ntreev.Library.Serialization;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 
@@ -44,8 +45,8 @@ namespace Ntreev.Crema.Services.Domains
 
         private DomainPostItemSerializationInfo currentPost;
         private IObjectSerializer serializer;
-        private readonly DomainPostSerializationInfo postedList;
-        private readonly DomainCompleteSerializationInfo completedList;
+        private readonly List<DomainPostItemSerializationInfo> postedList = new List<DomainPostItemSerializationInfo>();
+        private readonly List<DomainCompleteItemSerializationInfo> completedList = new List<DomainCompleteItemSerializationInfo>();
 
         public DomainLogger(IObjectSerializer serializer, Domain domain)
         {
@@ -57,9 +58,9 @@ namespace Ntreev.Crema.Services.Domains
             this.completedPath = Path.Combine(this.basePath, CompletedItemPath);
             this.serializer.Serialize(this.headerPath, domain.GetSerializationInfo(), ObjectSerializerSettings.Empty);
             this.serializer.Serialize(this.sourcePath, domain.Source, ObjectSerializerSettings.Empty);
-            this.postedList = new DomainPostSerializationInfo() { Items = new SerializationItemCollection<DomainPostItemSerializationInfo>() };
-            this.completedList = new DomainCompleteSerializationInfo() { Items = new SerializationItemCollection<DomainCompleteItemSerializationInfo>() };
-        }
+            this.postedList = new List<DomainPostItemSerializationInfo>();
+            this.completedList = new List<DomainCompleteItemSerializationInfo>();
+    }
 
         public DomainLogger(IObjectSerializer serializer, string basePath)
         {
@@ -69,8 +70,24 @@ namespace Ntreev.Crema.Services.Domains
             this.sourcePath = Path.Combine(this.basePath, SourceItemPath);
             this.postedPath = Path.Combine(this.basePath, PostedItemPath);
             this.completedPath = Path.Combine(this.basePath, CompletedItemPath);
-            this.postedList = (DomainPostSerializationInfo)this.serializer.Deserialize(this.postedPath, typeof(DomainPostSerializationInfo), ObjectSerializerSettings.Empty);
-            this.completedList = (DomainCompleteSerializationInfo)this.serializer.Deserialize(this.completedPath, typeof(DomainCompleteSerializationInfo), ObjectSerializerSettings.Empty);
+
+            {
+                var items = File.ReadAllLines(this.completedPath);
+                this.completedList = new List<DomainCompleteItemSerializationInfo>(items.Length);
+                foreach (var item in items)
+                {
+                    this.completedList.Add(DomainCompleteItemSerializationInfo.Parse(item));
+                }
+            }
+
+            {
+                var items = File.ReadAllLines(this.postedPath);
+                this.postedList = new List<DomainPostItemSerializationInfo>(items.Length); 
+                foreach (var item in items)
+                {
+                    this.postedList.Add(DomainPostItemSerializationInfo.Parse(item));
+                }
+            }
         }
 
         public void Dispose(bool delete)
@@ -183,7 +200,7 @@ namespace Ntreev.Crema.Services.Domains
             var id = this.ID++;
             var itemPath = Path.Combine(this.basePath, $"{id}");
             this.currentPost = new DomainPostItemSerializationInfo(id, action.GetType());
-            this.postedList.Items.Add(this.currentPost);
+            this.postedList.Add(this.currentPost);
             this.serializer.Serialize(itemPath, action, ObjectSerializerSettings.Empty);
             File.AppendAllText(this.postedPath, $"{this.currentPost}{Environment.NewLine}");
         }
@@ -193,12 +210,16 @@ namespace Ntreev.Crema.Services.Domains
             if (this.IsEnabled == false)
                 return;
 
-            this.completedList.Items.Add(new DomainCompleteItemSerializationInfo(this.currentPost.ID));
+            this.completedList.Add(new DomainCompleteItemSerializationInfo(this.currentPost.ID));
             File.AppendAllText(this.completedPath, $"{new DomainCompleteItemSerializationInfo(this.currentPost.ID)}{Environment.NewLine}");
         }
 
         public long ID { get; set; }
 
         public bool IsEnabled { get; set; } = true;
+
+        public IReadOnlyList<DomainPostItemSerializationInfo> PostedList => this.postedList;
+
+        public IReadOnlyList<DomainCompleteItemSerializationInfo> CompletedList => this.completedList;
     }
 }

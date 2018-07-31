@@ -108,17 +108,15 @@ namespace Ntreev.Crema.Commands.Consoles
             {
                 foreach (var item in query)
                 {
-                    this.Out.WriteLine();
-                    this.Out.WriteLine($"DataBaseName: {item.Key}");
-                    this.Out.Print(item.ToArray());
+                    this.CommandContext.WriteLine($"{item.Key}:");
+                    this.CommandContext.WriteList(item.ToArray());
+                    this.CommandContext.WriteLine();
                 }
             }
             else
             {
-                this.Out.WriteLine();
-                this.Out.WriteLine("no domains");
+                this.CommandContext.WriteLine("no domains");
             }
-            this.Out.WriteLine();
         }
 
         [CommandMethod]
@@ -142,7 +140,7 @@ namespace Ntreev.Crema.Commands.Consoles
                 { $"{nameof(domainInfo.ModificationInfo)}", domainInfo.ModificationInfo.ToLocalValue() },
                 { $"UserList", string.Empty },
             };
-            this.Out.WriteLine();
+            this.CommandContext.WriteLine();
             this.Out.Print<object>(items);
 
             var tableDataBuilder = new TableDataBuilder(nameof(DomainUserInfo.UserID), nameof(DomainUserInfo.UserName), nameof(DomainUserState), nameof(DomainUserInfo.AccessType));
@@ -152,7 +150,7 @@ namespace Ntreev.Crema.Commands.Consoles
             }
             this.Out.PrintTableData(tableDataBuilder.Data, true);
 
-            this.Out.WriteLine();
+            this.CommandContext.WriteLine();
         }
 
         [CommandProperty("cancel", 'c')]

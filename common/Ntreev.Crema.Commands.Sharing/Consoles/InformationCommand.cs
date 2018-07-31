@@ -15,6 +15,7 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.Commands.Consoles.Properties;
 using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Crema.Services;
 using Ntreev.Library;
@@ -36,6 +37,7 @@ namespace Ntreev.Crema.Commands.Consoles
 {
     [Export(typeof(IConsoleCommand))]
     [ResourceDescription("Resources", IsShared = true)]
+    [CommandStaticProperty(typeof(FormatProperties))]
     class InformationCommand : ConsoleCommandBase
     {
         [Import]
@@ -57,13 +59,6 @@ namespace Ntreev.Crema.Commands.Consoles
         [CommandProperty(IsRequired = true)]
         [DefaultValue("")]
         public string Path
-        {
-            get; set;
-        }
-
-        [CommandProperty("format")]
-        [DefaultValue(TextSerializerType.Yaml)]
-        public TextSerializerType FormatType
         {
             get; set;
         }
@@ -91,8 +86,8 @@ namespace Ntreev.Crema.Commands.Consoles
             var drive = this.CommandContext.Drive;
             var provider = this.GetObject(authentication, this.AbsolutePath);
             var info = this.Invoke(provider, () => provider.Info);
-            var text = TextSerializer.Serialize(info, this.FormatType);
-            this.Out.WriteLine(text);
+            var text = TextSerializer.Serialize(info, FormatProperties.Format);
+            this.CommandContext.WriteLine(text);
         }
 
         private IInfoProvider GetObject(Authentication authentication, string path)

@@ -18,47 +18,18 @@
 using Ntreev.Library.Commands;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+using System.ComponentModel;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace Ntreev.Crema.Commands.Consoles
+namespace Ntreev.Crema.Commands.Consoles.Properties
 {
-    public abstract class ConsoleCommandBase : CommandBase, IConsoleCommand
+    [ResourceDescription("../Resources", IsShared = true)]
+    static class MessageProperties
     {
-        protected ConsoleCommandBase()
+        [CommandProperty('m', true, IsRequired = true)]
+        public static string Message
         {
-
+            get; set;
         }
-
-        protected ConsoleCommandBase(string name)
-            : base(name)
-        {
-
-        }
-
-        public virtual object Instance
-        {
-            get { return this; }
-        }
-
-        public ConsoleCommandContextBase CommandContext
-        {
-            get;
-            internal set;
-        }
-
-        [Obsolete]
-        public TextWriter Out
-        {
-            get { return this.CommandContext.Out; }
-        }
-
-        #region IConsoleCommand
-
-        ICommand IConsoleCommand.Command => this;
-
-        #endregion
     }
 }

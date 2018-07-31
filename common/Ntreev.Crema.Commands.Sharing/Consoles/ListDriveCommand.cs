@@ -49,7 +49,7 @@ namespace Ntreev.Crema.Commands.Consoles
         {
             foreach (var item in this.CommandContext.DriveItems)
             {
-                this.Out.WriteLine($"{item.Name}:");
+                this.CommandContext.WriteLine($"{item.Name}:");
             }
         }
     }

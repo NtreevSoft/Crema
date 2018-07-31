@@ -62,30 +62,29 @@ namespace Ntreev.Crema.Commands.Consoles
                             where StringUtility.GlobMany(userID, FilterProperties.FilterExpression)
                             where this.IsOnline == false || item.UserState == UserState.Online
                             where this.IsBanned == false || item.BanInfo.Path == item.Path
-                            select item;
+                            select new TerminalUserItem(userID, item.BanInfo, item.UserState);
 
                 return query.ToArray();
             });
-
-            this.Out.Print(metaItems, this.PrintItem, this.SelectItem);
+            this.CommandContext.WriteList(metaItems);
         }
 
         [CommandMethod]
-        [CommandMethodProperty(nameof(Comment))]
+        [CommandMethodProperty(nameof(Message))]
         public void Kick([CommandCompletion(nameof(GetOnlineUserIDs))]string userID)
         {
             var user = this.GetUser(userID);
             var authentication = this.CommandContext.GetAuthentication(this);
-            user.Dispatcher.Invoke(() => user.Kick(authentication, this.Comment));
+            user.Dispatcher.Invoke(() => user.Kick(authentication, this.Message));
         }
 
         [CommandMethod]
-        [CommandMethodProperty(nameof(Comment))]
+        [CommandMethodProperty(nameof(Message))]
         public void Ban([CommandCompletion(nameof(GetUnbannedUserIDs))]string userID)
         {
             var user = this.GetUser(userID);
             var authentication = this.CommandContext.GetAuthentication(this);
-            user.Dispatcher.Invoke(() => user.Ban(authentication, this.Comment));
+            user.Dispatcher.Invoke(() => user.Ban(authentication, this.Message));
         }
 
         [CommandMethod]
@@ -133,13 +132,14 @@ namespace Ntreev.Crema.Commands.Consoles
         }
 
         [CommandMethod]
+        [CommandMethodStaticProperty(typeof(FormatProperties))]
         public void Info([CommandCompletion(nameof(GetUser))]string userID)
         {
             var user = this.GetUser(userID);
             var userInfo = user.Dispatcher.Invoke(() => user.UserInfo);
             var props = userInfo.ToDictionary();
-            var text = TextSerializer.Serialize(props);
-            this.Out.WriteLine(text);
+            var text = TextSerializer.Serialize(props, FormatProperties.Format);
+            this.CommandContext.WriteLine(text);
         }
 
         [ConsoleModeOnly]
@@ -175,8 +175,8 @@ namespace Ntreev.Crema.Commands.Consoles
             }
         }
 
-        [CommandMethod]
-        public void Message([CommandCompletion(nameof(GetUser))]string userID, string message)
+        [CommandMethod("message")]
+        public void SendMessage([CommandCompletion(nameof(GetUser))]string userID, string message)
         {
             this.UserContext.Dispatcher.Invoke(() =>
             {
@@ -198,8 +198,8 @@ namespace Ntreev.Crema.Commands.Consoles
             get; set;
         }
 
-        [CommandProperty('m', IsRequired = true)]
-        public string Comment
+        [CommandProperty('m', true, IsRequired = true)]
+        public string Message
         {
             get; set;
         }
@@ -232,36 +232,6 @@ namespace Ntreev.Crema.Commands.Consoles
             if (category == null)
                 throw new CategoryNotFoundException(categoryPath);
             return category;
-        }
-
-        private void PrintItem(UserMetaData item, Action action)
-        {
-            if (item.BanInfo.Path != string.Empty)
-            {
-                using (TerminalColor.SetForeground(ConsoleColor.Red))
-                {
-                    action();
-                }
-            }
-            else if (item.UserState != UserState.Online)
-            {
-                //using (TerminalColor.SetForeground(ConsoleColor.Gray))
-                {
-                    action();
-                }
-            }
-            else
-            {
-                using (TerminalColor.SetForeground(ConsoleColor.Blue))
-                {
-                    action();
-                }
-            }
-        }
-
-        private string SelectItem(UserMetaData item)
-        {
-            return item.UserInfo.ID;
         }
 
         private string[] GetUserIDs()
@@ -318,5 +288,50 @@ namespace Ntreev.Crema.Commands.Consoles
                 return query.ToArray();
             });
         }
+
+        #region classes
+
+        class TerminalUserItem : TerminalTextItem
+        {
+            private string userID;
+            private readonly BanInfo banInfo;
+            private readonly UserState userState;
+
+            public TerminalUserItem(string userID, BanInfo banInfo, UserState userState)
+                : base(userID)
+            {
+                this.userID = userID;
+                this.banInfo = banInfo;
+                this.userState = userState;
+            }
+
+            protected override void OnDraw(TextWriter writer, string text)
+            {
+                if (this.banInfo.Path != string.Empty)
+                {
+                    using (TerminalColor.SetForeground(ConsoleColor.Red))
+                    {
+                        base.OnDraw(writer, text);
+                    }
+                }
+                else if (this.userState != UserState.Online)
+                {
+                    //using (TerminalColor.SetForeground(ConsoleColor.Gray))
+                    {
+                        base.OnDraw(writer, text);
+                    }
+                }
+                else
+                {
+                    using (TerminalColor.SetForeground(ConsoleColor.Blue))
+                    {
+                        base.OnDraw(writer, text);
+                    }
+                }
+
+            }
+        }
+
+        #endregion
     }
 }

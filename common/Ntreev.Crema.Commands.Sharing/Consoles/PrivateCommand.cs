@@ -137,7 +137,7 @@ namespace Ntreev.Crema.Commands.Consoles
                 var accessInfo = this.Invoke(authentication, accessible, () => accessible.AccessInfo);
                 var prop = accessInfo.ToDictionary();
                 var text = TextSerializer.Serialize(prop, this.FormatType);
-                this.Out.WriteLine(text);
+                this.CommandContext.WriteLine(text);
             }
             else
             {

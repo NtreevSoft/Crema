@@ -92,7 +92,7 @@ namespace Ntreev.Crema.Commands.Consoles
                 var lockInfo = this.Invoke(authentication, lockable, () => lockable.LockInfo);
                 var prop = lockInfo.ToDictionary();
                 var text = TextSerializer.Serialize(prop, this.FormatType);
-                this.Out.WriteLine(text);
+                this.CommandContext.WriteLine(text);
             }
             else
             {

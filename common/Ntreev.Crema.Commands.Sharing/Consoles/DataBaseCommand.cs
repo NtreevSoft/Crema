@@ -58,13 +58,13 @@ namespace Ntreev.Crema.Commands.Consoles
         }
 
         [CommandMethod]
-        [CommandMethodProperty(nameof(Comment))]
+        [CommandMethodStaticProperty(typeof(MessageProperties))]
         public void Create(string dataBaseName)
         {
             var authentication = this.CommandContext.GetAuthentication(this);
             this.dataBases.Dispatcher.Invoke(() =>
             {
-                this.dataBases.AddNewDataBase(authentication, dataBaseName, this.Comment);
+                this.dataBases.AddNewDataBase(authentication, dataBaseName, MessageProperties.Message);
             });
         }
 
@@ -91,12 +91,13 @@ namespace Ntreev.Crema.Commands.Consoles
         }
 
         [CommandMethod]
-        [CommandMethodProperty(nameof(Comment), nameof(CopyForce))]
+        [CommandMethodStaticProperty(typeof(MessageProperties))]
+        [CommandMethodProperty(nameof(Force))]
         public void Copy([CommandCompletion(nameof(GetDataBaseNames))]string dataBaseName, string newDataBaseName)
         {
             var dataBase = GetDataBase(dataBaseName);
             var authentication = this.CommandContext.GetAuthentication(this);
-            dataBase.Dispatcher.Invoke(() => dataBase.Copy(authentication, newDataBaseName, this.Comment, this.CopyForce));
+            dataBase.Dispatcher.Invoke(() => dataBase.Copy(authentication, newDataBaseName, MessageProperties.Message, this.Force));
         }
 
         [CommandMethod]
@@ -116,12 +117,12 @@ namespace Ntreev.Crema.Commands.Consoles
         }
 
         [CommandMethod]
-        [CommandMethodProperty(nameof(Comment))]
+        [CommandMethodStaticProperty(typeof(MessageProperties))]
         public void Lock([CommandCompletion(nameof(GetDataBaseNames))]string dataBaseName)
         {
             var dataBase = this.GetDataBase(dataBaseName);
             var authentication = this.CommandContext.GetAuthentication(this);
-            dataBase.Dispatcher.Invoke(() => dataBase.Lock(authentication, this.Comment));
+            dataBase.Dispatcher.Invoke(() => dataBase.Lock(authentication, MessageProperties.Message));
         }
 
         [CommandMethod]
@@ -144,26 +145,18 @@ namespace Ntreev.Crema.Commands.Consoles
                 return query.ToArray();
             });
 
-            this.Out.Print(items, (o, a) => o.Print(a));
+            this.CommandContext.WriteList(items);
         }
 
         [CommandMethod]
+        [CommandMethodStaticProperty(typeof(FormatProperties))]
         public void Info([CommandCompletion(nameof(GetDataBaseNames))]string dataBaseName)
         {
             var dataBase = this.GetDataBase(dataBaseName);
             var dataBaseInfo = dataBase.Dispatcher.Invoke(() => dataBase.DataBaseInfo);
-
-            var items = new Dictionary<string, object>
-            {
-                { $"{nameof(dataBaseInfo.ID)}", dataBaseInfo.ID },
-                { $"{nameof(dataBaseInfo.Name)}", dataBaseInfo.Name },
-                { $"{nameof(dataBaseInfo.Comment)}", dataBaseInfo.Comment },
-                { $"{nameof(dataBaseInfo.Revision)}", dataBaseInfo.Revision },
-                { $"{nameof(dataBaseInfo.CreationInfo)}", dataBaseInfo.CreationInfo.ToLocalValue() },
-                { $"{nameof(dataBaseInfo.ModificationInfo)}", dataBaseInfo.ModificationInfo.ToLocalValue() }
-            };
-
-            this.Out.Print<object>(items);
+            var props = dataBaseInfo.ToDictionary();
+            var text = TextSerializer.Serialize(props, FormatProperties.Format);
+            this.CommandContext.WriteLine(text);
         }
 
         [CommandMethod]
@@ -187,8 +180,8 @@ namespace Ntreev.Crema.Commands.Consoles
             {
                 var props = item.ToDictionary();
                 var text = TextSerializer.Serialize(props, FormatProperties.Format);
-                this.Out.WriteLine(text);
-                this.Out.WriteLine();
+                this.CommandContext.WriteLine(text);
+                this.CommandContext.WriteLine();
             }
         }
 
@@ -213,24 +206,11 @@ namespace Ntreev.Crema.Commands.Consoles
             }
 
             var text = TextSerializer.Serialize(props, FormatProperties.Format);
-            this.Out.WriteLine(text);
+            this.CommandContext.WriteLine(text);
         }
 
         [CommandProperty('f', true)]
-        public bool CopyForce
-        {
-            get; set;
-        }
-
-        [CommandProperty("display")]
-        [DefaultValue("")]
-        public string[] DisplayArguments
-        {
-            get; set;
-        }
-
-        [CommandProperty('m', IsRequired = true)]
-        public string Comment
+        public bool Force
         {
             get; set;
         }
@@ -262,12 +242,13 @@ namespace Ntreev.Crema.Commands.Consoles
 
         #region classes
 
-        class ItemObject
+        class ItemObject : TerminalTextItem
         {
             private bool isLoaded;
             private string name;
 
             public ItemObject(string name, bool isLoaded)
+                : base(name)
             {
                 this.name = name;
                 this.isLoaded = isLoaded;
@@ -275,18 +256,18 @@ namespace Ntreev.Crema.Commands.Consoles
 
             public bool IsLoaded => this.isLoaded;
 
-            public void Print(Action action)
+            protected override void OnDraw(TextWriter writer, string text)
             {
                 if (this.isLoaded == false)
                 {
                     using (TerminalColor.SetForeground(ConsoleColor.DarkGray))
                     {
-                        action();
+                        base.OnDraw(writer, text);
                     }
                 }
                 else
                 {
-                    action();
+                    base.OnDraw(writer, text);
                 }
             }
 

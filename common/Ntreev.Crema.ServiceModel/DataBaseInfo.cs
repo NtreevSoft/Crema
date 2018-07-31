@@ -53,15 +53,6 @@ namespace Ntreev.Crema.ServiceModel
         [DataMember]
         public TagInfo Tags { get; set; }
 
-        //[DataMember]
-        //public string BranchRevision { get; set; }
-
-        //[DataMember]
-        //public string BranchSource { get; set; }
-
-        //[DataMember]
-        //public string BranchSourceRevision { get; set; }
-
         [DataMember]
         public string TypesHashValue { get; set; }
 
@@ -85,6 +76,9 @@ namespace Ntreev.Crema.ServiceModel
                 { nameof(this.Name), this.Name },
                 { nameof(this.Comment), this.Comment },
                 { nameof(this.Revision), this.Revision },
+                { nameof(this.Tags), $"{this.Tags}" },
+                { nameof(this.TypesHashValue), this.TypesHashValue },
+                { nameof(this.TablesHashValue), this.TablesHashValue },
                 { nameof(this.Paths), this.Paths },
                 { nameof(CremaSchema.Creator), this.CreationInfo.ID },
                 { nameof(CremaSchema.CreatedDateTime), this.CreationInfo.DateTime },
