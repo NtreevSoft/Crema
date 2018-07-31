@@ -138,12 +138,14 @@ namespace Ntreev.Crema.Commands.Consoles
 
         [CommandMethod]
         [CommandMethodStaticProperty(typeof(LogProperties))]
+        [CommandMethodStaticProperty(typeof(FormatProperties))]
         public void Log([CommandCompletion(nameof(GetPaths))]string tableItemName)
         {
             var tableItem = this.GetTableItem(tableItemName);
             var authentication = this.CommandContext.GetAuthentication(this);
             var logs = tableItem.Dispatcher.Invoke(() => tableItem.GetLog(authentication));
-            LogProperties.Print(this.Out, logs);
+            var text = TextSerializer.Serialize(logs, FormatProperties.Format);
+            this.Out.WriteLine(text);
         }
 
         [CommandMethod]
@@ -156,12 +158,13 @@ namespace Ntreev.Crema.Commands.Consoles
         }
 
         [CommandMethod]
+        [CommandMethodStaticProperty(typeof(FormatProperties))]
         public void Info([CommandCompletion(nameof(GetTableNames))]string tableName)
         {
             var table = this.GetTable(tableName);
             var tableInfo = table.Dispatcher.Invoke(() => table.TableInfo);
             var props = tableInfo.ToDictionary(true);
-            var text = TextSerializer.Serialize(props);
+            var text = TextSerializer.Serialize(props, FormatProperties.Format);
             this.Out.WriteLine(text);
         }
 

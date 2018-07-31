@@ -326,12 +326,13 @@ namespace Ntreev.Crema.Services.Data
         {
             try
             {
+                var oldName = base.Name;
                 this.ValidateDispatcher();
                 this.CremaHost.DebugMethod(authentication, this, nameof(Rename), this, name);
                 this.DataBases.InvokeDataBaseRename(authentication, this, name);
                 this.Sign(authentication);
-                var oldName = base.Name;
                 base.Name = name;
+                this.metaData = null;
                 this.DataBases.InvokeItemsRenamedEvent(authentication, new DataBase[] { this }, new string[] { oldName });
             }
             catch (Exception e)
