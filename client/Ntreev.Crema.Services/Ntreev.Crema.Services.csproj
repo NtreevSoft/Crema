@@ -150,19 +150,6 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-    <None Include="Properties\DataSources\Ntreev.Crema.Data.CremaDataSet.datasource" />
-    <None Include="Properties\DataSources\Ntreev.Crema.Data.TableInfo.datasource" />
-    <None Include="Properties\DataSources\Ntreev.Crema.Data.TypeInfo.datasource" />
-    <None Include="Properties\DataSources\Ntreev.Crema.ServiceModel.AccessInfo.datasource" />
-    <None Include="Properties\DataSources\Ntreev.Crema.ServiceModel.AccessMemberInfo.datasource" />
-    <None Include="Properties\DataSources\Ntreev.Crema.ServiceModel.DataBaseCollectionMetaData.datasource" />
-    <None Include="Properties\DataSources\Ntreev.Crema.ServiceModel.DataBaseInfo.datasource" />
-    <None Include="Properties\DataSources\Ntreev.Crema.ServiceModel.DataBaseMetaData.datasource" />
-    <None Include="Properties\DataSources\Ntreev.Crema.ServiceModel.DomainMetaData.datasource" />
-    <None Include="Properties\DataSources\Ntreev.Crema.ServiceModel.FindResultInfo.datasource" />
-    <None Include="Properties\DataSources\Ntreev.Crema.ServiceModel.LockInfo.datasource" />
-    <None Include="Properties\DataSources\Ntreev.Crema.ServiceModel.LogInfo.datasource" />
-    <None Include="Properties\DataSources\Ntreev.Crema.ServiceModel.ResultBase.datasource" />
     <None Include="Service References\DataBaseCollectionService\Arrays.xsd">
       <SubType>Designer</SubType>
     </None>
