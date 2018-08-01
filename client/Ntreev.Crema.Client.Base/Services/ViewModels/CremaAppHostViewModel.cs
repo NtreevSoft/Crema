@@ -270,19 +270,26 @@ namespace Ntreev.Crema.Client.Base.Services.ViewModels
             else
             {
                 this.securePassword = new SecureString();
-                if (isEncrypted == true)
+                try
                 {
-                    foreach (var item in StringUtility.Decrypt(password, this.ConnectionItem.ID))
+                    if (isEncrypted == true)
                     {
-                        this.securePassword.AppendChar(item);
+                        foreach (var item in StringUtility.Decrypt(password, this.ConnectionItem.ID))
+                        {
+                            this.securePassword.AppendChar(item);
+                        }
+                    }
+                    else
+                    {
+                        foreach (var item in password)
+                        {
+                            this.securePassword.AppendChar(item);
+                        }
                     }
                 }
-                else
+                catch
                 {
-                    foreach (var item in password)
-                    {
-                        this.securePassword.AppendChar(item);
-                    }
+                    return;
                 }
             }
             this.isEncrypted = isEncrypted;
