@@ -51,9 +51,10 @@ namespace Ntreev.Crema.Client.Tables.MenuItems.TreeViewItems
         {
             if (parameter is ITableDescriptor descriptor)
             {
-                if (TableUtility.CanEditContent(this.authenticator, descriptor) == false)
-                    return false;
-                return TableUtility.CanViewContent(this.authenticator, descriptor);
+                if (TableUtility.CanViewContent(this.authenticator, descriptor) == true)
+                {
+                    return true;
+                }
             }
             return false;
         }
