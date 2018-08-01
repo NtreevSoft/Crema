@@ -85,7 +85,7 @@ namespace Ntreev.Crema.Client.Users.Dialogs.ViewModels
                 this.NotifyOfPropertyChange(nameof(this.CanChange));
             }
         }
-
+         
         public SecureString Password
         {
             get { return this.password; }
@@ -120,6 +120,11 @@ namespace Ntreev.Crema.Client.Users.Dialogs.ViewModels
                 this.NotifyOfPropertyChange(nameof(this.Authority));
                 this.NotifyOfPropertyChange(nameof(this.CanChange));
             }
+        }
+
+        public bool IsCurrentUser
+        {
+            get { return this.authentication.ID == this.userID; }
         }
 
         public IEnumerable<Authority> Authorities

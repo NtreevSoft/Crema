@@ -35,6 +35,23 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
                 </Border>
             </DockPanel>
         </ControlTemplate>
+
+        <Style x:Key="Label_ComboBox_Style" TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsCurrentUser}" Value="True">
+                    <Setter Property="IsEnabled" Value="False" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="Password_PasswordBox_Style" TargetType="{x:Type PasswordBox}" BasedOn="{StaticResource {x:Type PasswordBox}}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsCurrentUser}" Value="True">
+                    <Setter Property="IsEnabled" Value="False" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
     </UserControl.Resources>
 
     <StackPanel>
@@ -42,11 +59,13 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
             <TextBox x:Name="ID" nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_ID}" 
                      IsReadOnly="True" Validation.ErrorTemplate="{StaticResource TextBoxErrorTemplate}" />
             <PasswordBox x:Name="passwordBox1" nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_Password}" 
-                         nmfc:PasswordBoxUtility.ValidationTarget="{Binding ElementName=passwordBox2}"
+                         nmfc:PasswordBoxUtility.ValidationTarget="{Binding ElementName=passwordBox2}" 
+                         Style="{StaticResource Password_PasswordBox_Style}"
                          PasswordChanged="PasswordBox1_PasswordChanged" />
             <PasswordBox x:Name="passwordBox2" nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_PasswordConfirm}"
+                         Style="{StaticResource Password_PasswordBox_Style}"
                          PasswordChanged="PasswordBox2_PasswordChanged" />
-            <ComboBox nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_Authority}" 
+            <ComboBox nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_Authority}" Style="{StaticResource Label_ComboBox_Style}"
                       ItemsSource="{Binding Authorities}" SelectedItem="{Binding Authority}" />
             <TextBox x:Name="UserName" nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_Name}" />
         </nmfc:PropertyItemsControl>
