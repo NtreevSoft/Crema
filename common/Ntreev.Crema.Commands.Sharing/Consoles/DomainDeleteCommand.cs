@@ -15,43 +15,56 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.Commands.Consoles.Properties;
+using Ntreev.Crema.Data.Xml.Schema;
+using Ntreev.Crema.ServiceModel;
+using Ntreev.Crema.Services;
+using Ntreev.Library;
+using Ntreev.Library.Commands;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.Composition;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.Runtime.Serialization;
-using Ntreev.Library;
-using System.Xml.Serialization;
-using System.Xml.Schema;
-using System.Xml;
-using Ntreev.Library.Serialization;
+using System.Threading.Tasks;
 
-namespace Ntreev.Crema.ServiceModel
+namespace Ntreev.Crema.Commands.Consoles
 {
-    [DataContract(Namespace = SchemaUtility.Namespace)]
-    public struct DomainUserInfo
+    [Export(typeof(IConsoleCommandProvider))]
+    class DomainDeleteCommand : ConsoleCommandProviderBase, IConsoleCommandProvider
     {
-        [DataMember]
-        public string UserID { get; set; }
+        private readonly ICremaHost cremaHost;
 
-        [DataMember]
-        public string UserName { get; set; }
-
-        [DataMember]
-        public DomainLocationInfo Location { get; set; }
-
-        [DataMember]
-        public DomainAccessType AccessType { get; set; }
-
-        public IDictionary<string, object> ToDictionary()
+        [ImportingConstructor]
+        public DomainDeleteCommand(ICremaHost cremaHost)
+            : base("domain")
         {
-            var props = new Dictionary<string, object>
-            {
-                { nameof(this.UserID), $"{this.UserID}" },
-                { nameof(this.UserName), $"{this.UserName}" },
-                { nameof(this.AccessType), this.AccessType },
-            };
-            return props;
+            this.cremaHost = cremaHost;
         }
+
+        [CommandMethod]
+        [CommandMethodProperty(nameof(DomainID), nameof(IsAll))]
+        public void DeleteTest()
+        {
+
+        }
+
+        [CommandProperty(IsRequired = true, IsExplicit = true)]
+        [DefaultValue("")]
+        [CommandPropertyTrigger(nameof(IsAll), false)]
+        public string DomainID
+        {
+            get; set;
+        }
+
+        [CommandProperty("all")]
+        [CommandPropertyTrigger(nameof(DomainID), "")]
+        public bool IsAll
+        {
+            get; set;
+        }
+
     }
 }

@@ -15,6 +15,8 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.Commands.Consoles.Properties;
+using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services;
 using Ntreev.Library;
@@ -44,9 +46,9 @@ namespace Ntreev.Crema.Commands.Consoles
 
         [CommandMethod]
         [CommandMethodProperty(nameof(IsCancelled), nameof(IsForce))]
-        public void Delete([CommandCompletion(nameof(GetDomainIDs))]Guid domainID)
+        public void Delete([CommandCompletion(nameof(GetDomainIDs))]string domainID = null)
         {
-            var domain = this.GetDomain(domainID);
+            var domain = this.GetDomain(Guid.Parse(domainID));
             var dataBase = this.cremaHost.Dispatcher.Invoke(() => this.cremaHost.DataBases.FirstOrDefault(item => item.ID == domain.DataBaseID));
             var isLoaded = dataBase.Dispatcher.Invoke(() => dataBase.IsLoaded);
 
@@ -120,37 +122,15 @@ namespace Ntreev.Crema.Commands.Consoles
         }
 
         [CommandMethod]
+        [CommandMethodStaticProperty(typeof(FormatProperties))]
         public void Info([CommandCompletion(nameof(GetDomainIDs))]Guid domainID)
         {
             var domain = this.GetDomain(domainID);
             var authentication = this.CommandContext.GetAuthentication(this);
-            var metaData = domain.Dispatcher.Invoke(() => domain.GetMetaData(authentication));
-            var domainInfo = metaData.DomainInfo;
-            var dataBaseName = this.cremaHost.Dispatcher.Invoke(() => this.cremaHost.DataBases[domainInfo.DataBaseID].Name);
-
-            var items = new Dictionary<string, object>
-            {
-                { $"{nameof(domainInfo.DomainID)}", domainInfo.DomainID },
-                { $"{nameof(domainInfo.DataBaseID)}", domainInfo.DataBaseID },
-                { $"DataBaseName", dataBaseName },
-                { $"{nameof(domainInfo.DomainType)}", domainInfo.DomainType },
-                { $"{nameof(domainInfo.ItemType)}", domainInfo.ItemType},
-                { $"{nameof(domainInfo.ItemPath)}", domainInfo.ItemPath },
-                { $"{nameof(domainInfo.CreationInfo)}", domainInfo.CreationInfo.ToLocalValue() },
-                { $"{nameof(domainInfo.ModificationInfo)}", domainInfo.ModificationInfo.ToLocalValue() },
-                { $"UserList", string.Empty },
-            };
-            this.CommandContext.WriteLine();
-            this.Out.Print<object>(items);
-
-            var tableDataBuilder = new TableDataBuilder(nameof(DomainUserInfo.UserID), nameof(DomainUserInfo.UserName), nameof(DomainUserState), nameof(DomainUserInfo.AccessType));
-            foreach (var item in metaData.Users)
-            {
-                tableDataBuilder.Add(item.DomainUserInfo.UserID, item.DomainUserInfo.UserName, item.DomainUserState, item.DomainUserInfo.AccessType);
-            }
-            this.Out.PrintTableData(tableDataBuilder.Data, true);
-
-            this.CommandContext.WriteLine();
+            var domainInfo = domain.Dispatcher.Invoke(() => domain.DomainInfo);
+            var props = domainInfo.ToDictionary();
+            var text = TextSerializer.Serialize(props, FormatProperties.Format);
+            this.CommandContext.WriteLine(text);
         }
 
         [CommandProperty("cancel", 'c')]

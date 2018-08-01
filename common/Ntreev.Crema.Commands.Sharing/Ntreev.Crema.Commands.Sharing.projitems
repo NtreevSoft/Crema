@@ -9,6 +9,7 @@
     <Import_RootNamespace>Ntreev.Crema.Commands</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Consoles\DomainDeleteCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Consoles\Properties\MessageProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Consoles\Properties\DataSetTypeProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Consoles\Properties\FormatProperties.cs" />

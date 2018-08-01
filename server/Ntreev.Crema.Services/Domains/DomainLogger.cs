@@ -43,21 +43,27 @@ namespace Ntreev.Crema.Services.Domains
         private readonly string postedPath;
         private readonly string completedPath;
 
+        private readonly IObjectSerializer serializer;
+        private readonly DomainSerializationInfo domainInfo;
+        private readonly object source;
+
         private DomainPostItemSerializationInfo currentPost;
-        private IObjectSerializer serializer;
         private readonly List<DomainPostItemSerializationInfo> postedList = new List<DomainPostItemSerializationInfo>();
         private readonly List<DomainCompleteItemSerializationInfo> completedList = new List<DomainCompleteItemSerializationInfo>();
 
         public DomainLogger(IObjectSerializer serializer, Domain domain)
         {
             this.serializer = serializer;
+            this.domainInfo = domain.GetSerializationInfo();
+            this.source = domain.Source;
             this.basePath = DirectoryUtility.Prepare(domain.Context.BasePath, domain.DataBaseID.ToString(), domain.Name);
             this.headerPath = Path.Combine(this.basePath, HeaderItemPath);
             this.sourcePath = Path.Combine(this.basePath, SourceItemPath);
             this.postedPath = Path.Combine(this.basePath, PostedItemPath);
             this.completedPath = Path.Combine(this.basePath, CompletedItemPath);
-            this.serializer.Serialize(this.headerPath, domain.GetSerializationInfo(), ObjectSerializerSettings.Empty);
-            this.serializer.Serialize(this.sourcePath, domain.Source, ObjectSerializerSettings.Empty);
+            
+            this.serializer.Serialize(this.headerPath, this.domainInfo, ObjectSerializerSettings.Empty);
+            this.serializer.Serialize(this.sourcePath, this.source, ObjectSerializerSettings.Empty);
             this.postedList = new List<DomainPostItemSerializationInfo>();
             this.completedList = new List<DomainCompleteItemSerializationInfo>();
     }
@@ -70,6 +76,9 @@ namespace Ntreev.Crema.Services.Domains
             this.sourcePath = Path.Combine(this.basePath, SourceItemPath);
             this.postedPath = Path.Combine(this.basePath, PostedItemPath);
             this.completedPath = Path.Combine(this.basePath, CompletedItemPath);
+
+            this.domainInfo = (DomainSerializationInfo)this.serializer.Deserialize(this.headerPath, typeof(DomainSerializationInfo), ObjectSerializerSettings.Empty);
+            this.source = this.serializer.Deserialize(this.sourcePath, Type.GetType(this.domainInfo.SourceType), ObjectSerializerSettings.Empty);
 
             {
                 var items = File.ReadAllLines(this.completedPath);
@@ -221,5 +230,9 @@ namespace Ntreev.Crema.Services.Domains
         public IReadOnlyList<DomainPostItemSerializationInfo> PostedList => this.postedList;
 
         public IReadOnlyList<DomainCompleteItemSerializationInfo> CompletedList => this.completedList;
+
+        public DomainSerializationInfo DomainInfo => this.domainInfo;
+
+        public object Source => this.source;
     }
 }
