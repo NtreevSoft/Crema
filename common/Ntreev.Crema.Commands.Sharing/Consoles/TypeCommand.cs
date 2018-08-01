@@ -188,52 +188,47 @@ namespace Ntreev.Crema.Commands.Consoles
         }
 
         [CommandMethod]
+        [CommandMethodStaticProperty(typeof(FormatProperties))]
         public void View([CommandCompletion(nameof(GetPaths))]string typeItemName, string revision = null)
         {
             var typeItem = this.GetTypeItem(typeItemName);
             var authentication = this.CommandContext.GetAuthentication(this);
-            var dataSet = typeItem.Dispatcher.Invoke(() =>
-            {
-                return typeItem.GetDataSet(authentication, revision);
-            });
-
-            foreach (var item in dataSet.Types)
-            {
-                var typeDataBuilder = new TableDataBuilder(CremaSchema.Name, CremaSchema.Value, CremaSchema.Comment);
-                foreach (var member in item.Members)
-                {
-                    typeDataBuilder.Add(member.Name, member.Value, member.Comment);
-                }
-                this.Out.Print(typeDataBuilder.Data);
-            }
+            var dataSet = typeItem.Dispatcher.Invoke(() => typeItem.GetDataSet(authentication, revision));
+            var props = dataSet.ToDictionary(false, true);
+            this.CommandContext.WriteObject(props, FormatProperties.Format);
         }
 
         [CommandMethod]
-        [CommandMethodStaticProperty(typeof(LogProperties))]
+        [CommandMethodStaticProperty(typeof(FormatProperties))]
         public void Log([CommandCompletion(nameof(GetPaths))]string typeItemName)
         {
             var typeItem = this.GetTypeItem(typeItemName);
             var authentication = this.CommandContext.GetAuthentication(this);
             var logs = typeItem.Dispatcher.Invoke(() => typeItem.GetLog(authentication));
-            LogProperties.Print(this.Out, logs);
+
+            foreach (var item in logs)
+            {
+                this.CommandContext.WriteObject(item.ToDictionary(), FormatProperties.Format);
+                this.CommandContext.WriteLine();
+            }
         }
 
         [CommandMethod]
         [CommandMethodStaticProperty(typeof(FilterProperties))]
+        [CommandMethodStaticProperty(typeof(TagsProperties))]
         public void List()
         {
             var typeNames = this.GetTypeNames((TagInfo)TagsProperties.Tags, FilterProperties.FilterExpression);
-            this.Out.Print(typeNames);
+            this.CommandContext.WriteList(typeNames);
         }
 
         [CommandMethod]
+        [CommandMethodStaticProperty(typeof(FormatProperties))]
         public void Info([CommandCompletion(nameof(GetTypeNames))]string typeName)
         {
             var type = this.GetType(typeName);
             var typeInfo = type.Dispatcher.Invoke(() => type.TypeInfo);
-            var props = typeInfo.ToDictionary();
-            var text = TextSerializer.Serialize(props);
-            this.Out.WriteLine(text);
+            this.CommandContext.WriteObject(typeInfo.ToDictionary(), FormatProperties.Format);
         }
 
         [CommandProperty]

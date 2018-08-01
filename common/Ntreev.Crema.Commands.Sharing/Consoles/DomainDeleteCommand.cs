@@ -45,26 +45,102 @@ namespace Ntreev.Crema.Commands.Consoles
         }
 
         [CommandMethod]
-        [CommandMethodProperty(nameof(DomainID), nameof(IsAll))]
-        public void DeleteTest()
+        [CommandMethodProperty(nameof(DomainID), nameof(DataBaseName))]
+        public void Delete()
         {
-
+            if (this.DataBaseName == null)
+            {
+                this.Delete(this.DomainID);
+            }
+            else
+            {
+                this.DeleteDomains(this.DataBaseName);
+            }
         }
 
-        [CommandProperty(IsRequired = true, IsExplicit = true)]
+        [CommandProperty(IsRequired = true)]
         [DefaultValue("")]
-        [CommandPropertyTrigger(nameof(IsAll), false)]
+        [CommandPropertyTrigger(nameof(DataBaseName), null)]
         public string DomainID
         {
             get; set;
         }
 
-        [CommandProperty("all")]
-        [CommandPropertyTrigger(nameof(DomainID), "")]
-        public bool IsAll
+        [CommandProperty("cancel", 'c')]
+        public bool IsCancelled
         {
             get; set;
         }
 
+        [CommandProperty("force", 'f')]
+        public bool IsForce
+        {
+            get; set;
+        }
+
+        [CommandProperty("database")]
+        [CommandPropertyTrigger(nameof(DomainID), "")]
+        [CommandCompletion(nameof(GetDataBaseNames))]
+        public string DataBaseName
+        {
+            get; set;
+        }
+
+        private void Delete(string domainID)
+        {
+            var domain = this.GetDomain(Guid.Parse(domainID));
+            var dataBase = this.cremaHost.Dispatcher.Invoke(() => this.cremaHost.DataBases.FirstOrDefault(item => item.ID == domain.DataBaseID));
+            var isLoaded = dataBase.Dispatcher.Invoke(() => dataBase.IsLoaded);
+
+            if (isLoaded == false && this.IsForce == false)
+                throw new ArgumentException($"'{dataBase}' database is not loaded.");
+
+            var authentication = this.CommandContext.GetAuthentication(this);
+            domain.Dispatcher.Invoke(() => domain.Delete(authentication, this.IsCancelled));
+        }
+
+        private void DeleteDomains(string dataBaseName)
+        {
+            var dataBase = this.cremaHost.Dispatcher.Invoke(() => this.cremaHost.DataBases[dataBaseName]);
+            if (dataBase == null)
+                throw new DataBaseNotFoundException(dataBaseName);
+
+            var isLoaded = dataBase.Dispatcher.Invoke(() => dataBase.IsLoaded);
+            if (isLoaded == false && this.IsForce == false)
+                throw new ArgumentException($"'{dataBase}' database is not loaded.");
+
+            var domains = this.DomainContext.Dispatcher.Invoke(() => this.DomainContext.Domains.Where(item => item.DataBaseID == dataBase.ID).ToArray());
+            var authentication = this.CommandContext.GetAuthentication(this);
+
+            foreach (var item in domains)
+            {
+                item.Dispatcher.Invoke(() => item.Delete(authentication, this.IsCancelled));
+            }
+        }
+
+        public IDomainContext DomainContext
+        {
+            get { return this.cremaHost.GetService(typeof(IDomainContext)) as IDomainContext; }
+        }
+
+        private string[] GetDataBaseNames()
+        {
+            return this.CremaHost.Dispatcher.Invoke(() =>
+            {
+                var query = from item in this.CremaHost.DataBases
+                            select item.Name;
+                return query.ToArray();
+            });
+        }
+
+        private IDomain GetDomain(Guid domainID)
+        {
+            var domain = this.DomainContext.Dispatcher.Invoke(() => this.DomainContext.Domains[domainID]);
+            if (domain == null)
+                throw new DomainNotFoundException(domainID);
+            return domain;
+        }
+
+        private ICremaHost CremaHost => this.cremaHost;
     }
 }

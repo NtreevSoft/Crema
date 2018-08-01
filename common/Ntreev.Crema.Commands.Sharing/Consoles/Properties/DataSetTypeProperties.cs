@@ -26,28 +26,28 @@ using System.Text;
 namespace Ntreev.Crema.Commands.Consoles.Properties
 {
     [ResourceDescription("../Resources", IsShared = true)]
-    static class DataSetTypeProperties
+    public static class DataSetTypeProperties
     {
         [CommandProperty]
-        [CommandPropertyTrigger(nameof(OmitTable), false)]
+        [CommandPropertyTrigger(nameof(TypeOnly), false)]
         [DefaultValue(false)]
-        public static bool OmitType
+        public static bool TableOnly
         {
             get; set;
         }
 
         [CommandProperty]
-        [CommandPropertyTrigger(nameof(OmitType), false)]
+        [CommandPropertyTrigger(nameof(TableOnly), false)]
         [CommandPropertyTrigger(nameof(OmitContent), false)]
         [DefaultValue(false)]
-        public static bool OmitTable
+        public static bool TypeOnly
         {
             get; set;
         }
 
         [CommandProperty]
         [DefaultValue(false)]
-        [CommandPropertyTrigger(nameof(OmitTable), false)]
+        [CommandPropertyTrigger(nameof(TypeOnly), false)]
         public static bool OmitContent
         {
             get; set;
@@ -59,7 +59,7 @@ namespace Ntreev.Crema.Commands.Consoles.Properties
             {
                 if (OmitContent == true)
                     return DataSetType.OmitContent;
-                else if (OmitTable == true)
+                else if (TypeOnly == true)
                     return DataSetType.TypeOnly;
                 return DataSetType.All;
             }

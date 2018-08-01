@@ -245,9 +245,18 @@ namespace Ntreev.Crema.Commands.Consoles
             return this.commission;
         }
 
-        internal Authentication GetAuthenticationInternal(IConsoleCommand command)
+        public Authentication GetAuthentication(IConsoleCommandProvider command)
         {
-            return this.authentication;
+            if (this.commission != null)
+                throw new Exception("임시 인증이 발급되어 있습니다.");
+            this.commission = this.authentication.BeginCommission();
+            return this.commission;
+        }
+
+        public void WriteObject(object value, TextSerializerType type)
+        {
+            var text = TextSerializer.Serialize(value, type);
+            this.WriteLine(text);
         }
 
         public bool IsOnline
@@ -464,6 +473,11 @@ namespace Ntreev.Crema.Commands.Consoles
         {
             if (SecureStringToString(value1) != SecureStringToString(value2))
                 throw new Exception("암호가 일치하지 않습니다.");
+        }
+
+        internal Authentication GetAuthenticationInternal(IConsoleCommand command)
+        {
+            return this.authentication;
         }
     }
 }

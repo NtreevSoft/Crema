@@ -30,7 +30,7 @@ using YamlDotNet.Serialization.EventEmitters;
 
 namespace Ntreev.Crema.Commands
 {
-    static class TextSerializer
+    public static class TextSerializer
     {
         private readonly static Serializer yamlSerializer;
 

@@ -30,6 +30,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
+using System.IO;
 using System.Linq;
 
 namespace Ntreev.Crema.Commands.Consoles
@@ -122,22 +123,17 @@ namespace Ntreev.Crema.Commands.Consoles
         }
 
         [CommandMethod]
-        [CommandMethodStaticProperty(typeof(ViewProperties))]
+        [CommandMethodStaticProperty(typeof(FormatProperties))]
         public void View([CommandCompletion(nameof(GetPaths))]string tableItemName, string revision = null)
         {
             var tableItem = this.GetTableItem(tableItemName);
             var authentication = this.CommandContext.GetAuthentication(this);
             var dataSet = tableItem.Dispatcher.Invoke(() => tableItem.GetDataSet(authentication, revision));
-
-            foreach (var item in dataSet.Tables)
-            {
-                this.Out.WriteLine(item.Name);
-                ViewProperties.View(item, this.Out);
-            }
+            var props = dataSet.ToDictionary(true, false);
+            this.CommandContext.WriteObject(props, FormatProperties.Format);
         }
 
         [CommandMethod]
-        [CommandMethodStaticProperty(typeof(LogProperties))]
         [CommandMethodStaticProperty(typeof(FormatProperties))]
         public void Log([CommandCompletion(nameof(GetPaths))]string tableItemName)
         {
@@ -147,10 +143,8 @@ namespace Ntreev.Crema.Commands.Consoles
 
             foreach (var item in logs)
             {
-                var props = item.ToDictionary();
-                var text = TextSerializer.Serialize(props, FormatProperties.Format);
-                this.Out.WriteLine(text);
-                this.Out.WriteLine();
+                this.CommandContext.WriteObject(item.ToDictionary(), FormatProperties.Format);
+                this.CommandContext.WriteLine();
             }
         }
 
@@ -160,7 +154,7 @@ namespace Ntreev.Crema.Commands.Consoles
         public void List()
         {
             var tableNames = this.GetTableNames((TagInfo)TagsProperties.Tags, FilterProperties.FilterExpression);
-            this.Out.Print(tableNames);
+            this.CommandContext.WriteList(tableNames);
         }
 
         [CommandMethod]
@@ -170,96 +164,37 @@ namespace Ntreev.Crema.Commands.Consoles
             var table = this.GetTable(tableName);
             var tableInfo = table.Dispatcher.Invoke(() => table.TableInfo);
             var props = tableInfo.ToDictionary(true);
-            var text = TextSerializer.Serialize(props, FormatProperties.Format);
-            this.Out.WriteLine(text);
+            this.CommandContext.WriteObject(props, FormatProperties.Format);
         }
 
         [CommandMethod]
-        [CommandMethodStaticProperty(typeof(ColumnInfoProperties))]
+        [CommandMethodStaticProperty(typeof(FilterProperties))]
+        [CommandMethodStaticProperty(typeof(FormatProperties))]
         public void ColumnList([CommandCompletion(nameof(GetTableNames))]string tableName)
         {
             var table = this.GetTable(tableName);
             var tableInfo = table.Dispatcher.Invoke(() => table.TableInfo);
-            var headerList = new List<string>(new string[] { CremaSchema.IsKey, CremaSchema.Name, CremaSchema.DataType, CremaSchema.Comment, });
-
-            if (ColumnInfoProperties.ID == true || ColumnInfoProperties.All)
-                headerList.Add(nameof(ColumnInfoProperties.ID));
-            if (ColumnInfoProperties.AllowNull == true || ColumnInfoProperties.All)
-                headerList.Add(nameof(ColumnInfoProperties.AllowNull));
-            if (ColumnInfoProperties.ReadOnly == true || ColumnInfoProperties.All)
-                headerList.Add(nameof(ColumnInfoProperties.ReadOnly));
-            if (ColumnInfoProperties.Unique == true || ColumnInfoProperties.All)
-                headerList.Add(nameof(ColumnInfoProperties.Unique));
-            if (ColumnInfoProperties.AutoIncrement == true || ColumnInfoProperties.All)
-                headerList.Add(nameof(ColumnInfoProperties.AutoIncrement));
-            if (ColumnInfoProperties.Tags == true || ColumnInfoProperties.All)
-                headerList.Add(nameof(ColumnInfoProperties.Tags));
-            if (ColumnInfoProperties.DefaultValue == true || ColumnInfoProperties.All)
-                headerList.Add(nameof(ColumnInfoProperties.DefaultValue));
-            if (ColumnInfoProperties.SignatureDate == true || ColumnInfoProperties.All)
-            {
-                headerList.Add(nameof(Data.ColumnInfo.CreationInfo));
-                headerList.Add(nameof(Data.ColumnInfo.ModificationInfo));
-            }
-
-            var tableDataBuilder = new TableDataBuilder(headerList.ToArray());
-
-            foreach (var item in tableInfo.Columns)
-            {
-                var objectList = new List<object>(new object[] { item.IsKey ? "O" : string.Empty, item.Name, item.DataType, item.Comment });
-
-                if (ColumnInfoProperties.ID == true || ColumnInfoProperties.All)
-                    objectList.Add(item.ID);
-                if (ColumnInfoProperties.AllowNull == true || ColumnInfoProperties.All)
-                    objectList.Add(item.AllowNull);
-                if (ColumnInfoProperties.ReadOnly == true || ColumnInfoProperties.All)
-                    objectList.Add(item.ReadOnly);
-                if (ColumnInfoProperties.Unique == true || ColumnInfoProperties.All)
-                    objectList.Add(item.IsUnique);
-                if (ColumnInfoProperties.AutoIncrement == true || ColumnInfoProperties.All)
-                    objectList.Add(item.AutoIncrement);
-                if (ColumnInfoProperties.Tags == true || ColumnInfoProperties.All)
-                    objectList.Add(item.DerivedTags);
-                if (ColumnInfoProperties.DefaultValue == true || ColumnInfoProperties.All)
-                    objectList.Add(item.DefaultValue);
-                if (ColumnInfoProperties.SignatureDate == true || ColumnInfoProperties.All)
-                {
-                    objectList.Add(item.CreationInfo);
-                    objectList.Add(item.ModificationInfo);
-                }
-
-                tableDataBuilder.Add(objectList.ToArray());
-            }
-
-            this.Out.PrintTableData(tableDataBuilder.Data, true);
-            this.Out.WriteLine();
+            var columnList = tableInfo.Columns.Where(item => StringUtility.GlobMany(item.Name, FilterProperties.FilterExpression))
+                                              .Select(item => new ColumnItem(item)).ToArray();
+            this.CommandContext.WriteList(columnList);
         }
 
         [CommandMethod]
-        public void ColumnInfo([CommandCompletion(nameof(GetTableNames))]string tableName, string columnName)
+        [CommandMethodStaticProperty(typeof(FormatProperties))]
+        [CommandMethodStaticProperty(typeof(FilterProperties))]
+        public void ColumnInfo([CommandCompletion(nameof(GetTableNames))]string tableName)
         {
             var table = this.GetTable(tableName);
             var tableInfo = table.Dispatcher.Invoke(() => table.TableInfo);
-            var columnInfo = tableInfo.Columns.First(item => item.Name == columnName);
-
-            var items = new Dictionary<string, object>
+            var columns = new Dictionary<string, object>(tableInfo.Columns.Length);
+            foreach (var item in tableInfo.Columns)
             {
-                { $"{nameof(columnInfo.ID)}", columnInfo.ID },
-                { $"{nameof(columnInfo.IsKey)}", columnInfo.IsKey },
-                { $"{nameof(columnInfo.IsUnique)}", columnInfo.IsUnique },
-                { $"{nameof(columnInfo.AllowNull)}", columnInfo.AllowNull },
-                { $"{nameof(columnInfo.Name)}", columnInfo.Name },
-                { $"{nameof(columnInfo.DataType)}", columnInfo.DataType },
-                { $"{nameof(columnInfo.DefaultValue)}", columnInfo.DefaultValue },
-                { $"{nameof(columnInfo.Comment)}", columnInfo.Comment },
-                { $"{nameof(columnInfo.AutoIncrement)}", columnInfo.AutoIncrement},
-                { $"{nameof(columnInfo.ReadOnly)}", columnInfo.ReadOnly},
-                { $"{nameof(columnInfo.Tags)}", columnInfo.DerivedTags},
-                { $"{nameof(columnInfo.CreationInfo)}", columnInfo.CreationInfo },
-                { $"{nameof(columnInfo.ModificationInfo)}", columnInfo.ModificationInfo },
-            };
-            this.Out.Print<object>(items);
-            this.Out.WriteLine();
+                if (StringUtility.GlobMany(item.Name, FilterProperties.FilterExpression))
+                {
+                    columns.Add(item.Name, item.ToDictionary());
+                }
+            }
+            this.CommandContext.WriteObject(columns, FormatProperties.Format);
         }
 
         [ConsoleModeOnly]
@@ -441,12 +376,6 @@ namespace Ntreev.Crema.Commands.Consoles
             get; set;
         }
 
-        [CommandProperty("complex")]
-        public bool IsComplexMode
-        {
-            get; set;
-        }
-
         public override bool IsEnabled => this.CommandContext.Drive is DataBasesConsoleDrive drive && drive.DataBaseName != string.Empty;
 
         protected override bool IsMethodEnabled(CommandMethodDescriptor descriptor)
@@ -575,5 +504,40 @@ namespace Ntreev.Crema.Commands.Consoles
         private DataBasesConsoleDrive Drive => this.CommandContext.Drive as DataBasesConsoleDrive;
 
         private ICremaHost CremaHost => this.cremaHost.Value;
+
+        #region classes
+
+        class ColumnItem : TerminalTextItem
+        {
+            private readonly ColumnInfo columnInfo;
+
+            public ColumnItem(ColumnInfo columnInfo)
+                : base(columnInfo)
+            {
+                this.columnInfo = columnInfo;
+            }
+
+            public override string ToString()
+            {
+                return this.columnInfo.Name;
+            }
+
+            protected override void OnDraw(TextWriter writer, string text)
+            {
+                if (this.columnInfo.IsKey == true)
+                {
+                    using (TerminalColor.SetForeground(ConsoleColor.Cyan))
+                    {
+                        base.OnDraw(writer, text);
+                    }
+                }
+                else
+                {
+                    base.OnDraw(writer, text);
+                }
+            }
+        }
+
+        #endregion
     }
 }

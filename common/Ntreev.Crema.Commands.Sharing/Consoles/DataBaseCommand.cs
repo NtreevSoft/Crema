@@ -155,8 +155,7 @@ namespace Ntreev.Crema.Commands.Consoles
             var dataBase = this.GetDataBase(dataBaseName);
             var dataBaseInfo = dataBase.Dispatcher.Invoke(() => dataBase.DataBaseInfo);
             var props = dataBaseInfo.ToDictionary();
-            var text = TextSerializer.Serialize(props, FormatProperties.Format);
-            this.CommandContext.WriteLine(text);
+            this.CommandContext.WriteObject(props, FormatProperties.Format);
         }
 
         [CommandMethod]
@@ -178,9 +177,7 @@ namespace Ntreev.Crema.Commands.Consoles
 
             foreach (var item in logs)
             {
-                var props = item.ToDictionary();
-                var text = TextSerializer.Serialize(props, FormatProperties.Format);
-                this.CommandContext.WriteLine(text);
+                this.CommandContext.WriteObject(item.ToDictionary(), FormatProperties.Format);
                 this.CommandContext.WriteLine();
             }
         }
@@ -194,19 +191,8 @@ namespace Ntreev.Crema.Commands.Consoles
             var dataBase = this.GetDataBase(dataBaseName);
             var authentication = this.CommandContext.GetAuthentication(this);
             var dataSet = dataBase.GetDataSet(authentication, DataSetTypeProperties.DataSetType, FilterProperties.FilterExpression, revision);
-            var props = dataSet.ToDictionary();
-
-            if (DataSetTypeProperties.OmitTable == true)
-            {
-                props.Remove(CremaSchema.TableDirectory);
-            }
-            else if (DataSetTypeProperties.OmitType == true)
-            {
-                props.Remove(CremaSchema.TypeDirectory);
-            }
-
-            var text = TextSerializer.Serialize(props, FormatProperties.Format);
-            this.CommandContext.WriteLine(text);
+            var props = dataSet.ToDictionary(DataSetTypeProperties.TableOnly == true, DataSetTypeProperties.TypeOnly == true);
+            this.CommandContext.WriteObject(props, FormatProperties.Format);
         }
 
         [CommandProperty('f', true)]

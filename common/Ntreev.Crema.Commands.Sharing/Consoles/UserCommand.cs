@@ -137,9 +137,7 @@ namespace Ntreev.Crema.Commands.Consoles
         {
             var user = this.GetUser(userID);
             var userInfo = user.Dispatcher.Invoke(() => user.UserInfo);
-            var props = userInfo.ToDictionary();
-            var text = TextSerializer.Serialize(props, FormatProperties.Format);
-            this.CommandContext.WriteLine(text);
+            this.CommandContext.WriteObject(userInfo.ToDictionary(), FormatProperties.Format);
         }
 
         [ConsoleModeOnly]
@@ -198,7 +196,7 @@ namespace Ntreev.Crema.Commands.Consoles
             get; set;
         }
 
-        [CommandProperty('m', true, IsRequired = true)]
+        [CommandProperty('m', true, IsRequired = true, IsExplicit = true)]
         public string Message
         {
             get; set;

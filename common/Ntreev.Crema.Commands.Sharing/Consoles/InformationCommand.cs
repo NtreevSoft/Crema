@@ -86,8 +86,7 @@ namespace Ntreev.Crema.Commands.Consoles
             var drive = this.CommandContext.Drive;
             var provider = this.GetObject(authentication, this.AbsolutePath);
             var info = this.Invoke(provider, () => provider.Info);
-            var text = TextSerializer.Serialize(info, FormatProperties.Format);
-            this.CommandContext.WriteLine(text);
+            this.CommandContext.WriteObject(info, FormatProperties.Format);
         }
 
         private IInfoProvider GetObject(Authentication authentication, string path)

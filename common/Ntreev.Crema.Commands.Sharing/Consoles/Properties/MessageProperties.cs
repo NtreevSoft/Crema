@@ -26,7 +26,7 @@ namespace Ntreev.Crema.Commands.Consoles.Properties
     [ResourceDescription("../Resources", IsShared = true)]
     static class MessageProperties
     {
-        [CommandProperty('m', true, IsRequired = true)]
+        [CommandProperty('m', true, IsRequired = true, IsExplicit = true)]
         public static string Message
         {
             get; set;

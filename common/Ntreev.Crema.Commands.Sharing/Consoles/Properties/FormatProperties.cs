@@ -24,7 +24,7 @@ using System.Text;
 namespace Ntreev.Crema.Commands.Consoles.Properties
 {
     [ResourceDescription("../Resources", IsShared = true)]
-    static class FormatProperties
+    public static class FormatProperties
     {
         [CommandProperty("format")]
         [DefaultValue(TextSerializerType.Yaml)]

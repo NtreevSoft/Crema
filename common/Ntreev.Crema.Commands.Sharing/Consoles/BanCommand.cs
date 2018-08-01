@@ -49,7 +49,7 @@ namespace Ntreev.Crema.Commands.Consoles
             get; set;
         }
 
-        [CommandProperty('m', true)]
+        [CommandProperty('m', true, IsRequired = true, IsExplicit = true)]
         [CommandPropertyTrigger(nameof(Information), false)]
         [DefaultValue("")]
         public string Message
@@ -80,8 +80,7 @@ namespace Ntreev.Crema.Commands.Consoles
             {
                 var banInfo = user.Dispatcher.Invoke(() => user.BanInfo);
                 var prop = banInfo.ToDictionary();
-                var text = TextSerializer.Serialize(prop, this.FormatType);
-                this.CommandContext.WriteLine(text);
+                this.CommandContext.WriteObject(prop, this.FormatType);
             }
             else
             {

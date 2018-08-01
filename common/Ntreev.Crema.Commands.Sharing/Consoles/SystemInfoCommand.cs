@@ -51,8 +51,7 @@ namespace Ntreev.Crema.Commands.Consoles
                 { "Platform", Environment.OSVersion.Platform },
                 { "MachineName", Environment.MachineName },
             };
-            var text = TextSerializer.Serialize(items, FormatProperties.Format);
-            this.CommandContext.WriteLine(text);
+            this.CommandContext.WriteObject(items, FormatProperties.Format);
         }
     }
 }

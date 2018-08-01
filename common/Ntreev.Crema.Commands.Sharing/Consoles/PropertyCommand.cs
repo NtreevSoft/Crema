@@ -78,7 +78,6 @@ namespace Ntreev.Crema.Commands.Consoles
         public void List()
         {
             var props = new Dictionary<string, object>();
-
             foreach (var item in this.Properties)
             {
                 if (StringUtility.GlobMany(item.PropertyName, FilterProperties.FilterExpression) == true)
@@ -86,8 +85,7 @@ namespace Ntreev.Crema.Commands.Consoles
                     props.Add(item.PropertyName, item.Value);
                 }
             }
-            var text = TextSerializer.Serialize(props, FormatProperties.Format);
-            this.CommandContext.WriteLine(text);
+            this.CommandContext.WriteObject(props, FormatProperties.Format);
         }
 
         [CommandMethod]

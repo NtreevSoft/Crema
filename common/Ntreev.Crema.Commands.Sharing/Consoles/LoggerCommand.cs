@@ -107,8 +107,7 @@ namespace Ntreev.Crema.Commands.Consoles
                         { nameof(ILogService.Verbose), item.Verbose},
                         { nameof(ILogService.FileName),item.FileName}
                     };
-                    var text = TextSerializer.Serialize(props, FormatProperties.Format);
-                    this.CommandContext.WriteLine(text);
+                    this.CommandContext.WriteObject(props, FormatProperties.Format);
                     this.CommandContext.WriteLine();
                 }
             }

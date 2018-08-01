@@ -208,7 +208,12 @@ namespace Ntreev.Crema.Data
 
         public static CremaDataSet ReadFromDirectory(string path)
         {
-            return ReadFromDirectory(path, null, ReadTypes.All);
+            return ReadFromDirectory(path, null);
+        }
+
+        public static CremaDataSet ReadFromDirectory(string path, string filterExpression)
+        {
+            return ReadFromDirectory(path, filterExpression, ReadTypes.All);
         }
 
         /// <summary>
@@ -251,7 +256,7 @@ namespace Ntreev.Crema.Data
                         if (filterExpression != null)
                         {
                             var query1 = from item in tableFiles
-                                         where StringUtility.GlobMany(Path.GetFileNameWithoutExtension(item), filterExpression)
+                                         where Filter(filterExpression, tablePath, item)
                                          select item;
 
                             var query2 = from item in query1
@@ -267,8 +272,8 @@ namespace Ntreev.Crema.Data
                     {
                         if (filterExpression != null)
                         {
-                            var query1 = from item in DirectoryUtility.Exists(typePath) ? DirectoryUtility.GetAllFiles(typePath, "*" + CremaSchema.SchemaExtension) : new string[] { }
-                                         where StringUtility.GlobMany(Path.GetFileNameWithoutExtension(item), filterExpression)
+                            var query1 = from item in typeFiles
+                                         where Filter(filterExpression, typePath, item)
                                          select item;
                         }
                         else
@@ -850,23 +855,34 @@ namespace Ntreev.Crema.Data
 
         public IDictionary<string, object> ToDictionary()
         {
-            var types = new Dictionary<string, object>(this.Types.Count);
-            foreach (var item in this.Types.OrderBy(item => item.Name))
+            return this.ToDictionary(false, false);
+        }
+
+        public IDictionary<string, object> ToDictionary(bool omitType, bool omitTable)
+        {
+            var props = new Dictionary<string, object>();
+
+            if (omitType == false)
             {
-                types.Add(item.Name, item.ToDictionary());
+                var types = new Dictionary<string, object>(this.Types.Count);
+                foreach (var item in this.Types.OrderBy(item => item.Name))
+                {
+                    types.Add(item.Name, item.ToDictionary());
+                }
+                props.Add(CremaSchema.TypeDirectory, types);
             }
 
-            var tables = new Dictionary<string, object>(this.Tables.Count);
-            foreach (var item in this.Tables.OrderBy(item => item.Name))
+            if (omitTable == false)
             {
-                tables.Add(item.Name, item.ToDictionary());
+                var tables = new Dictionary<string, object>(this.Tables.Count);
+                foreach (var item in this.Tables.OrderBy(item => item.Name))
+                {
+                    tables.Add(item.Name, item.ToDictionary());
+                }
+                props.Add(CremaSchema.TableDirectory, tables);
             }
 
-            return new Dictionary<string, object>()
-            {
-                {CremaSchema.TypeDirectory, types },
-                {CremaSchema.TableDirectory, tables }
-            };
+            return props;
         }
 
         [DefaultValue(false)]
@@ -1056,6 +1072,32 @@ namespace Ntreev.Crema.Data
                 Console.Write("warning: ");
                 Console.WriteLine(item.Message);
             }
+        }
+
+        private static bool Filter(string filterExpression, string basePath, string itemPath)
+        {
+            if (filterExpression == null)
+                return true;
+
+            var patterns = StringUtility.Split(filterExpression, ';');
+            var namePattern = string.Join(";", patterns.Where(item => item.IndexOf(PathUtility.SeparatorChar) < 0));
+            var pathPattern = string.Join(";", patterns.Where(item => item.IndexOf(PathUtility.SeparatorChar) >= 0));
+            var path = FileUtility.RemoveExtension(itemPath);
+            var relativePath = UriUtility.MakeRelativeOfDirectory(basePath, path);
+            var items = StringUtility.SplitPath(relativePath);
+            var itemName = ItemName.Create(items);
+
+            if (namePattern != string.Empty && StringUtility.GlobMany(itemName.Name, namePattern) == true)
+            {
+                return true;
+            }
+
+            if (pathPattern != string.Empty && StringUtility.GlobMany(itemName.CategoryPath, pathPattern) == true)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private void GetSerializableData(IDictionary<string, string> items)
