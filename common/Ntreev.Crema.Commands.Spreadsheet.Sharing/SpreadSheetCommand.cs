@@ -57,20 +57,6 @@ namespace Ntreev.Crema.Commands.Spreadsheet
 
         }
 
-        //public override string[] GetCompletions(CommandMethodDescriptor methodDescriptor, CommandMemberDescriptor memberDescriptor, string find)
-        //{
-        //    if (methodDescriptor.DescriptorName == nameof(Export))
-        //    {
-        //        if (memberDescriptor.DescriptorName == "itemNames")
-        //        {
-        //            return this.GetItemNames(find);
-        //        }
-        //    }
-        //    return base.GetCompletions(methodDescriptor, memberDescriptor, find);
-        //}
-
-        public override bool IsEnabled => this.CommandContext.IsOnline;
-
         [CommandMethod]
         [CommandMethodStaticProperty(typeof(FilterProperties))]
         [CommandMethodStaticProperty(typeof(DataSetTypeProperties))]
@@ -110,6 +96,8 @@ namespace Ntreev.Crema.Commands.Spreadsheet
             //    dataBase.TableContext.Import(authentication, dataSet, this.Message);
             //});
         }
+
+        public override bool IsEnabled => this.CommandContext.IsOnline;
 
         [CommandProperty]
         public bool OmitAttribute
@@ -352,115 +340,24 @@ namespace Ntreev.Crema.Commands.Spreadsheet
             };
             using (var writer = new SpreadsheetWriter(dataSet, settings))
             {
-                //writer.Progress += (s, e) => this.CommandContext.WriteLine($"")
+                writer.Progress += Writer_Progress;
                 writer.Write(path);
             }
             this.CommandContext.WriteLine($"export: \"{path}\"");
         }
 
-        //private IType[] GetFilterTypes(ITypeCollection types, string typeNames)
-        //{
-        //    var query = from item in types
-        //                where item.Name.GlobMany(typeNames) || item.Path.GlobMany(typeNames)
-        //                select item;
-
-        //    return query.Distinct().ToArray();
-        //}
-
-        //private ITable[] GetFilterTables(ITableCollection tables, string tableNames)
-        //{
-        //    var query = from item in tables
-        //                where item.Name.GlobMany(tableNames) || item.Path.GlobMany(tableNames)
-        //                select item;
-
-        //    return query.Distinct().ToArray();
-        //}
-
-        //private string[] GetTypeNames()
-        //{
-        //    return this.CremaHost.Dispatcher.Invoke(() =>
-        //    {
-        //        var dataBase = this.CremaHost.DataBases[this.DataBaseName];
-        //        var query = from item in dataBase.TypeContext.Types
-        //                    let name = item.Name
-        //                    select name;
-        //        return query.ToArray();
-        //    });
-        //}
-
-        //private string[] GetTypeCategoryPaths()
-        //{
-        //    return this.CremaHost.Dispatcher.Invoke(() =>
-        //    {
-        //        var dataBase = this.CremaHost.DataBases[this.DataBaseName];
-        //        var query = from item in dataBase.TypeContext.Categories
-        //                    let path = item.Path
-        //                    select path;
-        //        return query.ToArray();
-        //    });
-        //}
-
-        //private string[] GetTableNames()
-        //{
-        //    return this.CremaHost.Dispatcher.Invoke(() =>
-        //    {
-        //        var dataBase = this.CremaHost.DataBases[this.DataBaseName];
-        //        var query = from item in dataBase.TableContext.Tables
-        //                    let name = item.Name
-        //                    select name;
-        //        return query.ToArray();
-        //    });
-        //}
-
-        //private string[] GetTableCategoryPaths()
-        //{
-        //    return this.CremaHost.Dispatcher.Invoke(() =>
-        //    {
-        //        var dataBase = this.CremaHost.DataBases[this.DataBaseName];
-        //        var query = from item in dataBase.TableContext.Categories
-        //                    let path = item.Path
-        //                    select path;
-        //        return query.ToArray();
-        //    });
-        //}
-
-        //private string[] GetItemNames(string find)
-        //{
-        //    var ss = find.Split(';');
-        //    var itemNames = GetItemNames().OrderBy(item => item).ToArray();
-        //    if (ss.Length == 1)
-        //    {
-        //        var query = from item in itemNames
-        //                    where item.StartsWith(ss.First())
-        //                    select item;
-        //        return query.ToArray();
-        //    }
-        //    else
-        //    {
-        //        var pre = string.Join(";", ss.Take(ss.Length - 1));
-        //        var query = from item in itemNames
-        //                    where item.StartsWith(ss.Last())
-        //                    select $"{pre};{item}";
-        //        return query.ToArray();
-        //    }
-
-        //    IEnumerable<string> GetItemNames()
-        //    {
-        //        if (this.Context == CremaSchema.TableDirectory)
-        //        {
-        //            return this.GetTableNames().Concat(this.GetTableCategoryPaths());
-        //        }
-        //        else
-        //        {
-        //            return this.GetTypeNames().Concat(this.GetTypeCategoryPaths());
-        //        }
-        //    }
-        //}
+        private void Writer_Progress(object sender, ProgressEventArgs e)
+        {
+            if (e.Target is CremaDataType dataType)
+            {
+                this.CommandContext.WriteLine($"write type {ConsoleProgress.GetProgressString(e.Index + 1, e.Count)} : {dataType.Name}");
+            }
+            else if (e.Target is CremaDataTable dataTable)
+            {
+                this.CommandContext.WriteLine($"write table {ConsoleProgress.GetProgressString(e.Index + 1, e.Count)} : {dataTable.Name}");
+            }
+        }
 
         private ICremaHost CremaHost => this.cremaHost.Value;
-
-        //private string DataBaseName => (this.CommandContext.Drive as DataBasesConsoleDrive).DataBaseName;
-
-        //private string Context => (this.CommandContext.Drive as DataBasesConsoleDrive).Context;
     }
 }

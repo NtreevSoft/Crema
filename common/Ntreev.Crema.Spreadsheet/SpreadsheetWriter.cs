@@ -62,29 +62,12 @@ namespace Ntreev.Crema.Spreadsheet
             }
         }
 
-        //[Obsolete]
-        //public void Write(string filename, IProgress progress)
-        //{
-        //    using (var stream = new FileStream(filename, FileMode.Create))
-        //    {
-        //        this.Write(stream, progress);
-        //    }
-        //}
-
         public void Write(Stream stream)
         {
             var workbook = new XLWorkbook();
             this.WriteSheets(workbook);
             workbook.SaveAs(stream);
         }
-
-        //[Obsolete]
-        //public void Write(Stream stream, IProgress progress)
-        //{
-        //    var workbook = new XLWorkbook();
-        //    this.WriteSheets(workbook, progress);
-        //    workbook.SaveAs(stream);
-        //}
 
         public void Dispose()
         {
@@ -231,13 +214,24 @@ namespace Ntreev.Crema.Spreadsheet
             {
                 var column = sheet.Column(index);
                 var cell = sheet.Cell(rowIndex, index++);
-                cell.Value = CremaSchema.RelationID;
-                cell.Comment.AddText("부모 자식 테이블의 관계값을 나타냅니다. 이 열의 값은 부모 시트의 행 번호를 나타냅니다.");
+                cell.Value = CremaSchema.__ParentID__;
                 cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
                 column.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
                 column.Style.Border.RightBorder = XLBorderStyleValues.Thin;
             }
+
+            if (dataTable.Childs.Any() == true)
+            {
+                var column = sheet.Column(index);
+                var cell = sheet.Cell(rowIndex, index++);
+                cell.Value = CremaSchema.__RelationID__;
+                cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+                column.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                column.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            }
+
 
             if (this.settings.OmitSignatureDate == false)
             {
@@ -269,8 +263,12 @@ namespace Ntreev.Crema.Spreadsheet
 
                 if (dataTable.Parent != null)
                 {
-                    var parentIndex = dataTable.Parent.Rows.IndexOf(row.Parent);
-                    this.WriteField(workSheet, r, c++, parentIndex + 2);
+                    this.WriteField(workSheet, r, c++, row.ParentID);
+                }
+
+                if (dataTable.Childs.Any())
+                {
+                    this.WriteField(workSheet, r, c++, row.RelationID);
                 }
 
                 if (this.settings.OmitSignatureDate == false)
