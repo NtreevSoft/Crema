@@ -54,12 +54,12 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.Debug("TypeContext is created.");
         }
 
-        public void Import(Authentication authentication, CremaDataSet dataSet, string comment)
-        {
-            this.Dispatcher?.VerifyAccess();
-            this.CremaHost.DebugMethod(authentication, this, nameof(Import), comment);
-            throw new NotImplementedException();
-        }
+        //public void Import(Authentication authentication, CremaDataSet dataSet, string comment)
+        //{
+        //    this.Dispatcher?.VerifyAccess();
+        //    this.CremaHost.DebugMethod(authentication, this, nameof(Import), comment);
+        //    throw new NotImplementedException();
+        //}
 
         public void Dispose()
         {
@@ -67,7 +67,6 @@ namespace Ntreev.Crema.Services.Data
             this.dataBase = null;
             userContext.Dispatcher.Invoke(() => userContext.Users.UsersLoggedOut -= Users_UsersLoggedOut);
         }
-
 
         public void InvokeTypeItemLock(Authentication authentication, ITypeItem typeItem, string comment)
         {

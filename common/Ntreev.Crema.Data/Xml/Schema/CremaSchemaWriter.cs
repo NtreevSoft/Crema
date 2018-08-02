@@ -110,7 +110,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
                 this.WriteSchemaAttribute(schema, this.dataSet.Namespace);
                 this.WriteGuidType(schema);
                 this.WriteDataTypes(schema, dataSet.Types.OrderBy(item => item.Name));
-                this.WriteTables(schema, dataSet.DataSetName, dataSet.Tables.OrderBy(item => item.Name));
+                this.WriteTables(schema, dataSet.DataSetName, dataSet.Tables);
             }
             else if (this.dataTable != null)
             {
@@ -119,7 +119,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
                 this.WriteSchemaAttribute(schema, tableNamespace);
                 this.WriteGuidType(schema);
 
-                var tables = this.IsRecursive == true ? EnumerableUtility.Friends(dataTable, dataTable.Childs) : Enumerable.Repeat(dataTable, 1);
+                var tables = this.IsRecursive == true ? EnumerableUtility.FamilyTree(dataTable, item => item.Childs) : Enumerable.Repeat(dataTable, 1);
 
                 if (this.dataTable.DataSet != null)
                 {
@@ -147,7 +147,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
                     }
                 }
 
-                this.WriteTables(schema, contentName, tables.OrderBy(item => item.Name));
+                this.WriteTables(schema, contentName, tables);
             }
             else if (this.dataType != null)
             {

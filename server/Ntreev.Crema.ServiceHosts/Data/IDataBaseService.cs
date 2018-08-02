@@ -50,17 +50,15 @@ namespace Ntreev.Crema.ServiceHosts.Data
         ResultBase<CremaDataSet> GetDataSet(DataSetType dataSetType, string filterExpression, string revision);
 
         [OperationContract]
+        ResultBase ImportDataSet(CremaDataSet dataSet, string comment);
+
+        [OperationContract]
         ResultBase NewTableCategory(string categoryPath);
 
         [OperationContract]
         ResultBase<CremaDataSet> GetTableItemDataSet(string itemPath, string revision);
 
-        [OperationContract]
-        ResultBase ImportTables(CremaDataSet dataSet, string comment);
-
-        [OperationContract]
-        ResultBase RenameTableItem(string itemPath, string newName);
-
+        
         [OperationContract]
         ResultBase MoveTableItem(string itemPath, string parentPath);
 
@@ -132,9 +130,6 @@ namespace Ntreev.Crema.ServiceHosts.Data
 
         [OperationContract]
         ResultBase<CremaDataSet> GetTypeItemDataSet(string itemPath, string revision);
-
-        [OperationContract]
-        ResultBase ImportTypes(CremaDataSet dataSet, string comment);
 
         [OperationContract]
         ResultBase RenameTypeItem(string itemPath, string newName);

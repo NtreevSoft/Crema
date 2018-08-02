@@ -565,10 +565,6 @@ namespace Ntreev.Crema.Data
             set
             {
                 this.InternalTemplatedParent = value;
-                foreach (var item in this.ChildItems)
-                {
-                    item.TemplatedParent = value?.GetChild(item.LocalName);
-                }
             }
         }
 
@@ -578,10 +574,6 @@ namespace Ntreev.Crema.Data
             set
             {
                 this.templateNamespace = value;
-                foreach (var item in this.ChildItems)
-                {
-                    item.TemplateNamespace = templateNamespace + "." + item.LocalName;
-                }
             }
         }
 

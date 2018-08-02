@@ -16,7 +16,7 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 //#if !DEBUG
-#define USE_PARALLEL
+//#define USE_PARALLEL
 //#endif
 using Ntreev.Crema.Data.Properties;
 using Ntreev.Crema.Data.Xml;
@@ -572,8 +572,8 @@ namespace Ntreev.Crema.Data
             }
 #endif
 
-            if (schemaOnly == false)
-            {
+            //if (schemaOnly == false)
+            //{
                 this.BeginLoad();
 
 #if USE_PARALLEL
@@ -596,7 +596,11 @@ namespace Ntreev.Crema.Data
                 {
                     Parallel.ForEach(parallellist, new ParallelOptions { MaxDegreeOfParallelism = threadcount }, item =>
                     {
-                        this.ReadXml(item.XmlPath, item.ItemName);
+                        var xmlReader = new CremaXmlReader(this, item.ItemName)
+                        {
+                            OmitContent = schemaOnly == true
+                        };
+                        xmlReader.Read(item.XmlPath);
                     });
                 }
                 catch (AggregateException e)
@@ -606,11 +610,16 @@ namespace Ntreev.Crema.Data
 #else
             foreach (var item in readInfos)
             {
-                this.ReadXml(item.XmlPath, item.ItemName);
+                var xmlReader = new CremaXmlReader(this, item.ItemName)
+                {
+                    OmitContent = schemaOnly == true
+                };
+                xmlReader.Read(item.XmlPath);
             }
 #endif
                 this.EndLoad();
-            }
+            //}
+            this.Tables.Sort();
         }
 
         public void ReadType(string filename)

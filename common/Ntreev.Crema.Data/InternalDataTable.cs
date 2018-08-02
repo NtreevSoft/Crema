@@ -1257,7 +1257,10 @@ namespace Ntreev.Crema.Data
 
             if (this.DataSet != null)
             {
+                var signatureDate = this.DataSet.Sign();
                 this.DataSet.Tables.Add(childTable);
+                childTable.InternalCreationInfo = signatureDate;
+                childTable.InternalModificationInfo = signatureDate;
             }
             return childTable;
         }

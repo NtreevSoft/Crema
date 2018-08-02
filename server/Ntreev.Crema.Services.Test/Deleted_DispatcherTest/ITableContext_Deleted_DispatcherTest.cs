@@ -73,13 +73,6 @@ namespace Ntreev.Crema.Services.Test.Deleted_DispatcherTest
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void Import()
-        {
-            tableContext.Import(authentication, new CremaDataSet(), RandomUtility.NextString());
-        }
-
-        [TestMethod]
         public void Tables()
         {
             Console.Write(tableContext.Tables);

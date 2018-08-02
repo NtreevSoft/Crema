@@ -265,6 +265,11 @@ namespace Ntreev.Crema.Data
             }
         }
 
+        internal void Sort()
+        {
+            this.itemList.Sort((x, y) => string.Compare(x.Name, y.Name));
+        }
+
         #region IEnumerable
 
         void ICollection.CopyTo(Array array, int index)

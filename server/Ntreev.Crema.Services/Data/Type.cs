@@ -382,6 +382,21 @@ namespace Ntreev.Crema.Services.Data
             base.TypeState = typeState;
         }
 
+        public void ValidateLockInternal(Authentication authentication)
+        {
+            base.ValidateLock(authentication);
+        }
+
+        public void LockInternal(Authentication authentication, string comment)
+        {
+            base.Lock(authentication, comment);
+        }
+
+        public void UnlockInternal(Authentication authentication)
+        {
+            base.Unlock(authentication);
+        }
+
         public TypeTemplate Template { get; }
 
         public CremaDispatcher Dispatcher => this.Context?.Dispatcher;

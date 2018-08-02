@@ -134,7 +134,15 @@ namespace Ntreev.Crema.ServiceHosts.Data
         {
             return this.InvokeImmediately(() =>
             {
-                return this.dataBase.Dispatcher.Invoke(() => this.dataBase.GetDataSet(this.authentication, dataSetType, filterExpression, revision));
+                return this.dataBase.GetDataSet(this.authentication, dataSetType, filterExpression, revision);
+            });
+        }
+
+        public ResultBase ImportDataSet(CremaDataSet dataSet, string comment)
+        {
+            return this.Invoke(() =>
+            {
+                this.dataBase.Dispatcher.Invoke(() => this.dataBase.Import(this.authentication, dataSet, comment));
             });
         }
 
@@ -154,14 +162,6 @@ namespace Ntreev.Crema.ServiceHosts.Data
             {
                 var tableItem = this.dataBase.Dispatcher.Invoke(() => this.GetTableItem(itemPath));
                 return tableItem.GetDataSet(this.authentication, revision);
-            });
-        }
-
-        public ResultBase ImportTables(CremaDataSet dataSet, string comment)
-        {
-            return this.Invoke(() =>
-            {
-                this.TableContext.Import(this.authentication, dataSet, comment);
             });
         }
 
@@ -431,14 +431,6 @@ namespace Ntreev.Crema.ServiceHosts.Data
             {
                 var typeItem = this.cremaHost.Dispatcher.Invoke(() => this.GetTypeItem(itemPath));
                 return typeItem.GetDataSet(this.authentication, revision);
-            });
-        }
-
-        public ResultBase ImportTypes(CremaDataSet dataSet, string comment)
-        {
-            return this.Invoke(() =>
-            {
-                this.TypeContext.Import(this.authentication, dataSet, comment);
             });
         }
 

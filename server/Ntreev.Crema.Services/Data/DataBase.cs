@@ -36,7 +36,7 @@ using System.Linq;
 
 namespace Ntreev.Crema.Services.Data
 {
-    class DataBase : DataBaseBase<Type, TypeCategory, TypeCollection, TypeCategoryCollection, TypeContext, Table, TableCategory, TableCollection, TableCategoryCollection, TableContext>,
+    partial class DataBase : DataBaseBase<Type, TypeCategory, TypeCollection, TypeCategoryCollection, TypeContext, Table, TableCategory, TableCollection, TableCategoryCollection, TableContext>,
         IDataBase, IInfoProvider, IStateProvider
     {
         private readonly IRepositoryProvider repositoryProvider;
@@ -69,7 +69,16 @@ namespace Ntreev.Crema.Services.Data
         public DataBase(CremaHost cremaHost, string name, DataBaseSerializationInfo dataBaseInfo)
             : this(cremaHost, name)
         {
+            this.CremaHost = cremaHost;
+            this.repositoryProvider = cremaHost.RepositoryProvider;
+            this.serializer = cremaHost.Serializer;
+            this.Dispatcher = cremaHost.Dispatcher;
+            base.Name = name;
+            this.cachePath = cremaHost.GetPath(CremaPath.Caches, DataBaseCollection.DataBasesString);
+            this.userContext = this.CremaHost.UserContext;
+            this.userContext.Dispatcher.Invoke(() => this.userContext.Users.UsersLoggedOut += Users_UsersLoggedOut);
             base.DataBaseInfo = (DataBaseInfo)dataBaseInfo;
+            this.Initialize();
         }
 
         public override string ToString()

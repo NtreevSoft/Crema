@@ -95,7 +95,11 @@ namespace Ntreev.Crema.Data
                 }
                 else if (dataType == typeof(long))
                 {
-                    if (double.TryParse(textValue, out var d) == true)
+                    if (long.TryParse(textValue, out var l) == true)
+                    {
+                        return l;
+                    }
+                    else if (double.TryParse(textValue, out var d) == true)
                     {
                         return (long)d;
                     }
@@ -106,7 +110,11 @@ namespace Ntreev.Crema.Data
                 }
                 else if (dataType == typeof(ulong))
                 {
-                    if (double.TryParse(textValue, out var d) == true)
+                    if (ulong.TryParse(textValue, out var u) == true)
+                    {
+                        return u;
+                    }
+                    else if (double.TryParse(textValue, out var d) == true)
                     {
                         return (ulong)d;
                     }

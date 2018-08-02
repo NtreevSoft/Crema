@@ -55,67 +55,67 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.Debug(Resources.Message_TableContextIsCreated);
         }
 
-        public void Import(Authentication authentication, CremaDataSet dataSet, string comment)
-        {
-            this.Dispatcher?.VerifyAccess();
-            this.CremaHost.DebugMethod(authentication, this, nameof(Import), comment);
-            this.ValidateImport(authentication, dataSet, comment);
-            var query = from item in dataSet.Tables
-                        let table = this.Tables[item.Name]
-                        where table.LockInfo.Path != table.Path
-                        select table;
+        //public void Import(Authentication authentication, CremaDataSet dataSet, string comment)
+        //{
+        //    this.Dispatcher?.VerifyAccess();
+        //    this.CremaHost.DebugMethod(authentication, this, nameof(Import), comment);
+        //    this.ValidateImport(authentication, dataSet, comment);
+        //    var query = from item in dataSet.Tables
+        //                let table = this.Tables[item.Name]
+        //                where table.LockInfo.Path != table.Path
+        //                select table;
 
-            var items = query.ToArray();
-            var comments = Enumerable.Repeat(comment, items.Length).ToArray();
-            foreach (var item in items)
-            {
-                item.LockInternal(Authentication.System, comment);
-            }
-            this.InvokeItemsLockedEvent(authentication, items, comments);
+        //    var items = query.ToArray();
+        //    var comments = Enumerable.Repeat(comment, items.Length).ToArray();
+        //    foreach (var item in items)
+        //    {
+        //        item.LockInternal(Authentication.System, comment);
+        //    }
+        //    this.InvokeItemsLockedEvent(authentication, items, comments);
 
-            try
-            {
-                var targetSet = this.DataBase.GetDataSet(authentication, items, true);
-                foreach (var item in targetSet.Tables)
-                {
-                    var dataTable = dataSet.Tables[item.Name];
-                    if (dataTable == null)
-                        continue;
+        //    try
+        //    {
+        //        var targetSet = this.DataBase.GetDataSet(authentication, items, true);
+        //        foreach (var item in targetSet.Tables)
+        //        {
+        //            var dataTable = dataSet.Tables[item.Name];
+        //            if (dataTable == null)
+        //                continue;
 
-                    foreach (var row in dataTable.Rows)
-                    {
-                        item.ImportRow(row);
-                    }
-                    item.ContentsInfo = dataTable.ContentsInfo;
-                }
-                try
-                {
-                    this.Repository.Modify(targetSet);
-                    this.Repository.Commit(authentication, comment);
-                }
-                catch
-                {
-                    this.Repository.Revert();
-                }
+        //            foreach (var row in dataTable.Rows)
+        //            {
+        //                item.ImportRow(row);
+        //            }
+        //            item.ContentsInfo = dataTable.ContentsInfo;
+        //        }
+        //        try
+        //        {
+        //            this.Repository.Modify(targetSet);
+        //            this.Repository.Commit(authentication, comment);
+        //        }
+        //        catch
+        //        {
+        //            this.Repository.Revert();
+        //        }
 
-                foreach (var item in items)
-                {
-                    var dataTable = targetSet.Tables[item.Name, item.Category.Path];
-                    item.UpdateContent(dataTable.TableInfo);
-                }
+        //        foreach (var item in items)
+        //        {
+        //            var dataTable = targetSet.Tables[item.Name, item.Category.Path];
+        //            item.UpdateContent(dataTable.TableInfo);
+        //        }
 
-                var eventLog = EventLogBuilder.Build(authentication, this, nameof(Import), comment);
-                this.OnItemsChanged(new ItemsEventArgs<ITableItem>(Authentication.System, items, targetSet));
-            }
-            finally
-            {
-                foreach (var item in items)
-                {
-                    item.UnlockInternal(Authentication.System);
-                }
-                this.InvokeItemsUnlockedEvent(authentication, items);
-            }
-        }
+        //        var eventLog = EventLogBuilder.Build(authentication, this, nameof(Import), comment);
+        //        this.OnItemsChanged(new ItemsEventArgs<ITableItem>(Authentication.System, items, targetSet));
+        //    }
+        //    finally
+        //    {
+        //        foreach (var item in items)
+        //        {
+        //            item.UnlockInternal(Authentication.System);
+        //        }
+        //        this.InvokeItemsUnlockedEvent(authentication, items);
+        //    }
+        //}
 
         public void Dispose()
         {
@@ -625,37 +625,37 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        private void ValidateImport(Authentication authentication, CremaDataSet dataSet, string comment)
-        {
-            if (dataSet == null)
-                throw new ArgumentNullException(nameof(dataSet));
-            if (dataSet.Tables.Any() == false)
-                throw new ArgumentException(Resources.Exception_EmptyDataSetCannotImport, nameof(dataSet));
-            if (comment == null)
-                throw new ArgumentNullException(nameof(comment));
-            if (comment == string.Empty)
-                throw new ArgumentException(Resources.Exception_EmptyStringIsNotAllowed);
-            var tableList = new List<Table>(dataSet.Tables.Count);
-            foreach (var item in dataSet.Tables)
-            {
-                var table = this.Tables[item.Name];
-                if (table == null)
-                    throw new TableNotFoundException(item.Name);
-                tableList.Add(table);
-                table.ValidateAccessType(authentication, AccessType.Editor);
-                table.ValidateHasNotBeingEditedType();
-                table.ValidateNotBeingEdited();
-            }
+        //private void ValidateImport(Authentication authentication, CremaDataSet dataSet, string comment)
+        //{
+        //    if (dataSet == null)
+        //        throw new ArgumentNullException(nameof(dataSet));
+        //    if (dataSet.Tables.Any() == false)
+        //        throw new ArgumentException(Resources.Exception_EmptyDataSetCannotImport, nameof(dataSet));
+        //    if (comment == null)
+        //        throw new ArgumentNullException(nameof(comment));
+        //    if (comment == string.Empty)
+        //        throw new ArgumentException(Resources.Exception_EmptyStringIsNotAllowed);
+        //    var tableList = new List<Table>(dataSet.Tables.Count);
+        //    foreach (var item in dataSet.Tables)
+        //    {
+        //        var table = this.Tables[item.Name];
+        //        if (table == null)
+        //            throw new TableNotFoundException(item.Name);
+        //        tableList.Add(table);
+        //        table.ValidateAccessType(authentication, AccessType.Editor);
+        //        table.ValidateHasNotBeingEditedType();
+        //        table.ValidateNotBeingEdited();
+        //    }
 
-            var query = from item in tableList
-                        where item.LockInfo.Path != item.Path
-                        select item;
+        //    var query = from item in tableList
+        //                where item.LockInfo.Path != item.Path
+        //                select item;
 
-            foreach (var item in query)
-            {
-                item.ValidateLockInternal(authentication);
-            }
-        }
+        //    foreach (var item in query)
+        //    {
+        //        item.ValidateLockInternal(authentication);
+        //    }
+        //}
 
         private void Initialize(IEnumerable<TableInfo> tableInfos)
         {

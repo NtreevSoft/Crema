@@ -106,7 +106,7 @@ namespace Ntreev.Crema.Data
 
         public SignatureDate SignatureDate { get; private set; }
 
-        protected SignatureDate Sign()
+        public SignatureDate Sign()
         {
             this.ValidateSign();
             this.SignatureDate = this.SignatureDateProvider.Provide();

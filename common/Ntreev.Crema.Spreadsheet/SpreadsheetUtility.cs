@@ -25,6 +25,8 @@ namespace Ntreev.Crema.Spreadsheet
 {
     public static class SpreadsheetUtility
     {
+        public const string InformationSheet = "(information)";
+
         public static string Ellipsis(string name)
         {
             if (name.Length <= 31)

@@ -316,19 +316,19 @@ namespace Ntreev.Crema.Data
             {
                 this.InternalObject.ImportRow(row.InternalObject);
 
-                foreach (var item in row.Table.Childs)
-                {
-                    var childRows = row.GetChildRows(item);
+                //foreach (var item in row.Table.Childs)
+                //{
+                //    var childRows = row.GetChildRows(item);
 
-                    var thisChild = this.Childs[item.TableName];
-                    if (thisChild == null)
-                        continue;
+                //    var thisChild = this.Childs[item.TableName];
+                //    if (thisChild == null)
+                //        continue;
 
-                    foreach (var childRow in childRows)
-                    {
-                        thisChild.ImportRow(childRow);
-                    }
-                }
+                //    foreach (var childRow in childRows)
+                //    {
+                //        thisChild.ImportRow(childRow);
+                //    }
+                //}
             }
             finally
             {

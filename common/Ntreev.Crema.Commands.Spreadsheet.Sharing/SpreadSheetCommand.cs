@@ -60,41 +60,46 @@ namespace Ntreev.Crema.Commands.Spreadsheet
         [CommandMethod]
         [CommandMethodStaticProperty(typeof(FilterProperties))]
         [CommandMethodStaticProperty(typeof(DataSetTypeProperties))]
-        [CommandMethodProperty(nameof(DataBaseName), nameof(OmitAttribute), nameof(OmitSignatureDate), nameof(Revision))]
+        [CommandMethodProperty(nameof(DataBase), nameof(OmitAttribute), nameof(OmitSignatureDate), nameof(Revision))]
         public void Export(string filename)
         {
             var authentication = this.CommandContext.GetAuthentication(this);
-            var dataBase = this.CremaHost.Dispatcher.Invoke(() => this.CremaHost.DataBases[this.DataBaseName]);
-            var dataSet = dataBase.Dispatcher.Invoke(() => dataBase.GetDataSet(authentication, DataSetTypeProperties.DataSetType, FilterProperties.FilterExpression, this.Revision));
-            this.WriteDataSet(dataSet, filename);
+            var dataBase = this.CremaHost.Dispatcher.Invoke(() => this.CremaHost.DataBases[this.DataBase]);
+            var revision = dataBase.Dispatcher.Invoke(() => this.Revision ?? dataBase.DataBaseInfo.Revision);
+            var dataSet = dataBase.Dispatcher.Invoke(() => dataBase.GetDataSet(authentication, DataSetTypeProperties.DataSetType, FilterProperties.FilterExpression, revision));
+            var settings = new SpreadsheetWriterSettings()
+            {
+                OmitAttribute = this.OmitAttribute,
+                OmitSignatureDate = this.OmitSignatureDate,
+                OmitType = DataSetTypeProperties.TableOnly,
+                OmitTable = DataSetTypeProperties.TypeOnly
+            };
+            settings.Properties.Add(nameof(Revision), revision);
+            settings.Properties.Add(nameof(FilterProperties.FilterExpression), FilterProperties.FilterExpression);
+            settings.Properties.Add(nameof(DataBase), this.DataBase);
+            this.WriteDataSet(dataSet, filename, settings);
         }
 
         [CommandMethod]
         [CommandMethodProperty(nameof(Message))]
-        public void Import(string filename, string itemNames = null)
+        [CommandMethodStaticProperty(typeof(FilterProperties))]
+        public void Import(string filename)
         {
-            var authentication = this.CommandContext.GetAuthentication(this);
             var path = Path.Combine(this.CommandContext.BaseDirectory, filename);
-            var dataBase = this.CremaHost.Dispatcher.Invoke(() => this.CremaHost.DataBases[this.DataBaseName]);
-            var dataSet = new CremaDataSet();
-
-            //using (DataBaseUsing.Set(dataBase, authentication, true))
-            //{
-            //    if (this.Context == CremaSchema.TableDirectory)
-            //    {
-            //        this.ReadTables(dataSet, dataBase, path, itemNames);
-            //        this.ImportTables(authentication, dataSet, dataBase);
-            //    }
-            //    else
-            //    {
-            //        throw new NotImplementedException("타입 가져오기 기능은 구현되지 않았습니다.");
-            //    }
-            //}
-
-            //dataBase.Dispatcher.Invoke(() =>
-            //{
-            //    dataBase.TableContext.Import(authentication, dataSet, this.Message);
-            //});
+            var sheetNames = SpreadsheetReader.ReadTableNames(path);
+            var authentication = this.CommandContext.GetAuthentication(this);
+            var dataBase = this.CremaHost.Dispatcher.Invoke(() => this.CremaHost.DataBases[this.DataBase]);
+            var tableNames = dataBase.Dispatcher.Invoke(() => dataBase.TableContext.Tables.Select(item => item.Name).ToArray());
+            var query = from sheet in sheetNames
+                        join table in tableNames on sheet equals SpreadsheetUtility.Ellipsis(table)
+                        where StringUtility.GlobMany(table, FilterProperties.FilterExpression)
+                        orderby table
+                        select sheet;
+            var filterExpression = string.Join(";", query);
+            var revision = dataBase.Dispatcher.Invoke(() => dataBase.DataBaseInfo.Revision);
+            var dataSet = dataBase.Dispatcher.Invoke(() => dataBase.GetDataSet(authentication, DataSetType.OmitContent, filterExpression, revision));
+            this.ReadDataSet(dataSet, path);
+            dataBase.Dispatcher.Invoke(() => dataBase.Import(authentication, dataSet, this.Message));
         }
 
         public override bool IsEnabled => this.CommandContext.IsOnline;
@@ -126,7 +131,7 @@ namespace Ntreev.Crema.Commands.Spreadsheet
         }
 
         [CommandProperty("database")]
-        public string DataBaseName
+        public string DataBase
         {
             get
             {
@@ -171,73 +176,12 @@ namespace Ntreev.Crema.Commands.Spreadsheet
             }
         }
 
-        //private void ReadTables(CremaDataSet dataSet, IDataBase dataBase, string filename, string itemNames)
-        //{
-        //    var sheetNames = SpreadsheetReader.ReadSheetNames(filename);
-        //    var tableInfos = dataBase.Dispatcher.Invoke(() =>
-        //    {
-        //        var query = from table in dataBase.TableContext.Tables
-        //                    let tableName2 = SpreadsheetUtility.Ellipsis(table.Name)
-        //                    join sheetName in sheetNames on tableName2 equals sheetName
-        //                    where table.Name.GlobMany(itemNames) || table.Path.GlobMany(itemNames)
-        //                    orderby table.Name
-        //                    select table.TableInfo;
-
-        //        return query.ToArray();
-        //    });
-
-        //    var typeInfos = dataBase.Dispatcher.Invoke(() =>
-        //    {
-        //        var query = from table in dataBase.TableContext.Tables
-        //                    let tableName2 = SpreadsheetUtility.Ellipsis(table.Name)
-        //                    join sheetName in sheetNames on tableName2 equals sheetName
-        //                    where table.Name.GlobMany(itemNames) || table.Path.GlobMany(itemNames)
-        //                    from column in table.TableInfo.Columns
-        //                    where CremaDataTypeUtility.IsBaseType(column.DataType) == false
-        //                    let type = dataBase.TypeContext[column.DataType] as IType
-        //                    where type != null
-        //                    select type.TypeInfo;
-
-        //        return query.Distinct().ToArray();
-        //    });
-
-        //    foreach (var item in typeInfos)
-        //    {
-        //        dataSet.Types.Add(item);
-        //    }
-
-        //    foreach (var item in tableInfos)
-        //    {
-        //        if (item.TemplatedParent != string.Empty)
-        //            continue;
-        //        if (item.ParentName == string.Empty)
-        //            dataSet.Tables.Add(item);
-        //        else
-        //            dataSet.Tables[item.ParentName].Childs.Add(item);
-        //    }
-
-        //    foreach (var item in tableInfos)
-        //    {
-        //        if (item.TemplatedParent != string.Empty && item.ParentName == string.Empty)
-        //        {
-        //            var dataTable = dataSet.Tables[item.TemplatedParent];
-        //            dataTable.Inherit(item.TableName);
-        //        }
-        //    }
-
-        //    var progress = new ConsoleProgress(this.Out) { Style = ConsoleProgressStyle.None };
-        //    using (var reader = new SpreadsheetReader(filename))
-        //    {
-        //        reader.Read(dataSet, progress);
-        //    }
-        //}
-
         private void ImportTables(Authentication authentication, CremaDataSet dataSet, IDataBase dataBase)
         {
             this.CommandContext.WriteLine($"importing data");
             dataBase.Dispatcher.Invoke(() =>
             {
-                dataBase.TableContext.Import(authentication, dataSet, this.Message);
+                dataBase.Import(authentication, dataSet, this.Message);
             });
             this.CommandContext.WriteLine($"importing data has been completed.");
         }
@@ -292,26 +236,13 @@ namespace Ntreev.Crema.Commands.Spreadsheet
         //    }
         //}
 
-        //private void ReadTables(Authentication authentication, CremaDataSet dataSet, IDataBase dataBase, string tableNames)
-        //{
-        //    var tables = dataBase.Dispatcher.Invoke(() => this.GetFilterTables(dataBase.TableContext.Tables, tableNames));
-        //    if (tables.Any() == false)
-        //        throw new CremaException("조건에 맞는 테이블이 존재하지 않습니다.");
-        //    var step = new StepProgress(new ConsoleProgress(this.Out) { Style = ConsoleProgressStyle.None });
-        //    step.Begin(tables.Length);
-        //    foreach (var item in tables)
-        //    {
-        //        dataBase.Dispatcher.Invoke(() =>
-        //        {
-        //            var previewSet = item.GetDataSet(authentication, null);
-        //            var previewTable = previewSet.Tables[item.Name];
-        //            previewTable.CopyTo(dataSet);
-        //            var name = item.Name;
-        //            step.Next("read {0} : {1}", ConsoleProgress.GetProgressString(step.Step + 1, tables.Length), item.Name);
-        //        });
-        //    }
-        //    step.Complete();
-        //}
+        private void ReadDataSet(CremaDataSet dataSet, string filename)
+        {
+            using (var reader = new SpreadsheetReader(filename))
+            {
+                reader.Read(dataSet);
+            }
+        }
 
         //private void WriteTypes(CremaDataSet dataSet, string filename)
         //{
@@ -330,14 +261,9 @@ namespace Ntreev.Crema.Commands.Spreadsheet
         //    this.Out.WriteLine($"export: \"{path}\"");
         //}
 
-        private void WriteDataSet(CremaDataSet dataSet, string filename)
+        private void WriteDataSet(CremaDataSet dataSet, string filename, SpreadsheetWriterSettings settings)
         {
             var path = Path.Combine(this.CommandContext.BaseDirectory, filename);
-            var settings = new SpreadsheetWriterSettings()
-            {
-                OmitAttribute = this.OmitAttribute,
-                OmitSignatureDate = this.OmitSignatureDate,
-            };
             using (var writer = new SpreadsheetWriter(dataSet, settings))
             {
                 writer.Progress += Writer_Progress;
