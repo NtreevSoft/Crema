@@ -101,13 +101,13 @@ namespace Ntreev.Crema.Data
             this.InternalObject.EndLoad();
         }
 
-        public void BeginLoadInternal()
+        internal void BeginLoadInternal()
         {
             this.InternalObject.BeginLoadData();
             this.DetachEventHandlers();
         }
 
-        public void EndLoadInternal()
+        internal void EndLoadInternal()
         {
             this.AttachEventHandlers();
             this.InternalObject.EndLoadData();
@@ -315,20 +315,6 @@ namespace Ntreev.Crema.Data
             try
             {
                 this.InternalObject.ImportRow(row.InternalObject);
-
-                //foreach (var item in row.Table.Childs)
-                //{
-                //    var childRows = row.GetChildRows(item);
-
-                //    var thisChild = this.Childs[item.TableName];
-                //    if (thisChild == null)
-                //        continue;
-
-                //    foreach (var childRow in childRows)
-                //    {
-                //        thisChild.ImportRow(childRow);
-                //    }
-                //}
             }
             finally
             {

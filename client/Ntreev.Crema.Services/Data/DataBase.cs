@@ -209,6 +209,15 @@ namespace Ntreev.Crema.Services.Data
             this.DataBases.Revert(authentication, this, revision);
         }
 
+        public void Import(Authentication authentication, CremaDataSet dataSet, string comment)
+        {
+            this.Dispatcher?.VerifyAccess();
+            this.CremaHost.DebugMethod(authentication, this, nameof(Import), comment);
+
+            var result = this.Service.ImportDataSet(dataSet, comment);
+            this.Sign(authentication, result);
+        }
+
         public CremaDataSet GetDataSet(Authentication authentication, DataSetType dataSetType, string filterExpression, string revision)
         {
             this.ValidateGetDataSet(authentication);

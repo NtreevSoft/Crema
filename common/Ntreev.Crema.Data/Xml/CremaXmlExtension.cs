@@ -151,7 +151,7 @@ namespace Ntreev.Crema.Data.Xml
             return CremaXmlConvert.ToInt32(text);
         }
 
-        public static SignatureDate GetAttributeAsModificationInfo(this XmlReader reader, string user, string dateTime)
+        public static SignatureDate GetAttributeAsSignatureDate(this XmlReader reader, string user, string dateTime)
         {
             return new SignatureDate()
             {
@@ -160,24 +160,24 @@ namespace Ntreev.Crema.Data.Xml
             };
         }
 
-        public static bool TryGetAttributeAsModificationInfo(this XmlReader reader, string user, string dateTime, out SignatureDate value)
+        public static bool TryGetAttributeAsSignatureDate(this XmlReader reader, string user, string dateTime, out SignatureDate value)
         {
             var id = reader.GetAttribute(user);
-            var dateTimeValue = new DateTime();
-            if (id == null && reader.TryGetAttributeAsDateTime(dateTime, XmlDateTimeSerializationMode.Utc, out dateTimeValue) == false)
+            var dateTimeValue = DateTime.MinValue;
+            if (reader.TryGetAttributeAsDateTime(dateTime, XmlDateTimeSerializationMode.Utc, out dateTimeValue) == true || id != null)
             {
-                value = SignatureDate.Empty;
-                return false;
+                value = new SignatureDate()
+                {
+                    ID = id ?? string.Empty,
+                    DateTime = dateTimeValue,
+                };
+                return true;
             }
-            value = new SignatureDate()
-            {
-                ID = id ?? string.Empty,
-                DateTime = dateTimeValue,
-            };
-            return true;
+            value = SignatureDate.Empty;
+            return false;
         }
 
-        public static SignatureDate GetAttributeAsModificationInfo(this XElement element, string user, string dateTime)
+        public static SignatureDate GetAttributeAsSignatureDate(this XElement element, string user, string dateTime)
         {
             return new SignatureDate()
             {

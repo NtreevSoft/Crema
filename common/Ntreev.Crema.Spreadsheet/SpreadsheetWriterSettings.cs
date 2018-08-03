@@ -47,5 +47,7 @@ namespace Ntreev.Crema.Spreadsheet
         public IDictionary Properties => this.properties;
 
         public Func<string, string> NameEllipsis { get; set; }
+
+        public Comparison<object> Sort { get; set; }
     }
 }

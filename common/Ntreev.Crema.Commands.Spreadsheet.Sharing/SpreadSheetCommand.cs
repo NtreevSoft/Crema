@@ -38,6 +38,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Collections;
 
 namespace Ntreev.Crema.Commands.Spreadsheet
 {
@@ -60,9 +61,10 @@ namespace Ntreev.Crema.Commands.Spreadsheet
         [CommandMethod]
         [CommandMethodStaticProperty(typeof(FilterProperties))]
         [CommandMethodStaticProperty(typeof(DataSetTypeProperties))]
-        [CommandMethodProperty(nameof(DataBase), nameof(OmitAttribute), nameof(OmitSignatureDate), nameof(Revision))]
+        [CommandMethodProperty(nameof(DataBase), nameof(OmitAttribute), nameof(OmitSignatureDate), nameof(Revision), nameof(SaveEach), nameof(IsForce))]
         public void Export(string filename)
         {
+            this.ValidateExport(filename);
             var authentication = this.CommandContext.GetAuthentication(this);
             var dataBase = this.CremaHost.Dispatcher.Invoke(() => this.CremaHost.DataBases[this.DataBase]);
             var revision = dataBase.Dispatcher.Invoke(() => this.Revision ?? dataBase.DataBaseInfo.Revision);
@@ -72,12 +74,17 @@ namespace Ntreev.Crema.Commands.Spreadsheet
                 OmitAttribute = this.OmitAttribute,
                 OmitSignatureDate = this.OmitSignatureDate,
                 OmitType = DataSetTypeProperties.TableOnly,
-                OmitTable = DataSetTypeProperties.TypeOnly
+                OmitTable = DataSetTypeProperties.TypeOnly,
             };
+            if (this.SaveEach == true)
+                settings.Sort = this.Comparison;
             settings.Properties.Add(nameof(Revision), revision);
             settings.Properties.Add(nameof(FilterProperties.FilterExpression), FilterProperties.FilterExpression);
             settings.Properties.Add(nameof(DataBase), this.DataBase);
-            this.WriteDataSet(dataSet, filename, settings);
+            if (this.SaveEach == true)
+                this.WriteDataSetToDirectory(dataSet, filename, settings);
+            else
+                this.WriteDataSet(dataSet, filename, settings);
         }
 
         [CommandMethod]
@@ -100,6 +107,7 @@ namespace Ntreev.Crema.Commands.Spreadsheet
             var dataSet = dataBase.Dispatcher.Invoke(() => dataBase.GetDataSet(authentication, DataSetType.OmitContent, filterExpression, revision));
             this.ReadDataSet(dataSet, path);
             dataBase.Dispatcher.Invoke(() => dataBase.Import(authentication, dataSet, this.Message));
+            this.CommandContext.WriteLine($"importing data has been completed.");
         }
 
         public override bool IsEnabled => this.CommandContext.IsOnline;
@@ -147,6 +155,27 @@ namespace Ntreev.Crema.Commands.Spreadsheet
             }
         }
 
+        [CommandProperty]
+        public bool SaveEach
+        {
+            get; set;
+        }
+
+        [CommandProperty("force")]
+        public bool IsForce
+        {
+            get; set;
+        }
+
+        private int Comparison(object x, object y)
+        {
+            if (x is IDictionary)
+                return 1;
+            if (y is IDictionary)
+                return -1;
+            return $"{x}".CompareTo($"{y}");
+        }
+
         private static string GetName()
         {
             if (Environment.OSVersion.Platform == PlatformID.Unix)
@@ -176,66 +205,6 @@ namespace Ntreev.Crema.Commands.Spreadsheet
             }
         }
 
-        private void ImportTables(Authentication authentication, CremaDataSet dataSet, IDataBase dataBase)
-        {
-            this.CommandContext.WriteLine($"importing data");
-            dataBase.Dispatcher.Invoke(() =>
-            {
-                dataBase.Import(authentication, dataSet, this.Message);
-            });
-            this.CommandContext.WriteLine($"importing data has been completed.");
-        }
-
-        //private void ReadTypes(Authentication authentication, CremaDataSet dataSet, IDataBase dataBase, string typeNames)
-        //{
-        //    var types = dataBase.Dispatcher.Invoke(() => this.GetFilterTypes(dataBase.TypeContext.Types, typeNames));
-        //    if (types.Any() == false)
-        //        throw new CremaException("조건에 맞는 타입이 존재하지 않습니다.");
-        //    var step = new StepProgress(new ConsoleProgress(this.Out) { Style = ConsoleProgressStyle.None });
-        //    step.Begin(types.Length);
-        //    foreach (var item in types)
-        //    {
-        //        dataBase.Dispatcher.Invoke(() =>
-        //        {
-        //            var previewSet = item.GetDataSet(authentication, null);
-        //            var previewType = previewSet.Types[item.Name];
-        //            CreateTable(previewType);
-        //            step.Next("reading {0}/{1} : {2}", step.Step + 1, types.Length, item.Name);
-        //        });
-        //    }
-
-        //    step.Complete();
-
-        //    void CreateTable(CremaDataType dataType)
-        //    {
-        //        var dataTable = dataSet.Tables.Add(dataType.Name);
-
-        //        dataTable.Columns.Add(CremaSchema.Name);
-        //        dataTable.Columns.Add(CremaSchema.Value, typeof(long));
-        //        dataTable.Columns.Add(CremaSchema.Comment);
-
-        //        dataTable.BeginLoad();
-        //        foreach (var item in dataType.Members)
-        //        {
-        //            var row = dataTable.NewRow();
-
-        //            row[CremaSchema.Name] = item.Name;
-        //            row[CremaSchema.Value] = item.Value;
-        //            row[CremaSchema.Comment] = item.Comment;
-
-        //            row.IsEnabled = item.IsEnabled;
-        //            row.Tags = item.Tags;
-        //            row.SetAttribute(CremaSchema.Creator, item.CreationInfo.ID);
-        //            row.SetAttribute(CremaSchema.CreatedDateTime, item.CreationInfo.DateTime);
-        //            row.SetAttribute(CremaSchema.Modifier, item.ModificationInfo.ID);
-        //            row.SetAttribute(CremaSchema.ModifiedDateTime, item.ModificationInfo.DateTime);
-
-        //            dataTable.Rows.Add(row);
-        //        }
-        //        dataTable.EndLoad();
-        //    }
-        //}
-
         private void ReadDataSet(CremaDataSet dataSet, string filename)
         {
             using (var reader = new SpreadsheetReader(filename))
@@ -244,32 +213,59 @@ namespace Ntreev.Crema.Commands.Spreadsheet
             }
         }
 
-        //private void WriteTypes(CremaDataSet dataSet, string filename)
-        //{
-        //    var path = Path.Combine(this.CommandContext.BaseDirectory, filename);
-        //    var settings = new SpreadsheetWriterSettings()
-        //    {
-        //        OmitAttribute = this.OmitAttribute,
-        //        OmitSignatureDate = this.OmitSignatureDate,
-        //        Tags = (TagInfo)TagsProperties.Tags,
-        //    };
-        //    var progress = new ConsoleProgress(this.Out) { Style = ConsoleProgressStyle.None };
-        //    using (var writer = new SpreadsheetWriter(dataSet, settings))
-        //    {
-        //        writer.Write(path, progress);
-        //    }
-        //    this.Out.WriteLine($"export: \"{path}\"");
-        //}
-
         private void WriteDataSet(CremaDataSet dataSet, string filename, SpreadsheetWriterSettings settings)
         {
-            var path = Path.Combine(this.CommandContext.BaseDirectory, filename);
+            var path = Path.GetFullPath(Path.Combine(this.CommandContext.BaseDirectory, filename));
             using (var writer = new SpreadsheetWriter(dataSet, settings))
             {
                 writer.Progress += Writer_Progress;
                 writer.Write(path);
             }
-            this.CommandContext.WriteLine($"export: \"{path}\"");
+            this.WriteFooter(path, settings);
+        }
+
+        private void WriteDataSetToDirectory(CremaDataSet dataSet, string path, SpreadsheetWriterSettings settings)
+        {
+            var directory = Path.GetFullPath(Path.Combine(this.CommandContext.BaseDirectory, path));
+            if (settings.OmitType == false)
+            {
+                for (var i = 0; i < dataSet.Types.Count; i++)
+                {
+                    var item = dataSet.Types[i];
+                    var filename = Path.Combine(directory, $"${item.Name}.xlsx");
+                    using (var writer = new SpreadsheetWriter(item, settings))
+                    {
+                        writer.Write(filename);
+                    }
+                    this.CommandContext.WriteLine($"write type {ConsoleProgress.GetProgressString(i + 1, dataSet.Types.Count)} : {item.Name}");
+                }
+            }
+            if (settings.OmitTable == false)
+            {
+                for (var i = 0; i < dataSet.Tables.Count; i++)
+                {
+                    var item = dataSet.Tables[i];
+                    var filename = Path.Combine(directory, $"{item.Name}.xlsx");
+                    using (var writer = new SpreadsheetWriter(item, settings))
+                    {
+                        writer.Write(filename);
+                    }
+                    this.CommandContext.WriteLine($"write type {ConsoleProgress.GetProgressString(i + 1, dataSet.Tables.Count)} : {item.Name}");
+                }
+            }
+            this.WriteFooter(directory, settings);
+        }
+
+        private void WriteFooter(string path, SpreadsheetWriterSettings settings)
+        {
+            var props = new Dictionary<string, object>();
+            foreach (var item in settings.Properties.Keys)
+            {
+                props.Add($"{item}", settings.Properties[item]);
+            }
+            props.Add("Path", path);
+            this.CommandContext.WriteLine();
+            this.CommandContext.WriteObject(props, TextSerializerType.Yaml);
         }
 
         private void Writer_Progress(object sender, ProgressEventArgs e)
@@ -282,6 +278,18 @@ namespace Ntreev.Crema.Commands.Spreadsheet
             {
                 this.CommandContext.WriteLine($"write table {ConsoleProgress.GetProgressString(e.Index + 1, e.Count)} : {dataTable.Name}");
             }
+            else if (e.Target is IDictionary)
+            {
+                this.CommandContext.WriteLine($"write header {ConsoleProgress.GetProgressString(e.Index + 1, e.Count)}");
+            }
+        }
+
+        private void ValidateExport(string filename)
+        {
+            if (this.SaveEach == false && File.Exists(filename) == true && this.IsForce == false)
+                throw new InvalidOperationException("해당 파일이 이미 존재합니다.");
+            if (this.SaveEach == true && Directory.Exists(filename) == true && this.IsForce == false)
+                throw new InvalidOperationException("해당 폴더가 이미 존재합니다.");
         }
 
         private ICremaHost CremaHost => this.cremaHost.Value;

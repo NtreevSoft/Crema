@@ -15,31 +15,21 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using ClosedXML.Excel;
+using Ntreev.Crema.Data;
+using Ntreev.Crema.Data.Xml.Schema;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DocumentFormat.OpenXml.Packaging;
-using Ap = DocumentFormat.OpenXml.ExtendedProperties;
-using Vt = DocumentFormat.OpenXml.VariantTypes;
-using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Spreadsheet;
-using X14 = DocumentFormat.OpenXml.Office2010.Excel;
-using A = DocumentFormat.OpenXml.Drawing;
-using Ntreev.Crema.Data;
-using System.Diagnostics;
-using System.Threading;
-using Ntreev.Library;
-using Ntreev.Crema.Data.Xml.Schema;
-using ClosedXML.Excel;
 
 namespace Ntreev.Crema.Spreadsheet
 {
     public class SpreadsheetWriter : IDisposable
     {
-        private readonly CremaDataSet dataSet;
+        private readonly CremaDataType[] dataTypes;
+        private readonly CremaDataTable[] dataTables;
         private readonly SpreadsheetWriterSettings settings;
 
         public SpreadsheetWriter(CremaDataSet dataSet)
@@ -50,7 +40,60 @@ namespace Ntreev.Crema.Spreadsheet
 
         public SpreadsheetWriter(CremaDataSet dataSet, SpreadsheetWriterSettings settings)
         {
-            this.dataSet = dataSet;
+            this.dataTypes = dataSet.Types.ToArray();
+            this.dataTables = dataSet.Tables.ToArray();
+            this.settings = settings;
+        }
+
+        public SpreadsheetWriter(CremaDataType dataType)
+            : this(dataType, SpreadsheetWriterSettings.Default)
+        {
+
+        }
+
+        public SpreadsheetWriter(CremaDataType dataType, SpreadsheetWriterSettings settings)
+        {
+            this.dataTypes = new CremaDataType[] { dataType };
+            this.dataTables = new CremaDataTable[] { };
+            this.settings = settings;
+        }
+
+        public SpreadsheetWriter(CremaDataType[] dataTypes)
+            : this(dataTypes, SpreadsheetWriterSettings.Default)
+        {
+
+        }
+
+        public SpreadsheetWriter(CremaDataType[] dataTypes, SpreadsheetWriterSettings settings)
+        {
+            this.dataTypes = dataTypes;
+            this.dataTables = new CremaDataTable[] { };
+            this.settings = settings;
+        }
+
+        public SpreadsheetWriter(CremaDataTable dataTable)
+            : this(dataTable, SpreadsheetWriterSettings.Default)
+        {
+
+        }
+
+        public SpreadsheetWriter(CremaDataTable dataTable, SpreadsheetWriterSettings settings)
+        {
+            this.dataTypes = new CremaDataType[] { };
+            this.dataTables = new CremaDataTable[] { dataTable };
+            this.settings = settings;
+        }
+
+        public SpreadsheetWriter(CremaDataTable[] dataTables)
+            : this(dataTables, SpreadsheetWriterSettings.Default)
+        {
+
+        }
+
+        public SpreadsheetWriter(CremaDataTable[] dataTables, SpreadsheetWriterSettings settings)
+        {
+            this.dataTypes = new CremaDataType[] { };
+            this.dataTables = dataTables;
             this.settings = settings;
         }
 
@@ -83,54 +126,68 @@ namespace Ntreev.Crema.Spreadsheet
 
         private void WriteSheets(XLWorkbook workbook)
         {
+            var list = new List<object>();
             if (this.settings.Properties.Count > 0)
             {
-                this.WriteInformation(workbook);
+                list.Add(this.settings.Properties);
             }
             if (this.settings.OmitType == false)
             {
-                this.WriteTypes(workbook);
+                list.AddRange(this.dataTypes);
             }
             if (this.settings.OmitTable == false)
             {
-                this.WriteTables(workbook);
+                list.AddRange(this.dataTables);
+            }
+
+            if (this.settings.Sort != null)
+                list.Sort(this.settings.Sort);
+
+            for (var i = 0; i < list.Count; i++)
+            {
+                var item = list[i];
+                if (item is IDictionary)
+                {
+                    this.WriteInformation(workbook);
+                }
+                else if (item is CremaDataType dataType)
+                {
+                    this.WriteType(workbook, dataType);
+                }
+                else if (item is CremaDataTable dataTable)
+                {
+                    this.WriteTable(workbook, dataTable);
+                }
+                this.OnProgress(new ProgressEventArgs(item, i, list.Count));
             }
         }
 
-        private void WriteTypes(XLWorkbook workbook)
+        private void WriteType(XLWorkbook workbook, CremaDataType item)
         {
-            for (var i = 0; i < this.dataSet.Types.Count; i++)
-            {
-                var item = this.dataSet.Types[i];
-                var worksheet = workbook.AddWorksheet(this.settings.NameEllipsis($"${item.Name}"));
 
-                if (item.Tags.Color != null)
-                    worksheet.SetTabColor(XLColor.FromHtml(item.Tags.Color));
+            var worksheet = workbook.AddWorksheet(this.settings.NameEllipsis($"${item.Name}"));
 
-                this.WriteMembers(item, worksheet);
-                this.AdjustMembers(item, worksheet);
+            if (item.Tags.Color != null)
+                worksheet.SetTabColor(XLColor.FromHtml(item.Tags.Color));
 
-                this.OnProgress(new ProgressEventArgs(item, i, this.dataSet.Types.Count));
-            }
+            this.WriteMembers(item, worksheet);
+            this.AdjustMembers(item, worksheet);
+
+            worksheet.SheetView.Freeze(1, 1);
         }
 
-        private void WriteTables(XLWorkbook workbook)
+        private void WriteTable(XLWorkbook workbook, CremaDataTable dataTable)
         {
-            for (var i = 0; i < this.dataSet.Tables.Count; i++)
-            {
-                var item = this.dataSet.Tables[i];
-                var worksheet = workbook.AddWorksheet(this.settings.NameEllipsis(item.Name));
+            var worksheet = workbook.AddWorksheet(this.settings.NameEllipsis(dataTable.Name));
 
-                if (item.Tags.Color != null)
-                    worksheet.SetTabColor(XLColor.FromHtml(item.Tags.Color));
+            if (dataTable.Tags.Color != null)
+                worksheet.SetTabColor(XLColor.FromHtml(dataTable.Tags.Color));
 
-                this.WriteColumns(item, worksheet);
-                this.WriteRows(item, worksheet);
-                this.AdjustColumns(item, worksheet);
+            this.WriteColumns(dataTable, worksheet);
+            this.WriteRows(dataTable, worksheet);
+            this.AdjustColumns(dataTable, worksheet);
 
-                worksheet.SheetView.Freeze(1, item.PrimaryKey.Length);
-                this.OnProgress(new ProgressEventArgs(item, i, this.dataSet.Tables.Count));
-            }
+            worksheet.SheetView.Freeze(1, dataTable.PrimaryKey.Length);
         }
 
         private void WriteInformation(XLWorkbook workbook)

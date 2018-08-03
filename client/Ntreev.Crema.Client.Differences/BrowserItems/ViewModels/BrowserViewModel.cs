@@ -220,7 +220,7 @@ namespace Ntreev.Crema.Client.Differences.BrowserItems.ViewModels
                 dialog.DisplayName = viewModel.DisplayName;
                 dialog.ShowDialog(() =>
                 {
-                    this.cremaHost.Dispatcher.Invoke(() => dataBase.TableContext.Import(this.authenticator, dataTable.DataSet, comment));
+                    this.cremaHost.Dispatcher.Invoke(() => dataBase.Import(this.authenticator, dataTable.DataSet, comment));
                 });
             }
             catch (Exception e)

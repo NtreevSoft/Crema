@@ -58,7 +58,9 @@ namespace Ntreev.Crema.ServiceHosts.Data
         [OperationContract]
         ResultBase<CremaDataSet> GetTableItemDataSet(string itemPath, string revision);
 
-        
+        [OperationContract]
+        ResultBase RenameTableItem(string itemPath, string newName);
+
         [OperationContract]
         ResultBase MoveTableItem(string itemPath, string parentPath);
 

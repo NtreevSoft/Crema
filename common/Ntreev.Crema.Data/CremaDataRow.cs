@@ -296,13 +296,13 @@ namespace Ntreev.Crema.Data
         public SignatureDate CreationInfo
         {
             get => this.InternalObject.CreationInfo;
-            internal set => this.InternalObject.CreationInfo = value;
+            set => this.InternalObject.CreationInfo = value;
         }
 
         public SignatureDate ModificationInfo
         {
             get => this.InternalObject.ModificationInfo;
-            internal set => this.InternalObject.ModificationInfo = value;
+            set => this.InternalObject.ModificationInfo = value;
         }
 
         public string RelationID

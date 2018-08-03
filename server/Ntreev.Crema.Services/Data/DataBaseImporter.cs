@@ -1,6 +1,8 @@
 ﻿using Ntreev.Crema.Data;
+using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services.Properties;
+using Ntreev.Library;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +20,7 @@ namespace Ntreev.Crema.Services.Data
                 this.Dispatcher?.VerifyAccess();
                 this.CremaHost.DebugMethod(authentication, this, nameof(Import), comment);
                 this.ValidateImport(authentication, dataSet, comment);
-
+                this.Sign(authentication);
                 var filterExpression = string.Join(";", dataSet.Tables);
                 var targetSet = this.GetDataSet(authentication, null, filterExpression, ReadTypes.OmitContent);
                 this.LockTypes(authentication, targetSet, comment);
@@ -26,7 +28,7 @@ namespace Ntreev.Crema.Services.Data
 
                 try
                 {
-                    targetSet.SignatureDateProvider = new Library.SignatureDateProvider(authentication.ID);
+                    targetSet.SignatureDateProvider = new SignatureDateProvider(authentication.ID);
                     foreach (var item in targetSet.Tables)
                     {
                         var dataTable = dataSet.Tables[item.Name];
@@ -34,7 +36,14 @@ namespace Ntreev.Crema.Services.Data
                         {
                             item.ImportRow(row);
                         }
-                        item.ContentsInfo = dataTable.ContentsInfo;
+                        item.BeginLoad();
+                        foreach (var row in item.Rows)
+                        {
+                            row.CreationInfo = authentication.SignatureDate;
+                            row.ModificationInfo = authentication.SignatureDate;
+                        }
+                        item.ContentsInfo = authentication.SignatureDate;
+                        item.EndLoad();
                     }
                     try
                     {
@@ -102,6 +111,7 @@ namespace Ntreev.Crema.Services.Data
 
         private void LockTypes(Authentication authentication, CremaDataSet dataSet, string comment)
         {
+            Authentication.System.Sign(authentication.SignatureDate.DateTime);
             var query = from item in dataSet.Types
                         let type = this.TypeContext.Types[item.Name]
                         where type.LockInfo.Path != type.Path
@@ -119,6 +129,7 @@ namespace Ntreev.Crema.Services.Data
 
         private void LockTables(Authentication authentication, CremaDataSet dataSet, string comment)
         {
+            Authentication.System.Sign(authentication.SignatureDate.DateTime);
             var query = from item in dataSet.Tables
                         let table = this.TableContext.Tables[item.Name]
                         where table.LockInfo.Path != table.Path
@@ -131,11 +142,12 @@ namespace Ntreev.Crema.Services.Data
                 item.LockInternal(Authentication.System, comment);
                 dataSet.Tables[item.Name].ExtendedProperties[this] = true;
             }
-            this.TableContext.InvokeItemsLockedEvent(authentication, items, comments);
+            this.TableContext.InvokeItemsLockedEvent(Authentication.System, items, comments);
         }
 
         private void UnlockTypes(Authentication authentication, CremaDataSet dataSet)
         {
+            Authentication.System.Sign(authentication.SignatureDate.DateTime);
             var query = from item in dataSet.Types
                         where item.ExtendedProperties.Contains(this)
                         select this.TypeContext.Types[item.Name];
@@ -145,11 +157,12 @@ namespace Ntreev.Crema.Services.Data
             {
                 item.UnlockInternal(Authentication.System);
             }
-            this.TypeContext.InvokeItemsUnlockedEvent(authentication, items);
+            this.TypeContext.InvokeItemsUnlockedEvent(Authentication.System, items);
         }
 
         private void UnlockTables(Authentication authentication, CremaDataSet dataSet)
         {
+            Authentication.System.Sign(authentication.SignatureDate.DateTime);
             var query = from item in dataSet.Tables
                         where item.ExtendedProperties.Contains(this)
                         select this.TableContext.Tables[item.Name];
@@ -159,7 +172,7 @@ namespace Ntreev.Crema.Services.Data
             {
                 item.UnlockInternal(Authentication.System);
             }
-            this.TableContext.InvokeItemsUnlockedEvent(authentication, items);
+            this.TableContext.InvokeItemsUnlockedEvent(Authentication.System, items);
         }
 
         private void UpdateTables(Authentication authentication, CremaDataSet dataSet)
@@ -173,6 +186,5 @@ namespace Ntreev.Crema.Services.Data
             }
             this.TableContext.InvokeItemsChangedEvent(authentication, tableList.ToArray(), dataSet);
         }
-
     }
 }

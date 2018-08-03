@@ -837,8 +837,8 @@ namespace Ntreev.Crema.Data
             this.InternalComment = reader.GetAttribute(CremaSchema.Comment);
             this.InternalIsFlag = reader.GetAttributeAsBoolean("IsFlag");
             this.InternalTags = reader.GetAttributeAsTagInfo(CremaSchema.Tags);
-            this.InternalCreationInfo = reader.GetAttributeAsModificationInfo(CremaSchema.Creator, CremaSchema.CreatedDateTime);
-            this.InternalModificationInfo = reader.GetAttributeAsModificationInfo(CremaSchema.Modifier, CremaSchema.ModifiedDateTime);
+            this.InternalCreationInfo = reader.GetAttributeAsSignatureDate(CremaSchema.Creator, CremaSchema.CreatedDateTime);
+            this.InternalModificationInfo = reader.GetAttributeAsSignatureDate(CremaSchema.Modifier, CremaSchema.ModifiedDateTime);
 
             reader.ReadStartElement();
             reader.MoveToContent();
@@ -851,8 +851,8 @@ namespace Ntreev.Crema.Data
                 while (reader.NodeType == XmlNodeType.Element)
                 {
                     var member = this.NewMember();
-                    var creationInfo = reader.GetAttributeAsModificationInfo(CremaSchema.Creator, CremaSchema.CreatedDateTime);
-                    var modificationInfo = reader.GetAttributeAsModificationInfo(CremaSchema.Modifier, CremaSchema.ModifiedDateTime);
+                    var creationInfo = reader.GetAttributeAsSignatureDate(CremaSchema.Creator, CremaSchema.CreatedDateTime);
+                    var modificationInfo = reader.GetAttributeAsSignatureDate(CremaSchema.Modifier, CremaSchema.ModifiedDateTime);
                     var memberID = reader.GetAttributeAsGuid(CremaSchema.ID);
 
                     reader.ReadStartElement("Member");

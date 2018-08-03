@@ -55,15 +55,6 @@ namespace Ntreev.Crema.Services.Data
             this.Initialize(metaData);
         }
 
-        public void Import(Authentication authentication, CremaDataSet dataSet, string comment)
-        {
-            this.Dispatcher?.VerifyAccess();
-            this.CremaHost.DebugMethod(authentication, this, nameof(Import), comment);
-
-            var result = this.Service.ImportTables(dataSet, comment);
-            result.Validate(authentication);
-        }
-
         public void Dispose()
         {
             this.dataBase = null;

@@ -244,7 +244,7 @@ namespace Ntreev.Crema.Data.Xml
                     var count = item.Name + CremaSchema.CountExtension;
                     var id = item.Name + CremaSchema.IDExtension;
                     item.MinimumCapacity = reader.GetAttributeAsInt32(count);
-                    item.InternalContentsInfo = reader.GetAttributeAsModificationInfo(user, dateTime);
+                    item.InternalContentsInfo = reader.GetAttributeAsSignatureDate(user, dateTime);
                     item.InternalTableID = reader.GetAttributeAsGuid(id);
                 }
             }
@@ -264,7 +264,7 @@ namespace Ntreev.Crema.Data.Xml
                     {
                         item.MinimumCapacity = countValue;
                     }
-                    if (reader.TryGetAttributeAsModificationInfo(user, dateTime, out var dateTimeValue) == true)
+                    if (reader.TryGetAttributeAsSignatureDate(user, dateTime, out var dateTimeValue) == true)
                     {
                         item.InternalContentsInfo = dateTimeValue;
                     }
@@ -280,47 +280,36 @@ namespace Ntreev.Crema.Data.Xml
                 var dataTable = this.dataTable ?? this.dataSet.Tables[this.itemName.Name, this.itemName.CategoryPath];
                 if (reader.NamespaceURI != tableNamespace)
                 {
-                    {
-                        var name = dataTable.TemplatedParentName;
-                        var user = name + CremaSchema.CreatorExtension;
-                        var dateTime = name + CremaSchema.CreatedDateTimeExtension;
-                        if (reader.TryGetAttributeAsModificationInfo(user, dateTime, out var dateTimeValue) == true)
-                        {
-                            dataTable.InternalCreationInfo = dateTimeValue;
-                        }
-                    }
 
+                    var name = dataTable.TemplatedParentName;
+                    var user = name + CremaSchema.CreatorExtension;
+                    var dateTime = name + CremaSchema.CreatedDateTimeExtension;
+                    if (reader.TryGetAttributeAsSignatureDate(user, dateTime, out var dateTimeValue) == true)
                     {
-                        var user = dataTable.Name + CremaSchema.ModifierExtension;
-                        var dateTime = dataTable.Name + CremaSchema.ModifiedDateTimeExtension;
-                        var count = dataTable.Name + CremaSchema.CountExtension;
-                        var id = dataTable.Name + CremaSchema.IDExtension;
-                        if (reader.TryGetAttributeAsInt32(count, out var countValue) == true)
-                        {
-                            dataTable.MinimumCapacity = countValue;
-                        }
-                        if (reader.TryGetAttributeAsModificationInfo(user, dateTime, out var dateTimeValue) == true)
-                        {
-                            dataTable.InternalContentsInfo = dateTimeValue;
-                        }
-                        if (reader.TryGetAttributeAsGuid(id, out var idValue))
-                        {
-                            dataTable.InternalTableID = idValue;
-                        }
+                        dataTable.InternalCreationInfo = dateTimeValue;
                     }
                 }
-                //var items = this.version < new Version(4, 0) ? EnumerableUtility.Friends(dataTable, dataTable.Childs) : Enumerable.Repeat(dataTable, 1);
-                //foreach (var item in items)
-                //{
-                //    var serializableName = item.GetXmlPath(reader.NamespaceURI);
-                //    var user = serializableName + CremaSchema.ModifierExtension;
-                //    var dateTime = serializableName + CremaSchema.ModifiedDateTimeExtension;
-                //    var count = serializableName + CremaSchema.CountExtension;
-                //    var id = serializableName + CremaSchema.IDExtension;
-                //    item.MinimumCapacity = reader.GetAttributeAsInt32(count);
-                //    item.InternalContentsInfo = reader.GetAttributeAsModificationInfo(user, dateTime);
-                //    item.InternalTableID = reader.GetAttributeAsGuid(id);
-                //}
+                var items = this.version < new Version(4, 0) ? EnumerableUtility.FamilyTree(dataTable, item => item.Childs) : Enumerable.Repeat(dataTable, 1);
+                foreach (var item in items)
+                {
+                    var serializableName = item.GetXmlPath(reader.NamespaceURI);
+                    var user = serializableName + CremaSchema.ModifierExtension;
+                    var dateTime = serializableName + CremaSchema.ModifiedDateTimeExtension;
+                    var count = serializableName + CremaSchema.CountExtension;
+                    var id = serializableName + CremaSchema.IDExtension;
+                    if (reader.TryGetAttributeAsInt32(count, out var countValue) == true)
+                    {
+                        item.MinimumCapacity = countValue;
+                    }
+                    if (reader.TryGetAttributeAsSignatureDate(user, dateTime, out var dateTimeValue) == true)
+                    {
+                        item.InternalContentsInfo = dateTimeValue;
+                    }
+                    if (reader.TryGetAttributeAsGuid(id, out var idValue))
+                    {
+                        item.InternalTableID = idValue;
+                    }
+                }
             }
         }
 
@@ -330,14 +319,14 @@ namespace Ntreev.Crema.Data.Xml
             if (this.itemName != null)
             {
                 var dataTable = this.dataSet.Tables[this.itemName.Name, this.itemName.CategoryPath];
-                dataTable.InternalContentsInfo = reader.GetAttributeAsModificationInfo(CremaSchema.Modifier, CremaSchema.ModifiedDateTime);
+                dataTable.InternalContentsInfo = reader.GetAttributeAsSignatureDate(CremaSchema.Modifier, CremaSchema.ModifiedDateTime);
             }
             else
             {
                 var categoryPath = this.dataSet.GetTableCategoryPath(reader.NamespaceURI);
                 var tableName = this.dataSet.GetTableName(reader.NamespaceURI);
                 var dataTable = this.dataSet.Tables[tableName, categoryPath];
-                dataTable.InternalContentsInfo = reader.GetAttributeAsModificationInfo(CremaSchema.Modifier, CremaSchema.ModifiedDateTime);
+                dataTable.InternalContentsInfo = reader.GetAttributeAsSignatureDate(CremaSchema.Modifier, CremaSchema.ModifiedDateTime);
             }
         }
 
