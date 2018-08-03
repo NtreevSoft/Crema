@@ -92,7 +92,7 @@ namespace Ntreev.Crema.Commands.Spreadsheet
         [CommandMethodStaticProperty(typeof(FilterProperties))]
         public void Import(string filename)
         {
-            var path = Path.Combine(this.CommandContext.BaseDirectory, filename);
+            var path = Path.GetFullPath(Path.Combine(this.CommandContext.BaseDirectory, filename));
             var sheetNames = SpreadsheetReader.ReadTableNames(path);
             var authentication = this.CommandContext.GetAuthentication(this);
             var dataBase = this.CremaHost.Dispatcher.Invoke(() => this.CremaHost.DataBases[this.DataBase]);
