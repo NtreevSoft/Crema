@@ -210,12 +210,12 @@ namespace Ntreev.Crema.Services.Data
             return newDataBase;
         }
 
-        public LogInfo[] GetLog(Authentication authentication, DataBase dataBase)
+        public LogInfo[] GetLog(Authentication authentication, DataBase dataBase, string revision)
         {
             this.Dispatcher.VerifyAccess();
             this.CremaHost.DebugMethod(authentication, this, nameof(GetLog), dataBase);
 
-            var result = this.service.GetLog(dataBase.Name);
+            var result = this.service.GetLog(dataBase.Name, revision);
             result.Validate(authentication);
             return result.Value ?? new LogInfo[] { };
         }

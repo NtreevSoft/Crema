@@ -197,10 +197,10 @@ namespace Ntreev.Crema.Services.Data
             return this.authentications.Contains(authentication);
         }
 
-        public LogInfo[] GetLog(Authentication authentication)
+        public LogInfo[] GetLog(Authentication authentication, string revision)
         {
             this.ValidateDispatcher();
-            return this.DataBases.GetLog(authentication, this);
+            return this.DataBases.GetLog(authentication, this, revision);
         }
 
         public void Revert(Authentication authentication, string revision)

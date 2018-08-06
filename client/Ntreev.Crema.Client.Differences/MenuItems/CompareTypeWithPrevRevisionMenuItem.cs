@@ -60,7 +60,7 @@ namespace Ntreev.Crema.Client.Differences.MenuItems
         {
             return type.Dispatcher.InvokeAsync(() =>
             {
-                var logs = type.GetLog(this.authenticator);
+                var logs = type.GetLog(this.authenticator, null);
                 var hasRevision = logs.Length >= 2;
                 var dataSet1 = hasRevision ? type.GetDataSet(this.authenticator, logs[1].Revision) : new CremaDataSet();
                 var dataSet2 = type.GetDataSet(this.authenticator, null);

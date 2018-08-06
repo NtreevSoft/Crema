@@ -127,7 +127,7 @@ namespace Ntreev.Crema.Client.Base.Dialogs.ViewModels
                 this.BeginProgress(Resources.Message_ReceivingInfo);
                 this.itemsSource = await this.dataBase.Dispatcher.InvokeAsync(() =>
                 {
-                    var logs = this.dataBase.GetLog(this.authentication);
+                    var logs = this.dataBase.GetLog(this.authentication, null);
                     var logList = new List<LogInfoViewModel>(logs.Length);
                     foreach (var item in logs)
                     {

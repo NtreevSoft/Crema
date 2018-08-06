@@ -32,11 +32,11 @@ namespace Ntreev.Crema.Client.Framework
 {
     public static class TableItemDescriptorUtility
     {
-        public static async Task<LogInfo[]> GetLogAsync(Authentication authentication, ITableItemDescriptor descriptor)
+        public static async Task<LogInfo[]> GetLogAsync(Authentication authentication, ITableItemDescriptor descriptor, string revision)
         {
             if (descriptor.Target is ITableItem tableItem)
             {
-                return await tableItem.Dispatcher.InvokeAsync(() => tableItem.GetLog(authentication));
+                return await tableItem.Dispatcher.InvokeAsync(() => tableItem.GetLog(authentication, revision));
             }
             else
             {

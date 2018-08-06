@@ -309,13 +309,13 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public LogInfo[] GetLog(Authentication authentication)
+        public LogInfo[] GetLog(Authentication authentication, string revision)
         {
             try
             {
                 this.DataBase.ValidateAsyncBeginInDataBase(authentication);
                 this.CremaHost.DebugMethod(authentication, this, nameof(GetLog), this);
-                var result = this.Service.GetTableItemLog(base.Path);
+                var result = this.Service.GetTableItemLog(base.Path, revision);
                 this.Sign(authentication, result);
                 return result.Value ?? new LogInfo[] { };
             }
