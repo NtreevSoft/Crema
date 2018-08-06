@@ -39,7 +39,7 @@ namespace Ntreev.Crema.Services
 
         bool Contains(Authentication authentication);
 
-        LogInfo[] GetLog(Authentication authentication);
+        LogInfo[] GetLog(Authentication authentication, string revision);
 
         void Revert(Authentication authentication, string revision);
 

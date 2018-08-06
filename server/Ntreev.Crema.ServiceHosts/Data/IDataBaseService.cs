@@ -89,7 +89,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
         ResultBase UnlockTableItem(string itemPath);
 
         [OperationContract]
-        ResultBase<LogInfo[]> GetTableItemLog(string itemPath);
+        ResultBase<LogInfo[]> GetTableItemLog(string itemPath, string revision);
 
         [OperationContract]
         ResultBase<FindResultInfo[]> FindTableItem(string itemPath, string text, FindOptions options);
@@ -179,7 +179,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
         ResultBase UnlockTypeItem(string itemPath);
 
         [OperationContract]
-        ResultBase<LogInfo[]> GetTypeItemLog(string itemPath);
+        ResultBase<LogInfo[]> GetTypeItemLog(string itemPath, string revision);
 
         [OperationContract]
         ResultBase<FindResultInfo[]> FindTypeItem(string itemPath, string text, FindOptions options);

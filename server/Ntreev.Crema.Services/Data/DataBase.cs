@@ -379,12 +379,12 @@ namespace Ntreev.Crema.Services.Data
             return this.authentications.Contains(authentication);
         }
 
-        public LogInfo[] GetLog(Authentication authentication)
+        public LogInfo[] GetLog(Authentication authentication, string revision)
         {
             try
             {
                 var remotePath = this.CremaHost.GetPath(CremaPath.RepositoryDataBases);
-                var logs = this.repositoryProvider.GetLog(remotePath, this.Name);
+                var logs = this.repositoryProvider.GetLog(remotePath, this.Name, revision);
                 return logs.ToArray();
             }
             catch (Exception e)

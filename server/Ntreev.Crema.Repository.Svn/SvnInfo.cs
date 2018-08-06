@@ -62,15 +62,15 @@ namespace Ntreev.Crema.Repository.Svn
                 (SvnPath)path,
                 SvnCommandItem.Xml,
             };
-            var pathUri = new Uri(path);
-            if (Directory.Exists(pathUri.LocalPath) == true)
-            {
-                var updateCommand = new SvnCommand("update")
-                {
-                    (SvnPath)pathUri.LocalPath,
-                };
-                updateCommand.Run();
-            }
+            //var pathUri = new Uri(path);
+            //if (Directory.Exists(pathUri.LocalPath) == true)
+            //{
+            //    var updateCommand = new SvnCommand("update")
+            //    {
+            //        (SvnPath)pathUri.LocalPath,
+            //    };
+            //    updateCommand.Run();
+            //}
             return Parse(infoCommand.Run());
         }
 

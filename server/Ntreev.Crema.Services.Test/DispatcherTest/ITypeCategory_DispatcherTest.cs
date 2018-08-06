@@ -106,7 +106,7 @@ namespace Ntreev.Crema.Services.Test.DispatcherTest
         [TestMethod]
         public void GetLog()
         {
-            category.GetLog(authentication);
+            category.GetLog(authentication, null);
         }
 
         [TestMethod]

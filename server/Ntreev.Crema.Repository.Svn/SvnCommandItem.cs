@@ -58,6 +58,11 @@ namespace Ntreev.Crema.Repository.Svn
             return new SvnCommandItem('r', revision);
         }
 
+        public static SvnCommandItem FromMaxCount(int maxCount)
+        {
+            return new SvnCommandItem('l', maxCount);
+        }
+
         public readonly static SvnCommandItem Force = new SvnCommandItem("force");
 
         public readonly static SvnCommandItem Recursive = new SvnCommandItem("recursive");
@@ -67,5 +72,7 @@ namespace Ntreev.Crema.Repository.Svn
         public readonly static SvnCommandItem Xml = new SvnCommandItem("xml");
 
         public readonly static SvnCommandItem Verbose = new SvnCommandItem("verbose");
+
+        public readonly static SvnCommandItem WithAllRevprops = new SvnCommandItem("with-all-revprops");
     }
 }

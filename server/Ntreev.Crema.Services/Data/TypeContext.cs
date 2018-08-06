@@ -264,15 +264,15 @@ namespace Ntreev.Crema.Services.Data
             this.OnItemsChanged(new ItemsEventArgs<ITypeItem>(authentication, items, metaData));
         }
 
-        public LogInfo[] GetTypeLog(string itemPath)
+        public LogInfo[] GetTypeLog(string itemPath, string revision)
         {
             var files = this.GetFiles(itemPath);
-            return this.Repository.GetLog(files, null);
+            return this.Repository.GetLog(files, revision);
         }
 
-        public LogInfo[] GetCategoryLog(string localPath)
+        public LogInfo[] GetCategoryLog(string localPath, string revision)
         {
-            return this.Repository.GetLog(new string[] { localPath }, null);
+            return this.Repository.GetLog(new string[] { localPath }, revision);
         }
 
         public string GenerateCategoryPath(string parentPath, string name)

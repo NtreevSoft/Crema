@@ -83,7 +83,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
         ResultBase Delete(string dataBaseName);
 
         [OperationContract]
-        ResultBase<LogInfo[]> GetLog(string dataBaseName);
+        ResultBase<LogInfo[]> GetLog(string dataBaseName, string revision);
 
         [OperationContract]
         ResultBase<DataBaseInfo> Revert(string dataBaseName, string revision);

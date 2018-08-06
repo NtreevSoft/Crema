@@ -35,7 +35,7 @@ namespace Ntreev.Crema.Services
 
         void Delete(Authentication authentication);
 
-        LogInfo[] GetLog(Authentication authentication);
+        LogInfo[] GetLog(Authentication authentication, string revision);
 
         FindResultInfo[] Find(Authentication authentication, string text, FindOptions options);
 

@@ -133,7 +133,7 @@ namespace Ntreev.Crema.Repository.Git
                 var commitCommand = new GitCommitCommand(this.repositoryPath, this.transactionAuthor, transactionMessage);
                 var result = commitCommand.Run(this.logService);
                 this.logService?.Debug(result);
-                var log = GitLogInfo.Run(this.repositoryPath, 1).First();
+                var log = GitLogInfo.GetLatestLog(this.repositoryPath);
                 this.repositoryInfo.Revision = log.CommitID;
                 this.repositoryInfo.ModificationInfo = new SignatureDate(this.transactionAuthor, log.CommitDate);
                 this.SetNotes(this.transactionPropertyList.ToArray());
@@ -197,7 +197,7 @@ namespace Ntreev.Crema.Repository.Git
                     var commitCommand = new GitCommitCommand(this.repositoryPath, author, comment);
                     var result = commitCommand.Run(this.logService);
                     this.logService?.Debug(result);
-                    var log = GitLogInfo.Run(this.repositoryPath, 1).First();
+                    var log = GitLogInfo.GetLatestLog(this.repositoryPath);
                     this.repositoryInfo.Revision = log.CommitID;
                     this.repositoryInfo.ModificationInfo = new SignatureDate(author, log.CommitDate);
 
@@ -289,7 +289,7 @@ namespace Ntreev.Crema.Repository.Git
 
         public LogInfo[] GetLog(string[] paths, string revision)
         {
-            var logs = GitLogInfo.RunWithPaths(this.repositoryPath, revision, paths);
+            var logs = GitLogInfo.GetLogs(this.repositoryPath, revision, paths);
             return logs.Select(item => (LogInfo)item).ToArray();
         }
 

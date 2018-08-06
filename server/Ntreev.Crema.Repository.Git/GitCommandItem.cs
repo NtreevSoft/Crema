@@ -68,5 +68,7 @@ namespace Ntreev.Crema.Repository.Git
         public static readonly GitCommandItem Global = new GitCommandItem("global");
 
         public static readonly GitCommandItem ShowNotes = new GitCommandItem("show-notes");
+
+        public static readonly GitCommandItem NoPatch = new GitCommandItem("no-patch");
     }
 }

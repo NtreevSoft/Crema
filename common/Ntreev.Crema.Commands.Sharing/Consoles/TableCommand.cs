@@ -135,11 +135,11 @@ namespace Ntreev.Crema.Commands.Consoles
 
         [CommandMethod]
         [CommandMethodStaticProperty(typeof(FormatProperties))]
-        public void Log([CommandCompletion(nameof(GetPaths))]string tableItemName)
+        public void Log([CommandCompletion(nameof(GetPaths))]string tableItemName, string revision = null)
         {
             var tableItem = this.GetTableItem(tableItemName);
             var authentication = this.CommandContext.GetAuthentication(this);
-            var logs = tableItem.Dispatcher.Invoke(() => tableItem.GetLog(authentication));
+            var logs = tableItem.Dispatcher.Invoke(() => tableItem.GetLog(authentication, revision));
 
             foreach (var item in logs)
             {

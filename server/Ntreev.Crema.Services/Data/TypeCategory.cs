@@ -296,7 +296,7 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public LogInfo[] GetLog(Authentication authentication)
+        public LogInfo[] GetLog(Authentication authentication, string revision)
         {
             try
             {
@@ -304,7 +304,7 @@ namespace Ntreev.Crema.Services.Data
                 this.CremaHost.DebugMethod(authentication, this, nameof(GetLog), this);
                 this.ValidateAccessType(authentication, AccessType.Guest);
                 this.Sign(authentication);
-                return this.Context.GetCategoryLog(this.ItemPath);
+                return this.Context.GetCategoryLog(this.ItemPath, revision);
             }
             catch (Exception e)
             {

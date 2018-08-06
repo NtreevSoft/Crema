@@ -221,11 +221,11 @@ namespace Ntreev.Crema.Repository.Git
             }
         }
 
-        public LogInfo[] GetLog(string basePath, string repositoryName)
+        public LogInfo[] GetLog(string basePath, string repositoryName, string revision)
         {
             var baseUri = new Uri(basePath);
             var repositoryPath = baseUri.LocalPath;
-            var logs = GitLogInfo.GetBranchLogs(repositoryPath, repositoryName);
+            var logs = GitLogInfo.GetRepositoryLogs(repositoryPath, repositoryName, revision);
             return logs.Select(item => (LogInfo)item).ToArray();
         }
 
@@ -257,7 +257,8 @@ namespace Ntreev.Crema.Repository.Git
             var baseUri = new Uri(basePath);
             var repositoryInfo = new RepositoryInfo();
             var repositoryPath = baseUri.LocalPath;
-            var latestLog = GitLogInfo.GetBranchLog(repositoryPath, $"{repositoryName}");
+            var revisions = GitLogInfo.GetRepositoryRevisions(repositoryPath, repositoryName);
+            var latestLog = GitLogInfo.GetRepositoryLatestLog(repositoryPath, revisions.Last());
             var refLogItems = GitLogInfo.GetReflogs(basePath, repositoryName);
 
             var firstLog = refLogItems.Last();

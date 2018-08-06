@@ -264,7 +264,7 @@ namespace Ntreev.Crema.Repository.Svn
 
         public LogInfo[] GetLog(string[] paths, string revision)
         {
-            var logs = SvnLogInfo.Run(paths, revision, 100);
+            var logs = SvnLogInfo.GetLogs(paths, revision);
             return logs.Select(item => (LogInfo)item).ToArray();
         }
 

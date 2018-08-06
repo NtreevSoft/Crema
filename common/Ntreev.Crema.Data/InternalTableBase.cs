@@ -562,19 +562,13 @@ namespace Ntreev.Crema.Data
         public InternalTableBase TemplatedParent
         {
             get => this.InternalTemplatedParent;
-            set
-            {
-                this.InternalTemplatedParent = value;
-            }
+            set => this.InternalTemplatedParent = value;
         }
 
         public string TemplateNamespace
         {
             get => this.templateNamespace ?? string.Empty;
-            set
-            {
-                this.templateNamespace = value;
-            }
+            set => this.templateNamespace = value;
         }
 
         public string TemplatedParentName

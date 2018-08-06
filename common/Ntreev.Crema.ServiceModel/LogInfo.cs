@@ -82,5 +82,7 @@ namespace Ntreev.Crema.ServiceModel
                 return query.First().Value;
             return null;
         }
+
+        public static readonly LogInfo Empty = new LogInfo();
     }
 }

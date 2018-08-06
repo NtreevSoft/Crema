@@ -13,25 +13,18 @@ namespace Ntreev.Crema.Repository.Svn
 {
     class SvnCommand : CommandHost
     {
-        private const string svn = "svn";
-
         public SvnCommand(string commandName)
-            : base(svn, null, commandName)
+            : base(SvnCommand.ExecutablePath, null, commandName)
         {
 
         }
 
         public string Run(ILogService logService)
         {
-            try
-            {
-                return this.Run();
-            }
-            catch (Exception e)
-            {
-                logService.Error(e);
-                throw;
-            }
+            logService.Debug(this.ToString());
+            return this.Run();
         }
+
+        public static string ExecutablePath { get; set; }
     }
 }

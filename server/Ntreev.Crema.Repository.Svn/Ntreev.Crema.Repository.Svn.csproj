@@ -46,6 +46,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SvnConfigurations.cs" />
     <Compile Include="SvnChangeInfo.cs" />
     <Compile Include="SvnAdminCommand.cs" />
     <Compile Include="SvnCommand.cs" />

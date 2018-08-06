@@ -86,7 +86,7 @@ namespace Ntreev.Crema.Services.Test.DispatcherTest
         [TestMethod]
         public void GetLog()
         {
-            typeItem.GetLog(authentication);
+            typeItem.GetLog(authentication, null);
         }
 
         [TestMethod]

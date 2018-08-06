@@ -60,7 +60,7 @@ namespace Ntreev.Crema.Repository.Svn
                     var name = item.Remove(item.Length - PathUtility.Separator.Length);
                     var sourceUri = UriUtility.Combine(tagsUrl, name);
                     var destUri = UriUtility.Combine(branchesUri, name);
-                    var log = SvnLogInfo.Run(sourceUri.ToString(), null, 1).First();
+                    //var log = SvnLogInfo.Run(sourceUri.ToString(), null, 1).First();
                     var moveCommand = new SvnCommand("mv")
                     {
                         (SvnPath)sourceUri,

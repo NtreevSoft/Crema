@@ -319,7 +319,7 @@ namespace Ntreev.Crema.Bot.Tasks
         {
             category.Dispatcher.Invoke(() =>
             {
-                category.GetLog(context.Authentication);
+                category.GetLog(context.Authentication, null);
             });
         }
 

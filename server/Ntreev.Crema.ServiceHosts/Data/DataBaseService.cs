@@ -259,12 +259,12 @@ namespace Ntreev.Crema.ServiceHosts.Data
             });
         }
 
-        public ResultBase<LogInfo[]> GetTableItemLog(string itemPath)
+        public ResultBase<LogInfo[]> GetTableItemLog(string itemPath, string revision)
         {
             return this.InvokeImmediately(() =>
             {
                 var tableItem = this.dataBase.Dispatcher.Invoke(() => this.GetTableItem(itemPath));
-                return tableItem.GetLog(this.authentication);
+                return tableItem.GetLog(this.authentication, revision);
             });
         }
 
@@ -582,12 +582,12 @@ namespace Ntreev.Crema.ServiceHosts.Data
             });
         }
 
-        public ResultBase<LogInfo[]> GetTypeItemLog(string itemPath)
+        public ResultBase<LogInfo[]> GetTypeItemLog(string itemPath, string revision)
         {
             return this.InvokeImmediately(() =>
             {
                 var typeItem = this.cremaHost.Dispatcher.Invoke(() => this.GetTypeItem(itemPath));
-                return typeItem.GetLog(this.authentication);
+                return typeItem.GetLog(this.authentication, revision);
             });
         }
 

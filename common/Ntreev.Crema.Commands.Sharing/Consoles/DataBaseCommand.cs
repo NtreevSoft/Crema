@@ -169,11 +169,11 @@ namespace Ntreev.Crema.Commands.Consoles
         [CommandMethod]
         [CommandMethodStaticProperty(typeof(LogProperties))]
         [CommandMethodStaticProperty(typeof(FormatProperties))]
-        public void Log([CommandCompletion(nameof(GetDataBaseNames))]string dataBaseName)
+        public void Log([CommandCompletion(nameof(GetDataBaseNames))]string dataBaseName, string revision = null)
         {
             var dataBase = this.GetDataBase(dataBaseName);
             var authentication = this.CommandContext.GetAuthentication(this);
-            var logs = dataBase.Dispatcher.Invoke(() => dataBase.GetLog(authentication));
+            var logs = dataBase.Dispatcher.Invoke(() => dataBase.GetLog(authentication, revision));
 
             foreach (var item in logs)
             {

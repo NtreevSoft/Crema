@@ -45,6 +45,7 @@ namespace Ntreev.Crema.Repository.Git
 
         private const string dateTimeFormat = "ddd MMM d HH:mm:ss yyyy K";
 
+        private static readonly int maxCount = 50;
         private static readonly Deserializer propertyDeserializer = new Deserializer();
 
         public override string ToString()
@@ -74,40 +75,18 @@ namespace Ntreev.Crema.Repository.Git
 
         public GitPropertyValue[] Properties { get; internal set; }
 
-        public static GitLogInfo[] Run(string repositoryPath, int maxCount)
+        public static GitLogInfo GetLatestLog(string repositoryPath)
         {
-            var logCommand = new GitCommand(repositoryPath, "log")
+            var logCommand = new GitCommand(repositoryPath, "show")
             {
                 GitCommandItem.FromPretty("fuller"),
-                GitCommandItem.FromMaxCount(maxCount),
-                GitCommandItem.ShowNotes
-            };
-            return ParseMany(logCommand.Run());
-        }
-
-        public static GitLogInfo[] GetBranchLogs(string repositoryPath, string branchName)
-        {
-            var logCommand = new GitCommand(repositoryPath, "log")
-            {
-                $"{branchName}",
-                GitCommandItem.FromPretty("fuller"),
-                GitCommandItem.ShowNotes
-            };
-            return ParseMany(logCommand.Run());
-        }
-
-        public static GitLogInfo GetBranchLog(string repositoryPath, string branchName)
-        {
-            var logCommand = new GitCommand(repositoryPath, "log")
-            {
-                $"{branchName}",
-                GitCommandItem.FromPretty("fuller"),
-                GitCommandItem.ShowNotes
+                GitCommandItem.ShowNotes,
+                GitCommandItem.NoPatch,
             };
             return ParseMany(logCommand.Run()).First();
         }
 
-        public static GitLogInfo[] RunWithPaths(string repositoryPath, string revision, string[] paths)
+        public static GitLogInfo[] GetLogs(string repositoryPath, string revision, string[] paths)
         {
             var logCommand = new GitCommand(repositoryPath, "log")
             {
@@ -121,6 +100,59 @@ namespace Ntreev.Crema.Repository.Git
                 logCommand.Add((GitPath)item);
             }
             return ParseMany(logCommand.Run());
+        }
+
+        public static GitLogInfo[] GetRepositoryLogs(string repositoryPath, string repositoryName, string revision)
+        {
+            if (revision == null)
+            {
+                var logCommand = new GitCommand(repositoryPath, "log")
+                {
+                    $"{repositoryName}",
+                    GitCommandItem.FromPretty("fuller"),
+                    GitCommandItem.ShowNotes,
+                    GitCommandItem.FromMaxCount(maxCount),
+                };
+                return ParseMany(logCommand.Run());
+            }
+            else
+            {
+                var revisions = GetRepositoryRevisions(repositoryPath, repositoryName);
+                var index = revisions.IndexOf(revision);
+                if (index < 0)
+                    throw new ArgumentException($"not found revision: {revision}");
+
+                var logCommand = new GitCommand(repositoryPath, "log")
+                {
+                    $"{revision}",
+                    GitCommandItem.FromPretty("fuller"),
+                    GitCommandItem.ShowNotes,
+                    GitCommandItem.FromMaxCount(maxCount),
+                };
+                return ParseMany(logCommand.Run());
+            }
+        }
+
+        public static GitLogInfo GetRepositoryLatestLog(string repositoryPath, string repositoryName)
+        {
+            var logCommand = new GitCommand(repositoryPath, "show")
+            {
+                $"{repositoryName}",
+                GitCommandItem.FromPretty("fuller"),
+                GitCommandItem.ShowNotes,
+                GitCommandItem.NoPatch,
+            };
+            return ParseMany(logCommand.Run()).First();
+        }
+
+        public static string[] GetRepositoryRevisions(string repositoryPath, string repositoryName)
+        {
+            var logCommand = new GitCommand(repositoryPath, "log")
+            {
+                $"{repositoryName}",
+                GitCommandItem.FromPretty("format:%H")
+            };
+            return logCommand.ReadLines();
         }
 
         public static GitLogInfo Parse(string text)
@@ -205,7 +237,7 @@ namespace Ntreev.Crema.Repository.Git
                 }
                 catch
                 {
-                    
+
                 }
             }
             logInfo.Properties = new GitPropertyValue[] { };

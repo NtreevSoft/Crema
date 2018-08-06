@@ -237,7 +237,7 @@ namespace Ntreev.Crema.Repository.Svn
         public RepositoryInfo GetRepositoryInfo(string basePath, string repositoryName)
         {
             var uri = this.GetUrl(basePath, repositoryName);
-            var latestLog = SvnLogInfo.GetLastLog($"{uri}");
+            var latestLog = SvnLogInfo.GetLatestLog($"{uri}");
             var firstLog = SvnLogInfo.GetFirstLog($"{uri}");
             var repositoryInfo = new RepositoryInfo()
             {
@@ -262,10 +262,10 @@ namespace Ntreev.Crema.Repository.Svn
             return query.ToArray();
         }
 
-        public LogInfo[] GetLog(string basePath, string repositoryName)
+        public LogInfo[] GetLog(string basePath, string repositoryName, string revision)
         {
             var uri = this.GetUrl(basePath, repositoryName);
-            var logs = SvnLogInfo.Run(uri.ToString(), null, 100);
+            var logs = SvnLogInfo.GetLogs(uri.ToString(), revision);
             return logs.Select(item => (LogInfo)item).ToArray();
         }
 
