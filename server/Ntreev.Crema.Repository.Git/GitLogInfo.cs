@@ -45,7 +45,8 @@ namespace Ntreev.Crema.Repository.Git
 
         private const string dateTimeFormat = "ddd MMM d HH:mm:ss yyyy K";
 
-        private static readonly int maxCount = 50;
+        private static readonly int defaultMaxCount = 50;
+
         private static readonly Deserializer propertyDeserializer = new Deserializer();
 
         public override string ToString()
@@ -111,7 +112,7 @@ namespace Ntreev.Crema.Repository.Git
                     $"{repositoryName}",
                     GitCommandItem.FromPretty("fuller"),
                     GitCommandItem.ShowNotes,
-                    GitCommandItem.FromMaxCount(maxCount),
+                    GitCommandItem.FromMaxCount(MaxLogCount),
                 };
                 return ParseMany(logCommand.Run());
             }
@@ -127,7 +128,7 @@ namespace Ntreev.Crema.Repository.Git
                     $"{revision}",
                     GitCommandItem.FromPretty("fuller"),
                     GitCommandItem.ShowNotes,
-                    GitCommandItem.FromMaxCount(maxCount),
+                    GitCommandItem.FromMaxCount(MaxLogCount),
                 };
                 return ParseMany(logCommand.Run());
             }
@@ -221,6 +222,8 @@ namespace Ntreev.Crema.Repository.Git
 
             return obj;
         }
+
+        public static int MaxCount { get; set; }
 
         private static void ParseNotes(ref string text, ref GitLogInfo logInfo)
         {
@@ -374,5 +377,7 @@ namespace Ntreev.Crema.Repository.Git
         {
             return DateTime.ParseExact(text, dateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
         }
+
+        private static int MaxLogCount => MaxCount == 0 ? defaultMaxCount : MaxCount;
     }
 }

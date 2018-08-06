@@ -33,7 +33,7 @@ namespace Ntreev.Crema.Repository.Svn
 {
     struct SvnLogInfo
     {
-        private static readonly int maxCount = 50;
+        private static readonly int defaultMaxCount = 50;
 
         private const string propertyPrefix = "prop:";
 
@@ -90,7 +90,7 @@ namespace Ntreev.Crema.Repository.Svn
                     SvnCommandItem.FromRevision($"head:1"),
                     SvnCommandItem.Xml,
                     SvnCommandItem.Verbose,
-                    SvnCommandItem.FromMaxCount(maxCount),
+                    SvnCommandItem.FromMaxCount(MaxLogCount),
                     SvnCommandItem.WithAllRevprops
                 };
                 return SvnLogInfo.Read(logCommand.Run());
@@ -103,7 +103,7 @@ namespace Ntreev.Crema.Repository.Svn
                     SvnCommandItem.FromRevision($"{revision}:1"),
                     SvnCommandItem.Xml,
                     SvnCommandItem.Verbose,
-                    SvnCommandItem.FromMaxCount(maxCount),
+                    SvnCommandItem.FromMaxCount(MaxLogCount),
                     SvnCommandItem.WithAllRevprops
                 };
                 return SvnLogInfo.Read(logCommand.Run());
@@ -117,7 +117,7 @@ namespace Ntreev.Crema.Repository.Svn
                 SvnCommandItem.FromRevision($"{revision ?? "head"}:1"),
                 SvnCommandItem.Xml,
                 SvnCommandItem.Verbose,
-                SvnCommandItem.FromMaxCount(maxCount),
+                SvnCommandItem.FromMaxCount(MaxLogCount),
                 SvnCommandItem.WithAllRevprops,
             };
             foreach (var item in paths)
@@ -225,6 +225,8 @@ namespace Ntreev.Crema.Repository.Svn
             return obj;
         }
 
+        public static int MaxCount { get; set; }
+
         internal string GetPropertyString(string key)
         {
             if (this.Properties == null)
@@ -288,5 +290,7 @@ namespace Ntreev.Crema.Repository.Svn
 
             return obj;
         }
+
+        private static int MaxLogCount => MaxCount == 0 ? defaultMaxCount : MaxCount;
     }
 }

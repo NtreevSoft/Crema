@@ -2,6 +2,7 @@
 using Ntreev.Library;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
@@ -12,22 +13,25 @@ namespace Ntreev.Crema.Repository.Svn
     [Export(typeof(IConfigurationPropertyProvider))]
     class SvnConfigurations : IConfigurationPropertyProvider
     {
-        private string executablePath;
-
         public SvnConfigurations()
         {
-            SvnCommand.ExecutablePath = this.ExecutablePath;
+
         }
 
-        [ConfigurationProperty(ScopeType = typeof(ICremaConfiguration))]
+        [ConfigurationProperty]
+        [DefaultValue(null)]
         public string ExecutablePath
         {
-            get => this.executablePath ?? "svn";
-            set
-            {
-                this.executablePath = value;
-                SvnCommand.ExecutablePath = this.ExecutablePath;
-            }
+            get => SvnCommand.ExecutablePath;
+            set => SvnCommand.ExecutablePath = value;
+        }
+
+        [ConfigurationProperty]
+        [DefaultValue(0)]
+        public int MaxLogCount
+        {
+            get => SvnLogInfo.MaxCount;
+            set => SvnLogInfo.MaxCount = value;
         }
 
         public string Name => "svn";

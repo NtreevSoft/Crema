@@ -14,7 +14,7 @@ namespace Ntreev.Crema.Repository.Git
     class GitCommand : CommandHost
     {
         public GitCommand(string basePath, string commandName)
-            : base(GitCommand.ExecutablePath, basePath, commandName)
+            : base(GitCommand.ExecutablePath ?? "git", basePath, commandName)
         {
             
         }

@@ -2,6 +2,7 @@
 using Ntreev.Library;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
@@ -12,22 +13,25 @@ namespace Ntreev.Crema.Repository.Git
     [Export(typeof(IConfigurationPropertyProvider))]
     class GitConfigurations : IConfigurationPropertyProvider
     {
-        private string executablePath;
-
         public GitConfigurations()
         {
-            GitCommand.ExecutablePath = this.ExecutablePath;
+
         }
 
-        [ConfigurationProperty(ScopeType = typeof(ICremaConfiguration))]
+        [ConfigurationProperty]
+        [DefaultValue(null)]
         public string ExecutablePath
         {
-            get => this.executablePath ?? "git";
-            set
-            {
-                this.executablePath = value;
-                GitCommand.ExecutablePath = this.ExecutablePath;
-            }
+            get => GitCommand.ExecutablePath;
+            set => GitCommand.ExecutablePath = value;
+        }
+
+        [ConfigurationProperty]
+        [DefaultValue(0)]
+        public int MaxLogCount
+        {
+            get => GitLogInfo.MaxCount;
+            set => GitLogInfo.MaxCount = value;
         }
 
         public string Name => "git";
