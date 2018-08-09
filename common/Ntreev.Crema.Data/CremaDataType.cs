@@ -476,6 +476,13 @@ namespace Ntreev.Crema.Data
             get { return this.CategoryPath + this.TypeName; }
         }
 
+        [DefaultValue(50)]
+        public int MinimumCapacity
+        {
+            get { return this.type.MinimumCapacity; }
+            set { this.type.MinimumCapacity = value; }
+        }
+
         public string Namespace
         {
             get { return this.type.Namespace; }
