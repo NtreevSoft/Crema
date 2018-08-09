@@ -1247,7 +1247,7 @@ namespace Ntreev.Crema.Data
                 throw new ArgumentException(string.Format(Resources.Exception_AlreadyExistedItem_Format, itemName));
         }
 
-        internal void AttachTemplatedParent(CremaDataTable templatedParent)
+        public void AttachTemplatedParent(CremaDataTable templatedParent)
         {
             this.TemplatedParent = templatedParent;
         }

@@ -40,18 +40,20 @@ using System.Xml.Serialization;
 
 namespace Ntreev.Crema.Data
 {
-    public class CremaDataTypeCollection : IEnumerable<CremaDataType>, ICollection
+    public sealed class CremaDataTypeCollection : IEnumerable<CremaDataType>, ICollection
     {
         private readonly InternalDataSet dataSet;
         private readonly DataTableCollection tables;
         private readonly List<InternalDataType> itemList = new List<InternalDataType>();
+        private readonly Dictionary<string, InternalDataType> itemsByName = new Dictionary<string, InternalDataType>();
+        private readonly Dictionary<string, InternalDataType> itemsByNamespace = new Dictionary<string, InternalDataType>();
 
         internal CremaDataTypeCollection(InternalDataSet dataSet)
         {
             this.dataSet = dataSet;
             this.tables = dataSet.Tables;
             this.tables.CollectionChanged += Tables_CollectionChanged;
-            this.tables.CollectionChanging += Tables_CollectionChanging;
+            //this.tables.CollectionChanging += Tables_CollectionChanging;
             this.dataSet.PropertyChanged += InternalDataSet_PropertyChanged;
         }
 
@@ -297,16 +299,13 @@ namespace Ntreev.Crema.Data
             this.ValidateClear();
             var query = from item in this.itemList orderby item.Name select item;
             this.tables.CollectionChanged -= Tables_CollectionChanged;
-            this.tables.CollectionChanging -= Tables_CollectionChanging;
-            this.OnCollectionChanging(new CollectionChangeEventArgs(CollectionChangeAction.Refresh, null));
             foreach (var item in query.Reverse())
             {
                 this.tables.Remove(item);
             }
             this.itemList.Clear();
-            this.OnCollectionChanged(new CollectionChangeEventArgs(CollectionChangeAction.Refresh, null));
             this.tables.CollectionChanged += Tables_CollectionChanged;
-            this.tables.CollectionChanging += Tables_CollectionChanging;
+            this.InvokeCollectionChanged(new CollectionChangeEventArgs(CollectionChangeAction.Refresh, null));
         }
 
         public void CopyTo(Array array, int index)
@@ -327,19 +326,10 @@ namespace Ntreev.Crema.Data
 
         public event CollectionChangeEventHandler CollectionChanged;
 
-        public event CollectionChangeEventHandler CollectionChanging;
-
-        protected virtual void OnCollectionChanged(CollectionChangeEventArgs e)
+        private void InvokeCollectionChanged(CollectionChangeEventArgs e)
         {
             this.CollectionChanged?.Invoke(this, e);
         }
-
-        protected virtual void OnCollectionChanging(CollectionChangeEventArgs e)
-        {
-            this.CollectionChanging?.Invoke(this, e);
-        }
-
-
 
         private void ValidateAdd(string name, string categoryPath)
         {
@@ -381,14 +371,6 @@ namespace Ntreev.Crema.Data
             }
         }
 
-        private void Tables_CollectionChanging(object sender, CollectionChangeEventArgs e)
-        {
-            if (e.Element is InternalDataType dataType)
-            {
-                this.OnCollectionChanging(e);
-            }
-        }
-
         private void Tables_CollectionChanged(object sender, CollectionChangeEventArgs e)
         {
             switch (e.Action)
@@ -398,9 +380,12 @@ namespace Ntreev.Crema.Data
                         if (e.Element is InternalDataType dataType)
                         {
                             this.itemList.Add(dataType);
+                            this.itemsByName.Add(dataType.Name, dataType);
+                            this.itemsByNamespace.Add(dataType.Namespace, dataType);
                             dataType.DefaultView.Sort = $"{CremaSchema.Index} ASC";
                             dataType.BuildNamespace();
-                            this.OnCollectionChanged(e);
+                            this.InvokeCollectionChanged(e);
+                            dataType.PropertyChanged += DataType_PropertyChanged;
                         }
                     }
                     break;
@@ -408,10 +393,13 @@ namespace Ntreev.Crema.Data
                     {
                         if (e.Element is InternalDataType dataType)
                         {
+                            dataType.PropertyChanged -= DataType_PropertyChanged;
+                            this.itemsByNamespace.Remove(dataType.Namespace);
+                            this.itemsByName.Remove(dataType.Name);
                             this.itemList.Remove(dataType);
                             dataType.DefaultView.Sort = $"{CremaSchema.Index} ASC";
                             dataType.BuildNamespace();
-                            this.OnCollectionChanged(e);
+                            this.InvokeCollectionChanged(e);
                         }
                     }
                     break;
@@ -420,6 +408,26 @@ namespace Ntreev.Crema.Data
                         this.itemList.Clear();
                     }
                     break;
+            }
+        }
+
+        private void DataType_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (sender is InternalDataType dataType)
+            {
+                if (e.PropertyName == nameof(InternalDataType.Name))
+                {
+                    var value = this.itemsByName.First(item => item.Value == dataType);
+                    this.itemsByName.Remove(value.Key);
+                    this.itemsByName.Add(dataType.Name, dataType);
+                }
+                else if (e.PropertyName == nameof(InternalDataType.Namespace))
+                {
+                    var value = this.itemsByNamespace.First(item => item.Value == dataType);
+                    this.itemsByNamespace.Remove(value.Key);
+                    this.itemsByNamespace.Add(dataType.Namespace, dataType);
+
+                }
             }
         }
 
