@@ -225,7 +225,9 @@ namespace Ntreev.Crema.Data
         public override void EndLoadData()
         {
             base.EndLoadData();
-            this.GetNamesValues(out this.namesCache, out this.valuesCache, false);
+            this.namesCache = null;
+            this.valuesCache = null;
+            //this.GetNamesValues(out this.namesCache, out this.valuesCache, false);
             this.attributeID.DefaultValue = Guid.NewGuid();
             this.columnName.DefaultValue = this.GenerateMemberName();
             this.columnValue.DefaultValue = this.GenerateMemberValue();
@@ -352,6 +354,10 @@ namespace Ntreev.Crema.Data
 
         public string ConvertToString(long value)
         {
+            if(this.namesCache == null)
+            {
+                this.GetNamesValues(out this.namesCache, out this.valuesCache, false);
+            }
             return EnumUtility.ConvertToString(this.namesCache, this.valuesCache, this.IsFlag, (ulong)value);
         }
 
@@ -723,8 +729,10 @@ namespace Ntreev.Crema.Data
             {
                 base.OnRowChanged(e);
                 this.UpdateSignatureDate(e);
-                if (this.IsLoading == false)
-                    this.GetNamesValues(out this.namesCache, out this.valuesCache, false);
+                this.namesCache = null;
+                this.valuesCache = null;
+                //if (this.IsLoading == false)
+                //    this.GetNamesValues(out this.namesCache, out this.valuesCache, false);
                 this.UpdateTableData(e);
 
                 if (this.IsLoading == false && this.IsDiffMode == false)
@@ -755,7 +763,9 @@ namespace Ntreev.Crema.Data
         {
             base.OnRowDeleted(e);
 
-            this.GetNamesValues(out this.namesCache, out this.valuesCache, false);
+            this.namesCache = null;
+            this.valuesCache = null;
+            //this.GetNamesValues(out this.namesCache, out this.valuesCache, false);
             this.DeleteMember(this.deletedMember.Key, this.deletedMember.Value);
             if (this.OmitSignatureDate == false)
             {

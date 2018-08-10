@@ -671,6 +671,7 @@ namespace Ntreev.Crema.Data
                 }
 
                 this.BuildNamespace();
+                this.InvokePropertyChangedEvent(nameof(this.Name));
                 this.InvokePropertyChangedEvent(nameof(this.LocalName));
             }
         }

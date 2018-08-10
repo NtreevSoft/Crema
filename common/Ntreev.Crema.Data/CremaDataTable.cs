@@ -1292,7 +1292,7 @@ namespace Ntreev.Crema.Data
             this.InternalObject.TableNewRow -= Table_TableNewRow;
         }
 
-        internal void AttachTemplatedParent(CremaDataTable templatedParent)
+        public void AttachTemplatedParent(CremaDataTable templatedParent)
         {
             this.TemplatedParent = templatedParent;
         }

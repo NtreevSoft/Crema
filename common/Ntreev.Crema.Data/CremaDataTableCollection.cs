@@ -32,6 +32,8 @@ namespace Ntreev.Crema.Data
         private readonly InternalDataSet dataSet;
         private readonly DataTableCollection tables;
         private readonly List<InternalDataTable> itemList = new List<InternalDataTable>();
+        private readonly Dictionary<string, InternalDataTable> itemsByName = new Dictionary<string, InternalDataTable>();
+        private readonly Dictionary<string, InternalDataTable> itemsByNamespace = new Dictionary<string, InternalDataTable>();
 
         internal CremaDataTableCollection(InternalDataSet dataSet)
         {
@@ -47,6 +49,9 @@ namespace Ntreev.Crema.Data
         {
             get
             {
+                if (this.itemsByName.ContainsKey(name) == false)
+                    return null;
+                return this.itemsByName[name].Target;
                 var index = -1;
                 for (var i = 0; i < this.itemList.Count; i++)
                 {
@@ -71,6 +76,9 @@ namespace Ntreev.Crema.Data
             get
             {
                 var itemNamespace = UriUtility.Combine(this.dataSet.TableNamespace + categoryPath, name);
+                if (this.itemsByNamespace.ContainsKey(itemNamespace) == false)
+                    return null;
+                return this.itemsByNamespace[itemNamespace].Target;
                 for (var i = 0; i < this.itemList.Count; i++)
                 {
                     var item = this.itemList[i];
@@ -130,12 +138,15 @@ namespace Ntreev.Crema.Data
 
         public bool Contains(string name)
         {
-            return this.IndexOf(name) >= 0;
+            return this.itemsByName.ContainsKey(name);
+            //return this.IndexOf(name) >= 0;
         }
 
         public bool Contains(string name, string categoryPath)
         {
-            return this.IndexOf(name, categoryPath) >= 0;
+            var itemNamespace = UriUtility.Combine(this.dataSet.TableNamespace + categoryPath, name);
+            return this.itemsByNamespace.ContainsKey(name);
+            //return this.IndexOf(name, categoryPath) >= 0;
         }
 
         public void CopyTo(CremaDataTable[] array, int index)
@@ -228,9 +239,12 @@ namespace Ntreev.Crema.Data
                         if (e.Element is InternalDataTable dataTable)
                         {
                             this.itemList.Add(dataTable);
+                            this.itemsByName.Add(dataTable.Name, dataTable);
+                            this.itemsByNamespace.Add(dataTable.Namespace, dataTable);
                             dataTable.DefaultView.Sort = $"{CremaSchema.Index} ASC";
                             dataTable.BuildNamespace();
                             this.InvokeCollectionChanged(e);
+                            dataTable.PropertyChanged += DataTable_PropertyChanged;
                         }
                     }
                     break;
@@ -238,6 +252,9 @@ namespace Ntreev.Crema.Data
                     {
                         if (e.Element is InternalDataTable dataTable)
                         {
+                            dataTable.PropertyChanged -= DataTable_PropertyChanged;
+                            this.itemsByNamespace.Remove(dataTable.Namespace);
+                            this.itemsByName.Remove(dataTable.Name);
                             this.itemList.Remove(dataTable);
                             dataTable.DefaultView.Sort = $"{CremaSchema.Index} ASC";
                             dataTable.BuildNamespace();
@@ -250,6 +267,26 @@ namespace Ntreev.Crema.Data
                         this.itemList.Clear();
                     }
                     break;
+            }
+        }
+
+        private void DataTable_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (sender is InternalDataTable dataTable)
+            {
+                if (e.PropertyName == nameof(InternalDataTable.Name))
+                {
+                    var value = this.itemsByName.First(item => item.Value == dataTable);
+                    this.itemsByName.Remove(value.Key);
+                    this.itemsByName.Add(dataTable.Name, dataTable);
+                }
+                else if (e.PropertyName == nameof(InternalDataTable.Namespace))
+                {
+                    var value = this.itemsByNamespace.First(item => item.Value == dataTable);
+                    this.itemsByNamespace.Remove(value.Key);
+                    this.itemsByNamespace.Add(dataTable.Namespace, dataTable);
+
+                }
             }
         }
 

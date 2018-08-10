@@ -518,7 +518,15 @@ namespace Ntreev.Crema.Data
 
         public string Path => this.CategoryPath + this.TypeName;
 
+
         public string Namespace => this.InternalObject.Namespace;
+
+        [DefaultValue(50)]
+        public int MinimumCapacity
+        {
+            get => this.InternalObject.MinimumCapacity;
+            set => this.InternalObject.MinimumCapacity = value;
+        }
 
         public TypeInfo TypeInfo => this.InternalObject.TypeInfo;
 
