@@ -169,7 +169,7 @@ namespace Ntreev.Crema.Client.Tables.BrowserItems.ViewModels
 
         private void CremaAppHost_Unloaded(object sender, EventArgs e)
         {
-            this.SaveSettings();
+            this.cremaAppHost.UserConfigs.Commit(this);
             this.Release();
         }
 
@@ -235,20 +235,6 @@ namespace Ntreev.Crema.Client.Tables.BrowserItems.ViewModels
             return false;
         }
 
-        private void SaveSettings()
-        {
-            var items = this.GetSettings();
-            this.cremaAppHost.UserConfigs[this.GetType(), $"{this.dataBaseID}"] = items;
-        }
-
-        private void LoadSettings()
-        {
-            if (this.cremaAppHost.UserConfigs.TryParse<string[]>(this.GetType(), $"{this.dataBaseID}", out var savedItems) == true)
-            {
-                this.SetSettings(savedItems);
-            }
-        }
-
         private async void Initialize()
         {
             if (this.cremaAppHost.GetService(typeof(IDataBase)) is IDataBase dataBase)
@@ -262,13 +248,23 @@ namespace Ntreev.Crema.Client.Tables.BrowserItems.ViewModels
                 this.Items.Add(viewModel);
             };
 
-            this.LoadSettings();
+            this.cremaAppHost.UserConfigs.Update(this);
         }
 
         private void Release()
         {
             this.FilterExpression = string.Empty;
             this.Items.Clear();
+        }
+
+        [ConfigurationProperty(ScopeType = typeof(ICremaConfiguration))]
+        private string[] Settings
+        {
+            get { return this.GetSettings(); }
+            set
+            {
+                this.SetSettings(value);
+            }
         }
 
         #region ITableBrowser

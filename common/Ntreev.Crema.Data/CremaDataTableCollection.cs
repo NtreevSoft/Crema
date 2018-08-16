@@ -52,22 +52,6 @@ namespace Ntreev.Crema.Data
                 if (this.itemsByName.ContainsKey(name) == false)
                     return null;
                 return this.itemsByName[name].Target;
-                var index = -1;
-                for (var i = 0; i < this.itemList.Count; i++)
-                {
-                    var item = this.itemList[i];
-                    var itemPath = item.Namespace.Substring(this.dataSet.TableNamespace.Length);
-                    var itemName = new ItemName(itemPath);
-                    if (itemName.Name == name)
-                    {
-                        if (index != -1)
-                            return null;
-                        index = i;
-                    }
-                }
-                if (index >= 0)
-                    return this.itemList[index].Target;
-                return null;
             }
         }
 
@@ -79,13 +63,6 @@ namespace Ntreev.Crema.Data
                 if (this.itemsByNamespace.ContainsKey(itemNamespace) == false)
                     return null;
                 return this.itemsByNamespace[itemNamespace].Target;
-                for (var i = 0; i < this.itemList.Count; i++)
-                {
-                    var item = this.itemList[i];
-                    if (item.Name == name && item.Namespace == itemNamespace)
-                        return item.Target;
-                }
-                return null;
             }
         }
 

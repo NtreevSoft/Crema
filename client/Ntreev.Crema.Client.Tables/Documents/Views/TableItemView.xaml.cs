@@ -70,8 +70,8 @@ namespace Ntreev.Crema.Client.Tables.Documents.Views
                 var tableID = this.dataTableControl.Source.TableID;
                 var settings = new Xceed.Wpf.DataGrid.Settings.SettingsRepository();
                 this.gridControl.SaveUserSettings(settings, Xceed.Wpf.DataGrid.Settings.UserSettings.All);
-                this.Configs[this.GetType(), $"{nameof(this.columnsHashValue)}-{tableID}"] = this.columnsHashValue;
-                this.Configs[this.GetType(), tableID.ToString()] = settings;
+                this.Configs.SetValue(this.GetType(), $"{nameof(this.columnsHashValue)}-{tableID}", this.columnsHashValue);
+                this.Configs.SetValue(this.GetType(), tableID.ToString(), settings);
             }
         }
 
@@ -115,13 +115,13 @@ namespace Ntreev.Crema.Client.Tables.Documents.Views
             var columnsID = this.dataTableControl.Source.Columns.Select(item => (object)item.ColumnID).ToArray();
             this.columnsHashValue = HashUtility.GetHashValue(columnsID);
 
-            if (this.Configs.TryParse<string>(this.GetType(), $"{nameof(this.columnsHashValue)}-{tableID}", out var columnsHashValue) == true)
+            if (this.Configs.TryGetValue<string>(this.GetType(), $"{nameof(this.columnsHashValue)}-{tableID}", out var columnsHashValue) == true)
             {
                 if (this.columnsHashValue != columnsHashValue)
                     return;
             }
 
-            if (this.Configs.TryParse<Xceed.Wpf.DataGrid.Settings.SettingsRepository>(this.GetType(), tableID.ToString(), out var settings) == true)
+            if (this.Configs.TryGetValue<Xceed.Wpf.DataGrid.Settings.SettingsRepository>(this.GetType(), tableID.ToString(), out var settings) == true)
             {
                 this.gridControl.LoadUserSettings(settings, Xceed.Wpf.DataGrid.Settings.UserSettings.All);
             }

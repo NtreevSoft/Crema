@@ -51,6 +51,9 @@ namespace Ntreev.Crema.Services
         private LogService log;
         private Guid token;
 
+        [ImportMany]
+        private IEnumerable<IConfigurationPropertyProvider> propertiesProviders = null;
+
         [ImportingConstructor]
         public CremaHost(CremaSettings settings)
         {
@@ -160,7 +163,7 @@ namespace Ntreev.Crema.Services
                         this.DataBases = new DataBaseCollection(this, this.IPAddress, ServiceInfos[nameof(DataBaseCollectionService)]);
                         this.DomainContext = new DomainContext(this, this.IPAddress, ServiceInfos[nameof(DomainService)]);
                         this.IsOpened = true;
-                        this.configs = new CremaConfiguration(this.ConfigPath);
+                        this.configs = new CremaConfiguration(this.ConfigPath, this.propertiesProviders);
                         this.plugins = this.container.GetService(typeof(IEnumerable<IPlugin>)) as IEnumerable<IPlugin>;
                         foreach (var item in this.plugins)
                         {

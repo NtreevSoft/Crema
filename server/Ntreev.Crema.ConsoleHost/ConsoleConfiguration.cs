@@ -17,6 +17,7 @@
 
 using Ntreev.Crema.Commands;
 using Ntreev.Library;
+using Ntreev.Library.IO;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -31,11 +32,26 @@ namespace Ntreev.Crema.ConsoleHost
     [Export]
     class ConsoleConfiguration : ConfigurationBase, IConsoleConfiguration
     {
+        private readonly string xsdPath;
+        private readonly string xmlPath;
+        private readonly string schemaLocation;
+
         [ImportingConstructor]
         public ConsoleConfiguration([ImportMany]IEnumerable<IConfigurationPropertyProvider> propertiesProvider)
-            : base(AppUtility.GetDocumentFilename("configs.xml"), propertiesProvider)
+            : base(propertiesProvider)
         {
+            this.xmlPath = AppUtility.GetDocumentFilename("configs") + ".xml";
+            this.xsdPath = AppUtility.GetDocumentFilename("configs") + ".xsd";
+            this.schemaLocation = UriUtility.MakeRelative(this.xmlPath, this.xsdPath);
+            this.Read(this.xmlPath);
+        }
 
+        public void Write()
+        {
+            FileUtility.Backup(this.xsdPath);
+            FileUtility.Backup(this.xmlPath);
+            this.WriteSchema(this.xsdPath);
+            this.Write(this.xmlPath, this.schemaLocation);
         }
 
         public override string Name => "ConsoleConfigs";

@@ -245,31 +245,16 @@ namespace Ntreev.Crema.Client.SmartSet.BrowserItems.ViewModels
             this.Dispatcher.InvokeAsync((System.Action)(() =>
             {
                 this.InitializeBookmarkItems();
-                this.LoadSettings();
+                this.configs.Update(this);
             }));
         }
 
         private void CremaAppHost_Unloaded(object sender, EventArgs e)
         {
-            this.SaveSettings();
+            this.configs.Commit(this);
             this.bookmarkCategory.Items.Clear();
             this.Items.Clear();
             this.OnUnloaded(EventArgs.Empty);
-        }
-
-        private void SaveSettings()
-        {
-            var items = this.GetSettings();
-
-            this.configs[this.GetType(), "Settings"] = items;
-        }
-
-        private void LoadSettings()
-        {
-            if (this.configs.TryParse<string[]>(this.GetType(), "Settings", out var savedItems) == true)
-            {
-                this.SetSettings(savedItems);
-            }
         }
 
         private void Delete_Execute(object parameter)
@@ -328,6 +313,16 @@ namespace Ntreev.Crema.Client.SmartSet.BrowserItems.ViewModels
         {
             viewModel.Parent = null;
             this.UpdateBookmarkItems();
+        }
+
+        [ConfigurationProperty(ScopeType = typeof(ICremaConfiguration))]
+        private string[] Settings
+        {
+            get { return this.GetSettings(); }
+            set
+            {
+                this.SetSettings(value);
+            }
         }
 
         #region IPartImportsSatisfiedNotification

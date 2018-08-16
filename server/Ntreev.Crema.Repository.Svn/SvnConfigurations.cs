@@ -18,7 +18,7 @@ namespace Ntreev.Crema.Repository.Svn
 
         }
 
-        [ConfigurationProperty]
+        [ConfigurationProperty(ScopeType = typeof(ICremaConfiguration))]
         [DefaultValue(null)]
         public string ExecutablePath
         {
@@ -26,7 +26,7 @@ namespace Ntreev.Crema.Repository.Svn
             set => SvnCommand.ExecutablePath = value;
         }
 
-        [ConfigurationProperty]
+        [ConfigurationProperty(ScopeType = typeof(ICremaConfiguration))]
         [DefaultValue(0)]
         public int MaxLogCount
         {

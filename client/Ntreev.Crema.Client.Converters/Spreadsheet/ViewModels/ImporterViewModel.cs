@@ -71,12 +71,12 @@ namespace Ntreev.Crema.Client.Converters.Spreadsheet.ViewModels
                 item.Read(dataSet);
             }
 
-            this.configs.Commit(this);
+            
             this.importedItems = this.itemsSource.Descendants<TreeViewItemViewModel, SheetTreeViewItemViewModel>(item => item.Items)
                                      .Where(item => item.IsChecked == true)
                                      .Select(item => item.Path)
                                      .ToArray();
-            this.configs[this.GetType(), "importedItems"] = this.importedItems;
+            this.configs.Commit(this);
         }
 
         public string Name
@@ -207,10 +207,6 @@ namespace Ntreev.Crema.Client.Converters.Spreadsheet.ViewModels
         {
             base.OnViewLoaded(view);
             this.configs.Update(this);
-            if (this.configs.TryParse<string[]>(this.GetType(), "importedItems", out var importedItems) == true)
-            {
-                this.importedItems = importedItems;
-            }
         }
 
         private async void Initialize()
@@ -271,6 +267,16 @@ namespace Ntreev.Crema.Client.Converters.Spreadsheet.ViewModels
 
             this.CanImport = count > 0;
             this.NotifyOfPropertyChange(nameof(this.IsAllSelected));
+        }
+
+        [ConfigurationProperty]
+        private string[] ImportedItems
+        {
+            get { return this.importedItems; }
+            set
+            {
+                this.importedItems = value ?? new string[] { };
+            }
         }
     }
 }

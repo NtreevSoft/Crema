@@ -16,6 +16,7 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Ntreev.Library;
+using Ntreev.Library.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,12 +29,70 @@ namespace Ntreev.Crema.Services
     {
         void Commit(object target);
 
-        bool TryParse<T>(Type type, string key, out T value);
+        bool Contains(string name);
 
-        object this[Type type, string key] { get; set; }
+        object this[string name] { get; set; }
 
         void Update(object target);
+    }
 
-        ConfigurationPropertyDescriptorCollection Properties { get; }
+    public static class ICremaConfigurationExtensions
+    {
+        //public static bool TryGetValue<T>(this ICremaConfiguration config, Type section, Type type, string key, out T value)
+        //{
+        //    var configItem = new ConfigurationItem(section.Name, type.FullName, key);
+        //    if (config.Contains(configItem) == true)
+        //    {
+        //        value = (T)config[configItem];
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        value = default(T);
+        //        return false;
+        //    }
+        //}
+
+        public static bool TryGetValue<T>(this ICremaConfiguration config, Type section, string key, out T value)
+        {
+            var configItem = new ConfigurationItem(section.Name, key);
+            if (config.Contains(configItem) == true)
+            {
+                try
+                {
+                    if (ConfigurationBase.CanSupportType(typeof(T)) == true)
+                    {
+                        value = (T)config[configItem];
+                        return true;
+                    }
+                    else
+                    {
+                        var text = (string)config[configItem];
+                        value = XmlSerializerUtility.ReadString<T>(text.Decrypt());
+                        return true;
+                    }
+                }
+                catch
+                {
+
+                }
+            }
+
+            value = default(T);
+            return false;
+        }
+
+        public static void SetValue<T>(this ICremaConfiguration config, Type section, string key, T value)
+        {
+            var configItem = new ConfigurationItem(section.Name, key);
+            if (ConfigurationBase.CanSupportType(typeof(T)) == true)
+            {
+                config[configItem] = value;
+            }
+            else
+            {
+                config[configItem] = XmlSerializerUtility.GetString(value).Encrypt();
+            }
+        }
     }
 }

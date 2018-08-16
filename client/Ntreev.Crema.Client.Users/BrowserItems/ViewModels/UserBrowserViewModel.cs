@@ -33,6 +33,7 @@ using Ntreev.ModernUI.Framework;
 using Ntreev.Crema.Client.Users.Dialogs.ViewModels;
 using Ntreev.ModernUI.Framework.ViewModels;
 using Ntreev.Crema.Client.Users.Properties;
+using Ntreev.Library;
 
 namespace Ntreev.Crema.Client.Users.BrowserItems.ViewModels
 {
@@ -96,7 +97,7 @@ namespace Ntreev.Crema.Client.Users.BrowserItems.ViewModels
 
         private void CremaAppHost_Closed(object sender, EventArgs e)
         {
-            this.SaveSettings();
+            this.cremaAppHost.UserConfigs.Commit(this);
             this.FilterExpression = string.Empty;
             this.Items.Clear();
         }
@@ -114,7 +115,7 @@ namespace Ntreev.Crema.Client.Users.BrowserItems.ViewModels
                 this.compositionService.SatisfyImportsOnce(viewModel);
                 this.Items.Add(viewModel);
 
-                this.LoadSettings();
+                this.cremaAppHost.UserConfigs.Update(this);
             }
         }
 
@@ -148,20 +149,6 @@ namespace Ntreev.Crema.Client.Users.BrowserItems.ViewModels
             }
         }
 
-        private void SaveSettings()
-        {
-            var items = this.GetSettings();
-            this.cremaAppHost.UserConfigs[this.GetType(), nameof(TreeViewViewModel)] = items;
-        }
-
-        private void LoadSettings()
-        {
-            if (this.cremaAppHost.UserConfigs.TryParse<string[]>(this.GetType(), nameof(TreeViewViewModel), out var savedItems) == true)
-            {
-                this.SetSettings(savedItems);
-            }
-        }
-
         private void Delete_Execute(object parameter)
         {
             if (parameter is UserTreeViewItemViewModel userViewModel)
@@ -185,6 +172,16 @@ namespace Ntreev.Crema.Client.Users.BrowserItems.ViewModels
                 return categoryViewModel.DeleteCommand.CanExecute(parameter);
             }
             return false;
+        }
+
+        [ConfigurationProperty(ScopeType = typeof(ICremaConfiguration))]
+        private string[] Settings
+        {
+            get { return this.GetSettings(); }
+            set
+            {
+                this.SetSettings(value);
+            }
         }
 
         private IShell Shell => this.shell.Value;

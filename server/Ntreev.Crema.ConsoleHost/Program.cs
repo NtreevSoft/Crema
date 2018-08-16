@@ -90,7 +90,7 @@ namespace Ntreev.Crema.ConsoleHost
 #endif
 
                     commandContext.Execute(Environment.CommandLine);
-                    configs.Commit();
+                    configs.Write();
                 }
             }
             catch (Exception e)

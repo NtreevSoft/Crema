@@ -48,7 +48,7 @@ namespace Ntreev.Crema.Client.Converters.Dialogs.ViewModels
         private readonly IDataBase dataBase;
         private readonly IImportService importService;
         private readonly Authentication authentication;
-        private readonly IAppConfiguration configService;
+        private readonly IAppConfiguration configs;
         private readonly ObservableCollection<IImporter> importers;
         private IImporter selectedImporter;
         private bool isImporting;
@@ -62,9 +62,9 @@ namespace Ntreev.Crema.Client.Converters.Dialogs.ViewModels
             this.dataBase = dataBase;
             this.dataBase.Dispatcher.VerifyAccess();
             this.importService = dataBase.GetService(typeof(IImportService)) as IImportService;
-            this.configService = dataBase.GetService(typeof(IAppConfiguration)) as IAppConfiguration;
+            this.configs = dataBase.GetService(typeof(IAppConfiguration)) as IAppConfiguration;
             this.importers = new ObservableCollection<IImporter>(this.importService.Importers);
-            this.SelectedImporter = this.importers.FirstOrDefault(item => item.Name == (string)this.configService[this.GetType(), "SelectedImporter"]);
+            this.configs.Update(this);
         }
 
         public static Task<ImportViewModel> CreateInstanceAsync(Authentication authentication, IDataBase dataBase)
@@ -89,7 +89,7 @@ namespace Ntreev.Crema.Client.Converters.Dialogs.ViewModels
                 await this.dataBase.Dispatcher.InvokeAsync(() => this.CreateTables(dataSet, tableNames));
                 await Task.Run(() => this.selectedImporter.Import(dataSet));
                 await this.dataBase.Dispatcher.InvokeAsync(() => dataBase.Import(this.authentication, dataSet, this.Comment));
-                this.configService[this.GetType(), nameof(SelectedImporter)] = this.selectedImporter.Name;
+                this.configs.Commit(this);
                 AppMessageBox.Show(Resources.Message_Imported);
             }
             catch (Exception e)
@@ -250,6 +250,19 @@ namespace Ntreev.Crema.Client.Converters.Dialogs.ViewModels
                 if (tableInfo.TemplatedParent != string.Empty)
                     tableInfo.TemplatedParent = string.Empty;
                 return tableInfo;
+            }
+        }
+
+        [ConfigurationProperty("SelectedImporter")]
+        private string SelectedImporterName
+        {
+            get { return this.selectedImporter?.Name; }
+            set
+            {
+                if (value != null)
+                {
+                    this.SelectedImporter = this.importers.FirstOrDefault(item => item.Name == (string)value);
+                }
             }
         }
     }

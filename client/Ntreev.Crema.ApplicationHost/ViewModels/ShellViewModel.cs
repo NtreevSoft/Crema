@@ -65,10 +65,7 @@ namespace Ntreev.Crema.ApplicationHost.ViewModels
             this.cremaHost = cremaHost;
             this.cremaHost.Opened += (s, e) =>
             {
-                if (this.cremaHost.Configs.TryParse<string>(this.GetType(), "selectedServiceType", out var selectedServiceType) == true)
-                {
-                    this.selectedServiceType = selectedServiceType;
-                }
+                this.cremaHost.Configs.Update(this);
             };
             this.cremaAppHost = cremaAppHost;
             this.cremaAppHost.Opened += CremaAppHost_Opened;
@@ -112,7 +109,7 @@ namespace Ntreev.Crema.ApplicationHost.ViewModels
             {
                 if (Keyboard.IsKeyDown(Key.LeftShift) == true)
                     return 700;
-                return  Ntreev.Crema.ApplicationHost.Properties.Settings.Default.Width;
+                return Ntreev.Crema.ApplicationHost.Properties.Settings.Default.Width;
             }
             set
             {
@@ -205,7 +202,7 @@ namespace Ntreev.Crema.ApplicationHost.ViewModels
                     var contentService = this.selectedService as IContentService;
                     //this.ActivateItem(contentService);
                     this.selectedServiceType = contentService.GetType().FullName;
-                    this.cremaHost.Configs[this.GetType(), "selectedServiceType"] = this.selectedServiceType;
+                    this.cremaHost.Configs.Commit(this);
                 }
 
                 this.OnServiceChanged(EventArgs.Empty);
@@ -309,6 +306,13 @@ namespace Ntreev.Crema.ApplicationHost.ViewModels
         private void CremaAppHost_Closed(object sender, EventArgs e)
         {
             this.SelectedService = this.cremaAppHost;
+        }
+
+        [ConfigurationProperty]
+        private string SelectedServiceType
+        {
+            get { return this.selectedServiceType; }
+            set { this.selectedServiceType = value; }
         }
     }
 }

@@ -54,7 +54,7 @@ namespace Ntreev.Crema.Client.Base
             if (expander.DataContext == null)
                 return;
 
-            if (this.configs.TryParse<bool>(expander.DataContext.GetType(), nameof(expander.IsExpanded), out var isExpanded) == true)
+            if (this.configs.TryGetValue<bool>(this.GetType(), expander.DataContext.GetType(), nameof(expander.IsExpanded), out var isExpanded) == true)
             {
                 expander.IsExpanded = isExpanded;
             }
@@ -66,7 +66,7 @@ namespace Ntreev.Crema.Client.Base
             if (expander.DataContext == null)
                 return;
 
-            this.configs[expander.DataContext.GetType(), nameof(expander.IsExpanded)] = expander.IsExpanded;
+            this.configs.SetValue(this.GetType(), expander.DataContext.GetType(), nameof(expander.IsExpanded), expander.IsExpanded);
         }
     }
 }

@@ -59,7 +59,7 @@ namespace Ntreev.Crema.Presentation.Controls
                     var dataContext = container.GetValue(DataContextProperty);
                     if (dataContext != null)
                     {
-                        configs[dataContext.GetType(), nameof(BrowserExpander.IsExpanded)] = GetIsExpanded(container);
+                        configs.SetValue(typeof(BrowserItemsControl), dataContext.GetType(), nameof(BrowserExpander.IsExpanded), GetIsExpanded(container));
                     }
                 }
             }
@@ -72,7 +72,7 @@ namespace Ntreev.Crema.Presentation.Controls
                 if (this.ItemContainerGenerator.ContainerFromItem(item) is DependencyObject container)
                 {
                     var dataContext = container.GetValue(DataContextProperty);
-                    if (dataContext != null && configs.TryParse<bool>(dataContext.GetType(), nameof(BrowserExpander.IsExpanded), out var isExpanded) == true)
+                    if (dataContext != null && configs.TryGetValue<bool>(typeof(BrowserItemsControl), dataContext.GetType(), nameof(BrowserExpander.IsExpanded), out var isExpanded) == true)
                     {
                         SetIsExpanded(container, isExpanded);
                     }

@@ -28,19 +28,10 @@ namespace Ntreev.Crema.ConsoleHost
     {
         void Commit(object target);
 
-        bool TryParse<T>(Type type, string key, out T value);
+        bool Contains(string name);
 
-        object this[Type type, string key]
-        {
-            get;
-            set;
-        }
+        object this[string name] { get; set; }
 
         void Update(object target);
-
-        ConfigurationPropertyDescriptorCollection Properties
-        {
-            get;
-        }
     }
 }

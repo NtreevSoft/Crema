@@ -31,18 +31,15 @@ namespace Ntreev.Crema.ConsoleHost
     public class ConfigurationProperties : IConfigurationProperties
     {
         private readonly ICremaHost cremaHost;
-        private readonly ConfigurationPropertyDescriptorCollection properties = new ConfigurationPropertyDescriptorCollection();
+        private readonly ConfigurationPropertyDescriptorCollection properties;
 
         [ImportingConstructor]
-        public ConfigurationProperties(IConsoleConfiguration configs, ICremaHost cremaHost)
+        public ConfigurationProperties(IConsoleConfiguration configs, ICremaHost cremaHost, [ImportMany]IEnumerable<IConfigurationPropertyProvider> providers)
         {
             this.cremaHost = cremaHost;
             this.cremaHost.Opened += CremaHost_Opened;
             this.cremaHost.Closed += CremaHost_Closed;
-            foreach (var item in configs.Properties)
-            {
-                this.properties.Add(item);
-            }
+            this.properties = new ConfigurationPropertyDescriptorCollection(providers);
         }
 
         public ConfigurationPropertyDescriptorCollection Properties => this.properties;

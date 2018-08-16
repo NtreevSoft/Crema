@@ -11,29 +11,45 @@ using System.Threading.Tasks;
 namespace Ntreev.Crema.Repository.Git
 {
     [Export(typeof(IConfigurationPropertyProvider))]
-    class GitConfigurations : IConfigurationPropertyProvider
+    class GitConfigurations : IConfigurationPropertyProvider, INotifyPropertyChanged
     {
         public GitConfigurations()
         {
 
         }
 
-        [ConfigurationProperty]
+        [ConfigurationProperty(ScopeType = typeof(ICremaConfiguration))]
         [DefaultValue(null)]
+        [Description("git의 실행 경로를 나타냅니다.")]
         public string ExecutablePath
         {
             get => GitCommand.ExecutablePath;
-            set => GitCommand.ExecutablePath = value;
+            set
+            {
+                GitCommand.ExecutablePath = value;
+                this.OnPropertyChanged(new PropertyChangedEventArgs(nameof(ExecutablePath)));
+            }
         }
 
-        [ConfigurationProperty]
+        [ConfigurationProperty(ScopeType = typeof(ICremaConfiguration))]
         [DefaultValue(0)]
         public int MaxLogCount
         {
             get => GitLogInfo.MaxCount;
-            set => GitLogInfo.MaxCount = value;
+            set
+            {
+                GitLogInfo.MaxCount = value;
+                this.OnPropertyChanged(new PropertyChangedEventArgs(nameof(MaxLogCount)));
+            }
         }
 
         public string Name => "git";
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
+        {
+            this.PropertyChanged?.Invoke(this, e);
+        }
     }
 }

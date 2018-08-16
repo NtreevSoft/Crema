@@ -52,7 +52,7 @@ namespace Ntreev.Crema.Services
         private ShutdownTimer shutdownTimer;
 
         [ImportMany]
-        private IEnumerable<IConfigurationPropertyProvider> propertiesProvider = null;
+        private IEnumerable<IConfigurationPropertyProvider> propertiesProviders = null;
 
         [ImportingConstructor]
         public CremaHost(CremaSettings settings,
@@ -133,7 +133,7 @@ namespace Ntreev.Crema.Services
                     this.Info(Resources.Message_ProgramInfo, AppUtility.ProductName, AppUtility.ProductVersion);
                     this.Info("Repository module : {0}", this.settings.RepositoryModule);
                     this.Info(Resources.Message_ServiceStart);
-                    this.configs = new CremaConfiguration(Path.Combine(this.BasePath, "configs.xml"), this.propertiesProvider);
+                    this.configs = new CremaConfiguration(Path.Combine(this.BasePath, "configs"), this.propertiesProviders);
                     this.UserContext = new UserContext(this);
                     this.UserContext.Dispatcher.Invoke(() => this.UserContext.Initialize());
                     this.DataBases = new DataBaseCollection(this, this.repositoryProvider);
