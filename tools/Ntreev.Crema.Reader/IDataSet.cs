@@ -26,7 +26,7 @@ namespace Ntreev.Crema.Reader
     {
         ITableCollection Tables { get; }
 
-        int Revision { get; }
+        string Revision { get; }
 
         string TypesHashValue { get; }
 

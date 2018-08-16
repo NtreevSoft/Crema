@@ -42,16 +42,16 @@ namespace Ntreev.Crema.Javascript.Methods.DataBase
 
         protected override Delegate CreateDelegate()
         {
-            return new Func<string, string, IDictionary<string, object>[]>(GetTableItemLogInfo);
+            return new Func<string, string, string, IDictionary<string, object>[]>(GetTableItemLogInfo);
         }
 
-        private IDictionary<string, object>[] GetTableItemLogInfo(string dataBaseName, string tableItemPath)
+        private IDictionary<string, object>[] GetTableItemLogInfo(string dataBaseName, string tableItemPath, string revision = null)
         {
             var tableItem = this.GetTableItem(dataBaseName, tableItemPath);
             var authentication = this.Context.GetAuthentication(this);
             return tableItem.Dispatcher.Invoke(() =>
             {
-                var logInfos = tableItem.GetLog(authentication);
+                var logInfos = tableItem.GetLog(authentication, revision);
                 return this.GetLogInfo(logInfos);
             });
         }

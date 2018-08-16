@@ -151,7 +151,7 @@ namespace Ntreev.Crema.Services.Data
 
                     this.repositoryDispatcher.Invoke(() =>
                     {
-                        this.repositoryProvider.CreateRepository(authentication, this.remotesPath, dataBasePath, message);
+                        this.repositoryProvider.CreateRepository(authentication, this.remotesPath, dataBasePath, comment);
                     });
                 }
                 finally
@@ -182,7 +182,7 @@ namespace Ntreev.Crema.Services.Data
                 var message = EventMessageBuilder.CreateDataBase(authentication, newDataBaseName) + ": " + comment;
                 this.repositoryDispatcher.Invoke(() =>
                 {
-                    this.repositoryProvider.CopyRepository(authentication, this.remotesPath, dataBaseName, newDataBaseName, message);
+                    this.repositoryProvider.CopyRepository(authentication, this.remotesPath, dataBaseName, newDataBaseName, comment);
                 });
                 var newDataBase = new DataBase(this.CremaHost, newDataBaseName);
                 this.AddBase(newDataBase.Name, newDataBase);
@@ -226,6 +226,19 @@ namespace Ntreev.Crema.Services.Data
             this.RemoveBase(dataBase.Name);
         }
 
+        public void InvokeDataBaseRevert(Authentication authentication, DataBase dataBase, string revision)
+        {
+            this.CremaHost.DebugMethod(authentication, this, nameof(InvokeDataBaseRevert), dataBase, revision);
+            this.ValidateRevertDataBase(authentication, dataBase, revision);
+
+            var dataBaseName = dataBase.Name;
+            var comment = $"revert to {revision}";
+            this.repositoryDispatcher.Invoke(() =>
+            {
+                this.repositoryProvider.RevertRepository(authentication.ID, this.remotesPath, dataBaseName, revision, comment);
+            });
+        }
+
         public DataBaseCollectionMetaData GetMetaData(Authentication authentication)
         {
             if (authentication == null)
@@ -263,6 +276,15 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.Debug(eventLog);
             this.CremaHost.Info(message);
             this.OnItemsDeleted(new ItemsDeletedEventArgs<IDataBase>(authentication, items, paths));
+        }
+
+        public void InvokeItemsRevertedEvent(Authentication authentication, IDataBase[] items, string[] revisions)
+        {
+            var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsRevertedEvent), items, revisions);
+            var message = EventMessageBuilder.RevertDataBase(authentication, items, revisions);
+            this.CremaHost.Debug(eventLog);
+            this.CremaHost.Info(message);
+            this.OnItemsInfoChanged(new ItemsEventArgs<IDataBase>(authentication, items));
         }
 
         public void InvokeItemsLoadedEvent(Authentication authentication, IDataBase[] items)
@@ -756,6 +778,14 @@ namespace Ntreev.Crema.Services.Data
 
             if (dataBase.IsLoaded == true)
                 throw new InvalidOperationException(Resources.Exception_DataBaseHasBeenLoaded);
+        }
+
+        private void ValidateRevertDataBase(Authentication authentication, DataBase dataBase, string revision)
+        {
+            if (authentication.IsSystem == false && authentication.IsAdmin == false)
+                throw new PermissionDeniedException();
+            if (dataBase.IsLoaded == true)
+                throw new InvalidOperationException(Resources.Exception_LoadedDataBaseCannotRevert);
         }
 
         private Dictionary<string, DataBaseSerializationInfo> ReadCaches()

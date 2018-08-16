@@ -54,6 +54,20 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.Debug("TypeContext is created.");
         }
 
+        //public void Import(Authentication authentication, CremaDataSet dataSet, string comment)
+        //{
+        //    this.Dispatcher?.VerifyAccess();
+        //    this.CremaHost.DebugMethod(authentication, this, nameof(Import), comment);
+        //    throw new NotImplementedException();
+        //}
+
+        public void Dispose()
+        {
+            var userContext = this.CremaHost.UserContext;
+            this.dataBase = null;
+            userContext.Dispatcher.Invoke(() => userContext.Users.UsersLoggedOut -= Users_UsersLoggedOut);
+        }
+
         public void InvokeTypeItemLock(Authentication authentication, ITypeItem typeItem, string comment)
         {
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeTypeItemLock), typeItem, comment);
@@ -154,21 +168,7 @@ namespace Ntreev.Crema.Services.Data
                 throw;
             }
         }
-
-        public void Import(Authentication authentication, CremaDataSet dataSet, string comment)
-        {
-            this.Dispatcher?.VerifyAccess();
-            this.CremaHost.DebugMethod(authentication, this, nameof(Import), comment);
-            throw new NotImplementedException();
-        }
-
-        public void Dispose()
-        {
-            var userContext = this.CremaHost.UserContext;
-            this.dataBase = null;
-            userContext.Dispatcher.Invoke(() => userContext.Users.UsersLoggedOut -= Users_UsersLoggedOut);
-        }
-
+        
         public void InvokeItemsSetPublicEvent(Authentication authentication, ITypeItem[] items)
         {
             var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeItemsSetPublicEvent), items);
@@ -264,14 +264,15 @@ namespace Ntreev.Crema.Services.Data
             this.OnItemsChanged(new ItemsEventArgs<ITypeItem>(authentication, items, metaData));
         }
 
-        public LogInfo[] GetLog(string[] itemPaths)
+        public LogInfo[] GetTypeLog(string itemPath, string revision)
         {
-            return this.Repository.GetLog(itemPaths, null, 100);
+            var files = this.GetFiles(itemPath);
+            return this.Repository.GetLog(files, revision);
         }
 
-        public LogInfo[] GetCategoryLog(string localPath)
+        public LogInfo[] GetCategoryLog(string localPath, string revision)
         {
-            return this.Repository.GetLog(new string[] { localPath }, null, 100);
+            return this.Repository.GetLog(new string[] { localPath }, revision);
         }
 
         public string GenerateCategoryPath(string parentPath, string name)
@@ -581,6 +582,11 @@ namespace Ntreev.Crema.Services.Data
                 }
             }
             this.CremaHost.Debug("TypeLoadingCompleted.");
+        }
+
+        private void Sign(Authentication authentication)
+        {
+            authentication.Sign();
         }
 
         private ITypeItem GetTypeItemByItemPath(string itemPath)

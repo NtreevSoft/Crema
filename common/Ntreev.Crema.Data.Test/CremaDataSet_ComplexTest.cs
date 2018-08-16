@@ -28,6 +28,7 @@ using Ntreev.Library.Random;
 using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Library.IO;
 using System.Threading;
+using Ntreev.Library;
 
 namespace Ntreev.Crema.Data.Test
 {
@@ -802,6 +803,34 @@ namespace Ntreev.Crema.Data.Test
 
             Assert.AreEqual(childTable1.Name, derivedChild1.TemplatedParentName);
             Assert.AreEqual(childTable2.Name, derivedChild2.TemplatedParentName);
+        }
+
+        [TestMethod]
+        public void SignatureDateTest()
+        {
+            var dataSet = new CremaDataSet();
+            var identifier = RandomUtility.NextIdentifier();
+            dataSet.SignatureDateProvider = new SignatureDateProvider(identifier);
+            var table1 = dataSet.Tables.Add();
+            var derived1 = table1.Inherit();
+            var child1 = table1.Childs.Add();
+            var child2 = derived1.Childs[child1.TableName];
+            var cc1 = child1.Childs.Add();
+            var cc2 = child1.Childs[cc1.TableName];
+
+            Assert.AreEqual(table1.CreationInfo.ID, identifier);
+            Assert.AreEqual(derived1.CreationInfo.ID, identifier);
+            Assert.AreEqual(child1.CreationInfo.ID, identifier);
+            Assert.AreEqual(child2.CreationInfo.ID, identifier);
+            Assert.AreEqual(cc1.CreationInfo.ID, identifier);
+            Assert.AreEqual(cc2.CreationInfo.ID, identifier);
+
+            Assert.AreNotEqual(table1.CreationInfo.DateTime, DateTime.MinValue);
+            Assert.AreNotEqual(derived1.CreationInfo.DateTime, DateTime.MinValue);
+            Assert.AreNotEqual(child1.CreationInfo.DateTime, DateTime.MinValue);
+            Assert.AreNotEqual(child2.CreationInfo.DateTime, DateTime.MinValue);
+            Assert.AreNotEqual(cc1.CreationInfo.DateTime, DateTime.MinValue);
+            Assert.AreNotEqual(cc2.CreationInfo.DateTime, DateTime.MinValue);
         }
     }
 }

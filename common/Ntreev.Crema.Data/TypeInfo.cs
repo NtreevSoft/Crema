@@ -113,7 +113,6 @@ namespace Ntreev.Crema.Data
                 { CremaSchema.ModifiedDateTime, this.ModificationInfo.DateTime },
                 { nameof(this.Members), this.GetMembersInfo(this.Members) }
             };
-
             return props;
         }
 

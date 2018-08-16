@@ -34,7 +34,7 @@ namespace Ntreev.Crema.Client.Users.PropertyItems.ViewModels
 {
     [Export(typeof(IPropertyItem))]
     [RequiredAuthority(Authority.Guest)]
-    [ParentType("Ntreev.Crema.Client.Base.IPropertyService, Ntreev.Crema.Client.Base, Version=3.6.0.0, Culture=neutral, PublicKeyToken=null")]
+    [ParentType("Ntreev.Crema.Client.Base.IPropertyService, Ntreev.Crema.Client.Base, Version=4.0.0.0, Culture=neutral, PublicKeyToken=null")]
     class DomainsViewModel : PropertyItemBase
     {
         private readonly ICremaAppHost cremaAppHost;
@@ -167,6 +167,8 @@ namespace Ntreev.Crema.Client.Users.PropertyItems.ViewModels
             if (sender is IDomainCollection domainCollection)
             {
                 var domain = e.Domain;
+                if (domain.Dispatcher == null)
+                    return;
                 var viewModel = domain.Dispatcher.Invoke(() => new DomainTreeItemBase(this.authenticator, domain, true, this));
                 this.Dispatcher.InvokeAsync(() =>
                 {

@@ -102,7 +102,7 @@ namespace Ntreev.Crema.Services.Test.Deleted_DispatcherTest
         [ExpectedException(typeof(InvalidOperationException))]
         public void GetLog()
         {
-            type.GetLog(authentication);
+            type.GetLog(authentication, null);
         }
 
         [TestMethod]

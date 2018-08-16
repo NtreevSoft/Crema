@@ -61,6 +61,7 @@
     <Compile Include="CremaConfiguration.cs" />
     <Compile Include="CremaBootstrapper.cs" />
     <Compile Include="Authentication.cs" />
+    <Compile Include="CremaSettings.cs" />
     <Compile Include="Data\DataBaseCollectionServiceFactory.cs" />
     <Compile Include="Data\DataBaseCollection.cs" />
     <Compile Include="Data\DataBaseTransaction.cs" />
@@ -324,9 +325,7 @@
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\DataSources\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="..\..\common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems" Label="Shared" />
   <Import Project="..\..\common\Ntreev.Crema.Services.Sharing\Ntreev.Crema.Services.Sharing.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

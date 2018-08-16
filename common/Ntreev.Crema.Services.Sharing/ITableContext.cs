@@ -26,8 +26,6 @@ namespace Ntreev.Crema.Services
 {
     public interface ITableContext : IEnumerable<ITableItem>, IServiceProvider
     {
-        void Import(Authentication authentication, CremaDataSet dataSet, string comment);
-
         bool Contains(string itemPath);
 
         ITableCollection Tables { get; }

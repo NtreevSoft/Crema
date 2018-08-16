@@ -562,27 +562,13 @@ namespace Ntreev.Crema.Data
         public InternalTableBase TemplatedParent
         {
             get => this.InternalTemplatedParent;
-            set
-            {
-                this.InternalTemplatedParent = value;
-                foreach (var item in this.ChildItems)
-                {
-                    item.TemplatedParent = value?.GetChild(item.LocalName);
-                }
-            }
+            set => this.InternalTemplatedParent = value;
         }
 
         public string TemplateNamespace
         {
             get => this.templateNamespace ?? string.Empty;
-            set
-            {
-                this.templateNamespace = value;
-                foreach (var item in this.ChildItems)
-                {
-                    item.TemplateNamespace = templateNamespace + "." + item.LocalName;
-                }
-            }
+            set => this.templateNamespace = value;
         }
 
         public string TemplatedParentName
@@ -685,6 +671,7 @@ namespace Ntreev.Crema.Data
                 }
 
                 this.BuildNamespace();
+                this.InvokePropertyChangedEvent(nameof(this.Name));
                 this.InvokePropertyChangedEvent(nameof(this.LocalName));
             }
         }
@@ -752,6 +739,12 @@ namespace Ntreev.Crema.Data
                     this.InternalName = $"{this.parent.Name}.{this.LocalName}";
 
                     this.CreateParentColumn();
+
+                    var relationName = InternalSetBase.GenerateRelationName(this);
+                    if (this.DataSet?.Relations.Contains(relationName) == false)
+                    {
+                        InternalSetBase.AddRelation(this.DataSet, this.parent, this);
+                    }
 
                     if (this.parent.TemplatedParent != null)
                         this.InternalTemplatedParent = this.parent.TemplatedParent.GetChild(this.LocalName);

@@ -15,6 +15,8 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.Commands.Consoles.Properties;
+using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services;
 using Ntreev.Library;
@@ -42,41 +44,41 @@ namespace Ntreev.Crema.Commands.Consoles
             this.cremaHost = cremaHost;
         }
 
-        [CommandMethod]
-        [CommandMethodProperty(nameof(IsCancelled), nameof(IsForce))]
-        public void Delete([CommandCompletion(nameof(GetDomainIDs))]Guid domainID)
-        {
-            var domain = this.GetDomain(domainID);
-            var dataBase = this.cremaHost.Dispatcher.Invoke(() => this.cremaHost.DataBases.FirstOrDefault(item => item.ID == domain.DataBaseID));
-            var isLoaded = dataBase.Dispatcher.Invoke(() => dataBase.IsLoaded);
+        //[CommandMethod]
+        //[CommandMethodProperty(nameof(IsCancelled), nameof(IsForce))]
+        //public void Delete([CommandCompletion(nameof(GetDomainIDs))]string domainID = null)
+        //{
+        //    var domain = this.GetDomain(Guid.Parse(domainID));
+        //    var dataBase = this.cremaHost.Dispatcher.Invoke(() => this.cremaHost.DataBases.FirstOrDefault(item => item.ID == domain.DataBaseID));
+        //    var isLoaded = dataBase.Dispatcher.Invoke(() => dataBase.IsLoaded);
 
-            if (isLoaded == false && this.IsForce == false)
-                throw new ArgumentException($"'{dataBase}' database is not loaded.");
+        //    if (isLoaded == false && this.IsForce == false)
+        //        throw new ArgumentException($"'{dataBase}' database is not loaded.");
 
-            var authentication = this.CommandContext.GetAuthentication(this);
-            domain.Dispatcher.Invoke(() => domain.Delete(authentication, this.IsCancelled));
-        }
+        //    var authentication = this.CommandContext.GetAuthentication(this);
+        //    domain.Dispatcher.Invoke(() => domain.Delete(authentication, this.IsCancelled));
+        //}
 
-        [CommandMethod]
-        [CommandMethodProperty(nameof(IsCancelled), nameof(IsForce))]
-        public void DeleteAll([CommandCompletion(nameof(GetDataBaseNames))]string dataBaseName)
-        {
-            var dataBase = this.cremaHost.Dispatcher.Invoke(() => this.cremaHost.DataBases[dataBaseName]);
-            if (dataBase == null)
-                throw new DataBaseNotFoundException(dataBaseName);
+        //[CommandMethod]
+        //[CommandMethodProperty(nameof(IsCancelled), nameof(IsForce))]
+        //public void DeleteAll([CommandCompletion(nameof(GetDataBaseNames))]string dataBaseName)
+        //{
+        //    var dataBase = this.cremaHost.Dispatcher.Invoke(() => this.cremaHost.DataBases[dataBaseName]);
+        //    if (dataBase == null)
+        //        throw new DataBaseNotFoundException(dataBaseName);
 
-            var isLoaded = dataBase.Dispatcher.Invoke(() => dataBase.IsLoaded);
-            if (isLoaded == false && this.IsForce == false)
-                throw new ArgumentException($"'{dataBase}' database is not loaded.");
+        //    var isLoaded = dataBase.Dispatcher.Invoke(() => dataBase.IsLoaded);
+        //    if (isLoaded == false && this.IsForce == false)
+        //        throw new ArgumentException($"'{dataBase}' database is not loaded.");
 
-            var domains = this.DomainContext.Dispatcher.Invoke(() => this.DomainContext.Domains.Where(item => item.DataBaseID == dataBase.ID).ToArray());
-            var authentication = this.CommandContext.GetAuthentication(this);
+        //    var domains = this.DomainContext.Dispatcher.Invoke(() => this.DomainContext.Domains.Where(item => item.DataBaseID == dataBase.ID).ToArray());
+        //    var authentication = this.CommandContext.GetAuthentication(this);
 
-            foreach (var item in domains)
-            {
-                item.Dispatcher.Invoke(() => item.Delete(authentication, this.IsCancelled));
-            }
-        }
+        //    foreach (var item in domains)
+        //    {
+        //        item.Dispatcher.Invoke(() => item.Delete(authentication, this.IsCancelled));
+        //    }
+        //}
 
         [CommandMethod("list")]
         [CommandMethodProperty(nameof(DataBaseName))]
@@ -101,71 +103,45 @@ namespace Ntreev.Crema.Commands.Consoles
             var query = from domainInfo in domainInfos
                         join dataBaseInfo in dataBaseInfos on domainInfo.DataBaseID equals dataBaseInfo.ID
                         where this.DataBaseName == string.Empty || (dataBaseInfo.Name == this.DataBaseName)
-                        group domainInfo.DomainID by dataBaseInfo.Name into g
+                        group $"{domainInfo.DomainID}" by dataBaseInfo.Name into g
                         select g;
 
             if (query.Any())
             {
                 foreach (var item in query)
                 {
-                    this.Out.WriteLine();
-                    this.Out.WriteLine($"DataBaseName: {item.Key}");
-                    this.Out.Print(item.ToArray());
+                    this.CommandContext.WriteLine($"{item.Key}:");
+                    this.CommandContext.WriteList(item.ToArray());
+                    this.CommandContext.WriteLine();
                 }
             }
             else
             {
-                this.Out.WriteLine();
-                this.Out.WriteLine("no domains");
+                this.CommandContext.WriteLine("no domains");
             }
-            this.Out.WriteLine();
         }
 
         [CommandMethod]
+        [CommandMethodStaticProperty(typeof(FormatProperties))]
         public void Info([CommandCompletion(nameof(GetDomainIDs))]Guid domainID)
         {
             var domain = this.GetDomain(domainID);
             var authentication = this.CommandContext.GetAuthentication(this);
-            var metaData = domain.Dispatcher.Invoke(() => domain.GetMetaData(authentication));
-            var domainInfo = metaData.DomainInfo;
-            var dataBaseName = this.cremaHost.Dispatcher.Invoke(() => this.cremaHost.DataBases[domainInfo.DataBaseID].Name);
-
-            var items = new Dictionary<string, object>
-            {
-                { $"{nameof(domainInfo.DomainID)}", domainInfo.DomainID },
-                { $"{nameof(domainInfo.DataBaseID)}", domainInfo.DataBaseID },
-                { $"DataBaseName", dataBaseName },
-                { $"{nameof(domainInfo.DomainType)}", domainInfo.DomainType },
-                { $"{nameof(domainInfo.ItemType)}", domainInfo.ItemType},
-                { $"{nameof(domainInfo.ItemPath)}", domainInfo.ItemPath },
-                { $"{nameof(domainInfo.CreationInfo)}", domainInfo.CreationInfo.ToLocalValue() },
-                { $"{nameof(domainInfo.ModificationInfo)}", domainInfo.ModificationInfo.ToLocalValue() },
-                { $"UserList", string.Empty },
-            };
-            this.Out.WriteLine();
-            this.Out.Print<object>(items);
-
-            var tableDataBuilder = new TableDataBuilder(nameof(DomainUserInfo.UserID), nameof(DomainUserInfo.UserName), nameof(DomainUserState), nameof(DomainUserInfo.AccessType));
-            foreach (var item in metaData.Users)
-            {
-                tableDataBuilder.Add(item.DomainUserInfo.UserID, item.DomainUserInfo.UserName, item.DomainUserState, item.DomainUserInfo.AccessType);
-            }
-            this.Out.PrintTableData(tableDataBuilder.Data, true);
-
-            this.Out.WriteLine();
+            var domainInfo = domain.Dispatcher.Invoke(() => domain.DomainInfo);
+            this.CommandContext.WriteObject(domainInfo.ToDictionary(), FormatProperties.Format);
         }
 
-        [CommandProperty("cancel", 'c')]
-        public bool IsCancelled
-        {
-            get; set;
-        }
+        //[CommandProperty("cancel", 'c')]
+        //public bool IsCancelled
+        //{
+        //    get; set;
+        //}
 
-        [CommandProperty("force", 'f')]
-        public bool IsForce
-        {
-            get; set;
-        }
+        //[CommandProperty("force", 'f')]
+        //public bool IsForce
+        //{
+        //    get; set;
+        //}
 
         [CommandProperty("database")]
         [DefaultValue("")]
@@ -211,9 +187,6 @@ namespace Ntreev.Crema.Commands.Consoles
             return domain;
         }
 
-        private ICremaHost CremaHost
-        {
-            get => this.cremaHost;
-        }
+        private ICremaHost CremaHost => this.cremaHost;
     }
 }

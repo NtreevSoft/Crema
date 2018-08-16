@@ -53,7 +53,7 @@ namespace Ntreev.Crema.Commands.Consoles.TableContent
             {
                 var dataSet = domain.Source as CremaDataSet;
                 var dataTable = dataSet.Tables[tableName];
-                ViewProperties.View(dataTable, this.Out);
+                ViewProperties.View(dataTable, this.CommandContext.Out);
             });
         }
     }

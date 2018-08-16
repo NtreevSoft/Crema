@@ -74,15 +74,18 @@ namespace Ntreev.Crema.Commands.Consoles
         }
 
         [CommandMethod]
-        public void List(string filter = "")
+        [CommandMethodStaticProperty(typeof(FilterProperties))]
+        public void List()
         {
-            var query = from item in this.Properties
-                        where StringUtility.GlobMany(item.PropertyName, filter)
-                        select new { Name = item.PropertyName, Value = XmlConvertUtility.ToString(item.Value) };
-
-            this.Out.WriteLine();
-            this.Out.PrintItems(query);
-            this.Out.WriteLine();
+            var props = new Dictionary<string, object>();
+            foreach (var item in this.Properties)
+            {
+                if (StringUtility.GlobMany(item.PropertyName, FilterProperties.FilterExpression) == true)
+                {
+                    props.Add(item.PropertyName, item.Value);
+                }
+            }
+            this.CommandContext.WriteObject(props, FormatProperties.Format);
         }
 
         [CommandMethod]
@@ -125,7 +128,7 @@ namespace Ntreev.Crema.Commands.Consoles
                     if (object.Equals(value1, value2) == false)
                     {
                         this.Properties[item.Key].Value = value1;
-                        this.Out.WriteLine($"{item.Key} : {value2} => {value1}");
+                        this.CommandContext.WriteLine($"{item.Key} : {value2} => {value1}");
                     }
                 }
             }

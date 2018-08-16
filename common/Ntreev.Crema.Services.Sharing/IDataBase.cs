@@ -39,11 +39,13 @@ namespace Ntreev.Crema.Services
 
         bool Contains(Authentication authentication);
 
-        LogInfo[] GetLog(Authentication authentication);
+        LogInfo[] GetLog(Authentication authentication, string revision);
 
         void Revert(Authentication authentication, string revision);
 
-        CremaDataSet GetDataSet(Authentication authentication, string revision);
+        void Import(Authentication authentication, CremaDataSet dataSet, string comment);
+
+        CremaDataSet GetDataSet(Authentication authentication, DataSetType dataSetType, string filterExpression, string revision);
 
         ITransaction BeginTransaction(Authentication authentication);
 

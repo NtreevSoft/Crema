@@ -197,10 +197,10 @@ namespace Ntreev.Crema.Services.Data
             return this.authentications.Contains(authentication);
         }
 
-        public LogInfo[] GetLog(Authentication authentication)
+        public LogInfo[] GetLog(Authentication authentication, string revision)
         {
             this.ValidateDispatcher();
-            return this.DataBases.GetLog(authentication, this);
+            return this.DataBases.GetLog(authentication, this, revision);
         }
 
         public void Revert(Authentication authentication, string revision)
@@ -209,11 +209,21 @@ namespace Ntreev.Crema.Services.Data
             this.DataBases.Revert(authentication, this, revision);
         }
 
-        public CremaDataSet GetDataSet(Authentication authentication, string revision)
+        public void Import(Authentication authentication, CremaDataSet dataSet, string comment)
         {
-            this.ValidateAsyncBeginInDataBase(authentication);
-            var result = this.Service.GetDataSet(revision);
-            result.Validate(authentication);
+            this.Dispatcher?.VerifyAccess();
+            this.CremaHost.DebugMethod(authentication, this, nameof(Import), comment);
+
+            var result = this.Service.ImportDataSet(dataSet, comment);
+            this.Sign(authentication, result);
+        }
+
+        public CremaDataSet GetDataSet(Authentication authentication, DataSetType dataSetType, string filterExpression, string revision)
+        {
+            this.ValidateGetDataSet(authentication);
+            this.CremaHost.DebugMethod(authentication, this, nameof(GetDataSet), this, dataSetType, filterExpression, revision);
+            var result = this.Service.GetDataSet(dataSetType, filterExpression, revision);
+            this.Sign(authentication, result);
             return result.Value;
         }
 
@@ -253,11 +263,16 @@ namespace Ntreev.Crema.Services.Data
         {
             if (this.Dispatcher == null)
                 throw new InvalidOperationException(Resources.Exception_InvalidObject);
-            this.Dispatcher.Invoke(() =>
-            {
-                if (authentication != Authentication.System && this.authentications.Contains(authentication) == false)
-                    throw new InvalidOperationException(Resources.Exception_NotInDataBase);
-            });
+            if (authentication != Authentication.System && this.authentications.Contains(authentication) == false)
+                throw new InvalidOperationException(Resources.Exception_NotInDataBase);
+        }
+
+        public void ValidateGetDataSet(Authentication authentication)
+        {
+            if (this.IsLoaded == false)
+                throw new NotImplementedException();
+            this.VerifyAccessType(authentication, AccessType.Guest);
+            this.ValidateAsyncBeginInDataBase(authentication);
         }
 
         public bool VerifyAccess(Authentication authentication)

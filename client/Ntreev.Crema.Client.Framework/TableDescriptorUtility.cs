@@ -86,11 +86,11 @@ namespace Ntreev.Crema.Client.Framework
             return descriptor.TableAttribute.HasFlag(TableAttribute.BaseTable);
         }
 
-        public static async Task<LogInfo[]> GetLogAsync(Authentication authentication, ITableDescriptor descriptor)
+        public static async Task<LogInfo[]> GetLogAsync(Authentication authentication, ITableDescriptor descriptor, string revision)
         {
             if (descriptor.Target is ITable table)
             {
-                return await table.Dispatcher.InvokeAsync(() => table.GetLog(authentication));
+                return await table.Dispatcher.InvokeAsync(() => table.GetLog(authentication, revision));
             }
             else
             {

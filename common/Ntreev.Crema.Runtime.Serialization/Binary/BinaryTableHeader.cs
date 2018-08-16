@@ -25,8 +25,7 @@ namespace Ntreev.Crema.Runtime.Serialization.Binary
 {
     public struct BinaryTableHeader
     {
-        public const int DefaultMagicValueObsolete = 0x6cfc4a14;
-        public const int DefaultMagicValue = 0x03050000;
+        public const int DefaultMagicValue = 0x04000000;
 
         public int MagicValue { get; set; }
 

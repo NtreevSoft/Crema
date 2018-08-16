@@ -45,14 +45,6 @@ namespace Ntreev.Crema.Services.Data
             this.Initialize(metaData);
         }
 
-        public void Import(Authentication authentication, CremaDataSet dataSet, string comment)
-        {
-            this.Dispatcher?.VerifyAccess();
-            this.CremaHost.DebugMethod(authentication, this, nameof(Import), comment);
-
-            this.Service.ImportTypes(dataSet, comment);
-        }
-
         public void Dispose()
         {
             this.dataBase = null;
@@ -361,6 +353,16 @@ namespace Ntreev.Crema.Services.Data
         protected override IEnumerable<ITableInfoProvider> GetTables()
         {
             return this.DataBase.TableContext.Tables;
+        }
+
+        private void Sign(Authentication authentication, ResultBase result)
+        {
+            result.Validate(authentication);
+        }
+
+        private void Sign<T>(Authentication authentication, ResultBase<T> result)
+        {
+            result.Validate(authentication);
         }
 
         private void Initialize(DataBaseMetaData metaData)

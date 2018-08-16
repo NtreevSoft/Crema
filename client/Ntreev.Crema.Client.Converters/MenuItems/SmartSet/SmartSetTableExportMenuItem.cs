@@ -33,7 +33,7 @@ using System.Threading.Tasks;
 namespace Ntreev.Crema.Client.Converters.MenuItems.SmartSet
 {
     [Export(typeof(IMenuItem))]
-    [ParentType("Ntreev.Crema.Client.SmartSet.BrowserItems.ViewModels.SmartSetTreeViewItemViewModel, Ntreev.Crema.Client.SmartSet, Version=3.6.0.0, Culture=neutral, PublicKeyToken=null")]
+    [ParentType("Ntreev.Crema.Client.SmartSet.BrowserItems.ViewModels.SmartSetTreeViewItemViewModel, Ntreev.Crema.Client.SmartSet, Version=4.0.0.0, Culture=neutral, PublicKeyToken=null")]
     class SmartSetTableExportMenuItem : MenuItemBase
     {
         private readonly ICremaAppHost cremaAppHost;

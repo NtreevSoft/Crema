@@ -84,7 +84,7 @@ namespace Ntreev.Crema.Client.SmartSet.BrowserItems.ViewModels
             {
                 if (parent is BookmarkRootTreeViewItemViewModel || parent is BookmarkCategoryTreeViewItemViewModel)
                     return new BookmarkTableTreeViewItemViewModel(this.authenticator, descriptor, this);
-                return new TableTreeViewItemViewModel(this.authenticator, new TableDescriptor(this.authenticator, descriptor), this);
+                return new TableTreeViewItemViewModel(this.authenticator, new TableDescriptor(this.authenticator, descriptor, true, this), this);
             }
 
             return null;

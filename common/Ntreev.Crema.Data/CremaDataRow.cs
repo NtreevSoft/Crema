@@ -19,6 +19,7 @@ using Ntreev.Crema.Data.Properties;
 using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Library;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
@@ -68,14 +69,14 @@ namespace Ntreev.Crema.Data
             if (childTable.Parent != this.Table)
                 return null;
 
-            var relationName = InternalSetBase.GenerateRelationName(this.Table.TableName, childTable.TableName, this.Table.Namespace);
+            var relationName = InternalSetBase.GenerateRelationName(childTable.InternalObject);
 
             return this.InternalObject.GetChildRows(relationName).Select(item => (item as InternalDataRow).Target).ToArray();
         }
 
         public CremaDataRow[] GetChildRows(string childTableName)
         {
-            var relationName = InternalSetBase.GenerateRelationName(this.Table.TableName, childTableName, this.Table.Namespace);
+            var relationName = InternalSetBase.GenerateRelationName(childTableName, this.Table.Namespace);
 
             return this.InternalObject.GetChildRows(relationName).Select(item => (item as InternalDataRow).Target).ToArray();
         }
@@ -225,6 +226,25 @@ namespace Ntreev.Crema.Data
             this.InternalObject[attributeName] = value;
         }
 
+        public IDictionary<string, object> ToDictionary()
+        {
+            var dataTable = this.Table;
+            var props = new Dictionary<string, object>();
+            foreach (var item in dataTable.Columns)
+            {
+                var value = this[item];
+                if (value == DBNull.Value)
+                    props.Add(item.ColumnName, null);
+                else
+                    props.Add(item.ColumnName, value);
+            }
+            if (this.ParentID != null)
+                props.Add(CremaSchema.__ParentID__, this.ParentID);
+            if (this.RelationID != null)
+                props.Add(CremaSchema.__RelationID__, this.RelationID);
+            return props;
+        }
+
         public TagInfo Tags
         {
             get => this.InternalObject.Tags;
@@ -276,13 +296,13 @@ namespace Ntreev.Crema.Data
         public SignatureDate CreationInfo
         {
             get => this.InternalObject.CreationInfo;
-            internal set => this.InternalObject.CreationInfo = value;
+            set => this.InternalObject.CreationInfo = value;
         }
 
         public SignatureDate ModificationInfo
         {
             get => this.InternalObject.ModificationInfo;
-            internal set => this.InternalObject.ModificationInfo = value;
+            set => this.InternalObject.ModificationInfo = value;
         }
 
         public string RelationID
@@ -320,7 +340,7 @@ namespace Ntreev.Crema.Data
                 if (this.Table.Parent == null)
                     return null;
 
-                var relationName = InternalSetBase.GenerateRelationName(this.InternalObject.Table.Parent, this.InternalObject.Table);
+                var relationName = InternalSetBase.GenerateRelationName(this.InternalObject.Table);
                 if (this.InternalObject.GetParentRow(relationName) is InternalDataRow parentRow)
                 {
                     return parentRow.Target;

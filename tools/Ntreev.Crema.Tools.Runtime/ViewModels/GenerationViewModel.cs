@@ -98,7 +98,7 @@ namespace Ntreev.Crema.Tools.Runtime.ViewModels
             try
             {
                 this.BeginProgress();
-                var metaData = await Task.Run(() => this.service.GetMetaData(this.Address, this.DataBase, this.Tags, this.FilterExpression, this.IsDevmode, -1));
+                var metaData = await Task.Run(() => this.service.GetMetaData(this.Address, this.DataBase, this.Tags, this.FilterExpression, this.IsDevmode, null));
                 var generator = this.generators.FirstOrDefault(item => item.Name == this.LanguageType);
                 generator.Generate(this.OutputPath, metaData.Item1, CodeGenerationSettings.Default);
                 var serializer = this.serializers.First();

@@ -42,5 +42,16 @@ namespace Ntreev.Crema.ServiceModel
 
         [DataMember]
         public DomainAccessType AccessType { get; set; }
+
+        public IDictionary<string, object> ToDictionary()
+        {
+            var props = new Dictionary<string, object>
+            {
+                { nameof(this.UserID), $"{this.UserID}" },
+                { nameof(this.UserName), $"{this.UserName}" },
+                { nameof(this.AccessType), this.AccessType },
+            };
+            return props;
+        }
     }
 }

@@ -29,21 +29,20 @@ namespace Ntreev.Crema.ConsoleHost
     public class ConfigurationProperties : IConfigurationProperties
     {
         private readonly ICremaHost cremaHost;
-        private readonly ConfigurationPropertyDescriptorCollection properties = new ConfigurationPropertyDescriptorCollection();
+        private readonly ConfigurationPropertyDescriptorCollection properties;
+        private readonly List<ConfigurationPropertyDescriptor> disabledProperties;
 
         [ImportingConstructor]
-        public ConfigurationProperties(IConsoleConfiguration configs, ICremaHost cremaHost)
+        public ConfigurationProperties(IConsoleConfiguration configs, ICremaHost cremaHost, [ImportMany]IEnumerable<IConfigurationPropertyProvider> providers)
         {
             this.cremaHost = cremaHost;
             this.cremaHost.Opened += CremaHost_Opened;
             this.cremaHost.Closed += CremaHost_Closed;
-            foreach (var item in configs.Properties)
-            {
-                this.properties.Add(item);
-            }
+            this.properties = new ConfigurationPropertyDescriptorCollection(providers);
+            this.disabledProperties = new List<ConfigurationPropertyDescriptor>();
 
-            if (this.cremaHost.IsOpened == true)
-                this.AttachCremaConfigs();
+            if (this.cremaHost.IsOpened == false)
+                this.DetachCremaConfigs();
         }
 
         public ConfigurationPropertyDescriptorCollection Properties => this.properties;
@@ -60,12 +59,11 @@ namespace Ntreev.Crema.ConsoleHost
 
         private void AttachCremaConfigs()
         {
-            var configs = this.cremaHost.GetService(typeof(ICremaConfiguration)) as ICremaConfiguration;
-
-            foreach (var item in configs.Properties)
+            foreach(var item in this.disabledProperties)
             {
                 this.properties.Add(item);
             }
+            this.disabledProperties.Clear();
         }
 
         private void DetachCremaConfigs()
@@ -73,7 +71,10 @@ namespace Ntreev.Crema.ConsoleHost
             foreach (var item in this.properties.ToArray())
             {
                 if (item.ScopeType == typeof(ICremaConfiguration))
+                {
                     this.properties.Remove(item);
+                    this.disabledProperties.Add(item);
+                }
             }
         }
     }

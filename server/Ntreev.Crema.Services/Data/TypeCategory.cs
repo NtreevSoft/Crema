@@ -285,13 +285,9 @@ namespace Ntreev.Crema.Services.Data
             {
                 this.DataBase.ValidateAsyncBeginInDataBase(authentication);
                 this.CremaHost.DebugMethod(authentication, this, nameof(GetDataSet), this, revision);
-                var itemPath = this.Dispatcher.Invoke(() =>
-                {
-                    this.ValidateAccessType(authentication, AccessType.Guest);
-                    this.Sign(authentication);
-                    return this.ItemPath;
-                });
-                return this.Repository.GetTypeCategoryData(this.Serializer, itemPath, revision);
+                this.ValidateAccessType(authentication, AccessType.Guest);
+                this.Sign(authentication);
+                return this.Repository.GetTypeCategoryData(this.Serializer, this.ItemPath, revision);
             }
             catch (Exception e)
             {
@@ -300,20 +296,15 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public LogInfo[] GetLog(Authentication authentication)
+        public LogInfo[] GetLog(Authentication authentication, string revision)
         {
             try
             {
                 this.DataBase.ValidateAsyncBeginInDataBase(authentication);
                 this.CremaHost.DebugMethod(authentication, this, nameof(GetLog), this);
-                var itemPath = this.Dispatcher.Invoke(() =>
-                {
-                    this.ValidateAccessType(authentication, AccessType.Guest);
-                    this.Sign(authentication);
-                    return this.ItemPath;
-                });
-                var result = this.Context.GetCategoryLog(itemPath);
-                return result;
+                this.ValidateAccessType(authentication, AccessType.Guest);
+                this.Sign(authentication);
+                return this.Context.GetCategoryLog(this.ItemPath, revision);
             }
             catch (Exception e)
             {
@@ -328,16 +319,13 @@ namespace Ntreev.Crema.Services.Data
             {
                 this.DataBase.ValidateAsyncBeginInDataBase(authentication);
                 this.CremaHost.DebugMethod(authentication, this, nameof(Find), this, text, options);
-                var items = this.Dispatcher.Invoke(() =>
+                this.ValidateAccessType(authentication, AccessType.Guest);
+                this.Sign(authentication);
+                if (this.GetService(typeof(DataFindService)) is DataFindService service)
                 {
-                    this.ValidateAccessType(authentication, AccessType.Guest);
-                    this.Sign(authentication);
-                    var descendants = EnumerableUtility.Descendants<ITypeItem>(this, item => item.Childs);
-                    return EnumerableUtility.Friends(this, descendants).Select(item => item.Path).ToArray();
-                });
-                var service = this.GetService(typeof(DataFindService)) as DataFindService;
-                var result = service.Dispatcher.Invoke(() => service.FindFromType(this.DataBase.ID, items, text, options));
-                return result;
+                    return service.Dispatcher.Invoke(() => service.FindFromType(this.DataBase.ID, new string[] { base.Path }, text, options));
+                }
+                throw new NotImplementedException();
             }
             catch (Exception e)
             {
@@ -425,6 +413,8 @@ namespace Ntreev.Crema.Services.Data
         public IObjectSerializer Serializer => this.DataBase.Serializer;
 
         public DataBaseRepositoryHost Repository => this.DataBase.Repository;
+
+        public string BasePath => base.Path;
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override void OnValidateRename(IAuthentication authentication, object target, string oldPath, string newPath)

@@ -174,12 +174,43 @@ namespace Ntreev.Crema.Repository.Svn
             deleteCommand.Run();
         }
 
-        public void ValidateRepository(string basePath, string repositoryPath)
+        public void RevertRepository(string author, string basePath, string repositoryName, string revision, string comment)
         {
-            if (DirectoryUtility.Exists(basePath) == false)
-                throw new DirectoryNotFoundException($"base path does not exists :\"{basePath}\"");
-            if (DirectoryUtility.Exists(repositoryPath) == false)
-                throw new DirectoryNotFoundException($"repository path does not exists :\"{repositoryPath}\"");
+            var baseUri = new Uri(basePath);
+            var url = repositoryName == SvnString.Default ? UriUtility.Combine(baseUri, SvnString.Trunk) : UriUtility.Combine(baseUri, SvnString.Branches, repositoryName);
+            var tempPath = PathUtility.GetTempPath(false);
+            try
+            {
+                var checkoutCommand = new SvnCommand("checkout")
+                {
+                    (SvnPath)url,
+                    (SvnPath)tempPath,
+                };
+                checkoutCommand.Run();
+                var mergeCommand = new SvnCommand("merge")
+                {
+                    new SvnCommandItem('r', $"head:{revision}"),
+                    (SvnPath)tempPath,
+                    (SvnPath)tempPath,
+                };
+                mergeCommand.Run();
+                var commitCommand = new SvnCommand("commit")
+                {
+                    (SvnPath)tempPath,
+                    SvnCommandItem.FromMessage(comment),
+                    SvnCommandItem.FromEncoding(Encoding.UTF8),
+                    SvnCommandItem.FromUsername(author),
+                };
+                commitCommand.Run();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            finally
+            {
+                DirectoryUtility.Delete(tempPath);
+            }
         }
 
         public string[] GetRepositories(string basePath)
@@ -206,7 +237,7 @@ namespace Ntreev.Crema.Repository.Svn
         public RepositoryInfo GetRepositoryInfo(string basePath, string repositoryName)
         {
             var uri = this.GetUrl(basePath, repositoryName);
-            var latestLog = SvnLogInfo.GetLastLog($"{uri}");
+            var latestLog = SvnLogInfo.GetLatestLog($"{uri}");
             var firstLog = SvnLogInfo.GetFirstLog($"{uri}");
             var repositoryInfo = new RepositoryInfo()
             {
@@ -231,10 +262,10 @@ namespace Ntreev.Crema.Repository.Svn
             return query.ToArray();
         }
 
-        public LogInfo[] GetLog(string basePath, string repositoryName, int count)
+        public LogInfo[] GetLog(string basePath, string repositoryName, string revision)
         {
             var uri = this.GetUrl(basePath, repositoryName);
-            var logs = SvnLogInfo.Run(uri.ToString(), null, count);
+            var logs = SvnLogInfo.GetLogs(uri.ToString(), revision);
             return logs.Select(item => (LogInfo)item).ToArray();
         }
 

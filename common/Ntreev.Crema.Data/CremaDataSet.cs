@@ -211,7 +211,21 @@ namespace Ntreev.Crema.Data
             return ReadFromDirectory(path, null);
         }
 
-        public static CremaDataSet ReadFromDirectory(string path, string readPattern)
+        public static CremaDataSet ReadFromDirectory(string path, string filterExpression)
+        {
+            return ReadFromDirectory(path, filterExpression, ReadTypes.All);
+        }
+
+        /// <summary>
+        /// 경로내에 타입과 테이블을 읽어들입니다.
+        /// </summary>
+        /// <param name="path">데이터를 읽어들일 경로입니다.</param>
+        /// <param name="filterExpression">필터 표현식입니다. glob 형태를 사용하며 여러개일 경우 구분자 ; 를 사용합니다.
+        /// options 값이 TypeOnly 일경우에는 필터가 타입에 영향을 미칩니다.
+        /// </param>
+        /// <param name="readType"></param>
+        /// <returns></returns>
+        public static CremaDataSet ReadFromDirectory(string path, string filterExpression, ReadTypes readType)
         {
             ValidateReadFromDirectory(path);
 
@@ -231,27 +245,46 @@ namespace Ntreev.Crema.Data
                 typePath = Path.Combine(fullPath, CremaSchema.TypeDirectory);
             }
 
-            if (readPattern == null)
-            {
-                var typeFiles = DirectoryUtility.Exists(typePath) ? DirectoryUtility.GetAllFiles(typePath, "*" + CremaSchema.SchemaExtension) : new string[] { };
-                var tableFiles = DirectoryUtility.Exists(tablePath) ? DirectoryUtility.GetAllFiles(tablePath, "*" + CremaSchema.XmlExtension) : new string[] { };
-                dataSet.ReadMany(typeFiles, tableFiles);
-            }
-            else
-            {
-                var query1 = from item in DirectoryUtility.Exists(tablePath) ? DirectoryUtility.GetAllFiles(tablePath, "*" + CremaSchema.XmlExtension) : new string[] { }
-                             where StringUtility.GlobMany(Path.GetFileNameWithoutExtension(item), readPattern)
-                             select item;
+            var typeFiles = DirectoryUtility.Exists(typePath) ? DirectoryUtility.GetAllFiles(typePath, "*" + CremaSchema.SchemaExtension) : new string[] { };
+            var tableFiles = DirectoryUtility.Exists(tablePath) ? DirectoryUtility.GetAllFiles(tablePath, "*" + CremaSchema.XmlExtension) : new string[] { };
 
-                var query2 = from item in query1
-                             let readInfo = new CremaXmlReadInfo(item)
-                             from item2 in readInfo.GetTypePaths()
-                             select item2;
+            switch (readType)
+            {
+                case ReadTypes.All:
+                case ReadTypes.OmitContent:
+                    {
+                        if (filterExpression != null)
+                        {
+                            var query1 = from item in tableFiles
+                                         where Filter(filterExpression, tablePath, item)
+                                         select item;
 
-                var tableFiles = query1.ToArray();
-                var typeFiles = query2.Distinct().ToArray();
-                dataSet.ReadMany(typeFiles, tableFiles);
+                            var query2 = from item in query1
+                                         let readInfo = new CremaXmlReadInfo(item)
+                                         from item2 in readInfo.GetTypePaths()
+                                         select item2;
+                            tableFiles = query1.ToArray();
+                            typeFiles = query2.Distinct().ToArray();
+                        }
+                    }
+                    break;
+                case ReadTypes.TypeOnly:
+                    {
+                        if (filterExpression != null)
+                        {
+                            var query1 = from item in typeFiles
+                                         where Filter(filterExpression, typePath, item)
+                                         select item;
+                        }
+                        else
+                        {
+                            tableFiles = new string[] { };
+                        }
+                    }
+                    break;
             }
+
+            dataSet.ReadMany(typeFiles, tableFiles, readType == ReadTypes.OmitContent);
 
             if (dataSet.Namespace == CremaSchemaObsolete.BaseNamespaceObsolete)
             {
@@ -539,8 +572,8 @@ namespace Ntreev.Crema.Data
             }
 #endif
 
-            if (schemaOnly == false)
-            {
+            //if (schemaOnly == false)
+            //{
                 this.BeginLoad();
 
 #if USE_PARALLEL
@@ -563,7 +596,11 @@ namespace Ntreev.Crema.Data
                 {
                     Parallel.ForEach(parallellist, new ParallelOptions { MaxDegreeOfParallelism = threadcount }, item =>
                     {
-                        this.ReadXml(item.XmlPath, item.ItemName);
+                        var xmlReader = new CremaXmlReader(this, item.ItemName)
+                        {
+                            OmitContent = schemaOnly == true
+                        };
+                        xmlReader.Read(item.XmlPath);
                     });
                 }
                 catch (AggregateException e)
@@ -573,11 +610,16 @@ namespace Ntreev.Crema.Data
 #else
             foreach (var item in readInfos)
             {
-                this.ReadXml(item.XmlPath, item.ItemName);
+                var xmlReader = new CremaXmlReader(this, item.ItemName)
+                {
+                    OmitContent = schemaOnly == true
+                };
+                xmlReader.Read(item.XmlPath);
             }
 #endif
                 this.EndLoad();
-            }
+            //}
+            this.Tables.Sort();
         }
 
         public void ReadType(string filename)
@@ -820,6 +862,38 @@ namespace Ntreev.Crema.Data
             }
         }
 
+        public IDictionary<string, object> ToDictionary()
+        {
+            return this.ToDictionary(false, false);
+        }
+
+        public IDictionary<string, object> ToDictionary(bool omitType, bool omitTable)
+        {
+            var props = new Dictionary<string, object>();
+
+            if (omitType == false)
+            {
+                var types = new Dictionary<string, object>(this.Types.Count);
+                foreach (var item in this.Types.OrderBy(item => item.Name))
+                {
+                    types.Add(item.Name, item.ToDictionary());
+                }
+                props.Add(CremaSchema.TypeDirectory, types);
+            }
+
+            if (omitTable == false)
+            {
+                var tables = new Dictionary<string, object>(this.Tables.Count);
+                foreach (var item in this.Tables.OrderBy(item => item.Name))
+                {
+                    tables.Add(item.Name, item.ToDictionary());
+                }
+                props.Add(CremaSchema.TableDirectory, tables);
+            }
+
+            return props;
+        }
+
         [DefaultValue(false)]
         public bool CaseSensitive
         {
@@ -1007,6 +1081,32 @@ namespace Ntreev.Crema.Data
                 Console.Write("warning: ");
                 Console.WriteLine(item.Message);
             }
+        }
+
+        private static bool Filter(string filterExpression, string basePath, string itemPath)
+        {
+            if (filterExpression == null)
+                return true;
+
+            var patterns = StringUtility.Split(filterExpression, ';');
+            var namePattern = string.Join(";", patterns.Where(item => item.IndexOf(PathUtility.SeparatorChar) < 0));
+            var pathPattern = string.Join(";", patterns.Where(item => item.IndexOf(PathUtility.SeparatorChar) >= 0));
+            var path = FileUtility.RemoveExtension(itemPath);
+            var relativePath = UriUtility.MakeRelativeOfDirectory(basePath, path);
+            var items = StringUtility.SplitPath(relativePath);
+            var itemName = ItemName.Create(items);
+
+            if (namePattern != string.Empty && StringUtility.GlobMany(itemName.Name, namePattern) == true)
+            {
+                return true;
+            }
+
+            if (pathPattern != string.Empty && StringUtility.GlobMany(itemName.CategoryPath, pathPattern) == true)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private void GetSerializableData(IDictionary<string, string> items)

@@ -27,8 +27,7 @@ namespace Ntreev.Crema.Runtime.Serialization.Binary
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct BinaryFileHeader
     {
-        public const uint DefaultMagicValueObsolete = 0x8d31269e;
-        public const uint DefaultMagicValue = 0x03050000;
+        public const uint DefaultMagicValue = 0x04000000;
 
         public uint MagicValue { get; set; }
 

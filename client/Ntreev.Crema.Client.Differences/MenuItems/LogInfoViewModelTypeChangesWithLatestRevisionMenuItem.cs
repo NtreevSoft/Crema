@@ -67,7 +67,7 @@ namespace Ntreev.Crema.Client.Differences.MenuItems
         {
             return type.Dispatcher.InvokeAsync(() =>
             {
-                var logs = type.GetLog(this.authenticator);
+                var logs = type.GetLog(this.authenticator, null);
                 var revision = logs.First().Revision;
 
                 var dataSet1 = type.GetDataSet(this.authenticator, viewModel.Revision);

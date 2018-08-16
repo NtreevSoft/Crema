@@ -16,6 +16,7 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Ntreev.Crema.Commands.Consoles;
+using Ntreev.Crema.Commands.Consoles.Properties;
 using Ntreev.Crema.Services;
 using Ntreev.Library.Commands;
 using System;
@@ -60,6 +61,7 @@ namespace Ntreev.Crema.RuntimeService.Consoles
         }
 
         [CommandMethod]
+        [CommandMethodStaticProperty(typeof(FormatProperties))]
         public void Info(string dataBaseName)
         {
             var dataBaseID = this.CremaHost.Dispatcher.Invoke(() =>
@@ -72,12 +74,7 @@ namespace Ntreev.Crema.RuntimeService.Consoles
 
             var serviceItem = this.RuntimeService.GetServiceItem(dataBaseID);
             var info = serviceItem.Dispatcher.Invoke(() => serviceItem.DataServiceItemInfo);
-
-            this.Out.WriteLine();
-            this.Out.WriteLine($"Revision : {info.Revision}");
-            this.Out.WriteLine($"Version  : {info.Version}");
-            this.Out.WriteLine($"DateTime : {info.DateTime}");
-            this.Out.WriteLine();
+            this.CommandContext.WriteObject(info.ToDictionary(), FormatProperties.Format);
         }
 
         private RuntimeService RuntimeService => this.runtimeService.Value;

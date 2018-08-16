@@ -130,11 +130,19 @@ namespace Ntreev.Crema.ServiceHosts.Data
             });
         }
 
-        public ResultBase<CremaDataSet> GetDataSet(string revision)
+        public ResultBase<CremaDataSet> GetDataSet(DataSetType dataSetType, string filterExpression, string revision)
         {
             return this.InvokeImmediately(() =>
             {
-                return this.cremaHost.Dispatcher.Invoke(() => this.dataBase.GetDataSet(this.authentication, revision));
+                return this.dataBase.GetDataSet(this.authentication, dataSetType, filterExpression, revision);
+            });
+        }
+
+        public ResultBase ImportDataSet(CremaDataSet dataSet, string comment)
+        {
+            return this.Invoke(() =>
+            {
+                this.dataBase.Dispatcher.Invoke(() => this.dataBase.Import(this.authentication, dataSet, comment));
             });
         }
 
@@ -152,16 +160,8 @@ namespace Ntreev.Crema.ServiceHosts.Data
         {
             return this.InvokeImmediately(() =>
             {
-                var tableItem = this.cremaHost.Dispatcher.Invoke(() => this.GetTableItem(itemPath));
+                var tableItem = this.dataBase.Dispatcher.Invoke(() => this.GetTableItem(itemPath));
                 return tableItem.GetDataSet(this.authentication, revision);
-            });
-        }
-
-        public ResultBase ImportTables(CremaDataSet dataSet, string comment)
-        {
-            return this.Invoke(() =>
-            {
-                this.TableContext.Import(this.authentication, dataSet, comment);
             });
         }
 
@@ -259,12 +259,12 @@ namespace Ntreev.Crema.ServiceHosts.Data
             });
         }
 
-        public ResultBase<LogInfo[]> GetTableItemLog(string itemPath)
+        public ResultBase<LogInfo[]> GetTableItemLog(string itemPath, string revision)
         {
             return this.InvokeImmediately(() =>
             {
-                var tableItem = this.cremaHost.Dispatcher.Invoke(() => this.GetTableItem(itemPath));
-                return tableItem.GetLog(this.authentication);
+                var tableItem = this.dataBase.Dispatcher.Invoke(() => this.GetTableItem(itemPath));
+                return tableItem.GetLog(this.authentication, revision);
             });
         }
 
@@ -272,7 +272,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
         {
             return this.InvokeImmediately(() =>
             {
-                var tableItem = this.cremaHost.Dispatcher.Invoke(() => this.GetTableItem(itemPath));
+                var tableItem = this.dataBase.Dispatcher.Invoke(() => this.GetTableItem(itemPath));
                 return tableItem.Find(this.authentication, text, options);
             });
         }
@@ -434,14 +434,6 @@ namespace Ntreev.Crema.ServiceHosts.Data
             });
         }
 
-        public ResultBase ImportTypes(CremaDataSet dataSet, string comment)
-        {
-            return this.Invoke(() =>
-            {
-                this.TypeContext.Import(this.authentication, dataSet, comment);
-            });
-        }
-
         public ResultBase RenameTypeItem(string itemPath, string newName)
         {
             return this.Invoke(() =>
@@ -590,12 +582,12 @@ namespace Ntreev.Crema.ServiceHosts.Data
             });
         }
 
-        public ResultBase<LogInfo[]> GetTypeItemLog(string itemPath)
+        public ResultBase<LogInfo[]> GetTypeItemLog(string itemPath, string revision)
         {
             return this.InvokeImmediately(() =>
             {
                 var typeItem = this.cremaHost.Dispatcher.Invoke(() => this.GetTypeItem(itemPath));
-                return typeItem.GetLog(this.authentication);
+                return typeItem.GetLog(this.authentication, revision);
             });
         }
 

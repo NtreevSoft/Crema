@@ -47,16 +47,16 @@ namespace Ntreev.Crema.ServiceHosts.Data
         ResultBase<DataBaseMetaData> GetMetaData();
 
         [OperationContract]
-        ResultBase<CremaDataSet> GetDataSet(string revision);
+        ResultBase<CremaDataSet> GetDataSet(DataSetType dataSetType, string filterExpression, string revision);
+
+        [OperationContract]
+        ResultBase ImportDataSet(CremaDataSet dataSet, string comment);
 
         [OperationContract]
         ResultBase NewTableCategory(string categoryPath);
 
         [OperationContract]
         ResultBase<CremaDataSet> GetTableItemDataSet(string itemPath, string revision);
-
-        [OperationContract]
-        ResultBase ImportTables(CremaDataSet dataSet, string comment);
 
         [OperationContract]
         ResultBase RenameTableItem(string itemPath, string newName);
@@ -89,7 +89,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
         ResultBase UnlockTableItem(string itemPath);
 
         [OperationContract]
-        ResultBase<LogInfo[]> GetTableItemLog(string itemPath);
+        ResultBase<LogInfo[]> GetTableItemLog(string itemPath, string revision);
 
         [OperationContract]
         ResultBase<FindResultInfo[]> FindTableItem(string itemPath, string text, FindOptions options);
@@ -132,9 +132,6 @@ namespace Ntreev.Crema.ServiceHosts.Data
 
         [OperationContract]
         ResultBase<CremaDataSet> GetTypeItemDataSet(string itemPath, string revision);
-
-        [OperationContract]
-        ResultBase ImportTypes(CremaDataSet dataSet, string comment);
 
         [OperationContract]
         ResultBase RenameTypeItem(string itemPath, string newName);
@@ -182,7 +179,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
         ResultBase UnlockTypeItem(string itemPath);
 
         [OperationContract]
-        ResultBase<LogInfo[]> GetTypeItemLog(string itemPath);
+        ResultBase<LogInfo[]> GetTypeItemLog(string itemPath, string revision);
 
         [OperationContract]
         ResultBase<FindResultInfo[]> FindTypeItem(string itemPath, string text, FindOptions options);

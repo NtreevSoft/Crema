@@ -28,16 +28,16 @@ namespace Ntreev.Crema.Services.DataBaseService {
         Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.DataBaseMetaData> GetMetaData();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/GetDataSet", ReplyAction="http://www.ntreev.com/IDataBaseService/GetDataSetResponse")]
-        Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.Data.CremaDataSet> GetDataSet(string revision);
+        Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.Data.CremaDataSet> GetDataSet(Ntreev.Crema.ServiceModel.DataSetType dataSetType, string filterExpression, string revision);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/ImportDataSet", ReplyAction="http://www.ntreev.com/IDataBaseService/ImportDataSetResponse")]
+        Ntreev.Crema.ServiceModel.ResultBase ImportDataSet(Ntreev.Crema.Data.CremaDataSet dataSet, string comment);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/NewTableCategory", ReplyAction="http://www.ntreev.com/IDataBaseService/NewTableCategoryResponse")]
         Ntreev.Crema.ServiceModel.ResultBase NewTableCategory(string categoryPath);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/GetTableItemDataSet", ReplyAction="http://www.ntreev.com/IDataBaseService/GetTableItemDataSetResponse")]
         Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.Data.CremaDataSet> GetTableItemDataSet(string itemPath, string revision);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/ImportTables", ReplyAction="http://www.ntreev.com/IDataBaseService/ImportTablesResponse")]
-        Ntreev.Crema.ServiceModel.ResultBase ImportTables(Ntreev.Crema.Data.CremaDataSet dataSet, string comment);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/RenameTableItem", ReplyAction="http://www.ntreev.com/IDataBaseService/RenameTableItemResponse")]
         Ntreev.Crema.ServiceModel.ResultBase RenameTableItem(string itemPath, string newName);
@@ -70,7 +70,7 @@ namespace Ntreev.Crema.Services.DataBaseService {
         Ntreev.Crema.ServiceModel.ResultBase UnlockTableItem(string itemPath);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/GetTableItemLog", ReplyAction="http://www.ntreev.com/IDataBaseService/GetTableItemLogResponse")]
-        Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.LogInfo[]> GetTableItemLog(string itemPath);
+        Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.LogInfo[]> GetTableItemLog(string itemPath, string revision);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/FindTableItem", ReplyAction="http://www.ntreev.com/IDataBaseService/FindTableItemResponse")]
         Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.FindResultInfo[]> FindTableItem(string itemPath, string text, Ntreev.Crema.ServiceModel.FindOptions options);
@@ -113,9 +113,6 @@ namespace Ntreev.Crema.Services.DataBaseService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/GetTypeItemDataSet", ReplyAction="http://www.ntreev.com/IDataBaseService/GetTypeItemDataSetResponse")]
         Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.Data.CremaDataSet> GetTypeItemDataSet(string itemPath, string revision);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/ImportTypes", ReplyAction="http://www.ntreev.com/IDataBaseService/ImportTypesResponse")]
-        Ntreev.Crema.ServiceModel.ResultBase ImportTypes(Ntreev.Crema.Data.CremaDataSet dataSet, string comment);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/RenameTypeItem", ReplyAction="http://www.ntreev.com/IDataBaseService/RenameTypeItemResponse")]
         Ntreev.Crema.ServiceModel.ResultBase RenameTypeItem(string itemPath, string newName);
@@ -163,7 +160,7 @@ namespace Ntreev.Crema.Services.DataBaseService {
         Ntreev.Crema.ServiceModel.ResultBase UnlockTypeItem(string itemPath);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/GetTypeItemLog", ReplyAction="http://www.ntreev.com/IDataBaseService/GetTypeItemLogResponse")]
-        Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.LogInfo[]> GetTypeItemLog(string itemPath);
+        Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.LogInfo[]> GetTypeItemLog(string itemPath, string revision);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/FindTypeItem", ReplyAction="http://www.ntreev.com/IDataBaseService/FindTypeItemResponse")]
         Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.FindResultInfo[]> FindTypeItem(string itemPath, string text, Ntreev.Crema.ServiceModel.FindOptions options);
@@ -271,8 +268,12 @@ namespace Ntreev.Crema.Services.DataBaseService {
             return base.Channel.GetMetaData();
         }
         
-        public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.Data.CremaDataSet> GetDataSet(string revision) {
-            return base.Channel.GetDataSet(revision);
+        public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.Data.CremaDataSet> GetDataSet(Ntreev.Crema.ServiceModel.DataSetType dataSetType, string filterExpression, string revision) {
+            return base.Channel.GetDataSet(dataSetType, filterExpression, revision);
+        }
+        
+        public Ntreev.Crema.ServiceModel.ResultBase ImportDataSet(Ntreev.Crema.Data.CremaDataSet dataSet, string comment) {
+            return base.Channel.ImportDataSet(dataSet, comment);
         }
         
         public Ntreev.Crema.ServiceModel.ResultBase NewTableCategory(string categoryPath) {
@@ -281,10 +282,6 @@ namespace Ntreev.Crema.Services.DataBaseService {
         
         public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.Data.CremaDataSet> GetTableItemDataSet(string itemPath, string revision) {
             return base.Channel.GetTableItemDataSet(itemPath, revision);
-        }
-        
-        public Ntreev.Crema.ServiceModel.ResultBase ImportTables(Ntreev.Crema.Data.CremaDataSet dataSet, string comment) {
-            return base.Channel.ImportTables(dataSet, comment);
         }
         
         public Ntreev.Crema.ServiceModel.ResultBase RenameTableItem(string itemPath, string newName) {
@@ -327,8 +324,8 @@ namespace Ntreev.Crema.Services.DataBaseService {
             return base.Channel.UnlockTableItem(itemPath);
         }
         
-        public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.LogInfo[]> GetTableItemLog(string itemPath) {
-            return base.Channel.GetTableItemLog(itemPath);
+        public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.LogInfo[]> GetTableItemLog(string itemPath, string revision) {
+            return base.Channel.GetTableItemLog(itemPath, revision);
         }
         
         public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.FindResultInfo[]> FindTableItem(string itemPath, string text, Ntreev.Crema.ServiceModel.FindOptions options) {
@@ -385,10 +382,6 @@ namespace Ntreev.Crema.Services.DataBaseService {
         
         public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.Data.CremaDataSet> GetTypeItemDataSet(string itemPath, string revision) {
             return base.Channel.GetTypeItemDataSet(itemPath, revision);
-        }
-        
-        public Ntreev.Crema.ServiceModel.ResultBase ImportTypes(Ntreev.Crema.Data.CremaDataSet dataSet, string comment) {
-            return base.Channel.ImportTypes(dataSet, comment);
         }
         
         public Ntreev.Crema.ServiceModel.ResultBase RenameTypeItem(string itemPath, string newName) {
@@ -451,8 +444,8 @@ namespace Ntreev.Crema.Services.DataBaseService {
             return base.Channel.UnlockTypeItem(itemPath);
         }
         
-        public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.LogInfo[]> GetTypeItemLog(string itemPath) {
-            return base.Channel.GetTypeItemLog(itemPath);
+        public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.LogInfo[]> GetTypeItemLog(string itemPath, string revision) {
+            return base.Channel.GetTypeItemLog(itemPath, revision);
         }
         
         public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.FindResultInfo[]> FindTypeItem(string itemPath, string text, Ntreev.Crema.ServiceModel.FindOptions options) {

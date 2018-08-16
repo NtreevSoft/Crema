@@ -30,10 +30,15 @@ namespace Ntreev.Crema.ConsoleHost
     class ConsoleConfiguration : ConfigurationBase, IConsoleConfiguration
     {
         [ImportingConstructor]
-        public ConsoleConfiguration([ImportMany]IEnumerable<IConfigurationPropertyProvider> propertiesProvider)
-            : base(AppUtility.GetDocumentFilename("configs.xml"), propertiesProvider)
+        public ConsoleConfiguration([ImportMany]IEnumerable<IConfigurationPropertyProvider> propertiesProviders)
+            : base(propertiesProviders)
         {
 
+        }
+
+        public void Commit()
+        {
+            //AppUtility.GetDocumentFilename("configs.xml")
         }
 
         public override string Name => "ConsoleConfigs";

@@ -107,17 +107,17 @@ namespace Ntreev.Crema.Services
         {
             this.Dispatcher.Invoke(() =>
             {
-                this.Repository.Revert(null);
+                this.Repository.Revert();
             });
         }
 
-        public void Revert(string revision)
-        {
-            this.Dispatcher.Invoke(() =>
-            {
-                this.Repository.Revert(revision);
-            });
-        }
+        //public void Revert(string revision)
+        //{
+        //    this.Dispatcher.Invoke(() =>
+        //    {
+        //        this.Repository.Revert(revision);
+        //    });
+        //}
 
         public void BeginTransaction(string author, string name)
         {
@@ -168,9 +168,9 @@ namespace Ntreev.Crema.Services
             this.OnChanged(EventArgs.Empty);
         }
 
-        public LogInfo[] GetLog(string[] paths, string revision, int count)
+        public LogInfo[] GetLog(string[] paths, string revision)
         {
-            return this.Dispatcher.Invoke(() => this.Repository.GetLog(paths, revision, count));
+            return this.Dispatcher.Invoke(() => this.Repository.GetLog(paths, revision));
         }
 
         public string GetDataBaseUri(string repoUri, string itemUri)

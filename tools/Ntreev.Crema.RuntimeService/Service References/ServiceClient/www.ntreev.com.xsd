@@ -7,14 +7,14 @@
         <xs:element minOccurs="0" name="dataBaseName" nillable="true" type="xs:string" />
         <xs:element minOccurs="0" name="tags" nillable="true" type="xs:string" />
         <xs:element minOccurs="0" name="filterExpression" nillable="true" type="xs:string" />
-        <xs:element minOccurs="0" name="revision" type="xs:long" />
+        <xs:element minOccurs="0" name="revision" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="GetCodeGenerationDataResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q1="http://schemas.ntreev.com" minOccurs="0" name="GetCodeGenerationDataResult" type="q1:ResultBaseOfGenerationSete_P1K94QQ" />
+        <xs:element xmlns:q1="http://schemas.ntreev.com" minOccurs="0" name="GetCodeGenerationDataResult" type="q1:ResultBaseOfGenerationSetq8erDhHE" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -25,14 +25,14 @@
         <xs:element minOccurs="0" name="tags" nillable="true" type="xs:string" />
         <xs:element minOccurs="0" name="filterExpression" nillable="true" type="xs:string" />
         <xs:element minOccurs="0" name="isDevmode" type="xs:boolean" />
-        <xs:element minOccurs="0" name="revision" type="xs:long" />
+        <xs:element minOccurs="0" name="revision" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="GetDataGenerationDataResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q2="http://schemas.ntreev.com" minOccurs="0" name="GetDataGenerationDataResult" type="q2:ResultBaseOfSerializationSetPXjF_S884" />
+        <xs:element xmlns:q2="http://schemas.ntreev.com" minOccurs="0" name="GetDataGenerationDataResult" type="q2:ResultBaseOfSerializationSetq8erDhHE" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -43,14 +43,14 @@
         <xs:element minOccurs="0" name="tags" nillable="true" type="xs:string" />
         <xs:element minOccurs="0" name="filterExpression" nillable="true" type="xs:string" />
         <xs:element minOccurs="0" name="isDevmode" type="xs:boolean" />
-        <xs:element minOccurs="0" name="revision" type="xs:long" />
+        <xs:element minOccurs="0" name="revision" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="GetMetaDataResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q3="http://schemas.ntreev.com" minOccurs="0" name="GetMetaDataResult" type="q3:ResultBaseOfGenerationSetSerializationSetNekzTzjl" />
+        <xs:element xmlns:q3="http://schemas.ntreev.com" minOccurs="0" name="GetMetaDataResult" type="q3:ResultBaseOfGenerationSetSerializationSet45wWDu_Sb" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -78,7 +78,7 @@
   <xs:element name="GetRevisionResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q5="http://schemas.ntreev.com" minOccurs="0" name="GetRevisionResult" type="q5:ResultBaseOflong" />
+        <xs:element xmlns:q5="http://schemas.ntreev.com" minOccurs="0" name="GetRevisionResult" type="q5:ResultBaseOfstring" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

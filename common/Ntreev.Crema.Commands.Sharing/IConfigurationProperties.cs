@@ -23,9 +23,6 @@ namespace Ntreev.Crema.Commands
 {
     public interface IConfigurationProperties
     {
-        ConfigurationPropertyDescriptorCollection Properties
-        {
-            get;
-        }
+        ConfigurationPropertyDescriptorCollection Properties { get; }
     }
 }

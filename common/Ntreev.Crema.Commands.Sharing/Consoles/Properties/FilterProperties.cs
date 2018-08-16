@@ -19,6 +19,7 @@ using Ntreev.Library.Commands;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Text;
 
 namespace Ntreev.Crema.Commands.Consoles.Properties
@@ -27,16 +28,32 @@ namespace Ntreev.Crema.Commands.Consoles.Properties
     public static class FilterProperties
     {
         [CommandProperty("filter")]
-        [DefaultValue("")]
-        public static string FilterExpression
+        [CommandPropertyTrigger(nameof(FilterFile), "")]
+        [DefaultValue(null)]
+        public static string Filter
         {
             get; set;
         }
 
         [CommandProperty]
+        [CommandPropertyTrigger(nameof(Filter), null)]
+        [DefaultValue("")]
         public static string FilterFile
         {
             get; set;
+        }
+
+        public static string FilterExpression
+        {
+            get
+            {
+                if (FilterFile != string.Empty)
+                {
+                    var lines = File.ReadAllLines(FilterFile);
+                    return string.Join(";", lines);
+                }
+                return Filter;
+            }
         }
     }
 }

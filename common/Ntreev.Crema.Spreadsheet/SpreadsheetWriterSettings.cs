@@ -17,6 +17,7 @@
 
 using Ntreev.Library;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,34 +29,25 @@ namespace Ntreev.Crema.Spreadsheet
     {
         public static SpreadsheetWriterSettings Default = new SpreadsheetWriterSettings();
 
+        private readonly Hashtable properties = new Hashtable();
+
         public SpreadsheetWriterSettings()
         {
-            this.OmitSignatureDate = true;
-            this.Tags = TagInfo.All;
             this.NameEllipsis = SpreadsheetUtility.Ellipsis;
         }
 
-        public bool OmitAttribute
-        {
-            get;
-            set;
-        }
+        public bool OmitAttribute { get; set; }
 
-        public bool OmitSignatureDate
-        {
-            get;
-            set;
-        }
+        public bool OmitSignatureDate { get; set; }
 
-        public TagInfo Tags
-        {
-            get;
-            set;
-        }
+        public bool OmitType { get; set; }
 
-        public Func<string, string> NameEllipsis
-        {
-            get; set;
-        }
+        public bool OmitTable { get; set; }
+
+        public IDictionary Properties => this.properties;
+
+        public Func<string, string> NameEllipsis { get; set; }
+
+        public Comparison<object> Sort { get; set; }
     }
 }

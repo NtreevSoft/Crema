@@ -232,21 +232,22 @@ namespace Ntreev.Crema.ServiceHosts.Data
             });
         }
 
-        public ResultBase<LogInfo[]> GetLog(string dataBaseName)
+        public ResultBase<LogInfo[]> GetLog(string dataBaseName, string revision)
         {
             return this.Invoke(() =>
             {
                 var dataBase = GetDataBase(dataBaseName);
-                return dataBase.GetLog(this.authentication);
+                return dataBase.GetLog(this.authentication, revision);
             });
         }
 
-        public ResultBase Revert(string dataBaseName, string revision)
+        public ResultBase<DataBaseInfo> Revert(string dataBaseName, string revision)
         {
             return this.Invoke(() =>
             {
                 var dataBase = GetDataBase(dataBaseName);
                 dataBase.Revert(this.authentication, revision);
+                return dataBase.DataBaseInfo;
             });
         }
 

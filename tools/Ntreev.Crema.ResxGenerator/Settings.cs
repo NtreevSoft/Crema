@@ -46,7 +46,7 @@ namespace Ntreev.Crema.ResxGenerator
         }
 
         [CommandProperty("database")]
-        [DefaultValue("default")]
+        [DefaultValue("")]
         public string DataBaseName
         {
             get;

@@ -37,6 +37,7 @@ namespace Ntreev.Crema.Services
         public const string DefaultDataBase = "default";
         private const string pluginsString = "plugins";
 
+        private CremaSettings settings;
         private CompositionContainer container;
 
         static CremaBootstrapper()
@@ -113,6 +114,12 @@ namespace Ntreev.Crema.Services
             this.container.Dispose();
             this.container = null;
             this.OnDisposed(EventArgs.Empty);
+        }
+
+        public LogVerbose Verbose
+        {
+            get => this.settings.Verbose;
+            set => this.settings.Verbose = value;
         }
 
         public event EventHandler Disposed;
@@ -214,6 +221,7 @@ namespace Ntreev.Crema.Services
             }
 
             this.container.Compose(batch);
+            this.settings = this.container.GetExportedValue<CremaSettings>();
         }
 
         internal static TimeSpan DefaultInactivityTimeout { get; set; }

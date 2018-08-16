@@ -542,6 +542,14 @@
     </xs:list>
   </xs:simpleType>
   <xs:element name="TypeState" nillable="true" type="tns:TypeState" />
+  <xs:simpleType name="DataSetType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="All" />
+      <xs:enumeration value="OmitContent" />
+      <xs:enumeration value="TypeOnly" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="DataSetType" nillable="true" type="tns:DataSetType" />
   <xs:complexType name="ResultBaseOfCremaDataSetu_SdO6mFN">
     <xs:annotation>
       <xs:appinfo>

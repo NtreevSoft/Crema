@@ -190,7 +190,7 @@ namespace Ntreev.Crema.Data
             {
                 if (this.table.Parent == null)
                     return null;
-                var relationName = InternalSetBase.GenerateRelationName(this.table.Parent, this.table);
+                var relationName = InternalSetBase.GenerateRelationName(this.table);
                 return this.GetParentRow(relationName) as RowBase;
             }
         }

@@ -17,6 +17,7 @@
 
 using Ntreev.Library;
 using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace Ntreev.Crema.Services.Data
@@ -35,5 +36,17 @@ namespace Ntreev.Crema.Services.Data
 
         [DataMember]
         public DateTime DateTime { get; set; }
+
+        public IDictionary<string, object> ToDictionary()
+        {
+            var props = new Dictionary<string, object>
+            {
+                { nameof(this.Revision), this.Revision },
+                { nameof(this.Version), $"{this.Version}" },
+                { nameof(this.DateTime), this.DateTime },
+            };
+
+            return props;
+        }
     }
 }

@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="AuthenticationToken.cs" />
     <Compile Include="CremaString.cs" />
+    <Compile Include="Data\DataBaseImporter.cs" />
     <Compile Include="Data\DataServiceItemInfo.cs" />
     <Compile Include="Data\Serializations\DataBaseStateSerializationInfo.cs" />
     <Compile Include="Data\DataBaseSet.cs" />
@@ -97,7 +98,6 @@
     <Compile Include="Data\DataFindServiceItem.cs" />
     <Compile Include="Data\DataFindService.cs" />
     <Compile Include="Data\DomainBasedRow.cs" />
-    <Compile Include="IRepositoryExtensions.cs" />
     <Compile Include="IRepositoryProvider.cs" />
     <Compile Include="Data\NewTypeTemplate.cs" />
     <Compile Include="Data\TypeMember.cs" />

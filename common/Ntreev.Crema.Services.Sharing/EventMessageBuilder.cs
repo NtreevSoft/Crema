@@ -249,6 +249,17 @@ namespace Ntreev.Crema.Services
             return string.Format(EventResources.RevertDataBase, authentication.ID, authentication.Name, dataBase, revision);
         }
 
+        public static string RevertDataBase(Authentication authentication, IDataBase[] items, string[] revisions)
+        {
+            var messageList = new List<string>(items.Length);
+            for (var i = 0; i < items.Length; i++)
+            {
+                var message = RevertDataBase(authentication, items[i], revisions[i]);
+                messageList.Add(message);
+            }
+            return string.Join(Environment.NewLine, messageList);
+        }
+
         public static string LockTypeItem(Authentication authentication, ITypeItem[] items, string[] comments)
         {
             var messageList = new List<string>(items.Length);

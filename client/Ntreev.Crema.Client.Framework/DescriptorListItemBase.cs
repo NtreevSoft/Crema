@@ -73,6 +73,8 @@ namespace Ntreev.Crema.Client.Framework
 
         private async void Descriptor_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            if (this.isDescriptorDisposed == true)
+                return;
             await this.notifier.RefreshAsync();
             this.NotifyOfPropertyChange(e.PropertyName);
         }

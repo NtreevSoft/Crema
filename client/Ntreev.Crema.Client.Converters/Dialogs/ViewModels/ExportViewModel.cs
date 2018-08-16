@@ -41,7 +41,7 @@ namespace Ntreev.Crema.Client.Converters.Dialogs.ViewModels
     {
         private readonly IDataBase dataBase;
         private readonly IExportService exportService;
-        private readonly IAppConfiguration configService;
+        private readonly IAppConfiguration configs;
         private readonly Authentication authentication;
         private readonly ObservableCollection<ExportTreeViewItemViewModel> categories;
         private readonly ObservableCollection<IExporter> exporters;
@@ -59,7 +59,7 @@ namespace Ntreev.Crema.Client.Converters.Dialogs.ViewModels
             this.dataBase = dataBase;
             this.dataBase.Dispatcher.VerifyAccess();
             this.exportService = dataBase.GetService(typeof(IExportService)) as IExportService;
-            this.configService = dataBase.GetService(typeof(IAppConfiguration)) as IAppConfiguration;
+            this.configs = dataBase.GetService(typeof(IAppConfiguration)) as IAppConfiguration;
 
             this.root = new TableRootTreeViewItemViewModel(authentication, this.dataBase, this) { IsExpanded = true, };
             this.categories = new ObservableCollection<ExportTreeViewItemViewModel>
@@ -69,7 +69,7 @@ namespace Ntreev.Crema.Client.Converters.Dialogs.ViewModels
             this.SelectItems(this.root, selectedPaths);
 
             this.exporters = new ObservableCollection<IExporter>(this.exportService.Exporters);
-            this.SelectedExporter = this.exporters.FirstOrDefault(item => item.Name == (string)this.configService[this.GetType(), nameof(SelectedExporter)]);
+            this.configs.Update(this);
         }
 
         public static Task<ExportViewModel> CreateInstanceAsync(Authentication authentication, ITableCategoryDescriptor descriptor)
@@ -227,7 +227,7 @@ namespace Ntreev.Crema.Client.Converters.Dialogs.ViewModels
                     this.ProgressMessage = Resources.Message_ExportingData;
                     await Task.Run(() => this.selectedExporter.Export(null, dataSet));
                 }
-                this.configService[this.GetType(), nameof(SelectedExporter)] = this.selectedExporter.Name;
+                this.configs.Commit(this);
                 AppMessageBox.Show(Resources.Message_Exported);
             }
             catch (Exception e)
@@ -346,6 +346,19 @@ namespace Ntreev.Crema.Client.Converters.Dialogs.ViewModels
                     parent = parent.Parent;
                 }
                 item.IsSelected = true;
+            }
+        }
+
+        [ConfigurationProperty("SelectedExporter")]
+        private string SelectedExporterName
+        {
+            get { return this.selectedExporter?.Name; }
+            set
+            {
+                if (value != null)
+                {
+                    this.SelectedExporter = this.exporters.FirstOrDefault(item => item.Name == (string)value);
+                }
             }
         }
     }

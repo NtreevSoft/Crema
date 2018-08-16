@@ -17,6 +17,7 @@
 
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Ntreev.Crema.Client.Converters.Properties;
+using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services;
 using Ntreev.Crema.Spreadsheet;
 using Ntreev.ModernUI.Framework;
@@ -31,7 +32,7 @@ using System.Threading.Tasks;
 namespace Ntreev.Crema.Client.Converters.ToolBarItems
 {
     [Export(typeof(IToolBarItem))]
-    [ParentType("Ntreev.Crema.Client.Base.Dialogs.ViewModels.LogViewModel, Ntreev.Crema.Client.Base, Version=3.6.0.0, Culture=neutral, PublicKeyToken=null")]
+    [ParentType("Ntreev.Crema.Client.Base.Dialogs.ViewModels.LogViewModel, Ntreev.Crema.Client.Base, Version=4.0.0.0, Culture=neutral, PublicKeyToken=null")]
     class ExportRevisionDataBaseToolBarItem : ToolBarItemBase
     {
         [Import]
@@ -71,7 +72,7 @@ namespace Ntreev.Crema.Client.Converters.ToolBarItems
 
                         if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
                         {
-                            var dataSet = await dataBase.Dispatcher.InvokeAsync(() => dataBase.GetDataSet(this.authenticator, revision));
+                            var dataSet = await dataBase.Dispatcher.InvokeAsync(() => dataBase.GetDataSet(this.authenticator, DataSetType.All, null, revision));
                             var writer = new SpreadsheetWriter(dataSet);
                             writer.Write(dialog.FileName);
                             AppMessageBox.Show(Resources.Message_Exported);

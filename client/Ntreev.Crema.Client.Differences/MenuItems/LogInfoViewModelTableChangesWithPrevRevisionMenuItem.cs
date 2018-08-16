@@ -68,7 +68,7 @@ namespace Ntreev.Crema.Client.Differences.MenuItems
         {
             return table.Dispatcher.InvokeAsync(() =>
             {
-                var logs = table.GetLog(this.authenticator);
+                var logs = table.GetLog(this.authenticator, null);
                 var prevLog = this.GetPrevLog(logs, viewModel.Revision);
 
                 var header1 = prevLog != null ? $"[{prevLog.Value.DateTime}] {prevLog.Value.Revision}" : string.Empty;
@@ -83,7 +83,6 @@ namespace Ntreev.Crema.Client.Differences.MenuItems
                 return dataSet.Tables.First();
             });
         }
-
 
         private LogInfo? GetPrevLog(LogInfo[] logs, string revision)
         {

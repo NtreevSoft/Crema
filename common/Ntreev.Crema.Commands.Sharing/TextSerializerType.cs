@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Commands
 {
-    enum TextSerializerType
+    public enum TextSerializerType
     {
         Yaml,
 

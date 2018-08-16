@@ -78,16 +78,17 @@ namespace Ntreev.Crema.Commands.Consoles
                         orderby name
                         select new ItemObject(text);
 
-            this.Out.Print(query.ToArray(), (o, a) => o.Print(a));
+            this.CommandContext.WriteList(query.ToArray());
         }
 
         #region classes
 
-        class ItemObject
+        class ItemObject : TerminalTextItem
         {
             private bool isCategory;
             private string name;
             public ItemObject(string path)
+                : base(path)
             {
                 if (path.EndsWith(PathUtility.Separator) == true)
                 {
@@ -103,18 +104,18 @@ namespace Ntreev.Crema.Commands.Consoles
 
             public bool IsCategory { get { return this.isCategory; } }
 
-            public void Print(Action action)
+            protected override void OnDraw(TextWriter writer, string text)
             {
                 if (this.isCategory == true)
                 {
                     using (TerminalColor.SetForeground(ConsoleColor.Cyan))
                     {
-                        action();
+                        base.OnDraw(writer, text);
                     }
                 }
                 else
                 {
-                    action();
+                    base.OnDraw(writer, text);
                 }
             }
 

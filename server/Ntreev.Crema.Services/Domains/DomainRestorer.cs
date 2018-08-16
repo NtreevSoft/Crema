@@ -49,8 +49,6 @@ namespace Ntreev.Crema.Services.Domains
         private Domain domain;
         private DateTime dateTime;
 
-        private long lastID;
-
         private DomainRestorer(Authentication authentication, DomainContext domainContext, string workingPath)
         {
             this.authentication = authentication;
@@ -62,9 +60,9 @@ namespace Ntreev.Crema.Services.Domains
         {
             using (var restorer = new DomainRestorer(authentication, domainContext, workingPath))
             {
+                restorer.DeserializeDomain();
                 restorer.CollectCompletedActions();
                 restorer.CollectPostedActions();
-                restorer.DeserializeDomain();
                 restorer.CollectAuthentications();
                 restorer.RestoreDomain();
             }
@@ -72,26 +70,22 @@ namespace Ntreev.Crema.Services.Domains
 
         private void CollectCompletedActions()
         {
-            var itemPath = Path.Combine(this.workingPath, DomainLogger.CompletedItemPath);
-            var items = File.ReadAllLines(itemPath);
-            foreach (var item in items)
+            var domainLogger = this.domain.Logger;
+            foreach (var item in domainLogger.CompletedList)
             {
-                var info = DomainCompleteItemSerializationInfo.Parse(item);
-                this.completedList.Add(info.ID, info);
+                this.completedList.Add(item.ID, item);
             }
         }
 
         private void CollectPostedActions()
         {
-            var itemPath = Path.Combine(this.workingPath, DomainLogger.PostedItemPath);
-            var items = File.ReadAllLines(itemPath);
-            foreach (var item in items)
+            var domainLogger = this.domain.Logger;
+            foreach (var item in domainLogger.PostedList)
             {
-                var info = DomainPostItemSerializationInfo.Parse(item);
-                if (this.completedList.ContainsKey(info.ID) == true)
+                if (this.completedList.ContainsKey(item.ID) == true)
                 {
-                    var type = Type.GetType(info.Type);
-                    var path = Path.Combine(this.workingPath, $"{info.ID}");
+                    var type = Type.GetType(item.Type);
+                    var path = Path.Combine(this.workingPath, $"{item.ID}");
                     var action = (DomainActionBase)this.Serializer.Deserialize(path, type, ObjectSerializerSettings.Empty);
                     this.actionList.Add(action);
                 }
@@ -100,14 +94,12 @@ namespace Ntreev.Crema.Services.Domains
 
         private void DeserializeDomain()
         {
-            var headerItemPath = Path.Combine(this.workingPath, DomainLogger.HeaderItemPath);
-            var sourceItemPath = Path.Combine(this.workingPath, DomainLogger.SourceItemPath);
-            var domainSerializationInfo = (DomainSerializationInfo)this.Serializer.Deserialize(headerItemPath, typeof(DomainSerializationInfo), ObjectSerializerSettings.Empty);
-            var sourceType = Type.GetType(domainSerializationInfo.SourceType);
-            var source = this.Serializer.Deserialize(sourceItemPath, sourceType, ObjectSerializerSettings.Empty);
-            var domainType = Type.GetType(domainSerializationInfo.DomainType);
-            this.domain = (Domain)Activator.CreateInstance(domainType, domainSerializationInfo, source);
-            this.domain.Logger = new DomainLogger(this.domainContext.Serializer, this.workingPath);
+            var domainLogger = new DomainLogger(this.domainContext.Serializer, this.workingPath);
+            var domainInfo = domainLogger.DomainInfo;
+            var domainType = Type.GetType(domainInfo.DomainType);
+            var source = domainLogger.Source;
+            this.domain = (Domain)Activator.CreateInstance(domainType, domainInfo, source);
+            this.domain.Logger = domainLogger;
             this.domainContext.Domains.Restore(this.authentication, this.domain);
         }
 
@@ -193,7 +185,7 @@ namespace Ntreev.Crema.Services.Domains
                     }
                 }
 
-                this.domain.Logger.ID = this.lastID + 1;
+                this.domain.Logger.ID = this.postedList.Count;
                 this.domain.Logger.IsEnabled = true;
             });
             this.domain.Host = null;

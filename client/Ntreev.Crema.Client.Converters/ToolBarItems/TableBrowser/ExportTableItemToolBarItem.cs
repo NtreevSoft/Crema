@@ -29,7 +29,7 @@ using System.Threading.Tasks;
 namespace Ntreev.Crema.Client.Converters.ToolBarItems.TableBrowser
 {
     [Export(typeof(IToolBarItem))]
-    [ParentType("Ntreev.Crema.Client.Tables.ITableBrowser, Ntreev.Crema.Client.Tables, Version=3.6.0.0, Culture=neutral, PublicKeyToken=null")]
+    [ParentType("Ntreev.Crema.Client.Tables.ITableBrowser, Ntreev.Crema.Client.Tables, Version=4.0.0.0, Culture=neutral, PublicKeyToken=null")]
     class ExportRevisionDataBaseToolBarItem : ToolBarItemBase
     {
         [Import]

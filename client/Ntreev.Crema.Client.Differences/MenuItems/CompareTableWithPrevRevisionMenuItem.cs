@@ -34,7 +34,7 @@ using System.Threading.Tasks;
 namespace Ntreev.Crema.Client.Differences.MenuItems
 {
     [Export(typeof(IMenuItem))]
-    [ParentType("Ntreev.Crema.Client.Tables.BrowserItems.ViewModels.TableTreeViewItemViewModel, Ntreev.Crema.Client.Tables, Version=3.6.0.0, Culture=neutral, PublicKeyToken=null")]
+    [ParentType("Ntreev.Crema.Client.Tables.BrowserItems.ViewModels.TableTreeViewItemViewModel, Ntreev.Crema.Client.Tables, Version=4.0.0.0, Culture=neutral, PublicKeyToken=null")]
     class CompareTableWithPrevRevisionMenuItem : MenuItemBase
     {
         [Import]
@@ -61,7 +61,7 @@ namespace Ntreev.Crema.Client.Differences.MenuItems
         {
             return table.Dispatcher.InvokeAsync(() =>
             {
-                var logs = table.GetLog(this.authenticator);
+                var logs = table.GetLog(this.authenticator, null);
                 var hasRevision = logs.Length >= 2;
                 var dataSet1 = hasRevision ? table.GetDataSet(this.authenticator, logs[1].Revision) : new CremaDataSet();
                 var dataSet2 = table.GetDataSet(this.authenticator, null);

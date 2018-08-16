@@ -16,17 +16,29 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Ntreev.Library;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Ntreev.Crema.Services
 {
     public class CremaConfiguration : ConfigurationBase, ICremaConfiguration
     {
-        public CremaConfiguration(string path)
-            : base(path)
+        private readonly string schemaPath;
+        private readonly string xmlPath;
+        public CremaConfiguration(string path, IEnumerable<IConfigurationPropertyProvider> propertiesProviders)
+            : base(typeof(ICremaConfiguration), propertiesProviders)
         {
-
+            this.xmlPath = path;
+            this.schemaPath = Path.ChangeExtension(path, ".xsd");
+            this.Read(this.xmlPath);
         }
 
         public override string Name => "CremaConfigs";
+
+        public void Commit()
+        {
+            this.WriteSchema(this.schemaPath);
+            this.Write(this.xmlPath);
+        }
     }
 }

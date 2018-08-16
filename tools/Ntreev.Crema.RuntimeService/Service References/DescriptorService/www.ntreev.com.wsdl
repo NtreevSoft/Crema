@@ -5,6 +5,7 @@
       <xsd:import namespace="http://www.ntreev.com" />
       <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
       <xsd:import namespace="http://schemas.ntreev.com" />
+      <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IDescriptorService_GetVersion_InputMessage">

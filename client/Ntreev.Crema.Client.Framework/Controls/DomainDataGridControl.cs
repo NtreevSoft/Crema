@@ -275,7 +275,7 @@ namespace Ntreev.Crema.Client.Framework.Controls
 
         private async void Domain_Deleted(object sender, DomainDeletedEventArgs e)
         {
-            await this.Dispatcher.InvokeAsync(() => this.Domain = null);
+            await this.Dispatcher.InvokeAsync(() => this.Domain = null, DispatcherPriority.Send);
         }
 
         private IEnumerable<object> CollectItems(DataGridContext gridContext, SelectionRange itemRange)

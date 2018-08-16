@@ -140,6 +140,7 @@
     <Compile Include="MenuItems\DeleteDataBaseMenuItem.cs" />
     <Compile Include="MenuItems\CreateDataBaseMenuItem.cs" />
     <Compile Include="MenuItems\ConnectionItemDeleteMenuItem.cs" />
+    <Compile Include="MenuItems\RevertDataBaseMenuItem.cs" />
     <Compile Include="ToolBarItems\MovoToWikiToolBarItem.cs" />
     <Compile Include="ToolBarItems\CreateDataBaseToolBarItem.cs" />
     <Compile Include="ToolBarItems\LoadDataBaseIcon.xaml.cs">

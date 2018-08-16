@@ -49,6 +49,7 @@ namespace Ntreev.Crema.Commands.Consoles
             internal set;
         }
 
+        [Obsolete]
         public TextWriter Out
         {
             get { return this.CommandContext.Out; }

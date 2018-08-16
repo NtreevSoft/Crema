@@ -564,7 +564,6 @@ namespace Ntreev.Crema.Data.Xml.Schema
                     else
                     {
                         var query = from item in this.DataSet.Tables
-                                    where item.Parent == null
                                     where item != dataTable
                                     where item.TemplateNamespace == dataTable.Namespace
                                     select item;

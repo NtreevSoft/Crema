@@ -24,6 +24,7 @@ using System.Text;
 using System.ComponentModel;
 using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Crema.Data;
+using Ntreev.Crema.ServiceModel;
 
 namespace Ntreev.Crema.Javascript.Methods.DataBase
 {
@@ -41,17 +42,17 @@ namespace Ntreev.Crema.Javascript.Methods.DataBase
 
         protected override Delegate CreateDelegate()
         {
-            return new Func<string, string, string>(GetDataBaseData);
+            return new Func<string, DataSetType, string, string, string>(GetDataBaseData);
         }
 
-        private string GetDataBaseData(string dataBaseName, string revision)
+        private string GetDataBaseData(string dataBaseName, DataSetType dataSetType, string filterExpression, string revision)
         {
             var dataBase = this.GetDataBase(dataBaseName);
             var authentication = this.Context.GetAuthentication(this);
 
             return dataBase.Dispatcher.Invoke(() =>
             {
-                var dataSet = dataBase.GetDataSet(authentication, revision);
+                var dataSet = dataBase.GetDataSet(authentication, dataSetType, filterExpression, revision);
                 return dataSet.GetXml();
                 //return this.GetDataRows(dataTable);
             });

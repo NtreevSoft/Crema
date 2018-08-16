@@ -15,32 +15,54 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Ntreev.Crema.Data;
 using Ntreev.Crema.ServiceModel;
+using Ntreev.Library.Commands;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace Ntreev.Crema.Services
+namespace Ntreev.Crema.Commands.Consoles.Properties
 {
-    static class IRepositoryExtensions
+    [ResourceDescription("../Resources", IsShared = true)]
+    public static class DataSetTypeProperties
     {
-        public static void Commit(this IRepository repository, string comment, Authentication authentication, string eventLog)
+        [CommandProperty]
+        [CommandPropertyTrigger(nameof(TypeOnly), false)]
+        [DefaultValue(false)]
+        public static bool TableOnly
         {
-            Commit(repository, comment, null, authentication, eventLog);
+            get; set;
         }
 
-        public static void Commit(this IRepository repository, string comment, IEnumerable<LogPropertyInfo> properties, Authentication authentication, string eventLog)
+        [CommandProperty]
+        [CommandPropertyTrigger(nameof(TableOnly), false)]
+        [CommandPropertyTrigger(nameof(OmitContent), false)]
+        [DefaultValue(false)]
+        public static bool TypeOnly
         {
-            var props = new List<LogPropertyInfo>
-            {
-                new LogPropertyInfo() { Key = LogPropertyInfo.EventLogKey, Value = eventLog, },
-                new LogPropertyInfo() { Key = LogPropertyInfo.UserIDKey, Value = authentication.ID, }
-            };
-            props.AddRange(properties ?? Enumerable.Empty<LogPropertyInfo>());
+            get; set;
+        }
 
-            repository.Commit(authentication.ID, comment, props.ToArray());
+        [CommandProperty]
+        [DefaultValue(false)]
+        [CommandPropertyTrigger(nameof(TypeOnly), false)]
+        public static bool OmitContent
+        {
+            get; set;
+        }
+
+        public static DataSetType DataSetType
+        {
+            get
+            {
+                if (OmitContent == true)
+                    return DataSetType.OmitContent;
+                else if (TypeOnly == true)
+                    return DataSetType.TypeOnly;
+                return DataSetType.All;
+            }
         }
     }
 }

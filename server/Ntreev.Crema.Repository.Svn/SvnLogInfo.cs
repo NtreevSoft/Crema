@@ -33,6 +33,8 @@ namespace Ntreev.Crema.Repository.Svn
 {
     struct SvnLogInfo
     {
+        private static readonly int defaultMaxCount = 50;
+
         private const string propertyPrefix = "prop:";
 
         public string Author { get; private set; }
@@ -64,29 +66,64 @@ namespace Ntreev.Crema.Repository.Svn
             return logItemList.ToArray();
         }
 
-        public static SvnLogInfo[] Run(string path, string revision)
+        public static SvnLogInfo GetLatestLog(string path)
         {
             var logCommand = new SvnCommand("log")
             {
                 (SvnPath)path,
-                SvnCommandItem.FromRevision($"head:{revision}"),
+                SvnCommandItem.FromRevision($"head:1"),
                 SvnCommandItem.Xml,
                 SvnCommandItem.Verbose,
+                SvnCommandItem.FromMaxCount(1),
+                SvnCommandItem.WithAllRevprops
             };
-            return SvnLogInfo.Read(logCommand.Run());
+            return SvnLogInfo.Read(logCommand.Run()).First();
         }
 
-        public static SvnLogInfo[] Run(string path, string revision, int count)
+        public static SvnLogInfo[] GetLogs(string path, string revision)
+        {
+            if (revision == null)
+            {
+                var logCommand = new SvnCommand("log")
+                {
+                    (SvnPath)path,
+                    SvnCommandItem.FromRevision($"head:1"),
+                    SvnCommandItem.Xml,
+                    SvnCommandItem.Verbose,
+                    SvnCommandItem.FromMaxCount(MaxLogCount),
+                    SvnCommandItem.WithAllRevprops
+                };
+                return SvnLogInfo.Read(logCommand.Run());
+            }
+            else
+            {
+                var logCommand = new SvnCommand("log")
+                {
+                    (SvnPath)path,
+                    SvnCommandItem.FromRevision($"{revision}:1"),
+                    SvnCommandItem.Xml,
+                    SvnCommandItem.Verbose,
+                    SvnCommandItem.FromMaxCount(MaxLogCount),
+                    SvnCommandItem.WithAllRevprops
+                };
+                return SvnLogInfo.Read(logCommand.Run());
+            }
+        }
+
+        public static SvnLogInfo[] GetLogs(string[] paths, string revision)
         {
             var logCommand = new SvnCommand("log")
             {
-                (SvnPath)path,
                 SvnCommandItem.FromRevision($"{revision ?? "head"}:1"),
                 SvnCommandItem.Xml,
                 SvnCommandItem.Verbose,
-                new SvnCommandItem('l', count),
-                new SvnCommandItem("with-all-revprops"),
+                SvnCommandItem.FromMaxCount(MaxLogCount),
+                SvnCommandItem.WithAllRevprops,
             };
+            foreach (var item in paths)
+            {
+                logCommand.Add((SvnPath)item);
+            }
             return SvnLogInfo.Read(logCommand.Run());
         }
 
@@ -98,26 +135,9 @@ namespace Ntreev.Crema.Repository.Svn
                 SvnCommandItem.FromRevision($"{maxRevision}:{minRevision}"),
                 SvnCommandItem.Xml,
                 SvnCommandItem.Verbose,
-                new SvnCommandItem('l', count),
-                new SvnCommandItem("with-all-revprops"),
+                SvnCommandItem.FromMaxCount(count),
+                SvnCommandItem.WithAllRevprops,
             };
-            return SvnLogInfo.Read(logCommand.Run());
-        }
-
-        public static SvnLogInfo[] Run(string[] paths, string revision, int count)
-        {
-            var logCommand = new SvnCommand("log")
-            {
-                SvnCommandItem.FromRevision($"{revision ?? "head"}:1"),
-                SvnCommandItem.Xml,
-                SvnCommandItem.Verbose,
-                new SvnCommandItem('l', count),
-                new SvnCommandItem("with-all-revprops"),
-            };
-            foreach (var item in paths)
-            {
-                logCommand.Add((SvnPath)item);
-            }
             return SvnLogInfo.Read(logCommand.Run());
         }
 
@@ -179,12 +199,7 @@ namespace Ntreev.Crema.Repository.Svn
                     revision = logs.Last().Revision;
             }
 
-            return SvnLogInfo.Run(info.Uri.ToString(), "1").First();
-        }
-
-        public static SvnLogInfo GetLastLog(string path)
-        {
-            return SvnLogInfo.Run(path, null, 1).First();
+            return SvnLogInfo.GetLogs(info.Uri.ToString(), "1").First();
         }
 
         public static explicit operator LogInfo(SvnLogInfo value)
@@ -209,6 +224,8 @@ namespace Ntreev.Crema.Repository.Svn
 
             return obj;
         }
+
+        public static int MaxCount { get; set; }
 
         internal string GetPropertyString(string key)
         {
@@ -273,5 +290,7 @@ namespace Ntreev.Crema.Repository.Svn
 
             return obj;
         }
+
+        private static int MaxLogCount => MaxCount == 0 ? defaultMaxCount : MaxCount;
     }
 }

@@ -60,7 +60,7 @@ namespace Ntreev.Crema.Tools.View.ViewModels
             try
             {
                 this.BeginProgress();
-                var metaData = await Task.Run(() => this.service.GetDataGenerationData(address, dataBaseName, tags, filterExpression, isDevmode, -1));
+                var metaData = await Task.Run(() => this.service.GetDataGenerationData(address, dataBaseName, tags, filterExpression, isDevmode, null));
                 using (var stream = new MemoryStream())
                 {
                     this.serializer.Serialize(stream, metaData);

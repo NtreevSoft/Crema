@@ -63,8 +63,7 @@ namespace Ntreev.Crema.Commands
         }
 
         [CommandProperty]
-        [DefaultValue((long)-1)]
-        public long Revision
+        public string Revision
         {
             get; set;
         }
@@ -132,7 +131,7 @@ namespace Ntreev.Crema.Commands
                 throw new InvalidOperationException($"'{CodeSettings.LanguageType}'은(는) 존재하지 언어입니다.");
 
             this.Out.WriteLine("receiving info");
-            var metaData = this.service.GetMetaData(this.Address, DataBaseSettings.DataBaseName, DataBaseSettings.Tags, FilterSettings.FilterExpression, CodeSettings.Devmode, -1);
+            var metaData = this.service.GetMetaData(this.Address, DataBaseSettings.DataBaseName, DataBaseSettings.Tags, FilterSettings.FilterExpression, CodeSettings.Devmode, null);
 
             var generationSettings = new CodeGenerationSettings()
             {

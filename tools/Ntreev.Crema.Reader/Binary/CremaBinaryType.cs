@@ -25,8 +25,7 @@ namespace Ntreev.Crema.Reader.Binary
 {
     struct TableHeader
     {
-        public const int defaultMagicValueObsolete = 0x6cfc4a14;
-        public const int defaultMagicValue = 0x03050000;
+        public const int defaultMagicValue = 0x04000000;
 
         public int MagicValue { get; set; }
         public int HashValue { get; set; }
@@ -56,8 +55,7 @@ namespace Ntreev.Crema.Reader.Binary
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     struct FileHeader
     {
-        public const uint defaultMagicValueObsolete = 0x8d31269e;
-        public const int defaultMagicValue = 0x03050000;
+        public const int defaultMagicValue = 0x04000000;
 
         public int MagicValue { get; set; }
         public int Revision { get; set; }

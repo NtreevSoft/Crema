@@ -22,6 +22,7 @@ using Ntreev.Library;
 using Ntreev.Library.IO;
 using Ntreev.Library.ObjectModel;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.IO;
@@ -131,6 +132,35 @@ namespace Ntreev.Crema.Data
         public override string ToString()
         {
             return this.InternalObject.ToString();
+        }
+
+        public IDictionary<string, object> ToDictionary()
+        {
+            var props = new Dictionary<string, object>
+            {
+                { nameof(this.TypeID), this.TypeID },
+                { nameof(this.Name), this.Name },
+                { nameof(this.Comment), this.Comment },
+                { nameof(this.Tags), $"{this.Tags}" },
+                { nameof(this.IsFlag), this.IsFlag },
+                { nameof(this.CategoryPath), this.CategoryPath },
+                { CremaSchema.Creator, this.CreationInfo.ID },
+                { CremaSchema.CreatedDateTime, this.CreationInfo.DateTime },
+                { CremaSchema.Modifier, this.ModificationInfo.ID },
+                { CremaSchema.ModifiedDateTime, this.ModificationInfo.DateTime },
+                { nameof(this.Members), GetMembersInfo() }
+            };
+            return props;
+
+            IDictionary<string, object> GetMembersInfo()
+            {
+                var members = new Dictionary<string, object>(this.Members.Count);
+                foreach (var item in this.Members)
+                {
+                    members.Add(item.Name, item.ToDictionary());
+                }
+                return members;
+            }
         }
 
         public void Clear()
@@ -488,7 +518,15 @@ namespace Ntreev.Crema.Data
 
         public string Path => this.CategoryPath + this.TypeName;
 
+
         public string Namespace => this.InternalObject.Namespace;
+
+        [DefaultValue(50)]
+        public int MinimumCapacity
+        {
+            get => this.InternalObject.MinimumCapacity;
+            set => this.InternalObject.MinimumCapacity = value;
+        }
 
         public TypeInfo TypeInfo => this.InternalObject.TypeInfo;
 
@@ -807,8 +845,8 @@ namespace Ntreev.Crema.Data
             this.InternalComment = reader.GetAttribute(CremaSchema.Comment);
             this.InternalIsFlag = reader.GetAttributeAsBoolean("IsFlag");
             this.InternalTags = reader.GetAttributeAsTagInfo(CremaSchema.Tags);
-            this.InternalCreationInfo = reader.GetAttributeAsModificationInfo(CremaSchema.Creator, CremaSchema.CreatedDateTime);
-            this.InternalModificationInfo = reader.GetAttributeAsModificationInfo(CremaSchema.Modifier, CremaSchema.ModifiedDateTime);
+            this.InternalCreationInfo = reader.GetAttributeAsSignatureDate(CremaSchema.Creator, CremaSchema.CreatedDateTime);
+            this.InternalModificationInfo = reader.GetAttributeAsSignatureDate(CremaSchema.Modifier, CremaSchema.ModifiedDateTime);
 
             reader.ReadStartElement();
             reader.MoveToContent();
@@ -821,8 +859,8 @@ namespace Ntreev.Crema.Data
                 while (reader.NodeType == XmlNodeType.Element)
                 {
                     var member = this.NewMember();
-                    var creationInfo = reader.GetAttributeAsModificationInfo(CremaSchema.Creator, CremaSchema.CreatedDateTime);
-                    var modificationInfo = reader.GetAttributeAsModificationInfo(CremaSchema.Modifier, CremaSchema.ModifiedDateTime);
+                    var creationInfo = reader.GetAttributeAsSignatureDate(CremaSchema.Creator, CremaSchema.CreatedDateTime);
+                    var modificationInfo = reader.GetAttributeAsSignatureDate(CremaSchema.Modifier, CremaSchema.ModifiedDateTime);
                     var memberID = reader.GetAttributeAsGuid(CremaSchema.ID);
 
                     reader.ReadStartElement("Member");

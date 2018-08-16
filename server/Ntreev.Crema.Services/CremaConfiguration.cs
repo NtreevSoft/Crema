@@ -16,18 +16,28 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Ntreev.Library;
+using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Ntreev.Crema.Services
 {
     public class CremaConfiguration : ConfigurationBase, ICremaConfiguration
     {
-        public CremaConfiguration(string path, IEnumerable<IConfigurationPropertyProvider> propertiesProvider)
-            : base(path, typeof(ICremaConfiguration), propertiesProvider)
+        private readonly string itemName;
+        public CremaConfiguration(string itemName, IEnumerable<IConfigurationPropertyProvider> propertiesProvider)
+            : base(typeof(ICremaConfiguration), propertiesProvider)
         {
-
+            this.itemName = itemName;
+            this.Read(this.itemName + ".xml");
         }
 
         public override string Name => "CremaConfigs";
+
+        public void Commit()
+        {
+            this.WriteSchema(this.itemName + ".xsd");
+            this.Write(this.itemName + ".xml", Path.GetFileName(this.itemName) + ".xsd");
+        }
     }
 }

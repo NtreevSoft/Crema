@@ -28,7 +28,7 @@ namespace Ntreev.Crema.Commands
     static class DataBaseSettings
     {
         [CommandProperty("database")]
-        [DefaultValue("default")]
+        [DefaultValue("")]
         public static string DataBaseName
         {
             get;

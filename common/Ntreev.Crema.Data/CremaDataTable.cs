@@ -101,13 +101,13 @@ namespace Ntreev.Crema.Data
             this.InternalObject.EndLoad();
         }
 
-        public void BeginLoadInternal()
+        internal void BeginLoadInternal()
         {
             this.InternalObject.BeginLoadData();
             this.DetachEventHandlers();
         }
 
-        public void EndLoadInternal()
+        internal void EndLoadInternal()
         {
             this.AttachEventHandlers();
             this.InternalObject.EndLoadData();
@@ -315,20 +315,6 @@ namespace Ntreev.Crema.Data
             try
             {
                 this.InternalObject.ImportRow(row.InternalObject);
-
-                foreach (var item in row.Table.Childs)
-                {
-                    var childRows = row.GetChildRows(item);
-
-                    var thisChild = this.Childs[item.TableName];
-                    if (thisChild == null)
-                        continue;
-
-                    foreach (var childRow in childRows)
-                    {
-                        thisChild.ImportRow(childRow);
-                    }
-                }
             }
             finally
             {
@@ -650,6 +636,17 @@ namespace Ntreev.Crema.Data
         public override string ToString()
         {
             return this.Name;
+        }
+
+        public IDictionary<int, object> ToDictionary()
+        {
+            var props = new Dictionary<int, object>(this.Rows.Count);
+            for (var i = 0; i < this.Rows.Count; i++)
+            {
+                var dataRow = this.Rows[i];
+                props.Add(i, dataRow.ToDictionary());
+            }
+            return props;
         }
 
         public static CremaDataTable ReadSchema(XmlReader reader)
@@ -1295,7 +1292,7 @@ namespace Ntreev.Crema.Data
             this.InternalObject.TableNewRow -= Table_TableNewRow;
         }
 
-        internal void AttachTemplatedParent(CremaDataTable templatedParent)
+        public void AttachTemplatedParent(CremaDataTable templatedParent)
         {
             this.TemplatedParent = templatedParent;
         }

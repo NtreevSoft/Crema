@@ -13,25 +13,18 @@ namespace Ntreev.Crema.Repository.Git
 {
     class GitCommand : CommandHost
     {
-        private const string git = "git";
-
         public GitCommand(string basePath, string commandName)
-            : base(git, basePath, commandName)
+            : base(GitCommand.ExecutablePath ?? "git", basePath, commandName)
         {
             
         }
 
         public string Run(ILogService logService)
         {
-            try
-            {
-                return this.Run();
-            }
-            catch (Exception e)
-            {
-                logService.Error(e);
-                throw;
-            }
+            logService.Debug(this.ToString());
+            return this.Run();
         }
+
+        public static string ExecutablePath { get; set; }
     }
 }

@@ -240,6 +240,7 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" name="dataBaseName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="revision" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -261,7 +262,7 @@
   <xs:element name="RevertResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q22="http://schemas.ntreev.com" minOccurs="0" name="RevertResult" type="q22:ResultBase" />
+        <xs:element xmlns:q22="http://schemas.ntreev.com" minOccurs="0" name="RevertResult" type="q22:ResultBaseOfDataBaseInfoq8erDhHE" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

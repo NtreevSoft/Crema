@@ -305,7 +305,7 @@ namespace Ntreev.Crema.Bot.Tasks
         {
             table.Dispatcher.Invoke(() =>
             {
-                table.GetLog(context.Authentication);
+                table.GetLog(context.Authentication, null);
             });
         }
 

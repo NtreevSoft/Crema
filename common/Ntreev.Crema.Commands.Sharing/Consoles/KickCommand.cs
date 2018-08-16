@@ -54,8 +54,8 @@ namespace Ntreev.Crema.Commands.Consoles
             get; set;
         }
 
-        [CommandProperty('m', IsRequired = true, IsExplicit = true)]
-        public string Comment
+        [CommandProperty('m', true, IsRequired = true, IsExplicit = true)]
+        public string Message
         {
             get; set;
         }
@@ -64,7 +64,7 @@ namespace Ntreev.Crema.Commands.Consoles
         {
             var authentication = this.CommandContext.GetAuthentication(this);
             var user = this.GetUser(authentication, this.UserID);
-            user.Dispatcher.Invoke(() => user.Kick(authentication, this.Comment));
+            user.Dispatcher.Invoke(() => user.Kick(authentication, this.Message));
         }
     }
 }

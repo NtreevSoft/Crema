@@ -76,8 +76,7 @@ namespace Ntreev.Crema.Commands
         }
 
         [CommandProperty]
-        [DefaultValue((long)-1)]
-        public long Revision
+        public string Revision
         {
             get; set;
         }

@@ -55,7 +55,14 @@ namespace Ntreev.Crema.Repository.Git
                 name,
             };
             configCommand.ThrowOnError = false;
-            return configCommand.ReadLine() != null;
+            try
+            {
+                return configCommand.ReadLine() != null;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public static string GetValue(string repositoryPath, string name)
@@ -71,11 +78,6 @@ namespace Ntreev.Crema.Repository.Git
                 name,
             };
             return configCommand.Run();
-        }
-
-        public static Guid GetValueAsGuid(string repositoryPath, string name)
-        {
-            return Guid.Parse(GetValue(repositoryPath, name));
         }
 
         public static void SetValue(string name, string value)

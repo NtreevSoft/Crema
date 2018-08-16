@@ -65,8 +65,15 @@ namespace Ntreev.Crema.Client.Tables.Documents.ViewModels
         {
             if (this.Tables.Any() == true)
             {
-                await TableContentDescriptorUtility.EndEditAsync(this.authentication, this.contentDescriptor);
-                this.DetachEvent();
+                try
+                {
+                    await TableContentDescriptorUtility.EndEditAsync(this.authentication, this.contentDescriptor);
+                    this.DetachEvent();
+                }
+                catch (Exception e)
+                {
+                    AppMessageBox.ShowError(e);
+                }
             }
         }
 

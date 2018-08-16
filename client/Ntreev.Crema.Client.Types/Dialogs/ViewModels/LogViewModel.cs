@@ -104,7 +104,7 @@ namespace Ntreev.Crema.Client.Types.Dialogs.ViewModels
             try
             {
                 this.BeginProgress(Resources.Message_ReceivingInfo);
-                var query = from item in await Task.Run(() => this.typeItem.GetLog(this.authentication))
+                var query = from item in await Task.Run(() => this.typeItem.GetLog(this.authentication, null))
                             select new LogInfoViewModel(this.authentication, this.typeItem, item);
                 this.itemsSource = query.ToArray();
                 foreach (var item in this.itemsSource)

@@ -59,7 +59,7 @@ namespace Ntreev.Crema.Commands.Consoles
         {
             if (this.Path == string.Empty)
             {
-                this.Out.WriteLine(this.CommandContext.Path);
+                this.CommandContext.WriteLine(this.CommandContext.Path);
             }
             else
             {

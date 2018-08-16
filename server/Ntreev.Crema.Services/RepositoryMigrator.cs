@@ -1,4 +1,5 @@
-﻿using Ntreev.Crema.Services.Users.Serializations;
+﻿using Ntreev.Crema.Services.Properties;
+using Ntreev.Crema.Services.Users.Serializations;
 using Ntreev.Library;
 using Ntreev.Library.IO;
 using System;
@@ -63,6 +64,7 @@ namespace Ntreev.Crema.Services
                 var url = repositoryUrl == null ? null : new Uri(repositoryUrl, UriKind.RelativeOrAbsolute);
                 var migrator = new RepositoryMigrator(logService, repositoryMigrator, basePath, url);
                 migrator.Migrate();
+                FileUtility.WriteAllText(Resources.Text_README, basePath, "README.md");
             }
             catch (Exception e)
             {

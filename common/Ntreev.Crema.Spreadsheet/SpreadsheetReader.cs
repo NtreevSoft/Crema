@@ -60,12 +60,35 @@ namespace Ntreev.Crema.Spreadsheet
             this.workbook = null;
         }
 
+        public event ProgressEventHandler Progress;
+
+        protected virtual void OnProgress(ProgressEventArgs e)
+        {
+            this.Progress?.Invoke(this, e);
+        }
+
         public static string[] ReadSheetNames(string filename)
         {
             using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 return SpreadsheetReader.ReadSheetNames(fs);
             }
+        }
+
+        public static string[] ReadTypeNames(string filename)
+        {
+            var query = from item in ReadSheetNames(filename)
+                        where item.StartsWith("$") == true
+                        select item;
+            return query.ToArray();
+        }
+
+        public static string[] ReadTableNames(string filename)
+        {
+            var query = from item in ReadSheetNames(filename)
+                        where item != SpreadsheetUtility.InformationSheet && item.StartsWith("$") == false
+                        select item;
+            return query.ToArray();
         }
 
         public static string[] ReadSheetNames(Stream stream)
@@ -83,43 +106,24 @@ namespace Ntreev.Crema.Spreadsheet
 
         public void Read(CremaDataSet dataSet)
         {
-            this.Read(dataSet, new Progress());
-        }
-
-        public void Read(CremaDataSet dataSet, IProgress progress)
-        {
             var query = from sheet in this.workbook.Worksheets
                         join table in dataSet.Tables on sheet.Name equals SpreadsheetUtility.Ellipsis(table.Name)
                         orderby table.Name
-                        select sheet;
+                        select new { DataTable = table, Sheet = sheet };
             var items = query.ToArray();
-
-            var step = new StepProgress(progress);
-            step.Begin(items.Length);
-            foreach (var item in query)
+            for (var i = 0; i < items.Length; i++)
             {
-                this.ReadSheet(item, dataSet);
-                step.Next("read {0} : {1}", ConsoleProgress.GetProgressString(step.Step + 1, items.Length), item.Name);
+                var item = items[i];
+                this.ReadSheet(item.Sheet, item.DataTable);
+                this.OnProgress(new ProgressEventArgs(item.DataTable, i, items.Length));
             }
-            step.Complete();
         }
 
-        private void ReadSheet(IXLWorksheet worksheet, CremaDataSet dataSet)
+        private void ReadSheet(IXLWorksheet worksheet, CremaDataTable dataTable)
         {
-            var dataTable = dataSet.Tables.FirstOrDefault(item => item.Name == worksheet.Name);
-            if (dataTable == null)
-            {
-                if (worksheet.Name.IndexOf('~') >= 0)
-                {
-                    dataTable = dataSet.Tables.FirstOrDefault(item => SpreadsheetUtility.Ellipsis(item.Name) == worksheet.Name);
-                }
-            }
-
-            if (dataTable == null)
-                return;
-
+            if (dataTable.Rows.Any() == true)
+                throw new InvalidOperationException("비어있는 테이블이 아닙니다.");
             var columns = this.ReadColumns(dataTable, worksheet.FirstRow());
-
             foreach (var item in worksheet.Rows().Skip(1))
             {
                 if (item.Cells(true).Any() == false)
@@ -142,7 +146,7 @@ namespace Ntreev.Crema.Spreadsheet
                     throw new CremaDataException(message);
                 }
 
-                if (text == CremaSchema.Tags || text == CremaSchema.Enable || text == CremaSchema.RelationID)
+                if (text == CremaSchema.Tags || text == CremaSchema.Enable || text == CremaSchema.__ParentID__ || text == CremaSchema.__RelationID__)
                 {
                     columns.Add(text);
                     continue;
@@ -177,7 +181,7 @@ namespace Ntreev.Crema.Spreadsheet
             if (fields.Any() == false)
                 return;
 
-            var dataRow = this.NewRow(dataTable, fields, row);
+            var dataRow = dataTable.NewRow();
 
             foreach (var item in dataTable.Columns)
             {
@@ -195,6 +199,16 @@ namespace Ntreev.Crema.Spreadsheet
                 }
             }
 
+            if (fields.ContainsKey(CremaSchema.__RelationID__))
+            {
+                dataRow.RelationID = $"{fields[CremaSchema.__RelationID__]}";
+            }
+
+            if (fields.ContainsKey(CremaSchema.__ParentID__))
+            {
+                dataRow.ParentID = $"{fields[CremaSchema.__ParentID__]}";
+            }
+
             try
             {
                 dataTable.Rows.Add(dataRow);
@@ -210,7 +224,7 @@ namespace Ntreev.Crema.Spreadsheet
             if (dataTable.Parent == null)
                 return dataTable.NewRow();
 
-            if (fields.ContainsKey(CremaSchema.RelationID) == false)
+            if (fields.ContainsKey(CremaSchema.__ParentID__) == false)
             {
                 throw new CremaDataException(string.Format("'{0}!{1}'에 부모 행 번호가 존재하지 않습니다.", row.Worksheet.Name, row.RangeAddress));
             }
@@ -257,9 +271,13 @@ namespace Ntreev.Crema.Spreadsheet
                     {
                         fields.Add(columnName, item.GetBoolean());
                     }
-                    else if (columnName == CremaSchema.RelationID)
+                    else if (columnName == CremaSchema.__ParentID__)
                     {
-                        fields.Add(columnName, item.GetValue<int>());
+                        fields.Add(columnName, item.GetValue<string>());
+                    }
+                    else if (columnName == CremaSchema.__RelationID__)
+                    {
+                        fields.Add(columnName, item.GetValue<string>());
                     }
                     else if (column.DataType == typeof(byte))
                     {

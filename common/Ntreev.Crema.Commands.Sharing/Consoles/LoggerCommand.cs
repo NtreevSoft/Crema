@@ -77,7 +77,7 @@ namespace Ntreev.Crema.Commands.Consoles
             var logService = this.GetLog(logName);
             if (verbose == null)
             {
-                this.Out.WriteLine(logService.Verbose.ToString().ToLower());
+                this.CommandContext.WriteLine(logService.Verbose.ToString().ToLower());
             }
             else
             {
@@ -94,24 +94,27 @@ namespace Ntreev.Crema.Commands.Consoles
 
         [CommandMethod]
         [CommandMethodStaticProperty(typeof(DetailProperties))]
-        public void List(string filter = "")
+        [CommandMethodStaticProperty(typeof(FormatProperties))]
+        public void List()
         {
-            var items = this.GetLogList();
             if (DetailProperties.IsDetail == true)
             {
-                var tableData = new TableDataBuilder(nameof(ILogService.Name), nameof(ILogService.Verbose), nameof(ILogService.FileName));
                 foreach (var item in this.GetLogList())
                 {
-                    tableData.Add(item.Name, item.Verbose, item.FileName);
+                    var props = new Dictionary<string, object>()
+                    {
+                        { nameof(ILogService.Name), item.Name},
+                        { nameof(ILogService.Verbose), item.Verbose},
+                        { nameof(ILogService.FileName),item.FileName}
+                    };
+                    this.CommandContext.WriteObject(props, FormatProperties.Format);
+                    this.CommandContext.WriteLine();
                 }
-                this.Out.PrintTableData(tableData.Data, true);
             }
             else
             {
-                foreach (var item in this.GetLogList())
-                {
-                    this.Out.WriteLine(item.Name);
-                }
+                var names = this.GetLogList().Select(item => item.Name).ToArray();
+                this.CommandContext.WriteList(names);
             }
         }
 

@@ -74,6 +74,8 @@ namespace Ntreev.Crema.Services
                 var repoModulePath = FileUtility.WriteAllText(repositoryProvider.Name, repositoryPath, CremaString.Repo);
                 var fileTypePath = FileUtility.WriteAllText(serializer.Name, repositoryPath, CremaString.File);
 
+                FileUtility.WriteAllText(Resources.Text_README, basePath, "README.md");
+
                 FileUtility.SetReadOnly(repoModulePath, true);
                 FileUtility.SetReadOnly(fileTypePath, true);
                 DirectoryUtility.SetVisible(repositoryPath, false);

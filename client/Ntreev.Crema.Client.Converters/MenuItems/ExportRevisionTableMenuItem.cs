@@ -31,7 +31,7 @@ using System.Threading.Tasks;
 namespace Ntreev.Crema.Client.Converters.MenuItems
 {
     [Export(typeof(IMenuItem))]
-    [ParentType("Ntreev.Crema.Client.Tables.Dialogs.ViewModels.LogInfoViewModel, Ntreev.Crema.Client.Tables, Version=3.6.0.0, Culture=neutral, PublicKeyToken=null")]
+    [ParentType("Ntreev.Crema.Client.Tables.Dialogs.ViewModels.LogInfoViewModel, Ntreev.Crema.Client.Tables, Version=4.0.0.0, Culture=neutral, PublicKeyToken=null")]
     class ExportRevisionTableMenuItem : MenuItemBase
     {
         [Import]

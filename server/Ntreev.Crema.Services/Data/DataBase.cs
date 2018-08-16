@@ -36,7 +36,7 @@ using System.Linq;
 
 namespace Ntreev.Crema.Services.Data
 {
-    class DataBase : DataBaseBase<Type, TypeCategory, TypeCollection, TypeCategoryCollection, TypeContext, Table, TableCategory, TableCollection, TableCategoryCollection, TableContext>,
+    partial class DataBase : DataBaseBase<Type, TypeCategory, TypeCollection, TypeCategoryCollection, TypeContext, Table, TableCategory, TableCollection, TableCategoryCollection, TableContext>,
         IDataBase, IInfoProvider, IStateProvider
     {
         private readonly IRepositoryProvider repositoryProvider;
@@ -69,7 +69,16 @@ namespace Ntreev.Crema.Services.Data
         public DataBase(CremaHost cremaHost, string name, DataBaseSerializationInfo dataBaseInfo)
             : this(cremaHost, name)
         {
+            this.CremaHost = cremaHost;
+            this.repositoryProvider = cremaHost.RepositoryProvider;
+            this.serializer = cremaHost.Serializer;
+            this.Dispatcher = cremaHost.Dispatcher;
+            base.Name = name;
+            this.cachePath = cremaHost.GetPath(CremaPath.Caches, DataBaseCollection.DataBasesString);
+            this.userContext = this.CremaHost.UserContext;
+            this.userContext.Dispatcher.Invoke(() => this.userContext.Users.UsersLoggedOut += Users_UsersLoggedOut);
             base.DataBaseInfo = (DataBaseInfo)dataBaseInfo;
+            this.Initialize();
         }
 
         public override string ToString()
@@ -326,12 +335,13 @@ namespace Ntreev.Crema.Services.Data
         {
             try
             {
+                var oldName = base.Name;
                 this.ValidateDispatcher();
                 this.CremaHost.DebugMethod(authentication, this, nameof(Rename), this, name);
                 this.DataBases.InvokeDataBaseRename(authentication, this, name);
-                var oldName = base.Name;
-                base.Name = name;
                 this.Sign(authentication);
+                base.Name = name;
+                this.metaData = null;
                 this.DataBases.InvokeItemsRenamedEvent(authentication, new DataBase[] { this }, new string[] { oldName });
             }
             catch (Exception e)
@@ -369,14 +379,13 @@ namespace Ntreev.Crema.Services.Data
             return this.authentications.Contains(authentication);
         }
 
-        public LogInfo[] GetLog(Authentication authentication)
+        public LogInfo[] GetLog(Authentication authentication, string revision)
         {
             try
             {
-                this.ValidateDispatcher();
                 var remotePath = this.CremaHost.GetPath(CremaPath.RepositoryDataBases);
-                var logs = this.repositoryProvider.GetLog(remotePath, this.Name, 100);
-                return logs.OrderByDescending(item => item.Revision).Take(100).ToArray();
+                var logs = this.repositoryProvider.GetLog(remotePath, this.Name, revision);
+                return logs.ToArray();
             }
             catch (Exception e)
             {
@@ -390,26 +399,20 @@ namespace Ntreev.Crema.Services.Data
             try
             {
                 this.ValidateDispatcher();
-                this.ValidateRevert(authentication, revision);
-                var eventLog = EventLogBuilder.Build(authentication, this, nameof(Revert), this, revision);
-                var message = EventMessageBuilder.RevertDataBase(authentication, this, revision);
-                var dataBaseInfo = base.DataBaseInfo;
-
-                try
+                this.CremaHost.DebugMethod(authentication, this, nameof(Revert), this, revision);
+                this.DataBases.InvokeDataBaseRevert(authentication, this, revision);
+                this.Sign(authentication);
+                var repositoryInfo = this.repositoryProvider.GetRepositoryInfo(this.CremaHost.GetPath(CremaPath.RepositoryDataBases), base.Name);
+                base.DataBaseInfo = new DataBaseInfo()
                 {
-                    this.Repository.Revert(revision);
-                    this.Repository.Commit(authentication, message);
-                }
-                catch
-                {
-                    this.Repository.Revert();
-                    throw;
-                }
-
-                this.CremaHost.Debug(eventLog);
-                this.CremaHost.Info(message);
-                dataBaseInfo.Revision = this.Repository.RepositoryInfo.Revision;
-                base.DataBaseInfo = dataBaseInfo;
+                    ID = repositoryInfo.ID,
+                    Name = repositoryInfo.Name,
+                    Revision = repositoryInfo.Revision,
+                    Comment = repositoryInfo.Comment,
+                    CreationInfo = repositoryInfo.CreationInfo,
+                    ModificationInfo = repositoryInfo.ModificationInfo,
+                };
+                this.DataBases.InvokeItemsRevertedEvent(authentication, new IDataBase[] { this }, new string[] { revision });
             }
             catch (Exception e)
             {
@@ -461,11 +464,16 @@ namespace Ntreev.Crema.Services.Data
         {
             if (this.Dispatcher == null)
                 throw new InvalidOperationException(Resources.Exception_InvalidObject);
-            this.Dispatcher.Invoke(() =>
-            {
-                if (authentication != Authentication.System && this.authentications.Contains(authentication) == false)
-                    throw new InvalidOperationException(Resources.Exception_NotInDataBase);
-            });
+            if (authentication != Authentication.System && this.authentications.Contains(authentication) == false)
+                throw new InvalidOperationException(Resources.Exception_NotInDataBase);
+        }
+
+        public void ValidateGetDataSet(Authentication authentication)
+        {
+            if (this.IsLoaded == false)
+                throw new NotImplementedException();
+            this.VerifyAccessType(authentication, AccessType.Guest);
+            this.ValidateAsyncBeginInDataBase(authentication);
         }
 
         public bool VerifyAccess(Authentication authentication)
@@ -670,31 +678,35 @@ namespace Ntreev.Crema.Services.Data
                 return this.CremaHost.GetService(serviceType);
         }
 
-        public CremaDataSet GetDataSet(Authentication authentication, string revision)
+        public CremaDataSet GetDataSet(Authentication authentication, DataSetType dataSetType, string filterExpression, string revision)
         {
-            this.Dispatcher.Invoke(() => this.ValidatePreview(authentication));
-
-            if (revision == base.DataBaseInfo.Revision || revision == null)
+            this.ValidateGetDataSet(authentication);
+            this.CremaHost.DebugMethod(authentication, this, nameof(GetDataSet), this, dataSetType, filterExpression, revision);
+            switch(dataSetType)
             {
-                if (this.dataSetCache == null)
-                {
-                    this.dataSetCache = this.Dispatcher.Invoke(() => CremaDataSet.ReadFromDirectory(this.BasePath));
-                }
-                return this.dataSetCache;
+                case DataSetType.All:
+                    return this.GetDataSet(authentication, revision, filterExpression, ReadTypes.All);
+                case DataSetType.OmitContent:
+                    return this.GetDataSet(authentication, revision, filterExpression, ReadTypes.OmitContent);
+                case DataSetType.TypeOnly:
+                    return this.GetDataSet(authentication, revision, filterExpression, ReadTypes.TypeOnly);
+                default:
+                    throw new NotImplementedException();
             }
-            else
+        }
+
+        public CremaDataSet GetDataSet(Authentication authentication, string revision, string filterExpression, ReadTypes readType)
+        {
+            var tempPath = PathUtility.GetTempPath(false);
+            var uri = this.Repository.GetUri(this.BasePath, revision);
+            try
             {
-                var tempPath = PathUtility.GetTempPath(false);
-                var uri = this.Repository.GetUri(this.BasePath, revision);
-                try
-                {
-                    var exportPath = this.Repository.Export(uri, tempPath);
-                    return CremaDataSet.ReadFromDirectory(exportPath);
-                }
-                finally
-                {
-                    DirectoryUtility.Delete(tempPath);
-                }
+                var exportPath = this.Repository.Export(uri, tempPath);
+                return CremaDataSet.ReadFromDirectory(exportPath, filterExpression, readType);
+            }
+            finally
+            {
+                DirectoryUtility.Delete(tempPath);
             }
         }
 
@@ -782,8 +794,10 @@ namespace Ntreev.Crema.Services.Data
         {
             get
             {
-                this.Dispatcher?.VerifyAccess();
-                return base.DataBaseState;
+                lock ((object)this.Dispatcher ?? this)
+                {
+                    return base.DataBaseState;
+                }
             }
         }
 
@@ -1424,13 +1438,6 @@ namespace Ntreev.Crema.Services.Data
             this.Dispatcher?.VerifyAccess();
         }
 
-        private void ValidatePreview(Authentication authentication)
-        {
-            if (this.IsLoaded == false)
-                throw new NotImplementedException();
-            this.ValidateBeginInDataBase(authentication);
-        }
-
         private void ValidateEnter(Authentication authentication)
         {
             if (this.IsLoaded == false)
@@ -1465,17 +1472,6 @@ namespace Ntreev.Crema.Services.Data
                 throw new PermissionDeniedException();
             if (this.VerifyAccessType(authentication, AccessType.Master) == false)
                 throw new PermissionDeniedException();
-        }
-
-        private void ValidateRevert(Authentication authentication, string revision)
-        {
-            if (authentication.IsSystem == false && authentication.IsAdmin == false)
-                throw new PermissionDeniedException();
-            if (this.IsLoaded == true)
-                throw new InvalidOperationException(Resources.Exception_LoadedDataBaseCannotRevert);
-            var logs = this.Repository.GetLog(new string[] { this.BasePath }, this.Repository.RepositoryInfo.Revision, 100);
-            if (logs.Any(item => item.Revision == revision) == false)
-                throw new ArgumentException(string.Format(Resources.Exception_NotFoundRevision_Format, revision), nameof(revision));
         }
 
         private void ValidateBeginTransaction(Authentication authentication)
