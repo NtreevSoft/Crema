@@ -59,7 +59,7 @@ namespace Ntreev.Crema.ConsoleHost
 
         private void AttachCremaConfigs()
         {
-            foreach(var item in this.disabledProperties)
+            foreach (var item in this.disabledProperties)
             {
                 this.properties.Add(item);
             }
