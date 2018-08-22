@@ -29,7 +29,14 @@ namespace Ntreev.Crema.Services
             : base(typeof(ICremaConfiguration), propertiesProvider)
         {
             this.itemName = itemName;
-            this.Read(this.itemName + ".xml");
+            try
+            {
+                this.Read(this.itemName + ".xml");
+            }
+            catch (Exception e)
+            {
+                CremaLog.Error(e);
+            }
         }
 
         public override string Name => "CremaConfigs";
