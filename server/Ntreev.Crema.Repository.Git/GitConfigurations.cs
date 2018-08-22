@@ -33,6 +33,7 @@ namespace Ntreev.Crema.Repository.Git
 
         [ConfigurationProperty(ScopeType = typeof(ICremaConfiguration))]
         [DefaultValue(0)]
+        [Description("표시될 로그의 최대 개수를 나타냅니다.")]
         public int MaxLogCount
         {
             get => GitLogInfo.MaxCount;
