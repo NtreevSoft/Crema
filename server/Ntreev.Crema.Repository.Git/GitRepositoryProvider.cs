@@ -258,7 +258,7 @@ namespace Ntreev.Crema.Repository.Git
             var repositoryInfo = new RepositoryInfo();
             var repositoryPath = baseUri.LocalPath;
             var revisions = GitLogInfo.GetRepositoryRevisions(repositoryPath, repositoryName);
-            var latestLog = GitLogInfo.GetRepositoryLatestLog(repositoryPath, revisions.Last());
+            var latestLog = GitLogInfo.GetRepositoryLatestLog(repositoryPath, revisions.First());
             var refLogItems = GitLogInfo.GetReflogs(basePath, repositoryName);
 
             var firstLog = refLogItems.Last();
