@@ -61,13 +61,7 @@ namespace Ntreev.Crema.Designer.Types.Views
 
         public void Dispose()
         {
-            if (this.gridControl != null && this.dataTypeControl.Source != null)
-            {
-                var typeID = this.dataTypeControl.Source.TypeID;
-                var settings = new Xceed.Wpf.DataGrid.Settings.SettingsRepository();
-                this.gridControl.SaveUserSettings(settings, Xceed.Wpf.DataGrid.Settings.UserSettings.All);
-                this.configs[this.GetType(), typeID.ToString()] = settings;
-            }
+            
         }
 
         public override void OnApplyTemplate()
@@ -129,10 +123,10 @@ namespace Ntreev.Crema.Designer.Types.Views
         private void GridControl_ItemsSourceChangeCompleted(object sender, EventArgs e)
         {
             var typeID = this.dataTypeControl.Source.TypeID;
-            if (this.configs.TryParse<Xceed.Wpf.DataGrid.Settings.SettingsRepository>(this.GetType(), typeID.ToString(), out var settings) == true)
-            {
-                this.gridControl.LoadUserSettings(settings, Xceed.Wpf.DataGrid.Settings.UserSettings.All);
-            }
+            //if (this.configs.TryParse<Xceed.Wpf.DataGrid.Settings.SettingsRepository>(this.GetType(), typeID.ToString(), out var settings) == true)
+            //{
+            //    this.gridControl.LoadUserSettings(settings, Xceed.Wpf.DataGrid.Settings.UserSettings.All);
+            //}
         }
 
         //private ICremaConfiguration Configs

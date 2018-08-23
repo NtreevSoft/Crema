@@ -140,15 +140,15 @@ namespace Ntreev.Crema.Designer.Tables.ViewModels
         {
             var items = this.GetSettings();
 
-            this.configs[this.GetType(), $"{this.shell.DataSetPath}"] = items;
+            //this.configs[this.GetType(), $"{this.shell.DataSetPath}"] = items;
         }
 
         private void LoadSettings()
         {
-            if (this.shell.DataSetPath != null && this.configs.TryParse<string[]>(this.GetType(), $"{this.shell.DataSetPath}", out var savedItems) == true)
-            {
-                this.SetSettings(savedItems);
-            }
+            //if (this.shell.DataSetPath != null && this.configs.TryParse<string[]>(this.GetType(), $"{this.shell.DataSetPath}", out var savedItems) == true)
+            //{
+            //    this.SetSettings(savedItems);
+            //}
         }
 
         private IServiceProvider ServiceProvider => this.serviceProvider.Value;

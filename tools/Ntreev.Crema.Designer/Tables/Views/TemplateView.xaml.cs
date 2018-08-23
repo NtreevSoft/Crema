@@ -42,23 +42,23 @@ namespace Ntreev.Crema.Designer.Tables.Views
 
         public TemplateView()
         {
-            
+
         }
 
         private void PART_DataGridControl_Loaded(object sender, RoutedEventArgs e)
         {
-            var gridControl = sender as ModernDataGridControl;
-            this.configs.Update(this);
-            if (this.Settings != null)
-                gridControl.LoadUserSettings(this.Settings, Xceed.Wpf.DataGrid.Settings.UserSettings.All);
+            //var gridControl = sender as ModernDataGridControl;
+            //this.configs.Update(this);
+            //if (this.Settings != null)
+            //    gridControl.LoadUserSettings(this.Settings, Xceed.Wpf.DataGrid.Settings.UserSettings.All);
         }
 
         private void PART_DataGridControl_Unloaded(object sender, RoutedEventArgs e)
         {
             var gridControl = sender as ModernDataGridControl;
-            this.Settings = new Xceed.Wpf.DataGrid.Settings.SettingsRepository();
-            gridControl.SaveUserSettings(this.Settings, Xceed.Wpf.DataGrid.Settings.UserSettings.All);
-            this.configs.Commit(this);
+            //this.Settings = new Xceed.Wpf.DataGrid.Settings.SettingsRepository();
+            //gridControl.SaveUserSettings(this.Settings, Xceed.Wpf.DataGrid.Settings.UserSettings.All);
+            //this.configs.Commit(this);
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -82,12 +82,6 @@ namespace Ntreev.Crema.Designer.Tables.Views
             {
                 this.buttons.IsEnabled = true;
             }
-        }
-
-        [ConfigurationProperty("settings")]
-        private Xceed.Wpf.DataGrid.Settings.SettingsRepository Settings
-        {
-            get; set;
         }
     }
 }

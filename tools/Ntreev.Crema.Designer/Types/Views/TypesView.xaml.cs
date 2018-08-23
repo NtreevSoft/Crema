@@ -92,10 +92,10 @@ namespace Ntreev.Crema.Designer.Types.Views
             if (expander.DataContext == null)
                 return;
 
-            if (this.configs.TryParse<bool>(expander.DataContext.GetType(), nameof(expander.IsExpanded), out var isExpanded) == true)
-            {
-                expander.IsExpanded = isExpanded;
-            }
+            //if (this.configs.TryGetValue<bool>(expander.DataContext.GetType(), nameof(expander.IsExpanded), out var isExpanded) == true)
+            //{
+            //    expander.IsExpanded = isExpanded;
+            //}
         }
 
         private void Expander_Unloaded(object sender, RoutedEventArgs e)
@@ -104,7 +104,7 @@ namespace Ntreev.Crema.Designer.Types.Views
             if (expander.DataContext == null)
                 return;
 
-            this.configs[expander.DataContext.GetType(), nameof(expander.IsExpanded)] = expander.IsExpanded;
+            //this.configs[expander.DataContext.GetType(), nameof(expander.IsExpanded)] = expander.IsExpanded;
         }
 
         #region IPartImportsSatisfiedNotification

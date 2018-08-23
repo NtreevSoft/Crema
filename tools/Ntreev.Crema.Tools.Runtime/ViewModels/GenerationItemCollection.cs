@@ -38,7 +38,7 @@ namespace Ntreev.Crema.Tools.Runtime.ViewModels
         {
             this.configs = configs;
 
-            if (this.configs.TryParse<GenerationItemInfo[]>(this.GetType(), "Items", out GenerationItemInfo[] items) == true)
+            if (this.configs.TryGetValue<GenerationItemInfo[]>(this.GetType(), typeof(GenerationItemInfo[]), "Items", out GenerationItemInfo[] items) == true)
             {
                 foreach (var item in items)
                 {
@@ -101,7 +101,7 @@ namespace Ntreev.Crema.Tools.Runtime.ViewModels
                 serverInfoList.Add(serverInfo);
             }
 
-            this.configs[this.GetType(), "Items"] = serverInfoList.ToArray();
+            //this.configs[this.GetType(), "Items"] = serverInfoList.ToArray();
         }
 
         public IEnumerable<IMenuItem> ContextMenus

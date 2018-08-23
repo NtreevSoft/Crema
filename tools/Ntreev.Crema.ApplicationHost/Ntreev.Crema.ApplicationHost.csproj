@@ -158,9 +158,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\..\licenses\Xceed.Wpf.Toolkit.license">
-      <Link>Licenses\Xceed.Wpf.Toolkit.license</Link>
-    </EmbeddedResource>
     <None Include="App.config" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

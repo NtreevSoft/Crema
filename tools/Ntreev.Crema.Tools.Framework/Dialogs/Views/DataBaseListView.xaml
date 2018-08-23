@@ -111,7 +111,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
                 <xcdg:Column FieldName="ModificationInfo.DateTime" Title="편집한 시간" CellContentTemplate="{StaticResource DateTime_DataTemplate}" />
             </nmgc:ModernDataGridControl.Columns>
             <nmgc:ModernDataGridControl.View>
-            <xcdg:TableView RowSelectorPaneWidth="0" AllowDrop="True" ShowFixedColumnSplitter="False"
+            <xcdg:TableView RowSelectorPaneWidth="0" AllowDrop="True" 
                             VerticalGridLineBrush="{DynamicResource DataGridGridLines}" 
                             HorizontalGridLineBrush="{DynamicResource DataGridGridLines}" 
                             IsAlternatingRowStyleEnabled="False" AllowRowResize="True">

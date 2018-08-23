@@ -35,23 +35,7 @@ namespace Ntreev.Crema.Comparer
     {
         static App()
         {
-            RegisterLicense("Xceed_Wpf_DataGrid", item => Xceed.Wpf.DataGrid.Licenser.LicenseKey = item);
-            RegisterLicense("Xceed_Wpf_Toolkit", item => Xceed.Wpf.Toolkit.Licenser.LicenseKey = item);
 
-            void RegisterLicense(string licenseName, Action<string> action)
-            {
-                var type = typeof(App);
-                var rm = new ResourceManager($"{type.Namespace}.Properties.Resources", type.Assembly);
-                var obj = (byte[])rm.GetObject(licenseName);
-                if (obj != null)
-                {
-                    var license = Encoding.UTF8.GetString(obj);
-                    if (string.IsNullOrEmpty(license) == false)
-                    {
-                        action(license);
-                    }
-                }
-            }
         }
     }
 }

@@ -59,15 +59,5 @@ namespace Ntreev.Crema.ApplicationHost.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   System.Byte[] 형식의 지역화된 리소스를 찾습니다.
-        /// </summary>
-        internal static byte[] Xceed_Wpf_Toolkit {
-            get {
-                object obj = ResourceManager.GetObject("Xceed_Wpf_Toolkit", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
     }
 }

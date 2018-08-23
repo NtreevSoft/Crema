@@ -134,12 +134,6 @@
     <value>닫기</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Xceed_Wpf_DataGrid" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\..\licenses\xceed.wpf.datagrid.license;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Xceed_Wpf_Toolkit" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\..\licenses\xceed.wpf.toolkit.license;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="Title_TypeInfo" xml:space="preserve">
     <value>타입 정보</value>
   </data>

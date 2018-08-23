@@ -270,25 +270,5 @@ namespace Ntreev.Crema.Comparer.Properties {
                 return ResourceManager.GetString("Tool_Open", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   System.Byte[] 형식의 지역화된 리소스를 찾습니다.
-        /// </summary>
-        public static byte[] Xceed_Wpf_DataGrid {
-            get {
-                object obj = ResourceManager.GetObject("Xceed_Wpf_DataGrid", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   System.Byte[] 형식의 지역화된 리소스를 찾습니다.
-        /// </summary>
-        public static byte[] Xceed_Wpf_Toolkit {
-            get {
-                object obj = ResourceManager.GetObject("Xceed_Wpf_Toolkit", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
     }
 }

@@ -244,15 +244,6 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\..\licenses\Newtonsoft.Json.Schema.license">
-      <Link>Licenses\Newtonsoft.Json.Schema.license</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\..\licenses\Xceed.Wpf.DataGrid.license">
-      <Link>Licenses\Xceed.Wpf.DataGrid.license</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\..\licenses\Xceed.Wpf.Toolkit.license">
-      <Link>Licenses\Xceed.Wpf.Toolkit.license</Link>
-    </EmbeddedResource>
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
