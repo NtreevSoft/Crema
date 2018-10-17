@@ -167,6 +167,8 @@
     <Reference Include="Xceed.Wpf.AvalonDock, Version=3.4.17280.14430, Culture=neutral, PublicKeyToken=ba83ff368b7563c6, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Xceed.Wpf.AvalonDock.3.4.17280.14430\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
     </Reference>
+    <Reference Include="Xceed.Wpf.Controls.v5.7, Version=5.7.15459.10040, Culture=neutral, PublicKeyToken=ba83ff368b7563c6, processorArchitecture=MSIL" />
+    <Reference Include="Xceed.Wpf.DataGrid.v5.7, Version=5.7.15459.10040, Culture=neutral, PublicKeyToken=ba83ff368b7563c6, processorArchitecture=MSIL" />
     <Reference Include="Xceed.Wpf.Toolkit, Version=3.4.17280.14430, Culture=neutral, PublicKeyToken=ba83ff368b7563c6, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Xceed.Wpf.Toolkit.3.4.17280.14430\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
     </Reference>

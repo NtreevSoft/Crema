@@ -130,7 +130,15 @@ namespace Ntreev.Crema.Client.Types.Documents.Views
         private void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
             this.Dispatcher.InvokeAsync((this.focuedElement ?? this.FindingText).Focus);
+
+            if (this.Settings != null)
+                return;
+
             this.configs.Update(this);
+            if (this.Settings != null)
+            {
+                this.gridControl.LoadUserSettings(this.Settings, Xceed.Wpf.DataGrid.Settings.UserSettings.All);
+            }
         }
 
         private void UserControl_Unloaded(object sender, System.Windows.RoutedEventArgs e)
@@ -138,6 +146,8 @@ namespace Ntreev.Crema.Client.Types.Documents.Views
             var window = Window.GetWindow(this);
             if (window == null)
             {
+                this.Settings = new Xceed.Wpf.DataGrid.Settings.SettingsRepository();
+                this.gridControl.SaveUserSettings(this.Settings, Xceed.Wpf.DataGrid.Settings.UserSettings.All);
                 this.configs.Commit(this);
             }
         }
@@ -163,6 +173,12 @@ namespace Ntreev.Crema.Client.Types.Documents.Views
                 this.FindingText.Focus();
                 e.Handled = true;
             }
+        }
+
+        [ConfigurationProperty("settings")]
+        private Xceed.Wpf.DataGrid.Settings.SettingsRepository Settings
+        {
+            get; set;
         }
     }
 }

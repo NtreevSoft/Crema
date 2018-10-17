@@ -78,11 +78,21 @@ namespace Ntreev.Crema.Client.Base.Services.Views
         private void CremaAppHost_Opened(object sender, EventArgs e)
         {
             this.configs.Update(this);
+            if (this.Settings != null)
+                this.gridControl.LoadUserSettings(this.Settings, Xceed.Wpf.DataGrid.Settings.UserSettings.All);
         }
 
         private void CremaAppHost_Closed(object sender, EventArgs e)
         {
+            this.Settings = new Xceed.Wpf.DataGrid.Settings.SettingsRepository();
+            this.gridControl.SaveUserSettings(this.Settings, Xceed.Wpf.DataGrid.Settings.UserSettings.All);
             this.configs.Commit(this);
+        }
+
+        [ConfigurationProperty("settings")]
+        private Xceed.Wpf.DataGrid.Settings.SettingsRepository Settings
+        {
+            get; set;
         }
 
         #region IPartImportsSatisfiedNotification

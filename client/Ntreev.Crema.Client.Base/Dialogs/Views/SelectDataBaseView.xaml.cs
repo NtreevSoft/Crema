@@ -55,12 +55,16 @@ namespace Ntreev.Crema.Client.Base.Dialogs.Views
 
         private void DataBaseListView_Unloaded(object sender, RoutedEventArgs e)
         {
+            this.Settings = new Xceed.Wpf.DataGrid.Settings.SettingsRepository();
+            this.gridControl.SaveUserSettings(this.Settings, Xceed.Wpf.DataGrid.Settings.UserSettings.All);
             this.configs.Commit(this);
         }
 
         private void DataBaseListView_Loaded(object sender, RoutedEventArgs e)
         {
             this.configs.Update(this);
+            if (this.Settings != null)
+                this.gridControl.LoadUserSettings(this.Settings, Xceed.Wpf.DataGrid.Settings.UserSettings.All);
         }
 
         private void DataGridRow_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -69,6 +73,12 @@ namespace Ntreev.Crema.Client.Base.Dialogs.Views
             {
                 this.OK.RaiseEvent(new RoutedEventArgs(Button.ClickEvent, this.OK));
             }
+        }
+
+        [ConfigurationProperty("settings")]
+        private Xceed.Wpf.DataGrid.Settings.SettingsRepository Settings
+        {
+            get; set;
         }
 
         private void GridControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
