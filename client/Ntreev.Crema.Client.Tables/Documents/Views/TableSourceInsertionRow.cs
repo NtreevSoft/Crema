@@ -15,47 +15,25 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Library;
-using Ntreev.ModernUI.Framework;
+using Ntreev.Crema.Client.Framework.Controls;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Input;
+using Xceed.Wpf.DataGrid;
 
-namespace Ntreev.Crema.Client.Base.Dialogs.Views
+namespace Ntreev.Crema.Client.Tables.Documents.Views
 {
-    partial class LogView : UserControl
+    class TableSourceInsertionRow : DomainInsertionRow
     {
-        [Import]
-        private IAppConfiguration configs = null;
-
-        public LogView()
+        protected override void PrepareContainer(DataGridContext dataGridContext, object item)
         {
-            this.InitializeComponent();
-        }
+            base.PrepareContainer(dataGridContext, item);
 
-        private void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
-        {
-            this.configs.Update(this);
-            if (this.Settings != null)
-                this.gridControl.LoadUserSettings(this.Settings, Xceed.Wpf.DataGrid.Settings.UserSettings.All);
-        }
-
-        private void UserControl_Unloaded(object sender, System.Windows.RoutedEventArgs e)
-        {
-            this.Settings = new Xceed.Wpf.DataGrid.Settings.SettingsRepository();
-            this.gridControl.SaveUserSettings(this.Settings, Xceed.Wpf.DataGrid.Settings.UserSettings.All);
-            this.configs.Commit(this);
-        }
-
-        [ConfigurationProperty("settings")]
-        private Xceed.Wpf.DataGrid.Settings.SettingsRepository Settings
-        {
-            get; set;
+            var gridControl = dataGridContext.DataGridControl as TableSourceDataGridControl;
+            if (gridControl.CanInsert == false || gridControl.ReadOnly == true)
+                this.Visibility = System.Windows.Visibility.Collapsed;
         }
     }
 }

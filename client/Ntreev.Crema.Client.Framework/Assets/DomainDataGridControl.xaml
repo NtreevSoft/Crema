@@ -133,9 +133,23 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
         <!--<EventSetter Event="Loaded" Handler="TableViewItemsHost_Loaded" />-->
     </Style>
 
+    <Style TargetType="{x:Type ncfc:DomainInsertionCell}" BasedOn="{StaticResource {x:Type xcdg:Cell}}" />
+
     <Style x:Key="DomainInsertionRowSelector_Style" TargetType="{x:Type xcdg:RowSelector}" BasedOn="{StaticResource InsertionRowSelector_Style}">
         <Style.Triggers>
             <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=DataContext.(xcdg:DataGridControl.DataGridContext).(nmgc:ModernDataGridControl.IsCurrentContext)}" Value="False">
+                <Setter Property="Background" Value="{DynamicResource DataGridCellBackgroundInactivated}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="{x:Type ncfc:DomainInsertionRow}" BasedOn="{StaticResource {x:Type xcdg:InsertionRow}}">
+        <Setter Property="xcdg:RowSelector.RowSelectorStyle" Value="{StaticResource DomainInsertionRowSelector_Style}" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=(xcdg:DataGridControl.DataGridContext).DataGridControl.ReadOnly}" Value="True">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=(xcdg:DataGridControl.DataGridContext).(nmgc:ModernDataGridControl.IsCurrentContext)}" Value="False">
                 <Setter Property="Background" Value="{DynamicResource DataGridCellBackgroundInactivated}" />
             </DataTrigger>
         </Style.Triggers>
