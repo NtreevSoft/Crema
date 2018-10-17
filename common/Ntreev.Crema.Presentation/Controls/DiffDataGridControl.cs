@@ -148,11 +148,6 @@ namespace Ntreev.Crema.Presentation.Controls
             {
                 item.PropertyChanged += Column_PropertyChanged;
             }
-
-            foreach (var item in this.DetailConfigurations)
-            {
-                this.InitializeDetail(item);
-            }
         }
 
         protected override DependencyObject GetContainerForItemOverride()
@@ -188,19 +183,6 @@ namespace Ntreev.Crema.Presentation.Controls
             }
         }
 
-        private void InitializeDetail(DetailConfiguration detail)
-        {
-            var childTable = CremaDataTableItemControl.GetReference(detail) as CremaDataTable;
-            var diffState = DiffUtility.GetDiffState(childTable);
-            detail.Title = new DetailsDescriptor() { Title = childTable.TableName, DiffState = diffState, };
-            detail.TitleTemplate = this.FindResource("Diff_DetailConfiguration_Title_Template") as DataTemplate;
-
-            foreach (var item in detail.Columns)
-            {
-                item.PropertyChanged += Column_PropertyChanged;
-            }
-        }
-
         private ColumnBase FindDestColumn(ColumnBase column)
         {
             var destControl = this.DestControl;
@@ -214,16 +196,7 @@ namespace Ntreev.Crema.Presentation.Controls
             }
             else
             {
-                foreach (var item in this.DetailConfigurations)
-                {
-                    if (item.Columns.Contains(column) == true)
-                    {
-                        var index = item.Columns.IndexOf(column);
-                        var destDetail = destControl.DetailConfigurations[item.RelationName];
-                        if (destDetail != null && index < destDetail.Columns.Count)
-                            return destDetail.Columns[index];
-                    }
-                }
+                throw new NotImplementedException();
             }
             return null;
         }
@@ -435,18 +408,7 @@ namespace Ntreev.Crema.Presentation.Controls
             }
             else
             {
-                var parentIndex = gridContext.ParentDataGridContext.Items.IndexOf(gridContext.ParentItem);
-                if (parentIndex < 0)
-                    return;
-                var parentItem = destControl.Items.GetItemAt(parentIndex);
-                var index = gridContext.Items.IndexOf(gridContext.CurrentItem);
-                var relationName = gridContext.SourceDetailConfiguration.RelationName;
-                var destContext = destControl.GetChildContext(parentItem, relationName);
-                if (destContext != null)
-                    destContext.SetValue(TableView.FixedColumnCountProperty, (int)e.NewValue);
-
-                gridControl.OnNotifyPropertyChanged(new PropertyChangedEventArgs(TableView.FixedColumnCountProperty.Name));
-                destControl.OnNotifyPropertyChanged(new PropertyChangedEventArgs(TableView.FixedColumnCountProperty.Name));
+                throw new NotImplementedException();
             }
         }
 
@@ -547,14 +509,7 @@ namespace Ntreev.Crema.Presentation.Controls
             }
             else
             {
-                var parentIndex = destContext.ParentDataGridContext.Items.IndexOf(destContext.ParentItem);
-                if (parentIndex < 0)
-                    return null;
-
-                var parentItem = this.Items.GetItemAt(parentIndex);
-                var index = destContext.Items.IndexOf(destContext.CurrentItem);
-                var relationName = destContext.SourceDetailConfiguration.RelationName;
-                return this.GetChildContext(parentItem, relationName);
+                throw new NotImplementedException();
             }
         }
 

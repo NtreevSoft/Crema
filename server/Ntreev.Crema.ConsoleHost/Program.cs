@@ -48,27 +48,7 @@ namespace Ntreev.Crema.ConsoleHost
     {
         static Program()
         {
-            RegisterLicense($"{typeof(Program).Namespace}.Licenses.Newtonsoft.Json.Schema.license", item => Newtonsoft.Json.Schema.License.RegisterLicense(item));
-
-            void RegisterLicense(string licenseName, Action<string> action)
-            {
-                try
-                {
-                    using (var stream = typeof(Program).Assembly.GetManifestResourceStream(licenseName))
-                    using (var reader = new StreamReader(stream))
-                    {
-                        var license = reader.ReadToEnd();
-                        if (license == string.Empty)
-                            CremaLog.Warn($"license does not registered : {licenseName}");
-                        else
-                            action(license);
-                    }
-                }
-                catch (Exception e)
-                {
-                    CremaLog.Error(new Exception($"register license failed : {licenseName}", e));
-                }
-            }
+            
         }
 
         static void Main(string[] args)

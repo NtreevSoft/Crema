@@ -253,11 +253,6 @@ namespace Ntreev.Crema.Client.Framework.Controls
             e.Cancel = true;
         }
 
-        private void DomainDataGridControl_ItemInserting(object sender, ItemInsertingEventArgs e)
-        {
-            e.Cancel = true;
-        }
-
         private async static void DomainPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var self = d as DomainDataGridControl;
@@ -267,7 +262,6 @@ namespace Ntreev.Crema.Client.Framework.Controls
             {
                 self.PropertyChanged -= self.DomainDataGridControl_PropertyChanged;
                 self.ValueChanging -= self.DomainDataGridControl_ValueChanging;
-                self.ItemInserting -= self.DomainDataGridControl_ItemInserting;
                 oldDomain.Deleted -= self.Domain_Deleted;
             }
 
@@ -275,7 +269,6 @@ namespace Ntreev.Crema.Client.Framework.Controls
             {
                 self.PropertyChanged += self.DomainDataGridControl_PropertyChanged;
                 self.ValueChanging += self.DomainDataGridControl_ValueChanging;
-                self.ItemInserting += self.DomainDataGridControl_ItemInserting;
                 await newDomain.Dispatcher.InvokeAsync(() => newDomain.Deleted += self.Domain_Deleted);
             }
         }

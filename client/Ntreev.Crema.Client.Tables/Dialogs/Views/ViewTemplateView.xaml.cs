@@ -52,15 +52,11 @@ namespace Ntreev.Crema.Client.Tables.Dialogs.Views
         {
             var gridControl = sender as ModernDataGridControl;
             this.configs.Update(this);
-            if (this.Settings != null)
-                gridControl.LoadUserSettings(this.Settings, Xceed.Wpf.DataGrid.Settings.UserSettings.All);
         }
 
         private void PART_DataGridControl_Unloaded(object sender, RoutedEventArgs e)
         {
             var gridControl = sender as ModernDataGridControl;
-            this.Settings = new Xceed.Wpf.DataGrid.Settings.SettingsRepository();
-            gridControl.SaveUserSettings(this.Settings, Xceed.Wpf.DataGrid.Settings.UserSettings.All);
             this.configs.Commit(this);
         }
 
@@ -85,12 +81,6 @@ namespace Ntreev.Crema.Client.Tables.Dialogs.Views
             {
                 this.buttons.IsEnabled = true;
             }
-        }
-
-        [ConfigurationProperty("settings")]
-        private Xceed.Wpf.DataGrid.Settings.SettingsRepository Settings
-        {
-            get; set;
         }
     }
 }

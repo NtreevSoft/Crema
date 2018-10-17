@@ -46,7 +46,6 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
                                   View="{StaticResource DataGridControl_View}"
                                   SelectionUnit="Row"
                                   SelectionMode="Extended"
-                                  AutoCreateDetailConfigurations="True"
                                   DefaultDetailConfiguration="{StaticResource DiffDataGridControl_DefaultDetailConfiguration}"
                                   BorderBrush="{TemplateBinding BorderBrush}"
                                   BorderThickness="{TemplateBinding BorderThickness}">
