@@ -3,6 +3,12 @@
 게임 디자이너에게는 데이터를 생성 및 관리를 할 수 있게 UI를 제공하며
 게임 프로그래머에게는 데이터를 쉽게 사용할 수 있도록 코드와 바이너리 데이터 생성기능을 제공합니다.
 
+    1. Design Data
+    2. Generate Code and BinaryData
+    3. Include Code And BinaryData in your project.
+    4. Add codes to read and use (c#, typescript, c++)
+    5. Compile and Run
+
 ## 문서
 [위키 페이지](https://github.com/NtreevSoft/Crema/wiki)
 
@@ -55,14 +61,14 @@ UI 기반 크레마 클라이언트 프로그램
 * WPF(Windows Presentation Foundation)
 * WCF(Windows Communication Foundation)
 
-## 빌드시 필요 라이선스
-* [Xceed DataGrid for WPF v5.7](https://xceed.com/product/xceed-datagrid-for-wpf/)
-    * 라이선스 없을시에 crema 실행 불가능
-* [Xceed Toolkit Plus for WPF](https://xceed.com/xceed-toolkit-plus-for-wpf/)
-    * 라이선스 없을시에 crema, cremadev 빌드후 실행 불가능
+## Release 배포 버전 오픈 소스의 차이점
 * [Newtonsoft.Json.Schema](https://www.newtonsoft.com/jsonschema)
     * cremaserver와 cremaconsole에서 사용
     * 구동에는 문제가 없으나 일부 기능의 사용횟수가 제한됨(자주 사용되지 않는 기능)
+* 오픈 소스에는 DataGrid 무료 버전을 사용하기 때문에 Crema GUI 프로그램에서 일부 기능이 제한됨
+    * 새로운 행을 추가하지 못함
+    * 부모 테이블에서 자식 테이블의 내용을 추가,편집,삭제가 불가능
+    * DataGrid의 Layout 설정을 읽고 저장할 수 없음.
 
 ## 실행 필수 요소
 * [svn](https://tortoisesvn.net/)
@@ -87,8 +93,7 @@ UI 기반 크레마 클라이언트 프로그램
 * [Newtonsoft.Json.Schema](https://www.newtonsoft.com/jsonschema)
 * [WindowsAPICodePack-Shell](https://github.com/aybe/Windows-API-Code-Pack-1.1)
 * [YamlDotNet](https://github.com/aaubry/YamlDotNet/wiki)
-* [Xceed DataGrid for WPF v5.7](https://xceed.com/product/xceed-datagrid-for-wpf/)
-* [Xceed Toolkit Plus for WPF](https://xceed.com/xceed-toolkit-plus-for-wpf/)
+* [Extended WPF Toolkit](https://github.com/xceedsoftware/wpftoolkit)
 * [diffplex](https://github.com/mmanela/diffplex)
 
 ## License

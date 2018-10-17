@@ -41,21 +41,11 @@ namespace Ntreev.Crema.Client.Base.Dialogs.Views
         private void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
             this.configs.Update(this);
-            if (this.Settings != null)
-                this.gridControl.LoadUserSettings(this.Settings, Xceed.Wpf.DataGrid.Settings.UserSettings.All);
         }
 
         private void UserControl_Unloaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            this.Settings = new Xceed.Wpf.DataGrid.Settings.SettingsRepository();
-            this.gridControl.SaveUserSettings(this.Settings, Xceed.Wpf.DataGrid.Settings.UserSettings.All);
             this.configs.Commit(this);
-        }
-
-        [ConfigurationProperty("settings")]
-        private Xceed.Wpf.DataGrid.Settings.SettingsRepository Settings
-        {
-            get; set;
         }
     }
 }

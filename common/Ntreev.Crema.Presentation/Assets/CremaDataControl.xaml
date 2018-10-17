@@ -111,7 +111,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
     <xcdg:Column x:Key="tagColumn" x:Shared="False" 
                  MaxWidth="40" MinWidth="40" xcdg:TableView.CanScrollHorizontally="False"
-                 CellEditor="{StaticResource TagSelector}" FieldName="Tags" ShowInColumnChooser="True" 
+                 CellEditor="{StaticResource TagSelector}" FieldName="Tags" 
                  TitleTemplate="{StaticResource EmptyTitle_DataTemplate}"
                  CellHorizontalContentAlignment="Center"
                  CellContentTemplate="{StaticResource TagSelector_ContentTemplate}" VisiblePosition="0" />

@@ -246,14 +246,6 @@ namespace Ntreev.Crema.Presentation.Controls
         {
             if (gridContext.ParentDataGridContext != null)
             {
-                var relationName = gridContext.SourceDetailConfiguration.RelationName;
-                var childName = CremaSchema.GetChildNameFromRelationName(relationName);
-
-                for (var i = 0; i < this.Source.Childs.Length; i++)
-                {
-                    if (this.Source.Childs[i].SourceItem1.TableName == childName)
-                        return this.Source.Childs[i];
-                }
                 throw new NotImplementedException();
             }
             return this.Source;
