@@ -238,7 +238,7 @@ namespace Ntreev.Crema.Presentation.Controls
 
                 foreach (var item in this.dataGridControl.Columns)
                 {
-                    item.AllowSort = false;
+                    item.AllowSort = true;
                 }
             }
             this.dataGridControl.PropertyChanged -= DataGridControl_PropertyChanged;
