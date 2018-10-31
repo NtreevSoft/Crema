@@ -142,9 +142,6 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
                                     BorderBrush="{TemplateBinding BorderBrush}"
                                     BorderThickness="{TemplateBinding BorderThickness}"
                                     ReadOnly="{Binding Path=ReadOnly, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">
-            <nmgc:ModernDataGridControl.Columns>
-                <!--<xcdg:Column FieldName="Index" Title="Index" ReadOnly="True" />-->
-            </nmgc:ModernDataGridControl.Columns>
             <nmgc:ModernDataGridControl.View>
                 <xcdg:TableView RowSelectorPaneWidth="50" AllowDrop="True" ShowFixedColumnSplitter="False"
                                 VerticalGridLineBrush="{DynamicResource DataGridGridLines}" 
