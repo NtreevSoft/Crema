@@ -34,10 +34,12 @@ namespace Ntreev.Crema.Client.Tables.Documents.Views
         {
             base.PrepareContainer(dataGridContext, item);
 
+            if (dataGridContext.Items.SourceCollection == null) return;
+
             var typedList = dataGridContext.Items.SourceCollection as ITypedList;
             if (typedList == null)
             {
-                var source = (dataGridContext.Items.SourceCollection as CollectionView).SourceCollection;
+                var source = (dataGridContext.Items.SourceCollection as CollectionView)?.SourceCollection;
                 typedList = source as ITypedList;
             }
 

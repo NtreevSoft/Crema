@@ -112,6 +112,9 @@ namespace Ntreev.Crema.Client.Types.Documents.ViewModels
         protected override async void OnDisposed(EventArgs e)
         {
             base.OnDisposed(e);
+
+            if (this.type.Dispatcher == null) return;
+
             await this.type.Dispatcher.InvokeAsync(() =>
             {
                 this.type.TypeInfoChanged -= Type_TypeInfoChanged;
