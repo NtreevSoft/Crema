@@ -111,6 +111,8 @@ namespace Ntreev.Crema.Client.Tables.Documents.Views
 
         private void GridControl_ItemsSourceChangeCompleted(object sender, EventArgs e)
         {
+            if (this.dataTableControl.Source == null) return;
+
             var tableID = this.dataTableControl.Source.TableID;
             var columnsID = this.dataTableControl.Source.Columns.Select(item => (object)item.ColumnID).ToArray();
             this.columnsHashValue = HashUtility.GetHashValue(columnsID);
