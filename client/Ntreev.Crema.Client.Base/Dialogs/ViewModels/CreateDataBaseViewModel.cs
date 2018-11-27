@@ -118,6 +118,10 @@ namespace Ntreev.Crema.Client.Base.Dialogs.ViewModels
                     return false;
                 if (this.DataBaseName == string.Empty)
                     return false;
+
+                if (this.DataBaseName.Contains(' '))
+                    return false;
+
                 return NameValidator.VerifyName(this.DataBaseName);
             }
         }

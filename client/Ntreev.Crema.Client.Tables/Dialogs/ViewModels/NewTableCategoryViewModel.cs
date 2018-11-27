@@ -68,6 +68,12 @@ namespace Ntreev.Crema.Client.Tables.Dialogs.ViewModels
         {
             var result = await this.category.Dispatcher.InvokeAsync(() =>
             {
+                if (string.IsNullOrWhiteSpace(categoryName))
+                    return false;
+
+                if (categoryName.Contains(' '))
+                    return false;
+
                 if (this.category.Tables.ContainsKey(categoryName) == true)
                     return false;
 

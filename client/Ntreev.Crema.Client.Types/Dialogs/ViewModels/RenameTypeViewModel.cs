@@ -21,6 +21,7 @@ using Ntreev.Crema.Services;
 using Ntreev.Crema.Client.Framework;
 using System.Threading.Tasks;
 using System;
+using System.Linq;
 using Ntreev.ModernUI.Framework;
 using System.Windows.Threading;
 using Ntreev.Library.ObjectModel;
@@ -67,6 +68,12 @@ namespace Ntreev.Crema.Client.Types.Dialogs.ViewModels
         {
             var result = await this.type.Dispatcher.InvokeAsync(() =>
             {
+                if (newName.Contains(' '))
+                    return false;
+
+                if (this.type.Category.Categories.ContainsKey(newName))
+                    return false;
+
                 var types = this.type.GetService(typeof(ITypeCollection)) as ITypeCollection;
                 return types.Contains(newName) == false;
             });
