@@ -76,6 +76,9 @@ namespace Ntreev.Crema.Client.Tables.Dialogs.ViewModels
                     return false;
                 if (NameValidator.VerifyName(this.TableName) == false)
                     return false;
+                if (this.category.Categories.ContainsKey(this.TableName))
+                    return false;
+
                 return this.category.Dispatcher.Invoke(() => this.tableContext.Tables.Contains(this.TableName) == false);
             });
             isVerify(result);
