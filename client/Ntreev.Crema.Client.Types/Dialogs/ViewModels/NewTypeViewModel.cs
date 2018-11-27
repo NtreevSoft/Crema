@@ -74,6 +74,9 @@ namespace Ntreev.Crema.Client.Types.Dialogs.ViewModels
                 if (NameValidator.VerifyName(this.TypeName) == false)
                     return false;
 
+                if (this.category.Categories.ContainsKey(this.TypeName))
+                    return false;
+
                 return this.typeContext.Types.Contains(this.TypeName) == false;
             });
             isVerify(result);
