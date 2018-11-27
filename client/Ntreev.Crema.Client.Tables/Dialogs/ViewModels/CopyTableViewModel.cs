@@ -185,7 +185,13 @@ namespace Ntreev.Crema.Client.Tables.Dialogs.ViewModels
         {
             this.isVerify = await this.table.Dispatcher.InvokeAsync(() =>
             {
+                if (this.NewName.Contains(' '))
+                    return false;
+
                 if (this.tables.Contains(this.NewName) == true)
+                    return false;
+
+                if (this.categoryPaths.Contains($"{this.CategoryPath}{this.NewName}/"))
                     return false;
 
                 return this.categories.Contains(this.CategoryPath) == true;

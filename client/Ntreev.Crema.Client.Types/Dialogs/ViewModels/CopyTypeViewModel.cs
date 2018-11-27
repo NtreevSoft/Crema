@@ -144,7 +144,13 @@ namespace Ntreev.Crema.Client.Types.Dialogs.ViewModels
         {
             var result = await this.type.Dispatcher.InvokeAsync(() =>
             {
+                if (this.NewName.Contains(' '))
+                    return false;
+
                 if (this.types.Contains(this.NewName) == true)
+                    return false;
+
+                if (this.categoryPaths.Contains($"{this.categoryPath}{this.NewName}/"))
                     return false;
 
                 return this.categories.Contains(this.CategoryPath) == true;
