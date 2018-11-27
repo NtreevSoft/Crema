@@ -241,6 +241,8 @@ namespace Ntreev.Crema.Services.Data
             this.basePath = Path.Combine(Path.GetDirectoryName(this.basePath), name);
             this.Sign(authentication);
             this.DataBases.InvokeItemsRenamedEvent(authentication, new DataBase[] { this }, new string[] { oldName, });
+            this.repositoryHost = null;
+            this.Initialize();
             this.GetMetaData(authentication);
         }
 
