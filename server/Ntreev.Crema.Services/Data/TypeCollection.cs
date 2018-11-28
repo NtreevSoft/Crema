@@ -65,7 +65,7 @@ namespace Ntreev.Crema.Services.Data
         public Type Copy(Authentication authentication, string typeName, string newTypeName, string categoryPath)
         {
             this.CremaHost.DebugMethod(authentication, this, nameof(TypeCollection.Copy), typeName, newTypeName, categoryPath);
-            this.ValidateCopy(authentication, typeName, newTypeName);
+            this.ValidateCopy(authentication, typeName, newTypeName, categoryPath);
             var type = this[typeName];
             var dataType = type.ReadData(authentication);
             dataType.TypeName = newTypeName;
@@ -458,13 +458,20 @@ namespace Ntreev.Crema.Services.Data
             this.typesChanged?.Invoke(this, e);
         }
 
-        private void ValidateCopy(Authentication authentication, string typeName, string newTypeName)
+        private void ValidateCopy(Authentication authentication, string typeName, string newTypeName, string categoryPath)
         {
             if (this.Contains(typeName) == false)
                 throw new TypeNotFoundException(typeName);
 
             if (this.Contains(newTypeName) == true)
                 throw new ArgumentException(Resources.Exception_SameTypeNameExist, nameof(newTypeName));
+
+            var path = this.GetCategory(categoryPath);
+            if (path != null && path.Types.ContainsKey(newTypeName))
+                throw new ArgumentException(Resources.Exception_SameNamePathExists, nameof(newTypeName));
+
+            if (path != null && path.Categories.ContainsKey(newTypeName))
+                throw new ArgumentException(Resources.Exception_SameNamePathExists, nameof(newTypeName));
         }
 
         private void Sign(Authentication authentication)
