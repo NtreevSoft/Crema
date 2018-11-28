@@ -68,9 +68,15 @@ namespace Ntreev.Crema.Client.Tables.Dialogs.ViewModels
         {
             var result = await this.table.Dispatcher.InvokeAsync(() =>
             {
+                if (newName.Contains(' '))
+                    return false;
+
                 var tableContext = this.table.GetService(typeof(ITableContext)) as ITableContext;
                 var categoryNames = tableContext.Categories.Select(item => item.Path).ToArray();
                 if (categoryNames.Contains(newName, StringComparer.OrdinalIgnoreCase) == true)
+                    return false;
+
+                if (this.table.Category.Categories.ContainsKey(newName))
                     return false;
 
                 if (this.table.Childs.ContainsKey(newName) == true)

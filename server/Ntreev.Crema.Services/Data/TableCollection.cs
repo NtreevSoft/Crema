@@ -622,6 +622,8 @@ namespace Ntreev.Crema.Services.Data
                 throw new InvalidOperationException(Resources.Exception_ChildTableCannotInherit);
             if (table.TemplatedParent != null)
                 throw new InvalidOperationException(Resources.Exception_InheritedTableCannotInherit);
+            if (table.Category.Categories.ContainsKey(newTableName))
+                throw new ArgumentException(Resources.Exception_SameNamePathExists, nameof(newTableName));
 
             NameValidator.ValidateCategoryPath(categoryPath);
 
@@ -645,6 +647,8 @@ namespace Ntreev.Crema.Services.Data
                 throw new ArgumentException(Resources.Exception_SameTableNameExist, nameof(newTableName));
             if (table.Parent != null)
                 throw new InvalidOperationException(Resources.Exception_ChildTableCannotCopy);
+            if (table.Category.Categories.ContainsKey(newTableName))
+                throw new ArgumentException(Resources.Exception_SameNamePathExists, nameof(newTableName));
 
             NameValidator.ValidateCategoryPath(categoryPath);
 
