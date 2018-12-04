@@ -62,9 +62,15 @@ namespace Ntreev.Crema.Reader.Internal
                 writer.Write((int)HeaderType.Buffer);
                 writer.WriteValue(bufferInfo);
 
-                var read = reader.Read(buffer, 0, bufferLength);
-                this.Write(buffer, 0, read);
-                len += read;
+                var readBytes = 0;
+                var read = 0;
+                while (readBytes < bufferLength)
+                {
+                    read = reader.Read(buffer, 0, bufferLength);
+                    this.Write(buffer, 0, read);
+                    readBytes += read;
+                    len += read;
+                }
             }
             client.Close();
             this.Position = 0;
