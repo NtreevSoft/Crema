@@ -49,14 +49,22 @@ namespace Ntreev.Crema.Services.Data
 
         public TableCategory AddNew(Authentication authentication, string name, string parentPath)
         {
-            this.DataBase.ValidateBeginInDataBase(authentication);
-            this.ValidateAddNew(authentication, name, parentPath);
-            this.Sign(authentication);
-            this.InvokeCategoryCreate(authentication, name, parentPath);
-            var category = this.BaseAddNew(name, parentPath, authentication);
-            var items = EnumerableUtility.One(category).ToArray();
-            this.InvokeCategoriesCreatedEvent(authentication, items);
-            return category;
+            try
+            {
+                this.DataBase.ValidateBeginInDataBase(authentication);
+                this.ValidateAddNew(authentication, name, parentPath);
+                this.Sign(authentication);
+                this.InvokeCategoryCreate(authentication, name, parentPath);
+                var category = this.BaseAddNew(name, parentPath, authentication);
+                var items = EnumerableUtility.One(category).ToArray();
+                this.InvokeCategoriesCreatedEvent(authentication, items);
+                return category;
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public object GetService(System.Type serviceType)

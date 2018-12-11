@@ -34,56 +34,96 @@ namespace Ntreev.Crema.Services.Users
     {
         public void Rename(Authentication authentication, string name)
         {
-            this.Dispatcher.VerifyAccess();
-            this.CremaHost.DebugMethod(authentication, this, nameof(Rename), this, name);
-            this.ValidateRename(authentication, name);
-            var items = EnumerableUtility.One(this).ToArray();
-            var oldNames = items.Select(item => item.Name).ToArray();
-            var oldPaths = items.Select(item => item.Path).ToArray();
-            this.Container.InvokeCategoryRename(authentication, this, name);
-            base.Name = name;
-            authentication.Sign();
-            this.Container.InvokeCategoriesRenamedEvent(authentication, items, oldNames, oldPaths);
+            try
+            {
+                this.Dispatcher.VerifyAccess();
+                this.CremaHost.DebugMethod(authentication, this, nameof(Rename), this, name);
+                this.ValidateRename(authentication, name);
+                var items = EnumerableUtility.One(this).ToArray();
+                var oldNames = items.Select(item => item.Name).ToArray();
+                var oldPaths = items.Select(item => item.Path).ToArray();
+                this.Container.InvokeCategoryRename(authentication, this, name);
+                base.Name = name;
+                authentication.Sign();
+                this.Container.InvokeCategoriesRenamedEvent(authentication, items, oldNames, oldPaths);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void Move(Authentication authentication, string parentPath)
         {
-            this.Dispatcher.VerifyAccess();
-            this.CremaHost.DebugMethod(authentication, this, nameof(Move), this, parentPath);
-            this.ValidateMove(authentication, parentPath);
-            var items = EnumerableUtility.One(this).ToArray();
-            var oldPaths = items.Select(item => item.Path).ToArray();
-            var oldParentPaths = items.Select(item => item.Parent.Path).ToArray();
-            this.Container.InvokeCategoryMove(authentication, this, parentPath);
-            this.Parent = this.Container[parentPath];
-            authentication.Sign();
-            this.Container.InvokeCategoriesMovedEvent(authentication, items, oldPaths, oldParentPaths);
+            try
+            {
+                this.Dispatcher.VerifyAccess();
+                this.CremaHost.DebugMethod(authentication, this, nameof(Move), this, parentPath);
+                this.ValidateMove(authentication, parentPath);
+                var items = EnumerableUtility.One(this).ToArray();
+                var oldPaths = items.Select(item => item.Path).ToArray();
+                var oldParentPaths = items.Select(item => item.Parent.Path).ToArray();
+                this.Container.InvokeCategoryMove(authentication, this, parentPath);
+                this.Parent = this.Container[parentPath];
+                authentication.Sign();
+                this.Container.InvokeCategoriesMovedEvent(authentication, items, oldPaths, oldParentPaths);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void Delete(Authentication authentication)
         {
-            this.Dispatcher.VerifyAccess();
-            this.CremaHost.DebugMethod(authentication, this, nameof(Delete), this);
-            this.ValidateDelete(authentication);
-            var items = EnumerableUtility.One(this).ToArray();
-            var oldPaths = items.Select(item => item.Path).ToArray();
-            var container = this.Container;
-            container.InvokeCategoryDelete(authentication, this);
-            this.Dispose();
-            authentication.Sign();
-            container.InvokeCategoriesDeletedEvent(authentication, items, oldPaths);
+            try
+            {
+                this.Dispatcher.VerifyAccess();
+                this.CremaHost.DebugMethod(authentication, this, nameof(Delete), this);
+                this.ValidateDelete(authentication);
+                var items = EnumerableUtility.One(this).ToArray();
+                var oldPaths = items.Select(item => item.Path).ToArray();
+                var container = this.Container;
+                container.InvokeCategoryDelete(authentication, this);
+                this.Dispose();
+                authentication.Sign();
+                container.InvokeCategoriesDeletedEvent(authentication, items, oldPaths);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public UserCategory AddNewCategory(Authentication authentication, string name)
         {
-            this.Dispatcher.VerifyAccess();
-            return this.Container.AddNew(authentication, name, base.Path);
+            try
+            {
+                this.Dispatcher.VerifyAccess();
+                return this.Container.AddNew(authentication, name, base.Path);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public User AddNewUser(Authentication authentication, string userID, SecureString password, string userName, Authority authority)
         {
-            this.Dispatcher.VerifyAccess();
-            return this.Context.Users.AddNew(authentication, userID, base.Path, password, userName, authority);
+            try
+            {
+                this.Dispatcher.VerifyAccess();
+                return this.Context.Users.AddNew(authentication, userID, base.Path, password, userName, authority);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void ValidateRename(Authentication authentication, string name)

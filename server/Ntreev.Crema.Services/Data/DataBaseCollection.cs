@@ -252,79 +252,95 @@ namespace Ntreev.Crema.Services.Data
 
         public DataBase CreateDataBase(Authentication authentication, string dataBaseName, string comment)
         {
-            this.Dispatcher.VerifyAccess();
-            this.CremaHost.DebugMethod(authentication, this, nameof(CreateDataBase), dataBaseName, comment);
-            this.ValidateCreateDataBase(authentication, dataBaseName);
-
-            var exists = Directory.Exists(this.cremaHost.BranchesPath);
-            var dataBasePath = DirectoryUtility.Prepare(this.cremaHost.BranchesPath, dataBaseName);
-            var typePath = DirectoryUtility.Prepare(dataBasePath, CremaSchema.TypeDirectory);
-            var tablePath = DirectoryUtility.Prepare(dataBasePath, CremaSchema.TableDirectory);
-
             try
             {
-                this.cremaHost.RepositoryDispatcher.Invoke(() =>
+                this.Dispatcher.VerifyAccess();
+                this.CremaHost.DebugMethod(authentication, this, nameof(CreateDataBase), dataBaseName, comment);
+                this.ValidateCreateDataBase(authentication, dataBaseName);
+
+                var exists = Directory.Exists(this.cremaHost.BranchesPath);
+                var dataBasePath = DirectoryUtility.Prepare(this.cremaHost.BranchesPath, dataBaseName);
+                var typePath = DirectoryUtility.Prepare(dataBasePath, CremaSchema.TypeDirectory);
+                var tablePath = DirectoryUtility.Prepare(dataBasePath, CremaSchema.TableDirectory);
+
+                try
                 {
-                    if (exists == false)
-                        this.repository.Add(this.cremaHost.BranchesPath);
-                    this.repository.Add(dataBasePath);
-                    this.repository.Add(typePath);
-                    this.repository.Add(tablePath);
-                });
-                this.commitPath = this.cremaHost.BranchesPath;
+                    this.cremaHost.RepositoryDispatcher.Invoke(() =>
+                    {
+                        if (exists == false)
+                            this.repository.Add(this.cremaHost.BranchesPath);
+                        this.repository.Add(dataBasePath);
+                        this.repository.Add(typePath);
+                        this.repository.Add(tablePath);
+                    });
+                    this.commitPath = this.cremaHost.BranchesPath;
+                }
+                catch (Exception e)
+                {
+                    this.commitPath = null;
+                    this.cremaHost.Error(e);
+                    DirectoryUtility.Delete(typePath);
+                    DirectoryUtility.Delete(tablePath);
+                    DirectoryUtility.Delete(dataBasePath);
+                    throw e;
+                }
+
+                var dataBase = this.AddFromPath(dataBasePath);
+                authentication.Sign();
+                this.InvokeItemsCreateEvent(authentication, new DataBase[] { dataBase, }, comment);
+                return dataBase;
             }
             catch (Exception e)
             {
-                this.commitPath = null;
-                this.cremaHost.Error(e);
-                DirectoryUtility.Delete(typePath);
-                DirectoryUtility.Delete(tablePath);
-                DirectoryUtility.Delete(dataBasePath);
-                throw e;
+                this.CremaHost.Error(e);
+                throw;
             }
-
-            var dataBase = this.AddFromPath(dataBasePath);
-            authentication.Sign();
-            this.InvokeItemsCreateEvent(authentication, new DataBase[] { dataBase, }, comment);
-            return dataBase;
         }
 
         public DataBase CopyDataBase(Authentication authentication, DataBase dataBase, string newDataBaseName, string comment, bool force)
         {
-            this.Dispatcher.VerifyAccess();
-            this.CremaHost.DebugMethod(authentication, this, nameof(CopyDataBase), dataBase, newDataBaseName, comment);
-            this.ValidateCopyDataBase(authentication, dataBase, newDataBaseName, force);
-
-            var exists = Directory.Exists(this.cremaHost.BranchesPath);
-            DirectoryUtility.Prepare(this.cremaHost.BranchesPath);
-            var dataBasePath = Path.Combine(this.cremaHost.BranchesPath, newDataBaseName);
-
             try
             {
-                this.cremaHost.RepositoryDispatcher.Invoke(() =>
+                this.Dispatcher.VerifyAccess();
+                this.CremaHost.DebugMethod(authentication, this, nameof(CopyDataBase), dataBase, newDataBaseName, comment);
+                this.ValidateCopyDataBase(authentication, dataBase, newDataBaseName, force);
+
+                var exists = Directory.Exists(this.cremaHost.BranchesPath);
+                DirectoryUtility.Prepare(this.cremaHost.BranchesPath);
+                var dataBasePath = Path.Combine(this.cremaHost.BranchesPath, newDataBaseName);
+
+                try
                 {
-                    if (exists == false)
-                        this.repository.Add(this.cremaHost.BranchesPath);
-                    this.repository.Copy(dataBase.BasePath, dataBasePath);
-                });
-                this.commitPath = this.cremaHost.BranchesPath;
+                    this.cremaHost.RepositoryDispatcher.Invoke(() =>
+                    {
+                        if (exists == false)
+                            this.repository.Add(this.cremaHost.BranchesPath);
+                        this.repository.Copy(dataBase.BasePath, dataBasePath);
+                    });
+                    this.commitPath = this.cremaHost.BranchesPath;
+                }
+                catch (Exception e)
+                {
+                    this.commitPath = null;
+                    this.cremaHost.Error(e);
+                    this.cremaHost.RepositoryDispatcher.Invoke(() =>
+                    {
+                        this.repository.Revert(this.cremaHost.BranchesPath);
+                    });
+                    throw e;
+                }
+
+                var newDataBase = new DataBase(this.cremaHost, dataBasePath, Path.GetFileName(dataBasePath));
+                this.AddBase(newDataBase.Name, newDataBase);
+                authentication.Sign();
+                this.InvokeItemsCreateEvent(authentication, new DataBase[] { newDataBase, }, comment);
+                return newDataBase;
             }
             catch (Exception e)
             {
-                this.commitPath = null;
-                this.cremaHost.Error(e);
-                this.cremaHost.RepositoryDispatcher.Invoke(() =>
-                {
-                    this.repository.Revert(this.cremaHost.BranchesPath);
-                });
-                throw e;
+                this.CremaHost.Error(e);
+                throw;
             }
-
-            var newDataBase = new DataBase(this.cremaHost, dataBasePath, Path.GetFileName(dataBasePath));
-            this.AddBase(newDataBase.Name, newDataBase);
-            authentication.Sign();
-            this.InvokeItemsCreateEvent(authentication, new DataBase[] { newDataBase, }, comment);
-            return newDataBase;
         }
 
         public void InvokeDataBaseRename(Authentication authentication, DataBase dataBase, string newDataBaseName)
