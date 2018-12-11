@@ -45,33 +45,57 @@ namespace Ntreev.Crema.Services.Data
 
         public Type AddNew(Authentication authentication, string name, string categoryPath)
         {
-            if (NameValidator.VerifyName(name) == false)
-                throw new ArgumentException(string.Format(Resources.Exception_InvalidName_Format, name), nameof(name));
-            return this.BaseAddNew(name, categoryPath, authentication);
+            try
+            {
+                if (NameValidator.VerifyName(name) == false)
+                    throw new ArgumentException(string.Format(Resources.Exception_InvalidName_Format, name), nameof(name));
+                return this.BaseAddNew(name, categoryPath, authentication);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public Type AddNew(Authentication authentication, CremaDataType dataType)
         {
-            this.CremaHost.DebugMethod(authentication, this, nameof(AddNew), dataType.Name, dataType.CategoryPath);
-            this.ValidateAddNew(dataType.Name, dataType.CategoryPath, authentication);
-            this.Sign(authentication);
-            this.InvokeTypeCreate(authentication, dataType.Name, dataType.CategoryPath, dataType);
-            var type = this.BaseAddNew(dataType.Name, dataType.CategoryPath, authentication);
-            type.Initialize(dataType.TypeInfo);
-            this.InvokeTypesCreatedEvent(authentication, new Type[] { type, }, dataType.DataSet);
-            return type;
+            try
+            {
+                this.CremaHost.DebugMethod(authentication, this, nameof(AddNew), dataType.Name, dataType.CategoryPath);
+                this.ValidateAddNew(dataType.Name, dataType.CategoryPath, authentication);
+                this.Sign(authentication);
+                this.InvokeTypeCreate(authentication, dataType.Name, dataType.CategoryPath, dataType);
+                var type = this.BaseAddNew(dataType.Name, dataType.CategoryPath, authentication);
+                type.Initialize(dataType.TypeInfo);
+                this.InvokeTypesCreatedEvent(authentication, new Type[] { type, }, dataType.DataSet);
+                return type;
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public Type Copy(Authentication authentication, string typeName, string newTypeName, string categoryPath)
         {
-            this.CremaHost.DebugMethod(authentication, this, nameof(TypeCollection.Copy), typeName, newTypeName, categoryPath);
-            this.ValidateCopy(authentication, typeName, newTypeName, categoryPath);
-            var type = this[typeName];
-            var dataType = type.ReadData(authentication);
-            dataType.TypeName = newTypeName;
-            dataType.CategoryPath = categoryPath;
-            dataType.CreationInfo = authentication.SignatureDate;
-            return this.AddNew(authentication, dataType);
+            try
+            {
+                this.CremaHost.DebugMethod(authentication, this, nameof(TypeCollection.Copy), typeName, newTypeName, categoryPath);
+                this.ValidateCopy(authentication, typeName, newTypeName, categoryPath);
+                var type = this[typeName];
+                var dataType = type.ReadData(authentication);
+                dataType.TypeName = newTypeName;
+                dataType.CategoryPath = categoryPath;
+                dataType.CreationInfo = authentication.SignatureDate;
+                return this.AddNew(authentication, dataType);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public object GetService(System.Type serviceType)
