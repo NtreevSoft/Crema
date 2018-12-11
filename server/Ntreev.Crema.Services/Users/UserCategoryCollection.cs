@@ -48,12 +48,20 @@ namespace Ntreev.Crema.Services.Users
 
         public UserCategory AddNew(Authentication authentication, string name, string parentPath)
         {
-            this.ValidateAddNew(authentication, name, parentPath);
-            this.InvokeCategoryCreate(authentication, name, parentPath);
-            var category = this.BaseAddNew(name, parentPath, authentication);
-            authentication.Sign();
-            this.InvokeCategoriesCreatedEvent(authentication, new UserCategory[] { category });
-            return category;
+            try
+            {
+                this.ValidateAddNew(authentication, name, parentPath);
+                this.InvokeCategoryCreate(authentication, name, parentPath);
+                var category = this.BaseAddNew(name, parentPath, authentication);
+                authentication.Sign();
+                this.InvokeCategoriesCreatedEvent(authentication, new UserCategory[] { category });
+                return category;
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void InvokeCategoryCreate(Authentication authentication, string name, string parentPath)

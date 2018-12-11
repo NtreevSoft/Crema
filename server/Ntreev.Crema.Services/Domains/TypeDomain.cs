@@ -101,6 +101,7 @@ namespace Ntreev.Crema.Services.Domains
             }
             catch (Exception e)
             {
+                this.CremaHost.Error(e);
                 this.dataType.RejectChanges();
                 throw e;
             }
@@ -123,6 +124,7 @@ namespace Ntreev.Crema.Services.Domains
             }
             catch (Exception e)
             {
+                this.CremaHost.Error(e);
                 this.dataType.RejectChanges();
                 throw e;
             }
