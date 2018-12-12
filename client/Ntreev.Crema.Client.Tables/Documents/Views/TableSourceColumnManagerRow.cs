@@ -34,7 +34,7 @@ namespace Ntreev.Crema.Client.Tables.Documents.Views
         {
             base.PrepareContainer(dataGridContext, item);
 
-            if (dataGridContext.Items.SourceCollection == null) return;
+            if (dataGridContext?.Items?.SourceCollection == null) return;
 
             var typedList = dataGridContext.Items.SourceCollection as ITypedList;
             if (typedList == null)
