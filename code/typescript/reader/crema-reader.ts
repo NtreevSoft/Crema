@@ -552,9 +552,19 @@ class BinaryRow extends CremaRow {
             } else if (column.dataType === "unsignedInt") {
                 return this._fieldbytes.readUInt32LE(offset);
             } else if (column.dataType === "long") {
-                return this._fieldbytes.readIntLE(offset, 8);
+                let l: number = this._fieldbytes.readInt32LE(offset);
+                let h: number = this._fieldbytes.readInt32LE(offset + 4);
+                let v = l + h * 0x100000000;
+                if (l < 0) {
+                    return v + 0x100000000;
+                } else {
+                    return v;
+                }
             } else if (column.dataType === "unsignedLong") {
-                return this._fieldbytes.readUIntLE(offset, 8);
+                let l: number = this._fieldbytes.readUInt32LE(offset);
+                let h: number = this._fieldbytes.readUInt32LE(offset + 4);
+                let v = l + h * 0x100000000;
+                return v;
             }
             throw new Error(column.dataType);
         }
@@ -739,15 +749,23 @@ class BufferReader {
     }
 
     public readInt64(): number {
-        let value: number = this.buffer.readIntLE(this.pos, 8);
+        let l: number = this.buffer.readInt32LE(this.pos);
+        let h: number = this.buffer.readInt32LE(this.pos + 4);
+        let v = l + h * 0x100000000;
         this.pos += 8;
-        return value;
+        if (l < 0) {
+            return v + 0x100000000;
+        } else {
+            return v;
+        }
     }
 
     public readUInt64(): number {
-        let value: number = this.buffer.readUIntLE(this.pos, 8);
+        let l: number = this.buffer.readUInt32LE(this.pos);
+        let h: number = this.buffer.readUInt32LE(this.pos + 4);
+        let v = l + h * 0x100000000;
         this.pos += 8;
-        return value;
+        return v;
     }
 
     public get position(): number {
