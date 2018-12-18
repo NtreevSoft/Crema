@@ -26,7 +26,7 @@ export class CremaReader {
 
         let stats: fs.Stats = fs.statSync(filename);
         let fd: number = fs.openSync(filename, "r");
-        let buffer: Buffer = new Buffer(stats.size);
+        let buffer: Buffer = Buffer.alloc(stats.size);
 
         fs.readSync(fd, buffer, 0, stats.size, null);
         let reader: BufferReader = new BufferReader(buffer);
@@ -718,7 +718,7 @@ class BufferReader {
     }
 
     public readBytes(length: number): Buffer {
-        let buf: Buffer = new Buffer(length);
+        let buf: Buffer = Buffer.alloc(length);
         this.buffer.copy(buf, 0, this.pos, this.pos + length);
         this.pos += length;
         return buf;
@@ -783,7 +783,7 @@ class BufferReader {
     }
 
     public readString(length: number): string {
-        let buf: Buffer = new Buffer(length);
+        let buf: Buffer = Buffer.alloc(length);
         for (let i: number = 0; i < length; i++) {
             buf[i] = this.buffer[this.pos + i];
         }
