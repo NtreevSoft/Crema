@@ -182,16 +182,19 @@ namespace Ntreev.Crema.Client.Base.Services.ViewModels
                     this.ProgressMessage = string.Empty;
                 }
             }
-            catch (TimeoutException)
+            catch (TimeoutException e)
             {
+                CremaLog.Error(e);
                 this.ErrorMessage = Resources.Message_ConnectionFailed;
             }
-            catch (EndpointNotFoundException)
+            catch (EndpointNotFoundException e)
             {
+                CremaLog.Error(e);
                 this.ErrorMessage = Resources.Message_ConnectionFailed;
             }
             catch (Exception e)
             {
+                CremaLog.Error(e);
                 this.ErrorMessage = e.Message;
                 if (this.IsOpened == true)
                 {
