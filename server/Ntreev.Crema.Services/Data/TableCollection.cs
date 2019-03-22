@@ -51,74 +51,106 @@ namespace Ntreev.Crema.Services.Data
 
         public Table AddNew(Authentication authentication, string name, string categoryPath)
         {
-            if (NameValidator.VerifyName(name) == false)
-                throw new ArgumentException(string.Format(Resources.Exception_InvalidName_Format, name), nameof(name));
-            return this.BaseAddNew(name, categoryPath, authentication);
+            try
+            {
+                if (NameValidator.VerifyName(name) == false)
+                    throw new ArgumentException(string.Format(Resources.Exception_InvalidName_Format, name), nameof(name));
+                return this.BaseAddNew(name, categoryPath, authentication);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public Table AddNew(Authentication authentication, CremaTemplate template)
         {
-            var dataSet = template.TargetTable.DataSet.Copy();
-            var dataTable = dataSet.Tables[template.TableName, template.CategoryPath];
-            var categoryPath = dataTable.CategoryPath;
+            try
+            {
+                var dataSet = template.TargetTable.DataSet.Copy();
+                var dataTable = dataSet.Tables[template.TableName, template.CategoryPath];
+                var categoryPath = dataTable.CategoryPath;
 
-            this.ValidateAddNew(dataTable.TableName, categoryPath, authentication);
-            this.Sign(authentication);
-            this.InvokeTableCreate(authentication, dataTable.TableName, categoryPath, dataTable, null);
-            var table = this.AddNew(authentication, dataTable.TableName, categoryPath);
-            table.Initialize(dataTable.TableInfo);
-            this.InvokeTablesCreatedEvent(authentication, new Table[] { table }, dataSet);
-            return table;
+                this.ValidateAddNew(dataTable.TableName, categoryPath, authentication);
+                this.Sign(authentication);
+                this.InvokeTableCreate(authentication, dataTable.TableName, categoryPath, dataTable, null);
+                var table = this.AddNew(authentication, dataTable.TableName, categoryPath);
+                table.Initialize(dataTable.TableInfo);
+                this.InvokeTablesCreatedEvent(authentication, new Table[] { table }, dataSet);
+                return table;
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public Table Inherit(Authentication authentication, Table table, string newTableName, string categoryPath, bool copyContent)
         {
-            this.ValidateInherit(authentication, table, newTableName, categoryPath, copyContent);
-            this.Sign(authentication);
-            var dataTable = table.ReadData(authentication);
-            var itemName = new ItemName(categoryPath, newTableName);
-            var newDataTable = dataTable.Inherit(itemName, copyContent);
-            if (copyContent == false)
-                newDataTable.Clear();
-            newDataTable.CategoryPath = categoryPath;
-
-            this.InvokeTableCreate(authentication, newTableName, categoryPath, newDataTable, table);
-            var newTable = this.AddNew(authentication, newTableName, categoryPath);
-            newTable.TemplatedParent = table;
-            newTable.Initialize(newDataTable.TableInfo);
-            foreach (var item in newDataTable.Childs)
+            try
             {
-                var childTable = this.AddNew(authentication, item.Name, categoryPath);
-                childTable.TemplatedParent = table.Childs[item.TableName];
-                childTable.Initialize(item.TableInfo);
+                this.ValidateInherit(authentication, table, newTableName, categoryPath, copyContent);
+                this.Sign(authentication);
+                var dataTable = table.ReadData(authentication);
+                var itemName = new ItemName(categoryPath, newTableName);
+                var newDataTable = dataTable.Inherit(itemName, copyContent);
+                if (copyContent == false)
+                    newDataTable.Clear();
+                newDataTable.CategoryPath = categoryPath;
+
+                this.InvokeTableCreate(authentication, newTableName, categoryPath, newDataTable, table);
+                var newTable = this.AddNew(authentication, newTableName, categoryPath);
+                newTable.TemplatedParent = table;
+                newTable.Initialize(newDataTable.TableInfo);
+                foreach (var item in newDataTable.Childs)
+                {
+                    var childTable = this.AddNew(authentication, item.Name, categoryPath);
+                    childTable.TemplatedParent = table.Childs[item.TableName];
+                    childTable.Initialize(item.TableInfo);
+                }
+                var items = EnumerableUtility.Friends(newTable, newTable.Childs).ToArray();
+                this.InvokeTablesCreatedEvent(authentication, items, dataTable.DataSet);
+                return newTable;
             }
-            var items = EnumerableUtility.Friends(newTable, newTable.Childs).ToArray();
-            this.InvokeTablesCreatedEvent(authentication, items, dataTable.DataSet);
-            return newTable;
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public Table Copy(Authentication authentication, Table table, string newTableName, string categoryPath, bool copyContent)
         {
-            this.ValidateCopy(authentication, table, newTableName, categoryPath, copyContent);
-            this.Sign(authentication);
-            var dataTable = table.ReadData(authentication);
-            var itemName = new ItemName(categoryPath, newTableName);
-            var newDataTable = dataTable.Copy(itemName, copyContent);
-            if (copyContent == false)
-                newDataTable.Clear();
-            newDataTable.CategoryPath = categoryPath;
-
-            this.InvokeTableCreate(authentication, newTableName, categoryPath, newDataTable, null);
-            var newTable = this.AddNew(authentication, newTableName, categoryPath);
-            newTable.Initialize(newDataTable.TableInfo);
-            foreach (var item in newDataTable.Childs)
+            try
             {
-                var childTable = this.AddNew(authentication, item.Name, categoryPath);
-                childTable.Initialize(item.TableInfo);
+                this.ValidateCopy(authentication, table, newTableName, categoryPath, copyContent);
+                this.Sign(authentication);
+                var dataTable = table.ReadData(authentication);
+                var itemName = new ItemName(categoryPath, newTableName);
+                var newDataTable = dataTable.Copy(itemName, copyContent);
+                if (copyContent == false)
+                    newDataTable.Clear();
+                newDataTable.CategoryPath = categoryPath;
+
+                this.InvokeTableCreate(authentication, newTableName, categoryPath, newDataTable, null);
+                var newTable = this.AddNew(authentication, newTableName, categoryPath);
+                newTable.Initialize(newDataTable.TableInfo);
+                foreach (var item in newDataTable.Childs)
+                {
+                    var childTable = this.AddNew(authentication, item.Name, categoryPath);
+                    childTable.Initialize(item.TableInfo);
+                }
+                var items = EnumerableUtility.Friends(newTable, newTable.Childs).ToArray();
+                this.InvokeTablesCreatedEvent(authentication, items, dataTable.DataSet);
+                return newTable;
             }
-            var items = EnumerableUtility.Friends(newTable, newTable.Childs).ToArray();
-            this.InvokeTablesCreatedEvent(authentication, items, dataTable.DataSet);
-            return newTable;
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public object GetService(System.Type serviceType)

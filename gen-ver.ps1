@@ -4,7 +4,7 @@ $assemblyFilePath = ".\common\Ntreev.Crema.AssemblyInfo\AssemblyInfo.cs"
 
 $assemblyPath = Join-Path (Split-Path $myInvocation.MyCommand.Definition) $assemblyFilePath -Resolve
 $version = "$majorVersion.$minorVersion"
-$fileVersion = "$majorVersion.$minorVersion" + "." + (Get-Date -Format yy) + (Get-Date).DayOfYear + "." + (Get-Date -Format HHmm)
+$fileVersion = "$majorVersion.$minorVersion" + "." + (Get-Date -Format yy) + (Get-Date).DayOfYear.ToString("D3") + "." + (Get-Date -Format HHmm)
 
 if (Test-Path $assemblyPath) {
     $content = Get-Content $assemblyPath -Encoding UTF8
