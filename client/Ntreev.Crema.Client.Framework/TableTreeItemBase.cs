@@ -73,6 +73,30 @@ namespace Ntreev.Crema.Client.Framework
             {
                 childs.CollectionChanged += Tables_CollectionChanged;
             }
+
+            //addChilds(this, this.descriptor.Childs);
+
+            //void addChilds(TableTreeItemBase parent, IEnumerable<TableDescriptor> childs)
+            //{
+            //    foreach(var item in childs)
+            //    {
+            //        parent.AddDescriptor(item);
+
+            //        if (item.Childs.Count > 0)
+            //        {
+            //            var viewModel = CreateInstance(authentication, item, owner);
+            //            viewModel.Parent = parent;
+            //            item.Host = viewModel;
+            //            addChilds(viewModel, item.Childs);
+            //        }
+
+            //    }
+
+            //    if (descriptor.Childs is INotifyCollectionChanged childrens)
+            //    {
+            //        childrens.CollectionChanged += Tables_CollectionChanged;
+            //    }
+            //}
         }
 
         public async Task LockAsync()

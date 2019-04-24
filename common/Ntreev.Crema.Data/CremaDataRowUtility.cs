@@ -59,6 +59,15 @@ namespace Ntreev.Crema.Data
             throw new ArgumentException(nameof(component));
         }
 
+        public static string GetName(object component)
+        {
+            if (component is DataRowView == false)
+                throw new ArgumentException();
+
+            var rowView = component as DataRowView;
+            return CremaDataTable.GetTableName(((InternalDataTable)rowView.Row.Table).Name);
+        }
+
         public static string GetTableName(object component)
         {
             if (component is DataRowView == false)

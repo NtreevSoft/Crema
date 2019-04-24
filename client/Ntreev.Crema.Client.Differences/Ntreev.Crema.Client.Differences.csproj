@@ -66,7 +66,7 @@
       <HintPath>..\..\packages\Xceed.Wpf.AvalonDock.3.4.17280.14430\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Xceed.Wpf.DataGrid.v5.7, Version=5.7.15459.10040, Culture=neutral, PublicKeyToken=ba83ff368b7563c6, processorArchitecture=MSIL" />
+    <Reference Include="Xceed.Wpf.DataGrid.v5.8, Version=5.8.15608.14330, Culture=neutral, PublicKeyToken=ba83ff368b7563c6, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Authenticator.cs" />

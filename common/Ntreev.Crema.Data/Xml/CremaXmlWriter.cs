@@ -234,7 +234,8 @@ namespace Ntreev.Crema.Data.Xml
 
         private void WriteHeaderInfo(XmlWriter writer, CremaDataTable table)
         {
-            foreach (var item in EnumerableUtility.Friends(table, table.Childs))
+            //foreach (var item in EnumerableUtility.Friends(table, table.Childs))
+            foreach(var item in EnumerableUtility.FamilyTree(table, o => o.Childs))
             {
                 var name = item.GetXmlPath(this.targetNamespace);
                 var user = name + CremaSchema.ModifierExtension;

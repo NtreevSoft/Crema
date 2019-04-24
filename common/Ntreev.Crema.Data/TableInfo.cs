@@ -76,11 +76,19 @@ namespace Ntreev.Crema.Data
         {
             get
             {
-                if (this.Name.Contains('.') == true)
+                //if (this.Name.Contains('.') == true)
+                //{
+                //    return StringUtility.Split(this.Name, '.').First();
+                //}
+                //return string.Empty;
+                var index = this.Name.LastIndexOf(".");
+                if (index < 0)
                 {
-                    return StringUtility.Split(this.Name, '.').First();
+                    return string.Empty;
                 }
-                return string.Empty;
+
+                var parentName = this.Name.Substring(0, index);
+                return parentName;
             }
         }
 
@@ -96,11 +104,20 @@ namespace Ntreev.Crema.Data
         {
             get
             {
-                if (this.Name.Contains('.') == true)
+                //if (this.Name.Contains('.') == true)
+                //{
+                //    return StringUtility.Split(this.Name, '.')[1];
+                //}
+                //return this.Name;
+
+                var index = this.Name.LastIndexOf(".");
+                if (index < 0)
                 {
-                    return StringUtility.Split(this.Name, '.')[1];
+                    return this.Name;
                 }
-                return this.Name;
+
+                var tableName = this.Name.Substring(index + 1, this.Name.Length - index - 1);
+                return tableName;
             }
         }
 

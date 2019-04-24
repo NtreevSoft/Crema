@@ -72,7 +72,8 @@ namespace Ntreev.Crema.Presentation.Controls
         {
             if (e.NewValue is CremaDataTable dataTable)
             {
-                var items = EnumerableUtility.Friends(dataTable, dataTable.Childs);
+                //var items = EnumerableUtility.Friends(dataTable, dataTable.Childs);
+                var items = EnumerableUtility.FamilyTree(dataTable, o => o.Childs);
                 d.SetValue(TablesPropertyKey, items.ToArray());
                 d.SetValue(SelectedTableProperty, items.First());
             }

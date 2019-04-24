@@ -215,7 +215,8 @@ namespace Ntreev.Crema.Data
                 var dataTable = this.DataSet.Tables[itemName.Name, itemName.CategoryPath];
                 var signatureDate = this.SignatureDateProvider.Provide();
                 dataTable.DetachTemplatedParent();
-                foreach (var item in EnumerableUtility.Friends(dataTable, dataTable.childs))
+                //foreach (var item in EnumerableUtility.Friends(dataTable, dataTable.childs))
+                foreach (var item in EnumerableUtility.FamilyTree(dataTable, o => o.childs))
                 {
                     item.InternalTableID = Guid.NewGuid();
                     item.CreationInfo = signatureDate;

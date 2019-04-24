@@ -43,9 +43,11 @@ namespace Ntreev.Crema.ServiceModel
                 {
                     if (item.Name.Contains('.') == true)
                     {
-                        var ss = StringUtility.Split(item.Name, '.');
-                        item.Parent = this[ss[0]];
-                        
+                        // var ss = StringUtility.Split(item.Name, '.');
+                        // item.Parent = this[ss[0]];
+                        var index = item.Name.LastIndexOf(".");
+                        var parentName = item.Name.Substring(0, index);
+                        item.Parent = this[parentName];
                     }
                 }
             }

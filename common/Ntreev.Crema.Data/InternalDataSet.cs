@@ -28,6 +28,7 @@ using Ntreev.Library.ObjectModel;
 using Ntreev.Crema.Data.Properties;
 using Ntreev.Library.IO;
 using System.Security.Cryptography;
+using System.Collections.ObjectModel;
 
 namespace Ntreev.Crema.Data
 {
@@ -146,9 +147,19 @@ namespace Ntreev.Crema.Data
         {
             this.ValidateAddTable(dataTable);
             this.Tables.Add(dataTable);
-            foreach (var item in dataTable.ChildItems)
+            addTables(dataTable.ChildItems);
+
+            void addTables(ReadOnlyObservableCollection<InternalDataTable> tables)
             {
-                this.Tables.Add(item);
+                foreach (var item in tables)
+                {
+                    this.Tables.Add(item);
+
+                    if (item.ChildItems.Count > 0)
+                    {
+                        addTables(item.ChildItems);
+                    }
+                }
             }
         }
 

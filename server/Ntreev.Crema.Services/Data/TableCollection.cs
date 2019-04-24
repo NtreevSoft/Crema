@@ -137,12 +137,14 @@ namespace Ntreev.Crema.Services.Data
                 this.InvokeTableCreate(authentication, newTableName, categoryPath, newDataTable, null);
                 var newTable = this.AddNew(authentication, newTableName, categoryPath);
                 newTable.Initialize(newDataTable.TableInfo);
-                foreach (var item in newDataTable.Childs)
+
+                foreach (var item in EnumerableUtility.FamilyTree(newDataTable, o => o.Childs).Skip(1))
                 {
                     var childTable = this.AddNew(authentication, item.Name, categoryPath);
                     childTable.Initialize(item.TableInfo);
                 }
-                var items = EnumerableUtility.Friends(newTable, newTable.Childs).ToArray();
+
+                var items = EnumerableUtility.FamilyTree(newTable, o => o.Childs).ToArray();
                 this.InvokeTablesCreatedEvent(authentication, items, dataTable.DataSet);
                 return newTable;
             }
@@ -689,7 +691,8 @@ namespace Ntreev.Crema.Services.Data
 
             if (copyXml == true)
             {
-                foreach (var item in EnumerableUtility.Friends(table, table.Childs))
+                //foreach (var item in EnumerableUtility.Friends(table, table.Childs))
+                foreach (var item in EnumerableUtility.FamilyTree(table, o => o.Childs))
                 {
                     item.ValidateHasNotBeingEditedType();
                 }

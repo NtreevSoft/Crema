@@ -1071,8 +1071,8 @@ namespace Ntreev.Crema.Data
             {
                 if (this.TemplatedParentName != string.Empty)
                     throw new ArgumentException($"'{value}' 상속된 '{this.Name}'의 이름이기 때문에 사용할 수 없습니다.");
-                else
-                    throw new ArgumentException($"'{value}' '{this.Name}'의 이름이기 때문에 사용할 수 없습니다.");
+                //else
+                //    throw new ArgumentException($"'{value}' '{this.Name}'의 이름이기 때문에 사용할 수 없습니다.");
             }
         }
 

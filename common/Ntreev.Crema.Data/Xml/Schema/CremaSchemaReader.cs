@@ -444,8 +444,8 @@ namespace Ntreev.Crema.Data.Xml.Schema
             this.ReadChildTables(element.ElementSchemaType as XmlSchemaComplexType, dataTable);
             dataTable.EndLoadInternal();
 
-            this.tables.Add(dataTable.Name, dataTable);
-            foreach (var item in dataTable.Childs)
+            //this.tables.Add(dataTable.Name, dataTable);
+            foreach(var item in EnumerableUtility.FamilyTree(dataTable, o => o.Childs).ToList())
             {
                 this.tables.Add(item.Name, item);
             }
@@ -593,6 +593,11 @@ namespace Ntreev.Crema.Data.Xml.Schema
                     this.ReadTable(item.ElementSchemaType as XmlSchemaComplexType, childTable);
                     childTable.EndLoadInternal();
                     childTable.Parent = dataTable;
+
+                    if (item.ElementSchemaType is XmlSchemaComplexType childComplexType)
+                    {
+                        this.ReadChildTables(childComplexType, childTable);
+                    }
                 }
             }
         }

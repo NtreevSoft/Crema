@@ -393,7 +393,8 @@ namespace Ntreev.Crema.Services.Data
                 return;
 
             this.masterUserID = this.domain.Users.OwnerUserID;
-            var items = EnumerableUtility.Friends(this, this.Childs);
+            //var items = EnumerableUtility.Friends(this, this.Childs);
+            var items = EnumerableUtility.FamilyTree(this, o => o.Childs);
             foreach (var item in items)
             {
                 var tableState = item.table.TableState;
@@ -409,7 +410,8 @@ namespace Ntreev.Crema.Services.Data
 
         private void InvokeEditBegunEvent(EventArgs e)
         {
-            var items = EnumerableUtility.Friends(this, this.Childs);
+            //var items = EnumerableUtility.Friends(this, this.Childs);
+            var items = EnumerableUtility.FamilyTree(this, o => o.Childs);
             foreach (var item in items)
             {
                 item.OnEditBegun(e);
@@ -418,7 +420,8 @@ namespace Ntreev.Crema.Services.Data
 
         private void InvokeEditEndedEvent(EventArgs e)
         {
-            var items = EnumerableUtility.Friends(this, this.Childs);
+            //var items = EnumerableUtility.Friends(this, this.Childs);
+            var items = EnumerableUtility.FamilyTree(this, o => o.Childs);
             foreach (var item in items)
             {
                 item.OnEditEnded(e);
@@ -427,7 +430,8 @@ namespace Ntreev.Crema.Services.Data
 
         private void InvokeEditCanceledEvent(EventArgs e)
         {
-            var items = EnumerableUtility.Friends(this, this.Childs);
+            //var items = EnumerableUtility.Friends(this, this.Childs);
+            var items = EnumerableUtility.FamilyTree(this, o => o.Childs);
             foreach (var item in items)
             {
                 item.OnEditCanceled(e);
@@ -436,7 +440,8 @@ namespace Ntreev.Crema.Services.Data
 
         private void BeginContent(Authentication authentication, Domain domain)
         {
-            var items = EnumerableUtility.Friends(this, this.Childs);
+            //var items = EnumerableUtility.Friends(this, this.Childs);
+            var items = EnumerableUtility.FamilyTree(this, o => o.Childs);
             foreach (var item in items)
             {
                 item.domain = domain;
@@ -447,7 +452,8 @@ namespace Ntreev.Crema.Services.Data
 
         private void EndContent(Authentication authentication, TableInfo[] tableInfos)
         {
-            var items = EnumerableUtility.Friends(this.table, this.table.Childs);
+            //var items = EnumerableUtility.Friends(this.table, this.table.Childs);
+            var items = EnumerableUtility.FamilyTree(this.table, o => o.Childs);
             foreach (var item in items.Select(i => i.Content))
             {
                 item.domain = null;
@@ -463,7 +469,8 @@ namespace Ntreev.Crema.Services.Data
 
         private void CancelContent(Authentication authentication)
         {
-            var items = EnumerableUtility.Friends(this.table, this.table.Childs);
+            //var items = EnumerableUtility.Friends(this.table, this.table.Childs);
+            var items = EnumerableUtility.FamilyTree(this.table, o => o.Childs);
             foreach (var item in items.Select(i => i.Content))
             {
                 item.domain = null;
@@ -476,7 +483,8 @@ namespace Ntreev.Crema.Services.Data
 
         private void EnterContent(Authentication authentication, Domain domain)
         {
-            var items = EnumerableUtility.Friends(this, this.Childs);
+            //var items = EnumerableUtility.Friends(this, this.Childs);
+            var items = EnumerableUtility.FamilyTree(this, o => o.Childs);
             foreach (var item in items)
             {
                 var dataSet = domain.Source as CremaDataSet;
@@ -495,7 +503,8 @@ namespace Ntreev.Crema.Services.Data
 
         private void LeaveContent(Authentication authentication)
         {
-            var items = EnumerableUtility.Friends(this.table, this.table.Childs);
+            //var items = EnumerableUtility.Friends(this.table, this.table.Childs);
+            var items = EnumerableUtility.FamilyTree(this.table, o => o.Childs);
             foreach (var item in items.Select(i => i.Content))
             {
                 item.dataSet = null;

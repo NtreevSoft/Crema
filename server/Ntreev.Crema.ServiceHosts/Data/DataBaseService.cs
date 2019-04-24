@@ -292,7 +292,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
             {
                 var table = this.GetTable(tableName);
                 var newTable = table.Copy(this.authentication, newTableName, categoryPath, copyXml);
-                return EnumerableUtility.Friends(newTable, newTable.Childs).Select(item => item.TableInfo).ToArray();
+                return EnumerableUtility.FamilyTree(newTable, o => o.Childs).Select(item => item.TableInfo).ToArray();
             });
         }
 
@@ -350,7 +350,8 @@ namespace Ntreev.Crema.ServiceHosts.Data
                 var table = this.GetTable(tableName);
                 var content = table.Content;
                 content.EndEdit(this.authentication);
-                var tables = EnumerableUtility.Friends(content.Table, content.Table.Childs);
+                //var tables = EnumerableUtility.Friends(content.Table, content.Table.Childs);
+                var tables = EnumerableUtility.FamilyTree(content.Table, o => o.Childs);
                 return tables.Select(item => item.TableInfo).ToArray();
             });
         }

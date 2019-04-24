@@ -86,7 +86,9 @@ namespace Ntreev.Crema.Runtime.Generation.CSharp
 
             if (tableInfo.TemplatedParent.Contains('.') == true)
             {
-                return StringUtility.Split(tableInfo.TemplatedParent, '.')[1];
+                var index = tableInfo.TemplatedParent.LastIndexOf(".");
+                return tableInfo.TemplatedParent.Substring(index + 1, tableInfo.TemplatedParent.Length - index - 1);
+                //return StringUtility.Split(tableInfo.TemplatedParent, '.')[1];
             }
             return tableInfo.TemplatedParent;
         }

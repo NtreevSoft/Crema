@@ -18,6 +18,7 @@
 using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Library;
 using Ntreev.Library.IO;
+using Ntreev.Library.Linq;
 using Ntreev.Library.ObjectModel;
 using System;
 using System.Collections.Generic;
@@ -671,8 +672,10 @@ namespace Ntreev.Crema.Data
             set
             {
                 this.ValidateSetLocalName(value);
-                var childs = this.childItems.ToArray();
-                var derivedTable = this.parent != null ? this.derivedItems.ToArray() : new InternalTableBase[] { };
+                //var childs = this.childItems.ToArray();
+                //var derivedTable = this.parent != null ? this.derivedItems.ToArray() : new InternalTableBase[] { };
+                var childs = EnumerableUtility.FamilyTree(this, o => o.childItems).Skip(1).ToArray();
+                var derivedTable = this.parent != null ? EnumerableUtility.FamilyTree(this, o => o.derivedItems).Skip(1).ToArray() : new InternalTableBase[] { };
                 if (this.parent != null)
                     this.InternalName = this.parent.Name + "." + value;
                 else
@@ -680,7 +683,15 @@ namespace Ntreev.Crema.Data
 
                 foreach (var item in childs)
                 {
-                    item.InternalName = base.TableName + "." + item.LocalName;
+                    //item.InternalName = base.TableName + "." + item.LocalName;
+                    if (item.Parent != null)
+                    {
+                        item.InternalName = item.Parent.Name + "." + item.LocalName;
+                    }
+                    else
+                    {
+                        item.InternalName = item.Name;
+                    }
                 }
 
                 foreach (var item in derivedTable)

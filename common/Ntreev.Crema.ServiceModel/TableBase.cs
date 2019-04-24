@@ -405,7 +405,7 @@ namespace Ntreev.Crema.ServiceModel
             {
                 if (this.parent == null)
                     return this.Name;
-                return StringUtility.Split(this.Name, '.')[1];
+                return StringUtility.Split(this.Name, '.').Last();
             }
             set
             {
@@ -594,6 +594,8 @@ namespace Ntreev.Crema.ServiceModel
                 {
                     item.InvokeAccessChanged(EventArgs.Empty);
                 }
+
+                item.OnUpdateAccessParent(item);
             }
         }
 
@@ -608,6 +610,8 @@ namespace Ntreev.Crema.ServiceModel
                 {
 
                 }
+
+                item.OnUpdateLockParent(item.LockParent);
             }
         }
 

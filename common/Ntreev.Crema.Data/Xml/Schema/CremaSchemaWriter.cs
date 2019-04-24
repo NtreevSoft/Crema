@@ -211,7 +211,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
                 this.WriteDataTable(schema, item);
 
 
-                foreach (var t in EnumerableUtility.Friends(item, item.Childs))
+                foreach (var t in EnumerableUtility.FamilyTree(item, o => o.Childs))
                 {
                     this.WriteKeys(schema, element, t);
                     this.WriteUniques(schema, element, t);
@@ -283,7 +283,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
         private void WriteHeaderAttribute(XmlSchema schema, XmlSchemaComplexType rootType, CremaDataTable dataTable)
         {
             var baseNamespace = dataTable.DataSet != null ? dataTable.DataSet.Namespace : CremaSchema.BaseNamespace;
-            foreach (var item in EnumerableUtility.Friends(dataTable, dataTable.Childs))
+            foreach (var item in EnumerableUtility.FamilyTree(dataTable, o => o.Childs))
             {
                 rootType.Attributes.Add(new XmlSchemaAttribute()
                 {

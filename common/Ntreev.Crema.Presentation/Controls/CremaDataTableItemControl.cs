@@ -18,6 +18,7 @@
 using Ntreev.Crema.Data;
 using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Library;
+using Ntreev.Library.Linq;
 using Ntreev.ModernUI.Framework.DataGrid.Controls;
 using System;
 using System.Collections;
@@ -340,14 +341,27 @@ namespace Ntreev.Crema.Presentation.Controls
             }
 #endif
 
+            void configureDetailConfiguration(DetailConfiguration configuration)
+            {
+                var childName = CremaSchema.GetChildNameFromRelationName(configuration.RelationName);
+                configuration.Title = childName;
+                configuration.TitleTemplate = this.FindResource("DetailConfiguration_Title_Template") as DataTemplate;
+                var childTable = EnumerableUtility.FamilyTree(this.Source, o => o.Childs).First(o => o.TableName == childName); //this.Source.Childs[childName];
+                this.FillColumns(configuration, childTable);
+                SetReference(configuration, childTable);
+
+                configuration.DetailConfigurations.CollectionChanged += (configurationSender, configureationArg) =>
+                {
+                    if (configureationArg.NewItems != null && configureationArg.NewItems.Count > 0)
+                    {
+                        configureDetailConfiguration(configureationArg.NewItems[0] as DetailConfiguration);
+                    }
+                };
+            }
+
             foreach (var item in this.dataGridControl.DetailConfigurations)
             {
-                var childName = CremaSchema.GetChildNameFromRelationName(item.RelationName);
-                item.Title = childName;
-                item.TitleTemplate = this.FindResource("DetailConfiguration_Title_Template") as DataTemplate;
-                var childTable = this.Source.Childs[childName];
-                this.FillColumns(item, childTable);
-                SetReference(item, childTable);
+                configureDetailConfiguration(item);
             }
 
             var index = 0;
@@ -381,6 +395,11 @@ namespace Ntreev.Crema.Presentation.Controls
             this.dataGridControl.PropertyChanged -= DataGridControl_PropertyChanged;
             this.dataGridControl.PropertyChanged += DataGridControl_PropertyChanged;
             this.dataGridControl.LayoutUpdated += DataGridControl_LayoutUpdated;
+        }
+
+        private void Configuration_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void DataGridControl_LayoutUpdated(object sender, EventArgs e)

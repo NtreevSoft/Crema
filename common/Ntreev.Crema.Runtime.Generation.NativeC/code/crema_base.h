@@ -274,7 +274,7 @@ namespace CremaCode
 
 			if (elems.size() == 1)
 				return name;
-			return elems[1];
+			return elems[elems.size() - 1];
 		}
 	};
 } /*namespace CremaCode*/

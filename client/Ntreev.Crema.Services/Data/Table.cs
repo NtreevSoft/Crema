@@ -156,7 +156,8 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.DebugMethod(authentication, this, nameof(Rename), this, name);
             var result = this.Service.RenameTableItem(base.Path, name);
             this.Sign(authentication, result);
-            var items = this.Parent == null ? EnumerableUtility.Friends(this, this.Childs).ToArray() : EnumerableUtility.Friends(this, this.DerivedTables).ToArray();
+            //var items = this.Parent == null ? EnumerableUtility.Friends(this, this.Childs).ToArray() : EnumerableUtility.Friends(this, this.DerivedTables).ToArray();
+            var items = this.Parent == null ? EnumerableUtility.FamilyTree(this, o => o.Childs).ToArray() : EnumerableUtility.FamilyTree(this, o => o.DerivedTables).ToArray();
             var oldNames = items.Select(item => item.Name).ToArray();
             var oldPaths = items.Select(item => item.Path).ToArray();
             this.Container.InvokeTableRename(authentication, this, name);
@@ -170,7 +171,8 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.DebugMethod(authentication, this, nameof(Move), this, categoryPath);
             var result = this.Service.MoveTableItem(base.Path, categoryPath);
             this.Sign(authentication, result);
-            var items = EnumerableUtility.Friends(this, this.Childs).ToArray();
+            //var items = EnumerableUtility.Friends(this, this.Childs).ToArray();
+            var items = EnumerableUtility.FamilyTree(this, o => o.Childs).ToArray();
             var oldPaths = items.Select(item => item.Path).ToArray();
             var oldCategoryPaths = items.Select(item => item.Category.Path).ToArray();
             this.Container.InvokeTableMove(authentication, this, categoryPath);
@@ -184,7 +186,8 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.DebugMethod(authentication, this, nameof(Delete), this, base.Path);
             var result = this.Service.DeleteTableItem(base.Path);
             this.Sign(authentication, result);
-            var items = this.Parent == null ? EnumerableUtility.Friends(this, this.Childs).ToArray() : EnumerableUtility.Friends(this, this.DerivedTables).ToArray();
+            //var items = this.Parent == null ? EnumerableUtility.Friends(this, this.Childs).ToArray() : EnumerableUtility.Friends(this, this.DerivedTables).ToArray();
+            var items = this.Parent == null ? EnumerableUtility.FamilyTree(this, o => o.Childs).ToArray() : EnumerableUtility.FamilyTree(this, o => o.DerivedTables).ToArray();
             var oldPaths = items.Select(item => item.Path).ToArray();
             var container = this.Container;
             container.InvokeTableDelete(authentication, this);
@@ -212,7 +215,8 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.DebugMethod(authentication, this, nameof(SetTags), this, tags);
             var result = this.Service.SetTableItemProperty(base.Path, CremaSchema.Tags, tags.ToString());
             this.Sign(authentication, result);
-            var items = EnumerableUtility.Friends(this, this.Childs).SelectMany(item => item.DerivedTables).ToArray();
+            //var items = EnumerableUtility.Friends(this, this.Childs).SelectMany(item => item.DerivedTables).ToArray();
+            var items = EnumerableUtility.FamilyTree(this, o => o.Childs).SelectMany(item => item.DerivedTables).ToArray();
             this.Container.InvokeTableSetTags(authentication, this, tags);
             this.UpdateTags(tags);
             this.Container.InvokeTablesTemplateChangedEvent(authentication, items);
@@ -224,7 +228,8 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.DebugMethod(authentication, this, nameof(SetComment), this, comment);
             var result = this.Service.SetTableItemProperty(base.Path, CremaSchema.Comment, comment);
             this.Sign(authentication, result);
-            var items = EnumerableUtility.Friends(this, this.Childs).SelectMany(item => item.DerivedTables).ToArray();
+            //var items = EnumerableUtility.Friends(this, this.Childs).SelectMany(item => item.DerivedTables).ToArray();
+            var items = EnumerableUtility.FamilyTree(this, o => o.Childs).SelectMany(item => item.DerivedTables).ToArray();
             this.Container.InvokeTableSetComment(authentication, this, comment);
             this.UpdateComment(comment);
             this.Container.InvokeTablesTemplateChangedEvent(authentication, items);

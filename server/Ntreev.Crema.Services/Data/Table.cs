@@ -232,7 +232,8 @@ namespace Ntreev.Crema.Services.Data
                 this.CremaHost.DebugMethod(authentication, this, nameof(Rename), this, name);
                 base.ValidateRename(authentication, name);
                 this.Sign(authentication);
-                var items = this.Parent == null ? EnumerableUtility.Friends(this, this.Childs).ToArray() : EnumerableUtility.Friends(this, this.DerivedTables).ToArray();
+                //var items = this.Parent == null ? EnumerableUtility.FamilyTree(this, o => o.Childs).ToArray() : EnumerableUtility.FamilyTree(this, o => o.DerivedTables).ToArray();
+                var items = Enumerable.Concat(EnumerableUtility.FamilyTree(this, o => o.Childs), EnumerableUtility.FamilyTree(this, o => o.DerivedTables)).Distinct().ToArray();
                 var oldNames = items.Select(item => item.Name).ToArray();
                 var oldPaths = items.Select(item => item.Path).ToArray();
                 var dataSet = this.ReadAll(authentication);
@@ -255,7 +256,7 @@ namespace Ntreev.Crema.Services.Data
                 this.CremaHost.DebugMethod(authentication, this, nameof(Move), this, categoryPath);
                 base.ValidateMove(authentication, categoryPath);
                 this.Sign(authentication);
-                var items = EnumerableUtility.Friends(this, this.Childs).ToArray();
+                var items = EnumerableUtility.FamilyTree(this, o => o.Childs).ToArray();
                 var oldPaths = items.Select(item => item.Path).ToArray();
                 var oldCategoryPaths = items.Select(item => item.Category.Path).ToArray();
                 var dataSet = this.ReadAll(authentication);
@@ -278,7 +279,7 @@ namespace Ntreev.Crema.Services.Data
                 this.CremaHost.DebugMethod(authentication, this, nameof(Delete), this);
                 base.ValidateDelete(authentication);
                 this.Sign(authentication);
-                var items = this.Parent == null ? EnumerableUtility.Friends(this, this.Childs).ToArray() : EnumerableUtility.Friends(this, this.DerivedTables).ToArray();
+                var items = Enumerable.Concat(EnumerableUtility.FamilyTree(this, o => o.Childs), EnumerableUtility.FamilyTree(this, o => o.DerivedTables)).Distinct().ToArray();
                 var oldPaths = items.Select(item => item.Path).ToArray();
                 var container = this.Container;
                 var dataSet = this.Parent != null ? this.ReadAll(authentication) : null;
@@ -323,7 +324,8 @@ namespace Ntreev.Crema.Services.Data
                 this.CremaHost.DebugMethod(authentication, this, nameof(SetTags), this, tags);
                 this.ValidateSetTags(authentication, tags);
                 this.Sign(authentication);
-                var items = EnumerableUtility.Friends(this, this.Childs).SelectMany(item => item.DerivedTables).ToArray();
+                //var items = EnumerableUtility.Friends(this, this.Childs).SelectMany(item => item.DerivedTables).ToArray();
+                var items = EnumerableUtility.FamilyTree(this, o => o.Childs).SelectMany(item => item.DerivedTables).ToArray();
                 var dataSet = this.Parent == null ? this.ReadAll(authentication) : this.Parent.ReadAll(authentication);
                 this.Container.InvokeTableSetTags(authentication, this, tags, dataSet);
                 this.UpdateTags(tags);
@@ -344,7 +346,8 @@ namespace Ntreev.Crema.Services.Data
                 this.CremaHost.DebugMethod(authentication, this, nameof(SetComment), this, comment);
                 this.ValidateSetComment(authentication, comment);
                 this.Sign(authentication);
-                var items = EnumerableUtility.Friends(this, this.Childs).SelectMany(item => item.DerivedTables).ToArray();
+                //var items = EnumerableUtility.Friends(this, this.Childs).SelectMany(item => item.DerivedTables).ToArray();
+                var items = EnumerableUtility.FamilyTree(this, o => o.Childs).SelectMany(item => item.DerivedTables).ToArray();
                 var dataSet = this.Parent == null ? this.ReadAll(authentication) : this.Parent.ReadAll(authentication);
                 this.Container.InvokeTableSetComment(authentication, this, comment, dataSet);
                 this.UpdateComment(comment);
@@ -620,8 +623,8 @@ namespace Ntreev.Crema.Services.Data
 
         public void ValidateNewChild(Authentication authentication)
         {
-            if (this.Parent != null)
-                throw new InvalidOperationException(Resources.Exception_ChildTableCannotCreateChildTable);
+            //if (this.Parent != null)
+            //    throw new InvalidOperationException(Resources.Exception_ChildTableCannotCreateChildTable);
             if (this.TemplatedParent != null)
                 throw new InvalidOperationException(Resources.Exception_InheritedTableCannotNewChild);
             this.ValidateAccessType(authentication, AccessType.Master);

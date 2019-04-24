@@ -164,6 +164,7 @@ namespace Ntreev.Crema.Client.Framework
         private async void Content_Changed(object sender, EventArgs e)
         {
             this.isModified = this.content.IsModified;
+
             await this.RefreshAsync();
         }
 

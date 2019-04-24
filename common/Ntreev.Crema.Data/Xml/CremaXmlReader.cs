@@ -185,7 +185,8 @@ namespace Ntreev.Crema.Data.Xml
                 if (itemName != null)
                 {
                     var dataTable = this.dataSet.Tables[itemName.Name, itemName.CategoryPath];
-                    var items = EnumerableUtility.Friends(dataTable, dataTable.Childs);
+                    //var items = EnumerableUtility.Friends(dataTable, dataTable.Childs);
+                    var items = EnumerableUtility.FamilyTree(dataTable, o => o.Childs);
                     foreach (var item in items)
                     {
                         this.tables.Add(item.Name, item);
@@ -204,7 +205,8 @@ namespace Ntreev.Crema.Data.Xml
                     var categoryPath = CremaDataSet.GetTableCategoryPath(this.dataSet, reader.NamespaceURI);
                     var tableName = CremaDataSet.GetTableName(this.dataSet, reader.NamespaceURI);
                     var dataTable = this.dataSet.Tables[tableName, categoryPath];
-                    var items = EnumerableUtility.Friends(dataTable, dataTable.Childs);
+                    //var items = EnumerableUtility.Friends(dataTable, dataTable.Childs);
+                    var items = EnumerableUtility.FamilyTree(dataTable, o => o.Childs);
                     foreach (var item in items)
                     {
                         this.tables.Add(item.Name, item);
@@ -213,7 +215,8 @@ namespace Ntreev.Crema.Data.Xml
             }
             else
             {
-                var items = EnumerableUtility.Friends(this.dataTable, this.dataTable.Childs);
+                //var items = EnumerableUtility.Friends(this.dataTable, this.dataTable.Childs);
+                var items = EnumerableUtility.FamilyTree(this.dataTable, o => o.Childs);
                 this.tables = new Dictionary<string, CremaDataTable>(items.Count());
                 foreach (var item in items)
                 {
@@ -258,7 +261,8 @@ namespace Ntreev.Crema.Data.Xml
                 var categoryPath = CremaDataSet.GetTableCategoryPath(this.dataSet, reader.NamespaceURI);
                 var tableName = CremaDataSet.GetTableName(this.dataSet, reader.NamespaceURI);
                 var dataTable = this.dataTable ?? this.dataSet.Tables[tableName, categoryPath];
-                foreach (var item in EnumerableUtility.Friends(dataTable, dataTable.Childs))
+                //foreach (var item in EnumerableUtility.Friends(dataTable, dataTable.Childs))
+                foreach (var item in EnumerableUtility.FamilyTree(dataTable, o => o.Childs))
                 {
                     var user = item.Name + CremaSchema.ModifierExtension;
                     var dateTime = item.Name + CremaSchema.ModifiedDateTimeExtension;
@@ -278,7 +282,8 @@ namespace Ntreev.Crema.Data.Xml
                     var creationInfo = reader.GetAttributeAsModificationInfo(CremaSchema.Creator, CremaSchema.CreatedDateTime);
                     dataTable.InternalCreationInfo = creationInfo;
                 }
-                foreach (var item in EnumerableUtility.Friends(dataTable, dataTable.Childs))
+                //foreach (var item in EnumerableUtility.Friends(dataTable, dataTable.Childs))
+                foreach (var item in EnumerableUtility.FamilyTree(dataTable, o => o.Childs))
                 {
                     var serializableName = item.GetXmlPath(reader.NamespaceURI);
                     var user = serializableName + CremaSchema.ModifierExtension;

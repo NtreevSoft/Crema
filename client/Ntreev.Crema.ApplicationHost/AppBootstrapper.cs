@@ -57,8 +57,30 @@ namespace Ntreev.Crema.ApplicationHost
             get { return this.settings; }
         }
 
+        class BindingErrorListner : TraceListener
+        {
+            private Action<string> logAction;
+
+            public static void Listen(Action<string> logAction)
+            {
+                PresentationTraceSources.DataBindingSource.Listeners.Add(new BindingErrorListner() { logAction = logAction });
+            }
+
+            public override void Write(string message)
+            {
+                logAction(message);
+            }
+
+            public override void WriteLine(string message)
+            {
+                logAction(message);
+            }
+        }
+
         protected override void OnStartup(object sender, StartupEventArgs e)
         {
+            //BindingErrorListner.Listen(o => Debugger.Break());
+
             if (this.settings.Culture != string.Empty)
             {
                 System.Globalization.CultureInfo.DefaultThreadCurrentCulture = new System.Globalization.CultureInfo(this.settings.Culture);

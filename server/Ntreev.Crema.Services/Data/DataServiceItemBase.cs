@@ -337,7 +337,8 @@ namespace Ntreev.Crema.Services.Data
             {
                 if (domain.Host is TableContent content)
                 {
-                    var contents = EnumerableUtility.Friends(content, content.Childs);
+                    //var contents = EnumerableUtility.Friends(content, content.Childs);
+                    var contents = EnumerableUtility.FamilyTree(content, o => o.Childs);
                     var tableNames = contents.Select(item => item.Table.Name).ToArray();
                     foreach (var item in tableNames)
                     {
@@ -417,7 +418,8 @@ namespace Ntreev.Crema.Services.Data
 
             if (domain.Host is TableContent content)
             {
-                var contents = EnumerableUtility.Friends(content, content.Childs);
+                //var contents = EnumerableUtility.Friends(content, content.Childs);
+                var contents = EnumerableUtility.FamilyTree(content, o => o.Childs);
                 var tableNames = contents.Select(item => item.Table.Name).ToArray();
                 this.Dispatcher.InvokeAsync(() =>
                 {
