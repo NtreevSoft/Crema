@@ -152,6 +152,7 @@ namespace Ntreev.Crema.Client.Framework.Controls
         {
             base.PrepareContainer(dataGridContext, item);
             ModernDataGridControl.SetInsertionRow(dataGridContext, this);
+            this.hasField = false;
         }
 
         protected override void SetDataContext(object item)
