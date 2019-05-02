@@ -18,7 +18,6 @@
 using Ntreev.Crema.Data;
 using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Library;
-using Ntreev.Library.Linq;
 using Ntreev.ModernUI.Framework.DataGrid.Controls;
 using System;
 using System.Collections;
