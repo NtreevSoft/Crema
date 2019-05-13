@@ -124,11 +124,13 @@ namespace Ntreev.Crema.Data.Diff
         public void ResolveAll()
         {
             this.ValidateResolveInternal();
-            foreach (var item in this.childs)
+            //foreach (var item in this.childs)
+            foreach (var item in EnumerableUtility.FamilyTree(this, o => o.childs).Skip(1))
             {
                 item.ValidateResolveInternal();
             }
-            foreach (var item in this.childs)
+            //foreach (var item in this.childs)
+            foreach (var item in EnumerableUtility.FamilyTree(this, o => o.childs).Skip(1))
             {
                 item.Resolve();
             }
@@ -396,6 +398,10 @@ namespace Ntreev.Crema.Data.Diff
         {
             var tables1 = (this.dataTable1 != null ? this.dataTable1.Childs.OrderBy(item => item.TableName) : Enumerable.Empty<CremaDataTable>()).ToList();
             var tables2 = (this.dataTable2 != null ? this.dataTable2.Childs.OrderBy(item => item.TableName) : Enumerable.Empty<CremaDataTable>()).ToList();
+
+            //var tables1 = (this.dataTable1 != null ? EnumerableUtility.FamilyTree(this.dataTable1, o => o.Childs).Skip(1).OrderBy(item => item.TableName) : Enumerable.Empty<CremaDataTable>()).ToList();
+            //var tables2 = (this.dataTable2 != null ? EnumerableUtility.FamilyTree(this.dataTable1, o => o.Childs).Skip(1).OrderBy(item => item.TableName) : Enumerable.Empty<CremaDataTable>()).ToList();
+
             var tableList = new List<DiffDataTable>();
 
             foreach (var item in tables1.ToArray())
@@ -423,9 +429,12 @@ namespace Ntreev.Crema.Data.Diff
             foreach (var item in tables1)
             {
                 var dataTable1 = item;
+                //var childsOfTable2 = EnumerableUtility.FamilyTree(this.dataTable2, o => o.Childs).Skip(1);
                 if (this.dataTable2 != null && this.dataTable2.Childs.Contains(dataTable1.TableName) == true)
+                //if (this.dataTable2 != null && childsOfTable2.Any(o => o.TableName == dataTable1.TableName))
                 {
                     var dataTable2 = this.dataTable2.Childs[dataTable1.TableName];
+                    //var dataTable2 = childsOfTable2.First(o => o.TableName == dataTable1.TableName);
                     var diffTable1 = DiffDataTable.Create(this.diffSource1, dataTable1.TableName);
                     var diffTable2 = DiffDataTable.Create(this.diffSource2, dataTable2.TableName);
                     DiffInternalUtility.SyncColumns(diffTable1, diffTable2, dataTable1, dataTable2);
