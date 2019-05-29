@@ -143,7 +143,7 @@ namespace Ntreev.Crema.Commands
 
             foreach (var dataSet in metaDataList)
             {
-                var filepath = Path.Combine(this.Filename, $"{dataSet.Tables[0].Name}.dat");
+                var filepath = Path.Combine(this.Filename, $"{dataSet.Tables[0].Name}.{DataSplitSetting.Ext}");
                 serializer.Serialize(filepath, dataSet);
             }
         }
