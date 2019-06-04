@@ -155,31 +155,7 @@ namespace Ntreev.Crema.Services
             {
                 try
                 {
-                    this.address = AddressUtility.GetDisplayAddress(address);
-                    this.log = new LogService(this.address.Replace(':', '_'), userID, AppUtility.UserAppDataPath);
-                    this.log.Verbose = this.verbose;
-                    this.userContext = new UserContext(this, this.ipAddress, serviceInfos[nameof(UserService)], userID, password);
-                    var user = this.userContext.Users[userID];
-                    user.SetUserState(UserState.Online);
-                    this.userID = userID;
-                    this.authority = user.Authority;
-
-                    this.dataBases = new DataBaseCollection(this, this.ipAddress, serviceInfos[nameof(DataBaseCollectionService)]);
-                    this.domainContext = new DomainContext(this, this.ipAddress, serviceInfos[nameof(DomainService)]);
-                    this.isConnected = true;
-                    this.configs = new CremaConfiguration(this.ConfigPath);
-                    this.plugins = this.container.GetService(typeof(IEnumerable<IPlugin>)) as IEnumerable<IPlugin>;
-                    foreach (var item in this.plugins)
-                    {
-                        var authentication = new Authentication(new AuthenticationProvider(user), item.ID);
-                        this.authentications.Add(authentication);
-                        item.Initialize(authentication);
-                    }
-
-                    this.OnOpened(EventArgs.Empty);
-                    this.token = Guid.NewGuid();
-                    CremaLog.Info($"Crema opened : {address} {userID}");
-                    return token;
+                    return OpenInternal(address, null, userID, password);
                 }
                 catch
                 {
@@ -191,6 +167,62 @@ namespace Ntreev.Crema.Services
                     throw;
                 }
             });
+        }
+
+        public Guid Open(string address, string dataBase, string userID, SecureString password)
+        {
+            if (this.isConnected == true)
+                throw new InvalidOperationException(Resources.Exception_AlreadyConnected);
+
+            this.ipAddress = AddressUtility.GetIPAddress(address);
+            this.serviceInfos = GetServiceInfo(address).ToDictionary(item => item.Name);
+
+            this.OnOpening(EventArgs.Empty);
+            return this.dispatcher.Invoke(() =>
+            {
+                try
+                {
+                    return OpenInternal(address, dataBase, userID, password);
+                }
+                catch
+                {
+                    this.userContext?.Close(CloseInfo.Empty);
+                    this.userContext = null;
+                    this.log?.Dispose();
+                    this.log = null;
+                    this.address = null;
+                    throw;
+                }
+            });
+        }
+
+        private Guid OpenInternal(string address, string dataBase, string userID, SecureString password)
+        {
+            this.address = AddressUtility.GetDisplayAddress(address);
+            this.log = new LogService(this.address.Replace(':', '_'), userID, AppUtility.UserAppDataPath);
+            this.log.Verbose = this.verbose;
+            this.userContext = new UserContext(this, this.ipAddress, serviceInfos[nameof(UserService)], userID, password);
+            var user = this.userContext.Users[userID];
+            user.SetUserState(UserState.Online);
+            this.userID = userID;
+            this.authority = user.Authority;
+
+            this.dataBases = new DataBaseCollection(this, this.ipAddress, dataBase, serviceInfos[nameof(DataBaseCollectionService)]);
+            this.domainContext = new DomainContext(this, this.ipAddress, serviceInfos[nameof(DomainService)]);
+            this.isConnected = true;
+            this.configs = new CremaConfiguration(this.ConfigPath);
+            this.plugins = this.container.GetService(typeof(IEnumerable<IPlugin>)) as IEnumerable<IPlugin>;
+            foreach (var item in this.plugins)
+            {
+                var authentication = new Authentication(new AuthenticationProvider(user), item.ID);
+                this.authentications.Add(authentication);
+                item.Initialize(authentication);
+            }
+
+            this.OnOpened(EventArgs.Empty);
+            this.token = Guid.NewGuid();
+            CremaLog.Info($"Crema opened : {address} {userID}");
+            return token;
         }
 
         public void SaveConfigs()

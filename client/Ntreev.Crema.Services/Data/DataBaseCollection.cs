@@ -22,12 +22,14 @@ using Ntreev.Library.ObjectModel;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
 using Ntreev.Library;
 using System.Timers;
+using Ntreev.Library.Serialization;
 
 namespace Ntreev.Crema.Services.Data
 {
@@ -54,7 +56,7 @@ namespace Ntreev.Crema.Services.Data
         private ItemsEventHandler<IDataBase> itemsAccessChanged;
         private ItemsEventHandler<IDataBase> itemsLockChanged;
 
-        public DataBaseCollection(CremaHost cremaHost, string address, ServiceInfo serviceInfo)
+        public DataBaseCollection(CremaHost cremaHost, string address, string dataBase, ServiceInfo serviceInfo)
         {
             this.cremaHost = cremaHost;
             this.userContext = cremaHost.UserContext;
@@ -68,8 +70,15 @@ namespace Ntreev.Crema.Services.Data
                 {
                     service.Faulted += Service_Faulted;
                 }
-                var result = this.service.Subscribe(cremaHost.AuthenticationToken);
+
+                ResultBase<DataBaseCollectionMetaData> result;
+                result = dataBase == null
+                    ? this.service.Subscribe(cremaHost.AuthenticationToken)
+                    : this.service.SubscribeDataBase(cremaHost.AuthenticationToken, dataBase);
                 result.Validate();
+
+                XmlSerializerUtility.Write("./a.xml", result);
+
 #if !DEBUG
                 this.timer = new Timer(30000);
                 this.timer.Elapsed += Timer_Elapsed;

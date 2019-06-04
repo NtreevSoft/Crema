@@ -34,6 +34,7 @@ namespace Ntreev.Crema.Commands
     [Export(typeof(ICommand))]
     [CommandStaticProperty(typeof(FilterSettings))]
     [CommandStaticProperty(typeof(DataBaseSettings))]
+    [CommandStaticProperty(typeof(DataSplitSetting))]
     class GetDataCommand : CommandBase
     {
         [Import]
@@ -106,9 +107,47 @@ namespace Ntreev.Crema.Commands
 
             this.Out.WriteLine("data serializing.");
             var serializer = this.serializers.FirstOrDefault(item => item.Name == this.OutputType);
-            serializer.Serialize(this.Filename, metaData);
+            this.Serialize(serializer, metaData);
             this.Out.WriteLine("data serialized.");
         }
+
+        private void Serialize(IDataSerializer serializer, SerializationSet metaData)
+        {
+            if (DataSplitSetting.Split)
+            {
+                this.SerializePerTable(serializer, metaData);
+            }
+            else
+            {
+                this.SerializeAll(serializer, metaData);
+            }
+        }
+
+        private void SerializeAll(IDataSerializer serializer, SerializationSet metaData)
+        {
+            serializer.Serialize(this.Filename, metaData);
+        }
+
+        private void SerializePerTable(IDataSerializer serializer, SerializationSet metaData)
+        {
+            var metaDataList = new List<SerializationSet>();
+
+            foreach (var table in metaData.Tables)
+            {
+                var filteredMetaData = metaData.Filter(table.Name);
+                if (filteredMetaData.Tables.Any())
+                {
+                    metaDataList.Add(filteredMetaData);
+                }
+            }
+
+            foreach (var dataSet in metaDataList)
+            {
+                var filepath = Path.Combine(this.Filename, $"{dataSet.Tables[0].Name}.{DataSplitSetting.Ext}");
+                serializer.Serialize(filepath, dataSet);
+            }
+        }
+
 
         private TextWriter Out
         {

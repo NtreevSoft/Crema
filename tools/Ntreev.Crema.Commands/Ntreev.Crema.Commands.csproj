@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="CodeSettings.cs" />
     <Compile Include="DataBaseSettings.cs" />
+    <Compile Include="DataSplitSetting.cs" />
     <Compile Include="FilterSettings.cs" />
     <Compile Include="GetCodeCommand.cs" />
     <Compile Include="CommandContext.cs" />

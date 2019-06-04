@@ -102,7 +102,7 @@ namespace Ntreev.Crema.Commands
         {
             var generator = this.generators.FirstOrDefault(item => item.Name == CodeSettings.LanguageType);
             if (generator == null)
-                throw new InvalidOperationException($"'{CodeSettings.LanguageType}'은(는) 존재하지 언어입니다.");
+                throw new InvalidOperationException($"'{CodeSettings.LanguageType}'은(는) 존재하지 않는 언어입니다.");
 
             this.Out.WriteLine("receiving info");
             var metaData = this.service.GetMetaData(this.Address, DataBaseSettings.DataBaseName, DataBaseSettings.Tags, FilterSettings.FilterExpression, CodeSettings.Devmode, this.Revision);
@@ -129,7 +129,7 @@ namespace Ntreev.Crema.Commands
         {
             var compiler = this.compilers.FirstOrDefault(item => item.Name == CodeSettings.LanguageType);
             if (compiler == null)
-                throw new InvalidOperationException($"'{CodeSettings.LanguageType}'은(는) 존재하지 언어입니다.");
+                throw new InvalidOperationException($"'{CodeSettings.LanguageType}'은(는) 존재하지 않는 언어입니다.");
 
             this.Out.WriteLine("receiving info");
             var metaData = this.service.GetMetaData(this.Address, DataBaseSettings.DataBaseName, DataBaseSettings.Tags, FilterSettings.FilterExpression, CodeSettings.Devmode, -1);
