@@ -77,8 +77,6 @@ namespace Ntreev.Crema.Services.Data
                     : this.service.SubscribeDataBase(cremaHost.AuthenticationToken, dataBase);
                 result.Validate();
 
-                XmlSerializerUtility.Write("./a.xml", result);
-
 #if !DEBUG
                 this.timer = new Timer(30000);
                 this.timer.Elapsed += Timer_Elapsed;
