@@ -85,6 +85,40 @@ namespace Ntreev.Crema.ServiceHosts.Data
             return result;
         }
 
+
+        public ResultBase<DataBaseCollectionMetaData> SubscribeDataBase(Guid authenticationToken, string dataBase)
+        {
+            var result = new ResultBase<DataBaseCollectionMetaData>();
+            try
+            {
+                this.userContext.Dispatcher.Invoke(() =>
+                {
+                    this.authentication = this.userContext.Authenticate(authenticationToken);
+                    this.authentication.AddRef(this);
+                    this.OwnerID = this.authentication.ID;
+                    this.userContext.UsersLoggedOut += UserContext_UsersLoggedOut;
+                });
+                result.Value = this.cremaHost.Dispatcher.Invoke(() =>
+                {
+                    this.AttachEventHandlers();
+                    this.logService.Debug($"[{this.OwnerID}] {nameof(DataBaseCollectionService)} {nameof(SubscribeDataBase)}");
+                    return new DataBaseCollectionMetaData
+                    {
+                        DataBases = new[]
+                        {
+                            this.cremaHost.DataBases[dataBase].GetMetaData(authentication)
+                        }
+                    };
+                });
+                result.SignatureDate = this.authentication.SignatureDate;
+            }
+            catch (Exception e)
+            {
+                result.Fault = new CremaFault(e);
+            }
+            return result;
+        }
+
         public ResultBase Unsubscribe()
         {
             var result = new ResultBase();

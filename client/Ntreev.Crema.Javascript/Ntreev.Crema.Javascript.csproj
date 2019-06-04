@@ -52,6 +52,7 @@
     <Compile Include="Authenticator.cs" />
     <None Include="Consoles\RunFileCommand.cs" />
     <Compile Include="Consoles\RunCommand.cs" />
+    <Compile Include="Methods\LoginDataBaseMethod.cs" />
     <Compile Include="Methods\LoginMethod.cs" />
     <Compile Include="Methods\LogoutMethod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

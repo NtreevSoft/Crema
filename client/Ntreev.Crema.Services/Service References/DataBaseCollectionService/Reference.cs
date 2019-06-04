@@ -21,6 +21,9 @@ namespace Ntreev.Crema.Services.DataBaseCollectionService {
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseCollectionService/Subscribe", ReplyAction="http://www.ntreev.com/IDataBaseCollectionService/SubscribeResponse")]
         Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.DataBaseCollectionMetaData> Subscribe(System.Guid authenticationToken);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseCollectionService/SubscribeDataBase", ReplyAction="http://www.ntreev.com/IDataBaseCollectionService/SubscribeDataBaseResponse")]
+        Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.DataBaseCollectionMetaData> SubscribeDataBase(System.Guid authenticationToken, string dataBase);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseCollectionService/Unsubscribe", ReplyAction="http://www.ntreev.com/IDataBaseCollectionService/UnsubscribeResponse")]
         Ntreev.Crema.ServiceModel.ResultBase Unsubscribe();
         
@@ -163,6 +166,10 @@ namespace Ntreev.Crema.Services.DataBaseCollectionService {
         
         public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.DataBaseCollectionMetaData> Subscribe(System.Guid authenticationToken) {
             return base.Channel.Subscribe(authenticationToken);
+        }
+        
+        public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.DataBaseCollectionMetaData> SubscribeDataBase(System.Guid authenticationToken, string dataBase) {
+            return base.Channel.SubscribeDataBase(authenticationToken, dataBase);
         }
         
         public Ntreev.Crema.ServiceModel.ResultBase Unsubscribe() {
