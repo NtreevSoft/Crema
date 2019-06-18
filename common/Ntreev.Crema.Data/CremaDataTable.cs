@@ -1162,6 +1162,39 @@ namespace Ntreev.Crema.Data
             return CremaSchema.GenerateXPath(prefix, this.GetXmlName(targetNamespace));
         }
 
+        public CremaDataSet Filter(CremaDataSet srcDataSet, CremaDataSet destDataSet, TagInfo tags)
+        {
+            CremaDataTable parentDestDataTable = null;
+            if (this.Parent != null)
+            {
+                parentDestDataTable = new CremaDataTable(this.ParentName, this.Parent.CategoryPath);
+                destDataSet.Tables.Add(parentDestDataTable);
+            }
+
+            var destDataTable = new CremaDataTable(this.TableName, this.CategoryPath);
+            destDataSet.Tables.Add(destDataTable);
+            destDataTable.Parent = parentDestDataTable;
+
+            foreach (var column in this.Columns)
+            {
+                if ((column.DerivedTags & tags) != TagInfo.Unused)
+                {
+                    var newColumn = new CremaDataColumn(column.ColumnName, column.DataType);
+                    destDataTable.Columns.Add(newColumn);
+                }
+            }
+
+            var columns = destDataTable.Columns.ToArray();
+            foreach (var row in this.Rows)
+            {
+                if ((row.DerivedTags & tags) == TagInfo.Unused) continue;
+
+                destDataTable.AddRow(row.Filter(columns, tags));
+            }
+
+            return destDataSet;
+        }
+
         internal InternalDataTable InternalObject
         {
             get { return this.table; }

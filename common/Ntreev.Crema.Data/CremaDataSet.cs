@@ -1050,6 +1050,17 @@ namespace Ntreev.Crema.Data
             }
         }
 
+        public CremaDataSet Filter(string tableName, string tags)
+        {
+            var tagInfo = new TagInfo(tags);
+            var table = this.Tables[tableName];
+            var destDataSet = new CremaDataSet();
+
+            var filteredDataSet = table.Filter(this, destDataSet, tagInfo);
+
+            return filteredDataSet;
+        }
+
         private static void ValidateReadFromDirectory(string path)
         {
             // 이전 버전 경로 확인

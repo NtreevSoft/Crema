@@ -3,7 +3,7 @@
 #include "initype.h"
 #include <vector>
 
-namespace CremaReader
+namespace CremaCode { namespace reader
 {
 	class DLL_EXPORT idataset abstract
 	{
@@ -20,7 +20,7 @@ namespace CremaReader
 	{
 	public:
 #ifndef _IGNORE_BOOST
-		//static CremaReader& read(const std::string& address, int port, const std::string& name = "default", ReadFlag flag = ReadFlag_none);
+		static CremaReader& read(const std::string& address, int port, const std::string& name = "default", ReadFlag flag = ReadFlag_none);
 		static CremaReader& read(const std::string& address, int port, const std::string& database, DataLocation datalocation, ReadFlag flag = ReadFlag_none);
 #endif
 		static CremaReader& read(const std::string& filename, ReadFlag flag = ReadFlag_none);
@@ -31,6 +31,7 @@ namespace CremaReader
 			return read(filename, flag);
 		}
 
+		std::istream* get_istream() { return m_stream; }
 		virtual void destroy() = 0;
 
 		//virtual const itable_array& tables() const = 0;
@@ -44,4 +45,5 @@ namespace CremaReader
 	private:
 		std::istream* m_stream;
 	};
-} /*namespace CremaReader*/
+} /*namespace CremaCode*/ } /*namespace reader*/
+
