@@ -40,9 +40,13 @@ namespace Ntreev.Crema.Commands.OptionProcessor
 
         public static GenerationSet Process(GenerationSet generationSet)
         {
-            if (ReplaceSettings.ReplaceHashValue != null)
+            if (ReplaceSettings.ReplaceRevision != long.MinValue)
             {
                 generationSet.Revision = ReplaceSettings.ReplaceRevision;
+            }
+
+            if (ReplaceSettings.ReplaceHashValue != null)
+            {
                 generationSet.TablesHashValue = ReplaceSettings.ReplaceHashValue;
                 generationSet.TypesHashValue = ReplaceSettings.ReplaceHashValue;
             }
@@ -55,6 +59,10 @@ namespace Ntreev.Crema.Commands.OptionProcessor
             if (ReplaceSettings.ReplaceRevision != long.MinValue)
             {
                 serializationSet.Revision = ReplaceSettings.ReplaceRevision;
+            }
+
+            if (ReplaceSettings.ReplaceHashValue != null)
+            {
                 serializationSet.TablesHashValue = ReplaceSettings.ReplaceHashValue;
                 serializationSet.TypesHashValue = ReplaceSettings.ReplaceHashValue;
             }
