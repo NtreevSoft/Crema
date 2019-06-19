@@ -28,6 +28,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ntreev.Crema.Commands.OptionProcessor;
 
 namespace Ntreev.Crema.Commands
 {
@@ -35,6 +36,7 @@ namespace Ntreev.Crema.Commands
     [CommandStaticProperty(typeof(FilterSettings))]
     [CommandStaticProperty(typeof(DataBaseSettings))]
     [CommandStaticProperty(typeof(DataSplitSetting))]
+    [CommandStaticProperty(typeof(ReplaceSettings))]
     class GetDataCommand : CommandBase
     {
         [Import]
@@ -104,6 +106,7 @@ namespace Ntreev.Crema.Commands
 
             this.Out.WriteLine("receiving info");
             var metaData = service.GetDataGenerationData(this.Address, DataBaseSettings.DataBaseName, DataBaseSettings.Tags, FilterSettings.FilterExpression, this.Devmode, this.Revision);
+            metaData = ReplaceOptionProcessor.Process(metaData);
 
             this.Out.WriteLine("data serializing.");
             var serializer = this.serializers.FirstOrDefault(item => item.Name == this.OutputType);
@@ -135,6 +138,8 @@ namespace Ntreev.Crema.Commands
             foreach (var table in metaData.Tables)
             {
                 var filteredMetaData = metaData.Filter(table.Name);
+                filteredMetaData = ReplaceOptionProcessor.Process(filteredMetaData);
+
                 if (filteredMetaData.Tables.Any())
                 {
                     metaDataList.Add(filteredMetaData);
