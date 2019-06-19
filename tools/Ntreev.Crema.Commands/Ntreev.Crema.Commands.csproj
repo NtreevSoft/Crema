@@ -45,6 +45,8 @@
   <ItemGroup>
     <Compile Include="CodeSettings.cs" />
     <Compile Include="DataBaseSettings.cs" />
+    <Compile Include="OptionProcessor\ReplaceOptionProcessor.cs" />
+    <Compile Include="ReplaceSettings.cs" />
     <Compile Include="DataSplitSetting.cs" />
     <Compile Include="FilterSettings.cs" />
     <Compile Include="GetCodeCommand.cs" />
