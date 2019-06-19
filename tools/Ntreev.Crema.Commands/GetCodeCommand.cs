@@ -27,6 +27,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ntreev.Crema.Commands.OptionProcessor;
 
 namespace Ntreev.Crema.Commands
 {
@@ -34,6 +35,7 @@ namespace Ntreev.Crema.Commands
     [CommandStaticProperty(typeof(CodeSettings))]
     [CommandStaticProperty(typeof(FilterSettings))]
     [CommandStaticProperty(typeof(DataBaseSettings))]
+    [CommandStaticProperty(typeof(ReplaceSettings))]
     class GetCodeCommand : CommandBase
     {
         [Import]
@@ -106,6 +108,7 @@ namespace Ntreev.Crema.Commands
 
             this.Out.WriteLine("receiving info");
             var metaData = this.service.GetMetaData(this.Address, DataBaseSettings.DataBaseName, DataBaseSettings.Tags, FilterSettings.FilterExpression, CodeSettings.Devmode, this.Revision);
+            metaData = ReplaceOptionProcessor.Process(metaData);
 
             var generationSettings = new CodeGenerationSettings()
             {
