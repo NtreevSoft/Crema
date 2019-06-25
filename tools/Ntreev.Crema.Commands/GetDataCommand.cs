@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -41,10 +42,12 @@ namespace Ntreev.Crema.Commands
     {
         [Import]
         private IRuntimeService service = null;
-        [ImportMany]
-        private IEnumerable<IDataSerializer> serializers = null;
+
         [Import]
         private Lazy<CommandContext> commandContext = null;
+
+        [Import]
+        private CompositionContainer container = null;
 
         public GetDataCommand()
             : base("get-data")
@@ -109,31 +112,31 @@ namespace Ntreev.Crema.Commands
             metaData = ReplaceOptionProcessor.Process(metaData);
 
             this.Out.WriteLine("data serializing.");
-            var serializer = this.serializers.FirstOrDefault(item => item.Name == this.OutputType);
-            this.Serialize(serializer, metaData);
+            this.Serialize(metaData);
             this.Out.WriteLine("data serialized.");
         }
 
-        private void Serialize(IDataSerializer serializer, SerializationSet metaData)
+        private void Serialize(SerializationSet metaData)
         {
             if (DataSplitSetting.Split)
             {
-                this.SerializePerTable(serializer, metaData);
+                this.SerializePerTable(metaData);
             }
             else
             {
-                this.SerializeAll(serializer, metaData);
+                this.SerializeAll(metaData);
             }
         }
 
-        private void SerializeAll(IDataSerializer serializer, SerializationSet metaData)
+        private void SerializeAll(SerializationSet metaData)
         {
+            var serializer = this.GetDataSerializer(this.OutputType);
             serializer.Serialize(this.Filename, metaData);
         }
 
-        private void SerializePerTable(IDataSerializer serializer, SerializationSet metaData)
+        private void SerializePerTable(SerializationSet metaData)
         {
-            var metaDataList = new List<SerializationSet>();
+            var filteredMetaDataList = new List<SerializationSet>();
 
             foreach (var table in metaData.Tables)
             {
@@ -142,15 +145,22 @@ namespace Ntreev.Crema.Commands
 
                 if (filteredMetaData.Tables.Any())
                 {
-                    metaDataList.Add(filteredMetaData);
+                    filteredMetaDataList.Add(filteredMetaData);
                 }
             }
 
-            foreach (var dataSet in metaDataList)
+            foreach (var dataSet in filteredMetaDataList)
             {
                 var filepath = Path.Combine(this.Filename, $"{dataSet.Tables[0].Name}.{DataSplitSetting.Ext}");
+                var serializer = this.GetDataSerializer(this.OutputType);
                 serializer.Serialize(filepath, dataSet);
             }
+        }
+
+        private IDataSerializer GetDataSerializer(string outputType)
+        {
+            return this.container.GetExportedValues<IDataSerializer>()
+                .FirstOrDefault(o => o.Name == outputType);
         }
 
 
