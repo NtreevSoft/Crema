@@ -18,19 +18,37 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.ServiceModel;
 using System.ServiceModel.Channels;
+using System.ServiceModel.Web;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
-namespace Ntreev.Crema.ServiceHosts
+namespace Ntreev.Crema.ServiceHosts.Http.Extensions
 {
-    public interface IServiceHostProvider
+    public static class ObjectExtensions
     {
-        ServiceHost CreateInstance(int port);
+        private static readonly JsonSerializerSettings defaultJsonSerializerSettings = new JsonSerializerSettings
+        {
+            ContractResolver = new CamelCasePropertyNamesContractResolver()
+        };
 
-        string Name { get; }
+        public static string ToJson(this object obj, JsonSerializerSettings settings = null)
+        {
+            if (obj == null)
+                throw new NullReferenceException(nameof(obj));
 
-        string Schema { get; }
+            return JsonConvert.SerializeObject(obj, settings ?? defaultJsonSerializerSettings);
+        }
+
+        public static Message ToJsonMessage(this object obj)
+        {
+            if (WebOperationContext.Current == null)
+                throw new NullReferenceException(nameof(WebOperationContext.Current));
+
+            return WebOperationContext.Current.CreateTextResponse(obj.ToJson(), "application/json; charset=utf-8",
+                Encoding.UTF8);
+        }
     }
 }

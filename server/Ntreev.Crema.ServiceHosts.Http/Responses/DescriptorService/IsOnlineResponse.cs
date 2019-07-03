@@ -18,19 +18,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.ServiceModel;
-using System.ServiceModel.Channels;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
-namespace Ntreev.Crema.ServiceHosts
+namespace Ntreev.Crema.ServiceHosts.Http.Responses.DescriptorService
 {
-    public interface IServiceHostProvider
+    public class IsOnlineResponse
     {
-        ServiceHost CreateInstance(int port);
-
-        string Name { get; }
-
-        string Schema { get; }
+        public bool IsOnline { get; set; }
     }
 }

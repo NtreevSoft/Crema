@@ -26,6 +26,8 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Ntreev.Crema.ServiceModel
 {
@@ -33,18 +35,23 @@ namespace Ntreev.Crema.ServiceModel
     public struct ServiceInfo
     {
         [DataMember]
+        [JsonProperty]
         public string Name { get; set; }
 
         [DataMember]
+        [JsonProperty]
         public int Port { get; set; }
 
         [DataMember]
+        [JsonProperty]
         public string PlatformID { get; set; }
 
         [DataMember]
+        [JsonProperty]
         public string Version { get; set; }
 
         [DataMember]
+        [JsonProperty]
         public string Culture { get; set; }
 
         public readonly static ServiceInfo Empty = new ServiceInfo()

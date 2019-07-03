@@ -17,20 +17,41 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.ServiceModel;
-using System.ServiceModel.Channels;
 using System.Text;
 using System.Threading.Tasks;
+using Ntreev.Crema.ServiceHosts.Users;
+using Ntreev.Crema.Services;
+using Ntreev.Library;
 
-namespace Ntreev.Crema.ServiceHosts
+namespace Ntreev.Crema.ServiceHosts.Http
 {
-    public interface IServiceHostProvider
+    [Export(typeof(IServiceHostProvider))]
+    [Order(int.MaxValue)]
+    class HttpDescriptorServiceHostProvider : IServiceHostProvider
     {
-        ServiceHost CreateInstance(int port);
+        private readonly ICremaHost cremaHost;
+        private readonly CremaService cremaService;
 
-        string Name { get; }
+        [ImportingConstructor]
+        public HttpDescriptorServiceHostProvider(ICremaHost cremaHost, CremaService cremaService)
+        {
+            this.cremaHost = cremaHost;
+            this.cremaService = cremaService;
+        }
 
-        string Schema { get; }
+        public string Name
+        {
+            get { return nameof(HttpDescriptorService); }
+        }
+
+        public string Schema => "http";
+
+        public ServiceHost CreateInstance(int port)
+        {
+            return new HttpDescriptorServiceHost(this.cremaHost, port, this.cremaService);
+        }
     }
 }

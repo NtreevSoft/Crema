@@ -42,6 +42,8 @@ namespace Ntreev.Crema.ServiceHosts.Data
             get { return nameof(DataBaseCollectionService); }
         }
 
+        public string Schema => "net.tcp";
+
         public ServiceHost CreateInstance(int port)
         {
             return new DataBaseCollectionServiceHost(this.cremaHost, port);

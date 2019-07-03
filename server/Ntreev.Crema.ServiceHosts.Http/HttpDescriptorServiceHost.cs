@@ -17,44 +17,47 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.ServiceModel;
-using System.ServiceModel.Description;
-using Ntreev.Crema.ServiceHosts;
-
-using System.ServiceModel.Channels;
-using Ntreev.Crema.Services;
-using Ntreev.Crema.ServiceHosts.Domains;
 using System.ComponentModel.Composition;
+using System.Linq;
+using System.ServiceModel.Channels;
+using System.Text;
+using System.Threading.Tasks;
+using Ntreev.Crema.Services;
+using System.ServiceModel.Description;
+using Ntreev.Crema.ServiceModel;
+using System.ServiceModel;
+using Ntreev.Crema.ServiceHosts.Http;
 
-namespace Ntreev.Crema.ServiceHosts.Domains
+namespace Ntreev.Crema.ServiceHosts
 {
     [Export(typeof(CremaServiceItemHost))]
-    class DomainServiceHost : CremaServiceItemHost
+    class HttpDescriptorServiceHost : CremaServiceItemHost
     {
-        private const string address = "net.tcp://localhost:{0}/DomainService";
+        private static string address = "http://localhost:{0}/DescriptorService";
+        private readonly CremaService service;
 
-        public DomainServiceHost(ICremaHost cremaHost, int port)
-            : base(cremaHost, typeof(DomainService), address, port)
+        public HttpDescriptorServiceHost(ICremaHost cremaHost, int port, CremaService service)
+            : base(cremaHost, typeof(HttpDescriptorService), address, port)
         {
-            var binding = CreateNetTcpBinding();
+            var binding = CremaServiceItemHost.CreateWebHttpBinding();
 
-            this.AddServiceEndpoint(typeof(IDomainService), binding, string.Empty);
+            this.service = service;
+            var endpoint = this.AddServiceEndpoint(typeof(IHttpDescriptorService), binding, string.Empty);
+            endpoint.Behaviors.Add(new WebHttpBehavior());
             this.Description.Behaviors.Add(new InstanceProviderBehavior());
 
 #if DEBUG
             if (Environment.OSVersion.Platform != PlatformID.Unix)
             {
                 this.Description.Behaviors.Add(new ServiceMetadataBehavior());
-                this.AddServiceEndpoint(typeof(IMetadataExchange), MetadataExchangeBindings.CreateMexTcpBinding(), "mex");
+                this.AddServiceEndpoint(typeof(IMetadataExchange), MetadataExchangeBindings.CreateMexHttpBinding(), "mex");
             }
 #endif
         }
 
         public override object CreateInstance(Message message)
         {
-            return new DomainService(this.CremaHost);
+            return new HttpDescriptorService(this.service, this.CremaHost);
         }
     }
 }

@@ -194,17 +194,28 @@ namespace Ntreev.Crema.ServiceHosts
         {
             var providers = this.GetService(typeof(IEnumerable<IServiceHostProvider>)) as IEnumerable<IServiceHostProvider>;
             var items = providers.TopologicalSort().ToArray();
-            var port = this.port;
+            var ports = new Dictionary<string, int>();
+            var initPort = this.port;
+            foreach (var schema in providers.Select(o => o.Schema).Distinct())
+            {
+                ports.Add(schema, initPort);
+                initPort += 100;
+            };
             var version = new Version(FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly().Location).ProductVersion);
 
             CremaService.Dispatcher.Invoke(() =>
             {
                 if (Environment.OSVersion.Platform == PlatformID.Unix)
-                    port += 2;
+                {
+                    ports.ToList().ForEach(o => ports[o.Key] += 2);
+                }
+
                 foreach (var item in items)
                 {
+                    var port = ports[item.Schema];
                     var host = item.CreateInstance(port);
                     host.Open();
+                    
                     this.hosts.Add(host);
                     this.logService.Info(Resources.ServiceStart_Port, host.GetType().Name, port);
                     this.serviceInfos.Add(new ServiceInfo()
@@ -220,7 +231,7 @@ namespace Ntreev.Crema.ServiceHosts
                         Culture = $"{CultureInfo.CurrentCulture}"
                     });
                     if (Environment.OSVersion.Platform == PlatformID.Unix)
-                        port++;
+                        ports[item.Schema]++;
                 }
                 this.logService.Info(Resources.ServiceStart, cremaString);
             });

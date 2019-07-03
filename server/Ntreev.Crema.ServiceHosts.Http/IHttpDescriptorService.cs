@@ -15,22 +15,31 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
-using System.Text;
-using System.Threading.Tasks;
+using System.ServiceModel.Web;
+using Ntreev.Crema.ServiceHosts.Http.Responses.DescriptorService;
+using Ntreev.Crema.ServiceModel;
 
-namespace Ntreev.Crema.ServiceHosts
+namespace Ntreev.Crema.ServiceHosts.Http
 {
-    public interface IServiceHostProvider
+    [ServiceContract]
+    public interface IHttpDescriptorService
     {
-        ServiceHost CreateInstance(int port);
+        [OperationContract(IsInitiating = true)]
+        [WebGet(UriTemplate = "version", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        Message GetVersion();
 
-        string Name { get; }
+        [OperationContract]
+        [WebGet(UriTemplate = "isOnline?userID={userID}&password={password}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        Message IsOnline(string userID, string password);
 
-        string Schema { get; }
+        [OperationContract]
+        [WebGet(UriTemplate = "databaseInfos", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        Message GetDataBaseInfos();
+
+        [OperationContract]
+        [WebGet(UriTemplate = "serviceInfos", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        Message GetServiceInfos();
     }
 }
