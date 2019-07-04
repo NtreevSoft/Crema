@@ -16,12 +16,20 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System.ServiceModel;
-using Ntreev.Crema.ServiceHosts.Http.Responses.Commands;
+using System.ServiceModel.Channels;
+using System.ServiceModel.Web;
 
 namespace Ntreev.Crema.ServiceHosts.Http.Commands
 {
     [ServiceContract]
-    public interface IHttpCommandsService : IHttpCommandsUserService
+    public interface IHttpCommandsUserService
     {
+        [OperationContract]
+        [WebGet(UriTemplate = "login?userId={userId}&password={password}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        Message Login(string userId, string password);
+
+        [OperationContract]
+        [WebGet(UriTemplate = "logout?token={token}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        void Logout(string token);
     }
 }

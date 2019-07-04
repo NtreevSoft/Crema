@@ -68,6 +68,7 @@
     <Compile Include="Responses\Commands\LoginResponse.cs" />
     <Compile Include="Responses\DescriptorService\IsOnlineResponse.cs" />
     <Compile Include="Responses\DescriptorService\VersionResponse.cs" />
+    <Compile Include="Responses\ErrorResponse.cs" />
     <Compile Include="Users\IHttpUserService.cs" />
     <Compile Include="Users\HttpUserService.cs" />
     <Compile Include="Users\HttpUserServiceHost.cs" />
