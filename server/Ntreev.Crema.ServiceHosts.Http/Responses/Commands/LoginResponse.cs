@@ -20,11 +20,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ntreev.Crema.Services;
 
-namespace Ntreev.Crema.ServiceHosts
+namespace Ntreev.Crema.ServiceHosts.Http.Responses.Commands
 {
-    public interface ICremaServiceItem
+    public class LoginResponse
     {
-        void Abort(bool disconnect);
+        public string Token { get; set; }
     }
 }

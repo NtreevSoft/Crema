@@ -15,16 +15,22 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ServiceModel;
+using System.ServiceModel.Channels;
+using System.ServiceModel.Web;
+using Ntreev.Crema.ServiceHosts.Http.Responses.Commands;
 
-namespace Ntreev.Crema.ServiceHosts
+namespace Ntreev.Crema.ServiceHosts.Http.Commands
 {
-    public interface ICremaServiceItem
+    [ServiceContract]
+    public interface IHttpCommandsService
     {
-        void Abort(bool disconnect);
+        [OperationContract]
+        [WebGet(UriTemplate = "login?userId={userId}&password={password}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        Message Login(string userId, string password);
+
+        [OperationContract]
+        [WebGet(UriTemplate = "logout?token={token}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        void Logout(string token);
     }
 }

@@ -15,16 +15,38 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.Composition;
+using System.ServiceModel;
+using Ntreev.Crema.ServiceHosts.Users;
+using Ntreev.Crema.Services;
+using Ntreev.Library;
 
-namespace Ntreev.Crema.ServiceHosts
+namespace Ntreev.Crema.ServiceHosts.Http.Users
 {
-    public interface ICremaServiceItem
+    [Export(typeof(IServiceHostProvider))]
+    [Order(int.MaxValue)]
+    class HttpUserServiceHostProvider : IServiceHostProvider
     {
-        void Abort(bool disconnect);
+        private readonly ICremaHost cremaHost;
+        private readonly CremaService cremaService;
+
+        [ImportingConstructor]
+        public HttpUserServiceHostProvider(ICremaHost cremaHost, CremaService cremaService)
+        {
+            this.cremaHost = cremaHost;
+            this.cremaService = cremaService;
+        }
+
+        public string Name
+        {
+            get { return nameof(HttpUserService); }
+        }
+
+        public string Schema => "http";
+
+        public ServiceHost CreateInstance(int port)
+        {
+            return new UserServiceHost(this.cremaHost, port, this.cremaService);
+        }
     }
 }
