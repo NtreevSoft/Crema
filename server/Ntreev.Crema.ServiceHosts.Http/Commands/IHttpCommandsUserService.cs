@@ -29,7 +29,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Commands
         Message Login(string userId, string password);
 
         [OperationContract]
-        [WebGet(UriTemplate = "logout?token={token}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
-        void Logout(string token);
+        [WebGet(UriTemplate = "logout", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        void Logout();
     }
 }

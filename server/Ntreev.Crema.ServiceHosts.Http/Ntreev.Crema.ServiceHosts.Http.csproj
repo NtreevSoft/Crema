@@ -53,6 +53,8 @@
     <Compile Include="Commands\HttpCommandsServiceHost.cs" />
     <Compile Include="Commands\HttpCommandsServiceHostProvider.cs" />
     <Compile Include="Commands\IHttpCommandsService.cs" />
+    <Compile Include="Commands\IHttpCommandsDataBaseService.cs" />
+    <Compile Include="Commands\IHttpCommandsUserService.cs" />
     <Compile Include="ErrorHandleBehavior.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="HttpDescriptorService.cs" />
@@ -65,6 +67,12 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Requests\Commands\CopyDataBaseRequest.cs" />
+    <Compile Include="Requests\Commands\RenameDataBaseRequest.cs" />
+    <Compile Include="Requests\Commands\CreateDataBaseRequest.cs" />
+    <Compile Include="Responses\Commands\IsDataBaseEnteredResponse.cs" />
+    <Compile Include="Responses\Commands\ContainsDataBaseResponse.cs" />
+    <Compile Include="Responses\Commands\IsDataBaseLoadedResponse.cs" />
     <Compile Include="Responses\Commands\LoginResponse.cs" />
     <Compile Include="Responses\DescriptorService\IsOnlineResponse.cs" />
     <Compile Include="Responses\DescriptorService\VersionResponse.cs" />

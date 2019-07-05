@@ -25,6 +25,8 @@ using System.Xml.Serialization;
 using System.Xml;
 using Ntreev.Library.Serialization;
 using System.Xml.Schema;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Ntreev.Crema.ServiceModel
 {
@@ -33,18 +35,23 @@ namespace Ntreev.Crema.ServiceModel
     public struct LogInfo
     {
         [XmlElement]
+        [JsonProperty]
         public string UserID { get; set; }
 
         [XmlElement]
+        [JsonProperty]
         public long Revision { get; set; }
 
         [XmlElement]
+        [JsonProperty]
         public string Comment { get; set; }
 
         [XmlElement]
+        [JsonProperty]
         public DateTime DateTime { get; set; }
 
         [XmlArray]
+        [JsonProperty]
         public LogPropertyInfo[] Properties { get; set; }
 
         internal bool ContainsProperty(string key)
@@ -75,6 +82,7 @@ namespace Ntreev.Crema.ServiceModel
 
         [DataMember]
         [XmlIgnore]
+        [JsonIgnore]
         private string Xml
         {
             get { return XmlSerializerUtility.GetString(this); }

@@ -131,10 +131,9 @@ namespace Ntreev.Crema.ServiceHosts
 
         void IDisposable.Dispose()
         {
-            base.Dispose();
             this.host.Closing -= Host_Closing;
             this.callback = default(T);
-
+            base.Dispose();
         }
     }
 }

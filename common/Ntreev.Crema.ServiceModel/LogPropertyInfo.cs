@@ -24,6 +24,8 @@ using Ntreev.Library;
 using System.Xml.Serialization;
 using System.Xml.Schema;
 using System.Xml;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Ntreev.Library.Serialization;
 
 namespace Ntreev.Crema.ServiceModel
@@ -44,15 +46,18 @@ namespace Ntreev.Crema.ServiceModel
         public const string EventLogKey = "EventLog";
 
         [XmlElement]
+        [JsonProperty]
         public string Key { get; set; }
 
         [XmlElement]
+        [JsonProperty]
         public string Value { get; set; }
 
         #region DataMember
 
         [DataMember]
         [XmlIgnore]
+        [JsonIgnore]
         private string Xml
         {
             get { return XmlSerializerUtility.GetString(this); }

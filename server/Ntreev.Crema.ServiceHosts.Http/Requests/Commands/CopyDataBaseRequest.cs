@@ -15,13 +15,20 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System.ServiceModel;
-using Ntreev.Crema.ServiceHosts.Http.Responses.Commands;
+using System;
+using System.Runtime.Serialization;
 
-namespace Ntreev.Crema.ServiceHosts.Http.Commands
+namespace Ntreev.Crema.ServiceHosts.Http.Requests.Commands
 {
-    [ServiceContract]
-    public interface IHttpCommandsService : IHttpCommandsUserService, IHttpCommandsDataBaseService
+    [DataContract]
+    public class CopyDataBaseRequest
     {
+        [DataMember(Name = "newDataBaseName", IsRequired = true)]
+        public string NewDataBaseName { get; set; }
+
+        [DataMember(Name = "comment", IsRequired = true)]
+        public string Comment { get; set; }
+
+        public bool Force { get; set; } = false;
     }
 }
