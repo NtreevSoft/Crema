@@ -86,6 +86,7 @@
     <Compile Include="IDescriptorService.cs" />
     <Compile Include="ICremaService.cs" />
     <Compile Include="ICremaServiceItem.cs" />
+    <Compile Include="IHttpServiceHost.cs" />
     <Compile Include="InstanceProvider.cs" />
     <Compile Include="InstanceProviderBehavior.cs" />
     <Compile Include="IServiceHostProvider.cs" />

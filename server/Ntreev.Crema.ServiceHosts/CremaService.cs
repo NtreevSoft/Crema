@@ -34,6 +34,7 @@ using System.Xml.Serialization;
 using System.ServiceModel;
 using System.Diagnostics;
 using System.Globalization;
+using Ntreev.Library.Extensions;
 
 namespace Ntreev.Crema.ServiceHosts
 {
@@ -79,7 +80,8 @@ namespace Ntreev.Crema.ServiceHosts
                 this.descriptorServiceHost.Open();
                 this.logService.Info(Resources.ServiceStart, nameof(DescriptorServiceHost));
             });
-            this.StartServices();
+            this.StartWcfServices();
+            this.StartHttpServices();
 
             this.OnOpened(EventArgs.Empty);
         }
@@ -87,7 +89,8 @@ namespace Ntreev.Crema.ServiceHosts
         public void Close()
         {
             this.OnClosing(EventArgs.Empty);
-            this.StopServices();
+            this.StopWcfServices();
+            this.StopHttpServices();
             CremaService.Dispatcher.Invoke(() =>
             {
                 this.descriptorServiceHost.Close();
@@ -108,11 +111,11 @@ namespace Ntreev.Crema.ServiceHosts
 
         public void Restart()
         {
-            this.StopServices();
+            this.StopWcfServices();
             this.cremaHost.Dispatcher.Invoke(() => this.CremaHost.Close(this.token));
             this.cremaHost.SaveConfigs();
             this.token = this.cremaHost.Dispatcher.Invoke(() => this.CremaHost.Open());
-            this.StartServices();
+            this.StartWcfServices();
         }
 
         public int Port
@@ -182,15 +185,17 @@ namespace Ntreev.Crema.ServiceHosts
 
         private void CremaHost_Opened(object sender, EventArgs e)
         {
-            this.StartServices();
+            this.StartWcfServices();
+            this.StartHttpServices();
         }
 
         private void CremaHost_Closing(object sender, EventArgs e)
         {
-            this.StopServices();
+            this.StopWcfServices();
+            this.StopHttpServices();
         }
 
-        private void StartServices()
+        private void StartWcfServices()
         {
             var providers = this.GetService(typeof(IEnumerable<IServiceHostProvider>)) as IEnumerable<IServiceHostProvider>;
             var items = providers.TopologicalSort().ToArray();
@@ -237,7 +242,21 @@ namespace Ntreev.Crema.ServiceHosts
             });
         }
 
-        private void StopServices()
+        private void StartHttpServices()
+        {
+            var httpHosts = this.GetService<IEnumerable<IHttpServiceHost>>();
+
+            CremaService.Dispatcher.Invoke(() =>
+            {
+                foreach (var host in httpHosts)
+                {
+                    host.Open(this.port + 100);
+                    this.logService.Info(Resources.ServiceStart_Port, host.GetType().Name, this.port + 100);
+                }
+            });
+        }
+
+        private void StopWcfServices()
         {
             CremaService.Dispatcher.Invoke(() =>
             {
@@ -253,6 +272,20 @@ namespace Ntreev.Crema.ServiceHosts
                 this.hosts.Clear();
                 this.serviceInfos.Clear();
                 this.logService.Info(Resources.ServiceStop, cremaString);
+            });
+        }
+
+        private void StopHttpServices()
+        {
+            var httpHosts = this.GetService<IEnumerable<IHttpServiceHost>>();
+
+            CremaService.Dispatcher.Invoke(() =>
+            {
+                foreach (var host in httpHosts)
+                {
+                    host.Close();
+                    this.logService.Info(Resources.ServiceStop, cremaString);
+                }
             });
         }
     }

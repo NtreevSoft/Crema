@@ -24,7 +24,7 @@ using Ntreev.Crema.Services;
 
 namespace Ntreev.Crema.ServiceHosts.Http.Users
 {
-    [Export(typeof(CremaServiceItemHost))]
+    //[Export(typeof(CremaServiceItemHost))]
     class UserServiceHost : CremaServiceItemHost
     {
         private const string address = "http://localhost:{0}/UserService";

@@ -23,8 +23,8 @@ using Ntreev.Library;
 
 namespace Ntreev.Crema.ServiceHosts.Http.Users
 {
-    [Export(typeof(IServiceHostProvider))]
-    [Order(int.MaxValue)]
+    //[Export(typeof(IServiceHostProvider))]
+    //[Order(int.MaxValue)]
     class HttpUserServiceHostProvider : IServiceHostProvider
     {
         private readonly ICremaHost cremaHost;

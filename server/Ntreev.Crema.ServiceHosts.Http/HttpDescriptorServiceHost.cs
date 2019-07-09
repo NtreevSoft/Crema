@@ -30,7 +30,7 @@ using Ntreev.Crema.ServiceHosts.Http;
 
 namespace Ntreev.Crema.ServiceHosts
 {
-    [Export(typeof(CremaServiceItemHost))]
+    //[Export(typeof(CremaServiceItemHost))]
     class HttpDescriptorServiceHost : CremaServiceItemHost
     {
         private static string address = "http://localhost:{0}/DescriptorService";

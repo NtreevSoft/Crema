@@ -37,9 +37,18 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Web" />
+    <Reference Include="System.Web.Http, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Core.5.2.7\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.SelfHost, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebApi.SelfHost.5.2.7\lib\net45\System.Web.Http.SelfHost.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -55,12 +64,18 @@
     <Compile Include="Commands\IHttpCommandsService.cs" />
     <Compile Include="Commands\IHttpCommandsDataBaseService.cs" />
     <Compile Include="Commands\IHttpCommandsUserService.cs" />
+    <Compile Include="Controllers\Apis\V1\Commands\DataBaseApiController.cs" />
+    <Compile Include="Controllers\Apis\V1\Commands\DefaultController.cs" />
+    <Compile Include="Controllers\CremaApiController.cs" />
+    <Compile Include="CremaAuthorizeAttribute.cs" />
     <Compile Include="ErrorHandleBehavior.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
+    <Compile Include="HttpCommandServiceHost.cs" />
     <Compile Include="HttpDescriptorService.cs" />
     <Compile Include="HttpDescriptorServiceHost.cs" />
     <Compile Include="HttpDescriptorServiceHostProvider.cs" />
     <Compile Include="IHttpDescriptorService.cs" />
+    <Compile Include="MefDependencyResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <DependentUpon>Resources.resx</DependentUpon>
@@ -68,6 +83,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Requests\Commands\CopyDataBaseRequest.cs" />
+    <Compile Include="Requests\Commands\LoginRequest.cs" />
     <Compile Include="Requests\Commands\RenameDataBaseRequest.cs" />
     <Compile Include="Requests\Commands\CreateDataBaseRequest.cs" />
     <Compile Include="Responses\Commands\IsDataBaseEnteredResponse.cs" />
@@ -112,6 +128,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="..\..\common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems" Label="Shared" />
