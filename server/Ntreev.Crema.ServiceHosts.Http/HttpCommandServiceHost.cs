@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using System.Text;
@@ -14,11 +12,9 @@ using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.ExceptionHandling;
 using System.Web.Http.Filters;
-using System.Web.Http.Results;
 using System.Web.Http.SelfHost;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
-using Ntreev.Crema.ServiceHosts.Http.Responses;
 using Ntreev.Crema.Services;
 using Ntreev.Library.Extensions;
 
@@ -59,20 +55,6 @@ namespace Ntreev.Crema.ServiceHosts.Http
         public void Close()
         {
             this.server.CloseAsync().Wait();
-        }
-    }
-
-    public class CremaExceptionHandler : ExceptionHandler
-    {
-        public override void Handle(ExceptionHandlerContext context)
-        {
-            var response = context.Request.CreateResponse(HttpStatusCode.InternalServerError, new ErrorResponse
-            {
-                Type = context.Exception.GetType().ToString(),
-                Message = context.Exception.Message,
-                StackTrace = context.Exception.StackTrace
-            });
-            context.Result = new ResponseMessageResult(response);
         }
     }
 }

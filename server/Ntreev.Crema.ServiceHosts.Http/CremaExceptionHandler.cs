@@ -15,22 +15,25 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http.ExceptionHandling;
+using System.Web.Http.Results;
+using Ntreev.Crema.ServiceHosts.Http.Responses;
 
-namespace Ntreev.Crema.ServiceHosts.Http.Requests.Commands
+namespace Ntreev.Crema.ServiceHosts.Http
 {
-    public enum LoadDataBaseStatus
+    class CremaExceptionHandler : ExceptionHandler
     {
-        Loaded,
-        AlreadyLoaded
-    }
-
-    public class LoadDataBaseResponse
-    {
-        public LoadDataBaseStatus Status { get; set; }
+        public override void Handle(ExceptionHandlerContext context)
+        {
+            var response = context.Request.CreateResponse(HttpStatusCode.InternalServerError, new ErrorResponse
+            {
+                Type = context.Exception.GetType().ToString(),
+                Message = context.Exception.Message,
+                StackTrace = context.Exception.StackTrace
+            });
+            context.Result = new ResponseMessageResult(response);
+        }
     }
 }
