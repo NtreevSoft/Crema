@@ -59,7 +59,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\Apis\V1\Commands\DataBaseApiController.cs" />
-    <Compile Include="Controllers\Apis\V1\Commands\DefaultController.cs" />
+    <Compile Include="Controllers\Apis\V1\Commands\DefaultApiController.cs" />
+    <Compile Include="Controllers\Apis\V1\Commands\TablesApiController.cs" />
     <Compile Include="Controllers\CremaApiController.cs" />
     <Compile Include="CremaAuthorizeAttribute.cs" />
     <Compile Include="CremaExceptionHandler.cs" />
@@ -72,11 +73,22 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Requests\Commands\ContainsTableItemRequest.cs" />
     <Compile Include="Requests\Commands\CopyDataBaseRequest.cs" />
-    <Compile Include="Requests\Commands\LoadDataBaseResponse.cs" />
+    <Compile Include="Requests\Commands\CopyTableRequest.cs" />
+    <Compile Include="Requests\Commands\DeleteTableItemRequest.cs" />
+    <Compile Include="Requests\Commands\GetTableItemLogInfoRequest.cs" />
+    <Compile Include="Requests\Commands\InheritTableRequest.cs" />
+    <Compile Include="Requests\Commands\MoveTableRequest.cs" />
+    <Compile Include="Requests\Commands\RenameTableRequest.cs" />
+    <Compile Include="Responses\Commands\ContainsTableItemResponse.cs" />
+    <Compile Include="Responses\Commands\ContainsTableResponse.cs" />
+    <Compile Include="Responses\Commands\LoadDataBaseResponse.cs" />
     <Compile Include="Requests\Commands\LoginRequest.cs" />
+    <Compile Include="Requests\Commands\MoveTableItemRequest.cs" />
     <Compile Include="Requests\Commands\RenameDataBaseRequest.cs" />
     <Compile Include="Requests\Commands\CreateDataBaseRequest.cs" />
+    <Compile Include="Requests\Commands\RenameTableItemRequest.cs" />
     <Compile Include="Requests\Commands\UnloadDataBaseResponse.cs" />
     <Compile Include="Responses\Commands\IsDataBaseEnteredResponse.cs" />
     <Compile Include="Responses\Commands\ContainsDataBaseResponse.cs" />

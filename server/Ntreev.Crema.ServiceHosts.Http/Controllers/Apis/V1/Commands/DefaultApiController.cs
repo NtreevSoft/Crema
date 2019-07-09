@@ -32,12 +32,12 @@ namespace Ntreev.Crema.ServiceHosts.Http.Controllers.Apis.V1.Commands
     [Export]
     [PartCreationPolicy(CreationPolicy.NonShared)]
     [RoutePrefix("api/v1/commands")]
-    public class DefaultController : CremaApiController
+    public class DefaultApiController : CremaApiController
     {
         private readonly ICremaHost cremaHost;
 
         [ImportingConstructor]
-        public DefaultController(ICremaHost cremaHost) : base(cremaHost)
+        public DefaultApiController(ICremaHost cremaHost) : base(cremaHost)
         {
             this.cremaHost = cremaHost;
         }
