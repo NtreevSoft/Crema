@@ -94,18 +94,45 @@ namespace Ntreev.Crema.ServiceHosts.Http.Controllers.Apis.V1.Commands
 
         [HttpGet]
         [Route("{databaseName}/load")]
-        public void LoadDataBase(string databaseName)
+        public LoadDataBaseResponse LoadDataBase(string databaseName)
         {
             var database = this.GetDataBase(databaseName);
-            database.Dispatcher.Invoke(() => database.Load(this.Authentication));
+            return database.Dispatcher.Invoke(() =>
+            {
+                if (database.IsLoaded)
+                {
+                    return new LoadDataBaseResponse { Status = LoadDataBaseStatus.AlreadyLoaded };
+                }
+
+                database.Load(this.Authentication);
+                return new LoadDataBaseResponse
+                {
+                    Status = LoadDataBaseStatus.Loaded
+                };
+            });
         }
 
         [HttpGet]
         [Route("{databaseName}/unload")]
-        public void UnloadDataBase(string databaseName)
+        public UnloadDataBaseResponse UnloadDataBase(string databaseName)
         {
             var database = this.GetDataBase(databaseName);
-            database.Dispatcher.Invoke(() => database.Unload(this.Authentication));
+            return database.Dispatcher.Invoke(() =>
+            {
+                if (!database.IsLoaded)
+                {
+                    return new UnloadDataBaseResponse
+                    {
+                        Status = UnloadDataBaseStatus.AlreadyUnloaded
+                    };
+                }
+
+                database.Unload(this.Authentication);
+                return new UnloadDataBaseResponse
+                {
+                    Status = UnloadDataBaseStatus.Unloaded
+                };
+            });
         }
 
         [HttpGet]

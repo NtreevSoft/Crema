@@ -83,9 +83,11 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Requests\Commands\CopyDataBaseRequest.cs" />
+    <Compile Include="Requests\Commands\LoadDataBaseResponse.cs" />
     <Compile Include="Requests\Commands\LoginRequest.cs" />
     <Compile Include="Requests\Commands\RenameDataBaseRequest.cs" />
     <Compile Include="Requests\Commands\CreateDataBaseRequest.cs" />
+    <Compile Include="Requests\Commands\UnloadDataBaseResponse.cs" />
     <Compile Include="Responses\Commands\IsDataBaseEnteredResponse.cs" />
     <Compile Include="Responses\Commands\ContainsDataBaseResponse.cs" />
     <Compile Include="Responses\Commands\IsDataBaseLoadedResponse.cs" />
