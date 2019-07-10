@@ -65,8 +65,16 @@ namespace Ntreev.Crema.ConsoleHost
                     item.Publish(e.ExceptionObject);
                 }
             }
-            catch (Exception)
+            catch (ReflectionTypeLoadException rte)
             {
+                foreach (var exception in rte.LoaderExceptions)
+                {
+                    Console.WriteLine(exception);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
             }
 
             Environment.Exit(-1);
