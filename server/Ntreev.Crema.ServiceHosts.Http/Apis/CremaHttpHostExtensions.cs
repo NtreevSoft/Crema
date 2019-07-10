@@ -27,7 +27,7 @@ using Swashbuckle.Application;
 
 namespace Ntreev.Crema.ServiceHosts.Http.Apis
 {
-    static class CremaHostExtensions
+    static class CremaHttpHostExtensions
     {
         public static HttpConfiguration ConfigureCrema(this HttpConfiguration config, ICremaHost cremaHost)
         {

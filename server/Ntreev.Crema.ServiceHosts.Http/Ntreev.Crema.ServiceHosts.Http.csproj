@@ -79,7 +79,7 @@
     <Compile Include="Apis\V1\Controllers\Commands\TypesApiController.cs" />
     <Compile Include="Apis\CremaAuthorizeAttribute.cs" />
     <Compile Include="Apis\CremaExceptionHandler.cs" />
-    <Compile Include="Apis\CremaHostExtensions.cs" />
+    <Compile Include="Apis\CremaHttpHostExtensions.cs" />
     <Compile Include="Apis\HttpCommandServiceHost.cs" />
     <Compile Include="Apis\MefDependencyResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -121,10 +121,6 @@
     <Compile Include="Apis\V1\Responses\Commands\IsDataBaseLoadedResponse.cs" />
     <Compile Include="Apis\V1\Responses\Commands\LoginResponse.cs" />
     <Compile Include="Apis\V1\Responses\ErrorResponse.cs" />
-    <Compile Include="Users\IHttpUserService.cs" />
-    <Compile Include="Users\HttpUserService.cs" />
-    <Compile Include="Users\HttpUserServiceHost.cs" />
-    <Compile Include="Users\HttpUserServiceHostProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\common\Ntreev.Crema.Data\Ntreev.Crema.Data.csproj">
