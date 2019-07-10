@@ -61,6 +61,7 @@
     <Compile Include="Controllers\Apis\V1\Commands\DataBaseApiController.cs" />
     <Compile Include="Controllers\Apis\V1\Commands\DefaultApiController.cs" />
     <Compile Include="Controllers\Apis\V1\Commands\TablesApiController.cs" />
+    <Compile Include="Controllers\Apis\V1\Commands\TypesApiController.cs" />
     <Compile Include="Controllers\CremaApiController.cs" />
     <Compile Include="CremaAuthorizeAttribute.cs" />
     <Compile Include="CremaExceptionHandler.cs" />
@@ -74,15 +75,24 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Requests\Commands\ContainsTableItemRequest.cs" />
+    <Compile Include="Requests\Commands\ContainsTypeItemRequest.cs" />
     <Compile Include="Requests\Commands\CopyDataBaseRequest.cs" />
     <Compile Include="Requests\Commands\CopyTableRequest.cs" />
+    <Compile Include="Requests\Commands\CopyTypeRequest.cs" />
     <Compile Include="Requests\Commands\DeleteTableItemRequest.cs" />
+    <Compile Include="Requests\Commands\DeleteTypeItemRequest.cs" />
     <Compile Include="Requests\Commands\GetTableItemLogInfoRequest.cs" />
     <Compile Include="Requests\Commands\InheritTableRequest.cs" />
     <Compile Include="Requests\Commands\MoveTableRequest.cs" />
+    <Compile Include="Requests\Commands\MoveTypeItemRequest.cs" />
+    <Compile Include="Requests\Commands\MoveTypeRequest.cs" />
     <Compile Include="Requests\Commands\RenameTableRequest.cs" />
+    <Compile Include="Requests\Commands\RenameTypeItemRequest.cs" />
+    <Compile Include="Requests\Commands\RenameTypeRequest.cs" />
     <Compile Include="Responses\Commands\ContainsTableItemResponse.cs" />
     <Compile Include="Responses\Commands\ContainsTableResponse.cs" />
+    <Compile Include="Responses\Commands\ContainsTypeItemResponse.cs" />
+    <Compile Include="Responses\Commands\ContainsTypeResponse.cs" />
     <Compile Include="Responses\Commands\LoadDataBaseResponse.cs" />
     <Compile Include="Requests\Commands\LoginRequest.cs" />
     <Compile Include="Requests\Commands\MoveTableItemRequest.cs" />
