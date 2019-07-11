@@ -45,7 +45,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
         }
 
         [HttpGet]
-        [Route("list")]
+        [Route("")]
         [AllowAnonymous]
         public string[] GetDataBaseList()
         {
@@ -195,8 +195,8 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
             database.Dispatcher.Invoke(() => database.Copy(this.Authentication, request.NewDataBaseName, request.Comment, request.Force));
         }
 
-        [HttpGet]
-        [Route("{databaseName}/delete")]
+        [HttpDelete]
+        [Route("{databaseName}")]
         public void DeleteDataBase(string databaseName)
         {
             var database = this.GetDataBase(databaseName);
@@ -210,7 +210,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
             this.cremaHost.Dispatcher.Invoke(() => this.cremaHost.DataBases.AddNewDataBase(this.Authentication, databaseName, request.Comment));
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("{databaseName}/rename")]
         public void RenameDataBase(string databaseName, [FromBody] RenameDataBaseRequest request)
         {

@@ -43,7 +43,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
         }
 
         [HttpGet]
-        [Route("list")]
+        [Route("")]
         [AllowAnonymous]
         public string[] GetDomainList()
         {
@@ -79,8 +79,8 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
             });
         }
 
-        [HttpGet]
-        [Route("{domainId}/delete")]
+        [HttpDelete]
+        [Route("{domainId}")]
         public void DeleteDomain(string domainId, bool isCancel = false)
         {
             var domain = this.GetDomain(domainId);

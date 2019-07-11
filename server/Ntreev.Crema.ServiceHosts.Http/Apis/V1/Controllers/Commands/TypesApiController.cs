@@ -44,6 +44,26 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
         }
 
         [HttpGet]
+        [Route("types")]
+        public string[] GetTypeList(string databaseName, string tags = null)
+        {
+            var dataBase = this.GetDataBase(databaseName);
+            return dataBase.Dispatcher.Invoke(() =>
+            {
+                if (string.IsNullOrWhiteSpace(tags))
+                {
+                    return dataBase.TypeContext.Types.Select(item => item.Name).ToArray();
+                }
+
+                var types = dataBase.TypeContext.Types;
+                var query = from item in types
+                    where (item.TypeInfo.DerivedTags & (TagInfo)tags) != TagInfo.Unused
+                    select item.Name;
+                return query.ToArray();
+            });
+        }
+
+        [HttpGet]
         [Route("types/{typeName}/data")]
         public IDictionary<int, object> GetTypeData(string databaseName, string typeName, long revision = -1)
         {
@@ -86,26 +106,6 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
             });
         }
 
-        [HttpGet]
-        [Route("types/list")]
-        public string[] GetTypeList(string databaseName, string tags = null)
-        {
-            var dataBase = this.GetDataBase(databaseName);
-            return dataBase.Dispatcher.Invoke(() =>
-            {
-                if (string.IsNullOrWhiteSpace(tags))
-                {
-                    return dataBase.TypeContext.Types.Select(item => item.Name).ToArray();
-                }
-
-                var types = dataBase.TypeContext.Types;
-                var query = from item in types
-                    where (item.TypeInfo.DerivedTags & (TagInfo)tags) != TagInfo.Unused
-                    select item.Name;
-                return query.ToArray();
-            });
-        }
-
         [HttpPost]
         [Route("types/{typeName}/copy")]
         public void CopyType(string databaseName, string typeName, [FromBody] CopyTypeRequest request)
@@ -114,7 +114,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
             type.Dispatcher.Invoke(() => type.Copy(this.Authentication, request.NewTypeName, request.CategoryPath));
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("types/{typeName}/rename")]
         public void RenameType(string databaseName, string typeName, [FromBody] RenameTypeRequest request)
         {
@@ -122,7 +122,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
             type.Dispatcher.Invoke(() => type.Rename(this.Authentication, request.NewTypeName));
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("types/{typeName}/move")]
         public void MoveType(string databaseName, string typeName, [FromBody] MoveTypeRequest request)
         {
@@ -130,8 +130,8 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
             type.Dispatcher.Invoke(() => type.Move(this.Authentication, request.CategoryPath));
         }
 
-        [HttpGet]
-        [Route("types/{typeName}/delete")]
+        [HttpDelete]
+        [Route("types/{typeName}")]
         public void DeleteType(string databaseName, string typeName)
         {
             var type = this.GetType(databaseName, typeName);
@@ -151,7 +151,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
         }
 
         [HttpGet]
-        [Route("type-item/list")]
+        [Route("type-item")]
         public string[] GetTypeItemList(string databaseName, string tags = null)
         {
             var dataBase = this.GetDataBase(databaseName);
@@ -178,7 +178,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
             typeItem.Dispatcher.Invoke(() => typeItem.Delete(this.Authentication));
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("type-item/move")]
         public void MoveTypeItem(string databaseName, [FromBody] MoveTypeItemRequest request)
         {
@@ -186,7 +186,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
             typeItem.Dispatcher.Invoke(() => typeItem.Move(this.Authentication, request.ParentPath));
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("type-item/rename")]
         public void RenameTypeItem(string databaseName, [FromBody] RenameTypeItemRequest request)
         {

@@ -44,7 +44,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
         }
 
         [HttpGet]
-        [Route("tables/list")]
+        [Route("tables")]
         public string[] GetTableList(string databaseName, string tags = null)
         {
             var dataBase = this.GetDataBase(databaseName);
@@ -129,15 +129,15 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
             table.Dispatcher.Invoke(() => table.Copy(this.Authentication, request.NewTableName,request.CategoryPath, request.CopyContent));
         }
 
-        [HttpGet]
-        [Route("tables/{tableName}/delete")]
+        [HttpDelete]
+        [Route("tables/{tableName}")]
         public void CopyTable(string databaseName, string tableName)
         {
             var table = this.GetTable(databaseName, tableName);
             table.Dispatcher.Invoke(() => table.Delete(this.Authentication));
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("tables/{tableName}/move")]
         public void MoveTable(string databaseName, string tableName, [FromBody] MoveTableRequest request)
         {
@@ -153,7 +153,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
             table.Dispatcher.Invoke(() => table.Inherit(this.Authentication, request.NewTableName, request.CategoryPath, request.CopyContent));
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("tables/{tableName}/rename")]
         public void RenameTable(string databaseName, string tableName, [FromBody] RenameTableRequest request)
         {
@@ -174,7 +174,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
         }
 
         [HttpGet]
-        [Route("table-item/list")]
+        [Route("table-item")]
         public string[] GetTableItemList(string databaseName)
         {
             var dataBase = this.GetDataBase(databaseName);
@@ -193,7 +193,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
             });
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("table-item/move")]
         public void MoveTableItem(string databaseName, [FromBody] MoveTableItemRequest request)
         {
@@ -201,7 +201,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
             tableItem.Dispatcher.Invoke(() => tableItem.Move(this.Authentication, request.ParentPath));
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("table-item/rename")]
         public void RenameTableItem(string databaseName, [FromBody] RenameTableItemRequest request)
         {
