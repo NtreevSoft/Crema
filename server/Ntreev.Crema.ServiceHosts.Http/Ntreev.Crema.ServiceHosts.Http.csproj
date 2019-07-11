@@ -81,7 +81,7 @@
     <Compile Include="Apis\CremaAuthorizeAttribute.cs" />
     <Compile Include="Apis\CremaExceptionHandler.cs" />
     <Compile Include="Apis\CremaHttpHostExtensions.cs" />
-    <Compile Include="Apis\HttpCommandServiceHost.cs" />
+    <Compile Include="HttpCommandServiceHost.cs" />
     <Compile Include="Apis\MefDependencyResolver.cs" />
     <Compile Include="Apis\V1\Controllers\Commands\UsersApiController.cs" />
     <Compile Include="Apis\V1\Requests\Commands\BanUserRequest.cs" />

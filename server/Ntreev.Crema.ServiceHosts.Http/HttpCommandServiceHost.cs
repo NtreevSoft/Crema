@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.Composition;
 using System.Web.Http.SelfHost;
+using Ntreev.Crema.ServiceHosts.Http.Apis;
 using Ntreev.Crema.Services;
 
-namespace Ntreev.Crema.ServiceHosts.Http.Apis
+namespace Ntreev.Crema.ServiceHosts.Http
 {
     [Export(typeof(IHttpServiceHost))]
     class HttpCommandServiceHost : IHttpServiceHost
