@@ -95,6 +95,8 @@
     <Compile Include="Apis\V1\Responses\Commands\ContainsUserItemResponse.cs" />
     <Compile Include="Apis\V1\Responses\Commands\ContainsUserResponse.cs" />
     <Compile Include="Apis\V1\Responses\Commands\GetCurrentUserResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\GetDataBaseInfoResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\GetDataBaseLogInfoResponse.cs" />
     <Compile Include="Apis\V1\Responses\Commands\GetDomainInfoResponse.cs" />
     <Compile Include="Apis\V1\Responses\Commands\GetTableInfoResponse.cs" />
     <Compile Include="Apis\V1\Responses\Commands\GetTableItemLogInfoResponse.cs" />

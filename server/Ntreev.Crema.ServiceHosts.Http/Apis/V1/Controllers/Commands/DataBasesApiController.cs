@@ -58,7 +58,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
         [HttpGet]
         [Route("{databaseName}/info")]
         [AllowAnonymous]
-        public DataBaseInfo GetDataBaseInfo(string databaseName, string tags = null)
+        public GetDataBaseInfoResponse GetDataBaseInfo(string databaseName, string tags = null)
         {
             var database = this.GetDataBase(databaseName);
             return database.Dispatcher.Invoke(() =>
@@ -66,7 +66,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
                 var info = database.DataBaseInfo;
                 if (string.IsNullOrWhiteSpace(tags))
                 {
-                    return info;
+                    return GetDataBaseInfoResponse.ConvertFrom(info);
                 }
                 else
                 {
@@ -75,17 +75,21 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
                     info.TypesHashValue = this.GetTypesHashValue(database, (TagInfo) tags);
                     info.TablesHashValue = this.GetTablesHashValue(database, (TagInfo) tags);
 
-                    return info;
+                    return GetDataBaseInfoResponse.ConvertFrom(info);
                 }
             });
         }
 
         [HttpGet]
         [Route("{databaseName}/log")]
-        public LogInfo[] GetDataBaseLogInfo(string databaseName, string tags = null)
+        public GetDataBaseLogInfoResponse[] GetDataBaseLogInfo(string databaseName, string tags = null)
         {
             var database = this.GetDataBase(databaseName);
-            return database.Dispatcher.Invoke(() => database.GetLog(null));
+            return database.Dispatcher.Invoke(() =>
+            {
+                var logs = database.GetLog(null);
+                return GetDataBaseLogInfoResponse.ConvertFrom(logs);
+            });
         }
 
         [HttpPost]
