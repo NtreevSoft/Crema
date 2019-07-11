@@ -154,7 +154,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
             });
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("type-item/delete")]
         public void DeleteTypeItem(string databaseName, [FromBody] DeleteTypeItemRequest request)
         {

@@ -189,7 +189,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
             tableItem.Dispatcher.Invoke(() => tableItem.Rename(this.Authentication, request.NewName));
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("table-item/delete")]
         public void DeleteTableItem(string databaseName, [FromBody] DeleteTableItemRequest request)
         {
