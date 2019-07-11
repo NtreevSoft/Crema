@@ -45,6 +45,8 @@ namespace Ntreev.Crema.RuntimeService
             get { return nameof(RuntimeService); }
         }
 
+        public string Schema => "net.tcp";
+
         public ServiceHost CreateInstance(int port)
         {
             return new RuntimeServiceHost(this.cremaHost, service, port);

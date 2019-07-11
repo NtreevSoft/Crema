@@ -38,7 +38,7 @@ namespace Ntreev.Crema.ServiceHosts.Domains
         public DomainServiceHost(ICremaHost cremaHost, int port)
             : base(cremaHost, typeof(DomainService), address, port)
         {
-            var binding = CreateBinding();
+            var binding = CreateNetTcpBinding();
 
             this.AddServiceEndpoint(typeof(IDomainService), binding, string.Empty);
             this.Description.Behaviors.Add(new InstanceProviderBehavior());

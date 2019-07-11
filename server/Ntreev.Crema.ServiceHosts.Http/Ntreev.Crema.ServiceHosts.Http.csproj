@@ -1,0 +1,187 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2C7B8563-7160-4BA9-B4DF-9CE407DC16D6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Ntreev.Crema.ServiceHosts.Http</RootNamespace>
+    <AssemblyName>Ntreev.Crema.ServiceHosts.Http</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\Debug\cremaserver\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Swashbuckle.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cd1bb07a5ac7c7bc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Swashbuckle.Core.5.6.0\lib\net40\Swashbuckle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Web" />
+    <Reference Include="System.Web.Http, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Core.5.2.7\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.SelfHost, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebApi.SelfHost.5.2.7\lib\net45\System.Web.Http.SelfHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.7\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\WebActivatorEx.2.2.0\lib\net40\WebActivatorEx.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Apis\CremaApiController.cs" />
+    <Compile Include="Apis\Swagger\AddCremaTokenHeaderOperationFilter.cs" />
+    <Compile Include="Apis\V1\Controllers\Commands\DataBasesApiController.cs" />
+    <Compile Include="Apis\V1\Controllers\Commands\DefaultApiController.cs" />
+    <Compile Include="Apis\V1\Controllers\Commands\DomainsApiController.cs" />
+    <Compile Include="Apis\V1\Controllers\Commands\TablesApiController.cs" />
+    <Compile Include="Apis\V1\Controllers\Commands\TypesApiController.cs" />
+    <Compile Include="Apis\CremaAuthorizeAttribute.cs" />
+    <Compile Include="Apis\CremaExceptionHandler.cs" />
+    <Compile Include="Apis\CremaHttpHostExtensions.cs" />
+    <Compile Include="HttpCommandServiceHost.cs" />
+    <Compile Include="Apis\MefDependencyResolver.cs" />
+    <Compile Include="Apis\V1\Controllers\Commands\UsersApiController.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\BanUserRequest.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\ContainsUserItemRequest.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\DeleteUserItemRequest.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\KickUserRequest.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\MoveUserItemRequest.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\NotifyRequest.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\RenameUserItemRequest.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\SendMessageRequest.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\ContainsUserItemResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\ContainsUserResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\GetCurrentUserResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\GetDataBaseInfoResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\GetDataBaseLogInfoResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\GetDomainInfoResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\GetTableInfoResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\GetTableItemLogInfoResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\GetTypeInfoResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\GetUserBanInfoResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\GetUserStateResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\IsUserBannedResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\IsUserOnlineResponse.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <DependentUpon>Resources.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Apis\V1\Requests\Commands\ContainsTableItemRequest.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\ContainsTypeItemRequest.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\CopyDataBaseRequest.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\CopyTableRequest.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\CopyTypeRequest.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\DeleteTableItemRequest.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\DeleteTypeItemRequest.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\GetTableItemLogInfoRequest.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\InheritTableRequest.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\MoveTableRequest.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\MoveTypeItemRequest.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\MoveTypeRequest.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\RenameTableRequest.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\RenameTypeItemRequest.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\RenameTypeRequest.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\ContainsDomainResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\ContainsDomainUserResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\ContainsTableItemResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\ContainsTableResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\ContainsTypeItemResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\ContainsTypeResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\LoadDataBaseResponse.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\LoginRequest.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\MoveTableItemRequest.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\RenameDataBaseRequest.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\CreateDataBaseRequest.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\RenameTableItemRequest.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\UnloadDataBaseResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\IsDataBaseEnteredResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\ContainsDataBaseResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\IsDataBaseLoadedResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\LoginResponse.cs" />
+    <Compile Include="Apis\V1\Responses\ErrorResponse.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\common\Ntreev.Crema.Data\Ntreev.Crema.Data.csproj">
+      <Project>{04aeb614-3510-4064-99af-0aa807c7f957}</Project>
+      <Name>Ntreev.Crema.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\common\Ntreev.Crema.ServiceModel\Ntreev.Crema.ServiceModel.csproj">
+      <Project>{6478450a-dfa5-445d-890f-bc5f57c9a148}</Project>
+      <Name>Ntreev.Crema.ServiceModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\sub-modules\Ntreev.Library\Ntreev.Library\Ntreev.Library.csproj">
+      <Project>{1918437f-4fbf-4731-ac5b-981a4a4cb1f1}</Project>
+      <Name>Ntreev.Library</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ntreev.Crema.ServiceHosts\Ntreev.Crema.ServiceHosts.csproj">
+      <Project>{a7bf94f7-94a5-46ba-a756-c04bde65f47b}</Project>
+      <Name>Ntreev.Crema.ServiceHosts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ntreev.Crema.Services\Ntreev.Crema.Services.csproj">
+      <Project>{b7b4c207-7729-4147-96c4-b55e85647a66}</Project>
+      <Name>Ntreev.Crema.Services</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.ko-KR.resx" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Apis\Swagger\SwaggerAuthorization.js" />
+  </ItemGroup>
+  <Import Project="..\..\common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems" Label="Shared" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

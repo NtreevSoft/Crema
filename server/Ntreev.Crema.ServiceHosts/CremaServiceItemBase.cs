@@ -32,23 +32,20 @@ using System.Diagnostics;
 
 namespace Ntreev.Crema.ServiceHosts
 {
-    public abstract class CremaServiceItemBase<T> : IDisposable
+    public abstract class CremaServiceItemBase : IDisposable
     {
         private string sessionID;
-        private IContextChannel channel;
-        private T callback;
-        private ServiceHostBase host;
-        private readonly ILogService logService;
+        protected ILogService logService;
         private string ownerID;
+        protected IContextChannel channel;
+        protected ServiceHostBase host;
 
         protected CremaServiceItemBase(ILogService logService)
         {
             this.logService = logService;
-            OperationContext.Current.Host.Closing += Host_Closing;
             this.host = OperationContext.Current.Host;
             this.channel = OperationContext.Current.Channel;
             this.sessionID = OperationContext.Current.Channel.SessionId;
-            this.callback = OperationContext.Current.GetCallbackChannel<T>();
         }
 
         public event EventHandler Disposed;
@@ -78,11 +75,6 @@ namespace Ntreev.Crema.ServiceHosts
             this.Disposed?.Invoke(this, e);
         }
 
-        protected T Callback
-        {
-            get { return this.callback; }
-        }
-
         protected IContextChannel Channel
         {
             get { return this.channel; }
@@ -94,6 +86,35 @@ namespace Ntreev.Crema.ServiceHosts
         {
             get { return this.ownerID; }
             set { this.ownerID = value; }
+        }
+
+
+
+        #region IDisposable
+
+        public virtual void Dispose()
+        {
+            this.host = null;
+            this.channel = null;
+            this.OnDisposed(EventArgs.Empty);
+            this.logService.Debug($"[{this.OwnerID}] {this.GetType().Name} {nameof(IDisposable.Dispose)}");
+        }
+
+        #endregion
+    }
+    public abstract class CremaServiceItemBase<T> : CremaServiceItemBase, IDisposable
+    {
+        private T callback;
+
+        protected CremaServiceItemBase(ILogService logService) : base(logService)
+        {
+            this.callback = OperationContext.Current.GetCallbackChannel<T>();
+            OperationContext.Current.Host.Closing += Host_Closing;
+        }
+
+        protected T Callback
+        {
+            get { return this.callback; }
         }
 
         private void Host_Closing(object sender, EventArgs e)
@@ -108,18 +129,11 @@ namespace Ntreev.Crema.ServiceHosts
             }
         }
 
-        #region IDisposable
-
         void IDisposable.Dispose()
         {
             this.host.Closing -= Host_Closing;
-            this.host = null;
-            this.channel = null;
             this.callback = default(T);
-            this.OnDisposed(EventArgs.Empty);
-            this.logService.Debug($"[{this.OwnerID}] {this.GetType().Name} {nameof(IDisposable.Dispose)}");
+            base.Dispose();
         }
-
-        #endregion
     }
 }

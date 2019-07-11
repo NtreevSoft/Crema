@@ -25,7 +25,7 @@ using System.Timers;
 
 namespace Ntreev.Crema.ServiceHosts
 {
-    static class AuthenticationUtility
+    public static class AuthenticationUtility
     {
         private readonly static TimeSpan pingTimeout = new TimeSpan(0, 1, 0);
         private static Dictionary<Authentication, Description> authentications = new Dictionary<Authentication, Description>();
