@@ -82,6 +82,22 @@
     <Compile Include="Apis\CremaHttpHostExtensions.cs" />
     <Compile Include="Apis\HttpCommandServiceHost.cs" />
     <Compile Include="Apis\MefDependencyResolver.cs" />
+    <Compile Include="Apis\V1\Controllers\Commands\UsersApiController.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\BanUserRequest.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\ContainsUserItemRequest.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\DeleteUserItemRequest.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\KickUserRequest.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\MoveUserItemRequest.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\NotifyRequest.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\RenameUserItemRequest.cs" />
+    <Compile Include="Apis\V1\Requests\Commands\SendMessageRequest.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\ContainsUserItemResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\ContainsUserResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\GetCurrentUserResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\GetUserBanInfoResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\GetUserStateResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\IsUserBannedResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\IsUserOnlineResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <DependentUpon>Resources.resx</DependentUpon>
