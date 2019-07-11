@@ -16,12 +16,7 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Crema.ServiceModel;
 
@@ -35,12 +30,16 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Responses.Commands
         public string ItemType { get; set; }
         public string DomainType { get; set; }
         public string CategoryPath { get; set; }
+
         [JsonProperty(CremaSchema.Creator)]
         public string Creator { get; set; }
+
         [JsonProperty(CremaSchema.CreatedDateTime)]
         public DateTime CreatedDateTime { get; set; }
+
         [JsonProperty(CremaSchema.Modifier)]
         public string Modifier { get; set; }
+
         [JsonProperty(CremaSchema.ModifiedDateTime)]
         public DateTime ModifiedDateTime { get; set; }
 

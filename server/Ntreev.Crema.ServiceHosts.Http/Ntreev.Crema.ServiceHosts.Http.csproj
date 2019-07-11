@@ -42,6 +42,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
@@ -135,7 +136,7 @@
     <Compile Include="Apis\V1\Requests\Commands\RenameDataBaseRequest.cs" />
     <Compile Include="Apis\V1\Requests\Commands\CreateDataBaseRequest.cs" />
     <Compile Include="Apis\V1\Requests\Commands\RenameTableItemRequest.cs" />
-    <Compile Include="Apis\V1\Requests\Commands\UnloadDataBaseResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\UnloadDataBaseResponse.cs" />
     <Compile Include="Apis\V1\Responses\Commands\IsDataBaseEnteredResponse.cs" />
     <Compile Include="Apis\V1\Responses\Commands\ContainsDataBaseResponse.cs" />
     <Compile Include="Apis\V1\Responses\Commands\IsDataBaseLoadedResponse.cs" />

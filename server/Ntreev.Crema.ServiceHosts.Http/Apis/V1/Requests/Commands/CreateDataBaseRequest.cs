@@ -15,14 +15,13 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System.Runtime.Serialization;
+using System.ComponentModel.DataAnnotations;
 
 namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Requests.Commands
 {
-    [DataContract]
     public class CreateDataBaseRequest
     {
-        [DataMember(Name = "comment", IsRequired = true)]
+        [Required]
         public string Comment { get; set; }
     }
 }

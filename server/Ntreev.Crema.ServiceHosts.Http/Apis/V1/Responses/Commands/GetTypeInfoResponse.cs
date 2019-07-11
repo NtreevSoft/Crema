@@ -16,12 +16,8 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using Ntreev.Crema.Data;
 using Ntreev.Crema.Data.Xml.Schema;
 
@@ -36,15 +32,39 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Responses.Commands
         public bool IsFlag { get; set; }
         public string CategoryPath { get; set; }
         public string HashValue { get; set; }
+
         [JsonProperty(CremaSchema.Creator)]
         public string Creator { get; set; }
+
         [JsonProperty(CremaSchema.CreatedDateTime)]
         public DateTime CreatedDateTime { get; set; }
+
         [JsonProperty(CremaSchema.Modifier)]
         public string Modifier { get; set; }
+
         [JsonProperty(CremaSchema.ModifiedDateTime)]
         public DateTime ModifiedDateTime { get; set; }
+
         public MemberInfoResponse[] Members { get; set; }
+
+        public static GetTypeInfoResponse ConvertFrom(TypeInfo typeInfo)
+        {
+            return new GetTypeInfoResponse
+            {
+                Id = typeInfo.ID,
+                Name = typeInfo.Name,
+                Comment = typeInfo.Comment,
+                Tags = typeInfo.Tags.ToString(),
+                IsFlag = typeInfo.IsFlag,
+                CategoryPath = typeInfo.CategoryPath,
+                HashValue = typeInfo.HashValue,
+                Creator = typeInfo.CreationInfo.ID,
+                CreatedDateTime = typeInfo.CreationInfo.DateTime,
+                Modifier = typeInfo.ModificationInfo.ID,
+                ModifiedDateTime = typeInfo.ModificationInfo.DateTime,
+                Members = typeInfo.Members.Select(MemberInfoResponse.ConvertFrom).ToArray()
+            };
+        }
 
         public class MemberInfoResponse
         {
@@ -55,12 +75,16 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Responses.Commands
             public string Tags { get; set; }
             public string DerivedTags { get; set; }
             public bool IsEnabled { get; set; }
+
             [JsonProperty(CremaSchema.Creator)]
             public string Creator { get; set; }
+
             [JsonProperty(CremaSchema.CreatedDateTime)]
             public DateTime CreatedDateTime { get; set; }
+
             [JsonProperty(CremaSchema.Modifier)]
             public string Modifier { get; set; }
+
             [JsonProperty(CremaSchema.ModifiedDateTime)]
             public DateTime ModifiedDateTime { get; set; }
 
@@ -80,25 +104,6 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Responses.Commands
                     ModifiedDateTime = member.ModificationInfo.DateTime
                 };
             }
-        }
-
-        public static GetTypeInfoResponse ConvertFrom(TypeInfo typeInfo)
-        {
-            return new GetTypeInfoResponse
-            {
-                Id = typeInfo.ID,
-                Name = typeInfo.Name,
-                Comment = typeInfo.Comment,
-                Tags = typeInfo.Tags.ToString(),
-                IsFlag = typeInfo.IsFlag,
-                CategoryPath = typeInfo.CategoryPath,
-                HashValue = typeInfo.HashValue,
-                Creator = typeInfo.CreationInfo.ID,
-                CreatedDateTime = typeInfo.CreationInfo.DateTime,
-                Modifier = typeInfo.ModificationInfo.ID,
-                ModifiedDateTime = typeInfo.ModificationInfo.DateTime,
-                Members = typeInfo.Members.Select(MemberInfoResponse.ConvertFrom).ToArray()
-            };
         }
     }
 }
