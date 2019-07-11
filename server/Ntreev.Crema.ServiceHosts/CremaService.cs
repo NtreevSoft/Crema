@@ -52,6 +52,7 @@ namespace Ntreev.Crema.ServiceHosts
         private DescriptorServiceHost descriptorServiceHost;
         private List<ServiceInfo> serviceInfos = new List<ServiceInfo>();
         private Guid token;
+        private int httpPort;
 
         static CremaService()
         {
@@ -112,16 +113,28 @@ namespace Ntreev.Crema.ServiceHosts
         public void Restart()
         {
             this.StopWcfServices();
+            this.StopHttpServices();
             this.cremaHost.Dispatcher.Invoke(() => this.CremaHost.Close(this.token));
             this.cremaHost.SaveConfigs();
             this.token = this.cremaHost.Dispatcher.Invoke(() => this.CremaHost.Open());
             this.StartWcfServices();
+            this.StartHttpServices();
         }
 
         public int Port
         {
             get { return this.port; }
             set { this.port = value; }
+        }
+
+
+
+        public bool NoHttpServer { get; set; }
+
+        public int? HttpPort
+        {
+            get => this.httpPort;
+            set => this.httpPort = value ?? this.port + 100;
         }
 
         public ICremaHost CremaHost
@@ -244,14 +257,17 @@ namespace Ntreev.Crema.ServiceHosts
 
         private void StartHttpServices()
         {
+            if (this.NoHttpServer) return;
+            if (this.HttpPort == null) throw new NullReferenceException(nameof(this.HttpPort));
+
             var httpHosts = this.GetService<IEnumerable<IHttpServiceHost>>();
 
             CremaService.Dispatcher.Invoke(() =>
             {
                 foreach (var host in httpHosts)
                 {
-                    host.Open(this.port + 100);
-                    this.logService.Info(Resources.ServiceStart_Port, host.GetType().Name, this.port + 100);
+                    host.Open(this.HttpPort.Value);
+                    this.logService.Info(Resources.ServiceStart_Port, host.GetType().Name, this.HttpPort);
                 }
             });
         }
@@ -277,6 +293,9 @@ namespace Ntreev.Crema.ServiceHosts
 
         private void StopHttpServices()
         {
+            if (this.NoHttpServer) return;
+            if (this.HttpPort == null) throw new NullReferenceException(nameof(this.HttpPort));
+
             var httpHosts = this.GetService<IEnumerable<IHttpServiceHost>>();
 
             CremaService.Dispatcher.Invoke(() =>
