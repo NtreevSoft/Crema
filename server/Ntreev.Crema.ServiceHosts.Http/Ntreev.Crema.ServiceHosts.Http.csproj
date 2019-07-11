@@ -94,6 +94,10 @@
     <Compile Include="Apis\V1\Responses\Commands\ContainsUserItemResponse.cs" />
     <Compile Include="Apis\V1\Responses\Commands\ContainsUserResponse.cs" />
     <Compile Include="Apis\V1\Responses\Commands\GetCurrentUserResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\GetDomainInfoResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\GetTableInfoResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\GetTableItemLogInfoResponse.cs" />
+    <Compile Include="Apis\V1\Responses\Commands\GetTypeInfoResponse.cs" />
     <Compile Include="Apis\V1\Responses\Commands\GetUserBanInfoResponse.cs" />
     <Compile Include="Apis\V1\Responses\Commands\GetUserStateResponse.cs" />
     <Compile Include="Apis\V1\Responses\Commands\IsUserBannedResponse.cs" />

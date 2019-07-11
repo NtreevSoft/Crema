@@ -54,28 +54,15 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
         }
 
         [HttpGet]
-        [Route("{domainId}")]
+        [Route("{domainId}/info")]
         [AllowAnonymous]
-        public IDictionary<string, object> GetDomainInfo(string domainId)
+        public GetDomainInfoResponse GetDomainInfo(string domainId)
         {
             var domain = this.GetDomain(domainId);
             return domain.Dispatcher.Invoke(() =>
             {
                 var domainInfo = domain.DomainInfo;
-                var props = new Dictionary<string, object>
-                {
-                    {nameof(domainInfo.DomainID), $"{domainInfo.DomainID}"},
-                    {nameof(domainInfo.DataBaseID), $"{domainInfo.DataBaseID}"},
-                    {nameof(domainInfo.ItemPath), domainInfo.ItemPath},
-                    {nameof(domainInfo.ItemType), $"{domainInfo.ItemType}"},
-                    {nameof(domainInfo.DomainType), $"{domainInfo.DomainType}"},
-                    {nameof(domainInfo.CategoryPath), $"{domainInfo.CategoryPath}"},
-                    {CremaSchema.Creator, domainInfo.CreationInfo.ID},
-                    {CremaSchema.CreatedDateTime, domainInfo.CreationInfo.DateTime},
-                    {CremaSchema.Modifier, domainInfo.ModificationInfo.ID},
-                    {CremaSchema.ModifiedDateTime, domainInfo.ModificationInfo.DateTime}
-                };
-                return props;
+                return GetDomainInfoResponse.ConvertFrom(domainInfo);
             });
         }
 

@@ -64,7 +64,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
         }
 
         [HttpGet]
-        [Route("tables/{tableName}/data")]
+        [Route("tables/{tableName}")]
         public IDictionary<int, object> GetTableData(string databaseName, string tableName, int revision = -1, string tags = null)
         {
             var table = this.GetTable(databaseName, tableName);
@@ -83,7 +83,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
 
         [HttpGet]
         [Route("tables/{tableName}/info")]
-        public IDictionary<string, object> GetTableInfo(string databaseName, string tableName, string tags = null)
+        public GetTableInfoResponse GetTableInfo(string databaseName, string tableName, string tags = null)
         {
             var table = this.GetTable(databaseName, tableName);
             return table.Dispatcher.Invoke(() =>
@@ -95,28 +95,8 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
                     {
                         tableInfo = table.TableInfo.Filter((TagInfo)tags);
                     }
-                    var props = new Dictionary<string, object>
-                    {
-                        { nameof(tableInfo.ID), tableInfo.ID },
-                        { nameof(tableInfo.Name), tableInfo.Name },
-                        { nameof(tableInfo.TableName), tableInfo.TableName },
-                        { nameof(tableInfo.Tags), $"{tableInfo.Tags}" },
-                        { nameof(tableInfo.DerivedTags), $"{tableInfo.DerivedTags}" },
-                        { nameof(tableInfo.Comment), tableInfo.Comment },
-                        { nameof(tableInfo.TemplatedParent), tableInfo.TemplatedParent },
-                        { nameof(tableInfo.ParentName), tableInfo.ParentName },
-                        { nameof(tableInfo.CategoryPath), tableInfo.CategoryPath },
-                        { nameof(tableInfo.HashValue), tableInfo.HashValue },
-                        { CremaSchema.Creator, tableInfo.CreationInfo.ID },
-                        { CremaSchema.CreatedDateTime, tableInfo.CreationInfo.DateTime },
-                        { CremaSchema.Modifier, tableInfo.ModificationInfo.ID },
-                        { CremaSchema.ModifiedDateTime, tableInfo.ModificationInfo.DateTime },
-                        { CremaSchema.ContentsModifier, tableInfo.ContentsInfo.ID },
-                        { CremaSchema.ContentsModifiedDateTime, tableInfo.ContentsInfo.DateTime },
-                        { nameof(tableInfo.Columns), this.GetColumnsInfo(tableInfo.Columns) }
-                    };
 
-                    return props;
+                    return GetTableInfoResponse.ConvertFrom(tableInfo);
                 });
             });
         }
@@ -183,13 +163,13 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
 
         [HttpPost]
         [Route("table-item/log")]
-        public IDictionary<string, object>[] GetTableItemLogInfo(string databaseName, [FromBody] GetTableItemLogInfoRequest request)
+        public GetTableItemLogInfoResponse[] GetTableItemLogInfo(string databaseName, [FromBody] GetTableItemLogInfoRequest request)
         {
             var tableItem = this.GetTableItem(databaseName, request.TableItemPath);
             return tableItem.Dispatcher.Invoke(() =>
             {
                 var logInfos = tableItem.GetLog(this.Authentication);
-                return this.GetLogInfo(logInfos);
+                return logInfos.Select(GetTableItemLogInfoResponse.ConvertFrom).ToArray();
             });
         }
 
@@ -312,72 +292,6 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
                 props.Add(CremaSchema.__ParentID__, dataRow.ParentID);
             if (dataRow.RelationID != null)
                 props.Add(CremaSchema.__RelationID__, dataRow.RelationID);
-            return props;
-        }
-
-        private object[] GetColumnsInfo(ColumnInfo[] columns)
-        {
-            var props = new object[columns.Length];
-            for (var i = 0; i < columns.Length; i++)
-            {
-                props[i] = this.GetColumnInfo(columns[i]);
-            }
-            return props;
-        }
-
-        private IDictionary<string, object> GetColumnInfo(ColumnInfo columnInfo)
-        {
-            var props = new Dictionary<string, object>
-            {
-                { nameof(columnInfo.ID), columnInfo.ID },
-                { nameof(columnInfo.IsKey), columnInfo.IsKey },
-                { nameof(columnInfo.IsUnique), columnInfo.IsUnique },
-                { nameof(columnInfo.AllowNull), columnInfo.AllowNull },
-                { nameof(columnInfo.Name), columnInfo.Name },
-                { nameof(columnInfo.DataType), columnInfo.DataType },
-                { nameof(columnInfo.DefaultValue), this.GetDefaultValue(columnInfo) },
-                { nameof(columnInfo.Comment), columnInfo.Comment },
-                { nameof(columnInfo.AutoIncrement), columnInfo.AutoIncrement },
-                { nameof(columnInfo.ReadOnly), columnInfo.ReadOnly },
-                { nameof(columnInfo.Tags), $"{columnInfo.Tags}" },
-                { nameof(columnInfo.DerivedTags), $"{columnInfo.DerivedTags}" },
-                { CremaSchema.Creator, columnInfo.CreationInfo.ID },
-                { CremaSchema.CreatedDateTime, columnInfo.CreationInfo.DateTime },
-                { CremaSchema.Modifier, columnInfo.ModificationInfo.ID },
-                { CremaSchema.ModifiedDateTime, columnInfo.ModificationInfo.DateTime }
-            };
-            return props;
-        }
-
-        private object GetDefaultValue(ColumnInfo columnInfo)
-        {
-            if (columnInfo.DefaultValue != null && CremaDataTypeUtility.IsBaseType(columnInfo.DataType) == true)
-            {
-                var type = CremaDataTypeUtility.GetType(columnInfo.DataType);
-                return CremaConvert.ChangeType(columnInfo.DefaultValue, type);
-            }
-            return columnInfo.DefaultValue;
-        }
-
-        private IDictionary<string, object> GetLogInfo(LogInfo columnInfo)
-        {
-            var props = new Dictionary<string, object>
-            {
-                { nameof(columnInfo.UserID), columnInfo.UserID },
-                { nameof(columnInfo.Revision), columnInfo.Revision },
-                { nameof(columnInfo.Comment), columnInfo.Comment },
-                { nameof(columnInfo.DateTime), columnInfo.DateTime }
-            };
-            return props;
-        }
-
-        private IDictionary<string, object>[] GetLogInfo(LogInfo[] logInfos)
-        {
-            var props = new IDictionary<string, object>[logInfos.Length];
-            for (var i = 0; i < logInfos.Length; i++)
-            {
-                props[i] = this.GetLogInfo(logInfos[i]);
-            }
             return props;
         }
     }

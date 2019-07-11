@@ -64,7 +64,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
         }
 
         [HttpGet]
-        [Route("types/{typeName}/data")]
+        [Route("types/{typeName}")]
         public IDictionary<int, object> GetTypeData(string databaseName, string typeName, long revision = -1)
         {
             var type = this.GetType(databaseName, typeName);
@@ -79,30 +79,14 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
 
         [HttpGet]
         [Route("types/{typeName}/info")]
-        public IDictionary<string, object> GetTypeInfo(string databaseName, string typeName)
+        public GetTypeInfoResponse GetTypeInfo(string databaseName, string typeName)
         {
             var type = this.GetType(databaseName, typeName);
 
             return type.Dispatcher.Invoke(() =>
             {
                 var typeInfo = type.TypeInfo;
-                var props = new Dictionary<string, object>
-                {
-                    { nameof(typeInfo.ID), typeInfo.ID },
-                    { nameof(typeInfo.Name), typeInfo.Name },
-                    { nameof(typeInfo.Comment), typeInfo.Comment },
-                    { nameof(typeInfo.Tags), $"{typeInfo.Tags}" },
-                    { nameof(typeInfo.IsFlag), typeInfo.IsFlag },
-                    { nameof(typeInfo.CategoryPath), typeInfo.CategoryPath },
-                    { nameof(typeInfo.HashValue), typeInfo.HashValue },
-                    { CremaSchema.Creator, typeInfo.CreationInfo.ID },
-                    { CremaSchema.CreatedDateTime, typeInfo.CreationInfo.DateTime },
-                    { CremaSchema.Modifier, typeInfo.ModificationInfo.ID },
-                    { CremaSchema.ModifiedDateTime, typeInfo.ModificationInfo.DateTime },
-                    { nameof(typeInfo.Members), this.GetMembersInfo(typeInfo.Members) }
-                };
-
-                return props;
+                return GetTypeInfoResponse.ConvertFrom(typeInfo);
             });
         }
 
@@ -280,35 +264,6 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
                 { nameof(typeMember.Name), typeMember.Name },
                 { nameof(typeMember.Value), typeMember.Value },
                 { nameof(typeMember.Comment), typeMember.Comment }
-            };
-            return props;
-        }
-
-        private object[] GetMembersInfo(TypeMemberInfo[] members)
-        {
-            var props = new object[members.Length];
-            for (var i = 0; i < members.Length; i++)
-            {
-                props[i] = this.GetMemberInfo(members[i]);
-            }
-            return props;
-        }
-
-        private IDictionary<string, object> GetMemberInfo(TypeMemberInfo memberInfo)
-        {
-            var props = new Dictionary<string, object>
-            {
-                { nameof(memberInfo.ID), memberInfo.ID },
-                { nameof(memberInfo.Name), memberInfo.Name },
-                { nameof(memberInfo.Value), memberInfo.Value },
-                { nameof(memberInfo.Comment), memberInfo.Comment },
-                { nameof(memberInfo.Tags), $"{memberInfo.Tags}" },
-                { nameof(memberInfo.DerivedTags), $"{memberInfo.DerivedTags}" },
-                { nameof(memberInfo.IsEnabled), memberInfo.IsEnabled },
-                { CremaSchema.Creator, memberInfo.CreationInfo.ID },
-                { CremaSchema.CreatedDateTime, memberInfo.CreationInfo.DateTime },
-                { CremaSchema.Modifier, memberInfo.ModificationInfo.ID },
-                { CremaSchema.ModifiedDateTime, memberInfo.ModificationInfo.DateTime }
             };
             return props;
         }
