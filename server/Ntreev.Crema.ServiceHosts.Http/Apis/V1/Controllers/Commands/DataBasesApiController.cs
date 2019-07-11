@@ -88,7 +88,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
             return database.Dispatcher.Invoke(() => database.GetLog(null));
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("{databaseName}/enter")]
         public void EnterDataBase(string databaseName)
         {
@@ -96,7 +96,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
             database.Dispatcher.Invoke(() => database.Enter(this.Authentication));
         }
 
-        [HttpGet]
+        [HttpPut]
         [Route("{databaseName}/leave")]
         public void LeaveDataBase(string databaseName)
         {
@@ -104,7 +104,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
             database.Dispatcher.Invoke(() => database.Leave(this.Authentication));
         }
 
-        [HttpGet]
+        [HttpPut]
         [Route("{databaseName}/load")]
         public LoadDataBaseResponse LoadDataBase(string databaseName)
         {
@@ -124,7 +124,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
             });
         }
 
-        [HttpGet]
+        [HttpPut]
         [Route("{databaseName}/unload")]
         public UnloadDataBaseResponse UnloadDataBase(string databaseName)
         {
