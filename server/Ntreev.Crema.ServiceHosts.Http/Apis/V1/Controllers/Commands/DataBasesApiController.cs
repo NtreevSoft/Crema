@@ -82,7 +82,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
 
         [HttpGet]
         [Route("{databaseName}/log")]
-        public GetDataBaseLogInfoResponse[] GetDataBaseLogInfo(string databaseName, string tags = null)
+        public GetDataBaseLogInfoResponse[] GetDataBaseLogInfo(string databaseName)
         {
             var database = this.GetDataBase(databaseName);
             return database.Dispatcher.Invoke(() =>
