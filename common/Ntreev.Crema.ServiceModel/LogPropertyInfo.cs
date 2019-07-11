@@ -46,18 +46,15 @@ namespace Ntreev.Crema.ServiceModel
         public const string EventLogKey = "EventLog";
 
         [XmlElement]
-        [JsonProperty]
         public string Key { get; set; }
 
         [XmlElement]
-        [JsonProperty]
         public string Value { get; set; }
 
         #region DataMember
 
         [DataMember]
         [XmlIgnore]
-        [JsonIgnore]
         private string Xml
         {
             get { return XmlSerializerUtility.GetString(this); }

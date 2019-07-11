@@ -35,23 +35,18 @@ namespace Ntreev.Crema.ServiceModel
     public struct ServiceInfo
     {
         [DataMember]
-        [JsonProperty]
         public string Name { get; set; }
 
         [DataMember]
-        [JsonProperty]
         public int Port { get; set; }
 
         [DataMember]
-        [JsonProperty]
         public string PlatformID { get; set; }
 
         [DataMember]
-        [JsonProperty]
         public string Version { get; set; }
 
         [DataMember]
-        [JsonProperty]
         public string Culture { get; set; }
 
         public readonly static ServiceInfo Empty = new ServiceInfo()

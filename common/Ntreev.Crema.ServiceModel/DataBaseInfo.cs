@@ -35,55 +35,42 @@ namespace Ntreev.Crema.ServiceModel
     public struct DataBaseInfo
     {
         [XmlElement]
-        [JsonProperty]
         public Guid ID { get; set; }
 
         [XmlElement]
-        [JsonProperty]
         public string Name { get; set; }
 
         [XmlElement]
-        [JsonProperty]
         public string Comment { get; set; }
 
         [XmlElement]
-        [JsonProperty]
         public long Revision { get; set; }
 
         [XmlElement]
-        [JsonProperty]
         public TagInfo Tags { get; set; }
 
         [XmlElement]
-        [JsonProperty]
         public long BranchRevision { get; set; }
 
         [XmlElement]
-        [JsonProperty]
         public string BranchSource { get; set; }
 
         [XmlElement]
-        [JsonProperty]
         public long BranchSourceRevision { get; set; }
 
         [XmlElement]
-        [JsonProperty]
         public string TypesHashValue { get; set; }
 
         [XmlElement]
-        [JsonProperty]
         public string TablesHashValue { get; set; }
 
         [XmlArray]
-        [JsonProperty]
         public string[] Paths { get; set; }
 
         [XmlElement]
-        [JsonProperty]
         public SignatureDate CreationInfo { get; set; }
 
         [XmlElement]
-        [JsonProperty]
         public SignatureDate ModificationInfo { get; set; }
 
         public IDictionary<string, object> ToDictionary()
@@ -121,7 +108,6 @@ namespace Ntreev.Crema.ServiceModel
 
         [DataMember]
         [XmlIgnore]
-        [JsonIgnore]
         private string Xml
         {
             get { return XmlSerializerUtility.GetString(this); }
