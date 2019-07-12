@@ -117,13 +117,13 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
             {
                 if (database.IsLoaded)
                 {
-                    return new LoadDataBaseResponse { Status = LoadDataBaseStatus.AlreadyLoaded };
+                    return new LoadDataBaseResponse { DataBaseStatus = LoadDataBaseStatus.AlreadyLoaded };
                 }
 
                 database.Load(this.Authentication);
                 return new LoadDataBaseResponse
                 {
-                    Status = LoadDataBaseStatus.Loaded
+                    DataBaseStatus = LoadDataBaseStatus.Loaded
                 };
             });
         }
