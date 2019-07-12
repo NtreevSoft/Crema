@@ -111,7 +111,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
 
         [HttpDelete]
         [Route("tables/{tableName}")]
-        public void CopyTable(string databaseName, string tableName)
+        public void DeleteTable(string databaseName, string tableName)
         {
             var table = this.GetTable(databaseName, tableName);
             table.Dispatcher.Invoke(() => table.Delete(this.Authentication));

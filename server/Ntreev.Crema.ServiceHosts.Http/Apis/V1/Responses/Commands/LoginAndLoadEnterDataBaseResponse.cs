@@ -17,14 +17,9 @@
 
 namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Responses.Commands
 {
-    public enum LoadDataBaseStatus
+    public class LoginAndLoadEnterDataBaseResponse
     {
-        Loaded,
-        AlreadyLoaded
-    }
-
-    public class LoadDataBaseResponse
-    {
+        public string Token { get; set; }
         public LoadDataBaseStatus DataBaseStatus { get; set; }
     }
 }
