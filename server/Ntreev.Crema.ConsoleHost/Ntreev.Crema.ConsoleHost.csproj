@@ -136,6 +136,10 @@
       <Project>{9ed00a26-bf13-4b1f-af6e-3009c666ae15}</Project>
       <Name>Ntreev.Crema.Javascript</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Ntreev.Crema.ServiceHosts.Http\Ntreev.Crema.ServiceHosts.Http.csproj">
+      <Project>{2c7b8563-7160-4ba9-b4df-9ce407dc16d6}</Project>
+      <Name>Ntreev.Crema.ServiceHosts.Http</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Ntreev.Crema.ServiceHosts\Ntreev.Crema.ServiceHosts.csproj">
       <Project>{a7bf94f7-94a5-46ba-a756-c04bde65f47b}</Project>
       <Name>Ntreev.Crema.ServiceHosts</Name>
