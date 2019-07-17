@@ -44,7 +44,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
         public DataBaseServiceHost(ICremaHost cremaHost, int port)
             : base(cremaHost, typeof(DataBaseService), address, port)
         {
-            var binding = CreateBinding();
+            var binding = CreateNetTcpBinding();
 
             this.AddServiceEndpoint(typeof(IDataBaseService), binding, string.Empty);
             this.Description.Behaviors.Add(new InstanceProviderBehavior());

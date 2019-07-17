@@ -41,7 +41,7 @@ namespace Ntreev.Crema.ServiceHosts.Users
             : base(cremaHost, typeof(UserService), address, port)
         {
             this.cremaService = cremaService;
-            this.AddServiceEndpoint(typeof(IUserService), CreateBinding(), string.Empty);
+            this.AddServiceEndpoint(typeof(IUserService), CreateNetTcpBinding(), string.Empty);
             this.Description.Behaviors.Add(new InstanceProviderBehavior());
 
 #if DEBUG

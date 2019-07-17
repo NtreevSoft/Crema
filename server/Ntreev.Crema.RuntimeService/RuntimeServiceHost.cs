@@ -37,7 +37,7 @@ namespace Ntreev.Crema.RuntimeService
             : base(service, new Uri($"net.tcp://localhost:{port}/{nameof(RuntimeService)}"))
         {
             this.service = service;
-            this.AddServiceEndpoint(typeof(IRuntimeService), CremaServiceItemHost.CreateBinding(), string.Empty);
+            this.AddServiceEndpoint(typeof(IRuntimeService), CremaServiceItemHost.CreateNetTcpBinding(), string.Empty);
 
 #if DEBUG
             if (Environment.OSVersion.Platform != PlatformID.Unix)

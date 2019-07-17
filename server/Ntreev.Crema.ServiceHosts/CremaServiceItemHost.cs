@@ -44,6 +44,7 @@ namespace Ntreev.Crema.ServiceHosts
             this.cremaHost = cremaHost;
             this.logService = cremaHost.GetService(typeof(ILogService)) as ILogService;
             this.port = port;
+            this.Uri = new Uri(string.Format(address, port));
 #if !DEBUG
             this.DefaultInactivityTimeout = new TimeSpan(0, 1, 0);
 #else
@@ -58,6 +59,7 @@ namespace Ntreev.Crema.ServiceHosts
             this.cremaHost = cremaHost;
             this.logService = cremaHost.GetService(typeof(ILogService)) as ILogService;
             this.port = port;
+            this.Uri = new Uri(string.Format(address, port));
 #if !DEBUG
             this.DefaultInactivityTimeout = new TimeSpan(0, 1, 0);
 #else
@@ -70,12 +72,26 @@ namespace Ntreev.Crema.ServiceHosts
             get { return this.cremaHost; }
         }
 
+        public Uri Uri { get; }
+
         public abstract object CreateInstance(Message message);
 
-        public static Binding CreateBinding()
+        public static Binding CreateNetTcpBinding()
         {
             var binding = new NetTcpBinding();
             binding.Security.Mode = SecurityMode.None;
+            binding.ReceiveTimeout = TimeSpan.MaxValue;
+            binding.MaxBufferPoolSize = long.MaxValue;
+            binding.MaxBufferSize = int.MaxValue;
+            binding.MaxReceivedMessageSize = int.MaxValue;
+            binding.ReaderQuotas = XmlDictionaryReaderQuotas.Max;
+            return binding;
+        }
+
+        public static Binding CreateWebHttpBinding()
+        {
+            var binding = new WebHttpBinding();
+            binding.Security.Mode = WebHttpSecurityMode.None;
             binding.ReceiveTimeout = TimeSpan.MaxValue;
             binding.MaxBufferPoolSize = long.MaxValue;
             binding.MaxBufferSize = int.MaxValue;

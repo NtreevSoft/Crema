@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace Ntreev.Crema.ServiceHosts
 {
-    interface ICremaServiceItem
+    public interface ICremaServiceItem
     {
         void Abort(bool disconnect);
     }

@@ -25,6 +25,8 @@ using System.Xml.Serialization;
 using System.Xml;
 using Ntreev.Library.Serialization;
 using System.Xml.Schema;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Ntreev.Crema.ServiceModel
 {
