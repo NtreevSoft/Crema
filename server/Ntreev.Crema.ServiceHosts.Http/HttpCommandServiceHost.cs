@@ -1,7 +1,10 @@
-﻿using System.ComponentModel.Composition;
-using System.Web.Http.SelfHost;
+﻿using System;
+using System.ComponentModel.Composition;
+using System.Web.Http;
+using Microsoft.Owin.Hosting;
 using Ntreev.Crema.ServiceHosts.Http.Apis;
 using Ntreev.Crema.Services;
+using Owin;
 
 namespace Ntreev.Crema.ServiceHosts.Http
 {
@@ -10,7 +13,7 @@ namespace Ntreev.Crema.ServiceHosts.Http
     {
         private readonly ICremaHost cremaHost;
         private readonly CremaService cremaService;
-        private HttpSelfHostServer server = null;
+        private IDisposable server;
 
         [ImportingConstructor]
         public HttpCommandServiceHost(ICremaHost cremaHost, CremaService cremaService)
@@ -21,18 +24,21 @@ namespace Ntreev.Crema.ServiceHosts.Http
 
         public void Open(int port)
         {
-            var config = new HttpSelfHostConfiguration($"http://localhost:{port}");
-
-            config.ConfigureCrema(this.cremaHost)
-                .ConfigureCremaSwagger();
-
-            this.server = new HttpSelfHostServer(config);
-            this.server.OpenAsync().Wait();
+            this.server = WebApp.Start(new StartOptions
+            {
+                Port = port,
+            }, app =>
+            {
+                var config = new HttpConfiguration();
+                config.ConfigureCrema(this.cremaHost)
+                    .ConfigureCremaSwagger();
+                app.UseWebApi(config);
+            });
         }
 
         public void Close()
         {
-            this.server.CloseAsync().Wait();
+            this.server.Dispose();
         }
     }
 }
