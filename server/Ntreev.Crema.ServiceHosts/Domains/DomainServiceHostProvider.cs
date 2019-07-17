@@ -43,6 +43,8 @@ namespace Ntreev.Crema.ServiceHosts.Domains
             get { return nameof(DomainService); }
         }
 
+        public string Schema => "net.tcp";
+
         public ServiceHost CreateInstance(int port)
         {
             return new DomainServiceHost(this.cremaHost, port);

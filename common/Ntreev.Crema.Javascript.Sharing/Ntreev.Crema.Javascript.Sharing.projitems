@@ -18,6 +18,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBaseEventListenerHost.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBaseEventListenerContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\CremaEventListenerContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBase\GetTableDataByTagsMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\ListenerHosts\DataBases\DataBaseLockChangedEventListenerHost.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\ListenerHosts\DataBases\DataBaseAccessChangedEventListenerHost.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\ListenerHosts\DataBases\DataBaseStateChangedEventListenerHost.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Methods\ListenerHosts\Users\UserItemRenamedEventListenerHost.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\ListenerHosts\Users\UserItemCreatedEventListenerHost.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\ListenerHosts\Users\UserChangedEventListenerHost.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\ToJSONMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\RemoveDataBaseEventListenerMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\RemoveEventListenerMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\CremaEvents.cs" />

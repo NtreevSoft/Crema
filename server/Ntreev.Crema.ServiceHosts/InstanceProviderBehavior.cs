@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 
 namespace Ntreev.Crema.ServiceHosts
 {
-    class InstanceProviderBehavior : IServiceBehavior
+    public class InstanceProviderBehavior : IServiceBehavior
     {
         public void ApplyDispatchBehavior(ServiceDescription serviceDescription, ServiceHostBase serviceHostBase)
         {

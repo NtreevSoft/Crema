@@ -23,25 +23,31 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ntreev.Crema.Commands.OptionProcessor;
 
 namespace Ntreev.Crema.Commands
 {
     [Export(typeof(ICommand))]
     [CommandStaticProperty(typeof(FilterSettings))]
     [CommandStaticProperty(typeof(DataBaseSettings))]
+    [CommandStaticProperty(typeof(DataSplitSetting))]
+    [CommandStaticProperty(typeof(ReplaceSettings))]
     class GetDataCommand : CommandBase
     {
         [Import]
         private IRuntimeService service = null;
-        [ImportMany]
-        private IEnumerable<IDataSerializer> serializers = null;
+
         [Import]
         private Lazy<CommandContext> commandContext = null;
+
+        [Import]
+        private CompositionContainer container = null;
 
         public GetDataCommand()
             : base("get-data")
@@ -103,12 +109,60 @@ namespace Ntreev.Crema.Commands
 
             this.Out.WriteLine("receiving info");
             var metaData = service.GetDataGenerationData(this.Address, DataBaseSettings.DataBaseName, DataBaseSettings.Tags, FilterSettings.FilterExpression, this.Devmode, this.Revision);
+            metaData = ReplaceOptionProcessor.Process(metaData);
 
             this.Out.WriteLine("data serializing.");
-            var serializer = this.serializers.FirstOrDefault(item => item.Name == this.OutputType);
-            serializer.Serialize(this.Filename, metaData);
+            this.Serialize(metaData);
             this.Out.WriteLine("data serialized.");
         }
+
+        private void Serialize(SerializationSet metaData)
+        {
+            if (DataSplitSetting.Split)
+            {
+                this.SerializePerTable(metaData);
+            }
+            else
+            {
+                this.SerializeAll(metaData);
+            }
+        }
+
+        private void SerializeAll(SerializationSet metaData)
+        {
+            var serializer = this.GetDataSerializer(this.OutputType);
+            serializer.Serialize(this.Filename, metaData);
+        }
+
+        private void SerializePerTable(SerializationSet metaData)
+        {
+            var filteredMetaDataList = new List<SerializationSet>();
+
+            foreach (var table in metaData.Tables)
+            {
+                var filteredMetaData = metaData.Filter(table.Name);
+                filteredMetaData = ReplaceOptionProcessor.Process(filteredMetaData);
+
+                if (filteredMetaData.Tables.Any())
+                {
+                    filteredMetaDataList.Add(filteredMetaData);
+                }
+            }
+
+            foreach (var dataSet in filteredMetaDataList)
+            {
+                var filepath = Path.Combine(this.Filename, $"{dataSet.Tables[0].Name}.{DataSplitSetting.Ext}");
+                var serializer = this.GetDataSerializer(this.OutputType);
+                serializer.Serialize(filepath, dataSet);
+            }
+        }
+
+        private IDataSerializer GetDataSerializer(string outputType)
+        {
+            return this.container.GetExportedValues<IDataSerializer>()
+                .FirstOrDefault(o => o.Name == outputType);
+        }
+
 
         private TextWriter Out
         {

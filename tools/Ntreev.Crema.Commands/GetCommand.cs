@@ -29,6 +29,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ntreev.Crema.Commands.OptionProcessor;
 
 namespace Ntreev.Crema.Commands
 {
@@ -36,6 +37,7 @@ namespace Ntreev.Crema.Commands
     [CommandStaticProperty(typeof(CodeSettings))]
     [CommandStaticProperty(typeof(FilterSettings))]
     [CommandStaticProperty(typeof(DataBaseSettings))]
+    [CommandStaticProperty(typeof(ReplaceSettings))]
     class GetCommand : CommandBase
     {
         [Import]
@@ -114,6 +116,7 @@ namespace Ntreev.Crema.Commands
 
             this.Out.WriteLine("receiving info");
             var metaData = this.service.GetMetaData(this.Address, DataBaseSettings.DataBaseName, DataBaseSettings.Tags, FilterSettings.FilterExpression, CodeSettings.Devmode, this.Revision);
+            metaData = ReplaceOptionProcessor.Process(metaData);
 
             var generationSettings = new CodeGenerationSettings()
             {
@@ -137,7 +140,7 @@ namespace Ntreev.Crema.Commands
             {
                 var compiler = this.compilers.FirstOrDefault(item => item.Name == CodeSettings.LanguageType);
                 if (compiler == null)
-                    throw new InvalidOperationException($"'{CodeSettings.LanguageType}'은(는) 존재하지 언어입니다.");
+                    throw new InvalidOperationException($"'{CodeSettings.LanguageType}'은(는) 존재하지 않는 언어입니다.");
                 this.Out.WriteLine("compiling code.");
                 compiler.Compile(this.OutputPath, metaData.Item1, generationSettings, CodeSettings.BuildTarget);
                 this.Out.WriteLine("code compiled.");
@@ -147,7 +150,7 @@ namespace Ntreev.Crema.Commands
                 this.Out.WriteLine("code generating.");
                 var generator = this.generators.FirstOrDefault(item => item.Name == CodeSettings.LanguageType);
                 if (generator == null)
-                    throw new InvalidOperationException($"'{CodeSettings.LanguageType}'은(는) 존재하지 언어입니다.");
+                    throw new InvalidOperationException($"'{CodeSettings.LanguageType}'은(는) 존재하지 않는 언어입니다.");
                 generator.Generate(this.OutputPath, metaData.Item1, generationSettings);
                 this.Out.WriteLine("code generated.");
             }

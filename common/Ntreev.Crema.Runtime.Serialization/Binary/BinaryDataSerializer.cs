@@ -37,6 +37,7 @@ using System.Threading.Tasks;
 namespace Ntreev.Crema.Runtime.Serialization.Binary
 {
     [Export(typeof(IDataSerializer))]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
     class BinaryDataSerializer : IDataSerializer
     {
         public const int formatterVersion = 0;

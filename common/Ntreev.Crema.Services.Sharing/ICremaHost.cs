@@ -28,6 +28,7 @@ namespace Ntreev.Crema.Services
     {
 #if CLIENT
         Guid Open(string address, string userID, SecureString password);
+        Guid Open(string address, string dataBase, string userID, SecureString password);
 
         string Address { get; }
 

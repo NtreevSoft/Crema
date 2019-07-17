@@ -8,7 +8,7 @@
 #include "socket_istream.h"
 
 
-namespace CremaReader
+namespace CremaCode { namespace reader
 {
 	using namespace internal;
 	using namespace internal::binary;
@@ -48,27 +48,27 @@ namespace CremaReader
 		return reader;
 	}
 
-	CremaReader& CremaReader::read(const std::string& address, int port, const std::string& database, DataLocation datalocation, ReadFlag flag)
-	{
-		std::string dl;
-		switch (datalocation)
-		{
-		case DataLocation_both:
-			dl = "Both";
-			break;
-		case DataLocation_server:
-			dl = "Server";
-			break;
-		case DataLocation_client:
-			dl = "Client";
-			break;
-		default:
-			break;
-		}
-		std::ostringstream ss;
-		ss << "type=bin;data=" << dl << ";database=" << database << ";";
-		return read(address, port, ss.str(), flag);
-	}
+    CremaReader& CremaReader::read(const std::string& address, int port, const std::string& database, DataLocation datalocation, ReadFlag flag)
+    {
+        std::string dl;
+        switch (datalocation)
+        {
+        case DataLocation_both:
+            dl = "All";
+            break;
+        case DataLocation_server:
+            dl = "Server";
+            break;
+        case DataLocation_client:
+            dl = "Client";
+            break;
+        default:
+            break;
+        }
+        std::ostringstream ss;
+        ss << "type=bin;tags=" << dl << ";database=" << database << ";" << "devmode=True;";
+        return read(address, port, ss.str(), flag);
+    }
 #endif
 
 	CremaReader& CremaReader::read(std::istream& stream, ReadFlag flag)
@@ -106,4 +106,5 @@ namespace CremaReader
 		reader.m_stream = stream;
 		return reader;
 	}
-} /*namespace CremaReader*/
+} /*namespace CremaCode*/ } /*namespace reader*/
+

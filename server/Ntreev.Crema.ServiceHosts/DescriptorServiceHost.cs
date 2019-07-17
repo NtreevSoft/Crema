@@ -35,7 +35,7 @@ namespace Ntreev.Crema.ServiceHosts
         public DescriptorServiceHost(ICremaHost cremaHost, DescriptorService service, int port)
             : base(service, new Uri($"net.tcp://localhost:{port}/DescriptorService"))
         {
-            var binding = CremaServiceItemHost.CreateBinding();
+            var binding = CremaServiceItemHost.CreateNetTcpBinding();
 
             this.service = service;
             this.AddServiceEndpoint(typeof(IDescriptorService), binding, string.Empty);
