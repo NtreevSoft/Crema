@@ -38,9 +38,9 @@ namespace Ntreev.Crema.Client.Users.BrowserItems.ViewModels
 {
     [Export(typeof(IBrowserItem))]
     [Export(typeof(UserBrowserViewModel))]
-    [ParentType("Ntreev.Crema.Client.Tables.IBrowserService, Ntreev.Crema.Client.Tables, Version=3.6.0.0, Culture=neutral, PublicKeyToken=null")]
-    [ParentType("Ntreev.Crema.Client.Types.IBrowserService, Ntreev.Crema.Client.Types, Version=3.6.0.0, Culture=neutral, PublicKeyToken=null")]
-    [ParentType("Ntreev.Crema.Client.Base.IBrowserService, Ntreev.Crema.Client.Base, Version=3.6.0.0, Culture=neutral, PublicKeyToken=null")]
+    [ParentType("Ntreev.Crema.Client.Tables.IBrowserService, Ntreev.Crema.Client.Tables, Version=3.7.0.0, Culture=neutral, PublicKeyToken=null")]
+    [ParentType("Ntreev.Crema.Client.Types.IBrowserService, Ntreev.Crema.Client.Types, Version=3.7.0.0, Culture=neutral, PublicKeyToken=null")]
+    [ParentType("Ntreev.Crema.Client.Base.IBrowserService, Ntreev.Crema.Client.Base, Version=3.7.0.0, Culture=neutral, PublicKeyToken=null")]
     class UserBrowserViewModel : TreeViewBase, IBrowserItem
     {
         private readonly ICremaAppHost cremaAppHost;

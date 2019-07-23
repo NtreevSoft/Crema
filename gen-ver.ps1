@@ -1,5 +1,5 @@
 $majorVersion=3
-$minorVersion=6
+$minorVersion=7
 $assemblyFilePath = ".\common\Ntreev.Crema.AssemblyInfo\AssemblyInfo.cs"
 
 $assemblyPath = Join-Path (Split-Path $myInvocation.MyCommand.Definition) $assemblyFilePath -Resolve

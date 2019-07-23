@@ -31,7 +31,7 @@ using System.Threading.Tasks;
 namespace Ntreev.Crema.Client.Converters.ToolBarItems
 {
     [Export(typeof(IToolBarItem))]
-    [ParentType("Ntreev.Crema.Client.Base.Dialogs.ViewModels.LogViewModel, Ntreev.Crema.Client.Base, Version=3.6.0.0, Culture=neutral, PublicKeyToken=null")]
+    [ParentType("Ntreev.Crema.Client.Base.Dialogs.ViewModels.LogViewModel, Ntreev.Crema.Client.Base, Version=3.7.0.0, Culture=neutral, PublicKeyToken=null")]
     class ExportRevisionDataBaseToolBarItem : ToolBarItemBase
     {
         [Import]

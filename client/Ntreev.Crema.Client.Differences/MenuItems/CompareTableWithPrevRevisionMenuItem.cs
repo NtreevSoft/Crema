@@ -34,7 +34,7 @@ using System.Threading.Tasks;
 namespace Ntreev.Crema.Client.Differences.MenuItems
 {
     [Export(typeof(IMenuItem))]
-    [ParentType("Ntreev.Crema.Client.Tables.BrowserItems.ViewModels.TableTreeViewItemViewModel, Ntreev.Crema.Client.Tables, Version=3.6.0.0, Culture=neutral, PublicKeyToken=null")]
+    [ParentType("Ntreev.Crema.Client.Tables.BrowserItems.ViewModels.TableTreeViewItemViewModel, Ntreev.Crema.Client.Tables, Version=3.7.0.0, Culture=neutral, PublicKeyToken=null")]
     class CompareTableWithPrevRevisionMenuItem : MenuItemBase
     {
         [Import]
