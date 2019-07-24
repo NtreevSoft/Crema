@@ -42,12 +42,12 @@ namespace Ntreev.Crema.Javascript.Methods.Domain
             return new Func<string, string, bool>(this.ContainsDomainUser);
         }
 
-        private bool ContainsDomainUser(string domainID, string userID)
+        private bool ContainsDomainUser(string domainID, string token)
         {
             var domain = this.GetDomain(domainID);
             return domain.Dispatcher.Invoke(() =>
             {
-                return domain.Users.Contains(userID);
+                return domain.Users.Contains(Guid.Parse(token));
             });
         }
     }

@@ -274,17 +274,17 @@ namespace Ntreev.Crema.Services.Domains
             }
         }
 
-        public DomainUserInfo Kick(Authentication authentication, string userID, string comment)
+        public DomainUserInfo Kick(Authentication authentication, string userID, Guid token, string comment)
         {
             try
             {
                 this.dispatcher.VerifyAccess();
                 this.CremaHost.DebugMethod(authentication, this, nameof(Kick), base.DomainInfo.ItemPath, base.DomainInfo.ItemType, userID, comment);
-                this.ValidateKick(authentication, userID, comment);
+                this.ValidateKick(authentication, userID, token, comment);
                 this.Sign(authentication);
-                this.domainLogger.Kick(authentication, userID, comment);
-                this.InvokeKick(authentication, userID, comment, out var domainUser, out var removeInfo);
-                this.users.Remove(userID);
+                this.domainLogger.Kick(authentication, userID, token, comment);
+                this.InvokeKick(authentication, userID, token, comment, out var domainUser, out var removeInfo);
+                this.users.Remove(token);
                 this.domainLogger.Complete();
                 this.OnUserRemoved(new DomainUserRemovedEventArgs(authentication, this, domainUser, removeInfo));
                 this.Container.InvokeDomainUserRemovedEvent(authentication, this, domainUser, removeInfo);
@@ -297,16 +297,16 @@ namespace Ntreev.Crema.Services.Domains
             }
         }
 
-        public void SetOwner(Authentication authentication, string userID)
+        public void SetOwner(Authentication authentication, string userID, Guid token)
         {
             try
             {
                 this.dispatcher.VerifyAccess();
                 this.CremaHost.DebugMethod(authentication, this, nameof(SetOwner), base.DomainInfo.ItemPath, base.DomainInfo.ItemType, userID);
-                this.ValidateSetOwner(authentication, userID);
+                this.ValidateSetOwner(authentication, userID, token);
                 this.Sign(authentication);
-                this.domainLogger.SetOwner(authentication, userID);
-                this.InvokeSetOwner(authentication, userID, out var oldOwner, out var newOwner);
+                this.domainLogger.SetOwner(authentication, userID, token);
+                this.InvokeSetOwner(authentication, userID, token, out var oldOwner, out var newOwner);
                 this.users.Owner = newOwner;
                 this.domainLogger.Complete();
                 if (oldOwner != null)
@@ -338,7 +338,7 @@ namespace Ntreev.Crema.Services.Domains
                     DomainState = base.DomainState,
                 };
 
-                if (this.users.Contains(authentication.ID) == true)
+                if (this.users.Contains(authentication.Token) == true)
                 {
                     if (this.data == null)
                         this.data = this.SerializeSource();
@@ -481,7 +481,7 @@ namespace Ntreev.Crema.Services.Domains
                 this.Sign(authentication);
                 this.domainLogger.Disjoin(authentication, RemoveInfo.Empty);
                 this.InvokeRemoveUser(authentication, out var domainUser, out var isMaster);
-                this.users.Remove(authentication.ID);
+                this.users.Remove(authentication.Token);
                 this.domainLogger.Complete();
                 this.OnUserRemoved(new DomainUserRemovedEventArgs(authentication, this, domainUser, RemoveInfo.Empty));
                 this.Container.InvokeDomainUserRemovedEvent(authentication, this, domainUser, RemoveInfo.Empty);
@@ -817,7 +817,7 @@ namespace Ntreev.Crema.Services.Domains
 
         private void ValidateDelete(Authentication authentication, bool isCanceled)
         {
-            var isOwner = this.users.OwnerUserID == authentication.ID;
+            var isOwner = this.users.OwnerToken == authentication.Token;
             if (authentication.IsAdmin == false && isOwner == false)
                 throw new PermissionDeniedException();
             if (this.Host is IDomainHost domainHost)
@@ -826,7 +826,7 @@ namespace Ntreev.Crema.Services.Domains
 
         private void ValidateAdd(Authentication authentication)
         {
-            if (this.users.Contains(authentication.ID) == true)
+            if (this.users.Contains(authentication.Token) == true)
                 throw new NotImplementedException();
         }
 
@@ -887,26 +887,26 @@ namespace Ntreev.Crema.Services.Domains
             var domainUser = this.GetDomainUser(authentication);
         }
 
-        private void ValidateKick(Authentication authentication, string userID, string comment)
+        private void ValidateKick(Authentication authentication, string userID, Guid token, string comment)
         {
             if (userID == null)
                 throw new ArgumentNullException(nameof(userID));
-            if (this.users.ContainsKey(userID) == false)
+            if (this.users.ContainsKey(token) == false)
                 throw new ArgumentException(string.Format(Resources.Exception_UserIsNotInDomain_Format, userID), nameof(userID));
 
             if (authentication.ID == userID)
                 throw new ArgumentException(Resources.Exception_CannotKickYourself, nameof(userID));
 
-            var domainUser = this.users[userID];
+            var domainUser = (DomainUser)this.users[token];
             if (domainUser.IsOwner == true)
                 throw new PermissionDeniedException(Resources.Exception_OwnerCannotKicked);
         }
 
-        private void ValidateSetOwner(Authentication authentication, string userID)
+        private void ValidateSetOwner(Authentication authentication, string userID, Guid token)
         {
             if (userID == null)
                 throw new ArgumentNullException(nameof(userID));
-            if (this.users.ContainsKey(userID) == false)
+            if (this.users.ContainsKey(token) == false)
                 throw new ArgumentException(string.Format(Resources.Exception_UserIsNotInDomain_Format, userID), nameof(userID));
         }
 
@@ -915,8 +915,8 @@ namespace Ntreev.Crema.Services.Domains
             if (this.dispatcher == null)
                 throw new NotImplementedException();
 
-            if (this.Users.Contains(authentication.ID) == false)
-                throw new UserNotFoundException(authentication.ID);
+            if (this.Users.Contains(authentication.Token) == false)
+                throw new UserNotFoundException($"{authentication.ID} - {authentication.Token}");
         }
 
         private void InvokeBeginUserEdit(Authentication authentication, DomainLocationInfo location, out DomainUser domainUser)
@@ -971,10 +971,10 @@ namespace Ntreev.Crema.Services.Domains
             domainUser.Location = location;
         }
 
-        private void InvokeKick(Authentication authentication, string userID, string comment, out DomainUser domainUser, out RemoveInfo removeInfo)
+        private void InvokeKick(Authentication authentication, string userID, Guid token, string comment, out DomainUser domainUser, out RemoveInfo removeInfo)
         {
             removeInfo = new RemoveInfo(RemoveReason.Kick, comment);
-            domainUser = this.users[userID];
+            domainUser = (DomainUser)this.users[token];
             if (domainUser.Authentication != null)
             {
                 domainUser.Authentication.Expired -= Authentication_Expired;
@@ -982,15 +982,15 @@ namespace Ntreev.Crema.Services.Domains
             }
         }
 
-        private void InvokeSetOwner(Authentication authentication, string userID, out DomainUser oldOwner, out DomainUser newOwner)
+        private void InvokeSetOwner(Authentication authentication, string userID, Guid token, out DomainUser oldOwner, out DomainUser newOwner)
         {
             oldOwner = this.users.Owner;
-            newOwner = this.users[userID];
+            newOwner = (DomainUser)this.users[token];
         }
 
         private void InvokeAttach(Authentication authentication, out DomainUser domainUser)
         {
-            domainUser = this.users[authentication.ID];
+            domainUser = (DomainUser)this.users[authentication.Token];
             domainUser.IsOnline = true;
             domainUser.Authentication = authentication;
             authentication.Expired += Authentication_Expired;
@@ -998,7 +998,7 @@ namespace Ntreev.Crema.Services.Domains
 
         private void InvokeDetach(Authentication authentication, out DomainUser domainUser)
         {
-            domainUser = this.users[authentication.ID];
+            domainUser = (DomainUser)this.users[authentication.Token];
             domainUser.IsOnline = false;
             if (domainUser.Authentication != null)
             {
@@ -1009,7 +1009,7 @@ namespace Ntreev.Crema.Services.Domains
 
         private void InvokeAddUser(Authentication authentication, DomainAccessType accessType, out DomainUser domainUser)
         {
-            domainUser = new DomainUser(this, authentication.ID, authentication.Name, accessType)
+            domainUser = new DomainUser(this, authentication.ID, authentication.Name, authentication.Token, accessType)
             {
                 IsOnline = authentication.Types.HasFlag(AuthenticationType.User),
             };
@@ -1030,10 +1030,10 @@ namespace Ntreev.Crema.Services.Domains
             if (this.dispatcher == null)
                 throw new NotImplementedException();
 
-            if (this.Users.Contains(authentication.ID) == false)
-                throw new UserNotFoundException(authentication.ID);
+            if (this.Users.Contains(authentication.Token) == false)
+                throw new UserNotFoundException(authentication.ID, authentication.Token);
 
-            return this.Users[authentication.ID];
+            return (DomainUser)this.Users[authentication.Token];
         }
 
         private DateTime GetTime()
@@ -1041,12 +1041,7 @@ namespace Ntreev.Crema.Services.Domains
             return DateTime.UtcNow;
         }
 
-        private void Sign(Authentication authentication)
-        {
-            this.Sign(authentication, false);
-        }
-
-        private void Sign(Authentication authentication, bool defaultProvider)
+        private void Sign(Authentication authentication, bool defaultProvider = false)
         {
             if (defaultProvider == false)
             {
@@ -1097,7 +1092,7 @@ namespace Ntreev.Crema.Services.Domains
 
             foreach (var item in users)
             {
-                this.users.Add(new DomainUser(this, item.UserID, item.UserName, item.AccessType));
+                this.users.Add(new DomainUser(this, item.UserID, item.UserName, item.Token, item.AccessType));
             }
         }
 

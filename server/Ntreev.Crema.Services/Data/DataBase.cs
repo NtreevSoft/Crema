@@ -1111,7 +1111,7 @@ namespace Ntreev.Crema.Services.Data
             {
                 item.Dispatcher.Invoke(() =>
                 {
-                    if (item.Users.Contains(authentication.ID) == true)
+                    if (item.Users.Contains(authentication.Token) == true)
                         item.Attach(authentication);
                 });
             }
@@ -1145,9 +1145,9 @@ namespace Ntreev.Crema.Services.Data
             {
                 item.Dispatcher.Invoke(() =>
                 {
-                    if (item.Users.Contains(authentication.ID) == true)
+                    if (item.Users.Contains(authentication.Token) == true)
                     {
-                        var user = item.Users[authentication.ID];
+                        var user = (DomainUser)item.Users[authentication.Token];
                         if (user.IsOnline == true)
                         {
                             item.Detach(authentication);

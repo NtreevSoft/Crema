@@ -35,7 +35,7 @@ namespace Ntreev.Crema.Services
         internal static string AdminName = "Administrator";
 
         private IAuthenticationProvider provider;
-        private readonly Guid token;
+        private Guid token;
         private SignatureDate signatureDate;
         private EventHandler expired;
         private bool isExpired;
@@ -86,7 +86,7 @@ namespace Ntreev.Crema.Services
 
         public override string ToString()
         {
-            return $"{this.provider.ID}({this.provider.Name})";
+            return $"{this.provider.ID}({this.provider.Name}) - {this.token}";
         }
 
         public string ID
@@ -97,6 +97,12 @@ namespace Ntreev.Crema.Services
         public string Name
         {
             get { return this.provider.Name; }
+        }
+
+        public Guid Token
+        {
+            get => this.token;
+            internal set { this.token = value; }
         }
 
         public Authority Authority

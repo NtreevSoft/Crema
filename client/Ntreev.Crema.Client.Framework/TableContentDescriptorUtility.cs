@@ -45,7 +45,7 @@ namespace Ntreev.Crema.Client.Framework
                 });
                 var isEntered = await domain.Dispatcher.InvokeAsync(() =>
                 {
-                    return domain.Users.Contains(authentication.ID);
+                    return domain.Users.Contains(authentication.Token);
                 });
                 await content.Dispatcher.InvokeAsync(() =>
                 {

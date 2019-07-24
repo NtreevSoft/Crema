@@ -45,9 +45,9 @@ namespace Ntreev.Crema.Services
 
         void SetUserLocation(Authentication authentication, DomainLocationInfo location);
 
-        DomainUserInfo Kick(Authentication authentication, string userID, string comment);
+        DomainUserInfo Kick(Authentication authentication, string userID, Guid token, string comment);
 
-        void SetOwner(Authentication authentication, string userID);
+        void SetOwner(Authentication authentication, string userID, Guid token);
 
         Guid ID { get; }
 

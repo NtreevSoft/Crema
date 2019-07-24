@@ -33,6 +33,7 @@ namespace Ntreev.Crema.Services
         string Address { get; }
 
         string UserID { get; }
+        Guid Token { get; }
 
         Authority Authority { get; }
 

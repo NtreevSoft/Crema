@@ -47,7 +47,7 @@ namespace Ntreev.Crema.Javascript.Methods.Domain
             var domain = this.GetDomain(domainID);
             return domain.Dispatcher.Invoke(() =>
             {
-                return domain.Users.Select(item => item.ID).ToArray();
+                return domain.Users.Select(item => item.DomainUserInfo.UserID).ToArray();
             });
         }
     }

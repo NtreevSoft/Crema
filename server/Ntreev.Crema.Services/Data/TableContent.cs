@@ -182,7 +182,7 @@ namespace Ntreev.Crema.Services.Data
                 throw new NotImplementedException();
             this.domain.Dispatcher?.Invoke(() =>
             {
-                var isOwner = this.domain.Users.OwnerUserID == authentication.ID;
+                var isOwner = this.domain.Users.OwnerToken == authentication.Token;
                 if (isAdmin == false && isOwner == false)
                     throw new NotImplementedException();
             });
@@ -225,7 +225,7 @@ namespace Ntreev.Crema.Services.Data
                 throw new NotImplementedException();
             this.domain.Dispatcher.Invoke(() =>
             {
-                if (isAdmin == false && this.domain.Users.Owner.ID != authentication.ID)
+                if (isAdmin == false && this.domain.Users.OwnerToken != authentication.Token)
                     throw new NotImplementedException();
             });
 

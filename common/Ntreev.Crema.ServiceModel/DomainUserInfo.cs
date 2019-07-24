@@ -38,6 +38,9 @@ namespace Ntreev.Crema.ServiceModel
         public string UserName { get; set; }
 
         [XmlElement]
+        public Guid Token { get; set; }
+
+        [XmlElement]
         public DomainLocationInfo Location { get; set; }
 
         [XmlElement]

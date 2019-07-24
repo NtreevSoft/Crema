@@ -254,7 +254,7 @@ namespace Ntreev.Crema.Client.Framework.Controls
                     {
                         if (item.Location.ColumnName == this.FieldName)
                         {
-                            if (item.UserID == this.parentRow.UserID)
+                            if (item.Token == this.parentRow.UserToken)
                                 this.users.Insert(0, item);
                             else
                                 this.users.Add(item);
@@ -268,7 +268,7 @@ namespace Ntreev.Crema.Client.Framework.Controls
                     {
                         if (item.Location.ColumnName == this.FieldName)
                         {
-                            this.users.Remove(item.UserID);
+                            this.users.Remove(item.Token);
                         }
                     }
                 }
@@ -284,7 +284,7 @@ namespace Ntreev.Crema.Client.Framework.Controls
                     var domainUser = this.users.First();
                     this.UserBrush = domainUser.Background;
                     this.HasUser = true;
-                    this.IsUserEditing = domainUser.UserID == this.parentRow.UserID ? false : domainUser.IsBeingEdited;
+                    this.IsUserEditing = domainUser.Token != this.parentRow.UserToken && domainUser.IsBeingEdited;
                     if (this.users.Count == 1 && domainUser.UserID == this.parentRow.UserID)
                         this.IsClientAlone = true;
                     else

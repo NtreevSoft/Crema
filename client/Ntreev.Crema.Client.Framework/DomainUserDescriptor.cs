@@ -79,6 +79,8 @@ namespace Ntreev.Crema.Client.Framework
         [DescriptorProperty]
         public string UserID => this.domainUserInfo.UserID;
 
+        [DescriptorProperty] public Guid Token => this.domainUserInfo.Token;
+
         [DescriptorProperty]
         public string DisplayName => this.domainUserInfo.UserID + " [" + this.domainUserInfo.UserName + "]";
 

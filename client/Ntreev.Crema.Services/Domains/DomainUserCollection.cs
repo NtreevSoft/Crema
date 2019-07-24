@@ -15,6 +15,7 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using System;
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Library.ObjectModel;
 using System.Collections;
@@ -22,11 +23,10 @@ using System.Collections.Generic;
 
 namespace Ntreev.Crema.Services.Domains
 {
-    class DomainUserCollection : ContainerBase<DomainUser>, IDomainUserCollection
+    class DomainUserCollection : ContainerBase<Guid, DomainUser>, IDomainUserCollection
     {
         private readonly Domain domain;
         private DomainUser owner;
-        private string ownerUserID;
 
         public DomainUserCollection(Domain domain)
         {
@@ -35,19 +35,26 @@ namespace Ntreev.Crema.Services.Domains
 
         public void Add(DomainUser domainUser)
         {
-            this.AddBase(domainUser.ID, domainUser);
+            if (domainUser.Token == Guid.Empty)
+            {
+                throw new ArgumentException(nameof(domainUser.Token));
+            }
+
+            this.AddBase(domainUser.Token, domainUser);
         }
 
-        public void Remove(string userID)
+        public void Remove(Guid token)
         {
-            this.RemoveBase(userID);
+            this.RemoveBase(token);
         }
 
-        public bool Contains(string userID)
+        public bool Contains(Guid token)
         {
             this.Dispatcher.VerifyAccess();
-            return base.ContainsKey(userID);
+            return base.ContainsKey(token);
         }
+
+        public IDomainUser this[Guid token] => base[token];
 
         public DomainUser Owner
         {
@@ -61,16 +68,13 @@ namespace Ntreev.Crema.Services.Domains
                 this.owner = value;
                 if (this.owner != null)
                 {
-                    this.ownerUserID = this.owner.ID;
+                    this.OwnerToken = value.Token;
                     this.owner.IsOwner = true;
                 }
             }
         }
 
-        public string OwnerUserID
-        {
-            get { return this.ownerUserID; }
-        }
+        public Guid OwnerToken { get; private set; }
 
         public CremaDispatcher Dispatcher
         {
@@ -78,15 +82,6 @@ namespace Ntreev.Crema.Services.Domains
         }
 
         #region IDomainUserCollection
-
-        IDomainUser IDomainUserCollection.this[string userID]
-        {
-            get
-            {
-                this.Dispatcher.VerifyAccess();
-                return this[userID];
-            }
-        }
 
         IDomainUser IDomainUserCollection.Owner
         {

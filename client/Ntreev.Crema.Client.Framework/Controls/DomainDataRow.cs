@@ -117,6 +117,7 @@ namespace Ntreev.Crema.Client.Framework.Controls
                         if (this.domain.GetService(typeof(ICremaHost)) is ICremaHost cremaHost)
                         {
                             this.userID = cremaHost.UserID;
+                            this.UserToken = cremaHost.Token;
                         }
                     });
                 }
@@ -202,7 +203,7 @@ namespace Ntreev.Crema.Client.Framework.Controls
                 }
                 else
                 {
-                    this.userInfos.Remove(domainUserInfo.UserID);
+                    this.userInfos.Remove(domainUserInfo.Token);
                 }
             });
         }
@@ -212,7 +213,7 @@ namespace Ntreev.Crema.Client.Framework.Controls
             var domainUserInfo = e.DomainUserInfo;
             await this.Dispatcher.InvokeAsync(() =>
             {
-                this.userInfos.Remove(domainUserInfo.UserID);
+                this.userInfos.Remove(domainUserInfo.Token);
             });
         }
 
@@ -259,5 +260,7 @@ namespace Ntreev.Crema.Client.Framework.Controls
         {
             get { return this.userID; }
         }
+
+        internal Guid UserToken { get; private set; }
     }
 }

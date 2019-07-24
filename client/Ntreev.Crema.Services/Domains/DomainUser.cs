@@ -53,13 +53,15 @@ namespace Ntreev.Crema.Services.Domains
 
         public void Kick(Authentication authentication, string comment)
         {
-            this.domain.Kick(authentication, base.DomainUserInfo.UserID, comment);
+            this.domain.Kick(authentication, base.DomainUserInfo.UserID, base.DomainUserInfo.Token, comment);
         }
 
         public void SetOwner(Authentication authentication)
         {
-            this.domain.SetOwner(authentication, base.DomainUserInfo.UserID);
+            this.domain.SetOwner(authentication, base.DomainUserInfo.UserID, base.DomainUserInfo.Token);
         }
+
+        public Guid Token => this.DomainUserInfo.Token;
 
         public DomainUserMetaData GetMetaData(Authentication authentication)
         {

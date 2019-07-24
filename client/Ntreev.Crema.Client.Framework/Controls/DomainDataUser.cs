@@ -32,6 +32,7 @@ namespace Ntreev.Crema.Client.Framework.Controls
         {
             this.UserID = domainUserInfo.UserID;
             this.UserName = domainUserInfo.UserName;
+            this.Token = domainUserInfo.Token;
             this.Location = domainUserInfo.Location;
             this.IsBeingEdited = domainUserState.HasFlag(DomainUserState.IsBeingEdited);
             this.Background = new SolidColorBrush(domainUserInfo.GetColor());
@@ -40,6 +41,8 @@ namespace Ntreev.Crema.Client.Framework.Controls
         public string UserID { get; set; }
 
         public string UserName { get; set; }
+
+        public Guid Token { get; set; }
 
         public DomainLocationInfo Location { get; set; }
 

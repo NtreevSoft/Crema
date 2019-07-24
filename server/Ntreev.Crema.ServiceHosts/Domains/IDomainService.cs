@@ -63,10 +63,10 @@ namespace Ntreev.Crema.ServiceHosts.Domains
         ResultBase EndUserEdit(Guid domainID);
 
         [OperationContract]
-        ResultBase<DomainUserInfo> Kick(Guid domainID, string userID, string comment);
+        ResultBase<DomainUserInfo> Kick(Guid domainID, string userID, Guid token, string comment);
 
         [OperationContract]
-        ResultBase SetOwner(Guid domainID, string userID);
+        ResultBase SetOwner(Guid domainID, string userID, Guid token);
 
         [OperationContract]
         ResultBase DeleteDomain(Guid domainID, bool force);

@@ -80,6 +80,7 @@ namespace Ntreev.Crema.ServiceHosts.Users
                     });
 
                     this.OwnerID = this.authentication.ID;
+                    this.OwnerToken = this.authentication.Token;
                     this.AttachEventHandlers();
                     this.logService.Debug($"[{this.OwnerID}] {nameof(UserService)} {nameof(Subscribe)}");
 

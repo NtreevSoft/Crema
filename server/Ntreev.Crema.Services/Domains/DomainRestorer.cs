@@ -227,11 +227,11 @@ namespace Ntreev.Crema.Services.Domains
                         }
                         else if (item is KickAction kickAction)
                         {
-                            this.domain.Kick(authentication, kickAction.TargetID, kickAction.Comment);
+                            this.domain.Kick(authentication, kickAction.TargetID, kickAction.TargetToken, kickAction.Comment);
                         }
                         else if (item is SetOwnerAction setOwnerAction)
                         {
-                            this.domain.SetOwner(authentication, setOwnerAction.TargetID);
+                            this.domain.SetOwner(authentication, setOwnerAction.TargetID, setOwnerAction.TargetToken);
                         }
                         else
                         {

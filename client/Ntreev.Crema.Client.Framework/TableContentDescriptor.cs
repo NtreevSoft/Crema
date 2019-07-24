@@ -169,10 +169,10 @@ namespace Ntreev.Crema.Client.Framework
 
         private void Domain_UserRemoved(object sender, DomainUserRemovedEventArgs e)
         {
-            var domainUserID = e.DomainUserInfo.UserID;
+            var domainUserToken = e.DomainUserInfo.Token;
             var removeInfo = e.RemoveInfo;
             var userID = e.UserID;
-            if (domainUserID == this.authentication.ID && removeInfo.Reason == RemoveReason.Kick)
+            if (domainUserToken == this.authentication.Token && removeInfo.Reason == RemoveReason.Kick)
             {
                 this.accessType = DomainAccessType.None;
                 this.Dispatcher.InvokeAsync(async () =>

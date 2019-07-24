@@ -65,7 +65,7 @@ namespace Ntreev.Crema.Services
 
         public override string ToString()
         {
-            return $"{this.provider.ID}({this.provider.Name})";
+            return $"{this.provider.ID}({this.provider.Name}) - {this.token}";
         }
 
         public Authentication BeginCommission()
@@ -151,7 +151,7 @@ namespace Ntreev.Crema.Services
             }
         }
 
-        internal Guid Token
+        public Guid Token
         {
             get { return this.token; }
         }

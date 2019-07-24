@@ -414,7 +414,7 @@ namespace Ntreev.Crema.Commands.Consoles
             var table = this.GetTable(tableName);
             var template = table.Dispatcher.Invoke(() => table.Template);
             var domain = template.Dispatcher.Invoke(() => template.Domain);
-            var contains = domain == null ? false : domain.Dispatcher.Invoke(() => domain.Users.Contains(authentication.ID));
+            var contains = domain == null ? false : domain.Dispatcher.Invoke(() => domain.Users.Contains(authentication.Token));
 
             template.Dispatcher.Invoke(() =>
             {
@@ -456,7 +456,7 @@ namespace Ntreev.Crema.Commands.Consoles
                     content.BeginEdit(authentication);
                 return content.Domain;
             });
-            var contains = domain.Dispatcher.Invoke(() => domain.Users.Contains(authentication.ID));
+            var contains = domain.Dispatcher.Invoke(() => domain.Users.Contains(authentication.Token));
             content.Dispatcher.Invoke(() =>
             {
                 if (contains == false)
@@ -512,7 +512,7 @@ namespace Ntreev.Crema.Commands.Consoles
 
         private void Domain_UserRemoved(object sender, DomainUserRemovedEventArgs e)
         {
-            if (sender is IDomain domain && e.RemoveInfo.Reason == RemoveReason.Kick && e.DomainUserInfo.UserID == this.CommandContext.UserID)
+            if (sender is IDomain domain && e.RemoveInfo.Reason == RemoveReason.Kick && e.DomainUserInfo.Token == this.CommandContext.Token)
             {
                 domain.UserRemoved -= Domain_UserRemoved;
                 this.CommandContext.Category = null;

@@ -139,7 +139,7 @@ namespace Ntreev.Crema.Commands.Consoles
             var template = type.Dispatcher.Invoke(() => type.Template);
             var domain = template.Dispatcher.Invoke(() => template.Domain);
             var authentication = this.CommandContext.GetAuthentication(this);
-            var contains = domain == null ? false : domain.Dispatcher.Invoke(() => domain.Users.Contains(authentication.ID));
+            var contains = domain == null ? false : domain.Dispatcher.Invoke(() => domain.Users.Contains(authentication.Token));
 
             template.Dispatcher.Invoke(() =>
             {

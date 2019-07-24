@@ -241,7 +241,8 @@ namespace Ntreev.Crema.Client.Types
 
                 foreach (var item in domains)
                 {
-                    if (item.Users.Contains(this.authenticator.ID) == false)
+                    var users = item.Users.Select(o => o.DomainUserInfo.UserID);
+                    if (users.Contains(this.authenticator.ID) == false)
                         continue;
 
                     var itemPath = item.DomainInfo.ItemPath;

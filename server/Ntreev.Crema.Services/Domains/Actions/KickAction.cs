@@ -31,6 +31,9 @@ namespace Ntreev.Crema.Services.Domains.Actions
         public string TargetID { get; set; }
 
         [DataMember]
+        public Guid TargetToken { get; set; }
+
+        [DataMember]
         public string Comment { get; set; }
     }
 }

@@ -23,9 +23,9 @@ namespace Ntreev.Crema.Services
 {
     public interface IDomainUserCollection : IEnumerable<IDomainUser>
     {
-        bool Contains(string userID);
+        bool Contains(Guid token);
 
-        IDomainUser this[string userID] { get; }
+        IDomainUser this[Guid token] { get; }
 
         int Count { get; }
 

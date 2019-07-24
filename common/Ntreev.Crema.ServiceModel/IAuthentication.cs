@@ -32,6 +32,8 @@ namespace Ntreev.Crema.ServiceModel
 
         string Name { get; }
 
+        Guid Token { get; }
+
         SignatureDate SignatureDate { get; }
 
         bool IsAdmin { get; }

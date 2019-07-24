@@ -32,5 +32,11 @@ namespace Ntreev.Crema.ServiceModel
         {
             
         }
+
+        public UserNotFoundException(string userID, Guid token)
+            : base(string.Format(Resources.Exception_UserNotFound_Format, $"{userID} - {token}"))
+        {
+
+        }
     }
 }

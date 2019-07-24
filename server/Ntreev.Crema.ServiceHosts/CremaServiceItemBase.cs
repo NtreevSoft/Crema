@@ -50,12 +50,34 @@ namespace Ntreev.Crema.ServiceHosts
 
         public event EventHandler Disposed;
 
+        protected void InvokeEvent(Guid userToken, Guid exceptionUserToken, Action action)
+        {
+            CremaService.Dispatcher?.InvokeAsync(() =>
+            {
+                if (this.sessionID == null) return;
+                if (userToken == exceptionUserToken) return;
+
+                if (this.channel != null)
+                {
+                    try
+                    {
+                        action();
+                    }
+                    catch (Exception e)
+                    {
+                        this.logService.Error(e);
+                    }
+                }
+            });
+        }
+
         protected void InvokeEvent(string userID, string exceptionUserID, Action action)
         {
             CremaService.Dispatcher?.InvokeAsync(() =>
             {
-                if (this.sessionID == null || (userID != null && userID == exceptionUserID))
-                    return;
+                if (this.sessionID == null) return;
+                if (userID != null && userID == exceptionUserID) return;
+
                 if (this.channel != null)
                 {
                     try
@@ -87,6 +109,8 @@ namespace Ntreev.Crema.ServiceHosts
             get { return this.ownerID; }
             set { this.ownerID = value; }
         }
+
+        protected Guid OwnerToken { get; set; }
 
 
 

@@ -214,12 +214,13 @@ namespace Ntreev.Crema.Services
             this.plugins = this.container.GetService(typeof(IEnumerable<IPlugin>)) as IEnumerable<IPlugin>;
             foreach (var item in this.plugins)
             {
-                var authentication = new Authentication(new AuthenticationProvider(user), item.ID);
+                var authentication = new Authentication(new AuthenticationProvider(user), UserContext.AuthenticationToken);
                 this.authentications.Add(authentication);
                 item.Initialize(authentication);
             }
 
             this.OnOpened(EventArgs.Empty);
+            this.token = UserContext.AuthenticationToken;
             this.token = Guid.NewGuid();
             CremaLog.Info($"Crema opened : {address} {userID}");
             return token;
@@ -339,6 +340,8 @@ namespace Ntreev.Crema.Services
         {
             get { return this.userID; }
         }
+
+        public Guid Token => this.token;
 
         public Authority Authority
         {

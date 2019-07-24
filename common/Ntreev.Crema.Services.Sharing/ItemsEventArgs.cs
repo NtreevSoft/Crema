@@ -46,6 +46,7 @@ namespace Ntreev.Crema.Services
             if (items == null)
                 throw new ArgumentNullException(nameof(items));
             this.signatureDate = authentication.SignatureDate;
+            this.UserToken = authentication.Token;
             this.items = items.ToArray();
             this.metaData = metaData;
         }
@@ -54,6 +55,8 @@ namespace Ntreev.Crema.Services
         {
             get { return this.signatureDate.ID; }
         }
+
+        public Guid UserToken { get; }
 
         public SignatureDate SignatureDate
         {

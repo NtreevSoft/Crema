@@ -33,7 +33,7 @@ namespace Ntreev.Crema.Client.Framework.Controls
         {
             for (var i = 0; i < this.Count; i++)
             {
-                if (this[i].UserID == item.UserID)
+                if (this[i].Token == item.Token)
                 {
                     this[i] = new DomainDataUser(item, domainUserState);
                     return;
@@ -43,11 +43,11 @@ namespace Ntreev.Crema.Client.Framework.Controls
             this.Add(new DomainDataUser(item, domainUserState));
         }
 
-        public void Remove(string userID)
+        public void Remove(Guid token)
         {
             for (var i = 0; i < this.Count; i++)
             {
-                if (this[i].UserID == userID)
+                if (this[i].Token == token)
                 {
                     this.RemoveAt(i);
                     break;

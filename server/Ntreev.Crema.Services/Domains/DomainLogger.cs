@@ -151,15 +151,28 @@ namespace Ntreev.Crema.Services.Domains
             this.Post(action);
         }
 
-        public void Kick(Authentication authentication, string userID, string comment)
+        public void Kick(Authentication authentication, string userID, Guid token, string comment)
         {
-            var action = new KickAction() { UserID = authentication.ID, TargetID = userID, Comment = comment, AcceptTime = authentication.SignatureDate.DateTime };
+            var action = new KickAction()
+            {
+                UserID = authentication.ID,
+                TargetID = userID,
+                TargetToken = token,
+                Comment = comment,
+                AcceptTime = authentication.SignatureDate.DateTime
+            };
             this.Post(action);
         }
 
-        public void SetOwner(Authentication authentication, string userID)
+        public void SetOwner(Authentication authentication, string userID, Guid token)
         {
-            var action = new SetOwnerAction() { UserID = authentication.ID, TargetID = userID, AcceptTime = authentication.SignatureDate.DateTime };
+            var action = new SetOwnerAction()
+            {
+                UserID = authentication.ID,
+                TargetID = userID,
+                TargetToken = token,
+                AcceptTime = authentication.SignatureDate.DateTime
+            };
             this.Post(action);
         }
 

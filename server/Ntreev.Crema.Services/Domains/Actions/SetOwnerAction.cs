@@ -29,5 +29,8 @@ namespace Ntreev.Crema.Services.Domains.Actions
     {
         [DataMember]
         public string TargetID { get; set; }
+
+        [DataMember]
+        public Guid TargetToken { get; set; }
     }
 }

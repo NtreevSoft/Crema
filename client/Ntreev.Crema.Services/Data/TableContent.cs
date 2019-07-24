@@ -41,7 +41,7 @@ namespace Ntreev.Crema.Services.Data
 
         private bool isModified;
 
-        private string masterUserID;
+        private Guid masterUserToken;
 
         public TableContent(Table table)
         {
@@ -81,7 +81,7 @@ namespace Ntreev.Crema.Services.Data
             this.Sign(authentication, result);
             if (this.domain != null)
             {
-                this.masterUserID = this.domain.Users.OwnerUserID;
+                this.masterUserToken = this.domain.Users.OwnerToken;
                 this.DetachDomainEvent();
                 this.domain.Dispose(authentication, false);
             }
@@ -389,15 +389,15 @@ namespace Ntreev.Crema.Services.Data
 
         private void Domain_UserChanged(object sender, DomainUserEventArgs e)
         {
-            if (this.masterUserID == this.domain.Users.OwnerUserID)
+            if (this.masterUserToken == this.domain.Users.OwnerToken)
                 return;
 
-            this.masterUserID = this.domain.Users.OwnerUserID;
+            this.masterUserToken = this.domain.Users.OwnerToken;
             var items = EnumerableUtility.Friends(this, this.Childs);
             foreach (var item in items)
             {
                 var tableState = item.table.TableState;
-                if (this.masterUserID == this.CremaHost.UserID)
+                if (this.masterUserToken == this.CremaHost.Token)
                     tableState |= TableState.IsOwner;
                 else
                     tableState &= ~TableState.IsOwner;
@@ -485,7 +485,7 @@ namespace Ntreev.Crema.Services.Data
                 item.dataTable = dataSet?.Tables[item.table.Name, item.table.Category.Path];
                 if (dataSet != null)
                     tableState |= TableState.IsMember;
-                if (this.masterUserID == authentication.ID)
+                if (this.masterUserToken == authentication.Token)
                     tableState |= TableState.IsOwner;
                 item.table.SetTableState(tableState);
             }
@@ -591,7 +591,7 @@ namespace Ntreev.Crema.Services.Data
             this.InvokeEditBegunEvent(EventArgs.Empty);
             if (this.domain.Source != null)
                 this.EnterContent(Authentication.System, this.domain);
-            this.masterUserID = this.domain.Users.OwnerUserID;
+            this.masterUserToken = this.domain.Users.OwnerToken;
             this.domain.Dispatcher.Invoke(() =>
             {
                 this.isModified = this.domain.IsModified;

@@ -99,7 +99,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
             var domain = this.GetDomain(domainId);
             return domain.Dispatcher.Invoke(() =>
             {
-                return domain.Users.Select(item => item.ID).ToArray();
+                return domain.Users.Select(item => item.DomainUserInfo.UserID).ToArray();
             });
         }
 
@@ -109,7 +109,11 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
         public ContainsDomainUserResponse ContainsDomainUser(string domainId, string userId)
         {
             var domain = this.GetDomain(domainId);
-            var contains = domain.Dispatcher.Invoke(() => domain.Users.Contains(userId));
+            var contains = domain.Dispatcher.Invoke(() =>
+            {
+                var users = domain.Users.Select(o => o.DomainUserInfo.UserID);
+                return users.Contains(userId);
+            });
             return new ContainsDomainUserResponse
             {
                 Contains = contains

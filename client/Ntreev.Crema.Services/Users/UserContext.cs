@@ -150,11 +150,20 @@ namespace Ntreev.Crema.Services.Users
             return authentication;
         }
 
+        public Authentication Authenticate(SignatureDate signatureDate, Guid token)
+        {
+            var authentication = this.Authenticate(signatureDate);
+            authentication.Token = token;
+            return authentication;
+        }
+
         public Authentication Authenticate(AuthenticationInfo authenticationInfo)
         {
             var user = this.Users[authenticationInfo.ID];
             if (user != null)
+            {
                 return user.Authentication;
+            }
             return null;
         }
 

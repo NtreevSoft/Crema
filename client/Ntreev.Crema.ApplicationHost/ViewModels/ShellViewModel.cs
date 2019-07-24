@@ -156,7 +156,15 @@ namespace Ntreev.Crema.ApplicationHost.ViewModels
                 string productName = AppUtility.ProductName;
 
                 if (cremaHost.IsOpened == true)
-                    return $"{productName} - {this.cremaAppHost.DataBaseName} ({cremaHost.Address} - {cremaHost.UserID})";
+                {
+                    var title = $"{productName} - {this.cremaAppHost.DataBaseName} ({cremaHost.Address} - {cremaHost.UserID})";
+
+#if DEBUG
+                    title += " " + cremaHost.Token;
+#endif
+
+                    return title;
+                }
                 else
                     return productName;
             }

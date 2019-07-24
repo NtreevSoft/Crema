@@ -32,7 +32,7 @@ namespace Ntreev.Crema.Services
 
         void SetOwner(Authentication authentication);
 
-        string ID { get; }
+        Guid Token { get; }
 
         DomainUserInfo DomainUserInfo { get; }
 

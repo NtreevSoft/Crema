@@ -30,7 +30,7 @@ namespace Ntreev.Crema.Services.Domains
         private readonly Domain domain;
         private Authentication authentication;
 
-        public DomainUser(Domain domain, string userID, string name, DomainAccessType accessType)
+        public DomainUser(Domain domain, string userID, string name, Guid token, DomainAccessType accessType)
         {
             this.domain = domain;
             base.DomainUserInfo = new DomainUserInfo()
@@ -39,6 +39,7 @@ namespace Ntreev.Crema.Services.Domains
                 UserName = name,
                 AccessType = accessType,
                 Location = DomainLocationInfo.Empty,
+                Token = token
             };
         }
 
@@ -64,13 +65,15 @@ namespace Ntreev.Crema.Services.Domains
 
         public void Kick(Authentication authentication, string comment)
         {
-            this.domain.Kick(authentication, base.DomainUserInfo.UserID, comment);
+            this.domain.Kick(authentication, base.DomainUserInfo.UserID, base.DomainUserInfo.Token, comment);
         }
 
         public void SetOwner(Authentication authentication)
         {
-            this.domain.SetOwner(authentication, base.DomainUserInfo.UserID);
+            this.domain.SetOwner(authentication, base.DomainUserInfo.UserID, base.DomainUserInfo.Token);
         }
+
+        public Guid Token => this.DomainUserInfo.Token;
 
         public DomainUserMetaData GetMetaData(Authentication authentication)
         {

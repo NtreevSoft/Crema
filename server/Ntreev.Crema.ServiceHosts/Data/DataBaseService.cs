@@ -73,6 +73,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
                     this.authentication = this.userContext.Authenticate(authenticationToken);
                     this.authentication.AddRef(this);
                     this.OwnerID = this.authentication.ID;
+                    this.OwnerToken = this.authentication.Token;
                     this.userContext.UsersLoggedOut += UserContext_UsersLoggedOut;
                 });
                 result.Value = this.cremaHost.Dispatcher.Invoke(() =>

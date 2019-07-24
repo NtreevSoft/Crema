@@ -61,10 +61,10 @@ namespace Ntreev.Crema.Services.DomainService {
         Ntreev.Crema.ServiceModel.ResultBase EndUserEdit(System.Guid domainID);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDomainService/Kick", ReplyAction="http://www.ntreev.com/IDomainService/KickResponse")]
-        Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.DomainUserInfo> Kick(System.Guid domainID, string userID, string comment);
+        Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.DomainUserInfo> Kick(System.Guid domainID, string userID, System.Guid token, string comment);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDomainService/SetOwner", ReplyAction="http://www.ntreev.com/IDomainService/SetOwnerResponse")]
-        Ntreev.Crema.ServiceModel.ResultBase SetOwner(System.Guid domainID, string userID);
+        Ntreev.Crema.ServiceModel.ResultBase SetOwner(System.Guid domainID, string userID, System.Guid token);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDomainService/DeleteDomain", ReplyAction="http://www.ntreev.com/IDomainService/DeleteDomainResponse")]
         Ntreev.Crema.ServiceModel.ResultBase DeleteDomain(System.Guid domainID, bool force);
@@ -196,12 +196,12 @@ namespace Ntreev.Crema.Services.DomainService {
             return base.Channel.EndUserEdit(domainID);
         }
         
-        public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.DomainUserInfo> Kick(System.Guid domainID, string userID, string comment) {
-            return base.Channel.Kick(domainID, userID, comment);
+        public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.DomainUserInfo> Kick(System.Guid domainID, string userID, System.Guid token, string comment) {
+            return base.Channel.Kick(domainID, userID, token, comment);
         }
         
-        public Ntreev.Crema.ServiceModel.ResultBase SetOwner(System.Guid domainID, string userID) {
-            return base.Channel.SetOwner(domainID, userID);
+        public Ntreev.Crema.ServiceModel.ResultBase SetOwner(System.Guid domainID, string userID, System.Guid token) {
+            return base.Channel.SetOwner(domainID, userID, token);
         }
         
         public Ntreev.Crema.ServiceModel.ResultBase DeleteDomain(System.Guid domainID, bool force) {

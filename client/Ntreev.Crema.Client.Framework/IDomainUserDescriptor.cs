@@ -31,6 +31,8 @@ namespace Ntreev.Crema.Client.Framework
     {
         string UserID { get; }
 
+        Guid Token { get; }
+
         string DisplayName { get; }
 
         DomainUserInfo DomainUserInfo { get; }

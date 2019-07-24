@@ -334,6 +334,8 @@ namespace Ntreev.Crema.Commands.Consoles
             get { return this.authentication.ID; }
         }
 
+        public Guid Token => this.authentication.Token;
+
         public ConsoleTerminalBase Terminal { get; internal set; }
 
         public event EventHandler PathChanged;

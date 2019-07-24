@@ -67,6 +67,7 @@ namespace Ntreev.Crema.ServiceHosts.Domains
                     this.authentication = this.userContext.Authenticate(authenticationToken);
                     this.authentication.AddRef(this);
                     this.OwnerID = this.authentication.ID;
+                    this.OwnerToken = this.authentication.Token;
                     this.userContext.UsersLoggedOut += UserContext_UsersLoggedOut;
                 });
                 result.Value = this.domainContext.Dispatcher.Invoke(() =>
@@ -165,19 +166,19 @@ namespace Ntreev.Crema.ServiceHosts.Domains
             });
         }
 
-        public ResultBase<DomainUserInfo> Kick(Guid domainID, string userID, string comment)
+        public ResultBase<DomainUserInfo> Kick(Guid domainID, string userID, Guid token, string comment)
         {
             return this.Invoke(domainID, (domain) =>
             {
-                return domain.Kick(this.authentication, userID, comment);
+                return domain.Kick(this.authentication, userID, token, comment);
             });
         }
 
-        public ResultBase SetOwner(Guid domainID, string userID)
+        public ResultBase SetOwner(Guid domainID, string userID, Guid token)
         {
             return this.Invoke(domainID, (domain) =>
             {
-                domain.SetOwner(this.authentication, userID);
+                domain.SetOwner(this.authentication, userID, token);
             });
         }
 
@@ -311,73 +312,73 @@ namespace Ntreev.Crema.ServiceHosts.Domains
 
         private void DomainContext_DomainCreated(object sender, DomainEventArgs e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var domainInfo = e.DomainInfo;
             var domainState = e.DomainState;
             if (this.resettings.Contains(domainInfo.DataBaseID))
                 return;
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnDomainCreated(e.SignatureDate, domainInfo, domainState));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnDomainCreated(e.SignatureDate, domainInfo, domainState));
         }
 
         private void DomainContext_DomainDeleted(object sender, DomainDeletedEventArgs e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var domainID = e.DomainInfo.DomainID;
             var isCanceled = e.IsCanceled;
             this.domains.Remove(domainID);
             if (this.resettings.Contains(e.DomainInfo.DataBaseID))
                 return;
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnDomainDeleted(signatureDate, domainID, isCanceled));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnDomainDeleted(signatureDate, domainID, isCanceled));
         }
 
         private void DomainContext_DomainInfoChanged(object sender, DomainEventArgs e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var domainID = e.DomainInfo.DomainID;
             var domainInfo = e.DomainInfo;
             if (this.resettings.Contains(domainInfo.DataBaseID))
                 return;
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnDomainInfoChanged(signatureDate, domainID, domainInfo));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnDomainInfoChanged(signatureDate, domainID, domainInfo));
         }
 
         private void DomainContext_DomainStateChanged(object sender, DomainEventArgs e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var domainID = e.DomainInfo.DomainID;
             var domainState = e.DomainState;
             if (this.resettings.Contains(e.DomainInfo.DataBaseID))
                 return;
             System.Diagnostics.Trace.WriteLine("DomainContext_DomainStateChanged");
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnDomainStateChanged(signatureDate, domainID, domainState));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnDomainStateChanged(signatureDate, domainID, domainState));
         }
 
         private void DomainContext_DomainUserAdded(object sender, DomainUserEventArgs e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var domainID = e.DomainInfo.DomainID;
             var domainUserInfo = e.DomainUserInfo;
             var domainUserState = e.DomainUserState;
-            if (domainUserInfo.UserID == this.OwnerID)
+            if (domainUserInfo.Token == this.OwnerToken)
                 this.domains.Add(domainID);
             if (this.resettings.Contains(e.DomainInfo.DataBaseID))
                 return;
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnUserAdded(signatureDate, domainID, domainUserInfo, domainUserState));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnUserAdded(signatureDate, domainID, domainUserInfo, domainUserState));
         }
 
         private void DomainContext_DomainUserChanged(object sender, DomainUserEventArgs e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var domainID = e.DomainInfo.DomainID;
             var domainUserState = e.DomainUserState;
@@ -386,77 +387,77 @@ namespace Ntreev.Crema.ServiceHosts.Domains
                 domainUserInfo.Location = DomainLocationInfo.Empty;
             if (this.resettings.Contains(e.DomainInfo.DataBaseID))
                 return;
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnUserChanged(signatureDate, domainID, domainUserInfo, domainUserState));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnUserChanged(signatureDate, domainID, domainUserInfo, domainUserState));
         }
 
         private void DomainContext_DomainUserRemoved(object sender, DomainUserRemovedEventArgs e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var domainID = e.DomainInfo.DomainID;
             var domainUserInfo = e.DomainUserInfo;
             var removeInfo = e.RemoveInfo;
-            if (domainUserInfo.UserID == this.OwnerID)
+            if (domainUserInfo.Token == this.OwnerToken)
                 this.domains.Remove(domainID);
             if (this.resettings.Contains(e.DomainInfo.DataBaseID))
                 return;
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnUserRemoved(signatureDate, domainID, domainUserInfo, removeInfo));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnUserRemoved(signatureDate, domainID, domainUserInfo, removeInfo));
         }
 
         private void DomainContext_DomainRowAdded(object sender, DomainRowEventArgs e)
         {
             if (this.domains.Contains(e.DomainInfo.DomainID) == false)
                 return;
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var domainID = e.DomainInfo.DomainID;
             var rows = e.Rows;
             if (this.resettings.Contains(e.DomainInfo.DataBaseID))
                 return;
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnRowAdded(signatureDate, domainID, rows));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnRowAdded(signatureDate, domainID, rows));
         }
 
         private void DomainContext_DomainRowChanged(object sender, DomainRowEventArgs e)
         {
             if (this.domains.Contains(e.DomainInfo.DomainID) == false)
                 return;
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var domainID = e.DomainInfo.DomainID;
             var rows = e.Rows;
             if (this.resettings.Contains(e.DomainInfo.DataBaseID))
                 return;
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnRowChanged(signatureDate, domainID, rows));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnRowChanged(signatureDate, domainID, rows));
         }
 
         private void DomainContext_DomainRowRemoved(object sender, DomainRowEventArgs e)
         {
             if (this.domains.Contains(e.DomainInfo.DomainID) == false)
                 return;
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var domainID = e.DomainInfo.DomainID;
             var rows = e.Rows;
             if (this.resettings.Contains(e.DomainInfo.DataBaseID))
                 return;
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnRowRemoved(signatureDate, domainID, rows));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnRowRemoved(signatureDate, domainID, rows));
         }
 
         private void DomainContext_DomainPropertyChanged(object sender, DomainPropertyEventArgs e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var domainID = e.DomainInfo.DomainID;
             var propertyName = e.PropertyName;
             var value = e.Value;
             if (this.resettings.Contains(e.DomainInfo.DataBaseID))
                 return;
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnPropertyChanged(signatureDate, domainID, propertyName, value));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnPropertyChanged(signatureDate, domainID, propertyName, value));
         }
 
         private void DataBases_ItemsResetting(object sender, ItemsEventArgs<IDataBase> e)

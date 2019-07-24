@@ -59,7 +59,7 @@ namespace Ntreev.Crema.Client.Framework
 
         public static Color GetColor(this IDomainUser domainUser)
         {
-            if (idToColor.ContainsKey(domainUser.ID) == false)
+            if (idToColor.ContainsKey(domainUser.DomainUserInfo.UserID) == false)
             {
                 if (emptyColors.Count == 0)
                 {
@@ -68,11 +68,11 @@ namespace Ntreev.Crema.Client.Framework
                 }
 
                 int index = random.Next() % emptyColors.Count;
-                idToColor.Add(domainUser.ID, emptyColors[index]);
+                idToColor.Add(domainUser.DomainUserInfo.UserID, emptyColors[index]);
                 emptyColors.RemoveAt(index);
                 
             }
-            return idToColor[domainUser.ID];
+            return idToColor[domainUser.DomainUserInfo.UserID];
         }
 
         public static Color GetColor(this DomainUserInfo domainUserInfo)

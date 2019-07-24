@@ -159,7 +159,7 @@ namespace Ntreev.Crema.Client.Framework
 
         private void Domain_UserAdded(object sender, DomainUserEventArgs e)
         {
-            var domainUser = this.domain.Users[e.DomainUserInfo.UserID];
+            var domainUser = this.domain.Users[e.DomainUserInfo.Token];
             var viewModel = new DomainUserDescriptor(this.authentication, domainUser, this.descriptorTypes, this.owner);
             this.Dispatcher.InvokeAsync(() =>
             {
@@ -176,7 +176,7 @@ namespace Ntreev.Crema.Client.Framework
             {
                 foreach (var item in this.domainUsers.ToArray())
                 {
-                    if (item.UserID == domainUserInfo.UserID)
+                    if (item.Token == domainUserInfo.Token)
                     {
                         this.domainUsers.Remove(item);
                         break;

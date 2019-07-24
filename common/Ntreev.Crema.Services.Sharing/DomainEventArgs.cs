@@ -38,6 +38,7 @@ namespace Ntreev.Crema.Services
             this.domainInfo = domain.DomainInfo;
             this.domainState = domain.DomainState;
             this.signatureDate = authentication.SignatureDate;
+            this.UserToken = authentication.Token;
         }
 
         public IDomain Domain
@@ -59,6 +60,9 @@ namespace Ntreev.Crema.Services
         {
             get { return this.signatureDate.ID; }
         }
+
+        public Guid UserToken { get; private set; }
+
 
         public DateTime DateTime
         {
