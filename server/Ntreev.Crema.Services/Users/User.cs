@@ -112,13 +112,14 @@ namespace Ntreev.Crema.Services.Users
                 var authentication = new Authentication(new UserAuthenticationProvider(this), Guid.NewGuid());
                 this.Sign(authentication);
 
-                if (this.Authentication != null)
-                {
-                    var message = "다른 기기에서 동일한 아이디로 접속하였습니다.";
-                    var closeInfo = new CloseInfo() { Reason = CloseReason.Reconnected, Message = message };
-                    this.Authentication.InvokeExpiredEvent(this.ID, message);
-                    this.Container.InvokeUsersLoggedOutEvent(this.Authentication, users, closeInfo);
-                }
+                //TODO: 3.7
+                //if (this.Authentication != null)
+                //{
+                //    var message = "다른 기기에서 동일한 아이디로 접속하였습니다.";
+                //    var closeInfo = new CloseInfo() { Reason = CloseReason.Reconnected, Message = message };
+                //    this.Authentication.InvokeExpiredEvent(this.ID, message);
+                //    this.Container.InvokeUsersLoggedOutEvent(this.Authentication, users, closeInfo);
+                //}
 
                 this.Authentication = authentication;
                 this.IsOnline = true;
