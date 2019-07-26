@@ -305,7 +305,7 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element xmlns:q38="http://schemas.ntreev.com" minOccurs="0" name="signatureDate" type="q38:SignatureDate" />
-        <xs:element xmlns:q39="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="userIDs" nillable="true" type="q39:ArrayOfstring" />
+        <xs:element xmlns:q39="http://schemas.ntreev.com" minOccurs="0" name="auteAuthenticationInfos" nillable="true" type="q39:ArrayOfAuthenticationInfo" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -313,7 +313,7 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element xmlns:q40="http://schemas.ntreev.com" minOccurs="0" name="signatureDate" type="q40:SignatureDate" />
-        <xs:element xmlns:q41="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="userIDs" nillable="true" type="q41:ArrayOfstring" />
+        <xs:element xmlns:q41="http://schemas.ntreev.com" minOccurs="0" name="auteAuthenticationInfos" nillable="true" type="q41:ArrayOfAuthenticationInfo" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

@@ -45,7 +45,7 @@ namespace Ntreev.Crema.Services.Data
                 Members = value.Members.Select(item => (AccessMemberInfo)item).ToArray(),
             };
             if (obj.SignatureDate.ID == null)
-                obj.SignatureDate = new SignatureDate(string.Empty, obj.SignatureDate.DateTime);
+                obj.SignatureDate = new SignatureDate(string.Empty, obj.SignatureDate.Token, obj.SignatureDate.DateTime);
             return obj;
         }
 

@@ -299,12 +299,12 @@ namespace Ntreev.Crema.ServiceHosts.Domains
             this.logService.Debug($"[{this.OwnerID}] {nameof(DomainService)} {nameof(DetachEventHandlers)}");
         }
 
-        private void UserContext_UsersLoggedOut(object sender, ItemsEventArgs<IUser> e)
+        private void UserContext_UsersLoggedOut(object sender, ItemsEventArgs<AuthenticationInfo> e)
         {
-            var actionUserID = e.UserID;
-            var contains = e.Items.Any(item => item.ID == this.authentication.ID);
+            var actionUserToken = e.UserToken;
+            var contains = e.Items.Any(item => item.Token == this.authentication.Token);
             var closeInfo = (CloseInfo)e.MetaData;
-            if (actionUserID != this.authentication.ID && contains == true)
+            if (actionUserToken != this.authentication.Token && contains == true)
             {
                 this.InvokeEvent(null, null, () => this.Callback.OnServiceClosed(e.SignatureDate, (CloseInfo)e.MetaData));
             }

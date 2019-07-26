@@ -48,8 +48,8 @@ namespace Ntreev.Crema.Services.Users
         private ItemsDeletedEventHandler<IUserItem> itemsDeleted;
         private ItemsEventHandler<IUserItem> itemsChanged;
         private EventHandler<MessageEventArgs> messageReceived;
-        private ItemsEventHandler<IUser> usersLoggedIn;
-        private ItemsEventHandler<IUser> usersLoggedOut;
+        private ItemsEventHandler<AuthenticationInfo> usersLoggedIn;
+        private ItemsEventHandler<AuthenticationInfo> usersLoggedOut;
         private ItemsEventHandler<IUser> usersKicked;
         private ItemsEventHandler<IUser> usersBanChanged;
 
@@ -126,13 +126,14 @@ namespace Ntreev.Crema.Services.Users
         public Authentication Authenticate(Guid authenticationToken)
         {
             this.Dispatcher.VerifyAccess();
+            
             var query = from User item in this.Users
-                        let authentication = item.Authentication
-                        where authentication != null && authentication.Token == authenticationToken
-                        select item;
+                let authentications = item.Authentications
+                where authentications.ContainsKey(authenticationToken)
+                select item;
 
             if (query.Any() == true)
-                return query.First().Authentication;
+                return query.First().Authentications[authenticationToken].Authentication;
 
             if (authenticationToken == Authentication.System.Token)
                 return Authentication.System;
@@ -140,7 +141,18 @@ namespace Ntreev.Crema.Services.Users
             return null;
         }
 
-        public bool IsAuthenticated(string userID)
+        public Authentication Authenticate(AuthenticationInfo authenticationInfo)
+        {
+            var user = this.Users[authenticationInfo.ID];
+            if (user != null)
+            {
+                var auth = user.Authentications[authenticationInfo.Token];
+                return auth.Authentication;
+            }
+            return null;
+        }
+
+        public bool IsAuthenticated(string userID, Guid token)
         {
             this.Dispatcher.VerifyAccess();
 
@@ -149,10 +161,10 @@ namespace Ntreev.Crema.Services.Users
 
             var user = this.Users[userID];
 
-            if (user.IsOnline == false)
+            if (!user.Authentications.ContainsKey(token))
                 return false;
 
-            return user.Authentication != null;
+            return user.Authentications[token] != null;
         }
 
         public bool IsOnlineUser(string userID, SecureString password)
@@ -188,7 +200,17 @@ namespace Ntreev.Crema.Services.Users
                             select new UserMetaData()
                             {
                                 Path = item.Path,
-                                UserInfo = item.UserInfo,
+                                UserInfo = new UserInfo
+                                {
+                                    ID = item.UserInfo.ID,
+                                    Name = item.UserInfo.Name,
+                                    CreationInfo = item.UserInfo.CreationInfo,
+                                    ModificationInfo = item.UserInfo.ModificationInfo,
+                                    CategoryPath = item.UserInfo.CategoryPath,
+                                    CategoryName = item.UserInfo.CategoryName,
+                                    Authority = item.UserInfo.Authority,
+                                    AuthenticationInfos = item.Authentications.Values.Select(o => o.Authentication.AuthenticationInfo).ToArray()
+                                },
                                 UserState = item.UserState,
                                 BanInfo = item.BanInfo,
                             };
@@ -374,8 +396,11 @@ namespace Ntreev.Crema.Services.Users
         {
             foreach (var item in this.Users)
             {
-                if (item.Authentication != null)
-                    item.Authentication.InvokeExpiredEvent(Authentication.System.ID);
+                foreach (var auth in item.Authentications.Values.ToArray())
+                {
+                    auth.Authentication.InvokeExpiredEvent(Authentication.System.ID);
+                }
+                item.Authentications.Clear();
             }
             base.Clear();
         }
@@ -489,7 +514,7 @@ namespace Ntreev.Crema.Services.Users
             }
         }
 
-        public event ItemsEventHandler<IUser> UsersLoggedIn
+        public event ItemsEventHandler<AuthenticationInfo> UsersLoggedIn
         {
             add
             {
@@ -503,7 +528,7 @@ namespace Ntreev.Crema.Services.Users
             }
         }
 
-        public event ItemsEventHandler<IUser> UsersLoggedOut
+        public event ItemsEventHandler<AuthenticationInfo> UsersLoggedOut
         {
             add
             {
@@ -618,12 +643,12 @@ namespace Ntreev.Crema.Services.Users
             this.messageReceived?.Invoke(this, e);
         }
 
-        private void Users_UsersLoggedIn(object sender, ItemsEventArgs<IUser> e)
+        private void Users_UsersLoggedIn(object sender, ItemsEventArgs<AuthenticationInfo> e)
         {
             this.usersLoggedIn?.Invoke(this, e);
         }
 
-        private void Users_UsersLoggedOut(object sender, ItemsEventArgs<IUser> e)
+        private void Users_UsersLoggedOut(object sender, ItemsEventArgs<AuthenticationInfo> e)
         {
             this.usersLoggedOut?.Invoke(this, e);
         }

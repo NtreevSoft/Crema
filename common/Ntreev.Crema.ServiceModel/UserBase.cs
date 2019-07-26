@@ -38,13 +38,11 @@ namespace Ntreev.Crema.ServiceModel
         where _CT : ItemContext<_I, _C, _IC, _CC, _CT>
     {
         private UserInfo userInfo;
-        private UserState userState;
         private BanInfo banInfo = BanInfo.Empty;
         private bool isLoaded;
 
         public UserBase()
         {
-
         }
 
         public void UpdateUserInfo(UserInfo userInfo)
@@ -59,10 +57,15 @@ namespace Ntreev.Crema.ServiceModel
                 throw new InvalidOperationException();
             this.userInfo = userInfo;
             this.banInfo = banInfo;
+
+            this.InitializeUserInfo(userInfo);
+
             this.isLoaded = true;
             this.OnUserInfoChanged(EventArgs.Empty);
             this.OnUserBanInfoChanged(EventArgs.Empty);
         }
+
+        protected abstract void InitializeUserInfo(UserInfo userInfo);
 
         public UserInfo UserInfo
         {
@@ -86,33 +89,9 @@ namespace Ntreev.Crema.ServiceModel
             }
         }
 
-        public UserState UserState
-        {
-            get { return this.userState; }
-            set
-            {
-                if (this.userState == value)
-                    return;
-                this.userState = value;
-                this.OnUserStateChanged(EventArgs.Empty);
-            }
-        }
-
         public Authority Authority
         {
             get { return this.userInfo.Authority; }
-        }
-
-        public bool IsOnline
-        {
-            get { return this.UserState.HasFlag(UserState.Online); }
-            set
-            {
-                if (value == true)
-                    this.UserState |= UserState.Online;
-                else
-                    this.UserState &= ~UserState.Online;
-            }
         }
 
         public event EventHandler UserInfoChanged;
@@ -143,17 +122,17 @@ namespace Ntreev.Crema.ServiceModel
             this.OnUserBanInfoChanged(EventArgs.Empty);
         }
 
-        protected virtual void OnUserInfoChanged(EventArgs e)
+        internal virtual void OnUserInfoChanged(EventArgs e)
         {
             this.UserInfoChanged?.Invoke(this, e);
         }
 
-        protected virtual void OnUserStateChanged(EventArgs e)
+        internal virtual void OnUserStateChanged(EventArgs e)
         {
             this.UserStateChanged?.Invoke(this, e);
         }
 
-        protected virtual void OnUserBanInfoChanged(EventArgs e)
+        internal virtual void OnUserBanInfoChanged(EventArgs e)
         {
             this.UserBanInfoChanged?.Invoke(this, e);
         }
@@ -174,6 +153,8 @@ namespace Ntreev.Crema.ServiceModel
                 this.OnUserBanInfoChanged(EventArgs.Empty);
             }
         }
+
+        internal void OnPathChangeInternal(string oldPath, string newPath) => this.OnPathChanged(oldPath, newPath);
 
         protected void ValidateMove(IAuthentication authentication, string categoryPath)
         {

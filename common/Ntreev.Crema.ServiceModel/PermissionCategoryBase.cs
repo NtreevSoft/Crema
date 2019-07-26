@@ -112,7 +112,7 @@ namespace Ntreev.Crema.ServiceModel
             {
                 Path = this.Path,
                 ParentPath = string.Empty,
-                SignatureDate = new SignatureDate(authentication.ID),
+                SignatureDate = new SignatureDate(authentication.ID, authentication.Token),
                 Comment = comment
             };
             this.UpdateLockParent(this);

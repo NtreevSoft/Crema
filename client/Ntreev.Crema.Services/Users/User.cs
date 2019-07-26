@@ -28,13 +28,28 @@ using Ntreev.Crema.Services.UserService;
 using Ntreev.Library.Linq;
 using System.Security;
 using System.ComponentModel;
+using System.IdentityModel.Tokens;
 
 namespace Ntreev.Crema.Services.Users
 {
     class User : UserBase<User, UserCategory, UserCollection, UserCategoryCollection, UserContext>,
         IUser, IUserItem, IInfoProvider, IStateProvider
     {
-        private Authentication authentication;
+        public UserAuthenticationCollection Authentications { get; } = new UserAuthenticationCollection();
+
+        public UserState UserState
+        {
+            get
+            {
+                this.Dispatcher.VerifyAccess();
+                return this.Authentications.Any() ? ServiceModel.UserState.Online : ServiceModel.UserState.None;
+            }
+        }
+
+        public bool IsOnline
+        {
+            get { return this.UserState.HasFlag(UserState.Online); }
+        }
 
         public User()
         {
@@ -84,10 +99,11 @@ namespace Ntreev.Crema.Services.Users
             var users = new User[] { this };
             var comments = Enumerable.Repeat(comment, users.Length).ToArray();
             this.Container.InvokeUserKick(authentication, this, comment);
-            this.IsOnline = false;
+            var authenticationInfos = users.SelectMany(user => user.Authentications.Select(auth => auth.Value.Authentication.AuthenticationInfo)).ToArray();
+            this.Authentications.Clear();
             this.Container.InvokeUsersKickedEvent(authentication, users, comments);
             this.Container.InvokeUsersStateChangedEvent(authentication, users);
-            this.Container.InvokeUsersLoggedOutEvent(authentication, users, new CloseInfo(CloseReason.Kicked, comment));
+            this.Container.InvokeUsersLoggedOutEvent(authentication, authenticationInfos, new CloseInfo(CloseReason.Kicked, comment));
         }
 
         public void Ban(Authentication authentication, string comment)
@@ -103,9 +119,10 @@ namespace Ntreev.Crema.Services.Users
             this.Container.InvokeUsersBannedEvent(authentication, users, comments);
             if (this.IsOnline == true)
             {
-                this.IsOnline = false;
+                var authenticationInfos = users.SelectMany(user => user.Authentications.Select(auth => auth.Value.Authentication.AuthenticationInfo)).ToArray();
+                this.Authentications.Clear();
                 this.Container.InvokeUsersStateChangedEvent(authentication, users);
-                this.Container.InvokeUsersLoggedOutEvent(authentication, users, new CloseInfo(CloseReason.Banned, comment));
+                this.Container.InvokeUsersLoggedOutEvent(authentication, authenticationInfos, new CloseInfo(CloseReason.Banned, comment));
             }
         }
 
@@ -155,12 +172,6 @@ namespace Ntreev.Crema.Services.Users
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public void SetUserState(UserState userState)
-        {
-            base.UserState = userState;
-        }
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public void SetBanInfo(BanChangeType changeType, BanInfo banInfo)
         {
             if (changeType == BanChangeType.Ban)
@@ -205,21 +216,25 @@ namespace Ntreev.Crema.Services.Users
             }
         }
 
+        protected override void InitializeUserInfo(UserInfo userInfo)
+        {
+            if (userInfo.AuthenticationInfos == null) return;
+
+            foreach (var auth in userInfo.AuthenticationInfos)
+            {
+                if (this.Authentications.ContainsKey(auth.Token)) continue;
+
+                var authentication = new Authentication(new AuthenticationProvider(this), auth.Token);
+                this.Authentications.Add(auth.Token, new UserAuthentication(this, authentication));
+            }
+        }
+
         public new UserInfo UserInfo
         {
             get
             {
                 this.Dispatcher.VerifyAccess();
                 return base.UserInfo;
-            }
-        }
-
-        public new UserState UserState
-        {
-            get
-            {
-                this.Dispatcher.VerifyAccess();
-                return base.UserState;
             }
         }
 
@@ -235,11 +250,6 @@ namespace Ntreev.Crema.Services.Users
         public bool IsBanned
         {
             get { return this.BanInfo.Path != string.Empty; }
-        }
-
-        public Authentication Authentication
-        {
-            get { return authentication; }
         }
 
         public IUserService Service
@@ -344,7 +354,6 @@ namespace Ntreev.Crema.Services.Users
         protected override void OnAttached()
         {
             base.OnAttached();
-            this.authentication = new Authentication(new UserAuthenticationProvider(this));
         }
 
         private void Sign(Authentication authentication, ResultBase result)

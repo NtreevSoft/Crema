@@ -15,30 +15,28 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Library;
 using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Data;
+using Ntreev.Crema.ServiceModel;
 
-namespace Ntreev.Crema.Presentation.Converters
+namespace Ntreev.Crema.Services.Users
 {
-    class SignatureDateToStringConverter : IValueConverter
+    class UserAuthentication : IUserAuthentication
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public UserAuthentication(IUser user, Authentication authentication)
         {
-            if (value is SignatureDate signatureDate)
-            {
-                var localTime = signatureDate.DateTime.ToLocalTime();
-                return $"{new SignatureDate(signatureDate.ID, signatureDate.Token, localTime)}";
-            }
-            return $"{value}";
+            this.User = user;
+            this.Authentication = authentication;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public IUser User { get; set; }
+        public Authentication Authentication { get; }
+
+        public void SendMessage(Authentication authentication, string message)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Kick(Authentication authentication, string comment)
         {
             throw new NotImplementedException();
         }

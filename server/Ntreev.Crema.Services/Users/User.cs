@@ -34,12 +34,26 @@ namespace Ntreev.Crema.Services.Users
     class User : UserBase<User, UserCategory, UserCollection, UserCategoryCollection, UserContext>,
         IUser, IUserItem, IInfoProvider, IStateProvider
     {
-        private Authentication authentication;
         private SecureString password;
+
+        public UserAuthenticationCollection Authentications { get; } = new UserAuthenticationCollection();
+
+        public UserState UserState
+        {
+            get
+            {
+                this.Dispatcher.VerifyAccess();
+                return this.Authentications.Any() ? ServiceModel.UserState.Online : ServiceModel.UserState.None;
+            }
+        }
+
+        public bool IsOnline
+        {
+            get { return this.UserState.HasFlag(UserState.Online); }
+        }
 
         public User()
         {
-
         }
 
         public void Rename(Authentication authentication, string newName)
@@ -108,7 +122,6 @@ namespace Ntreev.Crema.Services.Users
                 this.CremaHost.DebugMethod(Authentication.System, this, nameof(Login), this);
                 this.ValidateLogin(password);
 
-                var users = new User[] { this };
                 var authentication = new Authentication(new UserAuthenticationProvider(this), Guid.NewGuid());
                 this.Sign(authentication);
 
@@ -121,11 +134,11 @@ namespace Ntreev.Crema.Services.Users
                 //    this.Container.InvokeUsersLoggedOutEvent(this.Authentication, users, closeInfo);
                 //}
 
-                this.Authentication = authentication;
-                this.IsOnline = true;
-                this.Container.InvokeUsersStateChangedEvent(this.Authentication, users);
-                this.Container.InvokeUsersLoggedInEvent(this.Authentication, users);
-                return this.Authentication;
+                this.Authentications.Add(authentication.Token, new UserAuthentication(this, authentication));
+                var authenticationInfos = new[] {authentication.AuthenticationInfo};
+                this.Container.InvokeUsersLoggedInEvent(authentication, authenticationInfos);
+                this.Container.InvokeUsersStateChangedEvent(authentication, new IUser[]{this});
+                return authentication;
             }
             catch (Exception e)
             {
@@ -142,12 +155,12 @@ namespace Ntreev.Crema.Services.Users
                 this.CremaHost.DebugMethod(authentication, this, nameof(Logout), this);
                 this.ValidateLogout(authentication);
                 this.Sign(authentication);
-                var users = new User[] { this };
-                this.Authentication.InvokeExpiredEvent(authentication.ID, string.Empty);
-                this.Authentication = null;
-                this.IsOnline = false;
-                this.Container.InvokeUsersStateChangedEvent(authentication, users);
-                this.Container.InvokeUsersLoggedOutEvent(authentication, users, CloseInfo.Empty);
+                var auth = this.Authentications[authentication.Token];
+                auth.Authentication.InvokeExpiredEvent(authentication.ID, string.Empty);
+                this.Authentications.Remove(auth.Authentication.Token);
+                var authenticationInfos = new[] {auth.Authentication.AuthenticationInfo};
+                this.Container.InvokeUsersStateChangedEvent(authentication, new IUser[]{this});
+                this.Container.InvokeUsersLoggedOutEvent(authentication, authenticationInfos, CloseInfo.Empty);
             }
             catch (Exception e)
             {
@@ -170,14 +183,17 @@ namespace Ntreev.Crema.Services.Users
                 var isOnline = this.IsOnline;
                 this.Container.InvokeUserBan(authentication, this, banInfo);
                 base.Ban(authentication, banInfo);
-                this.IsOnline = false;
                 this.Container.InvokeUsersBannedEvent(authentication, users, comments);
                 if (isOnline == true)
                 {
-                    this.Authentication.InvokeExpiredEvent(authentication.ID, comment);
-                    this.Authentication = null;
+                    foreach (var auth in this.Authentications.Values.ToArray())
+                    {
+                        auth.Authentication.InvokeExpiredEvent(authentication.ID, comment);
+                    }
+                    this.Authentications.Clear();
+                    var authenticationInfos = users.SelectMany(user => user.Authentications.Select(auth => auth.Value.Authentication.AuthenticationInfo)).ToArray();
                     this.Container.InvokeUsersStateChangedEvent(authentication, users);
-                    this.Container.InvokeUsersLoggedOutEvent(authentication, users, new CloseInfo(CloseReason.Banned, comment));
+                    this.Container.InvokeUsersLoggedOutEvent(authentication, authenticationInfos, new CloseInfo(CloseReason.Banned, comment));
                 }
             }
             catch (Exception e)
@@ -218,12 +234,15 @@ namespace Ntreev.Crema.Services.Users
                 var users = new User[] { this };
                 var comments = Enumerable.Repeat(comment, users.Length).ToArray();
                 this.Container.InvokeUserKick(authentication, this, comment);
-                this.IsOnline = false;
-                this.Authentication.InvokeExpiredEvent(authentication.ID, comment);
-                this.Authentication = null;
+                foreach (var auth in this.Authentications.Values.ToArray())
+                {
+                    auth.Authentication.InvokeExpiredEvent(authentication.ID, comment);
+                }
+                this.Authentications.Clear();
+                var authenticationInfos = users.SelectMany(user => user.Authentications.Select(auth => auth.Value.Authentication.AuthenticationInfo)).ToArray();
                 this.Container.InvokeUsersKickedEvent(authentication, users, comments);
                 this.Container.InvokeUsersStateChangedEvent(authentication, users);
-                this.Container.InvokeUsersLoggedOutEvent(authentication, users, new CloseInfo(CloseReason.Kicked, comment));
+                this.Container.InvokeUsersLoggedOutEvent(authentication, authenticationInfos, new CloseInfo(CloseReason.Kicked, comment));
             }
             catch (Exception e)
             {
@@ -250,7 +269,7 @@ namespace Ntreev.Crema.Services.Users
                 if (object.Equals(serializationInfo, this.SerializationInfo) == true)
                     return;
                 var items = EnumerableUtility.One(this).ToArray();
-                serializationInfo.ModificationInfo = new SignatureDate(authentication.ID);
+                serializationInfo.ModificationInfo = new SignatureDate(authentication.ID, authentication.Token);
                 this.Container.InvokeUserChange(authentication, this, serializationInfo);
                 if (newPassword != null)
                     this.password = UserContext.StringToSecureString(serializationInfo.Password);
@@ -283,12 +302,6 @@ namespace Ntreev.Crema.Services.Users
         public bool VerifyPassword(SecureString password)
         {
             return UserContext.SecureStringToString(this.password) == UserContext.SecureStringToString(password).Encrypt();
-        }
-
-        public Authentication Authentication
-        {
-            get { return authentication; }
-            set { this.authentication = value; }
         }
 
         public string ID
@@ -327,21 +340,16 @@ namespace Ntreev.Crema.Services.Users
             }
         }
 
+        protected override void InitializeUserInfo(UserInfo userInfo)
+        {
+        }
+
         public new UserInfo UserInfo
         {
             get
             {
                 this.Dispatcher.VerifyAccess();
                 return base.UserInfo;
-            }
-        }
-
-        public new UserState UserState
-        {
-            get
-            {
-                this.Dispatcher.VerifyAccess();
-                return base.UserState;
             }
         }
 
@@ -545,7 +553,7 @@ namespace Ntreev.Crema.Services.Users
             if (authentication.Types.HasFlag(AuthenticationType.Administrator) == false)
                 throw new PermissionDeniedException();
 
-            if (this.Authentication != authentication)
+            if (this.Authentications.Values.All(o => o.Authentication != authentication))
             {
                 if (authentication.Types.HasFlag(AuthenticationType.Administrator) == false)
                 {

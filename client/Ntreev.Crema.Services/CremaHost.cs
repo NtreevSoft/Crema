@@ -203,7 +203,6 @@ namespace Ntreev.Crema.Services
             this.log.Verbose = this.verbose;
             this.userContext = new UserContext(this, this.ipAddress, serviceInfos[nameof(UserService)], userID, password);
             var user = this.userContext.Users[userID];
-            user.SetUserState(UserState.Online);
             this.userID = userID;
             this.authority = user.Authority;
 
@@ -221,7 +220,6 @@ namespace Ntreev.Crema.Services
 
             this.OnOpened(EventArgs.Empty);
             this.token = UserContext.AuthenticationToken;
-            this.token = Guid.NewGuid();
             CremaLog.Info($"Crema opened : {address} {userID}");
             return token;
         }

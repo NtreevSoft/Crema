@@ -335,60 +335,60 @@ namespace Ntreev.Crema.ServiceHosts.Users
 
         private void Users_UsersStateChanged(object sender, Services.ItemsEventArgs<IUser> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var userIDs = e.Items.Select(item => item.ID).ToArray();
             var states = e.Items.Select(item => item.UserState).ToArray();
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnUsersStateChanged(e.SignatureDate, userIDs, states));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnUsersStateChanged(e.SignatureDate, userIDs, states));
         }
 
         private void Users_UsersChanged(object sender, Services.ItemsEventArgs<IUser> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var values = e.Items.Select(item => item.UserInfo).ToArray();
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnUsersChanged(signatureDate, values));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnUsersChanged(signatureDate, values));
         }
 
         private void UserContext_ItemsCreated(object sender, Services.ItemsCreatedEventArgs<IUserItem> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var itemPaths = e.Items.Select(item => item.Path).ToArray();
             var arguments = e.Arguments.Select(item => item is UserInfo userInfo ? (UserInfo?)userInfo : null).ToArray();
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnUserItemsCreated(signatureDate, itemPaths, arguments));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnUserItemsCreated(signatureDate, itemPaths, arguments));
         }
 
         private void UserContext_ItemsRenamed(object sender, Services.ItemsRenamedEventArgs<IUserItem> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var oldPaths = e.OldPaths;
             var itemNames = e.Items.Select(item => item.Name).ToArray();
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnUserItemsRenamed(signatureDate, oldPaths, itemNames));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnUserItemsRenamed(signatureDate, oldPaths, itemNames));
         }
 
         private void UserContext_ItemsMoved(object sender, Services.ItemsMovedEventArgs<IUserItem> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var oldPaths = e.OldPaths;
             var parentPaths = e.Items.Select(item => item.Parent.Path).ToArray();
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnUserItemsMoved(signatureDate, oldPaths, parentPaths));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnUserItemsMoved(signatureDate, oldPaths, parentPaths));
         }
 
         private void UserContext_ItemsDeleted(object sender, Services.ItemsDeletedEventArgs<IUserItem> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var itemPaths = e.ItemPaths;
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnUserItemsDeleted(signatureDate, itemPaths));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnUserItemsDeleted(signatureDate, itemPaths));
         }
 
         private void UserContext_MessageReceived(object sender, MessageEventArgs e)
@@ -403,21 +403,21 @@ namespace Ntreev.Crema.ServiceHosts.Users
             this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnMessageReceived(signatureDate, userIDs, message, messageType));
         }
 
-        private void UserContext_UsersLoggedIn(object sender, Services.ItemsEventArgs<IUser> e)
+        private void UserContext_UsersLoggedIn(object sender, Services.ItemsEventArgs<AuthenticationInfo> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
-            var userIDs = e.Items.Select(item => item.ID).ToArray();
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnUsersLoggedIn(signatureDate, userIDs));
+            var authenticationInfos = e.Items.ToArray();
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnUsersLoggedIn(signatureDate, authenticationInfos));
         }
 
-        private void UserContext_UsersLoggedOut(object sender, Services.ItemsEventArgs<IUser> e)
+        private void UserContext_UsersLoggedOut(object sender, Services.ItemsEventArgs<AuthenticationInfo> e)
         {
-            var actionUserID = e.UserID;
-            var contains = e.Items.Any(item => item.ID == this.authentication.ID);
+            var actionUserToken = e.UserToken;
+            var contains = e.Items.Any(item => item.Token == this.authentication.Token);
             var closeInfo = (CloseInfo)e.MetaData;
-            if (actionUserID != this.authentication.ID && contains == true)
+            if (actionUserToken != this.authentication.Token && contains == true)
             {
                 var signatureDate = e.SignatureDate;
                 this.DetachEventHandlers();
@@ -425,11 +425,11 @@ namespace Ntreev.Crema.ServiceHosts.Users
             }
             else
             {
-                var userID = this.authentication.ID;
-                var exceptionUserID = e.UserID;
+                var userToken = this.authentication.Token;
+                var exceptionUserToken = e.UserToken;
                 var signatureDate = e.SignatureDate;
-                var userIDs = e.Items.Select(item => item.ID).ToArray();
-                this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnUsersLoggedOut(signatureDate, userIDs));
+                var authenticationInfos = e.Items.ToArray();
+                this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnUsersLoggedOut(signatureDate, authenticationInfos));
             }
         }
 

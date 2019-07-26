@@ -40,8 +40,8 @@ namespace Ntreev.Crema.Services.Users
         private ItemsDeletedEventHandler<IUser> usersDeleted;
         private ItemsEventHandler<IUser> usersStateChanged;
         private ItemsEventHandler<IUser> usersChanged;
-        private ItemsEventHandler<IUser> usersLoggedIn;
-        private ItemsEventHandler<IUser> usersLoggedOut;
+        private ItemsEventHandler<AuthenticationInfo> usersLoggedIn;
+        private ItemsEventHandler<AuthenticationInfo> usersLoggedOut;
         private ItemsEventHandler<IUser> usersKicked;
         private ItemsEventHandler<IUser> usersBanChanged;
         private EventHandler<MessageEventArgs> messageReceived;
@@ -152,26 +152,26 @@ namespace Ntreev.Crema.Services.Users
             this.OnUsersChanged(new ItemsEventArgs<IUser>(authentication, users));
         }
 
-        public void InvokeUsersStateChangedEvent(Authentication authentication, User[] users)
+        public void InvokeUsersStateChangedEvent(Authentication authentication, IUser[] users)
         {
             this.CremaHost.DebugMethodMany(authentication, this, nameof(InvokeUsersStateChangedEvent), users);
             this.OnUsersStateChanged(new ItemsEventArgs<IUser>(authentication, users));
         }
 
-        public void InvokeUsersLoggedInEvent(Authentication authentication, User[] users)
+        public void InvokeUsersLoggedInEvent(Authentication authentication, AuthenticationInfo[] users)
         {
-            this.CremaHost.DebugMethodMany(authentication, this, nameof(InvokeUsersLoggedInEvent), users);
+            this.CremaHost.DebugMethodMany(authentication, this, nameof(InvokeUsersLoggedInEvent), users.ToObjects());
             this.CremaHost.Info(EventMessageBuilder.LoginUser(authentication, users));
-            this.OnUsersLoggedIn(new ItemsEventArgs<IUser>(authentication, users));
+            this.OnUsersLoggedIn(new ItemsEventArgs<AuthenticationInfo>(authentication, users));
         }
 
-        public void InvokeUsersLoggedOutEvent(Authentication authentication, User[] users, CloseInfo closeInfo)
+        public void InvokeUsersLoggedOutEvent(Authentication authentication, AuthenticationInfo[] users, CloseInfo closeInfo)
         {
-            var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeUsersLoggedOutEvent), users, closeInfo.Reason, closeInfo.Message);
+            var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeUsersLoggedOutEvent), users.ToObjects(), closeInfo.Reason, closeInfo.Message);
             var comment = EventMessageBuilder.LogoutUser(authentication, users);
             this.CremaHost.Debug(eventLog);
             this.CremaHost.Info(comment);
-            this.OnUsersLoggedOut(new ItemsEventArgs<IUser>(authentication, users));
+            this.OnUsersLoggedOut(new ItemsEventArgs<AuthenticationInfo>(authentication, users));
         }
 
         public void InvokeUsersKickedEvent(Authentication authentication, User[] users, string[] comments)
@@ -332,7 +332,7 @@ namespace Ntreev.Crema.Services.Users
             }
         }
 
-        public event ItemsEventHandler<IUser> UsersLoggedIn
+        public event ItemsEventHandler<AuthenticationInfo> UsersLoggedIn
         {
             add
             {
@@ -346,7 +346,7 @@ namespace Ntreev.Crema.Services.Users
             }
         }
 
-        public event ItemsEventHandler<IUser> UsersLoggedOut
+        public event ItemsEventHandler<AuthenticationInfo> UsersLoggedOut
         {
             add
             {
@@ -446,12 +446,12 @@ namespace Ntreev.Crema.Services.Users
             this.usersChanged?.Invoke(this, e);
         }
 
-        protected virtual void OnUsersLoggedIn(ItemsEventArgs<IUser> e)
+        protected virtual void OnUsersLoggedIn(ItemsEventArgs<AuthenticationInfo> e)
         {
             this.usersLoggedIn?.Invoke(this, e);
         }
 
-        protected virtual void OnUsersLoggedOut(ItemsEventArgs<IUser> e)
+        protected virtual void OnUsersLoggedOut(ItemsEventArgs<AuthenticationInfo> e)
         {
             this.usersLoggedOut?.Invoke(this, e);
         }

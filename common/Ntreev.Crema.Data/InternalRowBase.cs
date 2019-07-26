@@ -45,7 +45,9 @@ namespace Ntreev.Crema.Data
         {
             get
             {
-                return new SignatureDate(this.Field<string>(this.table.attributeCreator) ?? string.Empty, this.Field<DateTime>(this.table.attributeCreatedDateTime));
+                var creator = this.Field<string>(this.table.attributeCreator) ?? string.Empty;
+                var createdDate = this.Field<DateTime>(this.table.attributeCreatedDateTime);
+                return new SignatureDate(creator, createdDate);
             }
             internal set
             {
@@ -73,7 +75,9 @@ namespace Ntreev.Crema.Data
         {
             get
             {
-                return new SignatureDate(this.Field<string>(this.table.attributeModifier) ?? string.Empty, this.Field<DateTime>(this.table.attributeModifiedDateTime));
+                var modifier = this.Field<string>(this.table.attributeModifier) ?? string.Empty;
+                var modifierDate = this.Field<DateTime>(this.table.attributeModifiedDateTime);
+                return new SignatureDate(modifier, modifierDate);
             }
             internal set
             {

@@ -139,6 +139,8 @@
     <Compile Include="AuthenticationProvider.cs" />
     <Compile Include="RepositoryHost.cs" />
     <Compile Include="Users\User.cs" />
+    <Compile Include="Users\UserAuthentication.cs" />
+    <Compile Include="Users\UserAuthenticationCollection.cs" />
     <Compile Include="Users\UserAuthenticationProvider.cs" />
     <Compile Include="Users\UserCategory.cs" />
     <Compile Include="Users\UserCategoryCollection.cs" />

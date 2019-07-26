@@ -1260,7 +1260,7 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        private void Users_UsersLoggedOut(object sender, ItemsEventArgs<IUser> e)
+        private void Users_UsersLoggedOut(object sender, ItemsEventArgs<AuthenticationInfo> e)
         {
             this.CremaHost.Dispatcher.InvokeAsync(() =>
             {

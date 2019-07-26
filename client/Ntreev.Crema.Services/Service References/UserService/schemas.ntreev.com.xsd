@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<xs:schema xmlns:tns="http://schemas.ntreev.com" elementFormDefault="qualified" targetNamespace="http://schemas.ntreev.com" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://schemas.ntreev.com" elementFormDefault="qualified" targetNamespace="http://schemas.ntreev.com" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
   <xs:complexType name="ResultBaseOfUserContextMetaDataq8erDhHE">
     <xs:annotation>
@@ -119,6 +119,7 @@
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
+      <xs:element minOccurs="0" name="Token" type="ser:guid" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="SignatureDate" nillable="true" type="tns:SignatureDate" />
@@ -179,6 +180,21 @@
     </xs:list>
   </xs:simpleType>
   <xs:element name="UserState" nillable="true" type="tns:UserState" />
+  <xs:complexType name="ArrayOfAuthenticationInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="AuthenticationInfo" type="tns:AuthenticationInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfAuthenticationInfo" nillable="true" type="tns:ArrayOfAuthenticationInfo" />
+  <xs:complexType name="AuthenticationInfo">
+    <xs:annotation>
+      <xs:appinfo>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence />
+  </xs:complexType>
+  <xs:element name="AuthenticationInfo" nillable="true" type="tns:AuthenticationInfo" />
   <xs:complexType name="ArrayOfBanInfo">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="BanInfo" type="tns:BanInfo" />

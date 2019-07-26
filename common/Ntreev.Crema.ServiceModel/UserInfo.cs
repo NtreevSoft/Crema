@@ -54,6 +54,9 @@ namespace Ntreev.Crema.ServiceModel
         [XmlElement]
         public SignatureDate ModificationInfo { get; set; }
 
+        [XmlElement]
+        public AuthenticationInfo[] AuthenticationInfos { get; set; }
+
         [XmlIgnore]
         public string CategoryPath
         {

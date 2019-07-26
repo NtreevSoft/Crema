@@ -50,9 +50,9 @@ namespace Ntreev.Crema.Services
 
         event ItemsEventHandler<IUserItem> ItemsChanged;
 
-        event ItemsEventHandler<IUser> UsersLoggedIn;
+        event ItemsEventHandler<AuthenticationInfo> UsersLoggedIn;
 
-        event ItemsEventHandler<IUser> UsersLoggedOut;
+        event ItemsEventHandler<AuthenticationInfo> UsersLoggedOut;
 
         event ItemsEventHandler<IUser> UsersKicked;
 
@@ -67,7 +67,7 @@ namespace Ntreev.Crema.Services
 
         Authentication Authenticate(Guid authenticationToken);
 
-        bool IsAuthenticated(string userID);
+        bool IsAuthenticated(string userID, Guid token);
 
         bool IsOnlineUser(string userID, SecureString password);
 #endif

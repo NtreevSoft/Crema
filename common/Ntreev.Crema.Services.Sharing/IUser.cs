@@ -20,11 +20,15 @@ using System.Data;
 using System.Threading.Tasks;
 using Ntreev.Crema.ServiceModel;
 using System.Security;
+using Ntreev.Crema.Services.Users;
+using Ntreev.Library.ObjectModel;
 
 namespace Ntreev.Crema.Services
 {
     public interface IUser : IServiceProvider, IDispatcherObject, IExtendedProperties
     {
+        UserAuthenticationCollection Authentications { get; }
+
         void Move(Authentication authentication, string categoryPath);
 
         void Delete(Authentication authentication);

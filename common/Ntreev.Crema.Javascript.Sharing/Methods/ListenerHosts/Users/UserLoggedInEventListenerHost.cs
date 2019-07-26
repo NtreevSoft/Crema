@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Text;
+using Ntreev.Crema.ServiceModel;
 
 namespace Ntreev.Crema.Javascript.Methods.ListenerHosts.Users
 {
@@ -35,7 +36,7 @@ namespace Ntreev.Crema.Javascript.Methods.ListenerHosts.Users
             }
         }
 
-        private void UserContext_UsersLoggedIn(object sender, ItemsEventArgs<IUser> e)
+        private void UserContext_UsersLoggedIn(object sender, ItemsEventArgs<AuthenticationInfo> e)
         {
             this.Invoke(null);
         }

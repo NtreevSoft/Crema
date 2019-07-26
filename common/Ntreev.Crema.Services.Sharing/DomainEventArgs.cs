@@ -38,8 +38,11 @@ namespace Ntreev.Crema.Services
             this.domainInfo = domain.DomainInfo;
             this.domainState = domain.DomainState;
             this.signatureDate = authentication.SignatureDate;
+            this.Authentication = authentication;
             this.UserToken = authentication.Token;
         }
+
+        public Authentication Authentication { get; }
 
         public IDomain Domain
         {

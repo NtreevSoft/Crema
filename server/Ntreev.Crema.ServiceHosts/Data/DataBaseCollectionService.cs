@@ -354,12 +354,12 @@ namespace Ntreev.Crema.ServiceHosts.Data
             this.Callback.OnServiceClosed(signatureDate, closeInfo);
         }
 
-        private void UserContext_UsersLoggedOut(object sender, ItemsEventArgs<IUser> e)
+        private void UserContext_UsersLoggedOut(object sender, ItemsEventArgs<AuthenticationInfo> e)
         {
-            var actionUserID = e.UserID;
-            var contains = e.Items.Any(item => item.ID == this.authentication.ID);
+            var actionUserToken = e.UserToken;
+            var contains = e.Items.Any(item => item.Token == this.authentication.Token);
             var closeInfo = (CloseInfo)e.MetaData;
-            if (actionUserID != this.authentication.ID && contains == true)
+            if (actionUserToken != this.authentication.Token && contains == true)
             {
                 this.InvokeEvent(null, null, () => this.Callback.OnServiceClosed(e.SignatureDate, closeInfo));
             }
@@ -367,115 +367,115 @@ namespace Ntreev.Crema.ServiceHosts.Data
 
         private void DataBases_ItemsCreated(object sender, ItemsCreatedEventArgs<IDataBase> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var dataBaseNames = e.Items.Select(item => item.Name).ToArray();
             var dataBaseInfos = e.Arguments.Select(item => (DataBaseInfo)item).ToArray();
             var comment = e.MetaData as string;
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnDataBasesCreated(signatureDate, dataBaseNames, dataBaseInfos, comment));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnDataBasesCreated(signatureDate, dataBaseNames, dataBaseInfos, comment));
         }
 
         private void DataBases_ItemsRenamed(object sender, ItemsRenamedEventArgs<IDataBase> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var oldNames = e.OldNames;
             var itemNames = e.Items.Select(item => item.Name).ToArray();
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnDataBasesRenamed(signatureDate, oldNames, itemNames));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnDataBasesRenamed(signatureDate, oldNames, itemNames));
         }
 
         private void DataBases_ItemsDeleted(object sender, ItemsDeletedEventArgs<IDataBase> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var itemPaths = e.ItemPaths;
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnDataBasesDeleted(signatureDate, itemPaths));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnDataBasesDeleted(signatureDate, itemPaths));
         }
 
         private void DataBases_ItemsLoaded(object sender, ItemsEventArgs<IDataBase> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var itemNames = e.Items.Select(item => item.Name).ToArray();
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnDataBasesLoaded(signatureDate, itemNames));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnDataBasesLoaded(signatureDate, itemNames));
         }
 
         private void DataBases_ItemsUnloaded(object sender, ItemsEventArgs<IDataBase> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var itemNames = e.Items.Select(item => item.Name).ToArray();
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnDataBasesUnloaded(signatureDate, itemNames));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnDataBasesUnloaded(signatureDate, itemNames));
         }
 
         private void DataBases_ItemsResetting(object sender, ItemsEventArgs<IDataBase> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var itemNames = e.Items.Select(item => item.Name).ToArray();
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnDataBasesResetting(signatureDate, itemNames));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnDataBasesResetting(signatureDate, itemNames));
         }
 
         private void DataBases_ItemsReset(object sender, ItemsEventArgs<IDataBase> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var itemNames = e.Items.Select(item => item.Name).ToArray();
             var metaDatas = e.MetaData as DomainMetaData[];
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnDataBasesReset(signatureDate, itemNames, metaDatas));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnDataBasesReset(signatureDate, itemNames, metaDatas));
         }
 
         private void DataBases_ItemsAuthenticationEntered(object sender, ItemsEventArgs<IDataBase> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var itemNames = e.Items.Select(item => item.Name).ToArray();
             var authenticationInfo = (AuthenticationInfo)e.MetaData;
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnDataBasesAuthenticationEntered(signatureDate, itemNames, authenticationInfo));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnDataBasesAuthenticationEntered(signatureDate, itemNames, authenticationInfo));
         }
 
         private void DataBases_ItemsAuthenticationLeft(object sender, ItemsEventArgs<IDataBase> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var itemNames = e.Items.Select(item => item.Name).ToArray();
             var authenticationInfo = (AuthenticationInfo)e.MetaData;
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnDataBasesAuthenticationLeft(signatureDate, itemNames, authenticationInfo));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnDataBasesAuthenticationLeft(signatureDate, itemNames, authenticationInfo));
         }
 
         private void DataBases_ItemsInfoChanged(object sender, ItemsEventArgs<IDataBase> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var dataBaseInfos = e.Items.Select(item => item.DataBaseInfo).ToArray();
 
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnDataBasesInfoChanged(signatureDate, dataBaseInfos));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnDataBasesInfoChanged(signatureDate, dataBaseInfos));
         }
 
         private void DataBases_ItemsStateChanged(object sender, ItemsEventArgs<IDataBase> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var itemNames = e.Items.Select(item => item.Name).ToArray();
             var dataBaseStates = e.Items.Select(item => item.DataBaseState).ToArray();
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnDataBasesStateChanged(signatureDate, itemNames, dataBaseStates));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnDataBasesStateChanged(signatureDate, itemNames, dataBaseStates));
         }
 
         private void DataBases_ItemsAccessChanged(object sender, ItemsEventArgs<IDataBase> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var values = new AccessInfo[e.Items.Length];
             for (var i = 0; i < e.Items.Length; i++)
@@ -494,13 +494,13 @@ namespace Ntreev.Crema.ServiceHosts.Data
             var memberIDs = metaData[1] as string[];
             var accessTypes = metaData[2] as AccessType[];
 
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnDataBasesAccessChanged(signatureDate, changeType, values, memberIDs, accessTypes));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnDataBasesAccessChanged(signatureDate, changeType, values, memberIDs, accessTypes));
         }
 
         private void DataBases_ItemsLockChanged(object sender, ItemsEventArgs<IDataBase> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var values = new LockInfo[e.Items.Length];
             for (var i = 0; i < e.Items.Length; i++)
@@ -518,7 +518,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
             var changeType = (LockChangeType)metaData[0];
             var comments = metaData[1] as string[];
 
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnDataBasesLockChanged(signatureDate, changeType, values, comments));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnDataBasesLockChanged(signatureDate, changeType, values, comments));
         }
 
         private void AttachEventHandlers()

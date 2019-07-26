@@ -757,30 +757,28 @@ namespace Ntreev.Crema.Services
             return sb.ToString();
         }
 
-        public static string LoginUser(Authentication authentication, IUser[] users)
+        public static string LoginUser(Authentication authentication, AuthenticationInfo[] authenticationInfos)
         {
             var sb = new StringBuilder();
-            for (var i = 0; i < users.Length; i++)
+            for (var i = 0; i < authenticationInfos.Length; i++)
             {
                 if (i > 0)
                     sb.AppendLine();
-                var user = users[i];
-                var userInfo = user.UserInfo;
-                sb.AppendFormat(EventResources.LoginUser, userInfo.ID, userInfo.Name);
+                var user = authenticationInfos[i];
+                sb.AppendFormat(EventResources.LoginUser, user.ID, user.Name);
             }
             return sb.ToString();
         }
 
-        public static string LogoutUser(Authentication authentication, IUser[] users)
+        public static string LogoutUser(Authentication authentication, AuthenticationInfo[] authenticationInfos)
         {
             var sb = new StringBuilder();
-            for (var i = 0; i < users.Length; i++)
+            for (var i = 0; i < authenticationInfos.Length; i++)
             {
                 if (i > 0)
                     sb.AppendLine();
-                var user = users[i];
-                var userInfo = user.UserInfo;
-                sb.AppendFormat(EventResources.LogoutUser, userInfo.ID, userInfo.Name);
+                var user = authenticationInfos[i];
+                sb.AppendFormat(EventResources.LogoutUser, user.ID, user.Name);
             }
             return sb.ToString();
         }

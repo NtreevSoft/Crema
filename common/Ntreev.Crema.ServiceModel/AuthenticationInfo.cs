@@ -23,6 +23,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using Ntreev.Library.Serialization;
 
 namespace Ntreev.Crema.ServiceModel
 {
@@ -36,12 +37,28 @@ namespace Ntreev.Crema.ServiceModel
         public string Name { get; set; }
 
         [XmlElement]
+        public Guid Token { get; set; }
+
+        [XmlElement]
         public Authority Authority { get; set; }
 
         public readonly static AuthenticationInfo Empty = new AuthenticationInfo()
         {
             ID = string.Empty,
             Name = string.Empty,
+            Token = default
         };
+
+        #region DataMember
+
+        [DataMember]
+        [XmlIgnore]
+        private string Xml
+        {
+            get { return XmlSerializerUtility.GetString(this); }
+            set { this = XmlSerializerUtility.ReadString(this, value); }
+        }
+
+        #endregion
     }
 }

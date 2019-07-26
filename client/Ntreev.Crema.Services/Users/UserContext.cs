@@ -47,12 +47,12 @@ namespace Ntreev.Crema.Services.Users
         private ItemsDeletedEventHandler<IUserItem> itemsDeleted;
         private ItemsEventHandler<IUserItem> itemsChanged;
         private EventHandler<MessageEventArgs> messageReceived;
-        private ItemsEventHandler<IUser> usersLoggedIn;
-        private ItemsEventHandler<IUser> usersLoggedOut;
+        private ItemsEventHandler<AuthenticationInfo> usersLoggedIn;
+        private ItemsEventHandler<AuthenticationInfo> usersLoggedOut;
         private ItemsEventHandler<IUser> usersKicked;
         private ItemsEventHandler<IUser> usersBanChanged;
 
-        private readonly Dictionary<string, Authentication> customAuthentications = new Dictionary<string, Authentication>();
+        private readonly Dictionary<Guid, Authentication> customAuthentications = new Dictionary<Guid, Authentication>();
 
         public UserContext(CremaHost cremaHost, string address, ServiceInfo serviceInfo, string userID, SecureString password)
         {
@@ -136,24 +136,23 @@ namespace Ntreev.Crema.Services.Users
             var user = this.Users[signatureDate.ID];
             if (user != null)
             {
-                user.Authentication.SignatureDate = signatureDate;
-                return user.Authentication;
+                if (!user.Authentications.ContainsKey(signatureDate.Token))
+                {
+                    return new Authentication(new AuthenticationProvider(user), signatureDate.Token);
+                }
+
+                var auth = user.Authentications[signatureDate.Token];
+                auth.Authentication.SignatureDate = signatureDate;
+                return auth.Authentication;
             }
 
-            if (this.customAuthentications.ContainsKey(signatureDate.ID) == false)
+            if (this.customAuthentications.ContainsKey(signatureDate.Token) == false)
             {
-                this.customAuthentications.Add(signatureDate.ID, new Authentication(new AuthenticationProvider(signatureDate.ID)));
+                this.customAuthentications.Add(signatureDate.Token, new Authentication(new AuthenticationProvider(signatureDate.ID), signatureDate.Token));
             }
 
-            var authentication = this.customAuthentications[signatureDate.ID];
+            var authentication = this.customAuthentications[signatureDate.Token];
             authentication.SignatureDate = signatureDate;
-            return authentication;
-        }
-
-        public Authentication Authenticate(SignatureDate signatureDate, Guid token)
-        {
-            var authentication = this.Authenticate(signatureDate);
-            authentication.Token = token;
             return authentication;
         }
 
@@ -162,7 +161,13 @@ namespace Ntreev.Crema.Services.Users
             var user = this.Users[authenticationInfo.ID];
             if (user != null)
             {
-                return user.Authentication;
+                if (!user.Authentications.ContainsKey(authenticationInfo.Token))
+                {
+                    return new Authentication(new AuthenticationProvider(user), authenticationInfo.Token);
+                }
+
+                var auth = user.Authentications[authenticationInfo.Token];
+                return auth.Authentication;
             }
             return null;
         }
@@ -375,7 +380,7 @@ namespace Ntreev.Crema.Services.Users
             }
         }
 
-        public event ItemsEventHandler<IUser> UsersLoggedIn
+        public event ItemsEventHandler<AuthenticationInfo> UsersLoggedIn
         {
             add
             {
@@ -389,7 +394,7 @@ namespace Ntreev.Crema.Services.Users
             }
         }
 
-        public event ItemsEventHandler<IUser> UsersLoggedOut
+        public event ItemsEventHandler<AuthenticationInfo> UsersLoggedOut
         {
             add
             {
@@ -470,7 +475,6 @@ namespace Ntreev.Crema.Services.Users
                 var itemName = new ItemName(item.Path);
                 var user = this.Users.BaseAddNew(itemName.Name, itemName.CategoryPath);
                 user.Initialize(item.UserInfo, item.BanInfo);
-                user.SetUserState(item.UserState);
             }
         }
 
@@ -533,12 +537,12 @@ namespace Ntreev.Crema.Services.Users
             this.messageReceived?.Invoke(this, e);
         }
 
-        private void Users_UsersLoggedIn(object sender, ItemsEventArgs<IUser> e)
+        private void Users_UsersLoggedIn(object sender, ItemsEventArgs<AuthenticationInfo> e)
         {
             this.usersLoggedIn?.Invoke(this, e);
         }
 
-        private void Users_UsersLoggedOut(object sender, ItemsEventArgs<IUser> e)
+        private void Users_UsersLoggedOut(object sender, ItemsEventArgs<AuthenticationInfo> e)
         {
             this.usersLoggedOut?.Invoke(this, e);
         }
@@ -591,13 +595,14 @@ namespace Ntreev.Crema.Services.Users
             this.InvokeAsync(() =>
             {
                 var authentication = this.Authenticate(signatureDate);
-                var users = new User[userIDs.Length];
+                var users = new IUser[userIDs.Length];
                 for (var i = 0; i < userIDs.Length; i++)
                 {
                     var user = this.Users[userIDs[i]];
-                    user.SetUserState(states[i]);
                     users[i] = user;
                 }
+
+                var authenticationInfos = users.SelectMany(user => user.Authentications.Select(auth => auth.Value.Authentication.AuthenticationInfo)).ToArray();
                 this.Users.InvokeUsersStateChangedEvent(authentication, users);
             }, nameof(IUserServiceCallback.OnUsersStateChanged));
         }
@@ -844,35 +849,33 @@ namespace Ntreev.Crema.Services.Users
             }, nameof(IUserServiceCallback.OnUserItemsDeleted));
         }
 
-        void IUserServiceCallback.OnUsersLoggedIn(SignatureDate signatureDate, string[] userIDs)
+        void IUserServiceCallback.OnUsersLoggedIn(SignatureDate signatureDate, AuthenticationInfo[] authenticationInfos)
         {
             this.InvokeAsync(() =>
             {
-                var authentication = this.Authenticate(signatureDate);
-                var users = new User[userIDs.Length];
-                for (var i = 0; i < userIDs.Length; i++)
+                foreach (var info in authenticationInfos)
                 {
-                    var user = this.Users[userIDs[i]];
-                    user.IsOnline = true;
-                    users[i] = user;
+                    var user = this.Users[info.ID];
+                    var authentication = new Authentication(new AuthenticationProvider(user), info.Token);
+                    user.Authentications.Add(authentication.Token, new UserAuthentication(user, authentication));
+
+                    this.Users.InvokeUsersLoggedInEvent(authentication, new []{authentication.AuthenticationInfo});
                 }
-                this.Users.InvokeUsersLoggedInEvent(authentication, users);
             }, nameof(IUserServiceCallback.OnUsersLoggedIn));
         }
 
-        void IUserServiceCallback.OnUsersLoggedOut(SignatureDate signatureDate, string[] userIDs)
+        void IUserServiceCallback.OnUsersLoggedOut(SignatureDate signatureDate, AuthenticationInfo[] authenticationInfos)
         {
             this.InvokeAsync(() =>
             {
-                var authentication = this.Authenticate(signatureDate);
-                var users = new User[userIDs.Length];
-                for (var i = 0; i < userIDs.Length; i++)
+                foreach (var auth in authenticationInfos)
                 {
-                    var user = this.Users[userIDs[i]];
-                    user.IsOnline = false;
-                    users[i] = user;
+                    var user = this.Users[auth.ID];
+                    var authentication = this.Authenticate(auth);
+                    user.Authentications.Remove(auth.Token);
+                    this.Users.InvokeUsersLoggedOutEvent(authentication, new []{auth}, CloseInfo.Empty);
+
                 }
-                this.Users.InvokeUsersLoggedOutEvent(authentication, users, CloseInfo.Empty);
             }, nameof(IUserServiceCallback.OnUsersLoggedOut));
         }
 
@@ -885,7 +888,6 @@ namespace Ntreev.Crema.Services.Users
                 for (var i = 0; i < userIDs.Length; i++)
                 {
                     var user = this.Users[userIDs[i]];
-                    user.IsOnline = false;
                     users[i] = user;
                 }
                 this.Users.InvokeUsersKickedEvent(authentication, users, comments);

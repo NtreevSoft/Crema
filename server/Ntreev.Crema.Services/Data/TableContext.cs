@@ -663,7 +663,7 @@ namespace Ntreev.Crema.Services.Data
             this.itemsLockChanged?.Invoke(this, e);
         }
 
-        private void Users_UsersLoggedOut(object sender, ItemsEventArgs<IUser> e)
+        private void Users_UsersLoggedOut(object sender, ItemsEventArgs<AuthenticationInfo> e)
         {
             var userIDs = e.Items.Select(item => item.ID).ToArray();
             this.Dispatcher.InvokeAsync(() =>

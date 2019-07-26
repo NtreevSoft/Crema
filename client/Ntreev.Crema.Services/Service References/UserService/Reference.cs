@@ -89,10 +89,10 @@ namespace Ntreev.Crema.Services.UserService {
         void OnUserItemsDeleted(Ntreev.Library.SignatureDate signatureDate, string[] itemPaths);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://www.ntreev.com/IUserService/OnUsersLoggedIn")]
-        void OnUsersLoggedIn(Ntreev.Library.SignatureDate signatureDate, string[] userIDs);
+        void OnUsersLoggedIn(Ntreev.Library.SignatureDate signatureDate, Ntreev.Crema.ServiceModel.AuthenticationInfo[] auteAuthenticationInfos);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://www.ntreev.com/IUserService/OnUsersLoggedOut")]
-        void OnUsersLoggedOut(Ntreev.Library.SignatureDate signatureDate, string[] userIDs);
+        void OnUsersLoggedOut(Ntreev.Library.SignatureDate signatureDate, Ntreev.Crema.ServiceModel.AuthenticationInfo[] auteAuthenticationInfos);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://www.ntreev.com/IUserService/OnUsersKicked")]
         void OnUsersKicked(Ntreev.Library.SignatureDate signatureDate, string[] userIDs, string[] comments);

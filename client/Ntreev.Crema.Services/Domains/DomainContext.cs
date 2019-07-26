@@ -513,7 +513,7 @@ _Invoke:
             this.InvokeAsync(() =>
             {
                 var domain = this.Domains[domainID];
-                var authentication = this.userContext.Authenticate(signatureDate, domainUserInfo.Token);
+                var authentication = this.userContext.Authenticate(signatureDate);
                 domain.InvokeUserAdded(authentication, domainUserInfo, domainUserState);
             }, nameof(IDomainServiceCallback.OnUserAdded));
         }
@@ -523,7 +523,7 @@ _Invoke:
             this.InvokeAsync(() =>
             {
                 var domain = this.Domains[domainID];
-                var authentication = this.userContext.Authenticate(signatureDate, domainUserInfo.Token);
+                var authentication = this.userContext.Authenticate(signatureDate);
                 domain.InvokeUserRemoved(authentication, domainUserInfo, removeInfo);
             }, nameof(IDomainServiceCallback.OnUserRemoved));
         }
@@ -533,7 +533,7 @@ _Invoke:
             this.InvokeAsync(() =>
             {
                 var domain = this.Domains[domainID];
-                var authentication = this.userContext.Authenticate(signatureDate, domainUserInfo.Token);
+                var authentication = this.userContext.Authenticate(signatureDate);
                 domain.InvokeUserChanged(authentication, domainUserInfo, domainUserState);
             }, nameof(IDomainServiceCallback.OnUserChanged));
         }

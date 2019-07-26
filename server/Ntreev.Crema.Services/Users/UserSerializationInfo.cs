@@ -84,7 +84,7 @@ namespace Ntreev.Crema.Services.Users
                 CategoryPath = value.CategoryPath,
                 Authority = value.Authority,
                 CreationInfo = value.CreationInfo,
-                ModificationInfo = value.ModificationInfo,
+                ModificationInfo = value.ModificationInfo
             };
 
             if (obj.CreationInfo.ID == null)

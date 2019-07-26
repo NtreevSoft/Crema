@@ -41,9 +41,9 @@ namespace Ntreev.Crema.Services
 
         event ItemsEventHandler<IUser> UsersChanged;
 
-        event ItemsEventHandler<IUser> UsersLoggedIn;
+        event ItemsEventHandler<AuthenticationInfo> UsersLoggedIn;
 
-        event ItemsEventHandler<IUser> UsersLoggedOut;
+        event ItemsEventHandler<AuthenticationInfo> UsersLoggedOut;
 
         event ItemsEventHandler<IUser> UsersKicked;
 

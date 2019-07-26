@@ -130,6 +130,7 @@ namespace Ntreev.Crema.Services
                     ID = this.ID,
                     Name = this.Name,
                     Authority = this.Authority,
+                    Token = this.Token
                 };
             }
         }
@@ -180,7 +181,7 @@ namespace Ntreev.Crema.Services
 
         internal SignatureDate Sign(DateTime dateTime)
         {
-            this.signatureDate = new SignatureDate(this.ID, DateTime.UtcNow);
+            this.signatureDate = new SignatureDate(this.ID, this.token, DateTime.UtcNow);
             return this.signatureDate;
         }
 

@@ -662,12 +662,12 @@ namespace Ntreev.Crema.ServiceHosts.Data
             this.Callback.OnServiceClosed(signatureDate, closeInfo);
         }
 
-        private void UserContext_UsersLoggedOut(object sender, ItemsEventArgs<IUser> e)
+        private void UserContext_UsersLoggedOut(object sender, ItemsEventArgs<AuthenticationInfo> e)
         {
-            var actionUserID = e.UserID;
-            var contains = e.Items.Any(item => item.ID == this.authentication.ID);
+            var actionUserToken = e.UserToken;
+            var contains = e.Items.Any(item => item.Token == this.authentication.Token);
             var closeInfo = (CloseInfo)e.MetaData;
-            if (actionUserID != this.authentication.ID && contains == true)
+            if (actionUserToken != this.authentication.Token && contains == true)
             {
                 if (this.dataBase != null)
                 {
@@ -678,66 +678,66 @@ namespace Ntreev.Crema.ServiceHosts.Data
 
         private void Tables_TablesStateChanged(object sender, ItemsEventArgs<ITable> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var tableNames = e.Items.Select(item => item.Name).ToArray();
             var states = e.Items.Select(item => item.TableState).ToArray();
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnTablesStateChanged(signatureDate, tableNames, states));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnTablesStateChanged(signatureDate, tableNames, states));
         }
 
         private void Tables_TablesChanged(object sender, ItemsEventArgs<ITable> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var values = e.Items.Select(item => item.TableInfo).ToArray();
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnTablesChanged(signatureDate, values));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnTablesChanged(signatureDate, values));
         }
 
         private void TableContext_ItemCreated(object sender, ItemsCreatedEventArgs<ITableItem> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var paths = e.Items.Select(item => item.Path).ToArray();
             var arguments = e.Arguments.Select(item => item is TableInfo tableInfo ? (TableInfo?)tableInfo : null).ToArray();
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnTableItemsCreated(signatureDate, paths, arguments));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnTableItemsCreated(signatureDate, paths, arguments));
         }
 
         private void TableContext_ItemRenamed(object sender, ItemsRenamedEventArgs<ITableItem> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var oldPaths = e.OldPaths;
             var itemNames = e.Items.Select(item => item.Name).ToArray();
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnTableItemsRenamed(signatureDate, oldPaths, itemNames));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnTableItemsRenamed(signatureDate, oldPaths, itemNames));
         }
 
         private void TableContext_ItemMoved(object sender, ItemsMovedEventArgs<ITableItem> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var oldPaths = e.OldPaths;
             var parentPaths = e.Items.Select(item => item.Parent.Path).ToArray();
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnTableItemsMoved(signatureDate, oldPaths, parentPaths));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnTableItemsMoved(signatureDate, oldPaths, parentPaths));
         }
 
         private void TableContext_ItemDeleted(object sender, ItemsDeletedEventArgs<ITableItem> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var itemPaths = e.ItemPaths;
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnTableItemsDeleted(signatureDate, itemPaths));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnTableItemsDeleted(signatureDate, itemPaths));
         }
 
         private void TableContext_ItemsAccessChanged(object sender, ItemsEventArgs<ITableItem> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var values = new AccessInfo[e.Items.Length];
             for (var i = 0; i < e.Items.Length; i++)
@@ -756,13 +756,13 @@ namespace Ntreev.Crema.ServiceHosts.Data
             var memberIDs = metaData[1] as string[];
             var accessTypes = metaData[2] as AccessType[];
 
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnTableItemsAccessChanged(signatureDate, changeType, values, memberIDs, accessTypes));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnTableItemsAccessChanged(signatureDate, changeType, values, memberIDs, accessTypes));
         }
 
         private void TableContext_ItemsLockChanged(object sender, ItemsEventArgs<ITableItem> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var values = new LockInfo[e.Items.Length];
             for (var i = 0; i < e.Items.Length; i++)
@@ -780,71 +780,71 @@ namespace Ntreev.Crema.ServiceHosts.Data
             var changeType = (LockChangeType)metaData[0];
             var comments = metaData[1] as string[];
 
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnTableItemsLockChanged(signatureDate, changeType, values, comments));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnTableItemsLockChanged(signatureDate, changeType, values, comments));
         }
 
         private void Types_TypesStateChanged(object sender, ItemsEventArgs<IType> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var typeNames = e.Items.Select(item => item.Name).ToArray();
             var states = e.Items.Select(item => item.TypeState).ToArray();
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnTypesStateChanged(signatureDate, typeNames, states));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnTypesStateChanged(signatureDate, typeNames, states));
         }
 
         private void Types_TypesChanged(object sender, ItemsEventArgs<IType> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var values = e.Items.Select(item => item.TypeInfo).ToArray();
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnTypesChanged(signatureDate, values));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnTypesChanged(signatureDate, values));
         }
 
         private void TypeContext_ItemCreated(object sender, ItemsCreatedEventArgs<ITypeItem> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var itemPaths = e.Items.Select(item => item.Path).ToArray();
             var arguments = e.Arguments.Select(item => item is TypeInfo typeInfo ? (TypeInfo?)typeInfo : null).ToArray();
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnTypeItemsCreated(signatureDate, itemPaths, arguments));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnTypeItemsCreated(signatureDate, itemPaths, arguments));
         }
 
         private void TypeContext_ItemRenamed(object sender, ItemsRenamedEventArgs<ITypeItem> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var oldPaths = e.OldPaths;
             var itemNames = e.Items.Select(item => item.Name).ToArray();
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnTypeItemsRenamed(signatureDate, oldPaths, itemNames));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnTypeItemsRenamed(signatureDate, oldPaths, itemNames));
         }
 
         private void TypeContext_ItemMoved(object sender, ItemsMovedEventArgs<ITypeItem> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var oldPaths = e.OldPaths;
             var parentPaths = e.Items.Select(item => item.Parent.Path).ToArray();
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnTypeItemsMoved(signatureDate, oldPaths, parentPaths));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnTypeItemsMoved(signatureDate, oldPaths, parentPaths));
         }
 
         private void TypeContext_ItemDeleted(object sender, ItemsDeletedEventArgs<ITypeItem> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var itemPaths = e.ItemPaths;
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnTypeItemsDeleted(signatureDate, itemPaths));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnTypeItemsDeleted(signatureDate, itemPaths));
         }
 
         private void TypeContext_ItemsAccessChanged(object sender, ItemsEventArgs<ITypeItem> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var values = new AccessInfo[e.Items.Length];
             for (var i = 0; i < e.Items.Length; i++)
@@ -863,13 +863,13 @@ namespace Ntreev.Crema.ServiceHosts.Data
             var memberIDs = metaData[1] as string[];
             var accessTypes = metaData[2] as AccessType[];
 
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnTypeItemsAccessChanged(signatureDate, changeType, values, memberIDs, accessTypes));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnTypeItemsAccessChanged(signatureDate, changeType, values, memberIDs, accessTypes));
         }
 
         private void TypeContext_ItemsLockChanged(object sender, ItemsEventArgs<ITypeItem> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var values = new LockInfo[e.Items.Length];
             for (var i = 0; i < e.Items.Length; i++)
@@ -886,7 +886,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
             var metaData = e.MetaData as object[];
             var changeType = (LockChangeType)metaData[0];
             var comments = metaData[1] as string[];
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnTypeItemsLockChanged(signatureDate, changeType, values, comments));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnTypeItemsLockChanged(signatureDate, changeType, values, comments));
         }
 
         private void DataBase_Unloaded(object sender, EventArgs e)

@@ -88,12 +88,12 @@ namespace Ntreev.Crema.Services.Users
             throw new NotImplementedException();
         }
 
-        void IUserServiceCallback.OnUsersLoggedIn(SignatureDate signatureDate, string[] userIDs)
+        void IUserServiceCallback.OnUsersLoggedIn(SignatureDate signatureDate, AuthenticationInfo[] authenticationInfos)
         {
             throw new NotImplementedException();
         }
 
-        void IUserServiceCallback.OnUsersLoggedOut(SignatureDate signatureDate, string[] userIDs)
+        void IUserServiceCallback.OnUsersLoggedOut(SignatureDate signatureDate, AuthenticationInfo[] authenticationInfos)
         {
             throw new NotImplementedException();
         }

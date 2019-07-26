@@ -51,10 +51,10 @@ namespace Ntreev.Crema.ServiceHosts.Users
         void OnUserItemsDeleted(SignatureDate signatureDate, string[] itemPaths);
 
         [OperationContract(IsOneWay = true)]
-        void OnUsersLoggedIn(SignatureDate signatureDate, string[] userIDs);
+        void OnUsersLoggedIn(SignatureDate signatureDate, AuthenticationInfo[] auteAuthenticationInfos);
 
         [OperationContract(IsOneWay = true)]
-        void OnUsersLoggedOut(SignatureDate signatureDate, string[] userIDs);
+        void OnUsersLoggedOut(SignatureDate signatureDate, AuthenticationInfo[] auteAuthenticationInfos);
 
         [OperationContract(IsOneWay = true)]
         void OnUsersKicked(SignatureDate signatureDate, string[] userIDs, string[] comments);

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<xs:schema xmlns:tns="http://schemas.ntreev.com" elementFormDefault="qualified" targetNamespace="http://schemas.ntreev.com" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://schemas.ntreev.com" elementFormDefault="qualified" targetNamespace="http://schemas.ntreev.com" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
   <xs:complexType name="ResultBaseOfDomainContextMetaDataq8erDhHE">
     <xs:annotation>
@@ -108,6 +108,7 @@
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
+      <xs:element minOccurs="0" name="Token" type="ser:guid" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="SignatureDate" nillable="true" type="tns:SignatureDate" />

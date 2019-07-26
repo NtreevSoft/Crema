@@ -563,7 +563,7 @@ namespace Ntreev.Crema.Services.Data
             return this.DataBase.TableContext.Tables;
         }
 
-        private void Users_UsersLoggedOut(object sender, ItemsEventArgs<IUser> e)
+        private void Users_UsersLoggedOut(object sender, ItemsEventArgs<AuthenticationInfo> e)
         {
             var userIDs = e.Items.Select(item => item.ID).ToArray();
             this.CremaHost.Dispatcher.InvokeAsync(() =>
