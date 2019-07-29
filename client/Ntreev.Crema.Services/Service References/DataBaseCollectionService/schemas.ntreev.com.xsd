@@ -255,7 +255,9 @@
         <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
       </xs:appinfo>
     </xs:annotation>
-    <xs:sequence />
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Xml" nillable="true" type="xs:string" />
+    </xs:sequence>
   </xs:complexType>
   <xs:element name="AuthenticationInfo" nillable="true" type="tns:AuthenticationInfo" />
   <xs:complexType name="ArrayOfDataBaseState">

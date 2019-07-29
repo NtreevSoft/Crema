@@ -119,6 +119,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Service References\DomainService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Service References\UserService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -128,11 +133,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Service References\DomainService\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="Domains\Domain.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -206,8 +206,8 @@
     <None Include="Service References\DomainService\schemas.ntreev.com.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\DomainService\service1.wsdl" />
-    <None Include="Service References\DomainService\service21.xsd">
+    <None Include="Service References\DomainService\service.wsdl" />
+    <None Include="Service References\DomainService\service.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\DomainService\System.xsd">
@@ -241,18 +241,6 @@
     <WCFMetadataStorage Include="Service References\DescriptorService\" />
     <WCFMetadataStorage Include="Service References\DomainService\" />
     <WCFMetadataStorage Include="Service References\UserService\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\DomainService\configuration91.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\DomainService\configuration.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\DomainService\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\common\Ntreev.Crema.Data\Ntreev.Crema.Data.csproj">
@@ -320,6 +308,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\DescriptorService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DomainService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DomainService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DomainService\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>

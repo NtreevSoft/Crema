@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ntreev.Crema.Client.Users.PropertyItems.ViewModels;
 
 namespace Ntreev.Crema.Client.Users
 {
@@ -48,9 +49,18 @@ namespace Ntreev.Crema.Client.Users
                 throw new ArgumentNullException(nameof(authentication));
             if (descriptor == null)
                 throw new ArgumentNullException(nameof(descriptor));
+            if (DomainUserDescriptorUtility.IsOwner(authentication, descriptor) && authentication.Token == descriptor.Token)
+                return false;
+            if (authentication.Authority == Authority.Admin)
+                return true;
+            if (descriptor.Owner is EditorsViewModel editorsViewModel)
+            {
+                var isOwnerByUserId = editorsViewModel.Users.OfType<DomainUserTreeItemBase>().Any(user => user.UserID == descriptor.UserID && user.IsOwner);
+                if (isOwnerByUserId) return true;
+            }
             if (DomainUserDescriptorUtility.IsOwner(authentication, descriptor) == false)
                 return false;
-            return authentication.Authority == Authority.Admin;
+            return false;
         }
 
         public static bool CanKick(Authentication authentication, IDomainUserDescriptor descriptor)
@@ -61,7 +71,11 @@ namespace Ntreev.Crema.Client.Users
                 throw new ArgumentNullException(nameof(descriptor));
             if (DomainUserDescriptorUtility.IsOwner(authentication, descriptor) == true)
                 return false;
-            return authentication.Authority == Authority.Admin;
+            if (authentication.Authority == Authority.Admin)
+                return true;
+            if (authentication.ID == descriptor.UserID && authentication.Token != descriptor.Token)
+                return true;
+            return false;
         }
 
         public static async Task<bool> SendMessageAsync(Authentication authentication, IDomainUserDescriptor descriptor)

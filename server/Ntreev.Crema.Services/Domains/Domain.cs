@@ -894,8 +894,8 @@ namespace Ntreev.Crema.Services.Domains
             if (this.users.ContainsKey(token) == false)
                 throw new ArgumentException(string.Format(Resources.Exception_UserIsNotInDomain_Format, userID), nameof(userID));
 
-            if (authentication.ID == userID)
-                throw new ArgumentException(Resources.Exception_CannotKickYourself, nameof(userID));
+            if (authentication.Token == token)
+                throw new ArgumentException(Resources.Exception_CannotKickYourself, nameof(token));
 
             var domainUser = (DomainUser)this.users[token];
             if (domainUser.IsOwner == true)

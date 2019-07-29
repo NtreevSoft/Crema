@@ -39,6 +39,8 @@ namespace Ntreev.Crema.Client.Framework
 
         DomainUserState DomainUserState { get; }
 
+        object Owner { get; }
+
         bool IsOnline { get; }
 
         bool IsModified { get; }

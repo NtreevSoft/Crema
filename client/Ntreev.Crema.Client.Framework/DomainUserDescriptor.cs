@@ -90,6 +90,8 @@ namespace Ntreev.Crema.Client.Framework
         [DescriptorProperty(nameof(domainUserState))]
         public DomainUserState DomainUserState => this.domainUserState;
 
+        public object Owner => this.owner;
+
         [DescriptorProperty]
         public bool IsOnline => DomainUserDescriptorUtility.IsOnline(this.authentication, this);
 
