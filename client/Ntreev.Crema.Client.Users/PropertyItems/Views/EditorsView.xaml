@@ -32,9 +32,6 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
         <DataTemplate x:Key="ListBox_ItemTemplate">
             <DataTemplate.Resources>
                 <nmfc:ExpandableContextMenu x:Key="ListBoxItem_ContextMenu" ItemsSource="{Binding ContextMenus}">
-                    <MenuItem x:Name="SendMessage" Header="{x:Static p:Resources.MenuItem_SendMessage}" />
-                    <MenuItem x:Name="SetOwner" Header="{x:Static p:Resources.MenuItem_SetOwner}" />
-                    <MenuItem x:Name="Kick" Header="{x:Static p:Resources.MenuItem_Kick}" />
                 </nmfc:ExpandableContextMenu>
             </DataTemplate.Resources>
             <DockPanel Background="Transparent" Margin="2" ContextMenu="{StaticResource ListBoxItem_ContextMenu}">

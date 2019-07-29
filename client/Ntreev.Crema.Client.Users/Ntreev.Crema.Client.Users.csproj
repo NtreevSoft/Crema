@@ -114,10 +114,12 @@
     <Compile Include="Dialogs\Views\ViewMessageView.xaml.cs">
       <DependentUpon>ViewMessageView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MenuItems\KickMenuItem.cs" />
     <Compile Include="MenuItems\SendMessageMenuItem.cs" />
     <Compile Include="MenuItems\FileMenus\ChangePasswordMenuItem.cs" />
     <Compile Include="Dialogs\ViewModels\SendMessageViewModel.cs" />
     <Compile Include="Dialogs\ViewModels\ViewMessageViewModel.cs" />
+    <Compile Include="MenuItems\SetOwnerMenuItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
