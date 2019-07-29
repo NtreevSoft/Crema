@@ -108,7 +108,13 @@ namespace Ntreev.Crema.Services.Domains
             if (this.isEnabled == false)
                 return;
 
-            var action = new NewRowAction() { UserID = authentication.ID, Rows = rows, AcceptTime = authentication.SignatureDate.DateTime };
+            var action = new NewRowAction()
+            {
+                UserID = authentication.ID,
+                UserToken = authentication.Token,
+                Rows = rows,
+                AcceptTime = authentication.SignatureDate.DateTime
+            };
             this.Post(action);
         }
 
@@ -117,7 +123,13 @@ namespace Ntreev.Crema.Services.Domains
             if (this.isEnabled == false)
                 return;
 
-            var action = new SetRowAction() { UserID = authentication.ID, Rows = rows, AcceptTime = authentication.SignatureDate.DateTime };
+            var action = new SetRowAction()
+            {
+                UserID = authentication.ID,
+                UserToken = authentication.Token,
+                Rows = rows,
+                AcceptTime = authentication.SignatureDate.DateTime
+            };
             this.Post(action);
         }
 
@@ -126,7 +138,13 @@ namespace Ntreev.Crema.Services.Domains
             if (this.isEnabled == false)
                 return;
 
-            var action = new RemoveRowAction() { UserID = authentication.ID, Rows = rows, AcceptTime = authentication.SignatureDate.DateTime };
+            var action = new RemoveRowAction()
+            {
+                UserID = authentication.ID,
+                UserToken = authentication.Token,
+                Rows = rows,
+                AcceptTime = authentication.SignatureDate.DateTime
+            };
             this.Post(action);
         }
 
@@ -135,19 +153,38 @@ namespace Ntreev.Crema.Services.Domains
             if (this.isEnabled == false)
                 return;
 
-            var action = new SetPropertyAction() { UserID = authentication.ID, PropertyName = propertyName, Value = value, AcceptTime = authentication.SignatureDate.DateTime };
+            var action = new SetPropertyAction()
+            {
+                UserID = authentication.ID,
+                UserToken = authentication.Token,
+                PropertyName = propertyName,
+                Value = value,
+                AcceptTime = authentication.SignatureDate.DateTime
+            };
             this.Post(action);
         }
 
         public void Join(Authentication authentication, DomainAccessType accessType)
         {
-            var action = new JoinAction() { UserID = authentication.ID, AccessType = accessType, AcceptTime = authentication.SignatureDate.DateTime};
+            var action = new JoinAction()
+            {
+                UserID = authentication.ID,
+                UserToken = authentication.Token,
+                AccessType = accessType,
+                AcceptTime = authentication.SignatureDate.DateTime
+            };
             this.Post(action);
         }
 
         public void Disjoin(Authentication authentication, RemoveInfo removeInfo)
         {
-            var action = new DisjoinAction() { UserID = authentication.ID, RemoveInfo = removeInfo, AcceptTime = authentication.SignatureDate.DateTime };
+            var action = new DisjoinAction()
+            {
+                UserID = authentication.ID,
+                UserToken = authentication.Token,
+                RemoveInfo = removeInfo,
+                AcceptTime = authentication.SignatureDate.DateTime
+            };
             this.Post(action);
         }
 
@@ -156,6 +193,7 @@ namespace Ntreev.Crema.Services.Domains
             var action = new KickAction()
             {
                 UserID = authentication.ID,
+                UserToken = authentication.Token,
                 TargetID = userID,
                 TargetToken = token,
                 Comment = comment,
@@ -169,6 +207,7 @@ namespace Ntreev.Crema.Services.Domains
             var action = new SetOwnerAction()
             {
                 UserID = authentication.ID,
+                UserToken = authentication.Token,
                 TargetID = userID,
                 TargetToken = token,
                 AcceptTime = authentication.SignatureDate.DateTime

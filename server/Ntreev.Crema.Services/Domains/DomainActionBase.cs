@@ -43,6 +43,9 @@ namespace Ntreev.Crema.Services.Domains
         public string UserID { get; set; }
 
         [DataMember]
+        public Guid UserToken { get; set; }
+
+        [DataMember]
         public long ID { get; set; }
 
         [DataMember]

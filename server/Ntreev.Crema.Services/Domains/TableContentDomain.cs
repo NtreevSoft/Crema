@@ -60,7 +60,7 @@ namespace Ntreev.Crema.Services.Domains
         }
 
         public TableContentDomain(Authentication authentication, CremaDataSet dataSet, DataBase dataBase, string itemPath, string itemType)
-            : base(authentication.ID, dataBase.ID, itemPath, itemType)
+            : base(authentication.ID, authentication.Token, dataBase.ID, itemPath, itemType)
         {
             if (dataSet.HasChanges() == true)
                 throw new ArgumentException(Resources.Exception_UnsavedDataCannotEdit, nameof(dataSet));

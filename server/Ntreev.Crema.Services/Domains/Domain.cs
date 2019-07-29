@@ -66,9 +66,9 @@ namespace Ntreev.Crema.Services.Domains
             this.InitializeUsers(info);
         }
 
-        protected Domain(string creatorID, Guid dataBaseID, string itemPath, string itemType)
+        protected Domain(string creatorID, Guid creatorToken, Guid dataBaseID, string itemPath, string itemType)
         {
-            var signatureDate = new SignatureDate(creatorID, DateTime.UtcNow);
+            var signatureDate = new SignatureDate(creatorID, creatorToken, DateTime.UtcNow);
             var domainInfo = new DomainInfo()
             {
                 DomainID = Guid.NewGuid(),

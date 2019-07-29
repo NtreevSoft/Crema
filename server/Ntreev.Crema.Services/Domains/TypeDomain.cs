@@ -47,7 +47,7 @@ namespace Ntreev.Crema.Services.Domains
         }
 
         public TypeDomain(Authentication authentication, CremaDataType dataType, DataBase dataBase, string itemPath, string itemType)
-            : base(authentication.ID, dataBase.ID, itemPath, itemType)
+            : base(authentication.ID, authentication.Token, dataBase.ID, itemPath, itemType)
         {
             this.dataType = dataType;
             this.view = this.dataType.View;

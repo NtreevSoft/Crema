@@ -51,7 +51,7 @@ namespace Ntreev.Crema.Services.Domains
 
         private readonly HashSet<long> completedActions = new HashSet<long>();
         private readonly List<DomainActionBase> postedActions = new List<DomainActionBase>();
-        private Dictionary<string, Authentication> authentications;
+        private Dictionary<Guid, Authentication> authentications;
         private Domain domain;
         private DateTime dateTime;
 
@@ -165,19 +165,27 @@ namespace Ntreev.Crema.Services.Domains
 
         private void CollectAuthentications()
         {
-            var creatorID = this.domain.DomainInfo.CreationInfo.ID;
+            var creator = this.domain.DomainInfo.CreationInfo;
             var userContext = this.domainContext.CremaHost.UserContext;
-            var userIDs = this.postedActions.Select(item => item.UserID).Concat(Enumerable.Repeat(creatorID, 1)).Distinct();
+            var actionUsers = this.postedActions.Select(item => new
+            {
+                item.UserID,
+                item.UserToken
+            }).Concat(Enumerable.Repeat(new
+            {
+                UserID = creator.ID,
+                UserToken = creator.Token
+            }, 1)).Distinct();
 
             var users = userContext.Dispatcher.Invoke(() =>
             {
-                var query = from userID in userIDs
-                            join User user in userContext.Users on userID equals user.ID
-                            select new Authentication(new UserAuthenticationProvider(user, true));
+                var query = from actionUser in actionUsers
+                    join User user in userContext.Users on actionUser.UserID equals user.ID
+                    select new Authentication(new UserAuthenticationProvider(user, true), actionUser.UserToken);
                 return query.ToArray();
             });
 
-            this.authentications = users.ToDictionary(item => item.ID);
+            this.authentications = users.ToDictionary(item => item.Token);
         }
 
         private void RestoreDomain()
@@ -190,7 +198,7 @@ namespace Ntreev.Crema.Services.Domains
 
                 foreach (var item in this.postedActions)
                 {
-                    var authentication = this.authentications[item.UserID];
+                    var authentication = this.authentications[item.UserToken];
                     try
                     {
                         var action = item as DomainActionBase;

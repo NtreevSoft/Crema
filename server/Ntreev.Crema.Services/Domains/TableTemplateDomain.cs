@@ -48,7 +48,7 @@ namespace Ntreev.Crema.Services.Domains
         }
 
         public TableTemplateDomain(Authentication authentication, CremaTemplate templateSource, DataBase dataBase, string itemPath, string itemType)
-            : base(authentication.ID, dataBase.ID, itemPath, itemType)
+            : base(authentication.ID, authentication.Token, dataBase.ID, itemPath, itemType)
         {
             this.template = templateSource;
             this.view = this.template.View;
