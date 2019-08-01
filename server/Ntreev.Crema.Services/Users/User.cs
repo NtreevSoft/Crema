@@ -130,13 +130,6 @@ namespace Ntreev.Crema.Services.Users
                     this.Authentications.Clear();
 
                 }
-                //if (this.Authentication != null)
-                //{
-                //    var message = "다른 기기에서 동일한 아이디로 접속하였습니다.";
-                //    var closeInfo = new CloseInfo() { Reason = CloseReason.Reconnected, Message = message };
-                //    this.Authentication.InvokeExpiredEvent(this.ID, message);
-                //    this.Container.InvokeUsersLoggedOutEvent(this.Authentication, users, closeInfo);
-                //}
 
                 Guid authenticationToken = GetAuthenticationToken();
 
