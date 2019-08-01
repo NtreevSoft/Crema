@@ -86,6 +86,7 @@ namespace Ntreev.Crema.ServiceModel
                 { nameof(this.ID), this.ID },
                 { nameof(this.Name), this.Name },
                 { nameof(this.CategoryName), this.CategoryName },
+                { nameof(this.CategoryPath), this.CategoryPath },
                 { nameof(this.Authority), $"{this.Authority}" },
                 { nameof(this.AllowMultiLogin), this.AllowMultiLogin },
                 { CremaSchema.Creator, this.CreationInfo.ID },

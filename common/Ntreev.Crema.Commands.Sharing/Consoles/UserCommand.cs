@@ -314,6 +314,7 @@ namespace Ntreev.Crema.Commands.Consoles
             {
                 { $"{nameof(userInfo.ID)}", userInfo.ID },
                 { $"{nameof(userInfo.Name)}", userInfo.Name },
+                { $"{nameof(userInfo.AllowMultiLogin)}", userInfo.AllowMultiLogin },
                 { $"{nameof(userInfo.CategoryPath)}", userInfo.CategoryPath },
                 { $"{nameof(userInfo.Authority)}", userInfo.Authority },
                 { $"{nameof(userInfo.CreationInfo)}", userInfo.CreationInfo.ToLocalValue() },
