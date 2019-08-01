@@ -55,6 +55,8 @@ namespace Ntreev.Crema.Services
 
         public string ID => this.authentication.ID;
 
+        public Guid Token => this.authentication.Token;
+
         public Authority Authority => this.authentication.Authority;
 
         public bool IsOpened => this.authentication != null;

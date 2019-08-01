@@ -553,7 +553,14 @@ namespace Ntreev.Crema.Services.Data
         void IDomainHost.Restore(Domain domain)
         {
             this.OnRestore(domain);
-            this.OnEditBegun(EventArgs.Empty);
+        }
+
+        void IDomainHost.OnRestoredEvent(Domain domain)
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+                this.OnEditBegun(EventArgs.Empty);
+            });
         }
 
         void IDomainHost.Detach()

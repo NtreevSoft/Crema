@@ -579,6 +579,8 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
+        Domain IDomainHost.Domain => throw new NotImplementedException();
+
         #endregion
 
         #region IDomainHost
@@ -588,7 +590,6 @@ namespace Ntreev.Crema.Services.Data
             this.domain = domain;
             Authentication.System.Sign();
             this.BeginContent(Authentication.System, this.domain);
-            this.InvokeEditBegunEvent(EventArgs.Empty);
             if (this.domain.Source != null)
                 this.EnterContent(Authentication.System, this.domain);
             this.masterUserToken = this.domain.Users.OwnerToken;
@@ -596,6 +597,13 @@ namespace Ntreev.Crema.Services.Data
             {
                 this.isModified = this.domain.IsModified;
                 this.AttachDomainEvent();
+            });
+        }
+
+        void IDomainHost.OnRestoredEvent(Domain domain)
+        {
+            this.Dispatcher.Invoke(() => {
+                this.InvokeEditBegunEvent(EventArgs.Empty);
             });
         }
 

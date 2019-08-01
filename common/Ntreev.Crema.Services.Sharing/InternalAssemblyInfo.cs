@@ -15,49 +15,7 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Ntreev.Crema.ServiceModel;
+using System.Runtime.CompilerServices;
 
-namespace Ntreev.Crema.Services.Domains
-{
-    class DummyDomainHost : IDomainHost
-    {
-        private readonly Domain domain;
-
-        public DummyDomainHost(Domain domain)
-        {
-            this.domain = domain;
-        }
-
-        public DomainAccessType AccessType { get; internal set; }
-
-        public Domain Domain
-        {
-            get { return this.domain; }
-        }
-
-        public void Restore(Domain domain)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnRestoredEvent(Domain domain)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Detach()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ValidateDelete(Authentication authentication, bool isCanceled)
-        {
-            throw new NotImplementedException();
-        }
-    }
-}
+[assembly: InternalsVisibleTo("Ntreev.Crema.Client.Tables")]
+[assembly: InternalsVisibleTo("Ntreev.Crema.Client.Types")]

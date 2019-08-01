@@ -685,6 +685,10 @@ namespace Ntreev.Crema.Services.Data
             });
         }
 
+        void IDomainHost.OnRestoredEvent(Domain domain)
+        {
+        }
+
         void IDomainHost.Detach()
         {
             this.domain.Dispatcher.Invoke(() =>

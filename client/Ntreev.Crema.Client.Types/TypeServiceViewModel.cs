@@ -35,6 +35,7 @@ using System.Windows.Threading;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using Ntreev.Crema.Services.Domains;
 
 namespace Ntreev.Crema.Client.Types
 {
@@ -254,13 +255,26 @@ namespace Ntreev.Crema.Client.Types
                         {
                             var category = dataBase.TypeContext[itemPath] as ITypeCategory;
                             var dialog = new NewTypeViewModel(this.authenticator, category, template);
-                            restoreList.Add(new System.Action(() => dialog.ShowDialog()));
+                            restoreList.Add(new System.Action(() => {
+                                if (item.Host is IDomainHost host)
+                                {
+                                    host.OnRestoredEvent((Domain)item);
+                                }
+
+                                dialog.ShowDialog(); }));
                         }
                         else if (itemType == "TypeTemplate")
                         {
                             var type = dataBase.TypeContext[itemPath] as IType;
                             var dialog = new EditTemplateViewModel(this.authenticator, type, template);
-                            restoreList.Add(new System.Action(() => dialog.ShowDialog()));
+                            restoreList.Add(new System.Action(() => {
+                                if (item.Host is IDomainHost host)
+                                {
+                                    host.OnRestoredEvent((Domain)item);
+                                }
+
+                                dialog.ShowDialog();
+                            }));
                         }
                     }
                 }

@@ -524,6 +524,10 @@ namespace Ntreev.Crema.Services.Data
             this.OnEditBegun(EventArgs.Empty);
         }
 
+        void IDomainHost.OnRestoredEvent(Domain domain)
+        {
+        }
+
         void IDomainHost.Detach()
         {
             this.OnDetached();

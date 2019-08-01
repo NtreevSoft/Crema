@@ -52,10 +52,6 @@ namespace Ntreev.Crema.Services.Users
             get { return this.UserState.HasFlag(UserState.Online); }
         }
 
-        public User()
-        {
-        }
-
         public void Rename(Authentication authentication, string newName)
         {
             try
@@ -122,7 +118,29 @@ namespace Ntreev.Crema.Services.Users
                 this.CremaHost.DebugMethod(Authentication.System, this, nameof(Login), this);
                 this.ValidateLogin(password);
 
-                var authentication = new Authentication(new UserAuthenticationProvider(this), Guid.NewGuid());
+                var domainContext = this.CremaHost.GetService(typeof(IDomainContext)) as IDomainContext;
+                var userID = this.ID;
+                var authenticationToken = domainContext.Dispatcher.Invoke(() =>
+                {
+                    var domainContextMetaData = domainContext.GetMetaData(Authentication.System);
+                    var containsDomain = domainContextMetaData.Domains.Any(metaData => {
+                        return metaData.DomainInfo.ItemType != "TableContent" && metaData.Users.Any(user => user.DomainUserInfo.UserID == userID);
+                    });
+                    if (containsDomain)
+                    {
+                        foreach (var domainMetaData in domainContextMetaData.Domains)
+                        {
+                            var domainUserInfo = domainMetaData.Users.First(user => user.DomainUserInfo.UserID == userID);
+                            var token = domainUserInfo.DomainUserInfo.Token;
+
+                            return this.Authentications.ContainsKey(token) ? Guid.NewGuid() : token;
+                        }
+                    }
+
+                    return Guid.NewGuid();
+                });
+
+                var authentication = new Authentication(new UserAuthenticationProvider(this), authenticationToken);
                 this.Sign(authentication);
 
                 //TODO: 3.7

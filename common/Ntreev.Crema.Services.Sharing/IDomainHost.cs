@@ -19,6 +19,7 @@ using Ntreev.Crema.Services.Domains;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,6 +28,7 @@ namespace Ntreev.Crema.Services
     interface IDomainHost
     {
         void Restore(Domain domain);
+        void OnRestoredEvent(Domain domain);
 
         void Detach();
 

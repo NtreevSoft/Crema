@@ -13,6 +13,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ClosedEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ClosedEventHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EventMetaDataBuilder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)InternalAssemblyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IStateProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IInfoProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IDispatcherObject.cs" />

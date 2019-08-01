@@ -80,7 +80,10 @@ namespace Ntreev.Crema.ServiceHosts.Domains
                     {
                         if (item.Users.Any(i => i.DomainUserInfo.UserID == this.OwnerID) == true)
                         {
-                            this.domains.Add(item.DomainID);
+                            if (!this.domains.Contains(item.DomainID))
+                            {
+                                this.domains.Add(item.DomainID);
+                            }
                         }
                     }
                     return metaData;

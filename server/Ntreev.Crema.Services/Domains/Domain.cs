@@ -338,11 +338,10 @@ namespace Ntreev.Crema.Services.Domains
                     DomainState = base.DomainState,
                 };
 
-                if (this.users.Contains(authentication.Token) == true)
+                metaData.Data = this.GetMetaDataData(authentication);
+                if (this.data == null)
                 {
-                    if (this.data == null)
-                        this.data = this.SerializeSource();
-                    metaData.Data = this.data;
+                    this.data = metaData.Data;
                 }
 
                 return metaData;
@@ -353,6 +352,8 @@ namespace Ntreev.Crema.Services.Domains
                 throw;
             }
         }
+
+        protected abstract byte[] GetMetaDataData(Authentication authentication);
 
         public void Write(string filename)
         {

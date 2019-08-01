@@ -172,5 +172,15 @@ namespace Ntreev.Crema.Services.Domains
                 throw e;
             }
         }
+
+        protected override byte[] GetMetaDataData(Authentication authentication)
+        {
+            if (this.Users.Contains(authentication.Token) == true)
+            {
+                return this.SerializeSource();
+            }
+
+            return null;
+        }
     }
 }

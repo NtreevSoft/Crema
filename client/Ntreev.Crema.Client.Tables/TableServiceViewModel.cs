@@ -35,6 +35,7 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using Ntreev.Crema.Client.Tables.BrowserItems.ViewModels;
+using Ntreev.Crema.Services.Domains;
 
 namespace Ntreev.Crema.Client.Tables
 {
@@ -231,38 +232,65 @@ namespace Ntreev.Crema.Client.Tables
 
                 foreach (var item in domains)
                 {
-                    var users = item.Users.Select(o => o.DomainUserInfo.UserID);
-                    if (users.Contains(this.authenticator.ID) == false)
-                        continue;
+                    var users = item.Users.Select(o => o.DomainUserInfo);
 
                     var itemPath = item.DomainInfo.ItemPath;
                     var itemType = item.DomainInfo.ItemType;
 
                     if (item.Host is ITableContent content)
                     {
+                        if (users.Any(user => user.UserID == this.authenticator.ID) == false) continue;
+
                         var table = content.Table;
                         var tableDescriptor = this.browser.GetDescriptor(table.Path) as ITableDescriptor;
-                        restoreList.Add(new System.Action(() => this.DocumentService.OpenTable(this.authenticator, tableDescriptor)));
+                        restoreList.Add(new System.Action(() => {
+                            this.DocumentService.OpenTable(this.authenticator, tableDescriptor);
+                            if (item.Host is IDomainHost host)
+                            {
+                                host.OnRestoredEvent((Domain)item);
+                            }
+                        }));
                     }
                     else if (item.Host is ITableTemplate template)
                     {
+                        if (users.Any(user => user.Token == this.authenticator.Token) == false) continue;
+
                         if (itemType == "NewTableTemplate")
                         {
                             var category = dataBase.TableContext[itemPath] as ITableCategory;
                             var dialog = new NewTableViewModel(this.authenticator, category, template);
-                            restoreList.Add(new System.Action(() => dialog.ShowDialog()));
+                            restoreList.Add(new System.Action(() => {
+                                if (item.Host is IDomainHost host)
+                                {
+                                    host.OnRestoredEvent((Domain)item);
+                                }
+
+                                dialog.ShowDialog(); }));
                         }
                         else if (itemType == "NewChildTableTemplate")
                         {
                             var table = dataBase.TableContext[itemPath] as ITable;
                             var dialog = new NewChildTableViewModel(this.authenticator, table, template);
-                            restoreList.Add(new System.Action(() => dialog.ShowDialog()));
+                            restoreList.Add(new System.Action(() => {
+                                if (item.Host is IDomainHost host)
+                                {
+                                    host.OnRestoredEvent((Domain)item);
+                                }
+
+                                dialog.ShowDialog(); }));
                         }
                         else if (itemType == "TableTemplate")
                         {
                             var table = dataBase.TableContext[itemPath] as ITable;
                             var dialog = new EditTemplateViewModel(this.authenticator, table, template);
-                            restoreList.Add(new System.Action(() => dialog.ShowDialog()));
+                            restoreList.Add(new System.Action(() => {
+                                if (item.Host is IDomainHost host)
+                                {
+                                    host.OnRestoredEvent((Domain)item);
+                                }
+
+                                dialog.ShowDialog();
+                            }));
                         }
                     }
                 }

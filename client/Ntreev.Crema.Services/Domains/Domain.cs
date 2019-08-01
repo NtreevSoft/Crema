@@ -164,6 +164,7 @@ namespace Ntreev.Crema.Services.Domains
             var result = this.Service.Kick(this.ID, userID, token, comment);
             this.Sign(authentication, result);
             this.InvokeKick(authentication, userID, token, comment, out var domainUser, out var removeInfo);
+            this.users.Remove(token);
             this.OnUserRemoved(new DomainUserRemovedEventArgs(authentication, this, domainUser, removeInfo));
             this.Container.InvokeDomainUserRemovedEvent(authentication, this, domainUser, removeInfo);
             return result.Value;
