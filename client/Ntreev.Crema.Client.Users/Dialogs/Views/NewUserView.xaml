@@ -49,6 +49,8 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
                       SelectedItem="{Binding Authority}" ItemsSource="{Binding Authorities}" />
             <TextBox nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_Name}" 
                      Text="{Binding UserName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <CheckBox nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_AllowMultiLogin}"
+                      IsChecked="{Binding AllowMultiLogin, Mode=TwoWay}" />
         </nmfc:PropertyItemsControl>
         <Button x:Name="Create" Content="{x:Static p:Resources.Button_Create}" Style="{StaticResource Dialog_Button_Style}" IsDefault="True" />
     </StackPanel>

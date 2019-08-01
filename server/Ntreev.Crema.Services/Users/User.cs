@@ -118,32 +118,18 @@ namespace Ntreev.Crema.Services.Users
                 this.CremaHost.DebugMethod(Authentication.System, this, nameof(Login), this);
                 this.ValidateLogin(password);
 
-                var domainContext = this.CremaHost.GetService(typeof(IDomainContext)) as IDomainContext;
-                var userID = this.ID;
-                var authenticationToken = domainContext.Dispatcher.Invoke(() =>
+                if (!this.UserInfo.AllowMultiLogin && this.Authentications.Any())
                 {
-                    var domainContextMetaData = domainContext.GetMetaData(Authentication.System);
-                    var containsDomain = domainContextMetaData.Domains.Any(metaData => {
-                        return metaData.DomainInfo.ItemType != "TableContent" && metaData.Users.Any(user => user.DomainUserInfo.UserID == userID);
-                    });
-                    if (containsDomain)
+                    var message = "다른 기기에서 동일한 아이디로 접속하였습니다.";
+                    var closeInfo = new CloseInfo() { Reason = CloseReason.Reconnected, Message = message };
+                    foreach (var auth in this.Authentications.Values.ToArray())
                     {
-                        foreach (var domainMetaData in domainContextMetaData.Domains)
-                        {
-                            var domainUserInfo = domainMetaData.Users.First(user => user.DomainUserInfo.UserID == userID);
-                            var token = domainUserInfo.DomainUserInfo.Token;
-
-                            return this.Authentications.ContainsKey(token) ? Guid.NewGuid() : token;
-                        }
+                        auth.Authentication.InvokeExpiredEvent(this.ID, message);
+                        this.Container.InvokeUsersLoggedOutEvent(auth.Authentication, new[] { auth.Authentication.AuthenticationInfo }, closeInfo);
                     }
+                    this.Authentications.Clear();
 
-                    return Guid.NewGuid();
-                });
-
-                var authentication = new Authentication(new UserAuthenticationProvider(this), authenticationToken);
-                this.Sign(authentication);
-
-                //TODO: 3.7
+                }
                 //if (this.Authentication != null)
                 //{
                 //    var message = "다른 기기에서 동일한 아이디로 접속하였습니다.";
@@ -152,10 +138,15 @@ namespace Ntreev.Crema.Services.Users
                 //    this.Container.InvokeUsersLoggedOutEvent(this.Authentication, users, closeInfo);
                 //}
 
+                Guid authenticationToken = GetAuthenticationToken();
+
+                var authentication = new Authentication(new UserAuthenticationProvider(this), authenticationToken);
+                this.Sign(authentication);
+
                 this.Authentications.Add(authentication.Token, new UserAuthentication(this, authentication));
-                var authenticationInfos = new[] {authentication.AuthenticationInfo};
+                var authenticationInfos = new[] { authentication.AuthenticationInfo };
                 this.Container.InvokeUsersLoggedInEvent(authentication, authenticationInfos);
-                this.Container.InvokeUsersStateChangedEvent(authentication, new IUser[]{this});
+                this.Container.InvokeUsersStateChangedEvent(authentication, new IUser[] { this });
                 return authentication;
             }
             catch (Exception e)
@@ -163,6 +154,33 @@ namespace Ntreev.Crema.Services.Users
                 this.CremaHost.Error(e);
                 throw;
             }
+        }
+
+        private Guid GetAuthenticationToken()
+        {
+            var domainContext = this.CremaHost.GetService(typeof(IDomainContext)) as IDomainContext;
+            var userID = this.ID;
+            var authenticationToken = domainContext.Dispatcher.Invoke(() =>
+            {
+                var domainContextMetaData = domainContext.GetMetaData(Authentication.System);
+                var containsDomain = domainContextMetaData.Domains.Any(metaData =>
+                {
+                    return metaData.DomainInfo.ItemType != "TableContent" && metaData.Users.Any(user => user.DomainUserInfo.UserID == userID);
+                });
+                if (containsDomain)
+                {
+                    foreach (var domainMetaData in domainContextMetaData.Domains)
+                    {
+                        var domainUserInfo = domainMetaData.Users.First(user => user.DomainUserInfo.UserID == userID);
+                        var token = domainUserInfo.DomainUserInfo.Token;
+
+                        return this.Authentications.ContainsKey(token) ? Guid.NewGuid() : token;
+                    }
+                }
+
+                return Guid.NewGuid();
+            });
+            return authenticationToken;
         }
 
         public void Logout(Authentication authentication)
@@ -269,7 +287,7 @@ namespace Ntreev.Crema.Services.Users
             }
         }
 
-        public void ChangeUserInfo(Authentication authentication, SecureString password, SecureString newPassword, string userName, Authority? authority)
+        public void ChangeUserInfo(Authentication authentication, SecureString password, SecureString newPassword, string userName, Authority? authority, bool? allowMultiLogin)
         {
             try
             {
@@ -284,6 +302,8 @@ namespace Ntreev.Crema.Services.Users
                     serializationInfo.Name = userName;
                 if (authority.HasValue)
                     serializationInfo.Authority = authority.Value;
+                if (allowMultiLogin != null)
+                    serializationInfo.AllowMultiLogin = allowMultiLogin ?? serializationInfo.AllowMultiLogin;
                 if (object.Equals(serializationInfo, this.SerializationInfo) == true)
                     return;
                 var items = EnumerableUtility.One(this).ToArray();
@@ -532,13 +552,13 @@ namespace Ntreev.Crema.Services.Users
                     {
                         if (this.VerifyPassword(password) == false)
                             throw new ArgumentException(Resources.Exception_IncorrectPassword, nameof(password));
-                        if (this.VerifyPassword(newPassword) == true)
-                            throw new ArgumentException(Resources.Exception_CannotChangeToOldPassword, nameof(newPassword));
+                        //if (this.VerifyPassword(newPassword) == true)
+                        //    throw new ArgumentException(Resources.Exception_CannotChangeToOldPassword, nameof(newPassword));
                     }
                     else
                     {
-                        if (this.VerifyPassword(newPassword) == true)
-                            throw new ArgumentException(Resources.Exception_CannotChangeToOldPassword, nameof(newPassword));
+                        //if (this.VerifyPassword(newPassword) == true)
+                        //    throw new ArgumentException(Resources.Exception_CannotChangeToOldPassword, nameof(newPassword));
                     }
                 }
             }
@@ -548,8 +568,8 @@ namespace Ntreev.Crema.Services.Users
                 {
                     if (newPassword == null || this.VerifyPassword(password) == false)
                         throw new ArgumentException(Resources.Exception_IncorrectPassword, nameof(password));
-                    if (this.VerifyPassword(newPassword) == true)
-                        throw new ArgumentException(Resources.Exception_CannotChangeToOldPassword, nameof(newPassword));
+                    //if (this.VerifyPassword(newPassword) == true)
+                    //    throw new ArgumentException(Resources.Exception_CannotChangeToOldPassword, nameof(newPassword));
                 }
                 if (authority.HasValue == true)
                     throw new ArgumentException(Resources.Exception_CannotChangeYourAuthority);

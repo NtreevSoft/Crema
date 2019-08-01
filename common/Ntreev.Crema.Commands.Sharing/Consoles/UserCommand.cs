@@ -272,7 +272,7 @@ namespace Ntreev.Crema.Commands.Consoles
             this.UserContext.Dispatcher.Invoke(() =>
             {
                 var authentication = this.CommandContext.GetAuthentication(this);
-                user.ChangeUserInfo(authentication, null, password1, null, null);
+            user.ChangeUserInfo(authentication, null, password1, null, null, null);
             });
         }
 
@@ -286,7 +286,7 @@ namespace Ntreev.Crema.Commands.Consoles
             this.UserContext.Dispatcher.Invoke(() =>
             {
                 var authentication = this.CommandContext.GetAuthentication(this);
-                user.ChangeUserInfo(authentication, null, null, newName, null);
+            user.ChangeUserInfo(authentication, null, null, newName, null, null);
             });
         }
 
@@ -297,7 +297,7 @@ namespace Ntreev.Crema.Commands.Consoles
             {
                 var user = this.GetUser(userID);
                 var authentication = this.CommandContext.GetAuthentication(this);
-                user.ChangeUserInfo(authentication, null, null, null, authority);
+            user.ChangeUserInfo(authentication, null, null, null, authority, null);
             });
         }
 
@@ -342,9 +342,10 @@ namespace Ntreev.Crema.Commands.Consoles
                 var password = StringUtility.ToSecureString(userInfo.Password);
                 var userName = userInfo.UserName;
                 var authority = (Authority)Enum.Parse(typeof(Authority), userInfo.Authority);
+                var allowMultiLogin = userInfo.AllowMultiLogin;
                 var authentication = this.CommandContext.GetAuthentication(this);
 
-                category.AddNewUser(authentication, userID, password, userName, authority);
+                category.AddNewUser(authentication, userID, password, userName, authority, allowMultiLogin);
             });
         }
 

@@ -71,6 +71,20 @@ namespace Ntreev.Crema.Services
             }
         }
 
+        public static bool CanLogin(string address, string userID, SecureString password)
+        {
+            var serviceClient = DescriptorServiceFactory.CreateServiceClient(address);
+            serviceClient.Open();
+            try
+            {
+                return serviceClient.CanLogin(userID, UserContext.Encrypt(userID, password));
+            }
+            finally
+            {
+                serviceClient.Close();
+            }
+        }
+
         public static DataBaseInfo[] GetDataBases(string address)
         {
             var serviceClient = DescriptorServiceFactory.CreateServiceClient(address);

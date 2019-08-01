@@ -33,7 +33,7 @@ namespace Ntreev.Crema.Services
 
         void Delete(Authentication authentication);
 
-        void ChangeUserInfo(Authentication authentication, SecureString password, SecureString newPassword, string userName, Authority? authority);
+        void ChangeUserInfo(Authentication authentication, SecureString password, SecureString newPassword, string userName, Authority? authority, bool? allowMultiLogin);
 
         void SendMessage(Authentication authentication, string message);
 

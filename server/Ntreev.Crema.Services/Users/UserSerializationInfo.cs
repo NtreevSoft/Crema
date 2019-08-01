@@ -48,6 +48,9 @@ namespace Ntreev.Crema.Services.Users
         public Authority Authority { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
+        public bool AllowMultiLogin { get; set; }
+
+        [DataMember(EmitDefaultValue = false)]
         public SignatureDate CreationInfo { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
@@ -84,7 +87,8 @@ namespace Ntreev.Crema.Services.Users
                 CategoryPath = value.CategoryPath,
                 Authority = value.Authority,
                 CreationInfo = value.CreationInfo,
-                ModificationInfo = value.ModificationInfo
+                ModificationInfo = value.ModificationInfo,
+                AllowMultiLogin = value.AllowMultiLogin
             };
 
             if (obj.CreationInfo.ID == null)
@@ -105,6 +109,7 @@ namespace Ntreev.Crema.Services.Users
                 Authority = value.Authority,
                 CreationInfo = value.CreationInfo,
                 ModificationInfo = value.ModificationInfo,
+                AllowMultiLogin = value.AllowMultiLogin
             };
 
             if (obj.CreationInfo.ID == string.Empty && obj.CreationInfo.DateTime == DateTime.MinValue)

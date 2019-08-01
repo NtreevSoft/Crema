@@ -204,6 +204,7 @@ namespace Ntreev.Crema.Services.Users
                                 {
                                     ID = item.UserInfo.ID,
                                     Name = item.UserInfo.Name,
+                                    AllowMultiLogin = item.UserInfo.AllowMultiLogin,
                                     CreationInfo = item.UserInfo.CreationInfo,
                                     ModificationInfo = item.UserInfo.ModificationInfo,
                                     CategoryPath = item.UserInfo.CategoryPath,

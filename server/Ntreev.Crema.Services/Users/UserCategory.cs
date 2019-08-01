@@ -112,12 +112,12 @@ namespace Ntreev.Crema.Services.Users
             }
         }
 
-        public User AddNewUser(Authentication authentication, string userID, SecureString password, string userName, Authority authority)
+        public User AddNewUser(Authentication authentication, string userID, SecureString password, string userName, Authority authority, bool? allowMultiLogin)
         {
             try
             {
                 this.Dispatcher.VerifyAccess();
-                return this.Context.Users.AddNew(authentication, userID, base.Path, password, userName, authority);
+                return this.Context.Users.AddNew(authentication, userID, base.Path, password, userName, authority, allowMultiLogin);
             }
             catch (Exception e)
             {
@@ -239,9 +239,9 @@ namespace Ntreev.Crema.Services.Users
             return this.AddNewCategory(authentication, name);
         }
 
-        IUser IUserCategory.AddNewUser(Authentication authentication, string userID, SecureString password, string userName, Authority authority)
+        IUser IUserCategory.AddNewUser(Authentication authentication, string userID, SecureString password, string userName, Authority authority, bool? allowMultiLogin)
         {
-            return this.AddNewUser(authentication, userID, password, userName, authority);
+            return this.AddNewUser(authentication, userID, password, userName, authority, allowMultiLogin);
         }
 
         IUserCategory IUserCategory.Parent

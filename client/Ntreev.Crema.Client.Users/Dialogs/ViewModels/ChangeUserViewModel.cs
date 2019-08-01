@@ -39,6 +39,7 @@ namespace Ntreev.Crema.Client.Users.Dialogs.ViewModels
         private SecureString password;
         private string userName;
         private Authority authority;
+        private bool allowMultiLogin;
 
         private string oldUserName;
         private Authority oldAuthority;
@@ -51,6 +52,7 @@ namespace Ntreev.Crema.Client.Users.Dialogs.ViewModels
             this.userID = user.ID;
             this.userName = this.oldUserName = user.UserName;
             this.authority = this.oldAuthority = user.Authority;
+            this.allowMultiLogin = user.UserInfo.AllowMultiLogin;
             this.DisplayName = Resources.Title_ChangeUserInfo;
         }
 
@@ -122,6 +124,17 @@ namespace Ntreev.Crema.Client.Users.Dialogs.ViewModels
             }
         }
 
+        public bool AllowMultiLogin
+        {
+            get { return this.allowMultiLogin; }
+            set
+            {
+                this.allowMultiLogin = value;
+                this.NotifyOfPropertyChange(nameof(this.AllowMultiLogin));
+                this.NotifyOfPropertyChange(nameof(this.CanChange));
+            }
+        }
+
         public bool IsCurrentUser
         {
             get { return this.authentication.ID == this.userID; }
@@ -143,7 +156,7 @@ namespace Ntreev.Crema.Client.Users.Dialogs.ViewModels
                 var authority = this.oldAuthority == this.authority ? null : (Authority?)this.authority;
                 var userName = this.oldUserName == this.userName ? null : this.userName;
                 var password = this.Password;
-                await this.user.Dispatcher.InvokeAsync(() => this.user.ChangeUserInfo(this.authentication, password, password, userName, authority));
+                await this.user.Dispatcher.InvokeAsync(() => this.user.ChangeUserInfo(this.authentication, password, password, userName, authority, allowMultiLogin));
                 this.EndProgress();
                 this.TryClose(true);
                 AppMessageBox.Show(Resources.Message_ChangeComplete);

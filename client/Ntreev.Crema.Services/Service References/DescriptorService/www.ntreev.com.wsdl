@@ -19,6 +19,12 @@
   <wsdl:message name="IDescriptorService_IsOnline_OutputMessage">
     <wsdl:part name="parameters" element="tns:IsOnlineResponse" />
   </wsdl:message>
+  <wsdl:message name="IDescriptorService_CanLogin_InputMessage">
+    <wsdl:part name="parameters" element="tns:CanLogin" />
+  </wsdl:message>
+  <wsdl:message name="IDescriptorService_CanLogin_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CanLoginResponse" />
+  </wsdl:message>
   <wsdl:message name="IDescriptorService_GetDataBaseInfos_InputMessage">
     <wsdl:part name="parameters" element="tns:GetDataBaseInfos" />
   </wsdl:message>
@@ -39,6 +45,10 @@
     <wsdl:operation name="IsOnline">
       <wsdl:input wsaw:Action="http://www.ntreev.com/IDescriptorService/IsOnline" message="tns:IDescriptorService_IsOnline_InputMessage" />
       <wsdl:output wsaw:Action="http://www.ntreev.com/IDescriptorService/IsOnlineResponse" message="tns:IDescriptorService_IsOnline_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CanLogin">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDescriptorService/CanLogin" message="tns:IDescriptorService_CanLogin_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDescriptorService/CanLoginResponse" message="tns:IDescriptorService_CanLogin_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="GetDataBaseInfos">
       <wsdl:input wsaw:Action="http://www.ntreev.com/IDescriptorService/GetDataBaseInfos" message="tns:IDescriptorService_GetDataBaseInfos_InputMessage" />

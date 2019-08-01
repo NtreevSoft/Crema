@@ -80,9 +80,9 @@ namespace Ntreev.Crema.Services.Users
             return this.Container.AddNew(authentication, name, this.Path);
         }
 
-        public User AddNewUser(Authentication authentication, string userID, SecureString password, string userName, Authority authority)
+        public User AddNewUser(Authentication authentication, string userID, SecureString password, string userName, Authority authority, bool? allowMultiLogin)
         {
-            return this.Context.Users.AddNew(authentication, userID, this.Path, password, userName, authority);
+            return this.Context.Users.AddNew(authentication, userID, this.Path, password, userName, authority, allowMultiLogin);
         }
 
         public void InternalSetName(string name)
@@ -172,9 +172,9 @@ namespace Ntreev.Crema.Services.Users
             return this.AddNewCategory(authentication, name);
         }
 
-        IUser IUserCategory.AddNewUser(Authentication authentication, string userID, SecureString password, string userName, Authority authority)
+        IUser IUserCategory.AddNewUser(Authentication authentication, string userID, SecureString password, string userName, Authority authority, bool? allowMultiLogin)
         {
-            return this.AddNewUser(authentication, userID, password, userName, authority);
+            return this.AddNewUser(authentication, userID, password, userName, authority, allowMultiLogin);
         }
 
         IUserCategory IUserCategory.Parent

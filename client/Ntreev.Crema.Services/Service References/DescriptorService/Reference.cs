@@ -21,6 +21,9 @@ namespace Ntreev.Crema.Services.DescriptorService {
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDescriptorService/IsOnline", ReplyAction="http://www.ntreev.com/IDescriptorService/IsOnlineResponse")]
         bool IsOnline(string userID, byte[] password);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDescriptorService/CanLogin", ReplyAction="http://www.ntreev.com/IDescriptorService/CanLoginResponse")]
+        bool CanLogin(string userID, byte[] password);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDescriptorService/GetDataBaseInfos", ReplyAction="http://www.ntreev.com/IDescriptorService/GetDataBaseInfosResponse")]
         Ntreev.Crema.ServiceModel.DataBaseInfo[] GetDataBaseInfos();
         
@@ -61,6 +64,10 @@ namespace Ntreev.Crema.Services.DescriptorService {
         
         public bool IsOnline(string userID, byte[] password) {
             return base.Channel.IsOnline(userID, password);
+        }
+        
+        public bool CanLogin(string userID, byte[] password) {
+            return base.Channel.CanLogin(userID, password);
         }
         
         public Ntreev.Crema.ServiceModel.DataBaseInfo[] GetDataBaseInfos() {

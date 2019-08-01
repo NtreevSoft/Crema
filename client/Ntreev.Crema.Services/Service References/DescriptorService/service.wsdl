@@ -34,6 +34,15 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="CanLogin">
+      <soap12:operation soapAction="http://www.ntreev.com/IDescriptorService/CanLogin" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="GetDataBaseInfos">
       <soap12:operation soapAction="http://www.ntreev.com/IDescriptorService/GetDataBaseInfos" style="document" />
       <wsdl:input>

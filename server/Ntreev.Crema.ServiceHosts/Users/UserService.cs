@@ -160,12 +160,12 @@ namespace Ntreev.Crema.ServiceHosts.Users
             return result;
         }
 
-        public ResultBase<UserInfo> NewUser(string userID, string categoryPath, byte[] password, string userName, Authority authority)
+        public ResultBase<UserInfo> NewUser(string userID, string categoryPath, byte[] password, string userName, Authority authority, bool? allowMultiLogin)
         {
             return this.Invoke(() =>
             {
                 var category = this.GetCategory(categoryPath);
-                var user = category.AddNewUser(this.authentication, userID, ToSecureString(userID, password), userName, authority);
+                var user = category.AddNewUser(this.authentication, userID, ToSecureString(userID, password), userName, authority, allowMultiLogin);
                 return user.UserInfo;
             });
         }
@@ -207,14 +207,14 @@ namespace Ntreev.Crema.ServiceHosts.Users
             });
         }
 
-        public ResultBase<UserInfo> ChangeUserInfo(string userID, byte[] password, byte[] newPassword, string userName, Authority? authority)
+        public ResultBase<UserInfo> ChangeUserInfo(string userID, byte[] password, byte[] newPassword, string userName, Authority? authority, bool? allowMultiLogin)
         {
             return this.Invoke(() =>
             {
                 var user = this.GetUser(userID);
                 var p1 = password == null ? null : ToSecureString(userID, password);
                 var p2 = newPassword == null ? null : ToSecureString(userID, newPassword);
-                user.ChangeUserInfo(this.authentication, p1, p2, userName, authority);
+                user.ChangeUserInfo(this.authentication, p1, p2, userName, authority, allowMultiLogin);
                 return user.UserInfo;
             });
         }

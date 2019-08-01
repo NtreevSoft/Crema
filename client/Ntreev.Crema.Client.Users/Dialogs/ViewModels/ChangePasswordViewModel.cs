@@ -102,7 +102,7 @@ namespace Ntreev.Crema.Client.Users.Dialogs.ViewModels
             try
             {
                 this.BeginProgress(Resources.Message_Change);
-                await this.user.Dispatcher.InvokeAsync(() => this.user.ChangeUserInfo(this.authentication, this.Password, this.NewPassword, null, null));
+                await this.user.Dispatcher.InvokeAsync(() => this.user.ChangeUserInfo(this.authentication, this.Password, this.NewPassword, null, null, null));
                 this.EndProgress();
                 this.TryClose(true);
                 AppMessageBox.ShowInfo(Resources.Message_ChangeComplete);

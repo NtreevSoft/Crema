@@ -35,7 +35,7 @@ namespace Ntreev.Crema.Services
 
         IUserCategory AddNewCategory(Authentication authentication, string name);
 
-        IUser AddNewUser(Authentication authentication, string userID, SecureString password, string userName, Authority authority);
+        IUser AddNewUser(Authentication authentication, string userID, SecureString password, string userName, Authority authority, bool? allowMultiLogin);
 
         string Name { get; }
 

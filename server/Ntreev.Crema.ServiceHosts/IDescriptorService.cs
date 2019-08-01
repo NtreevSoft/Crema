@@ -35,6 +35,9 @@ namespace Ntreev.Crema.ServiceHosts
         bool IsOnline(string userID, byte[] password);
 
         [OperationContract]
+        bool CanLogin(string userID, byte[] password);
+
+        [OperationContract]
         DataBaseInfo[] GetDataBaseInfos();
 
         [OperationContract]

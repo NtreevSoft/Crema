@@ -63,5 +63,19 @@ namespace Ntreev.Crema.ServiceHosts
                 return userContext.IsOnlineUser(userID, StringUtility.ToSecureString(StringUtility.Decrypt(text, userID)));
             });
         }
+
+        public bool CanLogin(string userID, byte[] password)
+        {
+            var isOnline = this.IsOnline(userID, password);
+            var userContext = this.cremaHost.GetService(typeof(IUserContext)) as IUserContext;
+            var allowMultiLogin = userContext.Dispatcher.Invoke(() => userContext.Users[userID].UserInfo.AllowMultiLogin);
+
+            if (allowMultiLogin)
+            {
+                return true;
+            }
+
+            return !isOnline;
+        }
     }
 }

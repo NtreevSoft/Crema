@@ -321,4 +321,7 @@
   <data name="Title_UserDomainList" xml:space="preserve">
     <value>사용자 도메인 목록</value>
   </data>
+  <data name="Label_AllowMultiLogin" xml:space="preserve">
+    <value>중복 로그인 허용</value>
+  </data>
 </root>

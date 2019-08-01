@@ -139,7 +139,7 @@ namespace Ntreev.Crema.Services.Users
             this.Container.InvokeUsersStateChangedEvent(authentication, users);
         }
 
-        public void ChangeUserInfo(Authentication authentication, SecureString password, SecureString newPassword, string userName, Authority? authority)
+        public void ChangeUserInfo(Authentication authentication, SecureString password, SecureString newPassword, string userName, Authority? authority, bool? allowMultiLogin)
         {
             this.Dispatcher.VerifyAccess();
 
@@ -150,7 +150,7 @@ namespace Ntreev.Crema.Services.Users
 
             var p1 = password == null ? null : UserContext.Encrypt(this.ID, password);
             var p2 = newPassword == null ? null : UserContext.Encrypt(this.ID, newPassword);
-            var result = this.Service.ChangeUserInfo(this.UserInfo.ID, p1, p2, userName, authority);
+            var result = this.Service.ChangeUserInfo(this.UserInfo.ID, p1, p2, userName, authority, allowMultiLogin ?? false);
             this.Sign(authentication, result);
             this.Container.InvokeUserChange(authentication, this);
             base.UpdateUserInfo(result.Value);

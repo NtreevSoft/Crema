@@ -44,7 +44,7 @@ namespace Ntreev.Crema.ServiceHosts.Users
         ResultBase CancelShutdown();
 
         [OperationContract]
-        ResultBase<UserInfo> NewUser(string userID, string categoryPath, byte[] password, string userName, Authority authority);
+        ResultBase<UserInfo> NewUser(string userID, string categoryPath, byte[] password, string userName, Authority authority, bool? allowMultiLogin);
 
         [OperationContract]
         ResultBase NewUserCategory(string categoryPath);
@@ -59,7 +59,7 @@ namespace Ntreev.Crema.ServiceHosts.Users
         ResultBase DeleteUserItem(string itemPath);
 
         [OperationContract]
-        ResultBase<UserInfo> ChangeUserInfo(string userID, byte[] password, byte[] newPassword, string userName, Authority? authority);
+        ResultBase<UserInfo> ChangeUserInfo(string userID, byte[] password, byte[] newPassword, string userName, Authority? authority, bool? allowMultiLogin);
 
         [OperationContract]
         ResultBase Kick(string userID, string comment);

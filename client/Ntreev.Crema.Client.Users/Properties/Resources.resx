@@ -321,4 +321,7 @@
   <data name="Title_UserDomainList" xml:space="preserve">
     <value>User Domain List</value>
   </data>
+  <data name="Label_AllowMultiLogin" xml:space="preserve">
+    <value>Allow Multi Login</value>
+  </data>
 </root>

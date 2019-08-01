@@ -68,6 +68,8 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
             <ComboBox nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_Authority}" Style="{StaticResource Label_ComboBox_Style}"
                       ItemsSource="{Binding Authorities}" SelectedItem="{Binding Authority}" />
             <TextBox x:Name="UserName" nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_Name}" />
+            <CheckBox nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_AllowMultiLogin}"
+                      IsChecked="{Binding AllowMultiLogin, Mode=TwoWay}" />
         </nmfc:PropertyItemsControl>
         <Button x:Name="Change" Content="{x:Static p:Resources.Button_Change}" 
                 Style="{DynamicResource Dialog_Button_Style}" IsDefault="True" />

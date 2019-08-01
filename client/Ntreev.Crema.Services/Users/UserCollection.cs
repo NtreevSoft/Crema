@@ -55,10 +55,10 @@ namespace Ntreev.Crema.Services.Users
             return base.BaseAddNew(name, categoryPath, null);
         }
 
-        public User AddNew(Authentication authentication, string userID, string categoryPath, SecureString password, string userName, Authority authority)
+        public User AddNew(Authentication authentication, string userID, string categoryPath, SecureString password, string userName, Authority authority, bool? allowMultiLogin)
         {
             this.Dispatcher.VerifyAccess();
-            var result = this.Service.NewUser(userID, categoryPath, UserContext.Encrypt(userID, password), userName, authority);
+            var result = this.Service.NewUser(userID, categoryPath, UserContext.Encrypt(userID, password), userName, authority, allowMultiLogin ?? false);
             this.Sign(authentication, result);
             this.InvokeUserCreate(authentication, userID, authority, categoryPath);
             var user = this.BaseAddNew(userID, categoryPath);

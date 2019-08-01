@@ -49,6 +49,9 @@ namespace Ntreev.Crema.ServiceModel
         public Authority Authority { get; set; }
 
         [XmlElement]
+        public bool AllowMultiLogin { get; set; }
+
+        [XmlElement]
         public SignatureDate CreationInfo { get; set; }
 
         [XmlElement]
@@ -84,6 +87,7 @@ namespace Ntreev.Crema.ServiceModel
                 { nameof(this.Name), this.Name },
                 { nameof(this.CategoryName), this.CategoryName },
                 { nameof(this.Authority), $"{this.Authority}" },
+                { nameof(this.AllowMultiLogin), this.AllowMultiLogin },
                 { CremaSchema.Creator, this.CreationInfo.ID },
                 { CremaSchema.CreatedDateTime, this.CreationInfo.DateTime },
                 { CremaSchema.Modifier, this.ModificationInfo.ID },

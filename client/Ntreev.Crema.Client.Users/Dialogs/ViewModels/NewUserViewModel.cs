@@ -39,6 +39,7 @@ namespace Ntreev.Crema.Client.Users.Dialogs.ViewModels
         private string userID;
         private SecureString password;
         private string userName;
+        private bool allowMultiLogin;
         private Authority authority = Authority.Member;
 
         private NewUserViewModel(Authentication authentication, IUserCategory category)
@@ -75,7 +76,7 @@ namespace Ntreev.Crema.Client.Users.Dialogs.ViewModels
             try
             {
                 this.BeginProgress(Resources.Message_NewUser);
-                await this.category.Dispatcher.InvokeAsync(() => this.category.AddNewUser(this.authentication, this.ID, this.Password, this.UserName, this.Authority));
+                await this.category.Dispatcher.InvokeAsync(() => this.category.AddNewUser(this.authentication, this.ID, this.Password, this.UserName, this.Authority, this.allowMultiLogin));
                 this.EndProgress();
                 this.TryClose(true);
                 AppMessageBox.Show(Resources.Message_NewUserComplete);
@@ -143,6 +144,17 @@ namespace Ntreev.Crema.Client.Users.Dialogs.ViewModels
             {
                 this.authority = value;
                 this.NotifyOfPropertyChange(nameof(this.Authority));
+                this.NotifyOfPropertyChange(nameof(this.CanCreate));
+            }
+        }
+
+        public bool AllowMultiLogin
+        {
+            get { return this.allowMultiLogin; }
+            set
+            {
+                this.allowMultiLogin = value;
+                this.NotifyOfPropertyChange(nameof(this.AllowMultiLogin));
                 this.NotifyOfPropertyChange(nameof(this.CanCreate));
             }
         }

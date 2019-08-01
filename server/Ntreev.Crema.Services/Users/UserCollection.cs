@@ -66,7 +66,7 @@ namespace Ntreev.Crema.Services.Users
             }
         }
 
-        public User AddNew(Authentication authentication, string userID, string categoryPath, SecureString password, string userName, Authority authority)
+        public User AddNew(Authentication authentication, string userID, string categoryPath, SecureString password, string userName, Authority authority, bool? allowMultiLogin)
         {
             try
             {
@@ -82,6 +82,7 @@ namespace Ntreev.Crema.Services.Users
                     CategoryPath = categoryPath,
                     CreationInfo = designedInfo,
                     ModificationInfo = designedInfo,
+                    AllowMultiLogin = allowMultiLogin ?? false
                 };
 
                 this.InvokeUserCreate(authentication, userInfo);

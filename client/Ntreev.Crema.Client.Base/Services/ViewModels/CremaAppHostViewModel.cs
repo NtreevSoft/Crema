@@ -157,17 +157,16 @@ namespace Ntreev.Crema.Client.Base.Services.ViewModels
             {
                 this.ProgressMessage = Resources.Message_ConnectingToServer;
 
-                // TODO: 3.7
-                //if (await this.cremaHost.Dispatcher.InvokeAsync(() => CremaBootstrapper.IsOnline(address, userID, password)) == true)
-                //{
-                //    if (AppMessageBox.ShowQuestion(Resources.Message_SameIDConnected) == false)
-                //    {
-                //        this.ProgressMessage = string.Empty;
-                //        this.EndProgress();
-                //        this.HasError = false;
-                //        return;
-                //    }
-                //}
+                if (await this.cremaHost.Dispatcher.InvokeAsync(() => CremaBootstrapper.CanLogin(address, userID, password)) == false)
+                {
+                    if (AppMessageBox.ShowQuestion(Resources.Message_SameIDConnected) == false)
+                    {
+                        this.ProgressMessage = string.Empty;
+                        this.EndProgress();
+                        this.HasError = false;
+                        return;
+                    }
+                }
                 await this.OpenAsync(address, userID, password);
 
                 if (dataBaseName != string.Empty)

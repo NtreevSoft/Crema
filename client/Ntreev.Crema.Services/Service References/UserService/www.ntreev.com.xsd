@@ -69,6 +69,7 @@
         <xs:element minOccurs="0" name="password" nillable="true" type="xs:base64Binary" />
         <xs:element minOccurs="0" name="userName" nillable="true" type="xs:string" />
         <xs:element xmlns:q6="http://schemas.ntreev.com" minOccurs="0" name="authority" type="q6:Authority" />
+        <xs:element minOccurs="0" name="allowMultiLogin" nillable="true" type="xs:boolean" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -145,6 +146,7 @@
         <xs:element minOccurs="0" name="newPassword" nillable="true" type="xs:base64Binary" />
         <xs:element minOccurs="0" name="userName" nillable="true" type="xs:string" />
         <xs:element xmlns:q12="http://schemas.ntreev.com" minOccurs="0" name="authority" nillable="true" type="q12:Authority" />
+        <xs:element minOccurs="0" name="allowMultiLogin" nillable="true" type="xs:boolean" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

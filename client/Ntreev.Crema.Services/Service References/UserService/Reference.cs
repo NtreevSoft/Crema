@@ -28,7 +28,7 @@ namespace Ntreev.Crema.Services.UserService {
         Ntreev.Crema.ServiceModel.ResultBase CancelShutdown();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IUserService/NewUser", ReplyAction="http://www.ntreev.com/IUserService/NewUserResponse")]
-        Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.UserInfo> NewUser(string userID, string categoryPath, byte[] password, string userName, Ntreev.Crema.ServiceModel.Authority authority);
+        Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.UserInfo> NewUser(string userID, string categoryPath, byte[] password, string userName, Ntreev.Crema.ServiceModel.Authority authority, System.Nullable<bool> allowMultiLogin);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IUserService/NewUserCategory", ReplyAction="http://www.ntreev.com/IUserService/NewUserCategoryResponse")]
         Ntreev.Crema.ServiceModel.ResultBase NewUserCategory(string categoryPath);
@@ -43,7 +43,7 @@ namespace Ntreev.Crema.Services.UserService {
         Ntreev.Crema.ServiceModel.ResultBase DeleteUserItem(string itemPath);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IUserService/ChangeUserInfo", ReplyAction="http://www.ntreev.com/IUserService/ChangeUserInfoResponse")]
-        Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.UserInfo> ChangeUserInfo(string userID, byte[] password, byte[] newPassword, string userName, System.Nullable<Ntreev.Crema.ServiceModel.Authority> authority);
+        Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.UserInfo> ChangeUserInfo(string userID, byte[] password, byte[] newPassword, string userName, System.Nullable<Ntreev.Crema.ServiceModel.Authority> authority, System.Nullable<bool> allowMultiLogin);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IUserService/Kick", ReplyAction="http://www.ntreev.com/IUserService/KickResponse")]
         Ntreev.Crema.ServiceModel.ResultBase Kick(string userID, string comment);
@@ -151,8 +151,8 @@ namespace Ntreev.Crema.Services.UserService {
             return base.Channel.CancelShutdown();
         }
         
-        public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.UserInfo> NewUser(string userID, string categoryPath, byte[] password, string userName, Ntreev.Crema.ServiceModel.Authority authority) {
-            return base.Channel.NewUser(userID, categoryPath, password, userName, authority);
+        public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.UserInfo> NewUser(string userID, string categoryPath, byte[] password, string userName, Ntreev.Crema.ServiceModel.Authority authority, System.Nullable<bool> allowMultiLogin) {
+            return base.Channel.NewUser(userID, categoryPath, password, userName, authority, allowMultiLogin);
         }
         
         public Ntreev.Crema.ServiceModel.ResultBase NewUserCategory(string categoryPath) {
@@ -171,8 +171,8 @@ namespace Ntreev.Crema.Services.UserService {
             return base.Channel.DeleteUserItem(itemPath);
         }
         
-        public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.UserInfo> ChangeUserInfo(string userID, byte[] password, byte[] newPassword, string userName, System.Nullable<Ntreev.Crema.ServiceModel.Authority> authority) {
-            return base.Channel.ChangeUserInfo(userID, password, newPassword, userName, authority);
+        public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.UserInfo> ChangeUserInfo(string userID, byte[] password, byte[] newPassword, string userName, System.Nullable<Ntreev.Crema.ServiceModel.Authority> authority, System.Nullable<bool> allowMultiLogin) {
+            return base.Channel.ChangeUserInfo(userID, password, newPassword, userName, authority, allowMultiLogin);
         }
         
         public Ntreev.Crema.ServiceModel.ResultBase Kick(string userID, string comment) {

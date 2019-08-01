@@ -48,6 +48,9 @@ namespace Ntreev.Crema.Commands.Consoles.Serializations
         [MinLength(1)]
         public string UserName { get; set; }
 
+        [JsonProperty]
+        public bool AllowMultiLogin { get; set; }
+
         [JsonProperty(Required = Required.DisallowNull, DefaultValueHandling = DefaultValueHandling.Ignore)]
         //[JSchemaGenerationProvider(typeof(EnumStringGenerationProvider), new object[] { nameof(CategoryPaths) })]
         public string CategoryPath { get; set; }
@@ -60,6 +63,7 @@ namespace Ntreev.Crema.Commands.Consoles.Serializations
             Password = string.Empty,
             Authority = $"{ServiceModel.Authority.Member}",
             UserName = string.Empty,
+            AllowMultiLogin = false
         };
     }
 }
