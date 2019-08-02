@@ -296,7 +296,7 @@ namespace Ntreev.Crema.Services.Users
                 if (authority.HasValue)
                     serializationInfo.Authority = authority.Value;
                 if (allowMultiLogin != null)
-                    serializationInfo.AllowMultiLogin = allowMultiLogin ?? serializationInfo.AllowMultiLogin;
+                    serializationInfo.AllowMultiLogin = allowMultiLogin.Value;
                 if (object.Equals(serializationInfo, this.SerializationInfo) == true)
                     return;
                 var items = EnumerableUtility.One(this).ToArray();
