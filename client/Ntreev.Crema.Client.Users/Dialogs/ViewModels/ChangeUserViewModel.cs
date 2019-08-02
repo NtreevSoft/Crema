@@ -39,6 +39,7 @@ namespace Ntreev.Crema.Client.Users.Dialogs.ViewModels
         private SecureString password;
         private string userName;
         private Authority authority;
+        private bool oldAllowMultiLogin;
         private bool allowMultiLogin;
 
         private string oldUserName;
@@ -52,7 +53,7 @@ namespace Ntreev.Crema.Client.Users.Dialogs.ViewModels
             this.userID = user.ID;
             this.userName = this.oldUserName = user.UserName;
             this.authority = this.oldAuthority = user.Authority;
-            this.allowMultiLogin = user.UserInfo.AllowMultiLogin;
+            this.allowMultiLogin = this.oldAllowMultiLogin = user.UserInfo.AllowMultiLogin;
             this.DisplayName = Resources.Title_ChangeUserInfo;
         }
 
@@ -176,7 +177,7 @@ namespace Ntreev.Crema.Client.Users.Dialogs.ViewModels
                     return false;
                 if (this.UserName == string.Empty)
                     return false;
-                if (this.UserName == this.oldUserName && this.Authority == this.oldAuthority && this.Password == null)
+                if (this.UserName == this.oldUserName && this.Authority == this.oldAuthority && this.Password == null && this.oldAllowMultiLogin == this.allowMultiLogin)
                     return false;
                 return true;
             }
