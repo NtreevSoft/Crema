@@ -173,15 +173,5 @@ namespace Ntreev.Crema.Services.Domains
                 throw new NotSupportedException();
             }
         }
-
-        protected override byte[] GetMetaDataData(Authentication authentication)
-        {
-            if (this.Users.Values.Any(user => user.Token == authentication.Token) == true)
-            {
-                return this.SerializeSource();
-            }
-
-            return null;
-        }
     }
 }
