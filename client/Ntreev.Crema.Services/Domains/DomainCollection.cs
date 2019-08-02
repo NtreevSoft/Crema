@@ -234,6 +234,7 @@ namespace Ntreev.Crema.Services.Domains
                         if (target != null)
                         {
                             target.Restore(domain);
+                            target.OnRestoredEvent(domain);
                             domain.Host = target;
                         }
                     }

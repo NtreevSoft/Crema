@@ -821,6 +821,7 @@ namespace Ntreev.Crema.Services.Data
                 {
                     var target = this.FindDomainHost(item);
                     target.Restore(item);
+                    target.OnRestoredEvent(item);
                     item.Host = target;
                     item.AttachUser();
                 }
