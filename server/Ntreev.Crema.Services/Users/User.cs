@@ -131,7 +131,7 @@ namespace Ntreev.Crema.Services.Users
 
                 }
 
-                Guid authenticationToken = GetAuthenticationToken();
+                var authenticationToken = GetAuthenticationToken();
 
                 var authentication = new Authentication(new UserAuthenticationProvider(this), authenticationToken);
                 this.Sign(authentication);
@@ -265,6 +265,8 @@ namespace Ntreev.Crema.Services.Users
                 this.Container.InvokeUserKick(authentication, this, comment);
                 foreach (var auth in this.Authentications.Values.ToArray())
                 {
+                    if (auth.Authentication.Token == authentication.Token) continue;
+
                     auth.Authentication.InvokeExpiredEvent(authentication.ID, comment);
                 }
                 this.Authentications.Clear();
@@ -660,8 +662,6 @@ namespace Ntreev.Crema.Services.Users
                 throw new PermissionDeniedException();
             if (this.IsOnline == false)
                 throw new InvalidOperationException(Resources.Exception_OfflineUserCannotKicked);
-            if (authentication.ID == this.ID)
-                throw new PermissionDeniedException(Resources.Exception_CannotKickYourself);
         }
 
         private void Sign(Authentication authentication)

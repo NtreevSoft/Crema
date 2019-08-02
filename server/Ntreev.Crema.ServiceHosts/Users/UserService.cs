@@ -393,14 +393,14 @@ namespace Ntreev.Crema.ServiceHosts.Users
 
         private void UserContext_MessageReceived(object sender, MessageEventArgs e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var userIDs = e.Items.Select(item => item.ID).ToArray();
             var message = e.Message;
             var messageType = e.MessageType;
 
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnMessageReceived(signatureDate, userIDs, message, messageType));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnMessageReceived(signatureDate, userIDs, message, messageType));
         }
 
         private void UserContext_UsersLoggedIn(object sender, Services.ItemsEventArgs<AuthenticationInfo> e)
@@ -435,12 +435,12 @@ namespace Ntreev.Crema.ServiceHosts.Users
 
         private void UserContext_UsersKicked(object sender, ItemsEventArgs<IUser> e)
         {
-            var userID = this.authentication.ID;
-            var exceptionUserID = e.UserID;
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
             var userIDs = e.Items.Select(item => item.ID).ToArray();
             var comments = e.MetaData as string[];
-            this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnUsersKicked(signatureDate, userIDs, comments));
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnUsersKicked(signatureDate, userIDs, comments));
         }
 
         private void UserContext_UsersBanChanged(object sender, ItemsEventArgs<IUser> e)
