@@ -48,6 +48,8 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
                                 Content="{Binding UserInfo.ModificationInfo.ID}" />
         <HeaderedContentControl Header="{x:Static p:Resources.Label_UserAuthority}" 
                                 Content="{Binding UserInfo.Authority}" />
+        <HeaderedContentControl Header="{x:Static p:Resources.Label_AllowMultiLogin}"
+                                Content="{Binding UserInfo.AllowMultiLogin}" />
     </ncpc:HeaderedContentList>
 
 </UserControl>
