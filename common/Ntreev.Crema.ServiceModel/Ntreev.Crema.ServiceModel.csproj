@@ -28,6 +28,7 @@
     <Prefer32Bit>false</Prefer32Bit>
     <NoWarn>0612 0618</NoWarn>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
