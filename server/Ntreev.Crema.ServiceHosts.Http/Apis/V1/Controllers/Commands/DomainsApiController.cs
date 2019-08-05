@@ -99,7 +99,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
             var domain = this.GetDomain(domainId);
             return domain.Dispatcher.Invoke(() =>
             {
-                return domain.Users.Select(item => item.DomainUserInfo.UserID).ToArray();
+                return domain.Users.Select(item => item.DomainUserInfo.UserID).Distinct().ToArray();
             });
         }
 

@@ -17,37 +17,36 @@
 
 using Ntreev.Crema.Services;
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Text;
 using System.ComponentModel;
+using System.ComponentModel.Composition;
+using System.Linq;
+using System.Text;
 
 namespace Ntreev.Crema.Javascript.Methods.Domain
 {
     [Export(typeof(IScriptMethod))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
     [Category(nameof(Domain))]
-    class GetDomainUserListMethod : DomainScriptMethodBase
+    class GetDomainUserTokenListMethod : DomainScriptMethodBase
     {
         [ImportingConstructor]
-        public GetDomainUserListMethod(ICremaHost cremaHost)
+        public GetDomainUserTokenListMethod(ICremaHost cremaHost)
             : base(cremaHost)
         {
-
         }
 
         protected override Delegate CreateDelegate()
         {
-            return new Func<string, string[]>(this.GetDomainUserList);
+            return new Func<string, string[]>(this.GetDomainUserTokenList);
         }
 
-        private string[] GetDomainUserList(string domainID)
+        private string[] GetDomainUserTokenList(string domainID)
         {
             var domain = this.GetDomain(domainID);
             return domain.Dispatcher.Invoke(() =>
             {
-                return domain.Users.Select(item => item.DomainUserInfo.UserID).Distinct().ToArray();
+                return domain.Users.Select(item => item.DomainUserInfo.Token.ToString()).ToArray();
             });
         }
     }
