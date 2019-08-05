@@ -48,8 +48,11 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
                                 Content="{Binding UserInfo.ModificationInfo.ID}" />
         <HeaderedContentControl Header="{x:Static p:Resources.Label_UserAuthority}" 
                                 Content="{Binding UserInfo.Authority}" />
-        <HeaderedContentControl Header="{x:Static p:Resources.Label_AllowMultiLogin}"
-                                Content="{Binding UserInfo.AllowMultiLogin}" />
+        <HeaderedContentControl Header="{x:Static p:Resources.Label_AllowMultiLogin}">
+            <HeaderedContentControl.Content>
+                <CheckBox HorizontalAlignment="Left" IsChecked="{Binding Path=DataContext.UserInfo.AllowMultiLogin}" IsHitTestVisible="False" />
+            </HeaderedContentControl.Content>
+        </HeaderedContentControl>
     </ncpc:HeaderedContentList>
 
 </UserControl>
