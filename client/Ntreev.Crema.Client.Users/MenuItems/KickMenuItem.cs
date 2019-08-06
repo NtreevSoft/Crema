@@ -24,6 +24,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ntreev.Crema.Client.Framework;
 using Ntreev.Crema.Client.Users.Properties;
+using Ntreev.Crema.Services;
 using Ntreev.ModernUI.Framework;
 
 namespace Ntreev.Crema.Client.Users.MenuItems
@@ -54,7 +55,17 @@ namespace Ntreev.Crema.Client.Users.MenuItems
         {
             if (parameter is IDomainUserDescriptor domainUserDescriptor)
             {
-                await DomainUserUtility.KickAsync(this.authenticator, domainUserDescriptor);
+                if (domainUserDescriptor.IsOnline)
+                {
+                    await DomainUserUtility.KickAsync(this.authenticator, domainUserDescriptor);
+                }
+                else if (domainUserDescriptor.Target is IDomainUser domainUser)
+                {
+                    domainUser.Dispatcher.Invoke(() =>
+                    {
+                        domainUser.Kick(this.authenticator, string.Empty);
+                    });
+                }
             }
         }
     }
