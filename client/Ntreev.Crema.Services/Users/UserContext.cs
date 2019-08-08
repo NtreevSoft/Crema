@@ -50,6 +50,7 @@ namespace Ntreev.Crema.Services.Users
         private ItemsEventHandler<AuthenticationInfo> usersLoggedIn;
         private ItemsEventHandler<AuthenticationInfo> usersLoggedOut;
         private ItemsEventHandler<IUser> usersKicked;
+        private ItemsEventHandler<IUserAuthentication> userAuthenticationsKicked;
         private ItemsEventHandler<IUser> usersBanChanged;
 
         private readonly Dictionary<Guid, Authentication> customAuthentications = new Dictionary<Guid, Authentication>();
@@ -97,6 +98,7 @@ namespace Ntreev.Crema.Services.Users
             this.Items.UsersLoggedIn += Users_UsersLoggedIn;
             this.Items.UsersLoggedOut += Users_UsersLoggedOut;
             this.Items.UsersKicked += Users_UsersKicked;
+            this.Items.UserAuthenticationsKicked += Users_UserAuthenticationsKicked;
             this.Items.UsersBanChanged += Users_UsersBanChanged;
             this.cremaHost.AddService(this);
         }
@@ -422,6 +424,20 @@ namespace Ntreev.Crema.Services.Users
             }
         }
 
+        public event ItemsEventHandler<IUserAuthentication> UserAuthenticationsKicked
+        {
+            add
+            {
+                this.Dispatcher.VerifyAccess();
+                this.userAuthenticationsKicked += value;
+            }
+            remove
+            {
+                this.Dispatcher.VerifyAccess();
+                this.userAuthenticationsKicked -= value;
+            }
+        }
+
         public event ItemsEventHandler<IUser> UsersBanChanged
         {
             add
@@ -550,6 +566,11 @@ namespace Ntreev.Crema.Services.Users
         private void Users_UsersKicked(object sender, ItemsEventArgs<IUser> e)
         {
             this.usersKicked?.Invoke(this, e);
+        }
+
+        private void Users_UserAuthenticationsKicked(object sender, ItemsEventArgs<IUserAuthentication> e)
+        {
+            this.userAuthenticationsKicked?.Invoke(this, e);
         }
 
         private void Users_UsersBanChanged(object sender, ItemsEventArgs<IUser> e)
@@ -892,6 +913,22 @@ namespace Ntreev.Crema.Services.Users
                 }
                 this.Users.InvokeUsersKickedEvent(authentication, users, comments);
             }, nameof(IUserServiceCallback.OnUsersKicked));
+        }
+
+        void IUserServiceCallback.OnUserAuthenticationKicked(SignatureDate signatureDate, string[] userIDs, Guid[] userTokens, string[] comments)
+        {
+            this.InvokeAsync(() =>
+            {
+                var authentication = this.Authenticate(signatureDate);
+                var userAuthentications = new IUserAuthentication[userIDs.Length];
+                for (var i = 0; i < userIDs.Length; i++)
+                {
+                    var user = this.Users[userIDs[i]];
+                    var userAuthentication = user.Authentications[userTokens[i]];
+                    userAuthentications[i] = userAuthentication;
+                }
+                this.Users.InvokeUserAuthenticationsKickedEvent(authentication, userAuthentications, comments);
+            }, nameof(IUserServiceCallback.OnUserAuthenticationKicked));
         }
 
         void IUserServiceCallback.OnUsersBanChanged(SignatureDate signatureDate, BanInfo[] banInfos, BanChangeType changeType, string[] comments)

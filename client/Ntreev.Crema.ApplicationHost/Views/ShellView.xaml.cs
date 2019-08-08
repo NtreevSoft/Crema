@@ -129,6 +129,7 @@ namespace Ntreev.Crema.ApplicationHost.Views
         {
             var userContext = this.cremaHost.GetService(typeof(IUserContext)) as IUserContext;
             userContext.UsersKicked += UserContext_UsersKicked;
+            userContext.UserAuthenticationsKicked += UserContext_UserAuthenticationsKicked;
             userContext.UsersBanChanged += UserContext_UsersBanChanged;
 
             var logService = this.cremaHost.GetService(typeof(ILogService)) as ILogService;
@@ -172,6 +173,31 @@ namespace Ntreev.Crema.ApplicationHost.Views
                 for (var i = 0; i < userIDs.Length; i++)
                 {
                     if (userIDs[i] == userID)
+                    {
+                        if (this.IsActive == false)
+                        {
+                            FlashWindowUtility.FlashWindow(this);
+                        }
+                        AppMessageBox.Show(comments[i], Properties.Resources.Message_KickedByAdministrator);
+                        break;
+                    }
+                }
+            });
+        }
+
+        private void UserContext_UserAuthenticationsKicked(object sender, ItemsEventArgs<IUserAuthentication> e)
+        {
+            var userID = this.cremaHost.UserID;
+            var userToken = this.cremaHost.Token;
+            var userIDs = e.Items.Select(item => item.Authentication.ID).ToArray();
+            var userTokens = e.Items.Select(item => item.Authentication.Token).ToArray();
+            var comments = e.MetaData as string[];
+
+            this.Dispatcher.InvokeAsync(() =>
+            {
+                for (var i = 0; i < userIDs.Length; i++)
+                {
+                    if (userIDs[i] == userID && userTokens[i] == userToken)
                     {
                         if (this.IsActive == false)
                         {

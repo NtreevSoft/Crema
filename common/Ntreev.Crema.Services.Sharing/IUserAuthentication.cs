@@ -26,9 +26,5 @@ namespace Ntreev.Crema.Services
     {
         IUser User { get; }
         Authentication Authentication { get; }
-
-        void SendMessage(Authentication authentication, string message);
-
-        void Kick(Authentication authentication, string comment);
     }
 }

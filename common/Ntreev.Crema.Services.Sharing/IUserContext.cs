@@ -56,6 +56,8 @@ namespace Ntreev.Crema.Services
 
         event ItemsEventHandler<IUser> UsersKicked;
 
+        event ItemsEventHandler<IUserAuthentication> UserAuthenticationsKicked;
+
         event ItemsEventHandler<IUser> UsersBanChanged;
 
         event EventHandler<MessageEventArgs> MessageReceived;

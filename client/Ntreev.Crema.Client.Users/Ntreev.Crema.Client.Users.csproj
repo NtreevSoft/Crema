@@ -84,6 +84,7 @@
     <Compile Include="Dialogs\ViewModels\DeleteUserCategoryViewModel.cs" />
     <Compile Include="Dialogs\ViewModels\BanViewModel.cs" />
     <Compile Include="Dialogs\ViewModels\KickEditorViewModel.cs" />
+    <Compile Include="Dialogs\ViewModels\KickUserAuthenticationViewModel.cs" />
     <Compile Include="Dialogs\ViewModels\KickViewModel.cs" />
     <Compile Include="Dialogs\ViewModels\MoveUserCategoryViewModel.cs" />
     <Compile Include="Dialogs\ViewModels\MoveUserViewModel.cs" />

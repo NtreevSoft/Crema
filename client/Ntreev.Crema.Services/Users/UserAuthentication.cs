@@ -34,14 +34,9 @@ namespace Ntreev.Crema.Services.Users
 
         public PropertyCollection ExtendedProperties { get; } = new PropertyCollection();
 
-        public void SendMessage(Authentication authentication, string message)
+        public override string ToString()
         {
-            throw new NotImplementedException();
-        }
-
-        public void Kick(Authentication authentication, string comment)
-        {
-            throw new NotImplementedException();
+            return $"{this.Authentication.ID} ({this.Authentication.Token})";
         }
     }
 }

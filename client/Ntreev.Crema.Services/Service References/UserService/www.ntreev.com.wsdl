@@ -75,6 +75,12 @@
   <wsdl:message name="IUserService_Kick_OutputMessage">
     <wsdl:part name="parameters" element="tns:KickResponse" />
   </wsdl:message>
+  <wsdl:message name="IUserService_KickAuthentication_InputMessage">
+    <wsdl:part name="parameters" element="tns:KickAuthentication" />
+  </wsdl:message>
+  <wsdl:message name="IUserService_KickAuthentication_OutputMessage">
+    <wsdl:part name="parameters" element="tns:KickAuthenticationResponse" />
+  </wsdl:message>
   <wsdl:message name="IUserService_Ban_InputMessage">
     <wsdl:part name="parameters" element="tns:Ban" />
   </wsdl:message>
@@ -135,6 +141,9 @@
   <wsdl:message name="IUserService_OnUsersKicked_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:OnUsersKicked" />
   </wsdl:message>
+  <wsdl:message name="IUserService_OnUserAuthenticationKicked_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnUserAuthenticationKicked" />
+  </wsdl:message>
   <wsdl:message name="IUserService_OnUsersBanChanged_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:OnUsersBanChanged" />
   </wsdl:message>
@@ -192,6 +201,10 @@
       <wsdl:input wsaw:Action="http://www.ntreev.com/IUserService/Kick" message="tns:IUserService_Kick_InputMessage" />
       <wsdl:output wsaw:Action="http://www.ntreev.com/IUserService/KickResponse" message="tns:IUserService_Kick_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="KickAuthentication">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IUserService/KickAuthentication" message="tns:IUserService_KickAuthentication_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IUserService/KickAuthenticationResponse" message="tns:IUserService_KickAuthentication_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Ban">
       <wsdl:input wsaw:Action="http://www.ntreev.com/IUserService/Ban" message="tns:IUserService_Ban_InputMessage" />
       <wsdl:output wsaw:Action="http://www.ntreev.com/IUserService/BanResponse" message="tns:IUserService_Ban_OutputMessage" />
@@ -241,6 +254,9 @@
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnUsersKicked">
       <wsdl:output wsaw:Action="http://www.ntreev.com/IUserService/OnUsersKicked" message="tns:IUserService_OnUsersKicked_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnUserAuthenticationKicked">
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IUserService/OnUserAuthenticationKicked" message="tns:IUserService_OnUserAuthenticationKicked_OutputCallbackMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnUsersBanChanged">
       <wsdl:output wsaw:Action="http://www.ntreev.com/IUserService/OnUsersBanChanged" message="tns:IUserService_OnUsersBanChanged_OutputCallbackMessage" />

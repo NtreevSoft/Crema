@@ -39,6 +39,8 @@ namespace Ntreev.Crema.Services
 
         void Kick(Authentication authentication, string comment);
 
+        void KickAuthentication(Authentication authentication, Guid userToken, string comment);
+
         void Ban(Authentication authentication, string comment);
 
         void Unban(Authentication authentication);

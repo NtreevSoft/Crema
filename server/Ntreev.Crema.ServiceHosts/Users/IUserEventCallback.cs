@@ -60,6 +60,9 @@ namespace Ntreev.Crema.ServiceHosts.Users
         void OnUsersKicked(SignatureDate signatureDate, string[] userIDs, string[] comments);
 
         [OperationContract(IsOneWay = true)]
+        void OnUserAuthenticationKicked(SignatureDate signatureDate, string[] userIDs, Guid[] userTokens, string[] comments);
+
+        [OperationContract(IsOneWay = true)]
         void OnUsersBanChanged(SignatureDate signatureDate, BanInfo[] banInfos, BanChangeType changeType, string[] comments);
 
         [OperationContract(IsOneWay = true)]

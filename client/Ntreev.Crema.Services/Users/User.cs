@@ -106,6 +106,27 @@ namespace Ntreev.Crema.Services.Users
             this.Container.InvokeUsersLoggedOutEvent(authentication, authenticationInfos, new CloseInfo(CloseReason.Kicked, comment));
         }
 
+        public void KickAuthentication(Authentication authentication, Guid userToken, string comment)
+        {
+            this.Dispatcher.VerifyAccess();
+            this.CremaHost.DebugMethod(authentication, this, nameof(Kick), this, comment);
+            var result = this.Service.KickAuthentication(this.ID, userToken, comment ?? string.Empty);
+            this.Sign(authentication, result);
+            var users = new User[] { this };
+            var userAuthentications = new IUserAuthentication[] { this.Authentications[userToken] };
+            var comments = Enumerable.Repeat(comment, users.Length).ToArray();
+            for(var i=0; i < userAuthentications.Length; i++)
+            {
+                this.Container.InvokeUserAuthenticationsKick(authentication, userAuthentications[i], comments[i]);
+            }
+            var authenticationInfos = users.SelectMany(user => user.Authentications.Select(auth => auth.Value.Authentication.AuthenticationInfo)).ToArray();
+            this.Authentications.Remove(userToken);
+
+            this.Container.InvokeUserAuthenticationsKickedEvent(authentication, userAuthentications, comments);
+            this.Container.InvokeUsersStateChangedEvent(authentication, users);
+            this.Container.InvokeUsersLoggedOutEvent(authentication, authenticationInfos, new CloseInfo(CloseReason.Kicked, comment));
+        }
+
         public void Ban(Authentication authentication, string comment)
         {
             this.Dispatcher.VerifyAccess();

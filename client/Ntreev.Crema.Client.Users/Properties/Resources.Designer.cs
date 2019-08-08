@@ -421,6 +421,15 @@ namespace Ntreev.Crema.Client.Users.Properties {
         }
         
         /// <summary>
+        ///   Kicked by yourself.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Message_KickedByYourself {
+            get {
+                return ResourceManager.GetString("Message_KickedByYourself", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Adding User.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Message_NewUser {

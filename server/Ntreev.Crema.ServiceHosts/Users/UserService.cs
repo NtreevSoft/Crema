@@ -228,6 +228,15 @@ namespace Ntreev.Crema.ServiceHosts.Users
             });
         }
 
+        public ResultBase KickAuthentication(string userID, Guid userToken, string comment)
+        {
+            return this.Invoke(() =>
+            {
+                var user = this.GetUser(userID);
+                user.KickAuthentication(this.authentication, userToken, comment);
+            });
+        }
+
         public ResultBase<BanInfo> Ban(string userID, string comment)
         {
             return this.Invoke(() =>
@@ -308,6 +317,7 @@ namespace Ntreev.Crema.ServiceHosts.Users
             this.userContext.UsersLoggedIn += UserContext_UsersLoggedIn;
             this.userContext.UsersLoggedOut += UserContext_UsersLoggedOut;
             this.userContext.UsersKicked += UserContext_UsersKicked;
+            this.userContext.UserAuthenticationsKicked += UserContext_UserAuthenticationsKicked;
             this.userContext.UsersBanChanged += UserContext_UsersBanChanged;
             this.userContext.MessageReceived += UserContext_MessageReceived;
 
@@ -327,6 +337,7 @@ namespace Ntreev.Crema.ServiceHosts.Users
             this.userContext.UsersLoggedIn -= UserContext_UsersLoggedIn;
             this.userContext.UsersLoggedOut -= UserContext_UsersLoggedOut;
             this.userContext.UsersKicked -= UserContext_UsersKicked;
+            this.userContext.UserAuthenticationsKicked -= UserContext_UserAuthenticationsKicked;
             this.userContext.UsersBanChanged -= UserContext_UsersBanChanged;
             this.userContext.MessageReceived -= UserContext_MessageReceived;
 
@@ -441,6 +452,17 @@ namespace Ntreev.Crema.ServiceHosts.Users
             var userIDs = e.Items.Select(item => item.ID).ToArray();
             var comments = e.MetaData as string[];
             this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnUsersKicked(signatureDate, userIDs, comments));
+        }
+
+        private void UserContext_UserAuthenticationsKicked(object sender, ItemsEventArgs<IUserAuthentication> e)
+        {
+            var userToken = this.authentication.Token;
+            var exceptionUserToken = e.UserToken;
+            var signatureDate = e.SignatureDate;
+            var userIDs = e.Items.Select(item => item.Authentication.ID).ToArray();
+            var userTokens = e.Items.Select(item => item.Authentication.Token).ToArray();
+            var comments = e.MetaData as string[];
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnUserAuthenticationKicked(signatureDate, userIDs, userTokens, comments));
         }
 
         private void UserContext_UsersBanChanged(object sender, ItemsEventArgs<IUser> e)

@@ -284,6 +284,41 @@ namespace Ntreev.Crema.Services.Users
             }
         }
 
+        public void KickAuthentication(Authentication authentication, Guid userToken, string comment)
+        {
+            try
+            {
+                this.Dispatcher.VerifyAccess();
+                this.CremaHost.DebugMethod(authentication, this, nameof(Kick), this, comment);
+                this.ValidateKickUserAuthentication(authentication, comment);
+                this.Sign(authentication);
+                var users = new User[] { this };
+                var userAuthentications = new IUserAuthentication[] { this.Authentications[userToken] };
+                var comments = Enumerable.Repeat(comment, userAuthentications.Length).ToArray();
+                for(var i=0; i < userAuthentications.Length; i++)
+                {
+                    this.Container.InvokeUserKickAuthentication(authentication, userAuthentications[i], comments[i]);
+                }
+                foreach (var auth in this.Authentications.Values.ToArray())
+                {
+                    if (auth.Authentication.Token == authentication.Token) continue;
+
+                    auth.Authentication.InvokeExpiredEvent(authentication.ID, comment);
+                }
+                var authenticationInfos = userAuthentications.Select(user => user.Authentication.AuthenticationInfo).ToArray();
+                this.Authentications.Remove(userToken);
+
+                this.Container.InvokeUserAuthenticationsKickedEvent(authentication, userAuthentications, comments);
+                this.Container.InvokeUsersStateChangedEvent(authentication, users);
+                this.Container.InvokeUsersLoggedOutEvent(authentication, authenticationInfos, new CloseInfo(CloseReason.Kicked, comment));
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
+        }
+
         public void ChangeUserInfo(Authentication authentication, SecureString password, SecureString newPassword, string userName, Authority? authority, bool? allowMultiLogin)
         {
             try
@@ -664,6 +699,10 @@ namespace Ntreev.Crema.Services.Users
                 throw new PermissionDeniedException();
             if (this.IsOnline == false)
                 throw new InvalidOperationException(Resources.Exception_OfflineUserCannotKicked);
+        }
+
+        private void ValidateKickUserAuthentication(Authentication authentication, string comment)
+        {
         }
 
         private void Sign(Authentication authentication)

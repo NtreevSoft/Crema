@@ -731,6 +731,20 @@ namespace Ntreev.Crema.Services
             return sb.ToString();
         }
 
+        public static object KickUserAuthentication(Authentication authentication, IUserAuthentication[] userAuthentications, string[] comments)
+        {
+            var sb = new StringBuilder();
+            for (var i = 0; i < userAuthentications.Length; i++)
+            {
+                if (i > 0)
+                    sb.AppendLine();
+                sb.AppendFormat(EventResources.KickUser, authentication.ID, authentication.Name, userAuthentications[i], userAuthentications[i].Authentication.Token);
+                sb.AppendLine();
+                sb.Append($"{EventResources.Reason}: {comments[i]}");
+            }
+            return sb.ToString();
+        }
+
         public static string BanUser(Authentication authentication, IUser[] users, string[] comments)
         {
             var sb = new StringBuilder();
