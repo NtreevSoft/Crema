@@ -219,8 +219,9 @@ namespace Ntreev.Crema.Services.Users
                     {
                         auth.Authentication.InvokeExpiredEvent(authentication.ID, comment);
                     }
-                    this.Authentications.Clear();
+
                     var authenticationInfos = users.SelectMany(user => user.Authentications.Select(auth => auth.Value.Authentication.AuthenticationInfo)).ToArray();
+                    this.Authentications.Clear();
                     this.Container.InvokeUsersStateChangedEvent(authentication, users);
                     this.Container.InvokeUsersLoggedOutEvent(authentication, authenticationInfos, new CloseInfo(CloseReason.Banned, comment));
                 }
@@ -269,8 +270,9 @@ namespace Ntreev.Crema.Services.Users
 
                     auth.Authentication.InvokeExpiredEvent(authentication.ID, comment);
                 }
-                this.Authentications.Clear();
                 var authenticationInfos = users.SelectMany(user => user.Authentications.Select(auth => auth.Value.Authentication.AuthenticationInfo)).ToArray();
+                this.Authentications.Clear();
+
                 this.Container.InvokeUsersKickedEvent(authentication, users, comments);
                 this.Container.InvokeUsersStateChangedEvent(authentication, users);
                 this.Container.InvokeUsersLoggedOutEvent(authentication, authenticationInfos, new CloseInfo(CloseReason.Kicked, comment));
