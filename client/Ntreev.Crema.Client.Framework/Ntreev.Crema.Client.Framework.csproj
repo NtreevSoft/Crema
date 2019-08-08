@@ -78,6 +78,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IUserAuthenticationDescriptor.cs" />
     <Compile Include="ListBoxBase.cs" />
     <Compile Include="TreeViewBase.cs" />
     <Compile Include="Controls\PropertyListBox.cs" />
@@ -116,6 +117,8 @@
     <Compile Include="TableContentDescriptorUtility.cs" />
     <Compile Include="TableContentListItemBase.cs" />
     <Compile Include="TableItemDescriptorUtility.cs" />
+    <Compile Include="UserAuthenticationDescriptor.cs" />
+    <Compile Include="UserAuthenticationTreeItemBase.cs" />
     <Compile Include="UserCategoryTreeItemBase.cs" />
     <Compile Include="UserTreeItemBase.cs" />
     <None Include="Converters\DataBaseDescriptorToPropertyConverter.cs" />

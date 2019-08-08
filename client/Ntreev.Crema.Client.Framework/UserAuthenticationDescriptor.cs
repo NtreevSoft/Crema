@@ -15,41 +15,47 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.ServiceModel;
-using Ntreev.Crema.Services;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ntreev.Crema.ServiceModel;
+using Ntreev.Crema.Services;
 
 namespace Ntreev.Crema.Client.Framework
 {
-    public interface IUserDescriptor : IDescriptorBase
+    public class UserAuthenticationDescriptor : DescriptorBase, IUserAuthenticationDescriptor
     {
-        IUserAuthenticationCollection Authentications { get; }
+        private readonly IUserAuthentication userAuthentication;
 
-        string UserID { get; }
+        public UserAuthenticationDescriptor(Authentication authentication, IUserAuthentication userAuthentication, DescriptorTypes descriptorTypes, object owner)
+            : base(authentication, userAuthentication, descriptorTypes)
+        {
+            this.userAuthentication = userAuthentication;
+        }
 
-        string DisplayName { get; }
+        public string DisplayName
+        {
+            get
+            {
+                var name = "";
+                if (this.authentication.Token == this.userAuthentication.Authentication.Token)
+                {
+                    name += "* ";
+                }
 
-        UserInfo UserInfo { get; }
+                name += this.userAuthentication.Authentication.Token.ToString();
+                return name;
+            }
+        }
 
-        UserState UserState { get; }
+        public UserInfo UserInfo => this.User.UserInfo;
 
-        BanInfo BanInfo { get; }
+        public bool IsOnline { get; } = true;
 
-        bool IsOnline { get; }
+        public IUser User => this.userAuthentication.User;
 
-        bool IsBanned { get; }
-
-        bool IsAdmin { get; }
-
-        bool IsMember { get; }
-
-        bool IsGuest { get; }
-
-        new IUser Target { get; }
+        IUserAuthentication IUserAuthenticationDescriptor.Target => this.userAuthentication;
     }
 }

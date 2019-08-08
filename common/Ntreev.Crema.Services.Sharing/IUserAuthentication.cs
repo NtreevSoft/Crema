@@ -20,6 +20,9 @@ using Ntreev.Crema.Services.Users;
 namespace Ntreev.Crema.Services
 {
     public interface IUserAuthentication
+#if CLIENT
+        : IExtendedProperties
+#endif
     {
         IUser User { get; }
         Authentication Authentication { get; }

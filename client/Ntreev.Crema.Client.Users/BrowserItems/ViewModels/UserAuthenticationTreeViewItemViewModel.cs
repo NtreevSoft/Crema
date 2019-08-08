@@ -15,41 +15,28 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.ServiceModel;
+using Ntreev.Crema.Client.Framework;
 using Ntreev.Crema.Services;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ntreev.Crema.Client.Framework
+namespace Ntreev.Crema.Client.Users.BrowserItems.ViewModels
 {
-    public interface IUserDescriptor : IDescriptorBase
+    public class UserAuthenticationTreeViewItemViewModel : UserAuthenticationTreeItemBase
     {
-        IUserAuthenticationCollection Authentications { get; }
+        public UserAuthenticationTreeViewItemViewModel(Authentication authentication, IUserAuthentication userAuthentication, bool isSubscriptable, object owner) 
+            : base(authentication, userAuthentication, isSubscriptable, owner)
+        {
+        }
 
-        string UserID { get; }
+        internal protected UserAuthenticationTreeViewItemViewModel(Authentication authentication, UserAuthenticationDescriptor descriptor, object owner)
+            : base(authentication, descriptor, owner)
+        {
+        }
 
-        string DisplayName { get; }
-
-        UserInfo UserInfo { get; }
-
-        UserState UserState { get; }
-
-        BanInfo BanInfo { get; }
-
-        bool IsOnline { get; }
-
-        bool IsBanned { get; }
-
-        bool IsAdmin { get; }
-
-        bool IsMember { get; }
-
-        bool IsGuest { get; }
-
-        new IUser Target { get; }
+        public override string DisplayName => this.Descriptor.DisplayName;
     }
 }

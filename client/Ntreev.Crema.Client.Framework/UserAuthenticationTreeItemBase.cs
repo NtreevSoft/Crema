@@ -15,41 +15,35 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.ServiceModel;
-using Ntreev.Crema.Services;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ntreev.Crema.ServiceModel;
+using Ntreev.Crema.Services;
 
 namespace Ntreev.Crema.Client.Framework
 {
-    public interface IUserDescriptor : IDescriptorBase
+    public class UserAuthenticationTreeItemBase : DescriptorTreeItemBase<UserAuthenticationDescriptor>, IUserAuthenticationDescriptor
     {
-        IUserAuthenticationCollection Authentications { get; }
+        public UserAuthenticationTreeItemBase(Authentication authentication, IUserAuthentication userAuthentication, bool isSubscriptable, object owner)
+            : base(authentication, new UserAuthenticationDescriptor(authentication, userAuthentication, isSubscriptable ? DescriptorTypes.All : DescriptorTypes.IsRecursive, owner), owner)
+        {
 
-        string UserID { get; }
+        }
 
-        string DisplayName { get; }
+        internal protected UserAuthenticationTreeItemBase(Authentication authentication, UserAuthenticationDescriptor descriptor, object owner)
+            : base(authentication, descriptor, owner)
+        {
+        }
 
-        UserInfo UserInfo { get; }
+        public UserInfo UserInfo => this.Descriptor.UserInfo;
 
-        UserState UserState { get; }
+        public bool IsOnline => this.Descriptor.IsOnline;
 
-        BanInfo BanInfo { get; }
+        public IUser User => this.Descriptor.User;
 
-        bool IsOnline { get; }
-
-        bool IsBanned { get; }
-
-        bool IsAdmin { get; }
-
-        bool IsMember { get; }
-
-        bool IsGuest { get; }
-
-        new IUser Target { get; }
+        IUserAuthentication IUserAuthenticationDescriptor.Target => this.Descriptor.Target as IUserAuthentication;
     }
 }

@@ -19,37 +19,22 @@ using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Client.Framework
 {
-    public interface IUserDescriptor : IDescriptorBase
+    public interface IUserAuthenticationDescriptor : IDescriptorBase
     {
-        IUserAuthenticationCollection Authentications { get; }
-
-        string UserID { get; }
-
         string DisplayName { get; }
 
         UserInfo UserInfo { get; }
 
-        UserState UserState { get; }
-
-        BanInfo BanInfo { get; }
-
         bool IsOnline { get; }
 
-        bool IsBanned { get; }
+        IUser User { get; }
 
-        bool IsAdmin { get; }
-
-        bool IsMember { get; }
-
-        bool IsGuest { get; }
-
-        new IUser Target { get; }
+        new IUserAuthentication Target { get; }
     }
 }

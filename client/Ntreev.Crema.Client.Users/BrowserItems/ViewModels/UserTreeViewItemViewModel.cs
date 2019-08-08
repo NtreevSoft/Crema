@@ -124,5 +124,10 @@ namespace Ntreev.Crema.Client.Users.BrowserItems.ViewModels
         public bool CanBan => UserUtility.CanBan(this.authentication, this);
 
         public bool CanUnban => UserUtility.CanUnban(this.authentication, this);
+
+        protected override UserAuthenticationTreeItemBase CreateInstance(Authentication authentication, UserAuthenticationDescriptor descriptor, object owner)
+        {
+            return new UserAuthenticationTreeViewItemViewModel(authentication, descriptor, owner);
+        }
     }
 }

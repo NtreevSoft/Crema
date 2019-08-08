@@ -43,11 +43,18 @@ namespace Ntreev.Crema.Client.Framework
         private UserState userState;
         private BanInfo banInfo = BanInfo.Empty;
 
+        private readonly ObservableCollection<UserAuthenticationDescriptor> userAuthentications = new ObservableCollection<UserAuthenticationDescriptor>();
+        private readonly ReadOnlyObservableCollection<UserAuthenticationDescriptor> userAuthenticationsReadonly;
+
+        public ReadOnlyObservableCollection<UserAuthenticationDescriptor> UserAuthentications => this.userAuthenticationsReadonly;
+
         public UserDescriptor(Authentication authentication, IUserDescriptor descriptor, bool isSubscriptable, object owner)
             : base(authentication, descriptor.Target, descriptor, isSubscriptable)
         {
             this.user = descriptor.Target;
             this.owner = owner ?? this;
+
+            this.userAuthenticationsReadonly = new ReadOnlyObservableCollection<UserAuthenticationDescriptor>(this.userAuthentications);
         }
 
         public UserDescriptor(Authentication authentication, IUser user, DescriptorTypes descriptorTypes, object owner)
@@ -60,12 +67,22 @@ namespace Ntreev.Crema.Client.Framework
             this.userState = this.user.UserState;
             this.banInfo = this.user.BanInfo;
 
+            this.userAuthenticationsReadonly = new ReadOnlyObservableCollection<UserAuthenticationDescriptor>(this.userAuthentications);
+
             if (this.descriptorTypes.HasFlag(DescriptorTypes.IsSubscriptable) == true)
             {
                 this.user.Deleted += User_Deleted;
                 this.user.UserInfoChanged += User_UserInfoChanged;
                 this.user.UserStateChanged += User_UserStateChanged;
                 this.user.UserBanInfoChanged += User_UserBanInfoChanged;
+                this.user.Authentications.CollectionChanged += Authentications_CollectionChanged;
+            }
+
+            foreach (var userAutentication in this.user.Authentications.Values)
+            {
+                var userAuthenticationDescriptor = new UserAuthenticationDescriptor(this.authentication, userAutentication, this.descriptorTypes, this.owner);
+                userAutentication.ExtendedProperties[this.owner] = userAuthenticationDescriptor;
+                this.userAuthentications.Add(userAuthenticationDescriptor);
             }
         }
 
@@ -111,6 +128,7 @@ namespace Ntreev.Crema.Client.Framework
                         this.user.UserInfoChanged -= User_UserInfoChanged;
                         this.user.UserStateChanged -= User_UserStateChanged;
                         this.user.UserBanInfoChanged -= User_UserBanInfoChanged;
+                        this.user.Authentications.CollectionChanged -= Authentications_CollectionChanged;
                     }
                 });
             }
@@ -144,6 +162,70 @@ namespace Ntreev.Crema.Client.Framework
             await this.RefreshAsync();
         }
 
+        private void Authentications_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    {
+                        var descriptorList = new List<UserAuthenticationDescriptor>(e.NewItems.Count);
+                        foreach (IUserAuthentication item in e.NewItems)
+                        {
+                            if (item.ExtendedProperties.ContainsKey(this.owner) == true)
+                            {
+                                var descriptor = item.ExtendedProperties[this.owner] as UserAuthenticationDescriptor;
+                                descriptorList.Add(descriptor);
+                            }
+                            else
+                            {
+                                var descriptor = new UserAuthenticationDescriptor(this.authentication, item, this.descriptorTypes, this.owner);
+                                item.ExtendedProperties[this.owner] = descriptor;
+                                descriptorList.Add(descriptor);
+                            }
+
+                        }
+                        this.Dispatcher.InvokeAsync(() =>
+                        {
+                            foreach (var item in descriptorList)
+                            {
+                                this.userAuthentications.Add(item);
+                            }
+                        });
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    {
+                        var descriptorList = new List<UserAuthenticationDescriptor>(e.OldItems.Count);
+                        foreach (IUserAuthentication item in e.OldItems)
+                        {
+                            var descriptor = item.ExtendedProperties[this.owner] as UserAuthenticationDescriptor;
+                            descriptorList.Add(descriptor);
+                        }
+                        this.Dispatcher.InvokeAsync(() =>
+                        {
+                            foreach (var item in descriptorList)
+                            {
+                                this.userAuthentications.Remove(item);
+                            }
+                        });
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Move:
+                    {
+
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    {
+                        this.Dispatcher.InvokeAsync(() =>
+                        {
+                            this.userAuthentications.Clear();
+                        });
+                    }
+                    break;
+            }
+        }
+
         #region IUserItemDescriptor
 
         IUserItem IUserItemDescriptor.Target => this.user as IUserItem;
@@ -157,6 +239,8 @@ namespace Ntreev.Crema.Client.Framework
         #region IUserDescriptor
 
         IUser IUserDescriptor.Target => this.user;
+
+        public IUserAuthenticationCollection Authentications => this.user.Authentications;
 
         #endregion
     }

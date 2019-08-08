@@ -75,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Authenticator.cs" />
+    <Compile Include="BrowserItems\ViewModels\UserAuthenticationTreeViewItemViewModel.cs" />
     <Compile Include="BrowserItems\ViewModels\UserCategoryTreeViewItemViewModel.cs" />
     <Compile Include="BrowserItems\Views\UserBrowserView.xaml.cs">
       <DependentUpon>UserBrowserView.xaml</DependentUpon>

@@ -16,6 +16,7 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Data;
 using Ntreev.Crema.ServiceModel;
 
 namespace Ntreev.Crema.Services.Users
@@ -30,6 +31,8 @@ namespace Ntreev.Crema.Services.Users
 
         public IUser User { get; set; }
         public Authentication Authentication { get; }
+
+        public PropertyCollection ExtendedProperties { get; } = new PropertyCollection();
 
         public void SendMessage(Authentication authentication, string message)
         {

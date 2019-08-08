@@ -19,13 +19,21 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 
 namespace Ntreev.Crema.Services.Users
 {
-    public class UserAuthenticationCollection : IUserAuthenticationCollection
+    public class UserAuthenticationCollection : IUserAuthenticationCollection, INotifyCollectionChanged
     {
         private readonly IDictionary<Guid, IUserAuthentication> dictionary = new ConcurrentDictionary<Guid, IUserAuthentication>();
+
+        public event NotifyCollectionChangedEventHandler CollectionChanged;
+
+        protected virtual void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            this.CollectionChanged?.Invoke(sender, e);
+        }
 
         public IEnumerator<KeyValuePair<Guid, IUserAuthentication>> GetEnumerator()
         {
@@ -40,6 +48,7 @@ namespace Ntreev.Crema.Services.Users
         public void Add(KeyValuePair<Guid, IUserAuthentication> item)
         {
             this.dictionary.Add(item);
+            this.OnCollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, new[] { item.Value }));
 
             foreach (var value in this.dictionary.Values)
             {
@@ -50,11 +59,13 @@ namespace Ntreev.Crema.Services.Users
 
         public void Clear()
         {
-            var users = this.dictionary.Values.Select(user => user.User).Cast<User>().ToArray();
-            this.dictionary.Clear();
+            var user = this.dictionary.Values.Select(o => o.User).Cast<User>().FirstOrDefault();
+            var authentications = this.dictionary.Values.ToArray();
 
-            foreach (var user in users)
+            if (user != null)
             {
+                this.dictionary.Clear();
+                this.OnCollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset, null));
                 user.OnUserStateChanged(EventArgs.Empty);
             }
         }
@@ -71,12 +82,15 @@ namespace Ntreev.Crema.Services.Users
 
         public bool Remove(KeyValuePair<Guid, IUserAuthentication> item)
         {
-            var users = this.dictionary.Values.Select(user => user.User).Cast<User>().ToArray();
-            var result = this.Remove(item);
+            var user = this.dictionary.Values.Select(o => o.User).Cast<User>().FirstOrDefault();
+            var authentications = this.dictionary.Values.Where(auth => auth.Authentication.Token == item.Key).ToArray();
+            var result = dictionary.Remove(item);
 
-            foreach (var user in users)
+            if (user != null)
             {
+                this.OnCollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, authentications));
                 user.OnUserStateChanged(EventArgs.Empty);
+
             }
 
             return result;
@@ -93,6 +107,7 @@ namespace Ntreev.Crema.Services.Users
         public void Add(Guid key, IUserAuthentication value)
         {
             this.dictionary.Add(key, value);
+            this.OnCollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, new[] { value }));
 
             foreach (var val in this.dictionary.Values)
             {
@@ -103,11 +118,13 @@ namespace Ntreev.Crema.Services.Users
 
         public bool Remove(Guid key)
         {
-            var users = this.dictionary.Values.Select(user => user.User).Cast<User>().ToArray();
+            var user = this.dictionary.Values.Select(o => o.User).Cast<User>().FirstOrDefault();
+            var authentications = this.dictionary.Values.Where(auth => auth.Authentication.Token == key).ToArray();
             var result = this.dictionary.Remove(key);
 
-            foreach (var user in users)
+            if (user != null)
             {
+                this.OnCollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, authentications));
                 user.OnUserStateChanged(EventArgs.Empty);
             }
 

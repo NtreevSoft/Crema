@@ -40,14 +40,25 @@ namespace Ntreev.Crema.Client.Framework
         public UserTreeItemBase(Authentication authentication, IUser user, bool isSubscriptable, object owner)
             : this(authentication, new UserDescriptor(authentication, user, isSubscriptable == true ? DescriptorTypes.All : DescriptorTypes.IsRecursive, owner), owner)
         {
-
-
         }
 
         internal protected UserTreeItemBase(Authentication authentication, UserDescriptor descriptor, object owner)
             : base(authentication, descriptor, owner)
         {
+            this.Initialize();
+        }
 
+        private void Initialize()
+        {
+            foreach(var userAuthenticationDescriptor in this.descriptor.UserAuthentications)
+            {
+                this.AddDescriptor(userAuthenticationDescriptor);
+            }
+
+            if (this.descriptor.UserAuthentications is INotifyCollectionChanged userAuthentication)
+            {
+                userAuthentication.CollectionChanged += UserAuthentication_CollectionChanged;
+            }
         }
 
         public string UserID => this.descriptor.UserID;
@@ -69,6 +80,69 @@ namespace Ntreev.Crema.Client.Framework
         public bool IsMember => this.descriptor.IsMember;
 
         public bool IsGuest => this.descriptor.IsGuest;
+
+        public IUserAuthenticationCollection Authentications => this.descriptor.Authentications;
+
+        protected virtual UserAuthenticationTreeItemBase CreateInstance(Authentication authentication, UserAuthenticationDescriptor descriptor, object owner)
+        {
+            return new UserAuthenticationTreeItemBase(authentication, descriptor, owner);
+        }
+
+        private void AddDescriptor(UserAuthenticationDescriptor descriptor)
+        {
+            var viewModel = descriptor.Host == null ? this.CreateInstance(this.authentication, descriptor, this.Owner) : descriptor.Host as UserAuthenticationTreeItemBase;
+            viewModel.Parent = this;
+            descriptor.Host = viewModel;
+        }
+
+        private void RemoveDescriptor(UserAuthenticationDescriptor descriptor)
+        {
+            foreach (var item in this.Items.ToArray())
+            {
+                if (item is UserAuthenticationTreeItemBase viewModel && viewModel.Descriptor == descriptor)
+                {
+                    this.Items.Remove(viewModel);
+                }
+            }
+        }
+
+        private void UserAuthentication_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    {
+                        foreach (var item in e.NewItems)
+                        {
+                            if (item is UserAuthenticationDescriptor descriptor)
+                            {
+                                this.AddDescriptor(descriptor);
+                            }
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    {
+                        foreach (var item in e.OldItems)
+                        {
+                            if (item is UserAuthenticationDescriptor descriptor)
+                            {
+                                this.RemoveDescriptor(descriptor);
+                            }
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    {
+                        foreach (var item in this.Items.ToArray())
+                        {
+                            item.Parent = null;
+                        }
+                    }
+                    break;
+            }
+        }
+
 
         #region IUserItemDescriptor
 
