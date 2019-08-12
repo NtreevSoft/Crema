@@ -65,6 +65,9 @@ namespace Ntreev.Crema.ServiceHosts.Users
         ResultBase Kick(string userID, string comment);
 
         [OperationContract]
+        ResultBase KickAuthentication(string userID, Guid userToken, string comment);
+
+        [OperationContract]
         ResultBase<BanInfo> Ban(string userID, string comment);
 
         [OperationContract]

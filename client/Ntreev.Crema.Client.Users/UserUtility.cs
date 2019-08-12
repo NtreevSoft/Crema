@@ -20,6 +20,7 @@ using Ntreev.Crema.Client.Users.Dialogs.ViewModels;
 using Ntreev.Crema.Data;
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services;
+using Ntreev.Crema.Client.Users.Properties;
 using Ntreev.ModernUI.Framework;
 using System;
 using System.Collections.Generic;
@@ -67,6 +68,21 @@ namespace Ntreev.Crema.Client.Users
             if (authentication.Authority != Authority.Admin)
                 return false;
             return UserDescriptorUtility.IsOnline(authentication, descriptor) == true;
+        }
+
+        public static bool CanUserAuthenticationKick(Authentication authentication, IUserAuthenticationDescriptor descriptor)
+        {
+            var canKick = descriptor.Target.User.Dispatcher.Invoke(() =>
+            {
+                if (authentication.ID == descriptor.UserInfo.ID && authentication.Token == descriptor.Target.Authentication.Token)
+                    return false;
+                if (authentication.ID == descriptor.UserInfo.ID)
+                    return true;
+                if (authentication.Authority == Authority.Admin)
+                    return true;
+                return false;
+            });
+            return canKick;
         }
 
         public static bool CanBan(Authentication authentication, IUserDescriptor descriptor)
@@ -126,6 +142,22 @@ namespace Ntreev.Crema.Client.Users
         public static async Task<bool> KickAsync(Authentication authentication, IUserDescriptor descriptor)
         {
             var dialog = await KickViewModel.CreateInstanceAsync(authentication, descriptor);
+            return dialog?.ShowDialog() == true;
+        }
+
+        public static async Task<bool> KickUserAuthenticationAsync(Authentication authentication, IUserAuthenticationDescriptor descriptor)
+        {
+            var equalsUserID = descriptor.User.Dispatcher.Invoke(() => authentication.ID == descriptor.UserInfo.ID);
+            if (equalsUserID)
+            {
+                return descriptor.User.Dispatcher.Invoke(() =>
+                {
+                    descriptor.User.KickAuthentication(authentication, descriptor.Target.Authentication.Token, Resources.Message_KickedByYourself);
+                    return true;
+                });
+            }
+
+            var dialog = await KickUserAuthenticationViewModel.CreateInstanceAsync(authentication, descriptor);
             return dialog?.ShowDialog() == true;
         }
 

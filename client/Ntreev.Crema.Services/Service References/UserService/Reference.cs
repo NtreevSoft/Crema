@@ -48,6 +48,9 @@ namespace Ntreev.Crema.Services.UserService {
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IUserService/Kick", ReplyAction="http://www.ntreev.com/IUserService/KickResponse")]
         Ntreev.Crema.ServiceModel.ResultBase Kick(string userID, string comment);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IUserService/KickAuthentication", ReplyAction="http://www.ntreev.com/IUserService/KickAuthenticationResponse")]
+        Ntreev.Crema.ServiceModel.ResultBase KickAuthentication(string userID, System.Guid userToken, string comment);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IUserService/Ban", ReplyAction="http://www.ntreev.com/IUserService/BanResponse")]
         Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.BanInfo> Ban(string userID, string comment);
         
@@ -96,6 +99,9 @@ namespace Ntreev.Crema.Services.UserService {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://www.ntreev.com/IUserService/OnUsersKicked")]
         void OnUsersKicked(Ntreev.Library.SignatureDate signatureDate, string[] userIDs, string[] comments);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://www.ntreev.com/IUserService/OnUserAuthenticationKicked")]
+        void OnUserAuthenticationKicked(Ntreev.Library.SignatureDate signatureDate, string[] userIDs, System.Guid[] userTokens, string[] comments);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://www.ntreev.com/IUserService/OnUsersBanChanged")]
         void OnUsersBanChanged(Ntreev.Library.SignatureDate signatureDate, Ntreev.Crema.ServiceModel.BanInfo[] banInfos, Ntreev.Crema.ServiceModel.BanChangeType changeType, string[] comments);
@@ -177,6 +183,10 @@ namespace Ntreev.Crema.Services.UserService {
         
         public Ntreev.Crema.ServiceModel.ResultBase Kick(string userID, string comment) {
             return base.Channel.Kick(userID, comment);
+        }
+        
+        public Ntreev.Crema.ServiceModel.ResultBase KickAuthentication(string userID, System.Guid userToken, string comment) {
+            return base.Channel.KickAuthentication(userID, userToken, comment);
         }
         
         public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.BanInfo> Ban(string userID, string comment) {

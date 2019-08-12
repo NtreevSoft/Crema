@@ -103,6 +103,11 @@ namespace Ntreev.Crema.Services.Users
             throw new NotImplementedException();
         }
 
+        void IUserServiceCallback.OnUserAuthenticationKicked(SignatureDate signatureDate, string[] userIDs, Guid[] userTokens, string[] comments)
+        {
+            throw new NotImplementedException();
+        }
+
         void IUserServiceCallback.OnUsersBanChanged(SignatureDate signatureDate, BanInfo[] banInfos, BanChangeType changeType, string[] comments)
         {
             throw new NotImplementedException();

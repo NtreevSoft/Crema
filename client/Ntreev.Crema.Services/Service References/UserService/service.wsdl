@@ -115,6 +115,15 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="KickAuthentication">
+      <soap12:operation soapAction="http://www.ntreev.com/IUserService/KickAuthentication" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="Ban">
       <soap12:operation soapAction="http://www.ntreev.com/IUserService/Ban" style="document" />
       <wsdl:input>
@@ -216,6 +225,12 @@
     </wsdl:operation>
     <wsdl:operation name="OnUsersKicked">
       <soap12:operation soapAction="http://www.ntreev.com/IUserService/OnUsersKicked" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OnUserAuthenticationKicked">
+      <soap12:operation soapAction="http://www.ntreev.com/IUserService/OnUserAuthenticationKicked" style="document" />
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>

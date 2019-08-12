@@ -324,4 +324,7 @@
   <data name="Label_AllowMultiLogin" xml:space="preserve">
     <value>중복 로그인 허용</value>
   </data>
+  <data name="Message_KickedByYourself" xml:space="preserve">
+    <value>본인에 의해 추방되었습니다.</value>
+  </data>
 </root>

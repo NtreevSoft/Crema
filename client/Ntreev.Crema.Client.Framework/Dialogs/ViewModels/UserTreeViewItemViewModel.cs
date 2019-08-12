@@ -46,5 +46,10 @@ namespace Ntreev.Crema.Client.Framework.Dialogs.ViewModels
         {
             get { return this.descriptor.UserID; }
         }
+
+        protected override UserAuthenticationTreeItemBase CreateInstance(Authentication authentication, UserAuthenticationDescriptor descriptor, object owner)
+        {
+            return new UserAuthenticationTreeViewItemViewModel(authentication, descriptor, owner);
+        }
     }
 }

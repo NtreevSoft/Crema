@@ -51,6 +51,7 @@ namespace Ntreev.Crema.Services.Users
         private ItemsEventHandler<AuthenticationInfo> usersLoggedIn;
         private ItemsEventHandler<AuthenticationInfo> usersLoggedOut;
         private ItemsEventHandler<IUser> usersKicked;
+        private ItemsEventHandler<IUserAuthentication> userAuthenticationsKicked;
         private ItemsEventHandler<IUser> usersBanChanged;
 
         public UserContext(CremaHost cremaHost)
@@ -66,7 +67,9 @@ namespace Ntreev.Crema.Services.Users
                 this.Items.UsersLoggedIn += Users_UsersLoggedIn;
                 this.Items.UsersLoggedOut += Users_UsersLoggedOut;
                 this.Items.UsersKicked += Users_UsersKicked;
+                this.Items.UserAuthenticationsKicked += Users_UserAuthenticationsKicked;
                 this.Items.UsersBanChanged += Users_UsersBanChanged;
+                
             });
             this.cremaHost.Debug(Resources.Message_UserContextIsCreated);
         }
@@ -557,6 +560,20 @@ namespace Ntreev.Crema.Services.Users
             }
         }
 
+        public event ItemsEventHandler<IUserAuthentication> UserAuthenticationsKicked
+        {
+            add
+            {
+                this.Dispatcher.VerifyAccess();
+                this.userAuthenticationsKicked += value;
+            }
+            remove
+            {
+                this.Dispatcher.VerifyAccess();
+                this.userAuthenticationsKicked -= value;
+            }
+        }
+
         public event ItemsEventHandler<IUser> UsersBanChanged
         {
             add
@@ -657,6 +674,11 @@ namespace Ntreev.Crema.Services.Users
         private void Users_UsersKicked(object sender, ItemsEventArgs<IUser> e)
         {
             this.usersKicked?.Invoke(this, e);
+        }
+
+        private void Users_UserAuthenticationsKicked(object sender, ItemsEventArgs<IUserAuthentication> e)
+        {
+            this.userAuthenticationsKicked?.Invoke(this, e);
         }
 
         private void Users_UsersBanChanged(object sender, ItemsEventArgs<IUser> e)

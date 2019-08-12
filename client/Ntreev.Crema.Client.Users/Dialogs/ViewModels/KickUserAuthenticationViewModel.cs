@@ -27,32 +27,31 @@ using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Client.Users.Dialogs.ViewModels
 {
-    public class KickViewModel : ModalDialogAppBase
+    public class KickUserAuthenticationViewModel : KickViewModel
     {
         private readonly Authentication authentication;
         private readonly IUser user;
-        private string comment;
+        private readonly Guid token;
 
-        protected KickViewModel(Authentication authentication, IUser user)
+        private KickUserAuthenticationViewModel(Authentication authentication, IUser user, Guid token) : base(authentication, user)
         {
             this.authentication = authentication;
             this.user = user;
-            this.user.Dispatcher.VerifyAccess();
-            this.DisplayName = Resources.Title_KickUser;
+            this.token = token;
         }
 
-        public static Task<KickViewModel> CreateInstanceAsync(Authentication authentication, IUserDescriptor descriptor)
+        public static Task<KickUserAuthenticationViewModel> CreateInstanceAsync(Authentication authentication, IUserAuthenticationDescriptor descriptor)
         {
             if (authentication == null)
                 throw new ArgumentNullException(nameof(authentication));
             if (descriptor == null)
                 throw new ArgumentNullException(nameof(descriptor));
 
-            if (descriptor.Target is IUser user)
+            if (descriptor.Target is IUserAuthentication userAuthentication)
             {
-                return user.Dispatcher.InvokeAsync(() =>
+                return userAuthentication.User.Dispatcher.InvokeAsync(() =>
                 {
-                    return new KickViewModel(authentication, user);
+                    return new KickUserAuthenticationViewModel(authentication, userAuthentication.User, descriptor.Target.Authentication.Token);
                 });
             }
             else
@@ -61,12 +60,12 @@ namespace Ntreev.Crema.Client.Users.Dialogs.ViewModels
             }
         }
 
-        public virtual async void Kick()
+        public override async void Kick()
         {
             try
             {
                 this.BeginProgress();
-                await this.user.Dispatcher.InvokeAsync(() => this.user.Kick(this.authentication, this.Comment));
+                await this.user.Dispatcher.InvokeAsync(() => this.user.KickAuthentication(this.authentication, this.token, this.Comment));
                 this.EndProgress();
                 this.TryClose(true);
             }
@@ -74,16 +73,6 @@ namespace Ntreev.Crema.Client.Users.Dialogs.ViewModels
             {
                 this.EndProgress();
                 AppMessageBox.ShowError(e);
-            }
-        }
-
-        public string Comment
-        {
-            get { return this.comment ?? string.Empty; }
-            set
-            {
-                this.comment = value;
-                this.NotifyOfPropertyChange(nameof(this.Comment));
             }
         }
     }

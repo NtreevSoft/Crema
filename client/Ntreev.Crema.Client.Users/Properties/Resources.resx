@@ -324,4 +324,7 @@
   <data name="Label_AllowMultiLogin" xml:space="preserve">
     <value>Allow Multi Login</value>
   </data>
+  <data name="Message_KickedByYourself" xml:space="preserve">
+    <value>Kicked by yourself.</value>
+  </data>
 </root>

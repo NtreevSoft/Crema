@@ -38,5 +38,14 @@ namespace Ntreev.Crema.Client.Users.BrowserItems.ViewModels
         }
 
         public override string DisplayName => this.Descriptor.DisplayName;
+
+
+
+        public bool CanKick => UserUtility.CanUserAuthenticationKick(this.authentication, this);
+
+        public async Task KickAsync()
+        {
+            await UserUtility.KickUserAuthenticationAsync(this.authentication, this);
+        }
     }
 }

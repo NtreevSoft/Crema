@@ -62,6 +62,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Methods\ListenerHosts\Domains\DomainCreatedEventListenerHost.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\ListenerHosts\Users\UserBanChangedEventListenerHost.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\ListenerHosts\Users\MessageReceivedEventListenerHost.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\ListenerHosts\Users\UserAuthenticationKickedEventListenerHost.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\ListenerHosts\Users\UserKickedEventListenerHost.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\ListenerHosts\Users\UserLoggedOutEventListenerHost.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\ListenerHosts\Users\UserLoggedInEventListenerHost.cs" />

@@ -57,6 +57,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
     <HierarchicalDataTemplate DataType="{x:Type vm:UserAuthenticationTreeViewItemViewModel}" ItemsSource="{Binding Items}">
         <HierarchicalDataTemplate.Resources>
             <nmfc:ExpandableContextMenu x:Key="UserAuthentication_ContextMenu" ItemsSource="{Binding ContextMenus}">
+                <MenuItem x:Name="Kick" Style="{StaticResource Kick_MenuItem_Style}" />
             </nmfc:ExpandableContextMenu>
         </HierarchicalDataTemplate.Resources>
         <ContentControl Style="{StaticResource UserDescriptor_ContentControl_Style}" ContextMenu="{StaticResource UserAuthentication_ContextMenu}" />

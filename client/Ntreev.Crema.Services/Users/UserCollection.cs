@@ -43,6 +43,7 @@ namespace Ntreev.Crema.Services.Users
         private ItemsEventHandler<AuthenticationInfo> usersLoggedIn;
         private ItemsEventHandler<AuthenticationInfo> usersLoggedOut;
         private ItemsEventHandler<IUser> usersKicked;
+        private ItemsEventHandler<IUserAuthentication> userAuthenticationsKicked;
         private ItemsEventHandler<IUser> usersBanChanged;
         private EventHandler<MessageEventArgs> messageReceived;
 
@@ -105,6 +106,11 @@ namespace Ntreev.Crema.Services.Users
         public void InvokeUserKick(Authentication authentication, User user, string comment)
         {
             this.CremaHost.DebugMethod(authentication, this, nameof(InvokeUserKick), user, comment);
+        }
+
+        public void InvokeUserAuthenticationsKick(Authentication authentication, IUserAuthentication userAuthentication, string comment)
+        {
+            this.CremaHost.DebugMethod(authentication, this, nameof(InvokeUserAuthenticationsKick), userAuthentication, comment);
         }
 
         public void InvokeUsersCreatedEvent(Authentication authentication, User[] users)
@@ -181,6 +187,15 @@ namespace Ntreev.Crema.Services.Users
             this.CremaHost.Debug(eventLog);
             this.CremaHost.Info(comment);
             this.OnUsersKicked(new ItemsEventArgs<IUser>(authentication, users, comments));
+        }
+
+        public void InvokeUserAuthenticationsKickedEvent(Authentication authentication, IUserAuthentication[] userAuthentications, string[] comments)
+        {
+            var eventLog = EventLogBuilder.BuildMany(authentication, this, nameof(InvokeUserAuthenticationsKickedEvent), userAuthentications, comments);
+            var comment = EventMessageBuilder.KickUserAuthentication(authentication, userAuthentications, comments);
+            this.CremaHost.Debug(eventLog);
+            this.CremaHost.Info(comment);
+            this.OnUserAuthenticationsKicked(new ItemsEventArgs<IUserAuthentication>(authentication, userAuthentications, comments));
         }
 
         public void InvokeUsersBannedEvent(Authentication authentication, User[] users, string[] comments)
@@ -374,6 +389,20 @@ namespace Ntreev.Crema.Services.Users
             }
         }
 
+        public event ItemsEventHandler<IUserAuthentication> UserAuthenticationsKicked
+        {
+            add
+            {
+                this.Dispatcher.VerifyAccess();
+                this.userAuthenticationsKicked += value;
+            }
+            remove
+            {
+                this.Dispatcher.VerifyAccess();
+                this.userAuthenticationsKicked -= value;
+            }
+        }
+
         public event ItemsEventHandler<IUser> UsersBanChanged
         {
             add
@@ -459,6 +488,11 @@ namespace Ntreev.Crema.Services.Users
         protected virtual void OnUsersKicked(ItemsEventArgs<IUser> e)
         {
             this.usersKicked?.Invoke(this, e);
+        }
+
+        protected void OnUserAuthenticationsKicked(ItemsEventArgs<IUserAuthentication> e)
+        {
+            this.userAuthenticationsKicked?.Invoke(this, e);
         }
 
         protected virtual void OnUsersBanChanged(ItemsEventArgs<IUser> e)
