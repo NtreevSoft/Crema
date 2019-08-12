@@ -78,6 +78,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dialogs\ViewModels\UserAuthenticationTreeViewItemViewModel.cs" />
     <Compile Include="IUserAuthenticationDescriptor.cs" />
     <Compile Include="ListBoxBase.cs" />
     <Compile Include="TreeViewBase.cs" />

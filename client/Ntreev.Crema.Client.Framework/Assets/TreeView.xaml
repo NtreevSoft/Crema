@@ -40,6 +40,14 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
         <ContentControl Style="{StaticResource UserDescriptor_ContentControl_Style}" ContextMenu="{StaticResource User_ContextMenu}" />
     </HierarchicalDataTemplate>
 
+    <HierarchicalDataTemplate DataType="{x:Type ncf:UserAuthenticationTreeItemBase}" ItemsSource="{Binding Items}">
+        <HierarchicalDataTemplate.Resources>
+            <nmfc:ExpandableContextMenu x:Key="UserAuthentication_ContextMenu" ItemsSource="{Binding ContextMenus}">
+            </nmfc:ExpandableContextMenu>
+        </HierarchicalDataTemplate.Resources>
+        <ContentControl Style="{StaticResource UserDescriptor_ContentControl_Style}" ContextMenu="{StaticResource UserAuthentication_ContextMenu}" />
+    </HierarchicalDataTemplate>
+
     <HierarchicalDataTemplate DataType="{x:Type ncf:DomainCategoryTreeItemBase}" ItemsSource="{Binding Items}">
         <HierarchicalDataTemplate.Resources>
             <nmfc:ExpandableContextMenu x:Key="Category_ContextMenu" ItemsSource="{Binding ContextMenus}" />

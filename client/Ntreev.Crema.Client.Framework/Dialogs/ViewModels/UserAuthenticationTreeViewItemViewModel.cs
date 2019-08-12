@@ -15,41 +15,22 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.Services;
-using Ntreev.Crema.ServiceModel;
-using Ntreev.Library.ObjectModel;
-using Ntreev.ModernUI.Framework;
-using Ntreev.ModernUI.Framework.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ntreev.Crema.Services;
 
 namespace Ntreev.Crema.Client.Framework.Dialogs.ViewModels
 {
-    public class UserTreeViewItemViewModel : UserTreeItemBase
+    public class UserAuthenticationTreeViewItemViewModel : UserAuthenticationTreeItemBase
     {
-        public UserTreeViewItemViewModel(Authentication authentication, IUser user)
-            : base(authentication, user, false, null)
-        {
-
-        }
-
-        internal UserTreeViewItemViewModel(Authentication authentication, UserDescriptor descriptor, object owner)
+        public UserAuthenticationTreeViewItemViewModel(Authentication authentication, UserAuthenticationDescriptor descriptor, object owner) 
             : base(authentication, descriptor, owner)
         {
-
         }
 
-        public string DisplayPath
-        {
-            get { return this.descriptor.UserID; }
-        }
-
-        protected override UserAuthenticationTreeItemBase CreateInstance(Authentication authentication, UserAuthenticationDescriptor descriptor, object owner)
-        {
-            return new UserAuthenticationTreeViewItemViewModel(authentication, descriptor, owner);
-        }
+        public override string DisplayName => this.Descriptor.DisplayName;
     }
 }
