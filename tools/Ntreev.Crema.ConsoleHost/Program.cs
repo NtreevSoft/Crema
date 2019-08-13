@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -36,6 +37,14 @@ namespace Ntreev.Crema.ConsoleHost
             {
                 commandContext.VerifyName = false;
                 commandContext.Execute(Environment.CommandLine);
+            }
+            catch(ReflectionTypeLoadException e)
+            {
+                Console.WriteLine(e);
+                foreach(var exception in e.LoaderExceptions)
+                {
+                    Console.WriteLine(exception);
+                }
             }
             catch (Exception e)
             {
