@@ -246,8 +246,7 @@ namespace Ntreev.Crema.Services.Data
             if (isDevmode == true && this.domainItems.ContainsKey(name) == true)
             {
                 var domain = this.domainItems[name];
-                if (this.tableDomainDatas.ContainsKey(name) == false)
-                    this.Serialize(domain);
+                this.Serialize(domain);
                 return this.tableDomainDatas[name];
             }
 
