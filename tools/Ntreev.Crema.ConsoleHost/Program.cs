@@ -31,10 +31,10 @@ namespace Ntreev.Crema.ConsoleHost
         static void Main(string[] args)
         {
             Trace.Listeners.Add(new ConsoleTraceListener());
-            var commandContext = Container.Get<CommandContext>();
 
             try
             {
+                var commandContext = Container.Get<CommandContext>();
                 commandContext.VerifyName = false;
                 commandContext.Execute(Environment.CommandLine);
             }
