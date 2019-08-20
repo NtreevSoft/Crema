@@ -131,7 +131,8 @@ namespace Ntreev.Crema.Commands
         private void SerializeAll(SerializationSet metaData)
         {
             var serializer = this.GetDataSerializer(this.OutputType);
-            serializer.Serialize(this.Filename, metaData);
+            var filteredMetaData = ReplaceOptionProcessor.Process(metaData);
+            serializer.Serialize(this.Filename, filteredMetaData);
         }
 
         private void SerializePerTable(SerializationSet metaData)
