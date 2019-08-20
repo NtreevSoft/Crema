@@ -181,28 +181,36 @@ namespace Ntreev.Crema.ConsoleHost.Commands
 
         protected override void OnExecute()
         {
-            CremaLog.Verbose = this.Verbose ? LogVerbose.Debug : LogVerbose.Info;
-            this.application.BasePath = this.Path;
-            this.application.RepositoryName = this.RepositoryName;
-            this.application.RepositoryModule = this.RepositoryModule;
-            this.application.Verbose = this.Verbose ? LogVerbose.Debug : LogVerbose.Info;
-            this.application.NoCache = this.NoCache;
-            this.application.Culture = this.Culture;
-            this.application.DataBaseList = this.DataBaseList;
+            try
+            {
+                CremaLog.Verbose = this.Verbose ? LogVerbose.Debug : LogVerbose.Info;
+                this.application.BasePath = this.Path;
+                this.application.RepositoryName = this.RepositoryName;
+                this.application.RepositoryModule = this.RepositoryModule;
+                this.application.Verbose = this.Verbose ? LogVerbose.Debug : LogVerbose.Info;
+                this.application.NoCache = this.NoCache;
+                this.application.Culture = this.Culture;
+                this.application.DataBaseList = this.DataBaseList;
 #if DEBUG
-            this.application.ValidationMode = this.ValidationMode;
+                this.application.ValidationMode = this.ValidationMode;
 #endif
-            this.application.Port = this.Port;
-            this.application.NoHttpServer = this.NoHttpServer;
-            this.application.HttpPort = this.HttpPort;
-            this.application.Open();
+                this.application.Port = this.Port;
+                this.application.NoHttpServer = this.NoHttpServer;
+                this.application.HttpPort = this.HttpPort;
+                this.application.Open();
 
-            var cremaHost = this.application.GetService(typeof(ICremaHost)) as ICremaHost;
-            cremaHost.Closed += CremaHost_Closed;
-            this.Wait();
-            Console.WriteLine(Resources.StoppingServer);
-            this.application.Close();
-            Console.WriteLine(Resources.ServerHasBeenStopped);
+                var cremaHost = this.application.GetService(typeof(ICremaHost)) as ICremaHost;
+                cremaHost.Closed += CremaHost_Closed;
+                this.Wait();
+                Console.WriteLine(Resources.StoppingServer);
+                this.application.Close();
+                Console.WriteLine(Resources.ServerHasBeenStopped);
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine(e);
+                throw;
+            }
         }
 
         private void CremaHost_Closed(object sender, ClosedEventArgs e)
