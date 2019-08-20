@@ -27,8 +27,11 @@ namespace Ntreev.Crema.Commands
 {
     static class ReplaceSettings
     {
+        internal const long REPLACE_REVISION_DEFAULT_VALUE = long.MinValue;
+        internal const string REPLACE_HASH_VALUE_DEFAULT_VALUE = null;
+
         [CommandProperty]
-        [DefaultValue((long)long.MinValue)]
+        [DefaultValue(REPLACE_REVISION_DEFAULT_VALUE)]
         [Description("바이너리 파일 헤더의 Revision 값을 변경합니다.")]
         public static long ReplaceRevision
         {
@@ -36,7 +39,7 @@ namespace Ntreev.Crema.Commands
         }
 
         [CommandProperty("replace-hashvalue")]
-        [DefaultValue(null)]
+        [DefaultValue(REPLACE_HASH_VALUE_DEFAULT_VALUE)]
         [Description("바이너리 파일 헤더의 TablesHashValue, TypesHashValue 값을 변경합니다.")]
         public static string ReplaceHashValue
         {
