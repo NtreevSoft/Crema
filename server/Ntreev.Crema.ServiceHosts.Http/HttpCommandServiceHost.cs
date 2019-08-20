@@ -24,10 +24,7 @@ namespace Ntreev.Crema.ServiceHosts.Http
 
         public void Open(int port)
         {
-            this.server = WebApp.Start(new StartOptions
-            {
-                Port = port,
-            }, app =>
+            this.server = WebApp.Start($"http://*:{port}", app =>
             {
                 var config = new HttpConfiguration();
                 config.ConfigureCrema(this.cremaHost)
