@@ -11,7 +11,7 @@
 
             }),
             success: function (data) {
-                success && success(data.token);
+                success && success(data.Token);
             },
             error: function (jqXhr, err, msg) {
                 error && error(JSON.parse(jqXhr.responseText).error_description);
