@@ -25,6 +25,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Responses.Commands
 {
     public class GetTypeInfoResponse
     {
+        [JsonProperty("ID")]
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Comment { get; set; }
@@ -68,6 +69,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Responses.Commands
 
         public class MemberInfoResponse
         {
+            [JsonProperty("ID")]
             public Guid Id { get; set; }
             public string Name { get; set; }
             public long Value { get; set; }

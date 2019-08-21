@@ -17,32 +17,18 @@
 
 using System;
 using System.Linq;
+using Newtonsoft.Json;
 using Ntreev.Crema.ServiceModel;
 
 namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Responses.Commands
 {
     public class GetDataBaseLogInfoResponse
     {
+        [JsonProperty("UserID")]
         public string UserId { get; set; }
         public long Revision { get; set; }
         public string Comment { get; set; }
         public DateTime DateTime { get; set; }
-        public LogPropertyInfoResponse[] Properties { get; set; }
-
-        public class LogPropertyInfoResponse
-        {
-            public string Key { get; set; }
-            public string Value { get; set; }
-
-            public static LogPropertyInfoResponse Convert(LogPropertyInfo info)
-            {
-                return new LogPropertyInfoResponse
-                {
-                    Key = info.Key,
-                    Value = info.Value
-                };
-            }
-        }
 
         public static GetDataBaseLogInfoResponse ConvertFrom(LogInfo info)
         {
@@ -51,8 +37,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Responses.Commands
                 UserId = info.UserID,
                 Revision = info.Revision,
                 Comment = info.Comment,
-                DateTime = info.DateTime,
-                Properties = info.Properties?.Select(LogPropertyInfoResponse.Convert).ToArray()
+                DateTime = info.DateTime
             };
         }
 

@@ -25,14 +25,12 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Responses.Commands
 {
     public class GetDataBaseInfoResponse
     {
+        [JsonProperty("ID")]
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Comment { get; set; }
         public long Revision { get; set; }
         public string Tags { get; set; }
-        public long BranchRevision { get; set; }
-        public string BranchSource { get; set; }
-        public long BranchSourceRevision { get; set; }
         public string TypesHashValue { get; set; }
         public string TablesHashValue { get; set; }
         public string[] Paths { get; set; }
@@ -58,9 +56,6 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Responses.Commands
                 Comment = info.Comment,
                 Revision = info.Revision,
                 Tags = info.Tags.ToString(),
-                BranchRevision = info.BranchRevision,
-                BranchSource = info.BranchSource,
-                BranchSourceRevision = info.BranchSourceRevision,
                 TypesHashValue = info.TypesHashValue,
                 TablesHashValue = info.TablesHashValue,
                 Paths = info.Paths,
