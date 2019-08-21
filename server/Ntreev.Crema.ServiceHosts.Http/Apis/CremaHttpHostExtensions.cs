@@ -38,8 +38,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis
 
             config.Formatters.Clear();
             config.Formatters.Add(new JsonMediaTypeFormatter());
-            config.Formatters.JsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-            config.Formatters.JsonFormatter.SerializerSettings.Converters.Add(new StringEnumConverter(true));
+            config.Formatters.JsonFormatter.SerializerSettings.Converters.Add(new StringEnumConverter(false));
 
             return config;
         }

@@ -35,6 +35,8 @@ cremaserver.exe run <...> [--http-port] [--no-http-server]
 ## 3. 디자인 가이드
 Crema HTTP API v1 디자인 사양은 `cremaconsole.exe` 에서 제공하는 자바스크립트 함수를 REST API 로 이식하는데 있습니다. 초기 v1 디자인은 다음 REST API 버전에서 변경될 수 있습니다.
 
+API 의 JSON 응답 형식은 CremaConsole 과 일관성을 유지하기 위해 PascalCase 를 사용합니다.
+
 HTTP API 는 기본적으로 아래와 같은 HTTP 동사를 사용합니다.
 
 - 조회 명령은 HTTP GET 동사를 이용합니다.

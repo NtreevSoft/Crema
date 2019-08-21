@@ -24,7 +24,9 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Responses.Commands
 {
     public class GetDomainInfoResponse
     {
+        [JsonProperty("DomainID")]
         public Guid DomainId { get; set; }
+        [JsonProperty("DataBaseID")]
         public Guid DataBaseId { get; set; }
         public string ItemPath { get; set; }
         public string ItemType { get; set; }

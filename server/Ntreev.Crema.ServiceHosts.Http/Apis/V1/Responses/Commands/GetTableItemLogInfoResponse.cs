@@ -16,12 +16,14 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using Newtonsoft.Json;
 using Ntreev.Crema.ServiceModel;
 
 namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Responses.Commands
 {
     public class GetTableItemLogInfoResponse
     {
+        [JsonProperty("UserID")]
         public string UserId { get; set; }
         public long Revision { get; set; }
         public string Comment { get; set; }

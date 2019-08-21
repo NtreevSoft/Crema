@@ -25,6 +25,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Responses.Commands
 {
     public class GetTableInfoResponse
     {
+        [JsonProperty("ID")]
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string TableName { get; set; }
@@ -82,6 +83,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Responses.Commands
 
         public class ColumnInfoResponse
         {
+            [JsonProperty("ID")]
             public Guid Id { get; set; }
             public bool IsKey { get; set; }
             public bool IsUnique { get; set; }

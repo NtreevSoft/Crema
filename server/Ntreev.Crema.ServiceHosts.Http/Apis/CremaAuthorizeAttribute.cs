@@ -37,9 +37,19 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis
 
         protected override bool IsAuthorized(HttpActionContext actionContext)
         {
+            var token = "";
+
             if (actionContext.Request.Headers.Contains("token"))
             {
-                var token = actionContext.Request.Headers.GetValues("token").First();
+                token = actionContext.Request.Headers.GetValues("token").First();
+            }
+            else if(actionContext.Request.Headers.Contains("Token"))
+            {
+                token = actionContext.Request.Headers.GetValues("Token").First();
+            }
+
+            if (!string.IsNullOrWhiteSpace(token))
+            {
                 var authentication = this.cremaHost.Dispatcher.Invoke(() =>
                 {
                     return userContext.Dispatcher.Invoke(() => userContext.Authenticate(Guid.Parse(token)));

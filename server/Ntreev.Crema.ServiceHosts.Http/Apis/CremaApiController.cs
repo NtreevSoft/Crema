@@ -41,7 +41,20 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis
             {
                 return this.cremaHost.Dispatcher.Invoke(() =>
                 {
-                    var token = Request.Headers.GetValues("token").First();
+                    var token = "";
+                    if (Request.Headers.Contains("token"))
+                    {
+                        token = Request.Headers.GetValues("token").First();
+                    }
+                    else if (Request.Headers.Contains("Token"))
+                    {
+                        token = Request.Headers.GetValues("Token").First();
+                    }
+                    else
+                    {
+                        throw new ArgumentException(nameof(token));
+                    }
+                    
                     return this.userContext.Dispatcher.Invoke(() => this.userContext.Authenticate(Guid.Parse(token)));
                 });
             }
