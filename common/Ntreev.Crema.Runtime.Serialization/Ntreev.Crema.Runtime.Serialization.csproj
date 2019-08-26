@@ -51,6 +51,7 @@
     <Compile Include="Binary\BinaryTableHeader.cs" />
     <Compile Include="Binary\BinaryTableIndex.cs" />
     <Compile Include="Binary\BinaryTableInfo.cs" />
+    <Compile Include="Binary\BinaryWriterExtension.cs" />
     <Compile Include="IDataSerializerExtensions.cs" />
     <Compile Include="IDataSerializer.cs" />
     <Compile Include="Json\CremaJsonFormatter.cs" />

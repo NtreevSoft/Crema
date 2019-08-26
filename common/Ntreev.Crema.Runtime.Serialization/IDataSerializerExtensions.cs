@@ -27,7 +27,7 @@ namespace Ntreev.Crema.Runtime.Serialization
 {
     public static class IDataSerializerExtensions
     {
-        public static void Serialize(this IDataSerializer serializer, string filename, SerializationSet dataSet)
+        public static int Serialize(this IDataSerializer serializer, string filename, SerializationSet dataSet, int stringsIndex = 0)
         {
             FileUtility.Backup(filename);
             try
@@ -35,12 +35,13 @@ namespace Ntreev.Crema.Runtime.Serialization
                 FileUtility.Prepare(filename);
                 using (var stream = File.OpenWrite(filename))
                 {
-                    serializer.Serialize(stream, dataSet);
+                    return serializer.Serialize(stream, dataSet, stringsIndex);
                 }
             }
             catch
             {
                 FileUtility.Restore(filename);
+                return 0;
             }
             finally
             {

@@ -150,11 +150,12 @@ namespace Ntreev.Crema.Commands
                 }
             }
 
+            var stringsIndex = 0;
             foreach (var dataSet in filteredMetaDataList)
             {
                 var filepath = Path.Combine(this.Filename, $"{dataSet.Tables[0].Name}.{DataSplitSetting.Ext}");
                 var serializer = this.GetDataSerializer(this.OutputType);
-                serializer.Serialize(filepath, dataSet);
+                stringsIndex = serializer.Serialize(filepath, dataSet, stringsIndex);
             }
         }
 
