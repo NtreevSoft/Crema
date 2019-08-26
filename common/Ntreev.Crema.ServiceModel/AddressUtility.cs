@@ -66,5 +66,10 @@ namespace Ntreev.Crema.ServiceModel
             var match = Regex.Match(address, "(?<name>[^:]*)[:]*(?<port>\\d*)", RegexOptions.ExplicitCapture);
             return match.Groups["name"].Value;
         }
+
+        public static int GetDefaultHttpPort(int port)
+        {
+            return port + 100;
+        }
     }
 }

@@ -44,7 +44,7 @@ namespace Ntreev.Crema.WindowsServiceHost
         }
 
         [CommandMethod]
-        [CommandMethodProperty(nameof(Port), nameof(ServiceName), nameof(DisplayName), nameof(Comment))]
+        [CommandMethodProperty(nameof(Port), nameof(ServiceName), nameof(DisplayName), nameof(Comment), nameof(HttpPort))]
         public void Install(string path)
         {
             var basePath = new DirectoryInfo(path).FullName;
@@ -91,16 +91,24 @@ namespace Ntreev.Crema.WindowsServiceHost
             set;
         }
 
+        [CommandProperty]
+        public int? HttpPort
+        {
+            get;
+            set;
+        }
+
         public override bool IsEnabled => Environment.OSVersion.Platform == PlatformID.Win32NT;
 
         private void InstallService(string exeFilename, string basePath)
         {
             var pathArg = string.Format("/PATH={0}", basePath);
             var portArg = string.Format("/PORT={0}", this.Port);
+            var httpPortArgs = string.Format("/HTTPPORT={0}", this.HttpPort ?? AddressUtility.GetDefaultHttpPort(this.Port));
             var displayNameArg = string.Format("/DisplayName={0}", this.DisplayName);
             var serviceNameArg = string.Format("/ServiceName={0}", this.ServiceName);
             var comment = string.Format("/Comment={0}", this.Comment);
-            var commandLineOptions = new string[] { pathArg, portArg, displayNameArg, serviceNameArg, comment };
+            var commandLineOptions = new string[] { pathArg, portArg, displayNameArg, serviceNameArg, comment, httpPortArgs };
             var installer = new AssemblyInstaller(exeFilename, commandLineOptions);
 
             installer.Install(null);
@@ -111,9 +119,10 @@ namespace Ntreev.Crema.WindowsServiceHost
         {
             var pathArg = string.Format("/PATH={0}", basePath);
             var portArg = string.Format("/PORT={0}", this.Port);
+            var httpPortArgs = string.Format("/HTTPPORT={0}", this.HttpPort ?? AddressUtility.GetDefaultHttpPort(this.Port));
             var displayNameArg = string.Format("/DisplayName={0}", this.DisplayName);
             var serviceNameArg = string.Format("/ServiceName={0}", this.ServiceName);
-            var commandLineOptions = new string[] { pathArg, portArg, displayNameArg, serviceNameArg };
+            var commandLineOptions = new string[] { pathArg, portArg, displayNameArg, serviceNameArg, httpPortArgs };
             var installer = new AssemblyInstaller(exeFilename, commandLineOptions)
             {
                 UseNewContext = true

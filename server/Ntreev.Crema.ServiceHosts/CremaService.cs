@@ -134,7 +134,7 @@ namespace Ntreev.Crema.ServiceHosts
         public int? HttpPort
         {
             get => this.httpPort;
-            set => this.httpPort = value ?? this.port + 100;
+            set => this.httpPort = value ?? AddressUtility.GetDefaultHttpPort(this.port);
         }
 
         public ICremaHost CremaHost
@@ -233,7 +233,7 @@ namespace Ntreev.Crema.ServiceHosts
                     var port = ports[item.Schema];
                     var host = item.CreateInstance(port);
                     host.Open();
-                    
+
                     this.hosts.Add(host);
                     this.logService.Info(Resources.ServiceStart_Port, host.GetType().Name, port);
                     this.serviceInfos.Add(new ServiceInfo()

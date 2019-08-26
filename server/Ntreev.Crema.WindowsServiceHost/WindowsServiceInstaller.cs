@@ -53,9 +53,10 @@ namespace Ntreev.Crema.WindowsServiceHost
 
             var path = this.Context.Parameters["PATH"];
             var port = this.Context.Parameters["PORT"];
+            var httpPort = this.Context.Parameters["HTTPPORT"];
             var filename = this.Context.Parameters["assemblypath"];
 
-            this.Context.Parameters["assemblypath"] = $"{filename.WrapQuot()} {path.WrapQuot()} {port}";
+            this.Context.Parameters["assemblypath"] = $"{filename.WrapQuot()} {path.WrapQuot()} {port} {httpPort}";
 
             this.serviceInstaller.Description = this.Context.Parameters["Comment"];
             this.serviceInstaller.DisplayName = this.Context.Parameters["DisplayName"];
@@ -96,9 +97,10 @@ namespace Ntreev.Crema.WindowsServiceHost
 
             var path = this.Context.Parameters["PATH"];
             var port = this.Context.Parameters["PORT"];
+            var httpPort = this.Context.Parameters["HTTPPORT"];
             var filename = this.Context.Parameters["assemblypath"];
 
-            this.Context.Parameters["assemblypath"] = $"{filename.WrapQuot()} {path.WrapQuot()} {port}";
+            this.Context.Parameters["assemblypath"] = $"{filename.WrapQuot()} {path.WrapQuot()} {port} {httpPort}";
 
             this.serviceInstaller.Description = this.Context.Parameters["Comment"];
             this.serviceInstaller.DisplayName = this.Context.Parameters["DisplayName"];
