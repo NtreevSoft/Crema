@@ -55,5 +55,12 @@ namespace Ntreev.Crema.WindowsServiceHost
             get;
             set;
         }
+
+        [CommandProperty]
+        public int HttpPort
+        {
+            get;
+            set;
+        }
     }
 }
