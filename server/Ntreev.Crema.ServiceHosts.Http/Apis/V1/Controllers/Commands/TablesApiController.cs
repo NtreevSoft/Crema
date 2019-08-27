@@ -82,23 +82,63 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
         }
 
         [HttpGet]
-        [Route("tables/{tableName}/info")]
-        public GetTableInfoResponse GetTableInfo(string databaseName, string tableName, string tags = null)
+        [Route("tables/*/info")]
+        public GetTableInfoResponse[] GetTablesInfo(string databaseName, string tags = null, string columnTags = null)
         {
-            var table = this.GetTable(databaseName, tableName);
-            return table.Dispatcher.Invoke(() =>
+            var tables = this.GetTables(databaseName, tags);
+            return tables.Select(table =>
             {
                 return table.Dispatcher.Invoke(() =>
                 {
                     var tableInfo = table.TableInfo;
-                    if (!string.IsNullOrWhiteSpace(tags))
+                    if (!string.IsNullOrWhiteSpace(columnTags))
                     {
-                        tableInfo = table.TableInfo.Filter((TagInfo)tags);
+                        tableInfo = table.TableInfo.Filter((TagInfo)columnTags);
                     }
 
                     return GetTableInfoResponse.ConvertFrom(tableInfo);
                 });
-            });
+            }).ToArray();
+        }
+
+        [HttpPost]
+        [Route("tables/*/info")]
+        public GetTableInfoResponse[] GetTablesInfoByTableName(string databaseName, [FromBody] GetTableInfoByTableNameRequest request, string tags = null, string columnTags = null)
+        {
+            var tables = this.GetTables(databaseName, tags);
+            var intersectTables = tables.Select(table => table.Dispatcher.Invoke(() => table.TableName))
+                .Intersect(request.TableNames, StringComparer.OrdinalIgnoreCase);
+
+            return intersectTables.Select(tableName =>
+            {
+                var table = tables.First(o => o.Dispatcher.Invoke(() => o.TableName == tableName));
+                var tableInfo = table.Dispatcher.Invoke(() => table.TableInfo);
+                if (!string.IsNullOrWhiteSpace(columnTags))
+                {
+                    tableInfo = tableInfo.Filter((TagInfo)columnTags);
+                }
+                return GetTableInfoResponse.ConvertFrom(tableInfo);
+            }).ToArray();
+        }
+
+        [HttpGet]
+        [Route("tables/{tableName}/info")]
+        public GetTableInfoResponse GetTableInfo(string databaseName, string tableName, string tags = null)
+        {
+                var table = this.GetTable(databaseName, tableName);
+                return table.Dispatcher.Invoke(() =>
+                {
+                    return table.Dispatcher.Invoke(() =>
+                    {
+                        var tableInfo = table.TableInfo;
+                        if (!string.IsNullOrWhiteSpace(tags))
+                        {
+                            tableInfo = table.TableInfo.Filter((TagInfo)tags);
+                        }
+
+                        return GetTableInfoResponse.ConvertFrom(tableInfo);
+                    });
+                });
         }
 
         [HttpPost]
@@ -154,7 +194,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
         }
 
         [HttpGet]
-        [Route("table-item")]
+        [Route("table-items")]
         public string[] GetTableItemList(string databaseName)
         {
             var dataBase = this.GetDataBase(databaseName);
@@ -162,7 +202,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
         }
 
         [HttpPost]
-        [Route("table-item/log")]
+        [Route("table-items/log")]
         public GetTableItemLogInfoResponse[] GetTableItemLogInfo(string databaseName, [FromBody] GetTableItemLogInfoRequest request)
         {
             var tableItem = this.GetTableItem(databaseName, request.TableItemPath);
@@ -174,7 +214,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
         }
 
         [HttpPut]
-        [Route("table-item/move")]
+        [Route("table-items/move")]
         public void MoveTableItem(string databaseName, [FromBody] MoveTableItemRequest request)
         {
             var tableItem = this.GetTableItem(databaseName, request.TableItemPath);
@@ -182,7 +222,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
         }
 
         [HttpPut]
-        [Route("table-item/rename")]
+        [Route("table-items/rename")]
         public void RenameTableItem(string databaseName, [FromBody] RenameTableItemRequest request)
         {
             var tableItem = this.GetTableItem(databaseName, request.TableItemPath);
@@ -190,7 +230,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
         }
 
         [HttpPut]
-        [Route("table-item/delete")]
+        [Route("table-items/delete")]
         public void DeleteTableItem(string databaseName, [FromBody] DeleteTableItemRequest request)
         {
             var tableItem = this.GetTableItem(databaseName, request.TableItemPath);
@@ -198,7 +238,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
         }
 
         [HttpPost]
-        [Route("table-item/contains")]
+        [Route("table-items/contains")]
         public ContainsTableItemResponse ContainsTableItem(string databaseName, [FromBody] ContainsTableItemRequest request)
         {
             var dataBase = this.GetDataBase(databaseName);
@@ -218,6 +258,34 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
                 if (this.cremaHost.DataBases.Contains(databaseName) == false)
                     throw new DataBaseNotFoundException(databaseName);
                 return this.cremaHost.DataBases[databaseName];
+            });
+        }
+
+        private ITable[] GetTables(string dataBaseName, string tags = null)
+        {
+            if (dataBaseName == null)
+                throw new ArgumentNullException(nameof(dataBaseName));
+
+            var dataBase = this.cremaHost.Dispatcher.Invoke(() =>
+            {
+                if (this.cremaHost.DataBases.Contains(dataBaseName) == false)
+                    throw new DataBaseNotFoundException(dataBaseName);
+                return this.cremaHost.DataBases[dataBaseName];
+            });
+
+            return dataBase.Dispatcher.Invoke(() =>
+            {
+                if (tags == null)
+                {
+                    var tables = dataBase.TableContext.Tables.ToArray();
+                    return tables;
+                }
+                else
+                {
+                    var tagInfo = (TagInfo)tags;
+                    var tables = dataBase.TableContext.Tables.Where(table => (table.TableInfo.DerivedTags & tagInfo) != TagInfo.Unused).ToArray();
+                    return tables;
+                }
             });
         }
 

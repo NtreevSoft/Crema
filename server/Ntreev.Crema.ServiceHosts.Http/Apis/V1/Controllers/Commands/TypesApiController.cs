@@ -78,6 +78,19 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
         }
 
         [HttpGet]
+        [Route("types/*/info")]
+        public GetTypeInfoResponse[] GetTypeInfo(string databaseName)
+        {
+            var types = this.GetTypes(databaseName);
+
+            return types.Select(type => type.Dispatcher.Invoke(() =>
+            {
+                var typeInfo = type.TypeInfo;
+                return GetTypeInfoResponse.ConvertFrom(typeInfo);
+            })).ToArray();
+        }
+
+        [HttpGet]
         [Route("types/{typeName}/info")]
         public GetTypeInfoResponse GetTypeInfo(string databaseName, string typeName)
         {
@@ -135,7 +148,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
         }
 
         [HttpGet]
-        [Route("type-item")]
+        [Route("type-items")]
         public string[] GetTypeItemList(string databaseName, string tags = null)
         {
             var dataBase = this.GetDataBase(databaseName);
@@ -155,7 +168,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
         }
 
         [HttpPut]
-        [Route("type-item/delete")]
+        [Route("type-items/delete")]
         public void DeleteTypeItem(string databaseName, [FromBody] DeleteTypeItemRequest request)
         {
             var typeItem = this.GetTypeItem(databaseName, request.TypeItemPath);
@@ -163,7 +176,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
         }
 
         [HttpPut]
-        [Route("type-item/move")]
+        [Route("type-items/move")]
         public void MoveTypeItem(string databaseName, [FromBody] MoveTypeItemRequest request)
         {
             var typeItem = this.GetTypeItem(databaseName, request.TypeItemPath);
@@ -171,7 +184,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
         }
 
         [HttpPut]
-        [Route("type-item/rename")]
+        [Route("type-items/rename")]
         public void RenameTypeItem(string databaseName, [FromBody] RenameTypeItemRequest request)
         {
             var typeItem = this.GetTypeItem(databaseName, request.TypeItemPath);
@@ -179,7 +192,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
         }
 
         [HttpPost]
-        [Route("type-item/contains")]
+        [Route("type-items/contains")]
         public ContainsTypeItemResponse ContainsTypeItem(string databaseName, [FromBody] ContainsTypeItemRequest request)
         {
             var dataBase = this.GetDataBase(databaseName);
@@ -200,6 +213,25 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
                     throw new DataBaseNotFoundException(databaseName);
                 return this.cremaHost.DataBases[databaseName];
             });
+        }
+
+        private IType[] GetTypes(string dataBaseName)
+        {
+            if (dataBaseName == null)
+                throw new ArgumentNullException(nameof(dataBaseName));
+
+            var dataBase = this.cremaHost.Dispatcher.Invoke(() =>
+            {
+                if (this.cremaHost.DataBases.Contains(dataBaseName) == false)
+                    throw new DataBaseNotFoundException(dataBaseName);
+                return this.cremaHost.DataBases[dataBaseName];
+            });
+
+            return dataBase.Dispatcher.Invoke(() =>
+            {
+                var types = dataBase.TypeContext.Types;
+                return types.ToArray();
+            }).ToArray();
         }
 
         private IType GetType(string dataBaseName, string typeName)
