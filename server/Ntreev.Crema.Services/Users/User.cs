@@ -164,6 +164,8 @@ namespace Ntreev.Crema.Services.Users
                 {
                     foreach (var domainMetaData in domainContextMetaData.Domains)
                     {
+                        if (domainMetaData.Users.Any(user => user.DomainUserInfo.UserID == userID) == false) continue;
+
                         var domainUserInfo = domainMetaData.Users.First(user => user.DomainUserInfo.UserID == userID);
                         var token = domainUserInfo.DomainUserInfo.Token;
 
