@@ -237,18 +237,20 @@ namespace Ntreev.Crema.Client.Tables
                     var itemPath = item.DomainInfo.ItemPath;
                     var itemType = item.DomainInfo.ItemType;
 
+                    if (item.Host is IDomainHost host)
+                    {
+                        host.OnRestoredEvent((Domain)item);
+                    }
+
                     if (item.Host is ITableContent content)
                     {
                         if (users.Any(user => user.UserID == this.authenticator.ID) == false) continue;
 
                         var table = content.Table;
                         var tableDescriptor = this.browser.GetDescriptor(table.Path) as ITableDescriptor;
-                        restoreList.Add(new System.Action(() => {
+                        restoreList.Add(new System.Action(() => 
+                        {
                             this.DocumentService.OpenTable(this.authenticator, tableDescriptor);
-                            if (item.Host is IDomainHost host)
-                            {
-                                host.OnRestoredEvent((Domain)item);
-                            }
                         }));
                     }
                     else if (item.Host is ITableTemplate template)
@@ -259,36 +261,26 @@ namespace Ntreev.Crema.Client.Tables
                         {
                             var category = dataBase.TableContext[itemPath] as ITableCategory;
                             var dialog = new NewTableViewModel(this.authenticator, category, template);
-                            restoreList.Add(new System.Action(() => {
-                                if (item.Host is IDomainHost host)
-                                {
-                                    host.OnRestoredEvent((Domain)item);
-                                }
-
-                                dialog.ShowDialog(); }));
+                            restoreList.Add(new System.Action(() => 
+                            {
+                                dialog.ShowDialog();
+                            }));
                         }
                         else if (itemType == "NewChildTableTemplate")
                         {
                             var table = dataBase.TableContext[itemPath] as ITable;
                             var dialog = new NewChildTableViewModel(this.authenticator, table, template);
-                            restoreList.Add(new System.Action(() => {
-                                if (item.Host is IDomainHost host)
-                                {
-                                    host.OnRestoredEvent((Domain)item);
-                                }
-
-                                dialog.ShowDialog(); }));
+                            restoreList.Add(new System.Action(() => 
+                            {
+                                dialog.ShowDialog();
+                            }));
                         }
                         else if (itemType == "TableTemplate")
                         {
                             var table = dataBase.TableContext[itemPath] as ITable;
                             var dialog = new EditTemplateViewModel(this.authenticator, table, template);
-                            restoreList.Add(new System.Action(() => {
-                                if (item.Host is IDomainHost host)
-                                {
-                                    host.OnRestoredEvent((Domain)item);
-                                }
-
+                            restoreList.Add(new System.Action(() => 
+                            {
                                 dialog.ShowDialog();
                             }));
                         }
