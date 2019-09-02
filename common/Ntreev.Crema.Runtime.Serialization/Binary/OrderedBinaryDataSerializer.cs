@@ -15,51 +15,49 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.Data;
-using Ntreev.Crema.Data.Xml;
-using Ntreev.Library.IO;
-using Ntreev.Library;
-using Ntreev.Crema.Data.Xml.Schema;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
 using System.Text;
-using System.Xml;
-using System.Data;
-using System.ComponentModel;
-using System.ComponentModel.Composition;
-using Ntreev.Crema.Runtime.Serialization;
 using System.Threading.Tasks;
+using Ntreev.Crema.Data;
+using Ntreev.Library.IO;
 
 namespace Ntreev.Crema.Runtime.Serialization.Binary
 {
     [Export(typeof(IDataSerializer))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
-    class BinaryDataSerializer : IDataSerializer
+    class OrderedBinaryDataSerializer : IDataSerializer
     {
         public const int formatterVersion = 0;
 
         private BinaryTableHeader tableHeader = new BinaryTableHeader();
         private BinaryTableInfo tableInfo = new BinaryTableInfo();
-        private HashSet<string> strings = new HashSet<string>();
+        private IDictionary strings = new OrderedDictionary();
+        private IDictionary<string, int> stringsRef = new Dictionary<string, int>();
         private List<BinaryColumnInfo> columns;
+        private int stringsIndex = 0;
 
         [ImportingConstructor]
-        public BinaryDataSerializer()
+        public OrderedBinaryDataSerializer()
         {
 
         }
 
         public string Name
         {
-            get { return "bin"; }
+            get { return "seq-bin"; }
         }
 
         public void Serialize(Stream stream, SerializationSet dataSet)
         {
+            this.stringsIndex = 0;
+
             var fileHeader = new BinaryFileHeader();
             var tables = dataSet.Tables;
             var tableIndexes = new List<BinaryTableIndex>(tables.Length);
@@ -81,10 +79,10 @@ namespace Ntreev.Crema.Runtime.Serialization.Binary
 
             var t = new Dictionary<string, Stream>();
 
-            Parallel.ForEach(tables, item =>
+            tables.ToList().ForEach(item =>
             {
                 var memory = new MemoryStream();
-                var formatter = new BinaryDataSerializer();
+                var formatter = new OrderedBinaryDataSerializer();
                 formatter.SerializeTable(memory, item, dataSet.Types);
                 memory.Position = 0;
                 lock (t)
@@ -105,7 +103,7 @@ namespace Ntreev.Crema.Runtime.Serialization.Binary
             }
 
             fileHeader.StringResourcesOffset = stream.Position;
-            writer.WriteResourceStrings(this.strings.ToArray());
+            writer.WriteResourceStrings(this.strings.ToArray<int, string>());
 
             writer.Seek(0, SeekOrigin.Begin);
             writer.WriteValue(fileHeader);
@@ -142,7 +140,7 @@ namespace Ntreev.Crema.Runtime.Serialization.Binary
             this.WriteRows(writer, rows, columns, types);
 
             this.tableHeader.StringResourcesOffset = writer.GetPosition();
-            writer.WriteResourceStrings(this.strings.ToArray());
+            writer.WriteResourceStrings(this.strings.ToArray<int, string>());
 
             this.tableHeader.UserOffset = writer.GetPosition();
             writer.Write((byte)0);
@@ -313,10 +311,32 @@ namespace Ntreev.Crema.Runtime.Serialization.Binary
             lock (this.strings)
             {
                 text = text.Replace(Environment.NewLine, "\n");
-                if (this.strings.Contains(text) == false)
-                    this.strings.Add(text);
-                return text.GetHashCode();
+                if (this.stringsRef.ContainsKey(text) == false)
+                {
+                    this.stringsIndex++;
+                    this.strings.Add(this.stringsIndex, text);
+                    this.stringsRef.Add(text, this.stringsIndex);
+                    return this.stringsIndex;
+                }
+
+                return this.stringsRef[text];
             }
+        }
+    }
+
+    static class IDictionaryExtension
+    {
+        public static KeyValuePair<TKey, TValue>[] ToArray<TKey, TValue>(this IDictionary dictionary)
+        {
+            var index = 0;
+            var entries = new KeyValuePair<TKey, TValue>[dictionary.Count];
+
+            foreach (DictionaryEntry entry in dictionary)
+            {
+                entries[index++] = new KeyValuePair<TKey, TValue>((TKey)entry.Key, (TValue)entry.Value);
+            }
+
+            return entries;
         }
     }
 }
