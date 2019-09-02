@@ -16,12 +16,23 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Ntreev.Crema.Data;
+using Ntreev.Crema.Data.Xml;
+using Ntreev.Library.IO;
+using Ntreev.Library;
+using Ntreev.Crema.Data.Xml.Schema;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
+using System.Text;
+using System.Xml;
+using System.Data;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
+using Ntreev.Crema.Runtime.Serialization;
+using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Runtime.Serialization.Binary
 {
@@ -33,10 +44,8 @@ namespace Ntreev.Crema.Runtime.Serialization.Binary
 
         private BinaryTableHeader tableHeader = new BinaryTableHeader();
         private BinaryTableInfo tableInfo = new BinaryTableInfo();
-        private IDictionary<int, string> strings = new Dictionary<int, string>();
-        private static IDictionary<int, string> globalStrings = new Dictionary<int, string>();
+        private HashSet<string> strings = new HashSet<string>();
         private List<BinaryColumnInfo> columns;
-        private int stringsIndex = 0;
 
         [ImportingConstructor]
         public BinaryDataSerializer()
@@ -44,20 +53,13 @@ namespace Ntreev.Crema.Runtime.Serialization.Binary
 
         }
 
-        private BinaryDataSerializer(int stringsIndex)
-        {
-            this.stringsIndex = stringsIndex;
-        }
-
         public string Name
         {
             get { return "bin"; }
         }
 
-        public int Serialize(Stream stream, SerializationSet dataSet, int stringsIndex = 0)
+        public void Serialize(Stream stream, SerializationSet dataSet)
         {
-            this.stringsIndex = stringsIndex;
-
             var fileHeader = new BinaryFileHeader();
             var tables = dataSet.Tables;
             var tableIndexes = new List<BinaryTableIndex>(tables.Length);
@@ -79,13 +81,16 @@ namespace Ntreev.Crema.Runtime.Serialization.Binary
 
             var t = new Dictionary<string, Stream>();
 
-            tables.ToList().ForEach(item =>
+            Parallel.ForEach(tables, item =>
             {
                 var memory = new MemoryStream();
-                var formatter = new BinaryDataSerializer(this.stringsIndex);
-                this.stringsIndex = formatter.SerializeTable(memory, item, dataSet.Types);
+                var formatter = new BinaryDataSerializer();
+                formatter.SerializeTable(memory, item, dataSet.Types);
                 memory.Position = 0;
-                t.Add(item.Name, memory);
+                lock (t)
+                {
+                    t.Add(item.Name, memory);
+                }
             });
 
             foreach (var item in tables)
@@ -107,11 +112,9 @@ namespace Ntreev.Crema.Runtime.Serialization.Binary
 
             writer.Seek((int)fileHeader.IndexOffset, SeekOrigin.Begin);
             writer.WriteArray(tableIndexes.ToArray());
-
-            return this.stringsIndex;
         }
 
-        private int SerializeTable(Stream stream, SerializationTable dataTable, SerializationType[] types)
+        private void SerializeTable(Stream stream, SerializationTable dataTable, SerializationType[] types)
         {
             var columns = dataTable.Columns;
             var rows = dataTable.Rows;
@@ -150,8 +153,6 @@ namespace Ntreev.Crema.Runtime.Serialization.Binary
             writer.Seek((int)this.tableHeader.TableInfoOffset, SeekOrigin.Begin);
             writer.WriteValue(this.tableInfo);
             writer.SetPosition(lastPosition);
-
-            return this.stringsIndex;
         }
 
         private void CollectColumns(SerializationColumn[] columns)
@@ -312,25 +313,9 @@ namespace Ntreev.Crema.Runtime.Serialization.Binary
             lock (this.strings)
             {
                 text = text.Replace(Environment.NewLine, "\n");
-                if (this.strings.Values.Contains(text) == false)
-                {
-                    this.stringsIndex++;
-                    if (globalStrings.Values.Contains(text))
-                    {
-                        var id = globalStrings.First(o => o.Value == text).Key;
-                        this.strings.Add(id, text);
-                        return id;
-                    }
-                    else
-                    {
-                        globalStrings.Add(this.stringsIndex, text);
-                        this.strings.Add(this.stringsIndex, text);
-                        return this.stringsIndex;
-                    }
-                }
-
-                var item = this.strings.First(o => o.Value == text);
-                return item.Key;
+                if (this.strings.Contains(text) == false)
+                    this.strings.Add(text);
+                return text.GetHashCode();
             }
         }
     }
