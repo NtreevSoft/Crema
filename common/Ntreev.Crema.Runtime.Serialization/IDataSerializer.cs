@@ -28,6 +28,6 @@ namespace Ntreev.Crema.Runtime.Serialization
     {
         string Name { get; }
 
-        int Serialize(Stream stream, SerializationSet dataSet, int stringsIndex = 0);
+        void Serialize(Stream stream, SerializationSet dataSet);
     }
 }
