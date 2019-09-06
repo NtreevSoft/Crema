@@ -23,7 +23,7 @@ GOTO :END
 
 :HELP
 ECHO Usage
-ECHO     .\uninstall-service.bat ^<crema-repo-path^>
+ECHO     .\%~nx0 ^<crema-repo-path^>
 EXIT /B
 
 :WRITE-TEXT

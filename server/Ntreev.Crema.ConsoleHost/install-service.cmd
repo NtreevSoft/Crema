@@ -23,7 +23,7 @@ GOTO :END
 
 :HELP
 ECHO Usage
-ECHO     .\install-service.bat ^<crema-repo-path^>
+ECHO     .\%~nx0 ^<crema-repo-path^>
 EXIT /B
 
 :WRITE-TEXT
