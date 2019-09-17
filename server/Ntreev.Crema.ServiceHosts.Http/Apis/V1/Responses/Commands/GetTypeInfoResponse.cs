@@ -98,6 +98,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Responses.Commands
                     Name = member.Name,
                     Value = member.Value,
                     Comment = member.Comment,
+                    Tags = member.Tags.ToString(),
                     DerivedTags = member.DerivedTags.ToString(),
                     IsEnabled = member.IsEnabled,
                     Creator = member.CreationInfo.ID,
