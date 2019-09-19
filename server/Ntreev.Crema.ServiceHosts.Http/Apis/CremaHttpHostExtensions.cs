@@ -20,8 +20,10 @@ using System.Reflection;
 using System.Web.Http;
 using System.Web.Http.Description;
 using System.Web.Http.ExceptionHandling;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
+using Ntreev.Crema.ServiceHosts.Http.Apis.Swagger;
 using Ntreev.Crema.Services;
 using Swashbuckle.Application;
 
@@ -46,14 +48,16 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis
         public static HttpConfiguration ConfigureCremaSwagger(this HttpConfiguration config)
         {
             config.EnableSwagger(o =>
-                {
-                    o.MultipleApiVersions(
-                        ResolveVersionSupportByRouteConstraint,
-                        builder =>
-                        {
-                            builder.Version("v1", "Crema commands api v1");
-                        });
-                })
+            {
+                o.SchemaFilter<DefaultValueSchemaFilter>();
+
+                o.MultipleApiVersions(
+                    ResolveVersionSupportByRouteConstraint,
+                    builder =>
+                    {
+                        builder.Version("v1", "Crema commands api v1");
+                    });
+            })
                 .EnableSwaggerUi(o =>
                 {
                     o.EnableDiscoveryUrlSelector();
