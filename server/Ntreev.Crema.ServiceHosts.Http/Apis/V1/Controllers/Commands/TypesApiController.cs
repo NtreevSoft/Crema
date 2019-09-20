@@ -90,6 +90,22 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
             })).ToArray();
         }
 
+        [HttpPost]
+        [Route("types/*/info")]
+        public GetTypeInfoResponse[] GetTypeInfoByTypeName(string databaseName, [FromBody] GetTypeInfoByTypeNameRequest request)
+        {
+            var types = this.GetTypes(databaseName);
+            var intersectTypes = types.Select(type => type.Dispatcher.Invoke(() => type.Name))
+                .Intersect(request.TypeNames, StringComparer.OrdinalIgnoreCase);
+
+            return intersectTypes.Select(typeName =>
+            {
+                var type = types.First(o => o.Dispatcher.Invoke(() => o.Name == typeName));
+                var typeInfo = type.Dispatcher.Invoke(() => type.TypeInfo);
+                return GetTypeInfoResponse.ConvertFrom(typeInfo);
+            }).ToArray();
+        }
+
         [HttpGet]
         [Route("types/{typeName}/info")]
         public GetTypeInfoResponse GetTypeInfo(string databaseName, string typeName)
