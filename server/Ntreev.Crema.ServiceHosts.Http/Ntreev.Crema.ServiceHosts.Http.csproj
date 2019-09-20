@@ -98,7 +98,8 @@
     <Compile Include="Apis\CremaAuthorizeAttribute.cs" />
     <Compile Include="Apis\CremaExceptionHandler.cs" />
     <Compile Include="Apis\CremaHttpHostExtensions.cs" />
-    <Compile Include="Apis\V1\Controllers\CremaDev\CremaDevController.cs" />
+    <Compile Include="Apis\V1\Controllers\CremaDev\CremaDevDefaultApiController.cs" />
+    <Compile Include="Apis\V1\Controllers\CremaDev\CremaDevApiController.cs" />
     <Compile Include="Apis\V1\Requests\Commands\GetTableInfoByTableNameRequest.cs" />
     <Compile Include="Apis\V1\Requests\Commands\GetTypeInfoByTypeNameRequest.cs" />
     <Compile Include="Apis\V1\Requests\CremaDev\DataRequest.cs" />

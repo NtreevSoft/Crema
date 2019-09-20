@@ -15,31 +15,44 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Swashbuckle.Swagger;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.ComponentModel.Composition;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Http;
+using Ntreev.Crema.Runtime.Serialization;
+using Ntreev.Crema.Services;
 
-namespace Ntreev.Crema.ServiceHosts.Http.Apis.Swagger
+namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.CremaDev
 {
-    class DefaultValueSchemaFilter : ISchemaFilter
+    [Export]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
+    [RoutePrefix("api/v1/cremadev")]
+    public class CremaDevDefaultApiController : CremaApiController
     {
-        public void Apply(Schema schema, SchemaRegistry schemaRegistry, Type type)
+        private readonly ICremaHost cremaHost;
+
+        [ImportingConstructor]
+        public CremaDevDefaultApiController(ICremaHost cremaHost) : base(cremaHost)
         {
-            if (schema.properties == null || !schema.properties.Any()) return;
+            this.cremaHost = cremaHost;
+        }
 
-            foreach(var property in schema.properties)
-            {
-                var propertyInfo = type.GetProperty(property.Key, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
-                var defaultValueAttribute = propertyInfo.GetCustomAttributes(typeof(DefaultValueAttribute), false).FirstOrDefault() as DefaultValueAttribute;
-                if (defaultValueAttribute == null) continue;
+        [HttpGet]
+        [Route("output-types")]
+        public Task<string[]> GetOutputTypeListAsync()
+        {
+            var serializers = this.GetDataSerializers();
+            if (serializers == null || !serializers.Any()) return Task.FromResult(new string[] { });
 
-                property.Value.@default = defaultValueAttribute.Value;
-            }
+            return Task.FromResult(serializers.Select(serializer => serializer.Name).ToArray());
+        }
+
+        private IEnumerable<IDataSerializer> GetDataSerializers()
+        {
+            return this.cremaHost.GetService(typeof(IEnumerable<IDataSerializer>)) as IEnumerable<IDataSerializer>;
         }
     }
 }
