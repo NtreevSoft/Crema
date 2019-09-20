@@ -56,6 +56,7 @@
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
@@ -84,7 +85,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Apis\CremaApiController.cs" />
+    <Compile Include="Apis\Infrastructures\ActionResults\EncodedFilesResult.cs" />
+    <Compile Include="Apis\Infrastructures\ActionResults\FileResult.cs" />
+    <Compile Include="Apis\Infrastructures\ActionResults\ZipFileResult.cs" />
     <Compile Include="Apis\Swagger\AddCremaTokenHeaderOperationFilter.cs" />
+    <Compile Include="Apis\Swagger\DefaultValueSchemaFilter.cs" />
     <Compile Include="Apis\V1\Controllers\Commands\DataBasesApiController.cs" />
     <Compile Include="Apis\V1\Controllers\Commands\DefaultApiController.cs" />
     <Compile Include="Apis\V1\Controllers\Commands\DomainsApiController.cs" />
@@ -93,9 +98,13 @@
     <Compile Include="Apis\CremaAuthorizeAttribute.cs" />
     <Compile Include="Apis\CremaExceptionHandler.cs" />
     <Compile Include="Apis\CremaHttpHostExtensions.cs" />
+    <Compile Include="Apis\V1\Controllers\CremaDev\CremaDevDefaultApiController.cs" />
+    <Compile Include="Apis\V1\Controllers\CremaDev\CremaDevApiController.cs" />
     <Compile Include="Apis\V1\Requests\Commands\GetTableInfoByTableNameRequest.cs" />
     <Compile Include="Apis\V1\Requests\Commands\GetTypeInfoByTypeNameRequest.cs" />
+    <Compile Include="Apis\V1\Requests\CremaDev\DataRequest.cs" />
     <Compile Include="Apis\V1\Responses\Commands\LoginAndLoadEnterDataBaseResponse.cs" />
+    <Compile Include="Apis\V1\Responses\CremaDev\DataResponse.cs" />
     <Compile Include="HttpCommandServiceHost.cs" />
     <Compile Include="Apis\MefDependencyResolver.cs" />
     <Compile Include="Apis\V1\Controllers\Commands\UsersApiController.cs" />
@@ -165,6 +174,10 @@
       <Project>{04aeb614-3510-4064-99af-0aa807c7f957}</Project>
       <Name>Ntreev.Crema.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\common\Ntreev.Crema.Runtime.Serialization\Ntreev.Crema.Runtime.Serialization.csproj">
+      <Project>{279d3bbf-10a3-449f-aa73-545bc0b7baaf}</Project>
+      <Name>Ntreev.Crema.Runtime.Serialization</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\common\Ntreev.Crema.ServiceModel\Ntreev.Crema.ServiceModel.csproj">
       <Project>{6478450a-dfa5-445d-890f-bc5f57c9a148}</Project>
       <Name>Ntreev.Crema.ServiceModel</Name>
@@ -172,6 +185,10 @@
     <ProjectReference Include="..\..\sub-modules\Ntreev.Library\Ntreev.Library\Ntreev.Library.csproj">
       <Project>{1918437f-4fbf-4731-ac5b-981a4a4cb1f1}</Project>
       <Name>Ntreev.Library</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ntreev.Crema.RuntimeService\Ntreev.Crema.RuntimeService.csproj">
+      <Project>{3d7847d1-7706-4a64-8846-d8aa3639471c}</Project>
+      <Name>Ntreev.Crema.RuntimeService</Name>
     </ProjectReference>
     <ProjectReference Include="..\Ntreev.Crema.ServiceHosts\Ntreev.Crema.ServiceHosts.csproj">
       <Project>{a7bf94f7-94a5-46ba-a756-c04bde65f47b}</Project>

@@ -15,16 +15,55 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Requests.Commands
+namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Requests.CremaDev
 {
-    public class MoveUserItemRequest
+    public class DataRequest
     {
         [Required]
-        public string ParentPath { get; set; }
+        [DefaultValue("bin")]
+        public string OutputType { get; set; } = "bin";
 
         [Required]
-        public string UserItemPath { get; set; }
+        [DefaultValue(false)]
+        public bool IsDevMode { get; set; } = false;
+
+        [Required]
+        [DefaultValue(-1)]
+        public int Revision { get; set; } = -1;
+
+        [Required]
+        [DefaultValue("All")]
+        public string Tags { get; set; } = "All";
+
+        [Required]
+        [DefaultValue(false)]
+        public bool Split { get; set; } = false;
+
+        [Required]
+        [DefaultValue("dat")]
+        public string Ext { get; set; } = "dat";
+
+        [Required]
+        [DefaultValue("")]
+        public string FilterExpression { get; set; } = "";
+
+        [DefaultValue(null)]
+        public long? ReplaceRevision { get; set; } = null;
+
+        [DefaultValue(null)]
+        public string ReplaceHashValue { get; set; } = null;
+
+        [Required]
+        [DefaultValue("crema.dat")]
+        public string ResponseFileName { get; set; } = "crema.dat";
     }
 }

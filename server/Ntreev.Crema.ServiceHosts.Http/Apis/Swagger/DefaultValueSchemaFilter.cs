@@ -15,16 +15,31 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System.ComponentModel.DataAnnotations;
+using Swashbuckle.Swagger;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Requests.Commands
+namespace Ntreev.Crema.ServiceHosts.Http.Apis.Swagger
 {
-    public class MoveUserItemRequest
+    class DefaultValueSchemaFilter : ISchemaFilter
     {
-        [Required]
-        public string ParentPath { get; set; }
+        public void Apply(Schema schema, SchemaRegistry schemaRegistry, Type type)
+        {
+            if (schema.properties == null || !schema.properties.Any()) return;
 
-        [Required]
-        public string UserItemPath { get; set; }
+            foreach(var property in schema.properties)
+            {
+                var propertyInfo = type.GetProperty(property.Key, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+                var defaultValueAttribute = propertyInfo.GetCustomAttributes(typeof(DefaultValueAttribute), false).FirstOrDefault() as DefaultValueAttribute;
+                if (defaultValueAttribute == null) continue;
+
+                property.Value.@default = defaultValueAttribute.Value;
+            }
+        }
     }
 }
