@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -29,55 +30,47 @@ using Ntreev.Crema.ServiceHosts.Http.Apis.Infrastructures.ActionResults;
 using Ntreev.Crema.ServiceHosts.Http.Apis.V1.Requests.CremaDev;
 using Ntreev.Crema.ServiceHosts.Http.Apis.V1.Responses.CremaDev;
 using Ntreev.Crema.Services;
+using Swashbuckle.Swagger.Annotations;
 
 namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.CremaDev
 {
     [Export]
     [PartCreationPolicy(CreationPolicy.NonShared)]
     [RoutePrefix("api/v1/cremadev/databases/{databaseName}")]
-    public class CremaDevController : CremaApiController
+    public class CremaDevApiController : CremaApiController
     {
         private readonly ICremaHost cremaHost;
 
         [ImportingConstructor]
-        public CremaDevController(ICremaHost cremaHost) : base(cremaHost)
+        public CremaDevApiController(ICremaHost cremaHost) : base(cremaHost)
         {
             this.cremaHost = cremaHost;
-        }
-
-        [HttpGet]
-        [Route("output-types")]
-        public string[] GetOutputTypeList()
-        {
-            var serializers = this.GetDataSerializers();
-            if (serializers == null || !serializers.Any()) return new string[] { };
-
-            return serializers.Select(serializer => serializer.Name).ToArray();
         }
 
         [HttpPost]
         [Route("data.binary")]
         [AllowAnonymous]
-        public IHttpActionResult GetDataAsBinary(string databaseName, [FromBody] DataRequest request)
+        public Task<IHttpActionResult> GetDataAsBinaryAsync(string databaseName, [FromBody] DataRequest request)
         {
             var serializationSet = GetSerializationSet(databaseName, request);
 
             if (request.Split)
             {
                 var entries = this.SerializePerTable(serializationSet, request);
-                return new ZipFileResult(entries, request.ResponseFileName);
+                return Task.FromResult((IHttpActionResult)new ZipFileResult(entries, request.ResponseFileName));
             }
             else
             {
                 var stream = this.SerializeAll(serializationSet, request);
-                return new FileResult(stream, request.ResponseFileName);
+                return Task.FromResult((IHttpActionResult)new FileResult(stream, request.ResponseFileName));
             }
         }
 
         [HttpPost]
         [Route("data.json")]
         [AllowAnonymous]
-        public IHttpActionResult GetDataAsJson(string databaseName, [FromBody] DataRequest request)
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(DataResponse))]
+        public Task<IHttpActionResult> GetDataAsJsonAsync(string databaseName, [FromBody] DataRequest request)
         {
             var serializationSet = GetSerializationSet(databaseName, request);
             var formatter = this.RequestContext.Configuration.Formatters.JsonFormatter;
@@ -85,12 +78,12 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.CremaDev
             if (request.Split)
             {
                 var entries = this.SerializePerTable(serializationSet, request);
-                return new EncodedFilesResult(entries, formatter);
+                return Task.FromResult((IHttpActionResult)new EncodedFilesResult(entries, formatter));
             }
             else
             {
                 var stream = this.SerializeAll(serializationSet, request);
-                return new EncodedFilesResult(new[] { new ZipFileResultEntry(request.ResponseFileName, stream) }, formatter);
+                return Task.FromResult((IHttpActionResult)new EncodedFilesResult(new[] { new ZipFileResultEntry(request.ResponseFileName, stream) }, formatter));
             }
         }
 
@@ -105,47 +98,6 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.CremaDev
             var filteredMetaData = ReplaceOptionProcessor.Process(result.Value, request);
             return filteredMetaData;
         }
-
-        //private IHttpActionResult SerializeAll(SerializationSet serializationSet, DataRequest request)
-        //{
-        //    var serializationSetStream = new MemoryStream();
-
-        //    var serializer = this.GetDataSerializer(request.OutputType);
-        //    serializer.Serialize(serializationSetStream, serializationSet);
-
-        //    return request.ResponseType == DataResponseType.Binary
-        //        ? new FileResult(serializationSetStream, request.ResponseFileName)
-        //        : new EncodedFileResult(this.RequestContext.Configuration.Formatters.JsonFormatter, serializationSetStream, request.ResponseFileName);
-        //}
-
-        //private IHttpActionResult SerializePerTable(SerializationSet serializationSet, DataRequest request)
-        //{
-        //    var filteredMetaDataList = new List<SerializationSet>();
-
-        //    foreach (var table in serializationSet.Tables)
-        //    {
-        //        var filteredMetaData = serializationSet.Filter(table.Name);
-        //        filteredMetaData = ReplaceOptionProcessor.Process(filteredMetaData, request);
-
-        //        if (filteredMetaData.Tables.Any())
-        //        {
-        //            filteredMetaDataList.Add(filteredMetaData);
-        //        }
-        //    }
-
-        //    var entries = new List<ZipFileResultEntry>();
-        //    foreach (var dataSet in filteredMetaDataList)
-        //    {
-        //        var filename = $"{dataSet.Tables[0].Name}.{request.Ext}";
-        //        var serializationSetStream = new MemoryStream();
-        //        var serializer = this.GetDataSerializer(request.OutputType);
-        //        serializer.Serialize(serializationSetStream, dataSet);
-
-        //        entries.Add(new ZipFileResultEntry(filename, serializationSetStream));
-        //    }
-
-        //    return new ZipFileResult(entries.ToArray(), request.ResponseFileName);
-        //}
 
         private Stream SerializeAll(SerializationSet serializationSet, DataRequest request)
         {
