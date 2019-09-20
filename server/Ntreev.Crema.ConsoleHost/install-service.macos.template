@@ -1,18 +1,22 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict>
+  <dict>
     <key>Label</key>
     <string>crema</string>
     <key>ProgramArguments</key>
     <array>
-        <string>/Library/Frameworks/Mono.framework/Versions/Current/Commands/mono</string>
-        <string>{pwd}/cremaserver.exe</string>
-        <string>run</string>
-        <string>{repo-dir}</string>
+      <string>/Library/Frameworks/Mono.framework/Versions/Current/Commands/mono</string>
+      <string>{pwd}/cremaserver.exe</string>
+      <string>run</string>
+      <string>{repo-dir}</string>
     </array>
+    <key>StandardOutPath</key>
+    <string>{pwd}/launchctl-log/out.log</string>
+    <key>StandardErrorPath</key>
+    <string>{pwd}/launchctl-log/error.log</string>
     <key>RunAtLoad</key>
     <true/>
     <key>KeepAlive</key>
     <false/>
-</dict>
+  </dict>
 </plist>
