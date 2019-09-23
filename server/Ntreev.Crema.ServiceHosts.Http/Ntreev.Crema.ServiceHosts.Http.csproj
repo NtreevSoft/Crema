@@ -90,6 +90,8 @@
     <Compile Include="Apis\Infrastructures\ActionResults\ZipFileResult.cs" />
     <Compile Include="Apis\Swagger\AddCremaTokenHeaderOperationFilter.cs" />
     <Compile Include="Apis\Swagger\DefaultValueSchemaFilter.cs" />
+    <Compile Include="Apis\Swagger\SwaggerFileResponseAttribute.cs" />
+    <Compile Include="Apis\Swagger\SwaggerFileResponseOperationFilter.cs" />
     <Compile Include="Apis\V1\Controllers\Commands\DataBasesApiController.cs" />
     <Compile Include="Apis\V1\Controllers\Commands\DefaultApiController.cs" />
     <Compile Include="Apis\V1\Controllers\Commands\DomainsApiController.cs" />
