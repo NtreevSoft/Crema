@@ -2,14 +2,15 @@
 <plist version="1.0">
   <dict>
     <key>Label</key>
-    <string>crema</string>
+    <string>cremaserver</string>
     <key>ProgramArguments</key>
     <array>
-      <string>/Library/Frameworks/Mono.framework/Versions/Current/Commands/mono</string>
-      <string>{pwd}/cremaserver.exe</string>
-      <string>run</string>
+      <string>{pwd}/cremaservice-daemon.sh</string>
+      <string>start</string>
       <string>{repo-dir}</string>
     </array>
+    <key>WorkingDirectory</key>
+    <string>{pwd}</string>
     <key>StandardOutPath</key>
     <string>{pwd}/launchctl-log/out.log</string>
     <key>StandardErrorPath</key>

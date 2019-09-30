@@ -196,7 +196,7 @@ namespace Ntreev.Crema.Services
 
         public virtual IEnumerable<string> SelectPath()
         {
-            var dllPath = AppDomain.CurrentDomain.BaseDirectory;
+            var dllPath = this.NormalizedPath(AppDomain.CurrentDomain.BaseDirectory);
             var rootPath = Path.GetDirectoryName(dllPath);
             var repositoryPath = Path.Combine(rootPath, RepositoryModulesPath);
             if (Directory.Exists(repositoryPath) == true)
@@ -215,6 +215,13 @@ namespace Ntreev.Crema.Services
                     yield return item;
                 }
             }
+        }
+
+        private string NormalizedPath(string path)
+        {
+            return path.EndsWith("/") || path.EndsWith("\\")
+                ? path
+                : path + Path.DirectorySeparatorChar;
         }
 
         public string BasePath

@@ -18,8 +18,8 @@ uninstall() {
 
 uninstall_on_mac() {
     launchctl stop crema
-    launchctl unload -w crema.plist
-    rm crema.plist
+    launchctl unload -w /Library/LaunchDaemons/crema.plist
+    rm /Library/LaunchDaemons/crema.plist
 }
 
 help() {
