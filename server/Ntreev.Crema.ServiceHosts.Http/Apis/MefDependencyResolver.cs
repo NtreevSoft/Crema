@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.Http.Dependencies;
 using Ntreev.Crema.Services;
 
@@ -41,7 +42,14 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis
             if (serviceType == null)
                 throw new ArgumentNullException(nameof(serviceType));
 
-            return this.cremaHost.GetService(serviceType);
+            try
+            {
+                return this.cremaHost.GetService(serviceType);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         public IEnumerable<object> GetServices(Type serviceType)
@@ -49,7 +57,14 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis
             if (serviceType == null)
                 throw new ArgumentNullException(nameof(serviceType));
 
-            return this.cremaHost.GetService(typeof(IEnumerable<>).MakeGenericType(serviceType)) as IEnumerable<object>;
+            try
+            {
+                return this.cremaHost.GetService(typeof(IEnumerable<>).MakeGenericType(serviceType)) as IEnumerable<object>;
+            }
+            catch (Exception)
+            {
+                return Enumerable.Empty<object>();
+            }
         }
 
         public void Dispose()

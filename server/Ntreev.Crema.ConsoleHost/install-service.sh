@@ -28,8 +28,8 @@ validate() {
 
 install() {
     content="$(cat install-service.linux.template)"
-    content="${content/\{pwd\}/`pwd`}"
-    content="${content/\{repo-dir\}/\"$OPTION_REPO_DIR\"}"
+    content="${content//\{pwd\}/`pwd`}"
+    content="${content//\{repo-dir\}/$OPTION_REPO_DIR}"
     echo "$content" > /etc/systemd/system/crema.service
     if [ $? != 0 ]; then
         echo "ERROR: Could not write file. (etc/systemd/system/crema.service)"
@@ -42,15 +42,15 @@ install() {
 
 install_on_mac() {
     content="$(cat install-service.macos.template)"
-    content="${content/\{pwd\}/`pwd`}"
-    content="${content/\{repo-dir\}/\"$OPTION_REPO_DIR\"}"
-    echo "$content" > crema.plist
+    content="${content//\{pwd\}/`pwd`}"
+    content="${content//\{repo-dir\}/$OPTION_REPO_DIR}"
+    echo "$content" > /Library/LaunchDaemons/crema.plist
     if [ $? != 0 ]; then
         echo "ERROR: Could not write file. (crema.plist)"
         exit 1
     fi
 
-    launchctl load -w ./crema.plist
+    launchctl load -w /Library/LaunchDaemons/crema.plist
     launchctl start crema
 }
 
@@ -76,5 +76,4 @@ case "$osname" in
         echo "ERROR: Not supports os. ('$osname')"
         exit 1
     ;;
-    
 esac

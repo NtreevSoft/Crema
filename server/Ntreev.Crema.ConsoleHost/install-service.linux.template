@@ -2,9 +2,11 @@
 Description=cremaserver
 
 [Service]
-ExecStart=/usr/bin/mono {pwd}/cremaserver.exe run {repo-dir}
+ExecStart=/bin/sh cremaservice-daemon.sh start {repo-dir}
+ExecStopPost=/bin/rm -f /tmp/cremaservice.exe.lock
 Restart=always
 SyslogIdentifier=cremaserver
+WorkingDirectory={pwd}
 
 [Install]
 WantedBy=multi-user.target
