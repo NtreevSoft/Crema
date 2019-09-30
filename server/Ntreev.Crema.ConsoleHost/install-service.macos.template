@@ -5,6 +5,7 @@
     <string>cremaserver</string>
     <key>ProgramArguments</key>
     <array>
+      <string>/bin/sh</string>
       <string>{pwd}/cremaservice-daemon.sh</string>
       <string>start</string>
       <string>{repo-dir}</string>
