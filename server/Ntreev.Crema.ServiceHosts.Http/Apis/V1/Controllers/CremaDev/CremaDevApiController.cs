@@ -27,6 +27,7 @@ using System.Web.Http;
 using Ntreev.Crema.Runtime.Serialization;
 using Ntreev.Crema.RuntimeService;
 using Ntreev.Crema.ServiceHosts.Http.Apis.Infrastructures.ActionResults;
+using Ntreev.Crema.ServiceHosts.Http.Apis.Swagger;
 using Ntreev.Crema.ServiceHosts.Http.Apis.V1.Requests.CremaDev;
 using Ntreev.Crema.ServiceHosts.Http.Apis.V1.Responses.CremaDev;
 using Ntreev.Crema.Services;
@@ -50,6 +51,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.CremaDev
         [HttpPost]
         [Route("data.binary")]
         [AllowAnonymous]
+        [SwaggerFileResponse(HttpStatusCode.OK)]
         public Task<IHttpActionResult> GetDataAsBinaryAsync(string databaseName, [FromBody] DataRequest request)
         {
             var serializationSet = GetSerializationSet(databaseName, request);

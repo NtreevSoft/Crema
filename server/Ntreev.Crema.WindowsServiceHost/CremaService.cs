@@ -53,11 +53,16 @@ namespace Ntreev.Crema.WindowsServiceHost
             this.CanStop = true;
         }
 
+        private static bool IsMonoRuntime => Type.GetType("Mono.Runtime") != null;
+
         protected override void OnStart(string[] args)
         {
             base.OnStart(args);
 
-            var baseArgs = Environment.GetCommandLineArgs();
+            var environmentCommandLineArgs = Environment.GetCommandLineArgs();
+            var baseArgs = IsMonoRuntime == false
+                            ? environmentCommandLineArgs
+                            : Environment.GetCommandLineArgs().Skip(environmentCommandLineArgs.Length - 4).Take(4).ToArray();
             var path = baseArgs[1];
             var port = int.Parse(baseArgs[2]);
             var httpPort = int.Parse(baseArgs[3]);
@@ -75,7 +80,7 @@ namespace Ntreev.Crema.WindowsServiceHost
             try
             {
                 CremaLog.Debug(args.Length);
-                if (args.Any() == true)
+                if (!IsMonoRuntime && args.Any() == true)
                 {
                     var settings = new Settings()
                     {
@@ -122,6 +127,8 @@ namespace Ntreev.Crema.WindowsServiceHost
             CremaLog.Debug("service close");
             this.cremaService.Close();
             CremaLog.Debug("service closed.");
+
+            if (IsMonoRuntime) Environment.Exit(0);
         }
 
         private void CremaHost_Closed(object sender, ClosedEventArgs e)

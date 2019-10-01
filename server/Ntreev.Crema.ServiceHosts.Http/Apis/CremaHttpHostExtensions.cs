@@ -50,6 +50,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis
             config.EnableSwagger(o =>
             {
                 o.SchemaFilter<DefaultValueSchemaFilter>();
+                o.OperationFilter<SwaggerFileResponseOperationFilter>();
 
                 o.MultipleApiVersions(
                     ResolveVersionSupportByRouteConstraint,
