@@ -15,22 +15,30 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using Ntreev.Crema.ServiceModel;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Requests.Commands
+namespace Ntreev.Crema.Services
 {
-    public class NotifyRequest
+    public static class CremaFeatures
     {
-        [Required]
-        public string Message { get; set; }
+        public static bool SupportsToastMessage(Version clientVersion)
+        {
+            if (clientVersion.Major == 3 && clientVersion.Minor == 6)
+            {
+                return clientVersion > Version.Parse("3.6.19273.1701");
+            }
+            else if (clientVersion.Major == 3 && clientVersion.Minor == 7)
+            {
+                return clientVersion > Version.Parse("3.7.19273.1701");
+            }
+            else if (clientVersion.Major == 3 && clientVersion.Minor > 7)
+            {
+                return true;
+            }
 
-        [Required]
-        [DefaultValue(NotifyMessageType.Modal)]
-        public NotifyMessageType Type { get; set; } = NotifyMessageType.Modal;
-
-        [DefaultValue(10 * 1000)]
-        public int Duration { get; set; } = 10 * 1000;
+            return false;
+        }
     }
 }

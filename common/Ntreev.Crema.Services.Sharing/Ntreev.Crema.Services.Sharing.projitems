@@ -12,11 +12,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)AuthenticationEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ClosedEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ClosedEventHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CremaFeatures.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EventMetaDataBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IStateProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IInfoProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IDispatcherObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IExtendedProperties.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MessageEventArgs2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UsingDataBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DomainDeletedEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DomainEventArgs.cs" />

@@ -3,6 +3,7 @@
   <xs:import namespace="http://schemas.ntreev.com" />
   <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
   <xs:import namespace="http://schemas.datacontract.org/2004/07/System" />
+  <xs:import namespace="http://schemas.datacontract.org/2004/07/Ntreev.Crema.ServiceModel" />
   <xs:element name="Subscribe">
     <xs:complexType>
       <xs:sequence>
@@ -343,6 +344,17 @@
         <xs:element xmlns:q50="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="userIDs" nillable="true" type="q50:ArrayOfstring" />
         <xs:element minOccurs="0" name="message" nillable="true" type="xs:string" />
         <xs:element xmlns:q51="http://schemas.ntreev.com" minOccurs="0" name="messageType" type="q51:MessageType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="OnMessageReceived2">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q52="http://schemas.ntreev.com" minOccurs="0" name="signatureDate" type="q52:SignatureDate" />
+        <xs:element xmlns:q53="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="userIDs" nillable="true" type="q53:ArrayOfstring" />
+        <xs:element minOccurs="0" name="message" nillable="true" type="xs:string" />
+        <xs:element xmlns:q54="http://schemas.ntreev.com" minOccurs="0" name="messageType" type="q54:MessageType" />
+        <xs:element xmlns:q55="http://schemas.datacontract.org/2004/07/Ntreev.Crema.ServiceModel" minOccurs="0" name="nofiMessageType" type="q55:NotifyMessageType" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

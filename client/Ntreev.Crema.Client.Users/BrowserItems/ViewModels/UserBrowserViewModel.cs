@@ -108,6 +108,7 @@ namespace Ntreev.Crema.Client.Users.BrowserItems.ViewModels
                 var viewModel = await userContext.Dispatcher.InvokeAsync(() =>
                 {
                     userContext.MessageReceived += UserContext_MessageReceived;
+                    userContext.MessageReceived2 += UserContext_MessageReceived2;
                     return new UserCategoryTreeViewItemViewModel(this.authenticator, userContext.Root, this);
                 });
 
@@ -145,6 +146,27 @@ namespace Ntreev.Crema.Client.Users.BrowserItems.ViewModels
                     var dialog = await ViewMessageViewModel.CreateInstanceAsync(this.authenticator, userContext, message, sendUserID);
                     dialog?.ShowDialog();
                 });
+            }
+        }
+
+        private async void UserContext_MessageReceived2(object sender, MessageEventArgs2 e)
+        {
+            var message = e.Message;
+            var messageType = e.MessageType;
+            var sendUserID = e.UserID;
+            var userIDs = e.Items.Select(item => item.ID).ToArray();
+
+            if (messageType == MessageType.Notification)
+            {
+                if (e.UserID != this.authenticator.ID && (userIDs.Any() == false || userIDs.Any(item => item == this.authenticator.ID) == true))
+                {
+                    await this.Dispatcher.InvokeAsync(() =>
+                    {
+                        var title = string.Format(Resources.Title_AdministratorMessage_Format, sendUserID);
+                        this.flashService?.Flash();
+                        AppMessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Information);
+                    });
+                }
             }
         }
 
