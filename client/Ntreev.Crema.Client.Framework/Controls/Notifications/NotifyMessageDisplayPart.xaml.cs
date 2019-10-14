@@ -15,19 +15,38 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using Ntreev.Crema.ServiceModel;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using ToastNotifications.Core;
 
-namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Requests.Commands
+namespace Ntreev.Crema.Client.Framework.Controls.Notifications
 {
-    public class NotifyRequest
+    /// <summary>
+    /// ToastInformationMessage.xaml에 대한 상호 작용 논리
+    /// </summary>
+    public partial class NotifyMessageDisplayPart : NotificationDisplayPart
     {
-        [Required]
-        public string Message { get; set; }
+        public NotifyMessageDisplayPart(NotifyMessage notifyMessage)
+        {
+            InitializeComponent();
+            Bind(notifyMessage);
+        }
 
-        [Required]
-        [DefaultValue(NotifyMessageType.Modal)]
-        public NotifyMessageType Type { get; set; } = NotifyMessageType.Modal;
+        private void OnClick(object sender, RoutedEventArgs e)
+        {
+            Notification.Close();
+        }
     }
 }

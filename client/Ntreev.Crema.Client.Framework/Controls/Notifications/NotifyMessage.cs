@@ -15,19 +15,44 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using Ntreev.Crema.ServiceModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading.Tasks;
+using ToastNotifications.Core;
 
-namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Requests.Commands
+namespace Ntreev.Crema.Client.Framework.Controls.Notifications
 {
-    public class NotifyRequest
+    public class NotifyMessage : NotificationBase, INotifyPropertyChanged
     {
-        [Required]
-        public string Message { get; set; }
+        public NotifyMessage(string message, string title, MessageOptions options) : base(message, options)
+        {
+            Title = title;
+            this.DisplayPart = new NotifyMessageDisplayPart(this);
+        }
 
-        [Required]
-        [DefaultValue(NotifyMessageType.Modal)]
-        public NotifyMessageType Type { get; set; } = NotifyMessageType.Modal;
+        private string title;
+
+        public string Title
+        {
+            get => this.title;
+            set
+            {
+                this.title = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public override NotificationDisplayPart DisplayPart { get; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

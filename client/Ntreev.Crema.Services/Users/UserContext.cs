@@ -227,7 +227,12 @@ namespace Ntreev.Crema.Services.Users
 
         public void NotifyMessage2(Authentication authentication, string[] userIDs, string message, NotifyMessageType notifyMessageType)
         {
-            throw new NotImplementedException();
+            this.Dispatcher.VerifyAccess();
+            this.CremaHost.DebugMethod(authentication, this, nameof(NotifyMessage), this, userIDs, message);
+            var result = this.service.NotifyMessage(userIDs, message);
+            result.Validate(authentication);
+            var users = userIDs == null ? new User[] { } : userIDs.Select(item => this.Users[item]).ToArray();
+            this.Users.InvokeNotifyMessageEvent2(authentication, users, message, notifyMessageType);
         }
 
         public void Close(CloseInfo closeInfo)
