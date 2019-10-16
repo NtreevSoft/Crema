@@ -368,5 +368,17 @@ namespace Ntreev.Crema.Data
         {
             get { return this.row; }
         }
+
+        public object[] Filter(CremaDataColumn[] columns, TagInfo tags)
+        {
+            var fields = new List<object>();
+
+            for (var i = 0; i < columns.Length; i++)
+            {
+                fields.Add(this[columns[i].ColumnName]);
+            }
+
+            return fields.ToArray();
+        }
     }
 }

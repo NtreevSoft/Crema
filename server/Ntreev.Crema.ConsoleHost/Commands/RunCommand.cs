@@ -120,6 +120,23 @@ namespace Ntreev.Crema.ConsoleHost.Commands
         }
 
         [CommandProperty]
+        [DefaultValue(false)]
+        [Description("크레마 HTTP Rest API 서비스를 사용하지 않습니다.")]
+        public bool NoHttpServer {
+            get;
+            set;
+        }
+
+        [CommandProperty]
+        [Description(@"크레마 HTTP Rest API 서비스의 포트를 설정합니다.
+이 값을 설정하지 않고 HTTP Rest API 서비스를 사용하면 설정한 크레마 포트+100 번을 사용합니다.
+예) `cremaserver.exe run <...> --port 4004` 인 경우 HTTP Rest API 서비스의 포트는 4104 입니다.")]
+        public int? HttpPort
+        {
+            get; set;
+        }
+
+        [CommandProperty]
         public bool OmitRestore
         {
             get;
@@ -176,6 +193,8 @@ namespace Ntreev.Crema.ConsoleHost.Commands
             this.application.ValidationMode = this.ValidationMode;
 #endif
             this.application.Port = this.Port;
+            this.application.NoHttpServer = this.NoHttpServer;
+            this.application.HttpPort = this.HttpPort;
             this.application.Open();
 
             var cremaHost = this.application.GetService(typeof(ICremaHost)) as ICremaHost;

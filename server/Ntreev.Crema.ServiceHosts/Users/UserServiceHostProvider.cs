@@ -46,6 +46,8 @@ namespace Ntreev.Crema.ServiceHosts.Users
             get { return nameof(UserService); }
         }
 
+        public string Schema => "net.tcp";
+
         public ServiceHost CreateInstance(int port)
         {
             return new UserServiceHost(this.cremaHost, port, this.cremaService);

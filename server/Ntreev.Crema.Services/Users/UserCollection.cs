@@ -55,32 +55,48 @@ namespace Ntreev.Crema.Services.Users
 
         public User AddNew(string name, string categoryPath)
         {
-            return this.BaseAddNew(name, categoryPath, null);
+            try
+            {
+                return this.BaseAddNew(name, categoryPath, null);
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public User AddNew(Authentication authentication, string userID, string categoryPath, SecureString password, string userName, Authority authority)
         {
-            this.ValidateUserCreate(authentication, userID, categoryPath, password);
-            this.Sign(authentication);
-            var designedInfo = new SignatureDate(authentication.ID, DateTime.UtcNow);
-            var userInfo = new UserSerializationInfo()
+            try
             {
-                ID = userID,
-                Password = UserContext.SecureStringToString(password).Encrypt(),
-                Name = userName,
-                Authority = authority,
-                CategoryPath = categoryPath,
-                CreationInfo = designedInfo,
-                ModificationInfo = designedInfo,
-            };
+                this.ValidateUserCreate(authentication, userID, categoryPath, password);
+                this.Sign(authentication);
+                var designedInfo = new SignatureDate(authentication.ID, DateTime.UtcNow);
+                var userInfo = new UserSerializationInfo()
+                {
+                    ID = userID,
+                    Password = UserContext.SecureStringToString(password).Encrypt(),
+                    Name = userName,
+                    Authority = authority,
+                    CategoryPath = categoryPath,
+                    CreationInfo = designedInfo,
+                    ModificationInfo = designedInfo,
+                };
 
-            this.InvokeUserCreate(authentication, userInfo);
+                this.InvokeUserCreate(authentication, userInfo);
 
-            var user = this.BaseAddNew(userID, categoryPath, null);
-            user.Initialize((UserInfo)userInfo, BanInfo.Empty);
-            user.Password = UserContext.StringToSecureString(userInfo.Password);
-            this.InvokeUsersCreatedEvent(authentication, new User[] { user });
-            return user;
+                var user = this.BaseAddNew(userID, categoryPath, null);
+                user.Initialize((UserInfo)userInfo, BanInfo.Empty);
+                user.Password = UserContext.StringToSecureString(userInfo.Password);
+                this.InvokeUsersCreatedEvent(authentication, new User[] { user });
+                return user;
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void InvokeUserCreate(Authentication authentication, UserSerializationInfo userInfo)

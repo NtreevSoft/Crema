@@ -37,6 +37,7 @@ using System.Threading.Tasks;
 namespace Ntreev.Crema.Runtime.Serialization.Binary
 {
     [Export(typeof(IDataSerializer))]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
     class BinaryDataSerializer : IDataSerializer
     {
         public const int formatterVersion = 0;
@@ -72,7 +73,7 @@ namespace Ntreev.Crema.Runtime.Serialization.Binary
             writer.Seek(Marshal.SizeOf(typeof(BinaryTableIndex)) * tables.Length, SeekOrigin.Current);
             fileHeader.TypesHashValue = this.GetStringID(dataSet.TypesHashValue);
             fileHeader.TablesHashValue = this.GetStringID(dataSet.TablesHashValue);
-            fileHeader.Tags = this.GetStringID(dataSet.Tags);
+            fileHeader.Tags = this.GetStringID(dataSet.Tags.ToLower());
             fileHeader.TablesOffset = stream.Position;
             fileHeader.TableCount = tables.Length;
             fileHeader.Revision = (int)dataSet.Revision;

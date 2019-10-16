@@ -60,11 +60,13 @@ namespace Ntreev.Crema.WindowsServiceHost
             var baseArgs = Environment.GetCommandLineArgs();
             var path = baseArgs[1];
             var port = int.Parse(baseArgs[2]);
+            var httpPort = int.Parse(baseArgs[3]);
 
             this.cremaService = new CremaService()
             {
                 BasePath = path,
                 Port = port,
+                HttpPort = httpPort
             };
 
             CremaLog.Debug("service base path : {0}", path);
@@ -79,6 +81,7 @@ namespace Ntreev.Crema.WindowsServiceHost
                     {
                         BasePath = this.cremaService.BasePath,
                         Port = this.cremaService.Port,
+                        HttpPort = this.cremaService.HttpPort.Value,
                         RepositoryModule = this.cremaService.RepositoryModule,
                         RepositoryName = this.cremaService.RepositoryName,
                     };
@@ -94,6 +97,7 @@ namespace Ntreev.Crema.WindowsServiceHost
                     CremaLog.Debug("new settings");
                     CremaLog.Debug("service base path : {0}", settings.BasePath);
                     CremaLog.Debug("service port : {0}", settings.Port);
+                    CremaLog.Debug("service http port : {0}", settings.HttpPort);
                     CremaLog.Debug("service repo name : {0}", settings.RepositoryName);
                     CremaLog.Debug("service repo module : {0}", settings.RepositoryModule);
                     CremaLog.Debug("=========================================================");

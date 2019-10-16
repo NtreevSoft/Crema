@@ -34,6 +34,7 @@ using System.Xml.Serialization;
 using System.ServiceModel;
 using System.Diagnostics;
 using System.Globalization;
+using Ntreev.Library.Extensions;
 
 namespace Ntreev.Crema.ServiceHosts
 {
@@ -51,6 +52,7 @@ namespace Ntreev.Crema.ServiceHosts
         private DescriptorServiceHost descriptorServiceHost;
         private List<ServiceInfo> serviceInfos = new List<ServiceInfo>();
         private Guid token;
+        private int httpPort;
 
         static CremaService()
         {
@@ -79,7 +81,8 @@ namespace Ntreev.Crema.ServiceHosts
                 this.descriptorServiceHost.Open();
                 this.logService.Info(Resources.ServiceStart, nameof(DescriptorServiceHost));
             });
-            this.StartServices();
+            this.StartWcfServices();
+            this.StartHttpServices();
 
             this.OnOpened(EventArgs.Empty);
         }
@@ -87,7 +90,8 @@ namespace Ntreev.Crema.ServiceHosts
         public void Close()
         {
             this.OnClosing(EventArgs.Empty);
-            this.StopServices();
+            this.StopWcfServices();
+            this.StopHttpServices();
             CremaService.Dispatcher.Invoke(() =>
             {
                 this.descriptorServiceHost.Close();
@@ -108,17 +112,29 @@ namespace Ntreev.Crema.ServiceHosts
 
         public void Restart()
         {
-            this.StopServices();
+            this.StopWcfServices();
+            this.StopHttpServices();
             this.cremaHost.Dispatcher.Invoke(() => this.CremaHost.Close(this.token));
             this.cremaHost.SaveConfigs();
             this.token = this.cremaHost.Dispatcher.Invoke(() => this.CremaHost.Open());
-            this.StartServices();
+            this.StartWcfServices();
+            this.StartHttpServices();
         }
 
         public int Port
         {
             get { return this.port; }
             set { this.port = value; }
+        }
+
+
+
+        public bool NoHttpServer { get; set; }
+
+        public int? HttpPort
+        {
+            get => this.httpPort;
+            set => this.httpPort = value ?? AddressUtility.GetDefaultHttpPort(this.port);
         }
 
         public ICremaHost CremaHost
@@ -182,29 +198,42 @@ namespace Ntreev.Crema.ServiceHosts
 
         private void CremaHost_Opened(object sender, EventArgs e)
         {
-            this.StartServices();
+            this.StartWcfServices();
+            this.StartHttpServices();
         }
 
         private void CremaHost_Closing(object sender, EventArgs e)
         {
-            this.StopServices();
+            this.StopWcfServices();
+            this.StopHttpServices();
         }
 
-        private void StartServices()
+        private void StartWcfServices()
         {
             var providers = this.GetService(typeof(IEnumerable<IServiceHostProvider>)) as IEnumerable<IServiceHostProvider>;
             var items = providers.TopologicalSort().ToArray();
-            var port = this.port;
+            var ports = new Dictionary<string, int>();
+            var initPort = this.port;
+            foreach (var schema in providers.Select(o => o.Schema).Distinct())
+            {
+                ports.Add(schema, initPort);
+                initPort += 100;
+            };
             var version = new Version(FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly().Location).ProductVersion);
 
             CremaService.Dispatcher.Invoke(() =>
             {
                 if (Environment.OSVersion.Platform == PlatformID.Unix)
-                    port += 2;
+                {
+                    ports.ToList().ForEach(o => ports[o.Key] += 2);
+                }
+
                 foreach (var item in items)
                 {
+                    var port = ports[item.Schema];
                     var host = item.CreateInstance(port);
                     host.Open();
+
                     this.hosts.Add(host);
                     this.logService.Info(Resources.ServiceStart_Port, host.GetType().Name, port);
                     this.serviceInfos.Add(new ServiceInfo()
@@ -220,13 +249,30 @@ namespace Ntreev.Crema.ServiceHosts
                         Culture = $"{CultureInfo.CurrentCulture}"
                     });
                     if (Environment.OSVersion.Platform == PlatformID.Unix)
-                        port++;
+                        ports[item.Schema]++;
                 }
                 this.logService.Info(Resources.ServiceStart, cremaString);
             });
         }
 
-        private void StopServices()
+        private void StartHttpServices()
+        {
+            if (this.NoHttpServer) return;
+            if (this.HttpPort == null) throw new NullReferenceException(nameof(this.HttpPort));
+
+            var httpHosts = this.GetService<IEnumerable<IHttpServiceHost>>();
+
+            CremaService.Dispatcher.Invoke(() =>
+            {
+                foreach (var host in httpHosts)
+                {
+                    host.Open(this.HttpPort.Value);
+                    this.logService.Info(Resources.ServiceStart_Port, host.GetType().Name, this.HttpPort);
+                }
+            });
+        }
+
+        private void StopWcfServices()
         {
             CremaService.Dispatcher.Invoke(() =>
             {
@@ -242,6 +288,23 @@ namespace Ntreev.Crema.ServiceHosts
                 this.hosts.Clear();
                 this.serviceInfos.Clear();
                 this.logService.Info(Resources.ServiceStop, cremaString);
+            });
+        }
+
+        private void StopHttpServices()
+        {
+            if (this.NoHttpServer) return;
+            if (this.HttpPort == null) throw new NullReferenceException(nameof(this.HttpPort));
+
+            var httpHosts = this.GetService<IEnumerable<IHttpServiceHost>>();
+
+            CremaService.Dispatcher.Invoke(() =>
+            {
+                foreach (var host in httpHosts)
+                {
+                    host.Close();
+                    this.logService.Info(Resources.ServiceStop, cremaString);
+                }
             });
         }
     }

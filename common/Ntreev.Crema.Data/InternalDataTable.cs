@@ -1131,6 +1131,20 @@ namespace Ntreev.Crema.Data
 
                 dataType.ValidateValue(textValue);
             }
+            else if (e.Column is InternalAttribute attribute)
+            {
+                if (e.Column.ColumnName == nameof(Tags))
+                {
+                    var proposedValue = e.ProposedValue;
+
+                    if (proposedValue == null || proposedValue == DBNull.Value) return;
+
+                    if (TagInfoUtility.Names.Contains(proposedValue) == false)
+                    {
+                        throw new ArgumentException($"태그 이름 '{proposedValue}' 은(는) 지원하지 않는 태그입니다.");
+                    }
+                }
+            }
         }
 
         private void ChildTables_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

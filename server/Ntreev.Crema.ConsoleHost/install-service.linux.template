@@ -1,0 +1,10 @@
+[Unit]
+Description=cremaserver
+
+[Service]
+ExecStart=/usr/bin/mono {pwd}/cremaserver.exe run {repo-dir}
+Restart=always
+SyslogIdentifier=cremaserver
+
+[Install]
+WantedBy=multi-user.target

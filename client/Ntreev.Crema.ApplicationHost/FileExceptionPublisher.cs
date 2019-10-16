@@ -23,6 +23,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ntreev.Crema.Services;
 
 namespace Ntreev.Crema.ApplicationHost
 {
@@ -37,6 +38,8 @@ namespace Ntreev.Crema.ApplicationHost
         protected override void OnPublish(object exceptionObject, string exceptionMessage)
         {
             FileUtility.WriteAllText(exceptionMessage, this.FileName);
+
+            CremaLog.Error(exceptionObject);
         }
     }
 }

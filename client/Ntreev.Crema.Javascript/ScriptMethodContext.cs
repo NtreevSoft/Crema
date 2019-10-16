@@ -54,6 +54,17 @@ namespace Ntreev.Crema.Javascript
             return this.token;
         }
 
+        public string Login(string address, string dataBase, string userID, string password)
+        {
+            if (this.token != null)
+                throw new ArgumentException("이미 로그인되어 있습니다.");
+            var token = this.cremaHost.Dispatcher.Invoke(() => this.cremaHost.Open(address, dataBase, userID, StringUtility.ToSecureString(password)));
+            var authenticator = this.cremaHost.GetService(typeof(Authenticator)) as Authenticator;
+            this.Initialize(authenticator);
+            this.token = $"{token}";
+            return this.token;
+        }
+
         public void Logout(string token)
         {
             if (token == null)

@@ -260,17 +260,33 @@ namespace Ntreev.Crema.Client.Types.Dialogs.ViewModels
         {
             base.OnDeactivate(close);
 
-            if (this.template != null)
+            try
             {
-                await this.template.Dispatcher.InvokeAsync(() =>
+                if (this.template != null)
                 {
-                    this.template.CancelEdit(this.authentication);
-                    this.template.EditEnded -= Template_EditEnded;
-                    this.template.EditCanceled -= Template_EditCanceled;
-                    this.template.Changed -= Template_Changed;
-                });
+                    await this.template.Dispatcher.InvokeAsync(() =>
+                    {
+                        this.template.CancelEdit(this.authentication);
+                    });
+                }
             }
-            this.template = null;
+            catch (Exception e)
+            {
+                CremaLog.Error(e);
+            }
+            finally
+            {
+                if (this.template != null)
+                {
+                    await this.template.Dispatcher.InvokeAsync(() =>
+                    {
+                        this.template.EditEnded -= Template_EditEnded;
+                        this.template.EditCanceled -= Template_EditCanceled;
+                        this.template.Changed -= Template_Changed;
+                        this.template = null;
+                    });
+                }
+            }
         }
 
         protected override void OnCancel()

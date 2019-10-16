@@ -20,6 +20,12 @@
   <wsdl:message name="IDataBaseCollectionService_Subscribe_OutputMessage">
     <wsdl:part name="parameters" element="tns:SubscribeResponse" />
   </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_SubscribeDataBase_InputMessage">
+    <wsdl:part name="parameters" element="tns:SubscribeDataBase" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseCollectionService_SubscribeDataBase_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SubscribeDataBaseResponse" />
+  </wsdl:message>
   <wsdl:message name="IDataBaseCollectionService_Unsubscribe_InputMessage">
     <wsdl:part name="parameters" element="tns:Unsubscribe" />
   </wsdl:message>
@@ -190,6 +196,10 @@
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Subscribe">
       <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/Subscribe" message="tns:IDataBaseCollectionService_Subscribe_InputMessage" />
       <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/SubscribeResponse" message="tns:IDataBaseCollectionService_Subscribe_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="SubscribeDataBase">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/SubscribeDataBase" message="tns:IDataBaseCollectionService_SubscribeDataBase_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/SubscribeDataBaseResponse" message="tns:IDataBaseCollectionService_SubscribeDataBase_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Unsubscribe">
       <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseCollectionService/Unsubscribe" message="tns:IDataBaseCollectionService_Unsubscribe_InputMessage" />

@@ -41,6 +41,9 @@ namespace Ntreev.Crema.ServiceHosts.Data
         ResultBase<DataBaseCollectionMetaData> Subscribe(Guid authenticationToken);
 
         [OperationContract]
+        ResultBase<DataBaseCollectionMetaData> SubscribeDataBase(Guid authenticationToken, string dataBase);
+
+        [OperationContract]
         ResultBase Unsubscribe();
 
         [OperationContract]

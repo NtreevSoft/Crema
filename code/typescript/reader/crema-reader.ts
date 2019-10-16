@@ -26,7 +26,7 @@ export class CremaReader {
 
         let stats: fs.Stats = fs.statSync(filename);
         let fd: number = fs.openSync(filename, "r");
-        let buffer: Buffer = new Buffer(stats.size);
+        let buffer: Buffer = Buffer.alloc(stats.size);
 
         fs.readSync(fd, buffer, 0, stats.size, null);
         let reader: BufferReader = new BufferReader(buffer);
@@ -552,9 +552,19 @@ class BinaryRow extends CremaRow {
             } else if (column.dataType === "unsignedInt") {
                 return this._fieldbytes.readUInt32LE(offset);
             } else if (column.dataType === "long") {
-                return this._fieldbytes.readIntLE(offset, 8);
+                let l: number = this._fieldbytes.readInt32LE(offset);
+                let h: number = this._fieldbytes.readInt32LE(offset + 4);
+                let v = l + h * 0x100000000;
+                if (l < 0) {
+                    return v + 0x100000000;
+                } else {
+                    return v;
+                }
             } else if (column.dataType === "unsignedLong") {
-                return this._fieldbytes.readUIntLE(offset, 8);
+                let l: number = this._fieldbytes.readUInt32LE(offset);
+                let h: number = this._fieldbytes.readUInt32LE(offset + 4);
+                let v = l + h * 0x100000000;
+                return v;
             }
             throw new Error(column.dataType);
         }
@@ -708,7 +718,7 @@ class BufferReader {
     }
 
     public readBytes(length: number): Buffer {
-        let buf: Buffer = new Buffer(length);
+        let buf: Buffer = Buffer.alloc(length);
         this.buffer.copy(buf, 0, this.pos, this.pos + length);
         this.pos += length;
         return buf;
@@ -739,15 +749,23 @@ class BufferReader {
     }
 
     public readInt64(): number {
-        let value: number = this.buffer.readIntLE(this.pos, 8);
+        let l: number = this.buffer.readInt32LE(this.pos);
+        let h: number = this.buffer.readInt32LE(this.pos + 4);
+        let v = l + h * 0x100000000;
         this.pos += 8;
-        return value;
+        if (l < 0) {
+            return v + 0x100000000;
+        } else {
+            return v;
+        }
     }
 
     public readUInt64(): number {
-        let value: number = this.buffer.readUIntLE(this.pos, 8);
+        let l: number = this.buffer.readUInt32LE(this.pos);
+        let h: number = this.buffer.readUInt32LE(this.pos + 4);
+        let v = l + h * 0x100000000;
         this.pos += 8;
-        return value;
+        return v;
     }
 
     public get position(): number {
@@ -765,7 +783,7 @@ class BufferReader {
     }
 
     public readString(length: number): string {
-        let buf: Buffer = new Buffer(length);
+        let buf: Buffer = Buffer.alloc(length);
         for (let i: number = 0; i < length; i++) {
             buf[i] = this.buffer[this.pos + i];
         }

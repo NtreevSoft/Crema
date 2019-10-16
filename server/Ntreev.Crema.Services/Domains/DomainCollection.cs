@@ -162,24 +162,40 @@ namespace Ntreev.Crema.Services.Domains
 
         public void Restore(Authentication authentication, Domain domain)
         {
-            authentication.Sign();
-            var dataBase = this.Context.CremaHost.DataBases[domain.DataBaseID];
-            var categoryName = CategoryName.Create(dataBase.Name, domain.DomainInfo.ItemType);
-            var category = this.Context.Categories.Prepare(categoryName);
-            domain.Category = category;
-            domain.Dispatcher = new CremaDispatcher(domain);
-            domain.Dispatcher.InvokeAsync(() => this.InvokeDomainCreatedEvent(authentication, domain));
+            try
+            {
+                authentication.Sign();
+                var dataBase = this.Context.CremaHost.DataBases[domain.DataBaseID];
+                var categoryName = CategoryName.Create(dataBase.Name, domain.DomainInfo.ItemType);
+                var category = this.Context.Categories.Prepare(categoryName);
+                domain.Category = category;
+                domain.Dispatcher = new CremaDispatcher(domain);
+                domain.Dispatcher.InvokeAsync(() => this.InvokeDomainCreatedEvent(authentication, domain));
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public void Add(Authentication authentication, Domain domain)
         {
-            var dataBase = this.Context.CremaHost.DataBases[domain.DataBaseID];
-            var categoryName = CategoryName.Create(dataBase.Name, domain.DomainInfo.ItemType);
-            var category = this.Context.Categories.Prepare(categoryName);
-            domain.Category = category;
-            domain.Dispatcher = new CremaDispatcher(domain);
-            domain.Logger = new DomainLogger(domain);
-            domain.Dispatcher.InvokeAsync(() => this.InvokeDomainCreatedEvent(authentication, domain));
+            try
+            {
+                var dataBase = this.Context.CremaHost.DataBases[domain.DataBaseID];
+                var categoryName = CategoryName.Create(dataBase.Name, domain.DomainInfo.ItemType);
+                var category = this.Context.Categories.Prepare(categoryName);
+                domain.Category = category;
+                domain.Dispatcher = new CremaDispatcher(domain);
+                domain.Logger = new DomainLogger(domain);
+                domain.Dispatcher.InvokeAsync(() => this.InvokeDomainCreatedEvent(authentication, domain));
+            }
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public bool Contains(Guid domainID)
@@ -190,16 +206,24 @@ namespace Ntreev.Crema.Services.Domains
 
         public DomainMetaData[] GetMetaData(Authentication authentication)
         {
-            this.Dispatcher.VerifyAccess();
-
-            var domains = this.ToArray<Domain>();
-            var metaDataList = new List<DomainMetaData>(domains.Length);
-            foreach (var item in domains)
+            try
             {
-                var metaData = item.Dispatcher.Invoke(() => item.GetMetaData(authentication));
-                metaDataList.Add(metaData);
+                this.Dispatcher.VerifyAccess();
+
+                var domains = this.ToArray<Domain>();
+                var metaDataList = new List<DomainMetaData>(domains.Length);
+                foreach (var item in domains)
+                {
+                    var metaData = item.Dispatcher.Invoke(() => item.GetMetaData(authentication));
+                    metaDataList.Add(metaData);
+                }
+                return metaDataList.ToArray();
             }
-            return metaDataList.ToArray();
+            catch (Exception e)
+            {
+                this.CremaHost.Error(e);
+                throw;
+            }
         }
 
         public Domain this[Guid domainID]

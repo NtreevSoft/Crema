@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Linq;
 using System.Text;
@@ -31,6 +32,7 @@ namespace Ntreev.Crema.ConsoleHost
         static Container()
         {
             container = new CompositionContainer(new DirectoryCatalog(AppDomain.CurrentDomain.BaseDirectory));
+            container.ComposeExportedValue(container);
         }
 
         public static T Get<T>()
