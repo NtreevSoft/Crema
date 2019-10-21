@@ -50,5 +50,7 @@ namespace Ntreev.Crema.Services
         event ItemsEventHandler<IUser> UsersBanChanged;
 
         event EventHandler<MessageEventArgs> MessageReceived;
+
+        event EventHandler<MessageEventArgs2> MessageReceived2;
     }
 }

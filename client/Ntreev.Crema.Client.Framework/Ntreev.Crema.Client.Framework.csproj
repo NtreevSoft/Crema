@@ -66,6 +66,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="ToastNotifications, Version=2.5.1.0, Culture=neutral, PublicKeyToken=e89d9d7314a7c797, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\ToastNotifications.2.5.1\lib\net40\ToastNotifications.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
     <Reference Include="Xceed.Wpf.AvalonDock, Version=3.4.17280.14430, Culture=neutral, PublicKeyToken=ba83ff368b7563c6, processorArchitecture=MSIL">
@@ -78,7 +81,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\Notifications\NotifyMessage.cs" />
+    <Compile Include="Controls\Notifications\NotifyMessageDisplayPart.xaml.cs">
+      <DependentUpon>NotifyMessageDisplayPart.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="IToastMessageService.cs" />
     <Compile Include="ListBoxBase.cs" />
+    <Compile Include="ToastMessageService.cs" />
     <Compile Include="TreeViewBase.cs" />
     <Compile Include="Controls\PropertyListBox.cs" />
     <Compile Include="Converters\IsHighlightedConverter.cs" />
@@ -343,6 +352,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </None>
+    <Page Include="Controls\Notifications\NotifyMessageDisplayPart.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Dialogs\Views\AboutView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

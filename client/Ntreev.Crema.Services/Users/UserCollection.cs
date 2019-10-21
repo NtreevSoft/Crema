@@ -45,6 +45,7 @@ namespace Ntreev.Crema.Services.Users
         private ItemsEventHandler<IUser> usersKicked;
         private ItemsEventHandler<IUser> usersBanChanged;
         private EventHandler<MessageEventArgs> messageReceived;
+        private EventHandler<MessageEventArgs2> messageReceived2;
 
         public UserCollection()
         {
@@ -222,6 +223,25 @@ namespace Ntreev.Crema.Services.Users
             this.CremaHost.Debug(eventLog);
             this.CremaHost.Info(comment);
             this.OnMessageReceived(new MessageEventArgs(authentication, users, message, MessageType.Notification));
+        }
+
+        public void InvokeSendMessageEvent2(Authentication authentication, User user, string message, NotifyMessageType notifyMessageType)
+        {
+            var eventLog = EventLogBuilder.Build(authentication, this, nameof(InvokeSendMessageEvent), user, message);
+            var comment = EventMessageBuilder.SendMessage(authentication, user, message);
+            this.CremaHost.Debug(eventLog);
+            this.CremaHost.Info(comment);
+            this.OnMessageReceived2(new MessageEventArgs2(authentication, new IUser[] { user, }, message, MessageType.None, notifyMessageType));
+        }
+
+        public void InvokeNotifyMessageEvent2(Authentication authentication, User[] users, string message, NotifyMessageType notifyMessageType)
+        {
+            var target = users.Any() == false ? "all users" : string.Join(",", users.Select(item => item.ID).ToArray());
+            var eventLog = EventLogBuilder.Build(authentication, this, nameof(InvokeNotifyMessageEvent), target, message);
+            var comment = EventMessageBuilder.NotifyMessage(authentication, users, message);
+            this.CremaHost.Debug(eventLog);
+            this.CremaHost.Info(comment);
+            this.OnMessageReceived2(new MessageEventArgs2(authentication, users, message, MessageType.Notification, notifyMessageType));
         }
 
         public CremaHost CremaHost
@@ -402,6 +422,20 @@ namespace Ntreev.Crema.Services.Users
             }
         }
 
+        public event EventHandler<MessageEventArgs2> MessageReceived2
+        {
+            add
+            {
+                this.Dispatcher.VerifyAccess();
+                this.messageReceived2 += value;
+            }
+            remove
+            {
+                this.Dispatcher.VerifyAccess();
+                this.messageReceived2 -= value;
+            }
+        }
+
         public new event NotifyCollectionChangedEventHandler CollectionChanged
         {
             add
@@ -469,6 +503,11 @@ namespace Ntreev.Crema.Services.Users
         protected virtual void OnMessageReceived(MessageEventArgs e)
         {
             this.messageReceived?.Invoke(this, e);
+        }
+
+        protected virtual void OnMessageReceived2(MessageEventArgs2 e)
+        {
+            this.messageReceived2?.Invoke(this, e);
         }
 
         private void Sign(Authentication authentication, ResultBase result)

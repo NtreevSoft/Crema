@@ -218,6 +218,9 @@
     <None Include="Service References\UserService\Arrays.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Service References\UserService\Ntreev.Crema.ServiceModel.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\UserService\schemas.ntreev.com.xsd">
       <SubType>Designer</SubType>
     </None>
