@@ -44,6 +44,7 @@ namespace Ntreev.Crema.ServiceHosts.Users
         private readonly IUserContext userContext;
 
         private Authentication authentication;
+        private Version clientVersion;
 
         public UserService(ICremaHost cremaHost, CremaService cremaService)
             : base(cremaHost.GetService(typeof(ILogService)) as ILogService)
@@ -67,10 +68,10 @@ namespace Ntreev.Crema.ServiceHosts.Users
             {
                 result.Value = this.userContext.Dispatcher.Invoke(() =>
                 {
-                    var serverVersion = typeof(ICremaHost).Assembly.GetName().Version;
-                    var clientVersion = new Version(version);
+                    var serverVersion = new Version(AppUtility.ProductVersion);
+                    this.clientVersion = new Version(version);
 
-                    if (clientVersion < serverVersion)
+                    if (this.clientVersion.Major < serverVersion.Major && this.clientVersion.Minor < serverVersion.Minor)
                         throw new ArgumentException(Resources.Exception_LowerVersion, nameof(version));
 
                     this.authentication = this.userContext.Login(userID, ToSecureString(userID, password));
@@ -263,6 +264,14 @@ namespace Ntreev.Crema.ServiceHosts.Users
             });
         }
 
+        public ResultBase NotifyMessage2(string[] userIDs, string message, NotifyMessageType notifyMessageType)
+        {
+            return this.Invoke(() =>
+            {
+                this.userContext.NotifyMessage2(this.authentication, userIDs, message, notifyMessageType);
+            });
+        }
+
         public bool IsAlive()
         {
             if (this.authentication == null)
@@ -309,6 +318,7 @@ namespace Ntreev.Crema.ServiceHosts.Users
             this.userContext.UsersKicked += UserContext_UsersKicked;
             this.userContext.UsersBanChanged += UserContext_UsersBanChanged;
             this.userContext.MessageReceived += UserContext_MessageReceived;
+            this.userContext.MessageReceived2 += UserContext_MessageReceived2;
 
             this.logService.Debug($"[{this.OwnerID}] {nameof(UserService)} {nameof(AttachEventHandlers)}");
         }
@@ -328,6 +338,7 @@ namespace Ntreev.Crema.ServiceHosts.Users
             this.userContext.UsersKicked -= UserContext_UsersKicked;
             this.userContext.UsersBanChanged -= UserContext_UsersBanChanged;
             this.userContext.MessageReceived -= UserContext_MessageReceived;
+            this.userContext.MessageReceived2 -= UserContext_MessageReceived2;
 
             this.logService.Debug($"[{this.OwnerID}] {nameof(UserService)} {nameof(DetachEventHandlers)}");
         }
@@ -400,6 +411,29 @@ namespace Ntreev.Crema.ServiceHosts.Users
             var messageType = e.MessageType;
 
             this.InvokeEvent(userID, exceptionUserID, () => this.Callback.OnMessageReceived(signatureDate, userIDs, message, messageType));
+        }
+
+        private void UserContext_MessageReceived2(object sender, MessageEventArgs2 e)
+        {
+            var userID = this.authentication.ID;
+            var exceptionUserID = e.UserID;
+            var signatureDate = e.SignatureDate;
+            var userIDs = e.Items.Select(item => item.ID).ToArray();
+            var message = e.Message;
+            var messageType = e.MessageType;
+            var notifyMessageType = e.NotifyMessageType;
+
+            this.InvokeEvent(userID, exceptionUserID, () =>
+            {
+                if (notifyMessageType == NotifyMessageType.Toast && CremaFeatures.SupportsToastMessage(this.clientVersion))
+                {
+                    this.Callback.OnMessageReceived2(signatureDate, userIDs, message, messageType, notifyMessageType);
+                }
+                else
+                {
+                    this.Callback.OnMessageReceived(signatureDate, userIDs, message, messageType);
+                }
+            });
         }
 
         private void UserContext_UsersLoggedIn(object sender, Services.ItemsEventArgs<IUser> e)

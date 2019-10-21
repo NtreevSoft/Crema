@@ -15,19 +15,43 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using Ntreev.Crema.ServiceModel;
+using Ntreev.Library;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Requests.Commands
+namespace Ntreev.Crema.Services
 {
-    public class NotifyRequest
+    public class MessageEventArgs2 : ItemsEventArgs<IUser>
     {
-        [Required]
-        public string Message { get; set; }
+        private readonly string message;
+        private readonly MessageType messageType;
+        private readonly NotifyMessageType notifyMessageType;
 
-        [Required]
-        [DefaultValue(NotifyMessageType.Modal)]
-        public NotifyMessageType Type { get; set; } = NotifyMessageType.Modal;
+        public MessageEventArgs2(Authentication authentication, IUser[] users, string message, MessageType messageType, NotifyMessageType notifyMessageType)
+            : base(authentication, users)
+        {
+            this.message = message;
+            this.messageType = messageType;
+            this.notifyMessageType = notifyMessageType;
+        }
+
+        public string Message
+        {
+            get { return this.message; }
+        }
+
+        public MessageType MessageType
+        {
+            get { return this.messageType; }
+        }
+
+        public NotifyMessageType NotifyMessageType
+        {
+            get { return this.notifyMessageType; }
+        }
     }
 }

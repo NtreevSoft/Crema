@@ -113,6 +113,11 @@ namespace Ntreev.Crema.Services.Users
             throw new NotImplementedException();
         }
 
+        public void OnMessageReceived2(SignatureDate signatureDate, string[] userIDs, string message, MessageType messageType, NotifyMessageType nofiMessageType)
+        {
+            throw new NotImplementedException();
+        }
+
         bool IUserServiceCallback.OnPing()
         {
             throw new NotImplementedException();
