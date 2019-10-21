@@ -47,6 +47,7 @@ namespace Ntreev.Crema.Services.Users
         private ItemsDeletedEventHandler<IUserItem> itemsDeleted;
         private ItemsEventHandler<IUserItem> itemsChanged;
         private EventHandler<MessageEventArgs> messageReceived;
+        private EventHandler<MessageEventArgs2> messageReceived2;
         private ItemsEventHandler<AuthenticationInfo> usersLoggedIn;
         private ItemsEventHandler<AuthenticationInfo> usersLoggedOut;
         private ItemsEventHandler<IUser> usersKicked;
@@ -68,7 +69,7 @@ namespace Ntreev.Crema.Services.Users
                 {
                     service.Faulted += Service_Faulted;
                 }
-                var version = typeof(CremaHost).Assembly.GetName().Version;
+                var version = AppUtility.ProductVersion;
                 try
                 {
                     var result = this.service.Subscribe(userID, UserContext.Encrypt(userID, password), $"{version}", $"{Environment.OSVersion.Platform}", $"{CultureInfo.CurrentCulture}");
@@ -95,6 +96,7 @@ namespace Ntreev.Crema.Services.Users
             this.authenticationToken = metaData.AuthenticationToken;
             this.Initialize(metaData);
             this.Items.MessageReceived += Users_MessageReceived;
+            this.Items.MessageReceived2 += Users_MessageReceived2;
             this.Items.UsersLoggedIn += Users_UsersLoggedIn;
             this.Items.UsersLoggedOut += Users_UsersLoggedOut;
             this.Items.UsersKicked += Users_UsersKicked;
@@ -239,6 +241,16 @@ namespace Ntreev.Crema.Services.Users
             this.Users.InvokeNotifyMessageEvent(authentication, users, message);
         }
 
+        public void NotifyMessage2(Authentication authentication, string[] userIDs, string message, NotifyMessageType notifyMessageType)
+        {
+            this.Dispatcher.VerifyAccess();
+            this.CremaHost.DebugMethod(authentication, this, nameof(NotifyMessage), this, userIDs, message);
+            var result = this.service.NotifyMessage(userIDs, message);
+            result.Validate(authentication);
+            var users = userIDs == null ? new User[] { } : userIDs.Select(item => this.Users[item]).ToArray();
+            this.Users.InvokeNotifyMessageEvent2(authentication, users, message, notifyMessageType);
+        }
+
         public void Close(CloseInfo closeInfo)
         {
             this.serviceDispatcher?.Invoke(() =>
@@ -379,6 +391,20 @@ namespace Ntreev.Crema.Services.Users
             {
                 this.Dispatcher.VerifyAccess();
                 this.messageReceived -= value;
+            }
+        }
+
+        public event EventHandler<MessageEventArgs2> MessageReceived2
+        {
+            add
+            {
+                this.Dispatcher.VerifyAccess();
+                this.messageReceived2 += value;
+            }
+            remove
+            {
+                this.Dispatcher.VerifyAccess();
+                this.messageReceived2 -= value;
             }
         }
 
@@ -551,6 +577,11 @@ namespace Ntreev.Crema.Services.Users
         private void Users_MessageReceived(object sender, MessageEventArgs e)
         {
             this.messageReceived?.Invoke(this, e);
+        }
+
+        private void Users_MessageReceived2(object sender, MessageEventArgs2 e)
+        {
+            this.messageReceived2?.Invoke(this, e);
         }
 
         private void Users_UsersLoggedIn(object sender, ItemsEventArgs<AuthenticationInfo> e)
@@ -980,6 +1011,32 @@ namespace Ntreev.Crema.Services.Users
                         users[i] = user;
                     }
                     this.Users.InvokeNotifyMessageEvent(authentication, users, message);
+                }
+            }, nameof(IUserServiceCallback.OnMessageReceived));
+        }
+
+        void IUserServiceCallback.OnMessageReceived2(SignatureDate signatureDate, string[] userIDs, string message, MessageType messageType, NotifyMessageType nofiMessageType)
+        {
+            this.InvokeAsync(() =>
+            {
+                var authentication = this.Authenticate(signatureDate);
+                if (messageType == MessageType.None)
+                {
+                    foreach (var item in userIDs)
+                    {
+                        var user = this.Users[item];
+                        this.Users.InvokeSendMessageEvent2(authentication, user, message, nofiMessageType);
+                    }
+                }
+                else if (messageType == MessageType.Notification)
+                {
+                    var users = new User[userIDs.Length];
+                    for (var i = 0; i < userIDs.Length; i++)
+                    {
+                        var user = this.Users[userIDs[i]];
+                        users[i] = user;
+                    }
+                    this.Users.InvokeNotifyMessageEvent2(authentication, users, message, nofiMessageType);
                 }
             }, nameof(IUserServiceCallback.OnMessageReceived));
         }

@@ -58,7 +58,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
             var authentication = this.Authentication;
             this.userContext.Dispatcher.Invoke(() =>
             {
-                this.userContext.NotifyMessage(authentication, request.Message);
+                this.userContext.NotifyMessage2(authentication, request.Message, request.Type);
             });
         }
 

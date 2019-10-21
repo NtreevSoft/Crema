@@ -48,6 +48,7 @@ namespace Ntreev.Crema.Services.Users
         private ItemsEventHandler<IUserAuthentication> userAuthenticationKicked;
         private ItemsEventHandler<IUser> usersBanChanged;
         private EventHandler<MessageEventArgs> messageReceived;
+        private EventHandler<MessageEventArgs2> messageReceived2;
 
         public UserCollection()
         {
@@ -441,6 +442,16 @@ namespace Ntreev.Crema.Services.Users
             this.OnMessageReceived(new MessageEventArgs(authentication, users, message, MessageType.Notification));
         }
 
+        public void InvokeNotifyMessageEvent2(Authentication authentication, User[] users, string message, NotifyMessageType notifyMessageType)
+        {
+            var target = users.Any() == false ? "all users" : string.Join(",", users.Select(item => item.ID).ToArray());
+            var eventLog = EventLogBuilder.Build(authentication, this, nameof(InvokeNotifyMessageEvent), target, message);
+            var comment = EventMessageBuilder.NotifyMessage(authentication, users, message);
+            this.CremaHost.Debug(eventLog);
+            this.CremaHost.Info(comment);
+            this.OnMessageReceived2(new MessageEventArgs2(authentication, users, message, MessageType.Notification, notifyMessageType));
+        }
+
         public RepositoryHost Repository
         {
             get { return this.Context.Repository; }
@@ -633,6 +644,20 @@ namespace Ntreev.Crema.Services.Users
             }
         }
 
+        public event EventHandler<MessageEventArgs2> MessageReceived2
+        {
+            add
+            {
+                this.Dispatcher.VerifyAccess();
+                this.messageReceived2 += value;
+            }
+            remove
+            {
+                this.Dispatcher.VerifyAccess();
+                this.messageReceived2 -= value;
+            }
+        }
+
         public new event NotifyCollectionChangedEventHandler CollectionChanged
         {
             add
@@ -705,6 +730,11 @@ namespace Ntreev.Crema.Services.Users
         protected virtual void OnMessageReceived(MessageEventArgs e)
         {
             this.messageReceived?.Invoke(this, e);
+        }
+
+        protected virtual void OnMessageReceived2(MessageEventArgs2 e)
+        {
+            this.messageReceived2?.Invoke(this, e);
         }
 
         private void ValidateUserCreate(Authentication authentication, string userID, string categoryPath, SecureString password)

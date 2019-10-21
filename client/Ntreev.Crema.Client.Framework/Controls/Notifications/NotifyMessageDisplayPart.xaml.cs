@@ -16,43 +16,37 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using Ntreev.Library.ObjectModel;
-using Ntreev.Crema.ServiceModel;
 using System.Collections.Generic;
-using System.Collections.Specialized;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using ToastNotifications.Core;
 
-namespace Ntreev.Crema.Services
+namespace Ntreev.Crema.Client.Framework.Controls.Notifications
 {
-    public interface IUserCollection : IReadOnlyCollection<IUser>, IEnumerable<IUser>, INotifyCollectionChanged, IServiceProvider, IDispatcherObject
+    /// <summary>
+    /// ToastInformationMessage.xaml에 대한 상호 작용 논리
+    /// </summary>
+    public partial class NotifyMessageDisplayPart : NotificationDisplayPart
     {
-        bool Contains(string userID);
+        public NotifyMessageDisplayPart(NotifyMessage notifyMessage)
+        {
+            InitializeComponent();
+            Bind(notifyMessage);
+        }
 
-        IUser this[string userID] { get; }
-
-        event ItemsCreatedEventHandler<IUser> UsersCreated;
-
-        event ItemsMovedEventHandler<IUser> UsersMoved;
-
-        event ItemsRenamedEventHandler<IUser> UsersRenamed;
-
-        event ItemsDeletedEventHandler<IUser> UsersDeleted;
-
-        event ItemsEventHandler<IUser> UsersStateChanged;
-
-        event ItemsEventHandler<IUser> UsersChanged;
-
-        event ItemsEventHandler<AuthenticationInfo> UsersLoggedIn;
-
-        event ItemsEventHandler<AuthenticationInfo> UsersLoggedOut;
-
-        event ItemsEventHandler<IUser> UsersKicked;
-
-        event ItemsEventHandler<IUserAuthentication> UserAuthenticationsKicked;
-
-        event ItemsEventHandler<IUser> UsersBanChanged;
-
-        event EventHandler<MessageEventArgs> MessageReceived;
-
-        event EventHandler<MessageEventArgs2> MessageReceived2;
+        private void OnClick(object sender, RoutedEventArgs e)
+        {
+            Notification.Close();
+        }
     }
 }

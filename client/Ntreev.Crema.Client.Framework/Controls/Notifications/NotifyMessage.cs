@@ -16,43 +16,43 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using Ntreev.Library.ObjectModel;
-using Ntreev.Crema.ServiceModel;
 using System.Collections.Generic;
-using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading.Tasks;
+using ToastNotifications.Core;
 
-namespace Ntreev.Crema.Services
+namespace Ntreev.Crema.Client.Framework.Controls.Notifications
 {
-    public interface IUserCollection : IReadOnlyCollection<IUser>, IEnumerable<IUser>, INotifyCollectionChanged, IServiceProvider, IDispatcherObject
+    public class NotifyMessage : NotificationBase, INotifyPropertyChanged
     {
-        bool Contains(string userID);
+        public NotifyMessage(string message, string title, MessageOptions options) : base(message, options)
+        {
+            Title = title;
+            this.DisplayPart = new NotifyMessageDisplayPart(this);
+        }
 
-        IUser this[string userID] { get; }
+        private string title;
 
-        event ItemsCreatedEventHandler<IUser> UsersCreated;
+        public string Title
+        {
+            get => this.title;
+            set
+            {
+                this.title = value;
+                OnPropertyChanged();
+            }
+        }
 
-        event ItemsMovedEventHandler<IUser> UsersMoved;
+        public override NotificationDisplayPart DisplayPart { get; }
 
-        event ItemsRenamedEventHandler<IUser> UsersRenamed;
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        event ItemsDeletedEventHandler<IUser> UsersDeleted;
-
-        event ItemsEventHandler<IUser> UsersStateChanged;
-
-        event ItemsEventHandler<IUser> UsersChanged;
-
-        event ItemsEventHandler<AuthenticationInfo> UsersLoggedIn;
-
-        event ItemsEventHandler<AuthenticationInfo> UsersLoggedOut;
-
-        event ItemsEventHandler<IUser> UsersKicked;
-
-        event ItemsEventHandler<IUserAuthentication> UserAuthenticationsKicked;
-
-        event ItemsEventHandler<IUser> UsersBanChanged;
-
-        event EventHandler<MessageEventArgs> MessageReceived;
-
-        event EventHandler<MessageEventArgs2> MessageReceived2;
+        protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }
