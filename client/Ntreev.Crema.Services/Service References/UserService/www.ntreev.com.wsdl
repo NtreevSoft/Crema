@@ -6,6 +6,7 @@
       <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
       <xsd:import namespace="http://schemas.ntreev.com" />
       <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/Ntreev.Crema.ServiceModel" />
       <xsd:import namespace="http://schemas.datacontract.org/2004/07/System" />
     </xsd:schema>
   </wsdl:types>
@@ -105,6 +106,12 @@
   <wsdl:message name="IUserService_NotifyMessage_OutputMessage">
     <wsdl:part name="parameters" element="tns:NotifyMessageResponse" />
   </wsdl:message>
+  <wsdl:message name="IUserService_NotifyMessage2_InputMessage">
+    <wsdl:part name="parameters" element="tns:NotifyMessage2" />
+  </wsdl:message>
+  <wsdl:message name="IUserService_NotifyMessage2_OutputMessage">
+    <wsdl:part name="parameters" element="tns:NotifyMessage2Response" />
+  </wsdl:message>
   <wsdl:message name="IUserService_IsAlive_InputMessage">
     <wsdl:part name="parameters" element="tns:IsAlive" />
   </wsdl:message>
@@ -149,6 +156,9 @@
   </wsdl:message>
   <wsdl:message name="IUserService_OnMessageReceived_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:OnMessageReceived" />
+  </wsdl:message>
+  <wsdl:message name="IUserService_OnMessageReceived2_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnMessageReceived2" />
   </wsdl:message>
   <wsdl:message name="IUserService_OnPing_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:OnPing" />
@@ -221,6 +231,10 @@
       <wsdl:input wsaw:Action="http://www.ntreev.com/IUserService/NotifyMessage" message="tns:IUserService_NotifyMessage_InputMessage" />
       <wsdl:output wsaw:Action="http://www.ntreev.com/IUserService/NotifyMessageResponse" message="tns:IUserService_NotifyMessage_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="NotifyMessage2">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IUserService/NotifyMessage2" message="tns:IUserService_NotifyMessage2_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IUserService/NotifyMessage2Response" message="tns:IUserService_NotifyMessage2_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="IsAlive">
       <wsdl:input wsaw:Action="http://www.ntreev.com/IUserService/IsAlive" message="tns:IUserService_IsAlive_InputMessage" />
       <wsdl:output wsaw:Action="http://www.ntreev.com/IUserService/IsAliveResponse" message="tns:IUserService_IsAlive_OutputMessage" />
@@ -263,6 +277,9 @@
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnMessageReceived">
       <wsdl:output wsaw:Action="http://www.ntreev.com/IUserService/OnMessageReceived" message="tns:IUserService_OnMessageReceived_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnMessageReceived2">
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IUserService/OnMessageReceived2" message="tns:IUserService_OnMessageReceived2_OutputCallbackMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnPing">
       <wsdl:output wsaw:Action="http://www.ntreev.com/IUserService/OnPing" message="tns:IUserService_OnPing_OutputCallbackMessage" />

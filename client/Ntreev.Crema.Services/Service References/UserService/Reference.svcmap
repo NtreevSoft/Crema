@@ -27,6 +27,7 @@
     <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="74540c58-37ed-4d35-81e2-e22ac2dc530c" SourceId="1" SourceUrl="net.tcp://localhost:4004/UserService/mex" />
     <MetadataFile FileName="schemas.ntreev.com.xsd" MetadataType="Schema" ID="c48c68c6-ce59-41e5-a8c4-36e7f245d723" SourceId="1" SourceUrl="net.tcp://localhost:4004/UserService/mex" />
     <MetadataFile FileName="Arrays.xsd" MetadataType="Schema" ID="320867c9-1efd-4897-ae8a-e49e698aa433" SourceId="1" SourceUrl="net.tcp://localhost:4004/UserService/mex" />
+    <MetadataFile FileName="Ntreev.Crema.ServiceModel.xsd" MetadataType="Schema" ID="1d8b9a64-7a9a-4159-ae5b-74f70ff456eb" SourceId="1" SourceUrl="net.tcp://localhost:4004/UserService/mex" />
     <MetadataFile FileName="System.xsd" MetadataType="Schema" ID="b7f9c098-f9bf-4d38-8184-b639a3e0d8af" SourceId="1" SourceUrl="net.tcp://localhost:4004/UserService/mex" />
   </Metadata>
   <Extensions>

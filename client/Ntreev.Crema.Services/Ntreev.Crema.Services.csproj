@@ -220,6 +220,9 @@
     <None Include="Service References\UserService\Arrays.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Service References\UserService\Ntreev.Crema.ServiceModel.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\UserService\schemas.ntreev.com.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -324,6 +327,7 @@
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="..\..\common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems" Label="Shared" />
   <Import Project="..\..\common\Ntreev.Crema.Services.Sharing\Ntreev.Crema.Services.Sharing.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -30,6 +30,8 @@ namespace Ntreev.Crema.Services
 
         void NotifyMessage(Authentication authentication, string[] userIDs, string message);
 
+        void NotifyMessage2(Authentication authentication, string[] userIDs, string message, NotifyMessageType notifyMessageType);
+
         bool Contains(string itemPath);
 
         IUserCollection Users { get; }
@@ -62,6 +64,8 @@ namespace Ntreev.Crema.Services
 
         event EventHandler<MessageEventArgs> MessageReceived;
 
+        event EventHandler<MessageEventArgs2> MessageReceived2;
+
 #if SERVER
         Authentication Login(string userID, SecureString password);
 
@@ -80,6 +84,11 @@ namespace Ntreev.Crema.Services
         public static void NotifyMessage(this IUserContext userContext, Authentication authentication, string message)
         {
             userContext.NotifyMessage(authentication, new string[] { }, message);
+        }
+
+        public static void NotifyMessage2(this IUserContext userContext, Authentication authentication, string message, NotifyMessageType type)
+        {
+            userContext.NotifyMessage2(authentication, new string[] { }, message, type);
         }
     }
 }
