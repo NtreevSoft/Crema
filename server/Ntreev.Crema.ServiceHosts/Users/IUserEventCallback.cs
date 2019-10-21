@@ -68,6 +68,9 @@ namespace Ntreev.Crema.ServiceHosts.Users
         [OperationContract(IsOneWay = true)]
         void OnMessageReceived(SignatureDate signatureDate, string[] userIDs, string message, MessageType messageType);
 
+        [OperationContract(IsOneWay = true)]
+        void OnMessageReceived2(SignatureDate signatureDate, string[] userIDs, string message, MessageType messageType, NotifyMessageType nofiMessageType);
+
         [OperationContract]
         bool OnPing();
     }

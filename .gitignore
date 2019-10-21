@@ -26,6 +26,7 @@ TestResults/
 /bin/git/
 /repo
 /.vs
+/.idea
 /UpgradeLog3.htm
 /vscode/typescript/sample/*.js
 /vscode/typescript/sample/*.js.map

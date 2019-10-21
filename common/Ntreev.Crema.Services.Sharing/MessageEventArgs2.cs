@@ -15,44 +15,43 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using Ntreev.Library.ObjectModel;
 using Ntreev.Crema.ServiceModel;
+using Ntreev.Library;
+using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Services
 {
-    public interface IUserCollection : IReadOnlyCollection<IUser>, IEnumerable<IUser>, INotifyCollectionChanged, IServiceProvider, IDispatcherObject
+    public class MessageEventArgs2 : ItemsEventArgs<IUser>
     {
-        bool Contains(string userID);
+        private readonly string message;
+        private readonly MessageType messageType;
+        private readonly NotifyMessageType notifyMessageType;
 
-        IUser this[string userID] { get; }
+        public MessageEventArgs2(Authentication authentication, IUser[] users, string message, MessageType messageType, NotifyMessageType notifyMessageType)
+            : base(authentication, users)
+        {
+            this.message = message;
+            this.messageType = messageType;
+            this.notifyMessageType = notifyMessageType;
+        }
 
-        event ItemsCreatedEventHandler<IUser> UsersCreated;
+        public string Message
+        {
+            get { return this.message; }
+        }
 
-        event ItemsMovedEventHandler<IUser> UsersMoved;
+        public MessageType MessageType
+        {
+            get { return this.messageType; }
+        }
 
-        event ItemsRenamedEventHandler<IUser> UsersRenamed;
-
-        event ItemsDeletedEventHandler<IUser> UsersDeleted;
-
-        event ItemsEventHandler<IUser> UsersStateChanged;
-
-        event ItemsEventHandler<IUser> UsersChanged;
-
-        event ItemsEventHandler<AuthenticationInfo> UsersLoggedIn;
-
-        event ItemsEventHandler<AuthenticationInfo> UsersLoggedOut;
-
-        event ItemsEventHandler<IUser> UsersKicked;
-
-        event ItemsEventHandler<IUserAuthentication> UserAuthenticationsKicked;
-
-        event ItemsEventHandler<IUser> UsersBanChanged;
-
-        event EventHandler<MessageEventArgs> MessageReceived;
-
-        event EventHandler<MessageEventArgs2> MessageReceived2;
+        public NotifyMessageType NotifyMessageType
+        {
+            get { return this.notifyMessageType; }
+        }
     }
 }

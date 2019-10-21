@@ -16,43 +16,29 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using Ntreev.Library.ObjectModel;
-using Ntreev.Crema.ServiceModel;
 using System.Collections.Generic;
-using System.Collections.Specialized;
+using System.Text;
 
 namespace Ntreev.Crema.Services
 {
-    public interface IUserCollection : IReadOnlyCollection<IUser>, IEnumerable<IUser>, INotifyCollectionChanged, IServiceProvider, IDispatcherObject
+    public static class CremaFeatures
     {
-        bool Contains(string userID);
+        public static bool SupportsToastMessage(Version clientVersion)
+        {
+            if (clientVersion.Major == 3 && clientVersion.Minor == 6)
+            {
+                return clientVersion > Version.Parse("3.6.19273.1701");
+            }
+            else if (clientVersion.Major == 3 && clientVersion.Minor == 7)
+            {
+                return clientVersion > Version.Parse("3.7.19273.1701");
+            }
+            else if (clientVersion.Major == 3 && clientVersion.Minor > 7)
+            {
+                return true;
+            }
 
-        IUser this[string userID] { get; }
-
-        event ItemsCreatedEventHandler<IUser> UsersCreated;
-
-        event ItemsMovedEventHandler<IUser> UsersMoved;
-
-        event ItemsRenamedEventHandler<IUser> UsersRenamed;
-
-        event ItemsDeletedEventHandler<IUser> UsersDeleted;
-
-        event ItemsEventHandler<IUser> UsersStateChanged;
-
-        event ItemsEventHandler<IUser> UsersChanged;
-
-        event ItemsEventHandler<AuthenticationInfo> UsersLoggedIn;
-
-        event ItemsEventHandler<AuthenticationInfo> UsersLoggedOut;
-
-        event ItemsEventHandler<IUser> UsersKicked;
-
-        event ItemsEventHandler<IUserAuthentication> UserAuthenticationsKicked;
-
-        event ItemsEventHandler<IUser> UsersBanChanged;
-
-        event EventHandler<MessageEventArgs> MessageReceived;
-
-        event EventHandler<MessageEventArgs2> MessageReceived2;
+            return false;
+        }
     }
 }

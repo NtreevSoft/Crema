@@ -80,6 +80,9 @@ namespace Ntreev.Crema.ServiceHosts.Users
         ResultBase NotifyMessage(string[] userIDs, string message);
 
         [OperationContract]
+        ResultBase NotifyMessage2(string[] userIDs, string message, NotifyMessageType notifyMessageType);
+
+        [OperationContract]
         bool IsAlive();
     }
 }
