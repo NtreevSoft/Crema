@@ -44,6 +44,7 @@ namespace Ntreev.Crema.Client.Users.BrowserItems.ViewModels
     class UserBrowserViewModel : TreeViewBase, IBrowserItem
     {
         private readonly ICremaAppHost cremaAppHost;
+        private readonly IToastMessageService toastMessageService;
 
         [Import]
         private Authenticator authenticator = null;
@@ -60,9 +61,10 @@ namespace Ntreev.Crema.Client.Users.BrowserItems.ViewModels
         private ICompositionService compositionService = null;
 
         [ImportingConstructor]
-        public UserBrowserViewModel(ICremaAppHost cremaAppHost)
+        public UserBrowserViewModel(ICremaAppHost cremaAppHost, IToastMessageService toastMessageService)
         {
             this.cremaAppHost = cremaAppHost;
+            this.toastMessageService = toastMessageService;
             this.cremaAppHost.Opened += CremaAppHost_Opened;
             this.cremaAppHost.Closed += CremaAppHost_Closed;
             this.deleteCommand = new DelegateCommand(this.Delete_Execute, this.Delete_CanExecute);
@@ -164,7 +166,7 @@ namespace Ntreev.Crema.Client.Users.BrowserItems.ViewModels
                     {
                         var title = string.Format(Resources.Title_AdministratorMessage_Format, sendUserID);
                         this.flashService?.Flash();
-                        AppMessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Information);
+                        this.toastMessageService.Show(message, title);
                     });
                 }
             }
