@@ -88,6 +88,7 @@
     <Compile Include="Apis\Infrastructures\ActionResults\EncodedFilesResult.cs" />
     <Compile Include="Apis\Infrastructures\ActionResults\FileResult.cs" />
     <Compile Include="Apis\Infrastructures\ActionResults\ZipFileResult.cs" />
+    <Compile Include="Apis\Infrastructures\JsonConverters\FloatPointFormattingConverter.cs" />
     <Compile Include="Apis\Swagger\AddCremaTokenHeaderOperationFilter.cs" />
     <Compile Include="Apis\Swagger\DefaultValueSchemaFilter.cs" />
     <Compile Include="Apis\Swagger\SwaggerFileResponseAttribute.cs" />
@@ -216,6 +217,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Apis\Swagger\SwaggerAuthorization.js" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="..\..\common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

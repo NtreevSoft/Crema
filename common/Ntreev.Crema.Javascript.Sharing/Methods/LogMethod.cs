@@ -31,6 +31,21 @@ namespace Ntreev.Crema.Javascript.Methods
     [PartCreationPolicy(CreationPolicy.NonShared)]
     class LogMethod : ScriptMethodBase
     {
+        private static readonly JsonSerializerSettings settings = new JsonSerializerSettings
+        {
+            Converters = new JsonConverter[]
+            {
+                new FloatPointFormattingConverter()
+            },
+            Formatting = Formatting.Indented
+        };
+
+        private static readonly JsonSerializerSettings expandoObjectSettings = new JsonSerializerSettings
+        {
+            Converters = settings.Converters.Concat(new [] {new ExpandoObjectConverter() }).ToList(),
+            Formatting = settings.Formatting,
+        };
+
         public LogMethod()
         {
 
@@ -45,17 +60,17 @@ namespace Ntreev.Crema.Javascript.Methods
         {
             if (value != null && ScriptContextBase.IsDictionaryType(value.GetType()))
             {
-                var text = JsonConvert.SerializeObject(value, Formatting.Indented);
+                var text = JsonConvert.SerializeObject(value, settings);
                 this.Context.Out.WriteLine(text);
             }
             else if (value is System.Dynamic.ExpandoObject exobj)
             {
-                var text = JsonConvert.SerializeObject(exobj, Formatting.Indented, new ExpandoObjectConverter());
+                var text = JsonConvert.SerializeObject(exobj, expandoObjectSettings);
                 this.Context.Out.WriteLine(text);
             }
             else if (value != null && value.GetType().IsArray)
             {
-                var text = JsonConvert.SerializeObject(value, Formatting.Indented);
+                var text = JsonConvert.SerializeObject(value, settings);
                 this.Context.Out.WriteLine(text);
             }
             else if (value is bool b)
