@@ -263,7 +263,38 @@ namespace Ntreev.Crema.Services
 
         public Authentication Login(string userID, SecureString password)
         {
-            return this.userContext.Dispatcher.Invoke(() => this.userContext.Login(userID, password));
+            this.userContext.Dispatcher.Invoke(() => this.userContext.BeforeLogin(userID, password));
+            var authenticationToken = GetAuthenticationToken(userID);
+            return this.userContext.Dispatcher.Invoke(() => this.userContext.Login(userID, password, authenticationToken));
+        }
+
+        public Guid GetAuthenticationToken(string userID)
+        {
+            var contextUser = userContext.Users[userID];
+            var authenticationToken = domainContext.Dispatcher.Invoke(() =>
+            {
+                var domainContextMetaData = domainContext.GetMetaData(Authentication.System);
+                var containsDomain = domainContextMetaData.Domains.Any(metaData =>
+                {
+                    return metaData.DomainInfo.ItemType != "TableContent" && metaData.Users.Any(user => user.DomainUserInfo.UserID == userID);
+                });
+
+                if (containsDomain)
+                {
+                    foreach (var domainMetaData in domainContextMetaData.Domains)
+                    {
+                        if (domainMetaData.Users.Any(user => user.DomainUserInfo.UserID == userID) == false) continue;
+
+                        var domainUserInfo = domainMetaData.Users.First(user => user.DomainUserInfo.UserID == userID);
+                        var token = domainUserInfo.DomainUserInfo.Token;
+
+                        return contextUser.Authentications.ContainsKey(token) ? Guid.NewGuid() : token;
+                    }
+                }
+
+                return Guid.NewGuid();
+            });
+            return authenticationToken;
         }
 
         public void Logout(Authentication authentication)

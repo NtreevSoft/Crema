@@ -44,6 +44,8 @@ namespace Ntreev.Crema.Services
 
         void Logout(Authentication authentication);
 
+        Guid GetAuthenticationToken(string userID);
+
         string BasePath { get; }
 
         string RepositoryPath { get; }

@@ -110,7 +110,26 @@ namespace Ntreev.Crema.Services.Users
             }
         }
 
-        public Authentication Login(SecureString password)
+        public void BeforeLogin(SecureString password)
+        {
+            this.Dispatcher.VerifyAccess();
+            this.CremaHost.DebugMethod(Authentication.System, this, nameof(Login), this);
+            this.ValidateLogin(password);
+
+            if (!this.UserInfo.AllowMultiLogin && this.Authentications.Any())
+            {
+                var message = "다른 기기에서 동일한 아이디로 접속하였습니다.";
+                var closeInfo = new CloseInfo() { Reason = CloseReason.Reconnected, Message = message };
+                foreach (var auth in this.Authentications.Values.ToArray())
+                {
+                    auth.Authentication.InvokeExpiredEvent(this.ID, message);
+                    this.Container.InvokeUsersLoggedOutEvent(auth.Authentication, new[] { auth.Authentication.AuthenticationInfo }, closeInfo);
+                }
+                this.Authentications.Clear();
+            }
+        }
+
+        public Authentication Login(SecureString password, Guid token)
         {
             try
             {
@@ -118,20 +137,7 @@ namespace Ntreev.Crema.Services.Users
                 this.CremaHost.DebugMethod(Authentication.System, this, nameof(Login), this);
                 this.ValidateLogin(password);
 
-                if (!this.UserInfo.AllowMultiLogin && this.Authentications.Any())
-                {
-                    var message = "다른 기기에서 동일한 아이디로 접속하였습니다.";
-                    var closeInfo = new CloseInfo() { Reason = CloseReason.Reconnected, Message = message };
-                    foreach (var auth in this.Authentications.Values.ToArray())
-                    {
-                        auth.Authentication.InvokeExpiredEvent(this.ID, message);
-                        this.Container.InvokeUsersLoggedOutEvent(auth.Authentication, new[] { auth.Authentication.AuthenticationInfo }, closeInfo);
-                    }
-                    this.Authentications.Clear();
-
-                }
-
-                var authenticationToken = GetAuthenticationToken();
+                var authenticationToken = token;
 
                 var authentication = new Authentication(new UserAuthenticationProvider(this), authenticationToken);
                 this.Sign(authentication);
@@ -147,35 +153,6 @@ namespace Ntreev.Crema.Services.Users
                 this.CremaHost.Error(e);
                 throw;
             }
-        }
-
-        private Guid GetAuthenticationToken()
-        {
-            var domainContext = this.CremaHost.GetService(typeof(IDomainContext)) as IDomainContext;
-            var userID = this.ID;
-            var authenticationToken = domainContext.Dispatcher.Invoke(() =>
-            {
-                var domainContextMetaData = domainContext.GetMetaData(Authentication.System);
-                var containsDomain = domainContextMetaData.Domains.Any(metaData =>
-                {
-                    return metaData.DomainInfo.ItemType != "TableContent" && metaData.Users.Any(user => user.DomainUserInfo.UserID == userID);
-                });
-                if (containsDomain)
-                {
-                    foreach (var domainMetaData in domainContextMetaData.Domains)
-                    {
-                        if (domainMetaData.Users.Any(user => user.DomainUserInfo.UserID == userID) == false) continue;
-
-                        var domainUserInfo = domainMetaData.Users.First(user => user.DomainUserInfo.UserID == userID);
-                        var token = domainUserInfo.DomainUserInfo.Token;
-
-                        return this.Authentications.ContainsKey(token) ? Guid.NewGuid() : token;
-                    }
-                }
-
-                return Guid.NewGuid();
-            });
-            return authenticationToken;
         }
 
         public void Logout(Authentication authentication)

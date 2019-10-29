@@ -32,6 +32,7 @@ using System.Windows.Threading;
 using System.Security;
 using System.Runtime.InteropServices;
 using Ntreev.Crema.ServiceHosts.Properties;
+using Ntreev.Library.Extensions;
 
 namespace Ntreev.Crema.ServiceHosts.Users
 {
@@ -66,15 +67,19 @@ namespace Ntreev.Crema.ServiceHosts.Users
             var result = new ResultBase<UserContextMetaData>();
             try
             {
+                var serverVersion = new Version(AppUtility.ProductVersion);
+                this.clientVersion = new Version(version);
+
+                if (this.clientVersion.Major < serverVersion.Major && this.clientVersion.Minor < serverVersion.Minor)
+                    throw new ArgumentException(Resources.Exception_LowerVersion, nameof(version));
+
+
+                this.userContext.Dispatcher.Invoke(() => this.userContext.BeforeLogin(userID, ToSecureString(userID, password)));
+                var token = cremaHost.GetAuthenticationToken(userID);
+
                 result.Value = this.userContext.Dispatcher.Invoke(() =>
                 {
-                    var serverVersion = new Version(AppUtility.ProductVersion);
-                    this.clientVersion = new Version(version);
-
-                    if (this.clientVersion.Major < serverVersion.Major && this.clientVersion.Minor < serverVersion.Minor)
-                        throw new ArgumentException(Resources.Exception_LowerVersion, nameof(version));
-
-                    this.authentication = this.userContext.Login(userID, ToSecureString(userID, password));
+                    this.authentication = this.userContext.Login(userID, ToSecureString(userID, password), token);
                     this.authentication.AddRef(this, (a) =>
                     {
                         this.userContext.Dispatcher.Invoke(() => this.userContext.Logout(a));

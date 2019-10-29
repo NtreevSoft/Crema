@@ -9,6 +9,7 @@
     <Import_RootNamespace>Ntreev.Crema.Javascript</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)FloatPointFormattingConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\AddDataBaseEventListenerMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\CremaEventListenerCollection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\DataBaseEventListenerCollection.cs" />

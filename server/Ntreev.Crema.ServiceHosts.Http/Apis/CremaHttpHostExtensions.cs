@@ -23,6 +23,7 @@ using System.Web.Http.ExceptionHandling;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
+using Ntreev.Crema.ServiceHosts.Http.Apis.Infrastructures.JsonConverters;
 using Ntreev.Crema.ServiceHosts.Http.Apis.Swagger;
 using Ntreev.Crema.Services;
 using Swashbuckle.Application;
@@ -41,6 +42,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis
             config.Formatters.Clear();
             config.Formatters.Add(new JsonMediaTypeFormatter());
             config.Formatters.JsonFormatter.SerializerSettings.Converters.Add(new StringEnumConverter(false));
+            config.Formatters.JsonFormatter.SerializerSettings.Converters.Add(new FloatPointFormattingConverter());
 
             return config;
         }

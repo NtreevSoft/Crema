@@ -125,20 +125,17 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
         [Route("tables/{tableName}/info")]
         public GetTableInfoResponse GetTableInfo(string databaseName, string tableName, string tags = null)
         {
-                var table = this.GetTable(databaseName, tableName);
-                return table.Dispatcher.Invoke(() =>
+            var table = this.GetTable(databaseName, tableName);
+            return table.Dispatcher.Invoke(() =>
+            {
+                var tableInfo = table.TableInfo;
+                if (!string.IsNullOrWhiteSpace(tags))
                 {
-                    return table.Dispatcher.Invoke(() =>
-                    {
-                        var tableInfo = table.TableInfo;
-                        if (!string.IsNullOrWhiteSpace(tags))
-                        {
-                            tableInfo = table.TableInfo.Filter((TagInfo)tags);
-                        }
+                    tableInfo = table.TableInfo.Filter((TagInfo)tags);
+                }
 
-                        return GetTableInfoResponse.ConvertFrom(tableInfo);
-                    });
-                });
+                return GetTableInfoResponse.ConvertFrom(tableInfo);
+            });
         }
 
         [HttpPost]
