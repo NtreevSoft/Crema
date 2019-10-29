@@ -60,7 +60,7 @@ namespace Ntreev.Crema.ConsoleHost.Commands.Consoles
         {
             if (this.authentication != null)
                 throw new Exception("이미 로그인되어 있습니다.");
-            this.authentication = this.CremaHost.Login(userID, password);
+            this.authentication = this.CremaHost.Dispatcher.Invoke(() => this.CremaHost.Login(userID, password));
             this.authentication.Expired += (s, e) => this.authentication = null;
             this.Initialize(authentication);
         }

@@ -67,7 +67,7 @@ namespace Ntreev.Crema.Services
         event EventHandler<MessageEventArgs2> MessageReceived2;
 
 #if SERVER
-        void LoginPreprocess(string userID, SecureString password);
+        void BeforeLogin(string userID, SecureString password);
         Authentication Login(string userID, SecureString password, Guid token);
 
         void Logout(Authentication authentication);

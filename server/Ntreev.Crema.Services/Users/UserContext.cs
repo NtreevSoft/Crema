@@ -101,13 +101,22 @@ namespace Ntreev.Crema.Services.Users
             this.OnItemsChanged(new ItemsEventArgs<IUserItem>(authentication, items));
         }
 
-        public Authentication Login(string userID, SecureString password)
+        public void BeforeLogin(string userID, SecureString password)
         {
             this.Dispatcher.VerifyAccess();
             this.ValidateLogin(userID, password);
 
             var user = this.Users[userID];
-            return user.Login(password);
+            user.BeforeLogin(password);
+        }
+
+        public Authentication Login(string userID, SecureString password, Guid token)
+        {
+            this.Dispatcher.VerifyAccess();
+            this.ValidateLogin(userID, password);
+
+            var user = this.Users[userID];
+            return user.Login(password, token);
         }
 
         public void Logout(Authentication authentication)

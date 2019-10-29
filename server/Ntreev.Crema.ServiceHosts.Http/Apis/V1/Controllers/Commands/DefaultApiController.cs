@@ -44,7 +44,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
         [AllowAnonymous]
         public LoginResponse Login([FromBody] LoginRequest request)
         {
-            var authentication = this.cremaHost.Login(request.UserId, request.Password.ToSecureString());
+            var authentication = this.cremaHost.Dispatcher.Invoke(() => this.cremaHost.Login(request.UserId, request.Password.ToSecureString()));
             return new LoginResponse
             {
                 Token = authentication.Token.ToString()
@@ -56,7 +56,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Commands
         [AllowAnonymous]
         public LoginAndLoadEnterDataBaseResponse LoginAndLoadEnterDataBase(string databaseName, [FromBody] LoginRequest request)
         {
-            var authentication = this.cremaHost.Login(request.UserId, request.Password.ToSecureString());
+            var authentication = this.cremaHost.Dispatcher.Invoke(() => this.cremaHost.Login(request.UserId, request.Password.ToSecureString()));
             var database = this.GetDataBase(databaseName);
             var dataBaseStatus = database.Dispatcher.Invoke(() =>
             {
