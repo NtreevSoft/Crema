@@ -48,6 +48,7 @@ namespace Ntreev.Crema.Services.Users
         private ItemsDeletedEventHandler<IUserItem> itemsDeleted;
         private ItemsEventHandler<IUserItem> itemsChanged;
         private EventHandler<MessageEventArgs> messageReceived;
+        private EventHandler<MessageEventArgs2> messageReceived2;
         private ItemsEventHandler<IUser> usersLoggedIn;
         private ItemsEventHandler<IUser> usersLoggedOut;
         private ItemsEventHandler<IUser> usersKicked;
@@ -63,6 +64,7 @@ namespace Ntreev.Crema.Services.Users
             this.dispatcher.Invoke(() =>
             {
                 this.Items.MessageReceived += Users_MessageReceived;
+                this.Items.MessageReceived2 += Users_MessageReceived2;
                 this.Items.UsersLoggedIn += Users_UsersLoggedIn;
                 this.Items.UsersLoggedOut += Users_UsersLoggedOut;
                 this.Items.UsersKicked += Users_UsersKicked;
@@ -121,6 +123,22 @@ namespace Ntreev.Crema.Services.Users
             var users = userIDs == null ? new User[] { } : userIDs.Select(item => this.Users[item]).ToArray();
             authentication.Sign();
             this.Users.InvokeNotifyMessageEvent(authentication, users, message);
+        }
+
+        public void NotifyMessage2(Authentication authentication, string[] userIDs, string message, NotifyMessageType notifyMessageType)
+        {
+            if (notifyMessageType == NotifyMessageType.Modal)
+            {
+                this.NotifyMessage(authentication, userIDs, message);
+                return;
+            }
+
+            this.Dispatcher.VerifyAccess();
+            this.CremaHost.DebugMethod(authentication, this, nameof(NotifyMessage), this, userIDs, message);
+            this.ValidateSendMessage(authentication, userIDs, message);
+            var users = userIDs == null ? new User[] { } : userIDs.Select(item => this.Users[item]).ToArray();
+            authentication.Sign();
+            this.Users.InvokeNotifyMessageEvent2(authentication, users, message, notifyMessageType);
         }
 
         public Authentication Authenticate(Guid authenticationToken)
@@ -489,6 +507,20 @@ namespace Ntreev.Crema.Services.Users
             }
         }
 
+        public event EventHandler<MessageEventArgs2> MessageReceived2
+        {
+            add
+            {
+                this.Dispatcher.VerifyAccess();
+                this.messageReceived2 += value;
+            }
+            remove
+            {
+                this.Dispatcher.VerifyAccess();
+                this.messageReceived2 -= value;
+            }
+        }
+
         public event ItemsEventHandler<IUser> UsersLoggedIn
         {
             add
@@ -616,6 +648,11 @@ namespace Ntreev.Crema.Services.Users
         private void Users_MessageReceived(object sender, MessageEventArgs e)
         {
             this.messageReceived?.Invoke(this, e);
+        }
+
+        private void Users_MessageReceived2(object sender, MessageEventArgs2 e)
+        {
+            this.messageReceived2?.Invoke(this, e);
         }
 
         private void Users_UsersLoggedIn(object sender, ItemsEventArgs<IUser> e)

@@ -27,10 +27,6 @@ namespace Ntreev.Crema.ServiceHosts.Http
         {
             this.server = WebApp.Start($"http://*:{port}", app =>
             {
-                var listener = (OwinHttpListener)app.Properties[typeof(OwinHttpListener).FullName];
-                listener.GetRequestProcessingLimits(out var maxAccepts, out var maxRequests);
-                listener.SetRequestProcessingLimits(maxAccepts, 1);
-
                 var config = new HttpConfiguration();
                 config.ConfigureCrema(this.cremaHost)
                     .ConfigureCremaSwagger();

@@ -103,6 +103,9 @@ namespace Ntreev.Crema.Services.UserService {
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://www.ntreev.com/IUserService/OnMessageReceived")]
         void OnMessageReceived(Ntreev.Library.SignatureDate signatureDate, string[] userIDs, string message, Ntreev.Crema.ServiceModel.MessageType messageType);
         
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://www.ntreev.com/IUserService/OnMessageReceived2")]
+        void OnMessageReceived2(Ntreev.Library.SignatureDate signatureDate, string[] userIDs, string message, Ntreev.Crema.ServiceModel.MessageType messageType, Ntreev.Crema.ServiceModel.NotifyMessageType nofiMessageType);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IUserService/OnPing", ReplyAction="http://www.ntreev.com/IUserService/OnPingResponse")]
         bool OnPing();
     }
