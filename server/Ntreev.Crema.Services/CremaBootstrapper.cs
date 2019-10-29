@@ -331,7 +331,7 @@ namespace Ntreev.Crema.Services
                 catalog.Catalogs.Add(new AssemblyCatalog(item));
             }
 
-            this.container = new CompositionContainer(catalog);
+            this.container = new CompositionContainer(catalog, true);
 
             var batch = new CompositionBatch();
             batch.AddPart(this.settings);
