@@ -187,6 +187,8 @@ namespace Ntreev.Crema.Services.Data
             return result.Value;
         }
 
+        public long Revision => throw new NotSupportedException();
+
         public LogInfo[] GetLog(Authentication authentication)
         {
             this.DataBase.ValidateAsyncBeginInDataBase(authentication);

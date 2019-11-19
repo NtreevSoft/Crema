@@ -54,6 +54,8 @@ namespace Ntreev.Crema.Services
 
         long GetRevision(string path);
 
+        RevisionInfo[] GetRevisionFrom(string path, long revision);
+
         LogInfo[] GetLog(string path, long revision, int count);
 
         Uri GetUri(string path, long revision);

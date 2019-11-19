@@ -136,6 +136,11 @@ namespace Ntreev.Crema.Services
             return this.dispatcher.Invoke(() => this.repository.GetRevision(path));
         }
 
+        public RevisionInfo[] GetRevisionFrom(string path, long revision = -1)
+        {
+            return this.dispatcher.Invoke(() => this.repository.GetRevisionFrom(path, revision));
+        }
+
         public Uri GetUri(string path, long revision)
         {
             return this.dispatcher.Invoke(() => this.repository.GetUri(path, revision));

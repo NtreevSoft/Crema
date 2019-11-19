@@ -284,7 +284,18 @@ namespace Ntreev.Crema.Services.Data
         {
             return this.DataBase.GetService(serviceType);
         }
-        
+
+        public bool IsTypeUsed(string typePath)
+        {
+            foreach (var item in base.TableInfo.Columns)
+            {
+                if (item.DataType == typePath)
+                    return true;
+            }
+
+            return false;
+        }
+
         public TableTemplate Template
         {
             get { return this.template; }
@@ -357,6 +368,15 @@ namespace Ntreev.Crema.Services.Data
             {
                 this.Dispatcher?.VerifyAccess();
                 return base.IsPrivate;
+            }
+        }
+
+        public new long Revision
+        {
+            get
+            {
+                this.Dispatcher?.VerifyAccess();
+                return base.Revision;
             }
         }
 

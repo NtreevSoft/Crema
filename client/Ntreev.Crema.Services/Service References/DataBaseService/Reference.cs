@@ -75,6 +75,9 @@ namespace Ntreev.Crema.Services.DataBaseService {
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/GetTableItemLog", ReplyAction="http://www.ntreev.com/IDataBaseService/GetTableItemLogResponse")]
         Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.LogInfo[]> GetTableItemLog(string itemPath);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/GetTableRevision", ReplyAction="http://www.ntreev.com/IDataBaseService/GetTableRevisionResponse")]
+        Ntreev.Crema.ServiceModel.ResultBase<long> GetTableRevision(string itemPath);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/FindTableItem", ReplyAction="http://www.ntreev.com/IDataBaseService/FindTableItemResponse")]
         Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.FindResultInfo[]> FindTableItem(string itemPath, string text, Ntreev.Crema.ServiceModel.FindOptions options);
         
@@ -170,6 +173,9 @@ namespace Ntreev.Crema.Services.DataBaseService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/GetTypeItemLog", ReplyAction="http://www.ntreev.com/IDataBaseService/GetTypeItemLogResponse")]
         Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.LogInfo[]> GetTypeItemLog(string itemPath);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/GetTypeRevision", ReplyAction="http://www.ntreev.com/IDataBaseService/GetTypeRevisionResponse")]
+        Ntreev.Crema.ServiceModel.ResultBase<long> GetTypeRevision(string itemPath);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/FindTypeItem", ReplyAction="http://www.ntreev.com/IDataBaseService/FindTypeItemResponse")]
         Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.FindResultInfo[]> FindTypeItem(string itemPath, string text, Ntreev.Crema.ServiceModel.FindOptions options);
@@ -341,6 +347,10 @@ namespace Ntreev.Crema.Services.DataBaseService {
             return base.Channel.GetTableItemLog(itemPath);
         }
         
+        public Ntreev.Crema.ServiceModel.ResultBase<long> GetTableRevision(string itemPath) {
+            return base.Channel.GetTableRevision(itemPath);
+        }
+        
         public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.FindResultInfo[]> FindTableItem(string itemPath, string text, Ntreev.Crema.ServiceModel.FindOptions options) {
             return base.Channel.FindTableItem(itemPath, text, options);
         }
@@ -467,6 +477,10 @@ namespace Ntreev.Crema.Services.DataBaseService {
         
         public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.LogInfo[]> GetTypeItemLog(string itemPath) {
             return base.Channel.GetTypeItemLog(itemPath);
+        }
+        
+        public Ntreev.Crema.ServiceModel.ResultBase<long> GetTypeRevision(string itemPath) {
+            return base.Channel.GetTypeRevision(itemPath);
         }
         
         public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.FindResultInfo[]> FindTypeItem(string itemPath, string text, Ntreev.Crema.ServiceModel.FindOptions options) {

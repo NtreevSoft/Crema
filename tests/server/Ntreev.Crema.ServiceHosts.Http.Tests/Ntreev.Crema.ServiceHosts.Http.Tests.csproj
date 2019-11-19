@@ -41,11 +41,18 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Apis\V1\Controllers\Commands\TablesApiController_TableRevisionTests.cs" />
+    <Compile Include="Apis\V1\Controllers\Commands\TypesApiController_TypeRevisionTests.cs" />
+    <Compile Include="Collection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>10.0.3</Version>
+    </PackageReference>
     <PackageReference Include="System.ValueTuple">
       <Version>4.5.0</Version>
     </PackageReference>
@@ -73,6 +80,10 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\common\Ntreev.Crema.Data\Ntreev.Crema.Data.csproj">
+      <Project>{04aeb614-3510-4064-99af-0aa807c7f957}</Project>
+      <Name>Ntreev.Crema.Data</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\common\Ntreev.Crema.ServiceModel\Ntreev.Crema.ServiceModel.csproj">
       <Project>{6478450a-dfa5-445d-890f-bc5f57c9a148}</Project>
       <Name>Ntreev.Crema.ServiceModel</Name>
@@ -97,10 +108,11 @@
       <Project>{1918437f-4fbf-4731-ac5b-981a4a4cb1f1}</Project>
       <Name>Ntreev.Library</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\common\Ntreev.Crema.Tests\Ntreev.Crema.Tests.csproj">
+    <ProjectReference Include="..\..\common\Ntreev.CremaServer.Tests\Ntreev.CremaServer.Tests.csproj">
       <Project>{eceda733-1943-4cf1-98ee-bb3f3c64a4e8}</Project>
-      <Name>Ntreev.Crema.Tests</Name>
+      <Name>Ntreev.CremaServer.Tests</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

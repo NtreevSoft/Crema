@@ -532,6 +532,15 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
+        public new long Revision
+        {
+            get
+            {
+                this.Dispatcher?.VerifyAccess();
+                return base.Revision;
+            }
+        }
+
         public new AccessInfo AccessInfo
         {
             get
@@ -774,6 +783,12 @@ namespace Ntreev.Crema.Services.Data
                 throw new InvalidOperationException(string.Format(Resources.Exception_TableIsBeingSetup_Format, table.Name));
             if (table.VerifyAccessType(authentication, AccessType.Master) == false)
                 throw new PermissionException();
+        }
+
+        public override void UpdateRevision(long revision)
+        {
+            base.UpdateRevision(revision);
+            this.Context.InvokeItemsRevisionChangedEvent(Authentication.System, new[] {this});
         }
 
         private IEnumerable<Table> FailmyTables(Table table)

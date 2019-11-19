@@ -61,6 +61,8 @@ namespace Ntreev.Crema.Services
 
         bool IsPrivate { get; }
 
+        long Revision { get; }
+
         TableInfo TableInfo { get; }
 
         TableState TableState { get; }

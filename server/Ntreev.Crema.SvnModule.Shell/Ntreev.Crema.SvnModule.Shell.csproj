@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SvnChangeItem.cs" />
+    <Compile Include="SvnRevisionInfoEventArgs.cs" />
     <Compile Include="SvnStatusEventArgs.cs" />
     <Compile Include="SvnInfoEventArgs.cs" />
     <Compile Include="SvnLogEventArgs.cs" />
