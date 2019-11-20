@@ -387,6 +387,7 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.Debug(eventLog);
             this.Repository.Commit(authentication, comment, eventLog);
             this.CremaHost.Info(comment);
+            this.UpdateRevision(authentication, tables, dataSet);
             this.OnTablesCreated(new ItemsCreatedEventArgs<ITable>(authentication, tables, args, dataSet));
             this.Context.InvokeItemsCreatedEvent(authentication, tables, args, dataSet);
         }
@@ -398,6 +399,7 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.Debug(eventLog);
             this.Repository.Commit(authentication, comment, eventLog);
             this.CremaHost.Info(comment);
+            this.UpdateRevision(authentication, tables, dataSet);
             this.OnTablesRenamed(new ItemsRenamedEventArgs<ITable>(authentication, tables, oldNames, oldPaths, dataSet));
             this.Context.InvokeItemsRenamedEvent(authentication, tables, oldNames, oldPaths, dataSet);
         }
@@ -409,6 +411,7 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.Debug(eventLog);
             this.Repository.Commit(authentication, comment, eventLog);
             this.CremaHost.Info(comment);
+            this.UpdateRevision(authentication, tables, dataSet);
             this.OnTablesMoved(new ItemsMovedEventArgs<ITable>(authentication, tables, oldPaths, oldCategoryPaths, dataSet));
             this.Context.InvokeItemsMovedEvent(authentication, tables, oldPaths, oldCategoryPaths, dataSet);
         }
@@ -438,6 +441,7 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.Debug(eventLog);
             this.Repository.Commit(authentication, comment, eventLog);
             this.CremaHost.Info(comment);
+            this.UpdateRevision(authentication, tables, dataSet);
             this.OnTablesChanged(new ItemsEventArgs<ITable>(authentication, tables, dataSet));
             this.Context.InvokeItemsChangedEvent(authentication, tables, dataSet);
         }
@@ -449,8 +453,23 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.Debug(eventLog);
             this.Repository.Commit(authentication, comment, eventLog);
             this.CremaHost.Info(comment);
+            this.UpdateRevision(authentication, tables, dataSet);
             this.OnTablesChanged(new ItemsEventArgs<ITable>(authentication, tables));
             this.Context.InvokeItemsChangedEvent(authentication, tables, dataSet);
+        }
+
+        private void UpdateRevision(Authentication authentication, Table[] tables, CremaDataSet dataSet)
+        {
+            foreach (var table in tables)
+            {
+                var revision = this.Repository.GetRevision(table.XmlPath);
+                table.UpdateRevision(revision);
+
+                foreach (var dataTable in dataSet.Tables)
+                {
+                    dataTable.UpdateRevision(revision);
+                }
+            }
         }
 
         public DataBaseRepositoryHost Repository

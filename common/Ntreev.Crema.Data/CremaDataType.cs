@@ -378,6 +378,11 @@ namespace Ntreev.Crema.Data
             this.type.EndLoadData();
         }
 
+        public void UpdateRevision(long revision)
+        {
+            this.type.Revision = revision;
+        }
+
         public bool IsFlag
         {
             get { return this.type.IsFlag; }
@@ -492,6 +497,8 @@ namespace Ntreev.Crema.Data
         {
             get { return this.type.TypeInfo; }
         }
+
+        public long Revision => this.type.Revision;
 
         public CremaDataSet DataSet
         {

@@ -26,3 +26,6 @@ using System.Runtime.InteropServices;
 [assembly: Guid("5797d747-3c6a-4f97-a63a-7998f9a8b165")]
 //[assembly: InternalsVisibleTo("Ntreev.Crema.ServiceHosts")]
 [assembly: InternalsVisibleTo("Ntreev.Crema.ServiceHosts.Http")]
+[assembly: InternalsVisibleTo("Ntreev.CremaServer.Tests")]
+[assembly: InternalsVisibleTo("Ntreev.CremaClient.Tests")]
+[assembly: InternalsVisibleTo("Ntreev.Crema.SvnModule.Shell.Tests")]

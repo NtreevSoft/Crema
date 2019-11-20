@@ -37,6 +37,7 @@ namespace Ntreev.Crema.Runtime.Serialization
             this.Name = dataType.Name;
             this.IsFlag = dataType.IsFlag;
             this.Comment = dataType.Comment;
+            this.Revision = dataType.Revision;
             this.HashValue = dataType.TypeInfo.HashValue;
             this.Members = dataType.Members.Select(item => new SerializationTypeMember(item)).ToArray();
         }
@@ -64,6 +65,9 @@ namespace Ntreev.Crema.Runtime.Serialization
 
         [DataMember]
         public string HashValue { get; set; }
+
+        [DataMember]
+        public long Revision { get; set; }
 
         [Obsolete("타입에는 태그 기능이 아직 적용되어 있지 않음")]
         internal SerializationType Filter(TagInfo tags)

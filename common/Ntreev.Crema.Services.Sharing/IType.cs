@@ -50,6 +50,8 @@ namespace Ntreev.Crema.Services
 
         bool IsPrivate { get; }
 
+        long Revision { get; }
+
         TypeInfo TypeInfo { get; }
 
         TypeState TypeState { get; }

@@ -196,6 +196,15 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="GetTableRevision">
+      <soap12:operation soapAction="http://www.ntreev.com/IDataBaseService/GetTableRevision" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="FindTableItem">
       <soap12:operation soapAction="http://www.ntreev.com/IDataBaseService/FindTableItem" style="document" />
       <wsdl:input>
@@ -477,6 +486,15 @@
     </wsdl:operation>
     <wsdl:operation name="GetTypeItemLog">
       <soap12:operation soapAction="http://www.ntreev.com/IDataBaseService/GetTypeItemLog" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTypeRevision">
+      <soap12:operation soapAction="http://www.ntreev.com/IDataBaseService/GetTypeRevision" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

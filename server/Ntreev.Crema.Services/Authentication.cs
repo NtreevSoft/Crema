@@ -151,7 +151,7 @@ namespace Ntreev.Crema.Services
             }
         }
 
-        internal Guid Token
+        public Guid Token
         {
             get { return this.token; }
         }

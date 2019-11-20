@@ -42,6 +42,8 @@ namespace Ntreev.Crema.Services
 
         CremaDataSet GetDataSet(Authentication authentication, long revision);
 
+        long Revision { get; }
+
         string Name { get; }
 
         string Path { get; }

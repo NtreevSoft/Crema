@@ -83,6 +83,13 @@ namespace Ntreev.Crema.ServiceModel
             }
         }
 
+        public virtual void UpdateRevision(long revision)
+        {
+            this.Revision = revision;
+            this.tableInfo.Revision = revision;
+            this.UpdateTableInfo(this.tableInfo);
+        }
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override void OnValidateSetPublic(IAuthentication authentication, object target)
         {
@@ -415,6 +422,8 @@ namespace Ntreev.Crema.ServiceModel
                     this.Name = value;
             }
         }
+
+        public long Revision { get; set; }
 
         public _I Parent
         {
