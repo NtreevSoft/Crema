@@ -228,6 +228,29 @@ namespace Ntreev.Crema.Services.Data
             return this.DataBase.GetService(serviceType);
         }
 
+        public IEnumerable<Table> ReferencedTables
+        {
+            get
+            {
+                var tables = this.GetService(typeof(TableCollection)) as TableCollection;
+                foreach (var item in tables)
+                {
+                    if (item.IsTypeUsed(this.Path))
+                    {
+                        yield return item;
+                        if (item.Parent != null)
+                        {
+                            yield return item.Parent;
+                            foreach (var i in item.Parent.Childs)
+                            {
+                                yield return i;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public void SetName(string name)
         {

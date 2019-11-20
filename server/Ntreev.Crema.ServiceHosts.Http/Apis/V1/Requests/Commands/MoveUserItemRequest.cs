@@ -22,9 +22,9 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Requests.Commands
     public class MoveUserItemRequest
     {
         [Required]
-        public string ParentPath;
+        public string ParentPath { get; set; }
 
         [Required]
-        public string UserItemPath;
+        public string UserItemPath { get; set; }
     }
 }

@@ -562,7 +562,16 @@ namespace Ntreev.Crema.Services.Data
 
             dataSet.ReadXml(this.XmlPath, itemName);
             dataSet.AcceptChanges();
-            return dataSet.Tables[base.TableName, this.Category.Path];
+            var dataTable = dataSet.Tables[base.TableName, this.Category.Path];
+
+            var revision = this.Revision;
+            dataTable.UpdateRevision(revision);
+            foreach (var child in dataTable.Childs)
+            {
+                child.UpdateRevision(revision);
+            }
+
+            return dataTable;
         }
 
         public CremaDataTable ReadSchema(Authentication authentication, CremaDataSet dataSet)
@@ -643,6 +652,12 @@ namespace Ntreev.Crema.Services.Data
             base.Unlock(authentication);
         }
 
+        public override void UpdateRevision(long revision)
+        {
+            base.UpdateRevision(revision);
+            this.Context.InvokeItemsRevisionChangedEvent(Authentication.System, new[] { this });
+        }
+
         public void Attach(NewChildTableTemplate template)
         {
             template.EditCanceled += Template_EditCanceled;
@@ -717,6 +732,15 @@ namespace Ntreev.Crema.Services.Data
             {
                 this.Dispatcher?.VerifyAccess();
                 return base.IsPrivate;
+            }
+        }
+
+        public new long Revision
+        {
+            get
+            {
+                this.Dispatcher?.VerifyAccess();
+                return base.Revision;
             }
         }
 

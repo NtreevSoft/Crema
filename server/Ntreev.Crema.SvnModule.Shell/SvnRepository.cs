@@ -235,6 +235,16 @@ namespace Ntreev.Crema.SvnModule
             return repositoryInfo.LastChangeRevision;
         }
 
+        public RevisionInfo[] GetRevisionFrom(string path, long revision = -1)
+        {
+            var revisionInfos = SvnRevisionInfoEventArgs.Run(path, revision);
+            return revisionInfos.Select(info => new RevisionInfo
+            {
+                FilePath = info.Name.Replace("\\", "/"),
+                Revision = info.Revision
+            }).ToArray();
+        }
+
         public Uri GetUri(string path, long revision)
         {
             var revisionValue = revision == -1 ? this.revision : revision;

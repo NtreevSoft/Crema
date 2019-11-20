@@ -61,6 +61,7 @@ namespace Ntreev.Crema.Javascript.Methods.DataBase
                     { nameof(typeInfo.IsFlag), typeInfo.IsFlag },
                     { nameof(typeInfo.CategoryPath), typeInfo.CategoryPath },
                     { nameof(typeInfo.HashValue), typeInfo.HashValue },
+                    { nameof(typeInfo.Revision), typeInfo.Revision },
                     { CremaSchema.Creator, typeInfo.CreationInfo.ID },
                     { CremaSchema.CreatedDateTime, typeInfo.CreationInfo.DateTime },
                     { CremaSchema.Modifier, typeInfo.ModificationInfo.ID },

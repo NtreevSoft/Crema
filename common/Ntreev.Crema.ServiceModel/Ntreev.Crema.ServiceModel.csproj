@@ -73,11 +73,13 @@
     <Compile Include="DomainUserMetaData.cs" />
     <Compile Include="LockChangeType.cs" />
     <Compile Include="MessageType.cs" />
+    <Compile Include="NotifyMessageType.cs" />
     <Compile Include="Properties\EventResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>EventResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="RevisionInfo.cs" />
     <Compile Include="ServiceInfo.cs" />
     <Compile Include="DataBaseCollectionMetaData.cs" />
     <Compile Include="DataBaseMetaData.cs" />
