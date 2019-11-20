@@ -44,6 +44,7 @@ namespace Ntreev.Crema.Services.Data
         private ItemsEventHandler<ITypeItem> itemsChanged;
         private ItemsEventHandler<ITypeItem> itemsAccessChanged;
         private ItemsEventHandler<ITypeItem> itemsLockChanged;
+        private ItemsEventHandler<ITypeItem> itemsRevisionChanged;
 
         public TypeContext(DataBase dataBase, IEnumerable<TypeInfo> typeInfos)
         {
@@ -320,6 +321,11 @@ namespace Ntreev.Crema.Services.Data
             this.OnItemsChanged(new ItemsEventArgs<ITypeItem>(authentication, items, metaData));
         }
 
+        public void InvokeItemsRevisionChangedEvent(Authentication authentication, ITypeItem[] items)
+        {
+            this.OnItemsRevisionChanged(new ItemsEventArgs<ITypeItem>(authentication, items));
+        }
+
         public LogInfo[] GetLog(string schemaPath)
         {
             var revision = this.Repository.GetRevision(schemaPath);
@@ -523,6 +529,20 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
+        public event ItemsEventHandler<ITypeItem> ItemsRevisionChanged
+        {
+            add
+            {
+                this.Dispatcher?.VerifyAccess();
+                this.itemsRevisionChanged += value;
+            }
+            remove
+            {
+                this.Dispatcher?.VerifyAccess();
+                this.itemsRevisionChanged -= value;
+            }
+        }
+
         protected virtual void OnItemsCreated(ItemsCreatedEventArgs<ITypeItem> e)
         {
             this.itemsCreated?.Invoke(this, e);
@@ -556,6 +576,11 @@ namespace Ntreev.Crema.Services.Data
         protected virtual void OnItemsLockChanged(ItemsEventArgs<ITypeItem> e)
         {
             this.itemsLockChanged?.Invoke(this, e);
+        }
+
+        protected virtual void OnItemsRevisionChanged(ItemsEventArgs<ITypeItem> e)
+        {
+            this.itemsRevisionChanged?.Invoke(this, e);
         }
 
         protected override IEnumerable<ITableInfoProvider> GetTables()

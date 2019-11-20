@@ -26,6 +26,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections;
 using System.Data;
+using System.Runtime.Serialization;
 using Ntreev.Library.Serialization;
 using Ntreev.Crema.Services.Data;
 using Ntreev.Library;

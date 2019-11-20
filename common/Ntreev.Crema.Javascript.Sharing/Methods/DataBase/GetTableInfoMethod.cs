@@ -64,6 +64,7 @@ namespace Ntreev.Crema.Javascript.Methods.DataBase
                     { nameof(tableInfo.ParentName), tableInfo.ParentName },
                     { nameof(tableInfo.CategoryPath), tableInfo.CategoryPath },
                     { nameof(tableInfo.HashValue), tableInfo.HashValue },
+                    { nameof(tableInfo.Revision), tableInfo.Revision },
                     { CremaSchema.Creator, tableInfo.CreationInfo.ID },
                     { CremaSchema.CreatedDateTime, tableInfo.CreationInfo.DateTime },
                     { CremaSchema.Modifier, tableInfo.ModificationInfo.ID },

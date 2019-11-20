@@ -36,6 +36,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Responses.Commands
         public string ParentName { get; set; }
         public string CategoryPath { get; set; }
         public string HashValue { get; set; }
+        public long Revision { get; set; }
 
         [JsonProperty(CremaSchema.Creator)]
         public string Creator { get; set; }
@@ -71,6 +72,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Responses.Commands
                 ParentName = tableInfo.ParentName,
                 CategoryPath = tableInfo.CategoryPath,
                 HashValue = tableInfo.HashValue,
+                Revision = tableInfo.Revision,
                 Creator = tableInfo.CreationInfo.ID,
                 CreatedDateTime = tableInfo.CreationInfo.DateTime,
                 Modifier = tableInfo.ModificationInfo.ID,

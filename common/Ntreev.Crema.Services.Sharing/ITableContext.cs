@@ -51,5 +51,9 @@ namespace Ntreev.Crema.Services
         event ItemsEventHandler<ITableItem> ItemsAccessChanged;
 
         event ItemsEventHandler<ITableItem> ItemsLockChanged;
+
+#if SERVER
+        event ItemsEventHandler<ITableItem> ItemsRevisionChanged;
+#endif
     }
 }

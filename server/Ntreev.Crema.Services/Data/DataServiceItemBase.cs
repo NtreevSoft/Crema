@@ -29,6 +29,7 @@ using System.Threading.Tasks;
 using Ntreev.Library.Linq;
 using Ntreev.Library.Serialization;
 using System.Runtime.Serialization;
+using Ntreev.Crema.Runtime.Serialization;
 
 namespace Ntreev.Crema.Services.Data
 {
@@ -290,12 +291,14 @@ namespace Ntreev.Crema.Services.Data
             this.dataBase.TypeContext.ItemsMoved += TypeContext_ItemMoved;
             this.dataBase.TypeContext.ItemsDeleted += TypeContext_ItemDeleted;
             this.dataBase.TypeContext.ItemsChanged += TypeContext_ItemsChanged;
+            this.dataBase.TypeContext.ItemsRevisionChanged += TypeContext_ItemsRevisionChanged;
 
             this.dataBase.TableContext.ItemsCreated += TableContext_ItemCreated;
             this.dataBase.TableContext.ItemsRenamed += TableContext_ItemRenamed;
             this.dataBase.TableContext.ItemsMoved += TableContext_ItemMoved;
             this.dataBase.TableContext.ItemsDeleted += TableContext_ItemDeleted;
             this.dataBase.TableContext.ItemsChanged += TableContext_ItemsChanged;
+            this.dataBase.TableContext.ItemsRevisionChanged += TableContext_ItemsRevisionChanged;
             this.dataBaseID = this.dataBase.ID;
 
             if (this.dataBase is DataBase dataBaseInternal)
@@ -489,6 +492,12 @@ namespace Ntreev.Crema.Services.Data
             this.Dispatcher.InvokeAsync(() => this.Serialize(dataSet, revision));
         }
 
+
+        private void TypeContext_ItemsRevisionChanged(object sender, ItemsEventArgs<ITypeItem> e)
+        {
+            this.Dispatcher.InvokeAsync(() => this.SerializeTypeRevision(e.Items));
+        }
+
         private void TableContext_ItemCreated(object sender, Services.ItemsCreatedEventArgs<ITableItem> e)
         {
             var dataSet = e.MetaData as CremaDataSet;
@@ -543,6 +552,11 @@ namespace Ntreev.Crema.Services.Data
             var revision = this.dataBase.DataBaseInfo.Revision;
 
             this.Dispatcher.InvokeAsync(() => this.Serialize(dataSet, revision));
+        }
+
+        private void TableContext_ItemsRevisionChanged(object sender, ItemsEventArgs<ITableItem> e)
+        {
+            this.Dispatcher.InvokeAsync(() => this.SerializeTableRevision(e.Items));
         }
 
         private void Initialize()
@@ -684,6 +698,47 @@ namespace Ntreev.Crema.Services.Data
 
             this.typeInfos = typeInfos;
             this.typeDatas = typeDatas;
+        }
+
+        private void SerializeTypeRevision(ITypeItem[] items)
+        {
+            foreach (var item in items)
+            {
+                var typeItem = item.Dispatcher.Invoke(() => new Tuple<string, long>(item.Name, item.Revision));
+
+                if (this.typeInfos.ContainsKey(typeItem.Item1))
+                {
+                    var typeInfo = this.typeInfos[typeItem.Item1];
+                    typeInfo.Revision = typeItem.Item2;
+
+                    this.typeInfos[typeItem.Item1] = typeInfo;
+                    if (this.typeDatas[typeItem.Item1] is SerializationType type)
+                    {
+                        type.Revision = typeItem.Item2;
+                        this.typeDatas[typeItem.Item1] = type;
+                    }
+                }
+            }
+        }
+
+        private void SerializeTableRevision(ITableItem[] items)
+        {
+            foreach (var item in items)
+            {
+                var tableItem = item.Dispatcher.Invoke(() => new Tuple<string, long>(item.Name, item.Revision));
+                if (this.tableInfos.ContainsKey(tableItem.Item1))
+                {
+                    var tableInfo = this.tableInfos[tableItem.Item1];
+                    tableInfo.Revision = tableItem.Item2;
+
+                    this.tableInfos[tableItem.Item1] = tableInfo;
+                    if (this.tableDatas[tableItem.Item1] is SerializationTable table)
+                    {
+                        table.Revision = tableItem.Item2;
+                        this.tableDatas[tableItem.Item1] = table;
+                    }
+                }
+            }
         }
 
         private void Serialize(IDomain domain)

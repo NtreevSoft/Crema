@@ -70,6 +70,9 @@ namespace Ntreev.Crema.Data
             get; set;
         }
 
+        [DataMember]
+        public long Revision { get; set; }
+
         public override bool Equals(object obj)
         {
             if (obj is TypeInfo == false)
@@ -83,6 +86,7 @@ namespace Ntreev.Crema.Data
                     (this.CategoryPath == dest.CategoryPath) &&
                     (this.IsFlag == dest.IsFlag) &&
                     (this.CreationInfo == dest.CreationInfo) &&
+                    (this.Revision == dest.Revision) &&
                     (this.ModificationInfo == dest.ModificationInfo));
         }
 
@@ -99,7 +103,8 @@ namespace Ntreev.Crema.Data
                    HashUtility.GetHashCode(this.CategoryPath) ^
                    HashUtility.GetHashCode(this.IsFlag) ^
                    HashUtility.GetHashCode(this.CreationInfo) ^
-                   HashUtility.GetHashCode(this.ModificationInfo);
+                   HashUtility.GetHashCode(this.ModificationInfo) ^
+                   HashUtility.GetHashCode(this.Revision);
         }
 
         public IDictionary<string, object> ToDictionary()
@@ -112,6 +117,7 @@ namespace Ntreev.Crema.Data
                     { nameof(this.Tags), $"{this.Tags}" },
                     { nameof(this.IsFlag), this.IsFlag },
                     { nameof(this.CategoryPath), this.CategoryPath },
+                    { nameof(this.Revision), this.Revision },
                     { CremaSchema.Creator, this.CreationInfo.ID },
                     { CremaSchema.CreatedDateTime, this.CreationInfo.DateTime },
                     { CremaSchema.Modifier, this.ModificationInfo.ID },

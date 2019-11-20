@@ -37,6 +37,8 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
                                 Content="{Binding TableInfo.TableName}" />
         <HeaderedContentControl Header="{x:Static p:Resources.Label_Path}" 
                                 Content="{Binding TableInfo.CategoryName}" />
+        <HeaderedContentControl Header="{x:Static p:Resources.Label_Revision}"
+                                Content="{Binding TableInfo.Revision}"/>
         <HeaderedContentControl Header="{x:Static p:Resources.Label_Creator}" 
                                 Content="{Binding TableInfo.CreationInfo.ID}" />
         <HeaderedContentControl Header="{x:Static p:Resources.Label_CreatedDateTime}" 

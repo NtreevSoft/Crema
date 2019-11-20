@@ -256,6 +256,7 @@ namespace Ntreev.Crema.Services.Data
                 base.UpdateAccessParent();
                 this.Sign(authentication);
                 this.DataBases.InvokeItemsLoadedEvent(authentication, new IDataBase[] { this });
+                this.UpdateRevisions();
             }
             catch (Exception e)
             {
@@ -688,12 +689,47 @@ namespace Ntreev.Crema.Services.Data
                 try
                 {
                     var exportPath = this.repositoryHost.Export(uri, tempPath);
-                    return CremaDataSet.ReadFromDirectory(exportPath);
+                    var dataSet = CremaDataSet.ReadFromDirectory(exportPath);
+                    this.UpdateDataSetRevision(dataSet, GetRevisionInfos(revision));
+                    return dataSet;
                 }
                 finally
                 {
                     DirectoryUtility.Delete(tempPath);
                 }
+            }
+        }
+
+        private void UpdateDataSetRevision(CremaDataSet dataSet, RevisionInfo[] revisionInfos)
+        {
+            var tableQuery = from table in dataSet.Tables
+                let tablePath = $"tables{table.CategoryPath}{table.Name}{CremaSchema.XmlExtension}"
+                from info in revisionInfos
+                where info.FilePath.EndsWith(tablePath, StringComparison.InvariantCultureIgnoreCase)
+                select new
+                {
+                    Table = table,
+                    RevisionInfo = info
+                };
+
+            var typeQuery = from type in dataSet.Types
+                let typePath = $"tables{type.CategoryPath}{type.Name}{CremaSchema.SchemaExtension}"
+                from info in revisionInfos
+                where info.FilePath.EndsWith(typePath, StringComparison.InvariantCultureIgnoreCase)
+                select new
+                {
+                    Type = type,
+                    RevisionInfo = info
+                };
+
+            foreach (var match in tableQuery)
+            {
+                match.Table.UpdateRevision(match.RevisionInfo.Revision);
+            }
+
+            foreach (var match in typeQuery)
+            {
+                match.Type.UpdateRevision(match.RevisionInfo.Revision);
             }
         }
 
@@ -1250,6 +1286,7 @@ namespace Ntreev.Crema.Services.Data
             base.ResetDataBase(authentication);
             base.UpdateLockParent();
             base.UpdateAccessParent();
+
             if (this.IsLoaded == true)
             {
                 this.AttachDomainHost();
@@ -1258,6 +1295,63 @@ namespace Ntreev.Crema.Services.Data
                     this.AttachUsers(authentication);
                 }
             }
+        }
+
+        private void UpdateRevisions(long revision = -1)
+        {
+            var revisionInfos = GetRevisionInfos(revision);
+
+            UpdateTablesRevision(revisionInfos);
+            UpdateTypesRevision(revisionInfos);
+        }
+
+        private RevisionInfo[] GetRevisionInfos(long revision)
+        {
+            return this.Repository.GetRevisionFrom(this.BasePath, revision);
+        }
+
+        private void UpdateTablesRevision(RevisionInfo[] revisionInfos)
+        {
+            this.TableContext.Dispatcher.Invoke(() =>
+            {
+                var query = from tables in (ITableCollection) this.TableContext.Tables
+                    let table = (Table) tables
+                    let tableXmlPath = table.XmlPath.Replace("\\", "/")
+                    from info in revisionInfos
+                    where tableXmlPath.EndsWith(info.FilePath, StringComparison.InvariantCultureIgnoreCase)
+                    select new
+                    {
+                        Table = table,
+                        RevisionInfo = info
+                    };
+
+                foreach (var match in query)
+                {
+                    match.Table.UpdateRevision(match.RevisionInfo.Revision);
+                }
+            });
+        }
+
+        private void UpdateTypesRevision(RevisionInfo[] revisionInfos)
+        {
+            this.TypeContext.Dispatcher.Invoke(() =>
+            {
+                var query = from types in (ITypeCollection)this.TypeContext.Types
+                    let type = (Type) types
+                    let typeSchemaPath = type.SchemaPath.Replace("\\", "/")
+                    from info in revisionInfos
+                    where typeSchemaPath.EndsWith(info.FilePath, StringComparison.InvariantCultureIgnoreCase)
+                    select new
+                    {
+                        Type = type,
+                        RevisionInfo = info
+                    };
+
+                foreach (var match in query)
+                {
+                    match.Type.UpdateRevision(match.RevisionInfo.Revision);
+                }
+            });
         }
 
         private void Users_UsersLoggedOut(object sender, ItemsEventArgs<IUser> e)
