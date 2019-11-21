@@ -131,6 +131,12 @@
   <wsdl:message name="IDataBaseService_GetTableItemLog_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetTableItemLogResponse" />
   </wsdl:message>
+  <wsdl:message name="IDataBaseService_GetTableRevision_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetTableRevision" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseService_GetTableRevision_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetTableRevisionResponse" />
+  </wsdl:message>
   <wsdl:message name="IDataBaseService_FindTableItem_InputMessage">
     <wsdl:part name="parameters" element="tns:FindTableItem" />
   </wsdl:message>
@@ -323,6 +329,12 @@
   <wsdl:message name="IDataBaseService_GetTypeItemLog_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetTypeItemLogResponse" />
   </wsdl:message>
+  <wsdl:message name="IDataBaseService_GetTypeRevision_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetTypeRevision" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseService_GetTypeRevision_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetTypeRevisionResponse" />
+  </wsdl:message>
   <wsdl:message name="IDataBaseService_FindTypeItem_InputMessage">
     <wsdl:part name="parameters" element="tns:FindTypeItem" />
   </wsdl:message>
@@ -467,6 +479,10 @@
       <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseService/GetTableItemLog" message="tns:IDataBaseService_GetTableItemLog_InputMessage" />
       <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseService/GetTableItemLogResponse" message="tns:IDataBaseService_GetTableItemLog_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetTableRevision">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseService/GetTableRevision" message="tns:IDataBaseService_GetTableRevision_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseService/GetTableRevisionResponse" message="tns:IDataBaseService_GetTableRevision_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="FindTableItem">
       <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseService/FindTableItem" message="tns:IDataBaseService_FindTableItem_InputMessage" />
       <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseService/FindTableItemResponse" message="tns:IDataBaseService_FindTableItem_OutputMessage" />
@@ -594,6 +610,10 @@
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetTypeItemLog">
       <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseService/GetTypeItemLog" message="tns:IDataBaseService_GetTypeItemLog_InputMessage" />
       <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseService/GetTypeItemLogResponse" message="tns:IDataBaseService_GetTypeItemLog_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetTypeRevision">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseService/GetTypeRevision" message="tns:IDataBaseService_GetTypeRevision_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseService/GetTypeRevisionResponse" message="tns:IDataBaseService_GetTypeRevision_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="FindTypeItem">
       <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseService/FindTypeItem" message="tns:IDataBaseService_FindTypeItem_InputMessage" />

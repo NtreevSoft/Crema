@@ -80,6 +80,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>EventResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="RevisionInfo.cs" />
     <Compile Include="ServiceInfo.cs" />
     <Compile Include="DataBaseCollectionMetaData.cs" />
     <Compile Include="DataBaseMetaData.cs" />

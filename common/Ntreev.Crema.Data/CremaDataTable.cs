@@ -220,6 +220,7 @@ namespace Ntreev.Crema.Data
                     item.InternalTableID = Guid.NewGuid();
                     item.CreationInfo = signatureDate;
                 }
+                dataTable.UpdateRevision(this.Revision);
                 return dataTable;
             }
 
@@ -229,6 +230,8 @@ namespace Ntreev.Crema.Data
                 var dataTable = CremaDataTable.ReadSchema(reader, itemName);
                 if (xml != null)
                     dataTable.ReadXmlString(xml);
+
+                dataTable.UpdateRevision(this.Revision);
                 return dataTable;
             }
         }
@@ -373,6 +376,11 @@ namespace Ntreev.Crema.Data
             }
             this.rows.Add(dataRow);
             return dataRow;
+        }
+
+        public void UpdateRevision(long revision)
+        {
+            this.table.Revision = revision;
         }
 
         public void RejectChanges()
@@ -768,6 +776,8 @@ namespace Ntreev.Crema.Data
             }
         }
 
+        public long Revision => this.table.Revision;
+
         public SignatureDateProvider SignatureDateProvider
         {
             get { return this.table.SignatureDateProvider; }
@@ -942,6 +952,8 @@ namespace Ntreev.Crema.Data
             {
                 targetTable.AttachTemplatedParent(this.TemplateNamespace);
             }
+
+            targetTable.UpdateRevision(this.Revision);
 
             return targetTable;
 

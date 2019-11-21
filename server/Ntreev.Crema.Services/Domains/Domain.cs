@@ -62,6 +62,7 @@ namespace Ntreev.Crema.Services.Domains
             this.Name = base.DomainInfo.DomainID.ToString();
             this.data = (byte[])info.GetValue(dataKey, typeof(byte[]));
             this.DerializeSource(this.data);
+            this.Ondeserializing(info);
             this.users = new DomainUserCollection(this);
             this.InitializeUsers(info);
         }
@@ -773,6 +774,10 @@ namespace Ntreev.Crema.Services.Domains
                 var userInfos = query.ToArray();
                 return XmlSerializerUtility.GetString(userInfos);
             }
+        }
+
+        protected virtual void Ondeserializing(SerializationInfo info)
+        {
         }
 
         protected virtual void OnUserAdded(DomainUserEventArgs e)

@@ -164,6 +164,10 @@
       <Project>{04aeb614-3510-4064-99af-0aa807c7f957}</Project>
       <Name>Ntreev.Crema.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\common\Ntreev.Crema.Runtime.Serialization\Ntreev.Crema.Runtime.Serialization.csproj">
+      <Project>{279d3bbf-10a3-449f-aa73-545bc0b7baaf}</Project>
+      <Name>Ntreev.Crema.Runtime.Serialization</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\common\Ntreev.Crema.ServiceModel\Ntreev.Crema.ServiceModel.csproj">
       <Project>{6478450a-dfa5-445d-890f-bc5f57c9a148}</Project>
       <Name>Ntreev.Crema.ServiceModel</Name>

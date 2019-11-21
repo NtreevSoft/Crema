@@ -34,3 +34,4 @@ using System.Runtime.InteropServices;
 // 이 프로젝트가 COM에 노출되는 경우 다음 GUID는 typelib의 ID를 나타냅니다.
 [assembly: Guid("e0f76b09-4fe3-4a58-b16d-d136441dc1ae")]
 
+[assembly: InternalsVisibleTo("Ntreev.Crema.SvnModule.Shell.Tests")]

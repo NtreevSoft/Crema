@@ -118,7 +118,7 @@ namespace Ntreev.Crema.Runtime.Serialization.Binary
         {
             var columns = dataTable.Columns;
             var rows = dataTable.Rows;
-            this.tableHeader.MagicValue = BinaryTableHeader.DefaultMagicValue;
+            this.tableHeader.MagicValue = (int)dataTable.Revision;
             this.tableHeader.HashValue = this.GetStringID(dataTable.HashValue);
 
             this.tableInfo.TableName = this.GetStringID(dataTable.Name);

@@ -585,6 +585,8 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
+        public long Revision => throw new NotSupportedException();
+
         public new AccessInfo AccessInfo
         {
             get

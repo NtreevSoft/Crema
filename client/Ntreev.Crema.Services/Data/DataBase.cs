@@ -1452,6 +1452,7 @@ namespace Ntreev.Crema.Services.Data
                     var typeInfo = typeInfos[i];
                     var type = this.typeContext.Types[typeInfo.Name];
                     type.SetTypeInfo(typeInfo);
+                    types[i] = type;
                 }
                 this.typeContext.Types.InvokeTypesChangedEvent(authentication, types);
             }, nameof(IDataBaseServiceCallback.OnTypesChanged));
@@ -1468,6 +1469,7 @@ namespace Ntreev.Crema.Services.Data
                     var type = this.typeContext.Types[typeNames[i]];
                     var state = states[i];
                     type.SetTypeState(state);
+                    types[i] = type;
                 }
                 this.typeContext.Types.InvokeTypesStateChangedEvent(authentication, types);
             }, nameof(IDataBaseServiceCallback.OnTypesStateChanged));
