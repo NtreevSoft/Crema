@@ -40,6 +40,7 @@ namespace Ntreev.Crema.Runtime.Serialization
             this.Parent = dataTable.ParentName;
             this.TemplatedParent = dataTable.TemplatedParentName;
             this.Comment = dataTable.Comment;
+            this.Revision = dataTable.Revision;
 
             var columns = dataTable.Columns.ToArray();
             var columnList = columns.Select(item => new SerializationColumn(item)).ToList();
@@ -99,6 +100,9 @@ namespace Ntreev.Crema.Runtime.Serialization
 
         [DataMember]
         public string Comment { get; set; }
+
+        [DataMember]
+        public long Revision { get; set; }
 
         [DataMember]
         public SerializationColumn[] Columns { get; set; }

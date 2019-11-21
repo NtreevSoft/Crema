@@ -18,7 +18,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Ntreev.Crema.Tests.Extensions
+namespace Ntreev.CremaServer.Tests.Extensions
 {
     public static class HttpResponseExtensions
     {

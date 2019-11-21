@@ -45,17 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CremaServerTest.cs" />
-    <Compile Include="CremaServerTestFixture.cs" />
-    <Compile Include="Extensions\CremaHostExtensions.cs" />
-    <Compile Include="Extensions\CremaServerTestFixtureExtensions.cs" />
-    <Compile Include="Extensions\HttpContentExtensions.cs" />
-    <Compile Include="Extensions\HttpResponseExtensions.cs" />
-    <Compile Include="Extensions\JsonExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\server\Ntreev.Crema.ServiceHosts\Ntreev.Crema.ServiceHosts.csproj">

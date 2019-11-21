@@ -36,6 +36,8 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
                                 Content="{Binding TypeInfo.Name}" />
         <HeaderedContentControl Header="{x:Static p:Resources.Label_Path}" 
                                 Content="{Binding TypeInfo.CategoryName}" />
+        <HeaderedContentControl Header="{x:Static p:Resources.Label_Revision}" 
+                                Content="{Binding TypeInfo.Revision}" />
         <HeaderedContentControl Header="{x:Static p:Resources.Label_IsFlag}">
             <HeaderedContentControl.Content>
                 <CheckBox HorizontalAlignment="Left" IsChecked="{Binding Path=DataContext.TypeInfo.IsFlag, RelativeSource={RelativeSource AncestorType={x:Type HeaderedContentControl}}}" IsHitTestVisible="False" />

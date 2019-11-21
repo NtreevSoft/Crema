@@ -597,6 +597,8 @@ namespace Ntreev.Crema.Data
             set { this.modificationInfo = value; }
         }
 
+        public long Revision { get; set; }
+
         public TypeInfo TypeInfo
         {
             get
@@ -609,6 +611,7 @@ namespace Ntreev.Crema.Data
                     Name = this.Name,
                     Comment = this.Comment,
                     IsFlag = this.IsFlag,
+                    Revision = this.Revision,
                     CategoryPath = this.CategoryPath,
                     CreationInfo = this.CreationInfo,
                     ModificationInfo = this.ModificationInfo,

@@ -317,6 +317,8 @@ namespace Ntreev.Crema.Data
             dataSet.ReadXmlString(xml);
             dataSet.SignatureDateProvider = this.SignatureDateProvider;
 
+            this.UpdateRevision(this, dataSet);
+
             return dataSet;
         }
 
@@ -330,7 +332,28 @@ namespace Ntreev.Crema.Data
             CremaDataSet dataSet = new CremaDataSet();
             dataSet.ReadXmlSchemaString(schema);
 
+            this.UpdateRevision(this, dataSet);
+
             return dataSet;
+        }
+
+        private void UpdateRevision(CremaDataSet source, CremaDataSet target)
+        {
+            foreach (var table in source.Tables)
+            {
+                if (target.Tables.Contains(table.Name))
+                {
+                    target.tables[table.Name].UpdateRevision(table.Revision);
+                }
+            }
+
+            foreach (var type in source.Types)
+            {
+                if (target.Types.Contains(type.Name))
+                {
+                    target.Types[type.Name].UpdateRevision(type.Revision);
+                }
+            }
         }
 
         public void RejectChanges()

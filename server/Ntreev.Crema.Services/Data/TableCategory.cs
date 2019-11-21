@@ -311,6 +311,8 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
+        public long Revision => throw new NotSupportedException();
+
         public LogInfo[] GetLog(Authentication authentication)
         {
             try

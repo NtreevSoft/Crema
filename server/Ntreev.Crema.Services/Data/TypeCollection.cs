@@ -257,6 +257,7 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.Debug(eventLog);
             this.Repository.Commit(authentication, comment, eventLog);
             this.CremaHost.Info(comment);
+            this.UpdateRevision(authentication, types, dataSet);
             this.OnTypesCreated(new ItemsCreatedEventArgs<IType>(authentication, types, args, dataSet));
             this.Context.InvokeItemsCreatedEvent(authentication, types, args, dataSet);
         }
@@ -268,6 +269,7 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.Debug(eventLog);
             this.Repository.Commit(authentication, comment, eventLog);
             this.CremaHost.Info(comment);
+            this.UpdateRevision(authentication, types, dataSet);
             this.OnTypesRenamed(new ItemsRenamedEventArgs<IType>(authentication, types, oldNames, oldPaths));
             this.Context.InvokeItemsRenamedEvent(authentication, types, oldNames, oldPaths, dataSet);
         }
@@ -279,6 +281,7 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.Debug(eventLog);
             this.Repository.Commit(authentication, comment, eventLog);
             this.CremaHost.Info(comment);
+            this.UpdateRevision(authentication, types, dataSet);
             this.OnTypesMoved(new ItemsMovedEventArgs<IType>(authentication, types, oldPaths, oldCategoryPaths));
             this.Context.InvokeItemsMovedEvent(authentication, types, oldPaths, oldCategoryPaths, dataSet);
         }
@@ -301,6 +304,7 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.Debug(eventLog);
             this.Repository.Commit(authentication, comment, eventLog);
             this.CremaHost.Info(comment);
+            this.UpdateRevision(authentication, types, dataSet);
             this.OnTypesChanged(new ItemsEventArgs<IType>(authentication, types));
             this.Context.InvokeItemsChangedEvent(authentication, types, dataSet);
         }
@@ -309,6 +313,26 @@ namespace Ntreev.Crema.Services.Data
         {
             this.CremaHost.DebugMethodMany(authentication, this, nameof(InvokeTypesStateChangedEvent), types);
             this.OnTypesStateChanged(new ItemsEventArgs<IType>(authentication, types));
+        }
+
+        private void UpdateRevision(Authentication authentication, Type[] types, CremaDataSet dataSet)
+        {
+            foreach (var type in types)
+            {
+                var typeRevision = this.Repository.GetRevision(type.SchemaPath);
+                type.UpdateRevision(typeRevision);
+
+                foreach (var table in type.ReferencedTables.ToArray())
+                {
+                    var tableRevision = this.Repository.GetRevision(table.XmlPath);
+                    table.UpdateRevision(tableRevision);
+                }
+
+                foreach (var dataTable in dataSet.Tables)
+                {
+                    dataTable.UpdateRevision(typeRevision);
+                }
+            }
         }
 
         public DataBaseRepositoryHost Repository

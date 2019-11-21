@@ -278,6 +278,15 @@ namespace Ntreev.Crema.ServiceHosts.Data
             });
         }
 
+        public ResultBase<long> GetTableRevision(string itemPath)
+        {
+            return this.Invoke(() =>
+            {
+                var tableItem = this.cremaHost.Dispatcher.Invoke(() => this.GetTableItem(itemPath));
+                return tableItem.Revision;
+            });
+        }
+
         public ResultBase<FindResultInfo[]> FindTableItem(string itemPath, string text, FindOptions options)
         {
             return this.InvokeImmediately(() =>
@@ -611,6 +620,15 @@ namespace Ntreev.Crema.ServiceHosts.Data
             {
                 var typeItem = this.cremaHost.Dispatcher.Invoke(() => this.GetTypeItem(itemPath));
                 return typeItem.GetLog(this.authentication);
+            });
+        }
+
+        public ResultBase<long> GetTypeRevision(string itemPath)
+        {
+            return this.Invoke(() =>
+            {
+                var typeItem = this.cremaHost.Dispatcher.Invoke(() => this.GetTypeItem(itemPath));
+                return typeItem.Revision;
             });
         }
 

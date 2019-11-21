@@ -25,9 +25,9 @@ using Ntreev.Library;
 using Ntreev.Library.Extensions;
 using Ntreev.Library.IO;
 
-namespace Ntreev.Crema.Tests
+namespace Ntreev.CremaServer.Tests
 {
-    public class CremaServerTestFixture
+    public class CremaServerTestFixture : IDisposable
     {
         protected CremaService Service { get; private set; }
         public ICremaHost CremaHost { get; private set; }
@@ -63,7 +63,7 @@ namespace Ntreev.Crema.Tests
         private static void InitAppUtility()
         {
             AppUtility.ProductName = "crema";
-            AppUtility.ProductVersion = "3.7.0.0";
+            AppUtility.ProductVersion = "3.6.0.0";
         }
 
         private static void InitEntryAssembly()

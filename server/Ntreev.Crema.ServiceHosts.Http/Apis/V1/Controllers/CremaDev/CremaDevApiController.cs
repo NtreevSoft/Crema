@@ -89,6 +89,20 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.CremaDev
             }
         }
 
+        [HttpPost]
+        [Route("generation-data")]
+        [AllowAnonymous]
+        public Task<SerializationSet> GetGenerationDataAsync(string databaseName, [FromBody] GenerationDataRequest request)
+        {
+            var runtimeService = this.cremaHost.GetService(typeof(IRuntimeService)) as IRuntimeService;
+            if (runtimeService == null) throw new NullReferenceException(nameof(runtimeService));
+
+            var result = runtimeService.GetDataGenerationData(databaseName, request.Tags, request.FilterExpression, request.IsDevMode, request.Revision);
+            result.Validate();
+
+            return Task.FromResult(result.Value);
+        }
+
         private SerializationSet GetSerializationSet(string databaseName, DataRequest request)
         {
             var runtimeService = this.cremaHost.GetService(typeof(IRuntimeService)) as IRuntimeService;

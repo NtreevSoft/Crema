@@ -195,6 +195,21 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ResultBaseOfArrayOfLogInfoq8erDhHE" nillable="true" type="tns:ResultBaseOfArrayOfLogInfoq8erDhHE" />
+  <xs:complexType name="ResultBaseOflong">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ResultBaseOf{0}{#}" Namespace="http://schemas.ntreev.com" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="long" Namespace="http://www.w3.org/2001/XMLSchema">
+          </GenericParameter>
+        </GenericType>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Xml" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ResultBaseOflong" nillable="true" type="tns:ResultBaseOflong" />
   <xs:complexType name="ResultBaseOfArrayOfFindResultInfoq8erDhHE">
     <xs:annotation>
       <xs:appinfo>
@@ -293,7 +308,14 @@
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
-      <xs:element minOccurs="0" name="Token" type="ser:guid" />
+      <xs:element minOccurs="0" name="Token" type="ser:guid">
+        <xs:annotation>
+          <xs:appinfo>
+            <DefaultValue EmitDefaultValue="false" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+            </DefaultValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
     </xs:sequence>
   </xs:complexType>
   <xs:element name="SignatureDate" nillable="true" type="tns:SignatureDate" />
@@ -331,6 +353,7 @@
       <xs:element minOccurs="0" name="ID" type="ser:guid" />
       <xs:element minOccurs="0" name="ModificationInfo" type="tns:SignatureDate" />
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Revision" type="xs:long" />
       <xs:element minOccurs="0" name="Tags" type="tns:TagInfo" />
       <xs:element minOccurs="0" name="TemplatedParent" nillable="true" type="xs:string" />
     </xs:sequence>
@@ -476,6 +499,7 @@
       <xs:element minOccurs="0" name="Members" nillable="true" type="tns:ArrayOfTypeMemberInfo" />
       <xs:element minOccurs="0" name="ModificationInfo" type="tns:SignatureDate" />
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Revision" type="xs:long" />
       <xs:element minOccurs="0" name="Tags" type="tns:TagInfo" />
     </xs:sequence>
   </xs:complexType>

@@ -716,6 +716,7 @@ namespace Ntreev.Crema.Data
                     Tags = this.Tags,
                     DerivedTags = this.DerivedTags,
                     Comment = this.Comment,
+                    Revision = this.Revision,
                     CreationInfo = this.InternalCreationInfo,
                     ModificationInfo = this.InternalModificationInfo,
                     ContentsInfo = this.InternalContentsInfo,
@@ -836,6 +837,8 @@ namespace Ntreev.Crema.Data
             get { return this.contentsInfo; }
             set { this.contentsInfo = value; }
         }
+
+        public long Revision { get; set; }
 
         protected override DataRow NewRowFromBuilder(DataRowBuilder builder)
         {

@@ -21,15 +21,11 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using Ntreev.Crema.Services;
 
-namespace Ntreev.Crema.Tests
+namespace Ntreev.CremaServer.Tests
 {
-    public class CremaServerTest
+    public static class HttpClientTest
     {
-        public CremaServerTest()
-        {
-        }
-
-        public HttpClient GetHttpClient(Authentication authentication = null, IReadOnlyDictionary<string, string> headers = null)
+        public static HttpClient GetHttpClient(Authentication authentication = null, IReadOnlyDictionary<string, string> headers = null)
         {
             var httpClient = new HttpClient
             {

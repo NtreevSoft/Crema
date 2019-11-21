@@ -54,6 +54,7 @@ namespace Ntreev.Crema.Services.Data
         private ItemsEventHandler<ITableItem> itemsChanged;
         private ItemsEventHandler<ITableItem> itemsAccessChanged;
         private ItemsEventHandler<ITableItem> itemsLockChanged;
+        private ItemsEventHandler<ITableItem> itemsRevisionChanged;
 
         public TableContext(DataBase dataBase, IEnumerable<TableInfo> tableInfos)
         {
@@ -388,6 +389,11 @@ namespace Ntreev.Crema.Services.Data
             this.OnItemsChanged(new ItemsEventArgs<ITableItem>(authentication, items, metaData));
         }
 
+        public void InvokeItemsRevisionChangedEvent(Authentication authentication, ITableItem[] items)
+        {
+            this.OnItemsRevisionChanged(new ItemsEventArgs<ITableItem>(authentication, items));
+        }
+
         public LogInfo[] GetLog(string xmlPath, string schemaPath)
         {
             var revision = this.Repository.GetRevision(xmlPath);
@@ -628,6 +634,20 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
+        public event ItemsEventHandler<ITableItem> ItemsRevisionChanged
+        {
+            add
+            {
+                this.Dispatcher?.VerifyAccess();
+                this.itemsRevisionChanged += value;
+            }
+            remove
+            {
+                this.Dispatcher?.VerifyAccess();
+                this.itemsRevisionChanged -= value;
+            }
+        }
+
         protected virtual void OnItemsCreated(ItemsCreatedEventArgs<ITableItem> e)
         {
             this.itemsCreated?.Invoke(this, e);
@@ -661,6 +681,11 @@ namespace Ntreev.Crema.Services.Data
         protected virtual void OnItemsLockChanged(ItemsEventArgs<ITableItem> e)
         {
             this.itemsLockChanged?.Invoke(this, e);
+        }
+
+        protected virtual void OnItemsRevisionChanged(ItemsEventArgs<ITableItem> e)
+        {
+            this.itemsRevisionChanged?.Invoke(this, e);
         }
 
         private void Users_UsersLoggedOut(object sender, ItemsEventArgs<AuthenticationInfo> e)

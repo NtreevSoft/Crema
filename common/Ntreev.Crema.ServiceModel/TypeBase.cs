@@ -77,6 +77,13 @@ namespace Ntreev.Crema.ServiceModel
             this.OnTypeInfoChanged(EventArgs.Empty);
         }
 
+        public virtual void UpdateRevision(long revision)
+        {
+            this.Revision = revision;
+            this.typeInfo.Revision = revision;
+            this.UpdateTypeInfo(this.typeInfo);
+        }
+
         public void Initialize(TypeInfo typeInfo)
         {
             if (this.isLoaded == true)
@@ -123,6 +130,8 @@ namespace Ntreev.Crema.ServiceModel
                 this.OnTypeStateChanged(EventArgs.Empty);
             }
         }
+
+        public long Revision { get; set; }
 
         public TypeMetaData MetaData
         {

@@ -48,6 +48,8 @@ namespace Ntreev.Crema.Services.Domains
     class TableContentDomain : Domain
     {
         public const string TypeName = "Table";
+        private const string TablesRevisionKey = "tablesRevision";
+        private const string TypesRevisionKey = "typesRevision";
 
         private CremaDataSet dataSet;
         private List<FindResultInfo> findResults = new List<FindResultInfo>(100);
@@ -93,6 +95,71 @@ namespace Ntreev.Crema.Services.Domains
             {
                 var view = item.AsDataView();
                 this.views.Add(item.TableName, view);
+            }
+        }
+
+        protected override void OnSerializaing(SerializationInfo info, StreamingContext context)
+        {
+            base.OnSerializaing(info, context);
+
+            info.AddValue(TablesRevisionKey, GetTablesRevisionXml());
+            info.AddValue(TypesRevisionKey, GetTypesRevisionXml());
+
+            string GetTablesRevisionXml()
+            {
+                var list = new List<SerializableKeyValuePair<string, long>>();
+                if (this.Source is CremaDataSet dataSet)
+                {
+                    foreach (var table in dataSet.Tables)
+                    {
+                        list.Add(new SerializableKeyValuePair<string, long>(table.Name, table.Revision));
+                    }
+                }
+                return XmlSerializerUtility.GetString(list);
+            }
+
+            string GetTypesRevisionXml()
+            {
+                var list = new List<SerializableKeyValuePair<string, long>>();
+                if (this.Source is CremaDataSet dataSet)
+                {
+                    foreach (var type in dataSet.Types)
+                    {
+                        list.Add(new SerializableKeyValuePair<string, long>(type.Name, type.Revision));
+                    }
+                }
+                return XmlSerializerUtility.GetString(list);
+            }
+        }
+
+        protected override void Ondeserializing(SerializationInfo info)
+        {
+            base.Ondeserializing(info);
+
+            var tablesRevisionXml = info.GetValue(TablesRevisionKey, typeof(string)) as string;
+            var tablesRevision = XmlSerializerUtility.ReadString(tablesRevisionXml, typeof(List<SerializableKeyValuePair<string, long>>));
+            if (tablesRevision != null && tablesRevision is List<SerializableKeyValuePair<string, long>> tables)
+            {
+                foreach (var table in tables)
+                {
+                    if (table.Key != null && this.dataSet.Tables.Contains(table.Key))
+                    {
+                        this.dataSet.Tables[table.Key].UpdateRevision(table.Value);
+                    }
+                }
+            }
+
+            var typesRevisionXml = info.GetValue(TypesRevisionKey, typeof(string)) as string;
+            var typesRevision = XmlSerializerUtility.ReadString(typesRevisionXml, typeof(List<SerializableKeyValuePair<string, long>>));
+            if (typesRevision != null && typesRevision is List<SerializableKeyValuePair<string, long>> types)
+            {
+                foreach (var type in types)
+                {
+                    if (type.Key != null && this.dataSet.Types.Contains(type.Key))
+                    {
+                        this.dataSet.Types[type.Key].UpdateRevision(type.Value);
+                    }
+                }
             }
         }
 

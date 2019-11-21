@@ -20,21 +20,34 @@ using Ntreev.Crema.Services;
 using Ntreev.Library;
 using Ntreev.Library.Extensions;
 
-namespace Ntreev.Crema.Tests.Extensions
+namespace Ntreev.CremaServer.Tests.Extensions
 {
     public static class CremaServerTestFixtureExtensions
     {
-        public static void Login(string databaseName, string userId, string password)
-        {
-        }
-
-        public static (Authentication, IDataBase) InitDataBaseAndUser(this CremaServerTestFixture fixture, string databaseName, string userId, string password)
+        public static IDataBase InitDataBase(this CremaServerTestFixture fixture, string databaseName)
         {
             var cremaHost = fixture.CremaHost;
 
             return cremaHost.Dispatcher.Invoke(() =>
             {
                 var database = GetOrCreateDataBase(cremaHost, databaseName);
+                return database;
+            });
+        }
+
+        public static (Authentication, IDataBase) InitDataBaseAndUser(this CremaServerTestFixture fixture, string databaseName, string userId)
+        {
+            return InitDataBaseAndUser(fixture, databaseName, userId, userId);
+        }
+
+        public static (Authentication, IDataBase) InitDataBaseAndUser(this CremaServerTestFixture fixture, string databaseName, string userId, string password)
+        {
+            var cremaHost = fixture.CremaHost;
+
+            var database = InitDataBase(fixture, databaseName);
+
+            return cremaHost.Dispatcher.Invoke(() =>
+            {
                 var user = GetOrCreateUser(cremaHost, userId, password);
                 var authentication = cremaHost.Login(userId, password.ToSecureString());
 
@@ -44,31 +57,38 @@ namespace Ntreev.Crema.Tests.Extensions
             });
         }
 
-        public static IDataBase GetOrCreateDataBase(ICremaHost cremaHost, string databaseName)
+        public static IDataBase GetOrCreateDataBase(this ICremaHost cremaHost, string databaseName)
         {
             if (cremaHost.DataBases.Contains(databaseName))
             {
-                return cremaHost.DataBases[databaseName];
-            }
-
-            var authentication = GetAdminAuthentication(cremaHost);
-            try
-            {
-                var database = cremaHost.DataBases.AddNewDataBase(authentication, databaseName, "create database");
+                var database = cremaHost.DataBases[databaseName];
                 if (!database.IsLoaded)
                 {
-                    database.Load(authentication);
+                    database.Load(Authentication.System);
+                }
+
+                return database;
+            }
+
+            var adminAuthentication = cremaHost.GetAdminAuthentication();
+
+            try
+            {
+                var database = cremaHost.DataBases.AddNewDataBase(adminAuthentication, databaseName, "create database");
+                if (!database.IsLoaded)
+                {
+                    database.Load(Authentication.System);
                 }
 
                 return database;
             }
             finally
             {
-                cremaHost.Logout(authentication);
+                cremaHost.Logout(adminAuthentication);
             }
         }
 
-        private static IUser GetOrCreateUser(ICremaHost cremaHost, string userId, string password)
+        public static IUser GetOrCreateUser(this ICremaHost cremaHost, string userId, string password)
         {
             var userContext = cremaHost.GetService<IUserContext>();
             var user = userContext.Dispatcher.Invoke(() =>
@@ -83,25 +103,16 @@ namespace Ntreev.Crema.Tests.Extensions
 
             if (user != null) return user;
 
-            var authentication = GetAdminAuthentication(cremaHost);
+            var adminAuthentication = cremaHost.GetAdminAuthentication();
 
             try
             {
-
-                return userContext.Dispatcher.Invoke(() =>
-                {
-                    return userContext.Categories.Root.AddNewUser(authentication, userId, password.ToSecureString(), userId, Authority.Member, true);
-                });
+                return userContext.Dispatcher.Invoke(() => userContext.Categories.Root.AddNewUser(adminAuthentication, userId, password.ToSecureString(), userId, Authority.Member, true));
             }
             finally
             {
-                cremaHost.Logout(authentication);
+                cremaHost.Logout(adminAuthentication);
             }
-        }
-
-        private static Authentication GetAdminAuthentication(ICremaHost cremaHost)
-        {
-            return cremaHost.Login("admin", "admin".ToSecureString());
         }
     }
 }

@@ -15,24 +15,32 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Ntreev.Crema.Tests.Extensions
+namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Requests.CremaDev
 {
-    public static class JsonExtensions
+    public class GenerationDataRequest
     {
-        private static readonly JsonSerializerSettings DefaultSettings = new JsonSerializerSettings
-        {
-        };
+        [Required]
+        [DefaultValue(false)]
+        public bool IsDevMode { get; set; } = false;
 
-        public static string ToJson(this object obj, JsonSerializerSettings settings = null)
-        {
-            return JsonConvert.SerializeObject(obj, settings ?? DefaultSettings);
-        }
+        [Required]
+        [DefaultValue(-1)]
+        public int Revision { get; set; } = -1;
 
-        public static T FromJson<T>(this string obj, JsonSerializerSettings settings = null)
-        {
-            return JsonConvert.DeserializeObject<T>(obj, settings ?? DefaultSettings);
-        }
+        [Required]
+        [DefaultValue("All")]
+        public string Tags { get; set; } = "All";
+
+        [Required]
+        [DefaultValue("")]
+        public string FilterExpression { get; set; } = "";
     }
 }

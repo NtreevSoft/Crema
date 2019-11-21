@@ -33,6 +33,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Responses.Commands
         public bool IsFlag { get; set; }
         public string CategoryPath { get; set; }
         public string HashValue { get; set; }
+        public long Revision { get; set; }
 
         [JsonProperty(CremaSchema.Creator)]
         public string Creator { get; set; }
@@ -63,6 +64,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Responses.Commands
                 CreatedDateTime = typeInfo.CreationInfo.DateTime,
                 Modifier = typeInfo.ModificationInfo.ID,
                 ModifiedDateTime = typeInfo.ModificationInfo.DateTime,
+                Revision = typeInfo.Revision,
                 Members = typeInfo.Members.Select(MemberInfoResponse.ConvertFrom).ToArray()
             };
         }

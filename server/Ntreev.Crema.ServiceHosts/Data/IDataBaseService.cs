@@ -95,6 +95,9 @@ namespace Ntreev.Crema.ServiceHosts.Data
         ResultBase<LogInfo[]> GetTableItemLog(string itemPath);
 
         [OperationContract]
+        ResultBase<long> GetTableRevision(string itemPath);
+
+        [OperationContract]
         ResultBase<FindResultInfo[]> FindTableItem(string itemPath, string text, FindOptions options);
 
         [OperationContract]
@@ -189,6 +192,9 @@ namespace Ntreev.Crema.ServiceHosts.Data
 
         [OperationContract]
         ResultBase<LogInfo[]> GetTypeItemLog(string itemPath);
+
+        [OperationContract]
+        ResultBase<long> GetTypeRevision(string itemPath);
 
         [OperationContract]
         ResultBase<FindResultInfo[]> FindTypeItem(string itemPath, string text, FindOptions options);

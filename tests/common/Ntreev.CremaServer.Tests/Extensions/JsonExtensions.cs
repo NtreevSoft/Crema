@@ -15,31 +15,25 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.Services;
-using Ntreev.Library;
+using Newtonsoft.Json;
 
-namespace Ntreev.Crema.Tests.Extensions
+namespace Ntreev.CremaServer.Tests.Extensions
 {
-    public static class CremaHostExtensions
+    public static class JsonExtensions
     {
-        public static (Authentication, IDataBase) LoginAndEnter(this ICremaHost cremaHost, string databaseName, string userID, string password)
+        private static readonly JsonSerializerSettings DefaultSettings = new JsonSerializerSettings
         {
-            var authentication = cremaHost.Login(userID, password.ToSecureString());
-            return cremaHost.Dispatcher.Invoke(() =>
-            {
-                var database = cremaHost.DataBases[databaseName];
-                return database.Dispatcher.Invoke(() =>
-                {
-                    if (!database.IsLoaded)
-                    {
-                        database.Load(authentication);
-                    }
+            Formatting = Formatting.Indented
+        };
 
-                    database.Enter(authentication);
+        public static string ToJson(this object obj, JsonSerializerSettings settings = null)
+        {
+            return JsonConvert.SerializeObject(obj, settings ?? DefaultSettings);
+        }
 
-                    return (authentication, database);
-                });
-            });
+        public static T FromJson<T>(this string obj, JsonSerializerSettings settings = null)
+        {
+            return JsonConvert.DeserializeObject<T>(obj, settings ?? DefaultSettings);
         }
     }
 }

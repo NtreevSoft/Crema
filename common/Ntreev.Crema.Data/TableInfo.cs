@@ -72,6 +72,9 @@ namespace Ntreev.Crema.Data
         [DataMember]
         public string CategoryPath { get; set; }
 
+        [DataMember]
+        public long Revision { get; set; }
+
         public string ParentName
         {
             get
@@ -125,6 +128,7 @@ namespace Ntreev.Crema.Data
                    tableInfo.ModificationInfo == this.ModificationInfo &&
                    tableInfo.ContentsInfo == this.ContentsInfo &&
                    tableInfo.TemplatedParent == this.TemplatedParent &&
+                   tableInfo.Revision == this.Revision &&
                    HashUtility.Equals(tableInfo.Columns, this.Columns);
         }
 
@@ -138,7 +142,8 @@ namespace Ntreev.Crema.Data
                    HashUtility.GetHashCode(this.ModificationInfo) ^
                    HashUtility.GetHashCode(this.ContentsInfo) ^
                    HashUtility.GetHashCode(this.TemplatedParent) ^
-                   HashUtility.GetHashCode(this.Columns);
+                   HashUtility.GetHashCode(this.Columns) ^
+                   HashUtility.GetHashCode(this.Revision);
         }
 
         public IDictionary<string, object> ToDictionary()
@@ -159,6 +164,7 @@ namespace Ntreev.Crema.Data
                 { nameof(this.TemplatedParent), this.TemplatedParent },
                 { nameof(this.ParentName), this.ParentName },
                 { nameof(this.CategoryPath), this.CategoryPath },
+                { nameof(this.Revision), this.Revision },
                 { CremaSchema.Creator, this.CreationInfo.ID },
                 { CremaSchema.CreatedDateTime, this.CreationInfo.DateTime },
                 { CremaSchema.Modifier, this.ModificationInfo.ID },
