@@ -112,6 +112,9 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="cremaservice-daemon.cmd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="cremaservice-daemon.sh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
