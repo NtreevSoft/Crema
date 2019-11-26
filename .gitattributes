@@ -1,1 +1,2 @@
-*.sh eol=lf
+*.sh eol=lf diff=removebom
+*.cmd eof=crlf diff=removebom
