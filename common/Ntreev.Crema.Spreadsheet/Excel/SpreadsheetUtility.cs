@@ -15,47 +15,19 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Library;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Ntreev.Crema.Spreadsheet
+namespace Ntreev.Crema.Spreadsheet.Excel
 {
-    public class SpreadsheetWriterSettings
+    public static class SpreadsheetUtility
     {
-        public static SpreadsheetWriterSettings Default = new SpreadsheetWriterSettings();
-
-        public SpreadsheetWriterSettings()
+        public static string Ellipsis(string name)
         {
-            this.OmitSignatureDate = true;
-            this.Tags = TagInfo.All;
-            this.NameEllipsis = SpreadsheetUtility.Ellipsis;
-        }
+            if (name.Length <= 31)
+                return name;
 
-        public bool OmitAttribute
-        {
-            get;
-            set;
-        }
-
-        public bool OmitSignatureDate
-        {
-            get;
-            set;
-        }
-
-        public TagInfo Tags
-        {
-            get;
-            set;
-        }
-
-        public Func<string, string> NameEllipsis
-        {
-            get; set;
+            var middle = "~" + name.GetHashCode() + "~";
+            var first = name.Substring(0, (name.Length - middle.Length) / 2);
+            var last = name.Substring(name.Length - (31 - (first.Length + middle.Length)));
+            return first + middle + last;
         }
     }
 }

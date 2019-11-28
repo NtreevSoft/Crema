@@ -18,24 +18,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DocumentFormat.OpenXml.Packaging;
-using Ap = DocumentFormat.OpenXml.ExtendedProperties;
-using Vt = DocumentFormat.OpenXml.VariantTypes;
-using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Spreadsheet;
-using X14 = DocumentFormat.OpenXml.Office2010.Excel;
-using A = DocumentFormat.OpenXml.Drawing;
-using Ntreev.Crema.Data;
-using System.Diagnostics;
-using System.Threading;
-using Ntreev.Library;
-using Ntreev.Crema.Data.Xml.Schema;
 using ClosedXML.Excel;
+using Ntreev.Crema.Data;
+using Ntreev.Crema.Data.Xml.Schema;
+using Ntreev.Library;
 
-namespace Ntreev.Crema.Spreadsheet
+namespace Ntreev.Crema.Spreadsheet.Excel
 {
     public class SpreadsheetWriter : IDisposable
     {
