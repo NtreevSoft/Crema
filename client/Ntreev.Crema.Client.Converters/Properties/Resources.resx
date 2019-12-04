@@ -207,4 +207,13 @@
   <data name="Label_IncludeDate" xml:space="preserve">
     <value>Include date in file name</value>
   </data>
+  <data name="Label_CreateDirectoryIfNotExists" xml:space="preserve">
+    <value>Create directory if not exists</value>
+  </data>
+  <data name="MenuItem_QuickExport" xml:space="preserve">
+    <value>Quick E_xport</value>
+  </data>
+  <data name="Label_GetDomainDataSetIfEditing" xml:space="preserve">
+    <value>Get domain dataset when you editing.</value>
+  </data>
 </root>

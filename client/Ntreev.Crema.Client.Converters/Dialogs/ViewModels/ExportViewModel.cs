@@ -34,6 +34,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Ntreev.Crema.Client.Converters.Properties;
+using Ntreev.Crema.Client.Converters.Spreadsheet.Csv;
+using Ntreev.Crema.Client.Converters.Spreadsheet.Excel;
+using Action = System.Action;
 
 namespace Ntreev.Crema.Client.Converters.Dialogs.ViewModels
 {
@@ -51,6 +54,7 @@ namespace Ntreev.Crema.Client.Converters.Dialogs.ViewModels
         private CancellationTokenSource cancelToken;
 
         private TableRootTreeViewItemViewModel root;
+        private string[] lastExportedTables;
 
         private ExportViewModel(Authentication authentication, IDataBase dataBase, string[] selectedPaths)
             : base(Resources.Title_Export)
@@ -70,6 +74,8 @@ namespace Ntreev.Crema.Client.Converters.Dialogs.ViewModels
 
             this.exporters = new ObservableCollection<IExporter>(this.exportService.Exporters);
             this.SelectedExporter = this.exporters.FirstOrDefault(item => item.Name == (string)this.configService[this.GetType(), nameof(SelectedExporter)]);
+
+            this.configService?.Update(this);
         }
 
         public static Task<ExportViewModel> CreateInstanceAsync(Authentication authentication, ITableCategoryDescriptor descriptor)
@@ -170,7 +176,7 @@ namespace Ntreev.Crema.Client.Converters.Dialogs.ViewModels
             get { return this.categories; }
         }
 
-        public async Task ExportAsync()
+        public async Task ExportAsync(bool showExportCompletedMessageBox = true)
         {
             this.cancelToken = new CancellationTokenSource();
 
@@ -190,45 +196,25 @@ namespace Ntreev.Crema.Client.Converters.Dialogs.ViewModels
                     return viewModel.IsChecked != false;
                 });
 
-                if (this.selectedExporter.Settings.IsSeparable == true)
+                if (this.selectedExporter.Settings is ExcelExporterSettings excelExporterSettings)
                 {
-                    var query = from item in categories
-                                from tableItem in item.Items.OfType<TableTreeViewItemViewModel>()
-                                where tableItem.IsChecked != false
-                                select tableItem as ExportTreeViewItemViewModel;
-                    var items = this.selectedExporter.Settings.IsOneTableToOneFile == true ? query : categories;
-                    foreach (var item in items)
-                    {
-                        this.ProgressMessage = string.Format(Resources.Message_ReceivingDataFormat, item.Path);
-                        var dataSet = new CremaDataSet();
-                        await this.dataBase.Dispatcher.InvokeAsync(() => dataSet.ExtendedProperties[typeof(DataBaseInfo)] = this.dataBase.DataBaseInfo);
-                        await item.PreviewAsync(dataSet);
-                        if (this.cancelToken.IsCancellationRequested == true)
-                            break;
-
-                        this.ProgressMessage = string.Format(Resources.Message_ExportingDataFormat, item.Path);
-                        await Task.Run(() => this.selectedExporter.Export(item.Path, dataSet));
-                        if (this.cancelToken.IsCancellationRequested == true)
-                            break;
-                    }
+                    await this.ExcelExportAsync(excelExporterSettings, categories);
+                }
+                else if (this.selectedExporter.Settings is CsvExporterSettings csvExporterSettings)
+                {
+                    await this.CsvExportAsync(csvExporterSettings, categories);
                 }
                 else
                 {
-                    var dataSet = new CremaDataSet();
-                    foreach (var item in categories)
-                    {
-                        this.ProgressMessage = string.Format(Resources.Message_ReceivingDataFormat, item.Path);
-                        await this.dataBase.Dispatcher.InvokeAsync(() => dataSet.ExtendedProperties[typeof(DataBaseInfo)] = this.dataBase.DataBaseInfo);
-                        await item.PreviewAsync(dataSet);
-                        if (this.cancelToken.IsCancellationRequested == true)
-                            break;
-                    }
-
-                    this.ProgressMessage = Resources.Message_ExportingData;
-                    await Task.Run(() => this.selectedExporter.Export(null, dataSet));
+                    throw new NotSupportedException(this.selectedExporter.Settings.GetType().ToString());
                 }
+                
                 this.configService[this.GetType(), nameof(SelectedExporter)] = this.selectedExporter.Name;
-                AppMessageBox.Show(Resources.Message_Exported);
+
+                if (showExportCompletedMessageBox)
+                {
+                    AppMessageBox.Show(Resources.Message_Exported);
+                }
             }
             catch (Exception e)
             {
@@ -240,6 +226,121 @@ namespace Ntreev.Crema.Client.Converters.Dialogs.ViewModels
                 this.CanExport = true;
                 this.cancelToken = null;
             }
+        }
+
+        public async Task QuickExportAsync(bool showExportCompletedMessageBox = true, Action exportCompletedAction = null)
+        {
+            this.SelectItems(this.root, this.LastExportedTables);
+            await this.ExportAsync(showExportCompletedMessageBox);
+            exportCompletedAction?.Invoke();
+        }
+
+        private async Task ExcelExportAsync(ExcelExporterSettings settings, TableCategoryTreeViewItemViewModel[] categories)
+        {
+            if (settings.IsSeparable == true)
+            {
+                var query = from item in categories
+                            from tableItem in item.Items.OfType<TableTreeViewItemViewModel>()
+                            where tableItem.IsChecked != false
+                            select tableItem as ExportTreeViewItemViewModel;
+                var items = settings.IsOneTableToOneFile == true ? query : categories;
+                this.LastExportedTables = items.Select(o => o.Path).ToArray();
+                foreach (var item in items)
+                {
+                    this.ProgressMessage = string.Format(Resources.Message_ReceivingDataFormat, item.Path);
+                    var dataSet = new CremaDataSet();
+                    await this.dataBase.Dispatcher.InvokeAsync(() => dataSet.ExtendedProperties[typeof(DataBaseInfo)] = this.dataBase.DataBaseInfo);
+                    await item.PreviewAsync(dataSet);
+                    if (this.cancelToken.IsCancellationRequested == true)
+                        break;
+
+                    this.ProgressMessage = string.Format(Resources.Message_ExportingDataFormat, item.Path);
+                    await Task.Run(() => this.selectedExporter.Export(item.Path, dataSet));
+                    if (this.cancelToken.IsCancellationRequested == true)
+                        break;
+                }
+            }
+            else
+            {
+                var dataSet = new CremaDataSet();
+                foreach (var item in categories)
+                {
+                    this.ProgressMessage = string.Format(Resources.Message_ReceivingDataFormat, item.Path);
+                    await this.dataBase.Dispatcher.InvokeAsync(() => dataSet.ExtendedProperties[typeof(DataBaseInfo)] = this.dataBase.DataBaseInfo);
+                    await item.PreviewAsync(dataSet);
+                    if (this.cancelToken.IsCancellationRequested == true)
+                        break;
+                }
+
+                this.ProgressMessage = Resources.Message_ExportingData;
+                await Task.Run(() => this.selectedExporter.Export(null, dataSet));
+            }
+
+            this.configService.Commit(this);
+        }
+
+        private async Task CsvExportAsync(CsvExporterSettings settings, TableCategoryTreeViewItemViewModel[] categories)
+        {
+            var query = from item in categories
+                from tableItem in item.Items.OfType<TableTreeViewItemViewModel>()
+                where tableItem.IsChecked != false
+                select tableItem as ExportTreeViewItemViewModel;
+
+            this.LastExportedTables = query.Select(o => o.Path).ToArray();
+
+            foreach (var item in query)
+            {
+                this.ProgressMessage = string.Format(Resources.Message_ReceivingDataFormat, item.Path);
+                var dataSet = new CremaDataSet();
+                await this.dataBase.Dispatcher.InvokeAsync(() => dataSet.ExtendedProperties[typeof(DataBaseInfo)] = this.dataBase.DataBaseInfo);
+
+                if (settings.GetDomainDataSetIfEditing)
+                {
+                    var domainDataSet = GetDomainDataSet(this.authentication, item);
+                    if (domainDataSet == null)
+                    {
+                        await item.PreviewAsync(dataSet);
+                    }
+                    else
+                    {
+                        dataSet = domainDataSet?.Copy();
+                    }
+                }
+                else
+                {
+                    await item.PreviewAsync(dataSet);
+                }
+
+                if (this.cancelToken.IsCancellationRequested == true)
+                    break;
+
+                this.ProgressMessage = string.Format(Resources.Message_ExportingDataFormat, item.Path);
+                await Task.Run(() => this.selectedExporter.Export(item.Path, dataSet));
+                if (this.cancelToken.IsCancellationRequested == true)
+                    break;
+            }
+
+            this.configService.Commit(this);
+        }
+
+        private CremaDataSet GetDomainDataSet(Authentication authentication, ExportTreeViewItemViewModel item)
+        {
+            return this.dataBase.Dispatcher.Invoke(() =>
+            {
+                var table = this.dataBase.TableContext.Tables[item.DisplayName];
+                return table.Dispatcher.Invoke(() =>
+                {
+                    var content = table.Content;
+                    var domain = content?.Domain;
+
+                    return domain?.Dispatcher.Invoke(() =>
+                    {
+                        return domain.Users.Contains(authentication.ID)
+                            ? domain.GetClientDataSet(authentication)
+                            : null;
+                    });
+                });
+            });
         }
 
         public void Cancel()
@@ -280,6 +381,13 @@ namespace Ntreev.Crema.Client.Converters.Dialogs.ViewModels
         public bool IsExporting
         {
             get { return this.isExporting == true; }
+        }
+
+        [ConfigurationProperty(nameof(lastExportedTables))]
+        public string[] LastExportedTables
+        {
+            get => lastExportedTables;
+            set => lastExportedTables = value;
         }
 
         private IEnumerable<TableCategoryTreeViewItemViewModel> GetCategories(TreeViewItemViewModel treeViewItem)

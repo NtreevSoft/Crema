@@ -24,6 +24,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
              xmlns:nmfc="clr-namespace:Ntreev.ModernUI.Framework.Controls;assembly=Ntreev.ModernUI.Framework"
              xmlns:nmfm="clr-namespace:Ntreev.ModernUI.Framework.Markup;assembly=Ntreev.ModernUI.Framework"
              xmlns:p="clr-namespace:Ntreev.Crema.Client.Converters.Properties"
+             xmlns:cal="http://www.caliburnproject.org"
              xmlns:local="clr-namespace:Ntreev.Crema.Client.Converters.Dialogs.Views" 
              mc:Ignorable="d" Width="800" Height="600" >
     
@@ -47,7 +48,9 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
     <DockPanel>
         <Grid DockPanel.Dock="Bottom">
             <Button x:Name="Export" Content="{x:Static p:Resources.Button_Export}" Visibility="{nmfm:VisibilityBinding IsProgressing, Inverse=True}"
-                    Style="{StaticResource Dialog_Button_Style}" HorizontalAlignment="Center" />
+                    Style="{StaticResource Dialog_Button_Style}" HorizontalAlignment="Center" 
+                    cal:Message.Attach="[Event Click] = [Action ExportAsync('true')]"
+                    />
             <Button x:Name="Cancel" Content="{x:Static p:Resources.Button_Cancel}" Visibility="{nmfm:VisibilityBinding IsProgressing}"
                     Style="{StaticResource Dialog_Button_Style}" HorizontalAlignment="Center" />
         </Grid>
