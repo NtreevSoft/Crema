@@ -15,21 +15,14 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Library;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Caliburn.Micro;
-using Ntreev.Crema.Client.Converters.Properties;
-using System.ComponentModel;
+using Ntreev.Library;
 
-namespace Ntreev.Crema.Client.Converters
+namespace Ntreev.Crema.Client.Converters.Spreadsheet.Excel
 {
-    public class ExporterSettings : PropertyChangedBase
+    public class ExcelExporterSettings : PropertyChangedBase
     {
-        public readonly static ExporterSettings Default = new ExporterSettings();
+        public readonly static ExcelExporterSettings Default = new ExcelExporterSettings();
 
         private bool omitAttribute;
         private bool omitSignatureDate;
@@ -38,7 +31,7 @@ namespace Ntreev.Crema.Client.Converters
         private bool isIncludeDate;
         private string outputDateFormat = "yyyy-MM-dd_HH_mm";  // isIncludeDate : true일때 출력하는 날짜 형식
 
-        public ExporterSettings()
+        public ExcelExporterSettings()
         {
         }
 

@@ -23,6 +23,7 @@ using System.ServiceModel;
 using Ntreev.Crema.Services;
 using Ntreev.Crema.ServiceModel;
 using System.Threading.Tasks;
+using Ntreev.Crema.Data;
 using Ntreev.Library;
 using Ntreev.Crema.Data.Xml.Schema;
 
@@ -40,6 +41,9 @@ namespace Ntreev.Crema.ServiceHosts.Domains
 
         [OperationContract]
         ResultBase<DomainContextMetaData> GetMetaData();
+
+        [OperationContract]
+        ResultBase<CremaDataSet> GetDataSet(Guid domainID);
 
         [OperationContract]
         ResultBase SetUserLocation(Guid domainID, DomainLocationInfo location);

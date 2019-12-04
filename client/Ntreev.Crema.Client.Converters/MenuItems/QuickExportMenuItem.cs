@@ -15,67 +15,66 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using System.ComponentModel.Composition;
+using System.Linq;
+using System.Windows.Input;
 using Ntreev.Crema.Client.Converters.Dialogs.ViewModels;
 using Ntreev.Crema.Client.Converters.Properties;
 using Ntreev.Crema.Client.Framework;
-using Ntreev.Crema.ServiceModel;
-using Ntreev.Crema.Services;
 using Ntreev.ModernUI.Framework;
-using Ntreev.ModernUI.Framework.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Ntreev.Crema.Client.Converters.MenuItems.Tables
+namespace Ntreev.Crema.Client.Converters.MenuItems
 {
     [Export(typeof(IMenuItem))]
-    [ParentType("Ntreev.Crema.Client.Tables.BrowserItems.ViewModels.TableTreeViewItemViewModel, Ntreev.Crema.Client.Tables, Version=3.6.0.0, Culture=neutral, PublicKeyToken=null")]
-    class TableExportMenuItem : MenuItemBase
+    [ParentType(typeof(IToolMenuItem))]
+    public class QuickExportMenuItem : MenuItemBase
     {
         private readonly ICremaAppHost cremaAppHost;
+
         [Import]
         private Authenticator authenticator = null;
 
         [ImportingConstructor]
-        public TableExportMenuItem(ICremaAppHost cremaAppHost)
+        public QuickExportMenuItem(ICremaAppHost cremaAppHost)
         {
             this.cremaAppHost = cremaAppHost;
             this.cremaAppHost.Loaded += this.InvokeCanExecuteChangedEvent;
             this.cremaAppHost.Unloaded += this.InvokeCanExecuteChangedEvent;
-            this.DisplayName = Resources.MenuItem_Export;
-        }
-
-        protected override async void OnExecute(object parameter)
-        {
-            if (parameter is ITableDescriptor descriptor)
-            {
-                var dialog = await ExportViewModel.CreateInstanceAsync(this.authenticator, descriptor);
-                dialog?.ShowDialog();
-            }
+            this.DisplayName = Resources.MenuItem_QuickExport;
+            this.InputGesture = new KeyGesture(Key.E, ModifierKeys.Control);
         }
 
         protected override bool OnCanExecute(object parameter)
         {
-            if (this.cremaAppHost.IsLoaded == false)
-                return false;
-            if (parameter == null)
-                return false;
-            try
+            return this.cremaAppHost.IsLoaded;
+        }
+
+        protected override async void OnExecute(object parameter)
+        {
+            var dialog = await ExportViewModel.CreateInstanceAsync(this.authenticator, this.cremaAppHost);
+
+            if (dialog.IsExporting)
             {
-                if (parameter is IPermissionDescriptor descriptor)
-                {
-                    return descriptor.AccessType >= AccessType.Guest;
-                }
-                return false;
+                AppMessageBox.Show("Now exporting.");
+                return;
             }
-            catch
+
+            if (dialog.LastExportedTables == null || !dialog.LastExportedTables.Any())
             {
-                return false;
+                AppMessageBox.Show("No table to export because there is no last export.");
+                return;
             }
+
+            if (dialog.CanExport == false)
+            {
+                AppMessageBox.Show("Could not export.");
+                return;
+            }
+
+            var exportTask = dialog.QuickExportAsync(false, () => dialog?.TryClose());
+            dialog?.ShowDialog();
+
+            await exportTask;
         }
     }
 }
