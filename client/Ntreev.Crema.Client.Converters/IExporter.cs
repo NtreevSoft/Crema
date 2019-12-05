@@ -27,6 +27,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Ntreev.Crema.Client.Converters.Spreadsheet.Excel;
 
 namespace Ntreev.Crema.Client.Converters
 {
@@ -38,6 +39,6 @@ namespace Ntreev.Crema.Client.Converters
 
         bool CanExport { get; }
 
-        ExporterSettings Settings { get; }
+        object Settings { get; }
     }
 }
