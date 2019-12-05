@@ -16,39 +16,38 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Ntreev.Crema.Spreadsheet.Excel;
+using Ntreev.Library;
 
-namespace Ntreev.Crema.Client.Converters.Spreadsheet.Views
+namespace Ntreev.Crema.Spreadsheet.Csv
 {
-    /// <summary>
-    /// ImporterView.xaml에 대한 상호 작용 논리
-    /// </summary>
-    public partial class ImporterView : UserControl
+    public class SpreadsheetCsvWriterSettings
     {
-        public ImporterView()
+        public static SpreadsheetCsvWriterSettings Default = new SpreadsheetCsvWriterSettings();
+
+        public SpreadsheetCsvWriterSettings()
         {
-            InitializeComponent();
+            this.OmitSignatureDate = true;
+            this.Tags = TagInfo.All;
+            this.NameEllipsis = SpreadsheetUtility.Ellipsis;
         }
 
-        private void TextBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (Keyboard.Modifiers == ModifierKeys.None && e.Key == Key.Enter)
-            {
-                var be = BindingOperations.GetBindingExpression(sender as TextBox, TextBox.TextProperty);
-                be.UpdateSource();
-            }
-        }
+        public bool OmitAttribute { get; set; }
+
+        public bool OmitSignatureDate { get; set; }
+
+        public TagInfo Tags { get; set; }
+
+        public Func<string, string> NameEllipsis { get; set; }
+
+        public string CategorySeperatorString { get; set; }= ".";
+
+        public string Delimiter { get; set; } = ",";
+
+        public string Extension { get; set; } = ".csv";
+
+        public string FilenamePattern { get; set; }
+
+        public bool CreateDirectoryIfNotExists { get; set; } = true;
     }
 }

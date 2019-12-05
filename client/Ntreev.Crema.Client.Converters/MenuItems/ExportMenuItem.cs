@@ -47,10 +47,9 @@ namespace Ntreev.Crema.Client.Converters.MenuItems
             this.cremaAppHost.Loaded += this.InvokeCanExecuteChangedEvent;
             this.cremaAppHost.Unloaded += this.InvokeCanExecuteChangedEvent;
             this.DisplayName = Resources.MenuItem_Export;
-            this.InputGesture = new KeyGesture(Key.E, ModifierKeys.Control);
         }
 
-        protected async override void OnExecute(object parameter)
+        protected override async void OnExecute(object parameter)
         {
             var dialog = await ExportViewModel.CreateInstanceAsync(this.authenticator, this.cremaAppHost);
             dialog?.ShowDialog();

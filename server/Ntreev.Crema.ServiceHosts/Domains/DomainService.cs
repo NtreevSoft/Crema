@@ -28,6 +28,7 @@ using System.Collections.Specialized;
 using System.Threading.Tasks;
 using Ntreev.Crema.Services.Properties;
 using System.Windows.Threading;
+using Ntreev.Crema.Data;
 using Ntreev.Library;
 
 namespace Ntreev.Crema.ServiceHosts.Domains
@@ -131,6 +132,11 @@ namespace Ntreev.Crema.ServiceHosts.Domains
                 result.Fault = new CremaFault(e);
             }
             return result;
+        }
+
+        public ResultBase<CremaDataSet> GetDataSet(Guid domainID)
+        {
+            return this.Invoke(domainID, domain => domain.Source as CremaDataSet);
         }
 
         public ResultBase<DomainRowInfo[]> SetRow(Guid domainID, DomainRowInfo[] rows)

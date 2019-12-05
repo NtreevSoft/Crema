@@ -26,6 +26,12 @@
   <wsdl:message name="IDomainService_GetMetaData_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetMetaDataResponse" />
   </wsdl:message>
+  <wsdl:message name="IDomainService_GetDataSet_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDataSet" />
+  </wsdl:message>
+  <wsdl:message name="IDomainService_GetDataSet_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDataSetResponse" />
+  </wsdl:message>
   <wsdl:message name="IDomainService_SetUserLocation_InputMessage">
     <wsdl:part name="parameters" element="tns:SetUserLocation" />
   </wsdl:message>
@@ -140,6 +146,10 @@
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetMetaData">
       <wsdl:input wsaw:Action="http://www.ntreev.com/IDomainService/GetMetaData" message="tns:IDomainService_GetMetaData_InputMessage" />
       <wsdl:output wsaw:Action="http://www.ntreev.com/IDomainService/GetMetaDataResponse" message="tns:IDomainService_GetMetaData_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetDataSet">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDomainService/GetDataSet" message="tns:IDomainService_GetDataSet_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDomainService/GetDataSetResponse" message="tns:IDomainService_GetDataSet_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="SetUserLocation">
       <wsdl:input wsaw:Action="http://www.ntreev.com/IDomainService/SetUserLocation" message="tns:IDomainService_SetUserLocation_InputMessage" />

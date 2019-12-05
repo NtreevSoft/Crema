@@ -207,4 +207,13 @@
   <data name="Label_IncludeDate" xml:space="preserve">
     <value>출력파일에 날짜 포함시키기</value>
   </data>
+  <data name="Label_CreateDirectoryIfNotExists" xml:space="preserve">
+    <value>디렉토리가 없으면 생성</value>
+  </data>
+  <data name="MenuItem_QuickExport" xml:space="preserve">
+    <value>빠른 내보내기(_X)</value>
+  </data>
+  <data name="Label_GetDomainDataSetIfEditing" xml:space="preserve">
+    <value>편집 중인 데이터 가져오기 (편집 중인 테이블인 경우)</value>
+  </data>
 </root>

@@ -24,6 +24,9 @@ namespace Ntreev.Crema.Services.DomainService {
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDomainService/GetMetaData", ReplyAction="http://www.ntreev.com/IDomainService/GetMetaDataResponse")]
         Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.DomainContextMetaData> GetMetaData();
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDomainService/GetDataSet", ReplyAction="http://www.ntreev.com/IDomainService/GetDataSetResponse")]
+        Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.Data.CremaDataSet> GetDataSet(System.Guid domainID);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDomainService/SetUserLocation", ReplyAction="http://www.ntreev.com/IDomainService/SetUserLocationResponse")]
         Ntreev.Crema.ServiceModel.ResultBase SetUserLocation(System.Guid domainID, Ntreev.Crema.ServiceModel.DomainLocationInfo location);
         
@@ -40,6 +43,7 @@ namespace Ntreev.Crema.Services.DomainService {
         [System.ServiceModel.ServiceKnownTypeAttribute(typeof(System.DBNull))]
         [System.ServiceModel.ServiceKnownTypeAttribute(typeof(Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.DomainContextMetaData>))]
         [System.ServiceModel.ServiceKnownTypeAttribute(typeof(Ntreev.Crema.ServiceModel.ResultBase))]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.Data.CremaDataSet>))]
         [System.ServiceModel.ServiceKnownTypeAttribute(typeof(Ntreev.Crema.ServiceModel.DomainLocationInfo))]
         [System.ServiceModel.ServiceKnownTypeAttribute(typeof(Ntreev.Crema.ServiceModel.DomainRowInfo[]))]
         [System.ServiceModel.ServiceKnownTypeAttribute(typeof(Ntreev.Crema.ServiceModel.DomainRowInfo))]
@@ -113,6 +117,7 @@ namespace Ntreev.Crema.Services.DomainService {
         [System.ServiceModel.ServiceKnownTypeAttribute(typeof(System.DBNull))]
         [System.ServiceModel.ServiceKnownTypeAttribute(typeof(Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.DomainContextMetaData>))]
         [System.ServiceModel.ServiceKnownTypeAttribute(typeof(Ntreev.Crema.ServiceModel.ResultBase))]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.Data.CremaDataSet>))]
         [System.ServiceModel.ServiceKnownTypeAttribute(typeof(Ntreev.Crema.ServiceModel.DomainLocationInfo))]
         [System.ServiceModel.ServiceKnownTypeAttribute(typeof(Ntreev.Crema.ServiceModel.DomainRowInfo[]))]
         [System.ServiceModel.ServiceKnownTypeAttribute(typeof(Ntreev.Crema.ServiceModel.DomainRowInfo))]
@@ -166,6 +171,10 @@ namespace Ntreev.Crema.Services.DomainService {
         
         public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.DomainContextMetaData> GetMetaData() {
             return base.Channel.GetMetaData();
+        }
+        
+        public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.Data.CremaDataSet> GetDataSet(System.Guid domainID) {
+            return base.Channel.GetDataSet(domainID);
         }
         
         public Ntreev.Crema.ServiceModel.ResultBase SetUserLocation(System.Guid domainID, Ntreev.Crema.ServiceModel.DomainLocationInfo location) {
