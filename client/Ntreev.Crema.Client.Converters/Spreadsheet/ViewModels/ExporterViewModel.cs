@@ -34,6 +34,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using Ntreev.Crema.Spreadsheet.Excel;
 using Ntreev.Library.IO;
 
 namespace Ntreev.Crema.Client.Converters.Spreadsheet.ViewModels
