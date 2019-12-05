@@ -15,29 +15,29 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.Services;
-using Ntreev.Crema.ServiceModel;
-using Ntreev.Crema.Data;
-using Ntreev.Library;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Input;
 
-namespace Ntreev.Crema.Client.Converters
+namespace Ntreev.Crema.Client.Converters.Spreadsheet.Excel.Views
 {
-    public interface IExporter
+    /// <summary>
+    /// ImporterView.xaml에 대한 상호 작용 논리
+    /// </summary>
+    public partial class ImporterView : UserControl
     {
-        void Export(string itemPath, CremaDataSet dataSet);
+        public ImporterView()
+        {
+            InitializeComponent();
+        }
 
-        string Name { get; }
-
-        bool CanExport { get; }
-
-        object Settings { get; }
+        private void TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.None && e.Key == Key.Enter)
+            {
+                var be = BindingOperations.GetBindingExpression(sender as TextBox, TextBox.TextProperty);
+                be.UpdateSource();
+            }
+        }
     }
 }
