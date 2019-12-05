@@ -109,17 +109,7 @@
     <Compile Include="Dialogs\Views\ImportView.xaml.cs">
       <DependentUpon>ImportView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Spreadsheet\ViewModels\SpreadsheetTreeViewItemViewModel.cs" />
-    <Compile Include="Spreadsheet\ViewModels\ImporterViewModel.cs" />
-    <Compile Include="Spreadsheet\ViewModels\SheetTreeViewItemViewModel.cs" />
-    <None Include="Spreadsheet\ExcelConverter.cs" />
-    <Compile Include="Spreadsheet\ViewModels\ExporterViewModel.cs" />
-    <Compile Include="Spreadsheet\Views\ExporterView.xaml.cs">
-      <DependentUpon>ExporterView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Spreadsheet\Views\ImporterView.xaml.cs">
-      <DependentUpon>ImporterView.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="MenuItems\QuickExportMenuItem.cs" />
     <Compile Include="ExporterSettings.cs" />
     <Compile Include="ImportService.cs" />
     <Compile Include="ExportService.cs" />
@@ -148,6 +138,23 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Spreadsheet\Csv\CsvExporterSettings.cs" />
+    <Compile Include="Spreadsheet\Csv\ViewModels\ExporterViewModel.cs" />
+    <Compile Include="Spreadsheet\Csv\Views\ExporterView.xaml.cs">
+      <DependentUpon>ExporterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Spreadsheet\Excel\ExcelConverter.cs" />
+    <Compile Include="Spreadsheet\Excel\ExcelExporterSettings.cs" />
+    <Compile Include="Spreadsheet\Excel\ViewModels\ExporterViewModel.cs" />
+    <Compile Include="Spreadsheet\Excel\ViewModels\ImporterViewModel.cs" />
+    <Compile Include="Spreadsheet\Excel\Views\ExporterView.xaml.cs">
+      <DependentUpon>ExporterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Spreadsheet\Excel\Views\ImporterView.xaml.cs">
+      <DependentUpon>ImporterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Spreadsheet\ViewModels\SheetTreeViewItemViewModel.cs" />
+    <Compile Include="Spreadsheet\ViewModels\SpreadsheetTreeViewItemViewModel.cs" />
     <Compile Include="ToolBarItems\ExportRevisionDataBaseToolBarItem.cs" />
     <Compile Include="ToolBarItems\ExportRevisionTableToolBarItem.cs" />
     <Compile Include="ToolBarItems\TableBrowser\ExportTableItemToolBarItem.cs" />
@@ -190,13 +197,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Spreadsheet\Views\ExporterView.xaml">
+    <Page Include="Spreadsheet\Csv\Views\ExporterView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Spreadsheet\Views\ImporterView.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Spreadsheet\Excel\Views\ExporterView.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Spreadsheet\Excel\Views\ImporterView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>

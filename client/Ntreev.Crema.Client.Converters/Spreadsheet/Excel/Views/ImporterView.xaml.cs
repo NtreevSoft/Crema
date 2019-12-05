@@ -15,23 +15,29 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Input;
 
-// 어셈블리에 대한 일반 정보는 다음 특성 집합을 통해 
-// 제어됩니다. 어셈블리와 관련된 정보를 수정하려면
-// 이러한 특성 값을 변경하세요.
-[assembly: AssemblyTitle("Ntreev.Crema.Data")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyProduct("Ntreev.Crema.Data")]
+namespace Ntreev.Crema.Client.Converters.Spreadsheet.Excel.Views
+{
+    /// <summary>
+    /// ImporterView.xaml에 대한 상호 작용 논리
+    /// </summary>
+    public partial class ImporterView : UserControl
+    {
+        public ImporterView()
+        {
+            InitializeComponent();
+        }
 
-// ComVisible을 false로 설정하면 이 어셈블리의 형식이 COM 구성 요소에 
-// 표시되지 않습니다.  COM에서 이 어셈블리의 형식에 액세스하려면 
-// 해당 형식에 대해 ComVisible 특성을 true로 설정하세요.
-[assembly: ComVisible(false)]
-
-// 이 프로젝트가 COM에 노출되는 경우 다음 GUID는 typelib의 ID를 나타냅니다.
-[assembly: Guid("04aeb614-3510-4064-99af-0aa807c7f957")]
-[assembly: InternalsVisibleTo("Ntreev.Crema.Data.Diff")]
-[assembly: InternalsVisibleTo("Ntreev.Crema.Services")]
+        private void TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.None && e.Key == Key.Enter)
+            {
+                var be = BindingOperations.GetBindingExpression(sender as TextBox, TextBox.TextProperty);
+                be.UpdateSource();
+            }
+        }
+    }
+}

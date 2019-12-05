@@ -29,6 +29,11 @@ namespace Ntreev.Crema.Services
 {
     public interface IDomain : IServiceProvider, IDispatcherObject, IExtendedProperties
     {
+#if CLIENT
+        CremaDataSet GetDataSet(Authentication authentication);
+        CremaDataSet GetClientDataSet(Authentication authentication);
+#endif
+
         void Delete(Authentication authentication, bool isCancel);
 
         void BeginUserEdit(Authentication authentication, DomainLocationInfo location);

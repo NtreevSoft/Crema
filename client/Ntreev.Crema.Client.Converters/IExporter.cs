@@ -38,6 +38,6 @@ namespace Ntreev.Crema.Client.Converters
 
         bool CanExport { get; }
 
-        ExporterSettings Settings { get; }
+        object Settings { get; }
     }
 }

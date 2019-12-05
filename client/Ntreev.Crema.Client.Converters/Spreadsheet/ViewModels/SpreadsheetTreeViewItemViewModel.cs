@@ -26,6 +26,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using Ntreev.Crema.Data;
+using Ntreev.Crema.Spreadsheet.Excel;
 
 namespace Ntreev.Crema.Client.Converters.Spreadsheet.ViewModels
 {

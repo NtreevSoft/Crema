@@ -75,8 +75,11 @@ namespace Ntreev.Crema.Services.Data
             if (this.row != null)
                 throw new NotImplementedException();
 
+            var tableName = this.table is InternalDataTable internalDataTable
+                ? internalDataTable.LocalName
+                : this.table.TableName;
             var fields = this.fields.Values.ToArray();
-            var keys = this.domain.Dispatcher.Invoke(() => this.domain.NewRow(authentication, this.table.TableName, fields));
+            var keys = this.domain.Dispatcher.Invoke(() => this.domain.NewRow(authentication, tableName, fields));
             this.row = this.table.Rows.Find(keys);
             this.fields = null;
         }

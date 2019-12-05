@@ -24,6 +24,7 @@ using Ntreev.Library.ObjectModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Ntreev.Crema.Data;
 
 namespace Ntreev.Crema.Services.Domains
 {
@@ -50,6 +51,21 @@ namespace Ntreev.Crema.Services.Domains
             this.Initialize(domainInfo); ;
             this.Name = domainInfo.DomainID.ToString();
             this.users = new DomainUserCollection(this);
+        }
+
+        public CremaDataSet GetDataSet(Authentication authentication)
+        {
+            this.dispatcher.VerifyAccess();
+            var result = this.Service.GetDataSet(this.ID);
+            this.Sign(authentication, result);
+            return result.Value;
+        }
+
+        public CremaDataSet GetClientDataSet(Authentication authentication)
+        {
+            this.dispatcher.VerifyAccess();
+            var result = this.Source as CremaDataSet;
+            return result;
         }
 
         public void Delete(Authentication authentication, bool isCanceled)
