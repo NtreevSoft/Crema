@@ -23,18 +23,25 @@ start() {
 stop() {
     if [ -f "$LOCK_FILE" ]; then
         echo "- Remove lock file ($LOCK_FILE)."
-		kill -15 $(cat $LOCK_FILE)
-		rm $LOCK_FILE
-	fi
+        kill -15 $(cat $LOCK_FILE)
+        rm $LOCK_FILE
+    fi
 }
 
 case "$COMMAND" in
-	start)
+    init)
+        mono cremaserver.exe init $REPO_DIR --force
+        ;;
+    start)
         start
-		;;
-	*)
-		echo "Usage"
-		echo "  $0 <command> <current directory> <repo dir>"
-		;;
+        ;;
+    init-start)
+        mono cremaserver.exe init $REPO_DIR --force
+        start
+        ;;
+    *)
+        echo "Usage"
+        echo "  $0 <command> <current directory> <repo dir>"
+        ;;
 
 esac
