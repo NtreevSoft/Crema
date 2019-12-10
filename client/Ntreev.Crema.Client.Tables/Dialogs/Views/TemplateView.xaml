@@ -127,6 +127,16 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
             </Style.Triggers>
         </Style>
 
+        <Style x:Key="IgnoreCaseSensitive_Checkbox_Style" TargetType="{x:Type CheckBox}" BasedOn="{StaticResource {x:Type CheckBox}}">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="IsChecked" Value="{Binding IgnoreCaseSensitive, Mode=TwoWay}" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsReadOnly}" Value="True">
+                    <Setter Property="IsEnabled" Value="False" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
         <Style x:Key="Comment_TextBox_Style" TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
             <Setter Property="Text" Value="{Binding Comment, UpdateSourceTrigger=PropertyChanged, Delay=200}" />
             <Style.Triggers>
@@ -171,6 +181,10 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
                      Style="{StaticResource TableName_TextBox_Style}" Loaded="TextBox_Loaded" Validation.Error="TableName_Error" />
             <ncpc:TagSelector nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_Tags}" 
                               Style="{StaticResource TagSelector_Style}" />
+            <CheckBox x:Name="IgnoreCaseSensitive"
+                      Style="{StaticResource IgnoreCaseSensitive_Checkbox_Style}">
+                <Label Content="{x:Static p:Resources.Label_IgnoreCaseSensitive}"></Label>
+            </CheckBox>
             <TextBox nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_Comment}" 
                      Style="{StaticResource Comment_TextBox_Style}" />
         </nmfc:PropertyItemsControl>

@@ -337,6 +337,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
             dataTable.InternalTableID = complexType.ReadAppInfoAsGuid(CremaSchema.TableInfo, CremaSchema.ID);
             dataTable.InternalTags = complexType.ReadAppInfoAsTagInfo(CremaSchema.TableInfo, CremaSchema.Tags);
             dataTable.InternalComment = complexType.ReadDescription();
+            dataTable.IgnoreCaseSensitive = complexType.ReadAppInfoAsBoolean(CremaSchema.TableInfo, CremaSchema.IgnoreCaseSensitive, false);
         }
 
         private void ReadAttribute(XmlSchemaAttribute schemaAttribute, CremaDataTable dataTable)
