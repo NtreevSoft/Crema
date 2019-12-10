@@ -268,6 +268,12 @@ namespace Ntreev.Crema.Data
             get { return this.TargetTable.TableID; }
         }
 
+        public bool IgnoreCaseSensitive
+        {
+            get { return this.TargetTable.IgnoreCaseSensitive; }
+            set { this.TargetTable.IgnoreCaseSensitive = value; }
+        }
+
         public CremaDataTable TargetTable
         {
             get { return (CremaDataTable)this.template.TargetTable; }

@@ -435,4 +435,7 @@
   <data name="Title_ViewTableTemplate" xml:space="preserve">
     <value>View Table Template</value>
   </data>
+  <data name="Label_IgnoreCaseSensitive" xml:space="preserve">
+    <value>Ignore case sensitive of table keys</value>
+  </data>
 </root>

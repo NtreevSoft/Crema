@@ -778,6 +778,12 @@ namespace Ntreev.Crema.Data
 
         public long Revision => this.table.Revision;
 
+        public bool IgnoreCaseSensitive
+        {
+            get { return this.table.IgnoreCaseSensitive; }
+            set { this.table.IgnoreCaseSensitive = value; }
+        }
+
         public SignatureDateProvider SignatureDateProvider
         {
             get { return this.table.SignatureDateProvider; }
