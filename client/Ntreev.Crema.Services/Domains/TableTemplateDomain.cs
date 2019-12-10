@@ -144,6 +144,10 @@ namespace Ntreev.Crema.Services.Domains
             {
                 this.template.Tags = (TagInfo)((string)value);
             }
+            else if (propertyName == "IgnoreCaseSensitive")
+            {
+                this.template.IgnoreCaseSensitive = (bool)value;
+            }
             else
             {
                 if (propertyName == null)

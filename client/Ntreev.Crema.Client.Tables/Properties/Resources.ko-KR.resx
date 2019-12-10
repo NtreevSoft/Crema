@@ -435,4 +435,7 @@
   <data name="Title_ViewTableTemplate" xml:space="preserve">
     <value>테이블 형태 보기</value>
   </data>
+  <data name="Label_IgnoreCaseSensitive" xml:space="preserve">
+    <value>테이블 키의 대소문자 구분 안함</value>
+  </data>
 </root>

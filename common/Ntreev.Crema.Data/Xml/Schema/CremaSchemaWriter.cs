@@ -382,6 +382,7 @@ namespace Ntreev.Crema.Data.Xml.Schema
             complexType.WriteAppInfo(CremaSchema.TableInfo, CremaSchema.Tags, dataTable.Tags, tableNamespace);
             complexType.WriteAppInfo(CremaSchema.TableInfo, CremaSchema.ID, dataTable.TableID, tableNamespace);
             complexType.WriteAppInfo(CremaSchema.TableInfo, CremaSchema.CategoryPath, dataTable.CategoryPath, tableNamespace, PathUtility.Separator);
+            complexType.WriteAppInfo(CremaSchema.TableInfo, CremaSchema.IgnoreCaseSensitive, dataTable.IgnoreCaseSensitive, tableNamespace, false);
             if (dataTable.TemplateNamespace != string.Empty)
                 complexType.WriteAppInfo(CremaSchema.TableInfo, CremaSchema.TemplateNamespace, dataTable.TemplateNamespace, tableNamespace);
 
