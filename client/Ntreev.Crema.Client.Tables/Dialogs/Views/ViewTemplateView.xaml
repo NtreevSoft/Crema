@@ -85,6 +85,12 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
             <Setter Property="Value" Value="{Binding Tags, Mode=OneWay}" />
         </Style>
 
+        <Style x:Key="IgnoreCaseSensitive_Checkbox_Style" TargetType="{x:Type CheckBox}" BasedOn="{StaticResource {x:Type CheckBox}}">
+            <Setter Property="IsEnabled" Value="False" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="IsChecked" Value="{Binding IgnoreCaseSensitive, Mode=OneWay}" />
+        </Style>
+
         <Style x:Key="Comment_TextBox_Style" TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
             <Setter Property="IsReadOnly" Value="True" />
             <Setter Property="Text" Value="{Binding Comment, Mode=OneWay}" />
@@ -108,6 +114,10 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
                      Style="{StaticResource TableName_TextBox_Style}" Loaded="TextBox_Loaded" Validation.Error="TableName_Error" />
             <ncpc:TagSelector nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_Tags}"
                               Style="{StaticResource TagSelector_Style}" />
+            <CheckBox x:Name="IgnoreCaseSensitive"
+                      Style="{StaticResource IgnoreCaseSensitive_Checkbox_Style}">
+                <Label Content="{x:Static p:Resources.Label_IgnoreCaseSensitive}" />
+            </CheckBox>
             <TextBox nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_Comment}"
                      Style="{StaticResource Comment_TextBox_Style}" />
         </nmfc:PropertyItemsControl>
