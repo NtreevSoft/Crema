@@ -114,6 +114,12 @@ namespace Ntreev.Crema.Services.Data
             this.domain.Dispatcher.Invoke(() => this.domain.SetProperty(authentication, "Comment", value));
         }
 
+        public void SetIgnoreCaseSensitive(Authentication authentication, bool value)
+        {
+            this.DataBase.ValidateBeginInDataBase(authentication);
+            this.domain.Dispatcher.Invoke(() => this.domain.SetProperty(authentication, "IgnoreCaseSensitive", value));
+        }
+
         public abstract Type GetType(string typeName);
 
         public bool Contains(string columnName)
@@ -206,6 +212,17 @@ namespace Ntreev.Crema.Services.Data
             {
                 this.Dispatcher?.VerifyAccess();
                 return this.templateSource.Comment;
+            }
+        }
+
+
+
+        public bool IgnoreCaseSensitive
+        {
+            get
+            {
+                this.Dispatcher?.VerifyAccess();
+                return this.templateSource.IgnoreCaseSensitive;
             }
         }
 

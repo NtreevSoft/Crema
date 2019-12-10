@@ -90,6 +90,8 @@ namespace Ntreev.Crema.Data.Xml.Schema
 
         public const string ContentsModifiedDateTime = "ContentsModifiedDateTime";
         public const string ContentsModifier = "ContentsModifier";
+        public const string IgnoreCaseSensitive = "IgnoreCaseSensitive";
+
 
         private readonly static string[] reservedNames = new string[]
         {
