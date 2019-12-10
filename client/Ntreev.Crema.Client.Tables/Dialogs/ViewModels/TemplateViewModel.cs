@@ -51,6 +51,7 @@ namespace Ntreev.Crema.Client.Tables.Dialogs.ViewModels
         private string[] selectableTypes;
         private int count;
         private object source;
+        private bool ignoreCaseSensitive;
 
         [Import]
         private IFlashService flashService = null;
@@ -211,7 +212,36 @@ namespace Ntreev.Crema.Client.Tables.Dialogs.ViewModels
             }
         }
 
-        public async override void CanClose(Action<bool> callback)
+        public bool IgnoreCaseSensitive
+        {
+            get => this.ignoreCaseSensitive;
+            set
+            {
+                var originValue = this.ignoreCaseSensitive;
+                try
+                {
+                    this.template.Dispatcher.Invoke(() =>
+                    {
+                        this.template.SetIgnoreCaseSensitive(this.authentication, value);
+                    });
+                    this.ignoreCaseSensitive = value;
+                    this.NotifyOfPropertyChange(nameof(this.IgnoreCaseSensitive));
+                    this.IsModified = true;
+                }
+                catch(Exception e)
+                {
+                    this.template.Dispatcher.Invoke(() =>
+                    {
+                        this.template.SetIgnoreCaseSensitive(this.authentication, originValue);
+                    });
+                    this.ignoreCaseSensitive = originValue;
+                    this.NotifyOfPropertyChange(nameof(this.IgnoreCaseSensitive));
+                    AppMessageBox.ShowError(e);
+                }
+            }
+        }
+
+        public override async void CanClose(Action<bool> callback)
         {
             if (this.template == null || this.IsModified == false)
             {
@@ -259,7 +289,7 @@ namespace Ntreev.Crema.Client.Tables.Dialogs.ViewModels
 
         protected abstract void Verify(Action<bool> isValid);
 
-        protected async override void OnInitialize()
+        protected override async void OnInitialize()
         {
             base.OnInitialize();
             await this.template.Dispatcher.InvokeAsync(() =>
@@ -272,12 +302,13 @@ namespace Ntreev.Crema.Client.Tables.Dialogs.ViewModels
                 this.count = this.template.Count;
                 this.source = this.domain.Source;
                 this.isModified = this.template.IsModified;
+                this.ignoreCaseSensitive = this.template.IgnoreCaseSensitive;
             });
             this.Refresh();
             this.Verify(this.VerifyAction);
         }
 
-        protected async override void OnDeactivate(bool close)
+        protected override async void OnDeactivate(bool close)
         {
             base.OnDeactivate(close);
 

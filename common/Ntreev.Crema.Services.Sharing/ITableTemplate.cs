@@ -41,6 +41,8 @@ namespace Ntreev.Crema.Services
 
         void SetComment(Authentication authentication, string value);
 
+        void SetIgnoreCaseSensitive(Authentication authentication, bool value);
+
         ITableColumn AddNew(Authentication authentication);
 
         void EndNew(Authentication authentication, ITableColumn column);
@@ -70,6 +72,8 @@ namespace Ntreev.Crema.Services
         bool IsNew { get; }
 
         bool IsModified { get; }
+
+        bool IgnoreCaseSensitive { get; }
 
         event EventHandler EditBegun;
 
