@@ -42,6 +42,7 @@ namespace Ntreev.Crema.Client.Tables.Dialogs.ViewModels
         private string tableName;
         private string comment;
         private TagInfo tags;
+        private bool ignoreCaseSensitive;
 
         public ViewTemplateViewModel(Authentication authentication, CremaTemplate template)
         {
@@ -51,6 +52,7 @@ namespace Ntreev.Crema.Client.Tables.Dialogs.ViewModels
             this.tableName = this.template.TableName;
             this.comment = this.template.Comment;
             this.tags = this.template.Tags;
+            this.ignoreCaseSensitive = this.template.IgnoreCaseSensitive;
         }
 
         public static Task<ViewTemplateViewModel> CreateInstanceAsync(Authentication authentication, ITableDescriptor descriptor)
@@ -94,6 +96,11 @@ namespace Ntreev.Crema.Client.Tables.Dialogs.ViewModels
         public TagInfo Tags
         {
             get { return this.tags; }
+        }
+
+        public bool IgnoreCaseSensitive
+        {
+            get { return this.ignoreCaseSensitive; }
         }
     }
 }
