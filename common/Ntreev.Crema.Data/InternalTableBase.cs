@@ -811,6 +811,12 @@ namespace Ntreev.Crema.Data
             get; set;
         }
 
+        public bool IgnoreCaseSensitive
+        {
+            get => !this.CaseSensitive;
+            set => this.CaseSensitive = !value;
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void AddChild(InternalTableBase child)
