@@ -210,6 +210,7 @@ namespace Ntreev.Crema.Client.Converters.Dialogs.ViewModels
                 }
 
                 this.configService[this.GetType(), nameof(SelectedExporter)] = this.selectedExporter.Name;
+                this.configService.Commit(this);
 
                 if (showExportCompletedMessageBox)
                 {
@@ -275,8 +276,6 @@ namespace Ntreev.Crema.Client.Converters.Dialogs.ViewModels
                 this.ProgressMessage = Resources.Message_ExportingData;
                 await Task.Run(() => this.selectedExporter.Export(null, dataSet));
             }
-
-            this.configService.Commit(this);
         }
 
         private async Task CsvExportAsync(CsvExporterSettings settings, TableCategoryTreeViewItemViewModel[] categories)
@@ -319,8 +318,6 @@ namespace Ntreev.Crema.Client.Converters.Dialogs.ViewModels
                 if (this.cancelToken.IsCancellationRequested == true)
                     break;
             }
-
-            this.configService.Commit(this);
         }
 
         private CremaDataSet GetDomainDataSet(Authentication authentication, ExportTreeViewItemViewModel item)
@@ -386,7 +383,7 @@ namespace Ntreev.Crema.Client.Converters.Dialogs.ViewModels
         [ConfigurationProperty(nameof(lastExportedTables))]
         public string[] LastExportedTables
         {
-            get => lastExportedTables;
+            get => lastExportedTables ?? new string[0];
             set => lastExportedTables = value;
         }
 
