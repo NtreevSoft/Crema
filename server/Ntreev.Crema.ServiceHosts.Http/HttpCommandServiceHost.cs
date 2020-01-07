@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Web.Http;
-using Microsoft.Owin.Host.HttpListener;
 using Microsoft.Owin.Hosting;
 using Ntreev.Crema.ServiceHosts.Http.Apis;
+using Ntreev.Crema.ServiceHosts.Http.Apis.Infrastructures.GQL.Playground;
 using Ntreev.Crema.Services;
 using Owin;
 
@@ -32,6 +31,7 @@ namespace Ntreev.Crema.ServiceHosts.Http
                 config.ConfigureCrema(this.cremaHost)
                     .ConfigureCremaSwagger();
                 app.UseWebApi(config);
+                app.Use<PlaygroundMiddleware>(new GraphQLPlaygroundOptions());
             });
         }
 
