@@ -63,7 +63,7 @@ namespace Ntreev.Crema.Spreadsheet.Tests.Csv
             {
                 OmitAttribute = false,
             });
-            writer.Write("d:\\tmp\\t-{categoryName}{name}{extension}");
+            writer.Write(".\\test-{categoryName}{name}{extension}");
         }
 
         private static void CreateTableTemplate(string tableName, IDataBase dataBase, Authentication authentication)

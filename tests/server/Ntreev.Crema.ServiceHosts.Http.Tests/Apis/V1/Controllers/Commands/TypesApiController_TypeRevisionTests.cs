@@ -12,7 +12,7 @@ using Xunit.Abstractions;
 
 namespace Ntreev.Crema.ServiceHosts.Http.Tests.Apis.V1.Controllers.Commands
 {
-    [Collection("Ntreev.Crema.Services.Tests")]
+    [Collection("Ntreev.Crema.ServiceHosts.Http.Tests")]
     public class TypesApiController_TypeRevisionTests
     {
         private readonly ITestOutputHelper output;
