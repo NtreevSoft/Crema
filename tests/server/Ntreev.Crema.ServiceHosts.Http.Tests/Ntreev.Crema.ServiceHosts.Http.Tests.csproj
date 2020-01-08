@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Apis\V1\Controllers\Commands\TablesApiController_TableRevisionTests.cs" />
     <Compile Include="Apis\V1\Controllers\Commands\TypesApiController_TypeRevisionTests.cs" />
+    <Compile Include="Apis\V1\Controllers\GQL\QueryTests.cs" />
     <Compile Include="Collection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

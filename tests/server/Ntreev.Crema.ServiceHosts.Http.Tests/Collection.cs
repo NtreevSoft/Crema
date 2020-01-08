@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Ntreev.Crema.ServiceHosts.Http.Tests
 {
-    [CollectionDefinition("Ntreev.Crema.Services.Tests")]
+    [CollectionDefinition("Ntreev.Crema.ServiceHosts.Http.Tests")]
     public class Collection : ICollectionFixture<CremaServerTestFixture>
     {
     }

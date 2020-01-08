@@ -35,6 +35,8 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis
             this.userContext = cremaHost.GetService(typeof(IUserContext)) as IUserContext;
         }
 
+        protected bool ContainsCremaToken => Request.Headers.Contains("token") || Request.Headers.Contains("Token");
+
         protected Authentication Authentication
         {
             get
