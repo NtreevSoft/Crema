@@ -21,10 +21,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-using Ntreev.Crema.Reader.IO;
-using Ntreev.Crema.Reader.Internal;
+using Ntreev.Crema.Code.Reader.IO;
+using Ntreev.Crema.Code.Reader.Internal;
 
-namespace Ntreev.Crema.Reader.Binary
+namespace Ntreev.Crema.Code.Reader.Binary
 {
     class CremaBinaryReader : IDataSet
     {

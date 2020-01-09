@@ -5,9 +5,9 @@
 #include <string>
 #include <typeinfo>
 #include <stdexcept>
+#include "inidata.h"
 
-namespace CremaReader
-{
+namespace CremaReader {
 	class DLL_EXPORT enum_info
 	{
 	public:
@@ -80,42 +80,42 @@ namespace CremaReader
 		static std::string utf8_to_string(const char* text);
 		static std::wstring string_to_wstring(const std::string& text);
 		static const std::type_info& name_to_type(const std::string& typeName);
-		static int get_hash_code(const std::string& text);
+		//static int get_hash_code(const std::string& text);
 		static std::string to_lower(const std::string& text);
 
 		static int get_type_size(const std::type_info& typeinfo);
 
 		template<typename key_type>
-		static long generate_hash(key_type key_value)
+		static std::string generate_hash(const itable& table, key_type key_value)
 		{
 			size_t size = keys_size(1, &typeid(key_type));
-			return generate_hash_core(1, size, &typeid(key_type), key_value);
+			return generate_hash_core(table.name(), 1, size, &typeid(key_type), key_value);
 		}
 
 		template<typename key_type1, typename key_type2>
-		static long generate_hash(key_type1 key_value1, key_type2 key_value2)
+		static std::string generate_hash(const itable& table, key_type1 key_value1, key_type2 key_value2)
 		{
 			size_t size = keys_size(2, &typeid(key_type1), &typeid(key_type2));
-			return generate_hash_core(2, size,
+			return generate_hash_core(table.name(), 2, size,
 				&typeid(key_type1), key_value1,
 				&typeid(key_type2), key_value2);
 		}
 
 		template<typename key_type1, typename key_type2, typename key_type3>
-		static long generate_hash(key_type1 key_value1, key_type2 key_value2, key_type3 key_value3)
+		static std::string generate_hash(const itable& table, key_type1 key_value1, key_type2 key_value2, key_type3 key_value3)
 		{
 			size_t size = keys_size(3, &typeid(key_type1), &typeid(key_type2), &typeid(key_type3));
-			return generate_hash_core(3, size,
+			return generate_hash_core(table.name(), 3, size,
 				&typeid(key_type1), key_value1,
 				&typeid(key_type2), key_value2,
 				&typeid(key_type3), key_value3);
 		}
 
 		template<typename key_type1, typename key_type2, typename key_type3, typename key_type4>
-		static long generate_hash(key_type1 key_value1, key_type2 key_value2, key_type3 key_value3, key_type4 key_value4)
+		static std::string generate_hash(const itable& table, key_type1 key_value1, key_type2 key_value2, key_type3 key_value3, key_type4 key_value4)
 		{
 			size_t size = keys_size(4, &typeid(key_type1), &typeid(key_type2), &typeid(key_type3), &typeid(key_type4));
-			return generate_hash_core(4, size,
+			return generate_hash_core(table.name(), 4, size,
 				&typeid(key_type1), key_value1,
 				&typeid(key_type2), key_value2,
 				&typeid(key_type3), key_value3,
@@ -123,10 +123,59 @@ namespace CremaReader
 		}
 
 		template<typename key_type1, typename key_type2, typename key_type3, typename key_type4, typename key_type5>
-		static long generate_hash(key_type1 key_value1, key_type2 key_value2, key_type3 key_value3, key_type4 key_value4, key_type5 key_value5)
+		static std::string generate_hash(const itable& table, key_type1 key_value1, key_type2 key_value2, key_type3 key_value3, key_type4 key_value4, key_type5 key_value5)
 		{
 			size_t size = keys_size(5, &typeid(key_type1), &typeid(key_type2), &typeid(key_type3), &typeid(key_type4), &typeid(key_type5));
-			return generate_hash_core(5, size,
+			return generate_hash_core(table.name(), 5, size,
+				&typeid(key_type1), key_value1,
+				&typeid(key_type2), key_value2,
+				&typeid(key_type3), key_value3,
+				&typeid(key_type4), key_value4,
+				&typeid(key_type5), key_value5);
+		}
+
+		template<typename key_type>
+		static std::string generate_hash(const std::string& tableName, key_type key_value)
+		{
+			size_t size = keys_size(1, &typeid(key_type));
+			return generate_hash_core(tableName, 1, size, &typeid(key_type), key_value);
+		}
+
+		template<typename key_type1, typename key_type2>
+		static std::string generate_hash(const std::string& tableName, key_type1 key_value1, key_type2 key_value2)
+		{
+			size_t size = keys_size(2, &typeid(key_type1), &typeid(key_type2));
+			return generate_hash_core(tableName, 2, size,
+				&typeid(key_type1), key_value1,
+				&typeid(key_type2), key_value2);
+		}
+
+		template<typename key_type1, typename key_type2, typename key_type3>
+		static std::string generate_hash(const std::string& tableName, key_type1 key_value1, key_type2 key_value2, key_type3 key_value3)
+		{
+			size_t size = keys_size(3, &typeid(key_type1), &typeid(key_type2), &typeid(key_type3));
+			return generate_hash_core(tableName, 3, size,
+				&typeid(key_type1), key_value1,
+				&typeid(key_type2), key_value2,
+				&typeid(key_type3), key_value3);
+		}
+
+		template<typename key_type1, typename key_type2, typename key_type3, typename key_type4>
+		static std::string generate_hash(const std::string& tableName, key_type1 key_value1, key_type2 key_value2, key_type3 key_value3, key_type4 key_value4)
+		{
+			size_t size = keys_size(4, &typeid(key_type1), &typeid(key_type2), &typeid(key_type3), &typeid(key_type4));
+			return generate_hash_core(tableName, 4, size,
+				&typeid(key_type1), key_value1,
+				&typeid(key_type2), key_value2,
+				&typeid(key_type3), key_value3,
+				&typeid(key_type4), key_value4);
+		}
+
+		template<typename key_type1, typename key_type2, typename key_type3, typename key_type4, typename key_type5>
+		static std::string generate_hash(const std::string& tableName, key_type1 key_value1, key_type2 key_value2, key_type3 key_value3, key_type4 key_value4, key_type5 key_value5)
+		{
+			size_t size = keys_size(5, &typeid(key_type1), &typeid(key_type2), &typeid(key_type3), &typeid(key_type4), &typeid(key_type5));
+			return generate_hash_core(tableName, 5, size,
 				&typeid(key_type1), key_value1,
 				&typeid(key_type2), key_value2,
 				&typeid(key_type3), key_value3,
@@ -135,15 +184,7 @@ namespace CremaReader
 		}
 
 	private:
-		static long generate_hash_core(size_t count, size_t keysize, ...);
+		static std::string generate_hash_core(const std::string& tableName, size_t count, size_t keysize, ...);
 		static size_t keys_size(size_t count, ...);
-
-		template<typename _type>
-		static void set_field_value(const char* buffer, size_t& offset, _type value)
-		{
-			_type* value_ptr = (_type*)(buffer + offset);
-			*value_ptr = value;
-			offset += sizeof(_type);
-		}
 	};
 } /*namespace CremaReader*/

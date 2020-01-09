@@ -314,41 +314,13 @@ namespace CremaReader
 		return data;
 	}
 
-	//unsigned long hash(const std::string& str)
-	//{
-	//	unsigned long hash = 5381;
-	//	for (size_t i = 0; i < str.size(); ++i)
-	//		hash = 33 * hash + (unsigned char)str[i];
-	//	return hash;
-	//}
-
-	int iniutil::get_hash_code(const std::string& text)
-	{
-		std::wstring wtext = string_to_wstring(text);
-		const wchar_t* chPtr = wtext.c_str();
-
-		int num = 0x15051505;
-		int num2 = num;
-		int* numPtr = (int*)chPtr;
-		for (int i = (int)wtext.length(); i > 0; i -= 4)
-		{
-			num = (((num << 5) + num) + (num >> 0x1b)) ^ numPtr[0];
-			if (i <= 2)
-				break;
-			num2 = (((num2 << 5) + num2) + (num2 >> 0x1b)) ^ numPtr[1];
-			numPtr += 2;
-		}
-		return num + (num2 * 0x5d588b65);
-	}
-
-	long iniutil::generate_hash_core(size_t count, size_t keysize ...)
+	std::string iniutil::generate_hash_core(const std::string& tableName, size_t count, size_t keysize ...)
 	{
 		va_list vl;
 
 		va_start(vl, keysize);
-		size_t offset = 0;
-		std::vector<char> fields(keysize);
-		const std::collate<char>& coll = std::use_facet< std::collate<char> >(std::locale());
+		std::stringstream key_stringstream;
+		key_stringstream << tableName;
 
 		for (size_t i = 0; i < count; i++)
 		{
@@ -359,69 +331,64 @@ namespace CremaReader
 
 			if (typeinfo == typeid(bool))
 			{
-				internal_util::set_field_value(&fields.front(), offset, !!va_arg(vl, int));
+				key_stringstream << "," << !!va_arg(vl, int);
 			}
 			else if (typeinfo == typeid(char))
 			{
-				internal_util::set_field_value(&fields.front(), offset, (char)va_arg(vl, int));
+				key_stringstream << "," << (char)va_arg(vl, int);
 			}
 			else if (typeinfo == typeid(unsigned char))
 			{
-				internal_util::set_field_value(&fields.front(), offset, (unsigned char)va_arg(vl, int));
+				key_stringstream << "," << (unsigned char)va_arg(vl, int);
 			}
 			else if (typeinfo == typeid(short))
 			{
-				internal_util::set_field_value(&fields.front(), offset, (short)va_arg(vl, int));
+				key_stringstream << "," << (short)va_arg(vl, int);
 			}
 			else if (typeinfo == typeid(unsigned short))
 			{
-				internal_util::set_field_value(&fields.front(), offset, (unsigned short)va_arg(vl, int));
+				key_stringstream << "," << (unsigned short)va_arg(vl, int);
 			}
 			else if (typeinfo == typeid(int))
 			{
-				internal_util::set_field_value(&fields.front(), offset, (int)va_arg(vl, int));
+				key_stringstream << "," << (int)va_arg(vl, int);
 			}
 			else if (typeinfo == typeid(unsigned int))
 			{
-				internal_util::set_field_value(&fields.front(), offset, (unsigned int)va_arg(vl, int));
+				key_stringstream << "," << (unsigned int)va_arg(vl, int);
 			}
 			else if (typeinfo == typeid(float))
 			{
-				internal_util::set_field_value(&fields.front(), offset, (float)va_arg(vl, double));
+				key_stringstream << "," << (float)va_arg(vl, double);
 			}
 			else if (typeinfo == typeid(double))
 			{
-				internal_util::set_field_value(&fields.front(), offset, (double)va_arg(vl, double));
+				key_stringstream << "," << (double)va_arg(vl, double);
 			}
 			else if (typeinfo == typeid(long long))
 			{
-				internal_util::set_field_value(&fields.front(), offset, (long long)va_arg(vl, long long));
+				key_stringstream << "," << (long long)va_arg(vl, long long);
 			}
 			else if (typeinfo == typeid(unsigned long long))
 			{
-				internal_util::set_field_value(&fields.front(), offset, (unsigned long long)va_arg(vl, long long));
+				key_stringstream << "," << (unsigned long long)va_arg(vl, long long);
 			}
 			else if (typeinfo == typeid(char*) || typeinfo == typeid(const char*))
 			{
-				int stringID = iniutil::get_hash_code(va_arg(vl, const char*));
-				internal_util::set_field_value(&fields.front(), offset, stringID);
+				key_stringstream << "," << va_arg(vl, const char*);
 			}
 			else if (typeinfo == typeid(std::string))
 			{
-				std::string text = (std::string)va_arg(vl, std::string);
-				int stringID = iniutil::get_hash_code(text);
-				internal_util::set_field_value(&fields.front(), offset, stringID);
+				key_stringstream << "," << (std::string)va_arg(vl, std::string);
 			}
 			else
 			{
-				internal_util::set_field_value(&fields.front(), offset, (int)va_arg(vl, int));
+				key_stringstream << "," << (int)va_arg(vl, int);
 			}
 		}
 		va_end(vl);
 
-		long hash = coll.hash(&fields.front(), &fields.front() + fields.size());
-
-		return hash;
+		return key_stringstream.str();
 	}
 
 	size_t iniutil::keys_size(size_t count, ...)
