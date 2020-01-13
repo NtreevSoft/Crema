@@ -17,45 +17,51 @@
 
 using System;
 using System.Linq;
+using System.Security.Authentication;
 using System.Web.Http;
 using System.Web.Http.Controllers;
+using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services;
-using Ntreev.Library.Extensions;
 
 namespace Ntreev.Crema.ServiceHosts.Http.Apis
 {
     class CremaAuthorizeAttribute : AuthorizeAttribute
     {
-        private readonly ICremaHost cremaHost;
-        private readonly IUserContext userContext;
-
-        public CremaAuthorizeAttribute(ICremaHost cremaHost)
-        {
-            this.cremaHost = cremaHost;
-            this.userContext = this.cremaHost.GetService<IUserContext>();
-        }
-
         protected override bool IsAuthorized(HttpActionContext actionContext)
         {
+            var container = actionContext.RequestContext.Configuration.DependencyResolver;
+            var cremaHost = container.GetService(typeof(ICremaHost)) as ICremaHost ?? throw new NullReferenceException("cremaHost");
+            var userContext = container.GetService(typeof(IUserContext)) as IUserContext ?? throw new NullReferenceException("userContext");
             var token = "";
 
             if (actionContext.Request.Headers.Contains("token"))
             {
                 token = actionContext.Request.Headers.GetValues("token").First();
             }
-            else if(actionContext.Request.Headers.Contains("Token"))
+            else if (actionContext.Request.Headers.Contains("Token"))
             {
                 token = actionContext.Request.Headers.GetValues("Token").First();
             }
 
             if (!string.IsNullOrWhiteSpace(token))
             {
-                var authentication = this.cremaHost.Dispatcher.Invoke(() =>
+                var authentication = cremaHost.Dispatcher.Invoke(() =>
                 {
                     return userContext.Dispatcher.Invoke(() => userContext.Authenticate(Guid.Parse(token)));
                 });
 
-                return authentication != null;
+                if (authentication == null) return false;
+
+                if (!string.IsNullOrWhiteSpace(this.Roles))
+                {
+                    var authority = (Authority)Enum.Parse(typeof(Authority), Roles, true);
+                    if (authority > authentication.Authority)
+                    {
+                        throw new AuthenticationException("You do not have permission.");
+                    }
+                }
+
+                return true;
             }
 
             return false;
