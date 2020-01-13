@@ -20,9 +20,7 @@ using System.Reflection;
 using System.Web.Http;
 using System.Web.Http.Description;
 using System.Web.Http.ExceptionHandling;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
 using Ntreev.Crema.ServiceHosts.Http.Apis.Swagger;
 using Ntreev.Crema.Services;
 using Swashbuckle.Application;
@@ -35,7 +33,7 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis
         {
             config.MapHttpAttributeRoutes();
             config.DependencyResolver = new MefDependencyResolver(cremaHost);
-            config.Filters.Add(new CremaAuthorizeAttribute(cremaHost));
+            config.Filters.Add(new CremaAuthorizeAttribute());
             config.Services.Replace(typeof(IExceptionHandler), new CremaExceptionHandler());
 
             config.Formatters.Clear();
