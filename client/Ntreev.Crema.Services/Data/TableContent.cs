@@ -150,7 +150,7 @@ namespace Ntreev.Crema.Services.Data
             if (this.domain == null)
                 throw new InvalidOperationException(Resources.Exception_NotBeingEdited);
             var view = this.dataTable.DefaultView;
-            return new TableRow(this, view.Table);
+            return new TableRow(this, view.Table, relationID);
         }
 
         public void EndNew(Authentication authentication, TableRow row)
