@@ -86,9 +86,10 @@ namespace Ntreev.Crema.ServiceHosts.Http.Apis.V1.Controllers.Logs
             if (!File.Exists(path))
                 throw new FileNotFoundException(path);
 
+            var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             return download
-                ? Task.FromResult((IHttpActionResult)new FileResult(File.OpenRead(path), filename, "application/xml"))
-                : Task.FromResult((IHttpActionResult)Ok(File.ReadAllText(path)));
+                ? Task.FromResult((IHttpActionResult)new FileResult(fs, filename, "application/xml"))
+                : Task.FromResult((IHttpActionResult)Ok(new StreamReader(fs).ReadToEnd()));
         }
 
         private IEnumerable<ILogService> GetLogServices()
