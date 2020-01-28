@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Ntreev.Crema.Reader
+namespace Ntreev.Crema.Code.Reader
 {
     public static class ReaderExtensions
     {

@@ -21,7 +21,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Linq;
-using Ntreev.Crema.Reader;
+using Ntreev.Crema.Code.Reader;
 
 namespace Ntreev.Crema.Code
 {
@@ -260,12 +260,12 @@ namespace Ntreev.Crema.Code
     {
         public static string GenerateHashCode(params string[] keys)
         {
-            return string.Join(",", keys);
+            return string.Join("+", keys);
         }
 
         public static string GenerateHashCode(IRow row, params IColumn[] columns)
         {
-            return string.Join(",", columns.Where(column => column.IsKey).Select(column => row[column.Name]));
+            return string.Join("+", columns.Where(column => column.IsKey).Select(column => row[column.Name]));
         }
     }
 }

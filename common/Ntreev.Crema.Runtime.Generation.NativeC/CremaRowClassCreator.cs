@@ -94,11 +94,9 @@ namespace Ntreev.Crema.Runtime.Generation.NativeC
             //}
 
             // assign table
-            {
-                var tableField = new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "Table");
-                var tableVar = new CodeVariableReferenceExpression("table");
-                cc.Statements.AddAssign(tableField, tableVar);
-            }
+            var tableField = new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "Table");
+            var tableVar = new CodeVariableReferenceExpression("table");
+            cc.Statements.AddAssign(tableField, tableVar);
 
             // assign fields
             {
@@ -165,6 +163,7 @@ namespace Ntreev.Crema.Runtime.Generation.NativeC
                 var methodRefExp = new CodeMethodReferenceExpression(new CodeThisReferenceExpression(), "SetKey");
                 var methodInvokeExp = new CodeMethodInvokeExpression(methodRefExp);
 
+                methodInvokeExp.Parameters.Add(new CodeSnippetExpression("table->name()"));
                 foreach (var item in tableInfo.Columns)
                 {
                     if (item.IsKey == true)
