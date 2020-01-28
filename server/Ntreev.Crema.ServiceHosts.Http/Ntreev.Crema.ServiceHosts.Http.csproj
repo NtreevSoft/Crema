@@ -129,7 +129,6 @@
     <Compile Include="Apis\V1\Controllers\CremaDev\CremaDevApiController.cs" />
     <Compile Include="Apis\V1\Controllers\Logs\LogsApiController.cs" />
     <Compile Include="Apis\V1\Controllers\GQL\GraphQLApiController.cs" />
-    <Compile Include="Apis\V1\Controllers\Logs\LogsApiController.cs" />
     <Compile Include="Apis\V1\GQL\CremaDocumentExecuter.cs" />
     <Compile Include="Apis\V1\GQL\CremaDocumentWriter.cs" />
     <Compile Include="Apis\V1\GQL\CremaMutation.cs" />
