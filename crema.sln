@@ -143,6 +143,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.Runtime.Genera
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Crema.ServiceHosts.Http.Benchmark", "tests\server\Ntreev.Crema.ServiceHosts.Http.Benchmark\Ntreev.Crema.ServiceHosts.Http.Benchmark.csproj", "{9010E186-A36B-4305-A62B-DCBD175EAECF}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphQL", "sub-modules\GraphQL\src\GraphQL\GraphQL.csproj", "{8E06E538-9CC3-4789-BB20-A6572B4F7C10}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems*{04aeb614-3510-4064-99af-0aa807c7f957}*SharedItemsImports = 4
@@ -433,6 +435,10 @@ Global
 		{9010E186-A36B-4305-A62B-DCBD175EAECF}.Debug|Any CPU.Build.0 = Release|Any CPU
 		{9010E186-A36B-4305-A62B-DCBD175EAECF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9010E186-A36B-4305-A62B-DCBD175EAECF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E06E538-9CC3-4789-BB20-A6572B4F7C10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E06E538-9CC3-4789-BB20-A6572B4F7C10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E06E538-9CC3-4789-BB20-A6572B4F7C10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E06E538-9CC3-4789-BB20-A6572B4F7C10}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -502,6 +508,7 @@ Global
 		{B7106EC4-DFAA-4126-A3D9-D45E6D368FF2} = {64D5C576-5D84-4EB1-A092-9D885FA7CC5C}
 		{DFED35EB-0F0E-4C4E-B56D-B7CD0AB54216} = {64D5C576-5D84-4EB1-A092-9D885FA7CC5C}
 		{9010E186-A36B-4305-A62B-DCBD175EAECF} = {AC4C5E07-A287-48F5-B6C9-9B1A1FD4805A}
+		{8E06E538-9CC3-4789-BB20-A6572B4F7C10} = {2C88EBD3-AF02-4842-8922-7C439EC5AB5E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4B597F4B-D27E-4576-ABBB-44B003E121A1}
