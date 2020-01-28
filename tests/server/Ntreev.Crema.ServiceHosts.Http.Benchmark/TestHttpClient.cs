@@ -22,7 +22,7 @@ using System.Net.Http.Headers;
 
 namespace Ntreev.Crema.ServiceHosts.Http.Benchmark
 {
-    public static class HttpClientTest
+    public static class TestHttpClient
     {
         public static HttpClient GetHttpClient(string baseAddress, IDictionary<string, string> headers = null, string token = null)
         {

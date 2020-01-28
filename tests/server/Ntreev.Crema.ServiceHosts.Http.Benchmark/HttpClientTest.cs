@@ -15,19 +15,35 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System.Dynamic;
+using System;
+using System.Collections.Generic;
 using System.Net.Http;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+using System.Net.Http.Headers;
 
 namespace Ntreev.Crema.ServiceHosts.Http.Benchmark
 {
-    public static class JsonExtensions
-    {
-        public static async Task<dynamic> ReadAsDynamicAsync(this HttpContent content)
+	public static class HttpClientTest
+	{
+		public static HttpClient GetHttpClient(string baseAddress, IDictionary<string, string> headers = null, string token = null)
         {
-            var json = await content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<ExpandoObject>(json);
-        }
-    }
+            var client = new HttpClient
+            {
+                BaseAddress = new Uri(baseAddress), 
+                Timeout = TimeSpan.FromSeconds(5)
+            };
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+			if (token != null)
+			{
+				client.DefaultRequestHeaders.Add("Token", token);
+			}
+			if (headers != null)
+			{
+				foreach (var header in headers)
+				{
+					client.DefaultRequestHeaders.Add(header.Key, header.Value);
+				}
+			}
+			return client;
+		}
+	}
 }
