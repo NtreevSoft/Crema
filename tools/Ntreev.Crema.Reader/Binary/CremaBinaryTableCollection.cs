@@ -36,12 +36,12 @@ namespace Ntreev.Crema.Reader.Binary
         public CremaBinaryTableCollection(CremaBinaryReader reader, TableIndex[] tableIndexes)
         {
             this.reader = reader;
-
             this.tables = new OrderedDictionary(tableIndexes.Length, StringResource.GetComparer(this.reader.CaseSensitive));
+            var tableStrings = StringResource.GetTableStrings(null);
 
             foreach (TableIndex item in tableIndexes)
             {
-                this.tables.Add(StringResource.GetString(item.TableName), null);
+                this.tables.Add(tableStrings.GetString(item.TableName), null);
             }
 
             this.tableNames = this.tables.Keys.Cast<string>().ToArray();

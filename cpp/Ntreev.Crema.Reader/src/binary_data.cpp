@@ -112,7 +112,7 @@ namespace CremaReader {
 				return *m_table;
 			}
 
-			long binary_row::hash() const
+			std::string binary_row::hash() const
 			{
 				return m_hash;
 			}
@@ -132,7 +132,7 @@ namespace CremaReader {
 				m_table = &table;
 			}
 
-			void binary_row::set_hash(long hash)
+			void binary_row::set_hash(std::string hash)
 			{
 				m_hash = hash;
 			}
@@ -239,7 +239,7 @@ namespace CremaReader {
 				return *m_columns[index];
 			}
 
-			void binary_key_array::add(binary_column* column)
+			void binary_key_array::add(binary_column * column)
 			{
 				m_columns.push_back(column);
 			}
@@ -274,7 +274,7 @@ namespace CremaReader {
 				return *m_columns[index];
 			}
 
-			inicolumn& binary_column_array::at(const std::string& columnName) const
+			inicolumn& binary_column_array::at(const std::string & columnName) const
 			{
 				std::map<std::string, binary_column*>::const_iterator itor = m_nameToColumn.find(conv_string(columnName));
 				if (itor == m_nameToColumn.end())
@@ -282,12 +282,12 @@ namespace CremaReader {
 				return *itor->second;
 			}
 
-			bool binary_column_array::contains(const std::string& columnName) const
+			bool binary_column_array::contains(const std::string & columnName) const
 			{
 				return m_nameToColumn.find(conv_string(columnName)) != m_nameToColumn.end();
 			}
 
-			void binary_column_array::set(size_t index, binary_column* column)
+			void binary_column_array::set(size_t index, binary_column * column)
 			{
 				m_columns[index] = column;
 				m_nameToColumn[conv_string(column->name())] = column;
@@ -299,7 +299,7 @@ namespace CremaReader {
 				m_caseSensitive = (flag & ReadFlag_case_sensitive) != 0;
 			}
 
-			std::string binary_column_array::conv_string(const std::string& text) const
+			std::string binary_column_array::conv_string(const std::string & text) const
 			{
 				if (m_caseSensitive == true)
 					return text;
@@ -341,8 +341,8 @@ namespace CremaReader {
 					return;
 
 				binary_row& row = this->at(index);
-				const std::collate<char>& coll = std::use_facet< std::collate<char> >(std::locale());
-				std::vector<char> fields(keysize);
+				std::stringstream key_stringstream;
+				key_stringstream << this->m_table->name();
 #if _MSC_VER >= 1700
 				for (inicolumn& item : m_table->m_keys)
 				{
@@ -354,59 +354,54 @@ namespace CremaReader {
 					const std::type_info& typeinfo = item.datatype();
 					if (typeinfo == typeid(bool))
 					{
-						this->set_field_value(&fields.front(), offset, row.value<bool>(item));
+						key_stringstream << "," << row.value<bool>(item);
 					}
 					else if (typeinfo == typeid(char))
 					{
-						this->set_field_value(&fields.front(), offset, row.value<char>(item));
+						key_stringstream << "," << row.value<char>(item);
 					}
 					else if (typeinfo == typeid(unsigned char))
 					{
-						this->set_field_value(&fields.front(), offset, row.value<unsigned char>(item));
+						key_stringstream << "," << row.value<unsigned char>(item);
 					}
 					else if (typeinfo == typeid(short))
 					{
-						this->set_field_value(&fields.front(), offset, row.value<short>(item));
+						key_stringstream << "," << row.value<short>(item);
 					}
 					else if (typeinfo == typeid(unsigned short))
 					{
-						this->set_field_value(&fields.front(), offset, row.value<unsigned short>(item));
+						key_stringstream << "," << row.value<unsigned short>(item);
 					}
 					else if (typeinfo == typeid(int))
 					{
-						this->set_field_value(&fields.front(), offset, row.value<int>(item));
+						key_stringstream << "," << row.value<int>(item);
 					}
 					else if (typeinfo == typeid(unsigned int))
 					{
-						this->set_field_value(&fields.front(), offset, row.value<unsigned int>(item));
+						key_stringstream << "," << row.value<unsigned int>(item);
 					}
 					else if (typeinfo == typeid(long long))
 					{
-						this->set_field_value(&fields.front(), offset, row.value<long long>(item));
+						key_stringstream << "," << row.value<long long>(item);
 					}
 					else if (typeinfo == typeid(unsigned long long))
 					{
-						this->set_field_value(&fields.front(), offset, row.value<unsigned long long>(item));
+						key_stringstream << "," << row.value<unsigned long long>(item);
 					}
 					else if (typeinfo == typeid(float))
 					{
-						this->set_field_value(&fields.front(), offset, row.value<float>(item));
+						key_stringstream << "," << row.value<float>(item);
 					}
 					else if (typeinfo == typeid(std::string))
 					{
-						const std::string& text = *(const std::string*)row.value_core(item);
-						this->set_field_value(&fields.front(), offset, iniutil::get_hash_code(text));
+						key_stringstream << "," << *(const std::string*)row.value_core(item);
 					}
 				}
 
-				long hash = coll.hash(&fields.front(), &fields.front() + fields.size());
-
-				row.set_hash(hash);
-
-				m_keyTorow.insert(std::multimap<long, binary_row*>::value_type(hash, &row));
+				m_keyTorow.insert(std::multimap<std::string, binary_row*>::value_type(key_stringstream.str(), &row));
 			}
 
-			void binary_row_array::set_table(binary_table& table)
+			void binary_row_array::set_table(binary_table & table)
 			{
 				m_table = &table;
 			}
@@ -423,74 +418,68 @@ namespace CremaReader {
 				va_list vl;
 				size_t keysize = this->keys_size();
 				va_start(vl, count);
-
-				size_t offset = 0;
-				std::vector<char> fields(keysize);
-				const std::collate<char>& coll = std::use_facet< std::collate<char> >(std::locale());
+				std::stringstream key_stringstream;
+				key_stringstream << this->m_table->name();
 
 				for (size_t i = 0; i < count; i++)
 				{
 					const std::type_info& typeinfo = *va_arg(vl, const std::type_info*);
 					if (typeinfo == typeid(bool))
 					{
-						this->set_field_value(&fields.front(), offset, !!va_arg(vl, int));
+						key_stringstream << "," << !!va_arg(vl, int);
 					}
 					else if (typeinfo == typeid(char))
 					{
-						this->set_field_value(&fields.front(), offset, (char)va_arg(vl, int));
+						key_stringstream << "," << (char)va_arg(vl, int);
 					}
 					else if (typeinfo == typeid(unsigned char))
 					{
-						this->set_field_value(&fields.front(), offset, (unsigned char)va_arg(vl, int));
+						key_stringstream << "," << (unsigned char)va_arg(vl, int);
 					}
 					else if (typeinfo == typeid(short))
 					{
-						this->set_field_value(&fields.front(), offset, (short)va_arg(vl, int));
+						key_stringstream << "," << (short)va_arg(vl, int);
 					}
 					else if (typeinfo == typeid(unsigned short))
 					{
-						this->set_field_value(&fields.front(), offset, (unsigned short)va_arg(vl, int));
+						key_stringstream << "," << (unsigned short)va_arg(vl, int);
 					}
 					else if (typeinfo == typeid(int))
 					{
-						this->set_field_value(&fields.front(), offset, (int)va_arg(vl, int));
+						key_stringstream << "," << (int)va_arg(vl, int);
 					}
 					else if (typeinfo == typeid(unsigned int))
 					{
-						this->set_field_value(&fields.front(), offset, (unsigned int)va_arg(vl, int));
+						key_stringstream << "," << (unsigned int)va_arg(vl, int);
 					}
 					else if (typeinfo == typeid(float))
 					{
-						this->set_field_value(&fields.front(), offset, (float)va_arg(vl, double));
+						key_stringstream << "," << (float)va_arg(vl, double);
 					}
 					else if (typeinfo == typeid(double))
 					{
-						this->set_field_value(&fields.front(), offset, (float)va_arg(vl, double));
+						key_stringstream << "," << (float)va_arg(vl, double);
 					}
 					else if (typeinfo == typeid(long long))
 					{
-						this->set_field_value(&fields.front(), offset, (long long)va_arg(vl, long long));
+						key_stringstream << "," << (long long)va_arg(vl, long long);
 					}
 					else if (typeinfo == typeid(unsigned long long))
 					{
-						this->set_field_value(&fields.front(), offset, (unsigned long long)va_arg(vl, long long));
+						key_stringstream << "," << (unsigned long long)va_arg(vl, long long);
 					}
 					else if (typeinfo == typeid(char*) || typeinfo == typeid(const char*))
 					{
-						int stringID = iniutil::get_hash_code(va_arg(vl, const char*));
-						this->set_field_value(&fields.front(), offset, stringID);
+						key_stringstream << "," << va_arg(vl, const char*);
 					}
 					else if (typeinfo == typeid(std::string))
 					{
-						std::string text = (std::string)va_arg(vl, std::string);
-						int stringID = iniutil::get_hash_code(text);
-						this->set_field_value(&fields.front(), offset, stringID);
+						key_stringstream << "," << (std::string)va_arg(vl, std::string);
 					}
 				}
 				va_end(vl);
 
-				long hash = coll.hash(&fields.front(), &fields.front() + fields.size());
-				std::pair <std::multimap<long, binary_row*>::iterator, std::multimap<long, binary_row*>::iterator> ret = m_keyTorow.equal_range(hash);
+				std::pair <std::multimap<std::string, binary_row*>::iterator, std::multimap<std::string, binary_row*>::iterator> ret = m_keyTorow.equal_range(key_stringstream.str());
 
 				size_t len = std::distance(ret.first, ret.second);
 
@@ -500,7 +489,7 @@ namespace CremaReader {
 					return iterator(this, index);
 				}
 
-				for (std::multimap<long, binary_row*>::iterator itor = ret.first; itor != ret.second; ++itor)
+				for (std::multimap<std::string, binary_row*>::iterator itor = ret.first; itor != ret.second; ++itor)
 				{
 					va_list vl1;
 					va_start(vl1, count);
@@ -581,7 +570,7 @@ namespace CremaReader {
 				return size;
 			}
 
-			binary_table::binary_table(binary_reader* reader, size_t columnCount, size_t rowCount)
+			binary_table::binary_table(binary_reader * reader, size_t columnCount, size_t rowCount)
 				: m_columns(columnCount), m_rows(rowCount)
 			{
 				this->m_reader = reader;
@@ -623,7 +612,7 @@ namespace CremaReader {
 
 			}
 
-			binary_table_array::binary_table_array(binary_reader& reader)
+			binary_table_array::binary_table_array(binary_reader & reader)
 				: m_reader(reader)
 			{
 
@@ -656,7 +645,7 @@ namespace CremaReader {
 				return *table;
 			}
 
-			itable& binary_table_array::at(const std::string& tableName) const throw()
+			itable& binary_table_array::at(const std::string & tableName) const throw()
 			{
 				std::map<std::string, binary_table*>::const_iterator itor = m_nameToTable.find(conv_string(tableName));
 				if (itor == m_nameToTable.end())
@@ -666,12 +655,12 @@ namespace CremaReader {
 				return *itor->second;
 			}
 
-			bool binary_table_array::contains(const std::string& tableName) const
+			bool binary_table_array::contains(const std::string & tableName) const
 			{
 				return m_nameToTable.find(conv_string(tableName)) != m_nameToTable.end();
 			}
 
-			void binary_table_array::set(size_t index, binary_table* table)
+			void binary_table_array::set(size_t index, binary_table * table)
 			{
 				std::string tableName;
 				m_nameToTable[conv_string(table->name())] = table;
@@ -683,7 +672,7 @@ namespace CremaReader {
 #endif
 			}
 
-			void binary_table_array::set_size(const std::vector<table_index>& indexes)
+			void binary_table_array::set_size(const std::vector<table_index> & indexes)
 			{
 				m_tables.assign(indexes.size(), NULL);
 
@@ -700,7 +689,7 @@ namespace CremaReader {
 				m_caseSensitive = (flag & ReadFlag_case_sensitive) != 0;
 			}
 
-			std::string binary_table_array::conv_string(const std::string& text) const
+			std::string binary_table_array::conv_string(const std::string & text) const
 			{
 				if (m_caseSensitive == true)
 					return text;
@@ -712,13 +701,13 @@ namespace CremaReader {
 				return m_tableNames;
 			}
 
-			bool binary_table_array::is_table_loaded(const std::string& tableName) const
+			bool binary_table_array::is_table_loaded(const std::string & tableName) const
 			{
 				std::map<std::string, binary_table*>::const_iterator itor = m_nameToTable.find(conv_string(tableName));
 				return itor != m_nameToTable.end();
 			}
 
-			void binary_table_array::load_table(const std::string& tableName)
+			void binary_table_array::load_table(const std::string & tableName)
 			{
 				if (this->is_table_loaded(tableName) == true)
 					return;
@@ -726,7 +715,7 @@ namespace CremaReader {
 				m_reader.read_table(conv_string(tableName));
 			}
 
-			void binary_table_array::release_table(const std::string& tableName)
+			void binary_table_array::release_table(const std::string & tableName)
 			{
 				std::map<std::string, binary_table*>::const_iterator itor = m_nameToTable.find(conv_string(tableName));
 				if (itor == m_nameToTable.end())

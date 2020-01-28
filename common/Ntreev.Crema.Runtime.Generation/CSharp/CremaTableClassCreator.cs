@@ -30,8 +30,8 @@ namespace Ntreev.Crema.Runtime.Generation.CSharp
 {
     static class CremaTableClassCreator
     {
-        private readonly static CodeThisReferenceExpression thisRef = new CodeThisReferenceExpression();
-        private readonly static CodeBaseReferenceExpression baseRef = new CodeBaseReferenceExpression();
+        private static readonly CodeThisReferenceExpression thisRef = new CodeThisReferenceExpression();
+        private static readonly CodeBaseReferenceExpression baseRef = new CodeBaseReferenceExpression();
 
         public static void Create(CodeNamespace codeNamespace, CodeGenerationInfo generationInfo)
         {
@@ -200,10 +200,12 @@ namespace Ntreev.Crema.Runtime.Generation.CSharp
             // invoke base.FindRow
             {
                 var query = from item in tableInfo.Columns
-                            where item.IsKey
-                            select new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(new CodeVariableReferenceExpression(item.Name), "GetHashCode"));
+                    where item.IsKey
+                    select new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(new CodeVariableReferenceExpression(item.Name), "ToString"));
 
-                var invokeFindRow = new CodeMethodInvokeExpression(baseRef, "FindRow", query.ToArray());
+                var invokeGenerateHashCode = new CodeMethodInvokeExpression(new CodeTypeReferenceExpression("CremaUtility"), "GenerateHashCode");
+                invokeGenerateHashCode.Parameters.AddRange(query.ToArray());
+                var invokeFindRow = new CodeMethodInvokeExpression(baseRef, "FindRow", invokeGenerateHashCode);
 
                 cmm.Statements.AddMethodReturn(invokeFindRow);
             }

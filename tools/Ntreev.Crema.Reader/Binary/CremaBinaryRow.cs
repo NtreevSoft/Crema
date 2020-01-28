@@ -40,7 +40,7 @@ namespace Ntreev.Crema.Reader.Binary
                     if (offset == 0)
                         return string.Empty;
                     int id = BitConverter.ToInt32(this.fieldbytes, offset);
-                    return StringResource.GetString(id);
+                    return StringResource.GetTableStrings(this.Table).GetString(id);
                 }
                 else
                 {

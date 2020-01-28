@@ -105,15 +105,16 @@ namespace CremaReader {
 				stream.seekg(tableHeader.stringResourcesOffset + offset, std::ios::beg);
 				string_resource::read(stream);
 
+				table->m_tableName = string_resource::get(tableInfo.tableName);
+				table->m_categoryName = string_resource::get(tableInfo.categoryName);
+				table->m_hashValue = string_resource::get(tableHeader.hashValue);
+
 				stream.seekg(tableHeader.columnsOffset + offset);
 				binary_reader::read_columns(stream, *table, tableInfo.columnCount, flag);
 
 				stream.seekg(tableHeader.rowsOffset + offset, std::ios::beg);
 				binary_reader::read_rows(stream, *table, tableInfo.rowCount);
 
-				table->m_tableName = string_resource::get(tableInfo.tableName);
-				table->m_categoryName = string_resource::get(tableInfo.categoryName);
-				table->m_hashValue = string_resource::get(tableHeader.hashValue);
 				return table;
 			}
 

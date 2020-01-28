@@ -38,27 +38,87 @@ export class CremaReader {
     }
 }
 
+class StringValueDictionary {
+    private strings: { [key: number]: string } = {};
+
+    add(key: number, value: string): void {
+        this.strings[key] = value;
+    }
+
+    contains(key: number): boolean {
+        return key in this.strings;
+    }
+
+    getString(key: number): string {
+        return this.strings[key];
+    }
+
+    equals(key: number, value: string, caseSensitive: boolean = true): boolean {
+        const str = this.getString(key);
+
+        if (caseSensitive) {
+            return str === value;
+        }
+
+        return str.toLowerCase() === value.toLowerCase();
+    }
+}
+
 class StringResource {
-    private static strings: { [s: number]: string; } = {};
+    private static refCount = 0;
+    private static tableStrings = new Map<BinaryTable, StringValueDictionary>();
+    private static fileStrings = new StringValueDictionary();
 
-    public static read(reader: BufferReader): void {
-        let stringCount: number = reader.readInt32();
+    static readHeader(reader: BufferReader): void {
+        StringResource.read(reader, null);
+    }
 
-        for (let i: number = 0; i < stringCount; i++) {
-            let id: number = reader.readInt32();
-            let length: number = reader.readInt32();
+    static read(reader: BufferReader, table: BinaryTable | null): void {
+        const stringCount = reader.readInt32();
+        const strings = StringResource.getTableStrings(table);
 
-            if (this.strings[id] == null) {
-                let text: string = reader.readString(length);
-                this.strings[id] = text;
+        for (let i = 0; i < stringCount; i++) {
+            const id = reader.readInt32();
+            const length = reader.readInt32();
+
+            if ((id in strings) === false) {
+                let text = "";
+                if (length !== 0) {
+                    text = reader.readString(length);
+                }
+                strings.add(id, text);
             } else {
                 reader.seek(length, SeekOrigin.Current);
             }
         }
     }
 
-    public static getString(id: number): string {
-        return this.strings[id];
+    static getHeaderStrings(): StringValueDictionary {
+        return StringResource.getTableStrings(null);
+    }
+
+    static getTableStrings(table: BinaryTable | null): StringValueDictionary {
+        if (table === null || table === undefined) {
+            return StringResource.fileStrings;
+        }
+
+        if (StringResource.tableStrings.has(table)) {
+            return StringResource.tableStrings.get(table)!;
+        }
+
+        StringResource.tableStrings.set(table, new StringValueDictionary());
+        return StringResource.tableStrings.get(table)!;
+    }
+
+    static get ref(): number {
+        return StringResource.refCount;
+    }
+
+    static set ref(value: number) {
+        StringResource.refCount = value;
+        if (StringResource.ref === 0) {
+            StringResource.tableStrings = {};
+        }
     }
 }
 
@@ -200,7 +260,7 @@ export interface IColumn extends CremaColumn {
 
 export interface IRow extends CremaRow {
     table?: ITable;
-    getValue(index: number): string | number | boolean | Date;
+    getValue(index: number): string | number | boolean | Date | null;
     hasValue(index: number): boolean;
     toBoolean(index: number): boolean;
     toString(index: number): string;
@@ -217,7 +277,7 @@ export interface IRow extends CremaRow {
     toDateTime(index: number): Date;
     toDuration(index: number): number;
 
-    getValueByString(columnName: string): string | number | boolean | Date;
+    getValueByString(columnName: string): string | number | boolean | Date | null;
     hasValueByString(columnName: string): boolean;
     toBooleanByString(columnName: string): boolean;
     toStringByString(columnName: string): string;
@@ -261,13 +321,14 @@ class BinaryReader extends CremaReader {
         }
 
         reader.seek(fileHeader.stringResourcesOffset, SeekOrigin.Begin);
-        StringResource.read(reader);
+        StringResource.readHeader(reader);
 
-        this._name = StringResource.getString(fileHeader.name);
+        const fileHeaderString = StringResource.getHeaderStrings();
+        this._name = fileHeaderString.getString(fileHeader.name);
         this._tables = new Array<BinaryTable>(this._tableIndexes.length);
-        this._typesHashValue = StringResource.getString(fileHeader.typesHashValue);
-        this._tablesHashValue = StringResource.getString(fileHeader.tablesHashValue);
-        this._tags = StringResource.getString(fileHeader.tags);
+        this._typesHashValue = fileHeaderString.getString(fileHeader.typesHashValue);
+        this._tablesHashValue = fileHeaderString.getString(fileHeader.tablesHashValue);
+        this._tags = fileHeaderString.getString(fileHeader.tags);
 
         for (let i: number = 0; i < this._tableIndexes.length; i++) {
             let table: BinaryTable = this.readTable(reader, this._tableIndexes[i].offset);
@@ -322,8 +383,12 @@ class BinaryReader extends CremaReader {
         let table: BinaryTable = new BinaryTable(this, tableHeader, tableInfo);
 
         reader.seek(tableHeader.stringResourcesOffset + offset, SeekOrigin.Begin);
-        StringResource.read(reader);
-        table.hashValue = StringResource.getString(tableHeader.hashValue);
+        StringResource.read(reader, table);
+
+        const tableStrings = StringResource.getTableStrings(table);
+        table.name = tableStrings.getString(tableInfo.tableName);
+        table.category = tableStrings.getString(tableInfo.categoryName);
+        table.hashValue = tableStrings.getString(tableHeader.hashValue);
 
         reader.seek(tableHeader.columnsOffset + offset, SeekOrigin.Begin);
         table.readColumns(reader, tableInfo);
@@ -350,8 +415,6 @@ class BinaryTable extends CremaTable {
     constructor(dataSet: BinaryReader, tableHeader: TableHeader, tableInfo: TableInfo) {
         super();
         this._dataSet = dataSet;
-        this._name = StringResource.getString(tableInfo.tableName);
-        this._category = StringResource.getString(tableInfo.categoryName);
         this._version = tableHeader.magicValue;
     }
 
@@ -363,8 +426,16 @@ class BinaryTable extends CremaTable {
         return this._name;
     }
 
+    public set name(value: string) {
+        this._name = value;
+    }
+
     public get category(): string {
         return this._category;
+    }
+
+    public set category(value: string) {
+        this._category = value;
     }
 
     public get version(): number {
@@ -395,13 +466,14 @@ class BinaryTable extends CremaTable {
         let keys: Array<BinaryColumn> = new Array<BinaryColumn>();
         let columns: { [key: number]: BinaryColumn; } = {};
         let columnsByName: { [key: string]: BinaryColumn; } = {};
+        const tableStrings = StringResource.getTableStrings(this);
 
         for (let i: number = 0; i < tableInfo.columnCount; i++) {
             let columnInfo: ColumnInfo = new ColumnInfo();
             columnInfo.read(reader);
 
-            let columnName: string = StringResource.getString(columnInfo.columnName);
-            let typeName: string = StringResource.getString(columnInfo.dataType);
+            let columnName: string = tableStrings.getString(columnInfo.columnName);
+            let typeName: string = tableStrings.getString(columnInfo.dataType);
             let isKey: boolean = columnInfo.isKey === 0 ? false : true;
 
             let column: BinaryColumn = new BinaryColumn(this, columnName, typeName, isKey, i);
@@ -506,7 +578,7 @@ class BinaryColumn extends CremaColumn {
     }
 }
 
-class BinaryRow extends CremaRow {
+class BinaryRow extends CremaRow implements IRow {
     private _table: BinaryTable;
     private _fieldbytes: Buffer;
 
@@ -520,7 +592,7 @@ class BinaryRow extends CremaRow {
         return this._table;
     }
 
-    public getValueByColumn(column: BinaryColumn): string | number | boolean {
+    public getValueByColumn(column: BinaryColumn): string | number | boolean | null {
         var offset: number = this._fieldbytes.readInt32LE(4 * column.index);
 
         if (column.dataType === "string") {
@@ -528,7 +600,7 @@ class BinaryRow extends CremaRow {
                 return "";
             }
             var id: number = this._fieldbytes.readInt32LE(offset);
-            return StringResource.getString(id);
+            return StringResource.getTableStrings(this.table).getString(id);
         } else {
             if (offset === 0) {
                 return null;
@@ -570,12 +642,12 @@ class BinaryRow extends CremaRow {
         }
     }
 
-    public getValue(index: number): string | number | boolean {
+    public getValue(index: number): string | number | boolean | null {
         let column: BinaryColumn = this.table.columns[index];
         return this.getValueByColumn(column);
     }
 
-    public getValueByString(columnName: string): string | number | boolean {
+    public getValueByString(columnName: string): string | number | boolean | null {
         let column: BinaryColumn = this.table.columnsByName[columnName];
         return this.getValueByColumn(column);
     }
