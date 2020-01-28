@@ -1,4 +1,4 @@
-﻿//Released under the MIT License.
+//Released under the MIT License.
 //
 //Copyright (c) 2018 Ntreev Soft co., Ltd.
 //
@@ -22,32 +22,28 @@ using System.Net.Http.Headers;
 
 namespace Ntreev.Crema.ServiceHosts.Http.Benchmark
 {
-    public static class HttpClientTest
-    {
-        public static HttpClient GetHttpClient(string baseAddress, IDictionary<string, string> headers = null, string token = null)
+	public static class HttpClientTest
+	{
+		public static HttpClient GetHttpClient(string baseAddress, IDictionary<string, string> headers = null, string token = null)
         {
-            var httpClient = new HttpClient
+            var client = new HttpClient
             {
-                BaseAddress = new Uri(baseAddress),
-                Timeout = TimeSpan.FromSeconds(5),
+                BaseAddress = new Uri(baseAddress), 
+                Timeout = TimeSpan.FromSeconds(5)
             };
-
-            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            if (token != null)
-            {
-                httpClient.DefaultRequestHeaders.Add("Token", token);
-            }
-
-            if (headers != null)
-            {
-                foreach (var header in headers)
-                {
-                    httpClient.DefaultRequestHeaders.Add(header.Key, header.Value);
-                }
-            }
-
-            return httpClient;
-        }
-    }
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+			if (token != null)
+			{
+				client.DefaultRequestHeaders.Add("Token", token);
+			}
+			if (headers != null)
+			{
+				foreach (var header in headers)
+				{
+					client.DefaultRequestHeaders.Add(header.Key, header.Value);
+				}
+			}
+			return client;
+		}
+	}
 }

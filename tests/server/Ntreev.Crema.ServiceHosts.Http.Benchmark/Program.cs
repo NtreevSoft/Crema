@@ -1,4 +1,4 @@
-﻿//Released under the MIT License.
+//Released under the MIT License.
 //
 //Copyright (c) 2018 Ntreev Soft co., Ltd.
 //
@@ -15,21 +15,24 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
 using BenchmarkDotNet.Running;
 using Ntreev.Crema.ServiceHosts.Http.Benchmark.Benchmarks;
+using System;
+using System.Threading.Tasks;
 
 namespace Ntreev.Crema.ServiceHosts.Http.Benchmark
 {
     class Program
     {
-        static void Main(string[] args)
+        private static async Task Main(string[] args)
         {
-            var test = new HttpBenchmark();
-            test.LoginAsync().GetAwaiter().GetResult();
-            Console.WriteLine(test.GetHttpApiAsync().GetAwaiter().GetResult());
-            Console.WriteLine(test.GetGraphQLAllAsync().GetAwaiter().GetResult());
-            test.LogoutAsync().GetAwaiter().GetResult();
+            //var test = new HttpBenchmark();
+            //await test.LoginAsync();
+            //var httpResult = await test.GetHttpApiAsync();
+            //Console.WriteLine(httpResult);
+            //var gqlResult = await test.GetGraphQLAllAsync();
+            //Console.WriteLine(gqlResult);
+            //await test.LogoutAsync();
 
             BenchmarkRunner.Run<HttpBenchmark>();
         }
