@@ -1,161 +1,148 @@
-﻿//Released under the MIT License.
-//
-//Copyright (c) 2018 Ntreev Soft co., Ltd.
-//
-//Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
-//documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
-//rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
-//persons to whom the Software is furnished to do so, subject to the following conditions:
-//
-//The above copyright notice and this permission notice shall be included in all copies or substantial portions of the 
-//Software.
-//
-//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
-//WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
-//COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
-//OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
+using System;
+using BenchmarkDotNet.Attributes;
 using System.Net.Http;
 using System.Threading.Tasks;
-using BenchmarkDotNet.Attributes;
 
 namespace Ntreev.Crema.ServiceHosts.Http.Benchmark.Benchmarks
 {
-    [SimpleJob(targetCount:5)]
+    [SimpleJob(targetCount: 5)]
     [HtmlExporter]
     [MarkdownExporterAttribute.GitHub]
     public class HttpBenchmark
-    {
-        public string Token { get; set; }
-        private static string DatabaseName = "GameData_KOR_Dev";
+	{
+		private static readonly string DatabaseName;
+        private const string address = "http://localhost:4104";
+        private const string userId = "admin";
+        private const string password = "admin";
+        private string token;
 
-        [GlobalSetup]
-        public async Task<string> LoginAsync()
-        {
-            var client = HttpClientTest.GetHttpClient("http://localhost:4104");
-            var response = await client.PostAsJsonAsync($"api/v1/commands/login/databases/{DatabaseName}/load-and-enter", new
-            {
-                UserID = "admin",
-                Password = "admin"
-            });
-            var json = await response.Content.ReadAsDynamicAsync();
-            var token = json.Token.ToString();
-            this.Token = token;
-            
-            return token;
-        }
+        static HttpBenchmark()
+		{
+			DatabaseName = "GameData_KOR_Dev";
+		}
 
-        [GlobalCleanup]
-        public async Task LogoutAsync()
+        [Benchmark(Description="GraphQL (All Fields)")]
+		public async Task<string> GetGraphQLAllFieldsAsync()
         {
-            var client = HttpClientTest.GetHttpClient("http://localhost:4104", token: this.Token);
-            var response = await client.PostAsJsonAsync("api/v1/commands/logout", new
-            {
-                UserID = "admin",
-                Password = "admin"
-            });
-            var json = await response.Content.ReadAsDynamicAsync();
-        }
+            _ = this.token ?? throw new InvalidOperationException(nameof(this.token));
 
-        [Benchmark(Description = "HttpApi")]
-        public async Task<string> GetHttpApiAsync()
-        {
-            var client = HttpClientTest.GetHttpClient("http://localhost:4104", token: this.Token);
-            var response = await client.GetAsync($"api/v1/commands/databases/{DatabaseName}/tables/*/info");
-            var json = await response.Content.ReadAsStringAsync();
-            return json;
-        }
-
-        [Benchmark(Description = "GraphQL (All Fields)")]
-        public async Task<string> GetGraphQLAllAsync()
-        {
-            var client = HttpClientTest.GetHttpClient("http://localhost:4104", token: this.Token);
-            var response = await client.PostAsJsonAsync("api/v1/graphql", new
-            {
-                Query = @"
+			var httpClient = HttpClientTest.GetHttpClient(address, null, this.token);
+			var httpResponseMessage = await httpClient.PostAsJsonAsync("api/v1/graphql", 
+                new
+                {
+                    Query = @"
 query {
-  Database(name: ""GameData_KOR_Dev"") {
-    ID
-    Name
-    TablesHashValue
-    TypesHashValue
-    Comment
-    CreatedDateTime
-    Creator
-    ModifiedDateTime
-    Modifier
-    Paths
-    Revision
-    Tags
-    Tables {
-      ID
-      Name
-      TableName
-      CategoryPath
-      Comment
-      Tags
-      ContentsModifiedDateTime
-      ContentsModifier
-      CreatedDateTime
-      Creator
-      DerivedTags
-      HashValue
-      TemplatedParent
-      Columns {
+    Database(name: ""GameData_KOR_Dev"") {
         ID
         Name
-        IsKey
-        DataType
-        Tags
-        AllowNull
-        AutoIncrement
+        TablesHashValue
+        TypesHashValue
+        Comment
         CreatedDateTime
         Creator
-        DefaultValue
-        DerivedTags
-        ReadOnly
         ModifiedDateTime
         Modifier
-        IsUnique
-      }
-    }
-  }
-}
-"
-            });
-            var json = await response.Content.ReadAsStringAsync();
-            return json;
+        Paths
+        Revision
+        Tags
+        Tables {
+            ID
+            Name
+            TableName
+            CategoryPath
+            Comment
+            Tags
+            ContentsModifiedDateTime
+            ContentsModifier
+            CreatedDateTime
+            Creator
+            DerivedTags
+            HashValue
+            TemplatedParent
+            Columns {
+                ID
+                Name
+                IsKey
+                DataType
+                Tags
+                AllowNull
+                AutoIncrement
+                CreatedDateTime
+                Creator
+                DefaultValue
+                DerivedTags
+                ReadOnly
+                ModifiedDateTime
+                Modifier
+                IsUnique
+            }
         }
+    }
+}"
+                });
+			return await httpResponseMessage.Content.ReadAsStringAsync();
+		}
 
-        [Benchmark(Description = "GraphQL (Specified)")]
-        public async Task<string> GetGraphQLSpecifiedAsync()
-        {
-            var client = HttpClientTest.GetHttpClient("http://localhost:4104");
-            client.DefaultRequestHeaders.Add("Token", this.Token);
-            var response = await client.PostAsJsonAsync("api/v1/graphql", new
-            {
-                Query = @"
+		[Benchmark(Description="GraphQL (Specified)")]
+		public async Task<string> GetGraphQLSpecifiedFieldsAsync()
+		{
+            _ = this.token ?? throw new InvalidOperationException(nameof(this.token));
+
+            var httpClient = HttpClientTest.GetHttpClient(address);
+			httpClient.DefaultRequestHeaders.Add("Token", this.token);
+            var httpResponseMessage = await httpClient.PostAsJsonAsync("api/v1/graphql",
+                new
+                {
+                    Query = @"
 query {
-  Database(name:""GameData_KOR_Dev"") {
-  	ID
-  	Name
-  	IsEntered
-  	Tags
-  	Tables {
-  		Name
-  		Tags
-  		Columns {
-  			Name
-  			DefaultValue
-  			Tags
-  		}
-  	}
-  }
-}
-"
-            });
-            var json = await response.Content.ReadAsStringAsync();
-            return json;
+    Database(name:""GameData_KOR_Dev"") {
+        ID
+        Name
+        IsEntered
+        Tags
+        Tables {
+            Name
+            Tags
+            Columns {
+                Name
+                DefaultValue
+                Tags
+            }
         }
     }
+}"
+                });
+			return await httpResponseMessage.Content.ReadAsStringAsync();
+		}
+
+		[Benchmark(Description="HttpApi")]
+		public async Task<string> GetHttpApiAsync()
+		{
+            _ = this.token ?? throw new InvalidOperationException(nameof(this.token));
+
+            var httpClient = HttpClientTest.GetHttpClient(address, null, this.token);
+			var httpResponseMessage = await httpClient.GetAsync($"api/v1/commands/databases/{HttpBenchmark.DatabaseName}/tables/*/info");
+			return await httpResponseMessage.Content.ReadAsStringAsync();
+		}
+
+		[GlobalSetup]
+		public async Task<string> LoginAsync()
+		{
+			var httpClient = HttpClientTest.GetHttpClient(address);
+			var httpResponseMessage = await httpClient.PostAsJsonAsync($"api/v1/commands/login/databases/{HttpBenchmark.DatabaseName}/load-and-enter", new { UserID = userId, Password = password });
+			var response = await JsonExtensions.ReadAsDynamicAsync(httpResponseMessage.Content);
+            this.token = response.Token.ToString();
+			return response.Token.ToString();
+		}
+
+		[GlobalCleanup]
+		public async Task LogoutAsync()
+		{
+            _ = this.token ?? throw new InvalidOperationException(nameof(this.token));
+
+            var httpClient = HttpClientTest.GetHttpClient(address, null, this.token);
+			var httpResponseMessage = await httpClient.PostAsJsonAsync("api/v1/commands/logout", new { UserID = userId, Password = password });
+			await JsonExtensions.ReadAsDynamicAsync(httpResponseMessage.Content);
+		}
+	}
 }
