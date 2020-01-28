@@ -45,7 +45,7 @@ namespace CremaCode
 		std::string _relationID;
 		std::string _parentID;
 
-		long _key;
+		std::string _key;
 
 	protected:
 		CremaRow(reader::irow& row)
@@ -67,33 +67,63 @@ namespace CremaCode
 
 	protected:
 		template<typename keytype>
-		void SetKey(keytype keyvalue)
+		void SetKey(reader::itable& table, keytype keyvalue)
 		{
-			_key = reader::iniutil::generate_hash(keyvalue);
+			_key = reader::iniutil::generate_hash(table, keyvalue);
 		}
 
 		template<typename keytype1, typename keytype2>
-		void SetKey(keytype1 keyvalue1, keytype2 keyvalue2)
+		void SetKey(reader::itable& table, keytype1 keyvalue1, keytype2 keyvalue2)
 		{
-			_key = reader::iniutil::generate_hash(keyvalue1, keyvalue2);
+			_key = reader::iniutil::generate_hash(table, keyvalue1, keyvalue2);
 		}
 
 		template<typename keytype1, typename keytype2, typename keytype3>
-		void SetKey(keytype1 keyvalue1, keytype2 keyvalue2, keytype3 keyvalue3)
+		void SetKey(reader::itable& table, keytype1 keyvalue1, keytype2 keyvalue2, keytype3 keyvalue3)
 		{
-			_key = reader::iniutil::generate_hash(keyvalue1, keyvalue2, keyvalue3);
+			_key = reader::iniutil::generate_hash(table, keyvalue1, keyvalue2, keyvalue3);
 		}
 
 		template<typename keytype1, typename keytype2, typename keytype3, typename keytype4>
-		void SetKey(keytype1 keyvalue1, keytype2 keyvalue2, keytype3 keyvalue3, keytype4 keyvalue4)
+		void SetKey(reader::itable& table, keytype1 keyvalue1, keytype2 keyvalue2, keytype3 keyvalue3, keytype4 keyvalue4)
 		{
-			_key = reader::iniutil::generate_hash(keyvalue1, keyvalue2, keyvalue3, keyvalue4);
+			_key = reader::iniutil::generate_hash(table, keyvalue1, keyvalue2, keyvalue3, keyvalue4);
 		}
 
 		template<typename keytype1, typename keytype2, typename keytype3, typename keytype4, typename keytype5>
-		void SetKey(keytype1 keyvalue1, keytype2 keyvalue2, keytype3 keyvalue3, keytype4 keyvalue4, keytype5 keyvalue5)
+		void SetKey(reader::itable& table, keytype1 keyvalue1, keytype2 keyvalue2, keytype3 keyvalue3, keytype4 keyvalue4, keytype5 keyvalue5)
 		{
-			_key = reader::iniutil::generate_hash(keyvalue1, keyvalue2, keyvalue3, keyvalue4, keyvalue5);
+			_key = reader::iniutil::generate_hash(table, keyvalue1, keyvalue2, keyvalue3, keyvalue4, keyvalue5);
+		}
+
+		template<typename keytype>
+		void SetKey(const std::string& tableName, keytype keyvalue)
+		{
+			_key = reader::iniutil::generate_hash(tableName, keyvalue);
+		}
+
+		template<typename keytype1, typename keytype2>
+		void SetKey(const std::string& tableName, keytype1 keyvalue1, keytype2 keyvalue2)
+		{
+			_key = reader::iniutil::generate_hash(tableName, keyvalue1, keyvalue2);
+		}
+
+		template<typename keytype1, typename keytype2, typename keytype3>
+		void SetKey(const std::string& tableName, keytype1 keyvalue1, keytype2 keyvalue2, keytype3 keyvalue3)
+		{
+			_key = reader::iniutil::generate_hash(tableName, keyvalue1, keyvalue2, keyvalue3);
+		}
+
+		template<typename keytype1, typename keytype2, typename keytype3, typename keytype4>
+		void SetKey(const std::string& tableName, keytype1 keyvalue1, keytype2 keyvalue2, keytype3 keyvalue3, keytype4 keyvalue4)
+		{
+			_key = reader::iniutil::generate_hash(tableName, keyvalue1, keyvalue2, keyvalue3, keyvalue4);
+		}
+
+		template<typename keytype1, typename keytype2, typename keytype3, typename keytype4, typename keytype5>
+		void SetKey(const std::string& tableName, keytype1 keyvalue1, keytype2 keyvalue2, keytype3 keyvalue3, keytype4 keyvalue4, keytype5 keyvalue5)
+		{
+			_key = reader::iniutil::generate_hash(tableName, keyvalue1, keyvalue2, keyvalue3, keyvalue4, keyvalue5);
 		}
 
 		template<typename T = CremaRow, typename U = CremaRow>
@@ -106,7 +136,7 @@ namespace CremaCode
 		}
 
 	private:
-		friend long GetKey(CremaRow* target)
+		friend std::string GetKey(CremaRow* target)
 		{
 			return target->_key;
 		}
@@ -129,7 +159,7 @@ namespace CremaCode
 		const std::vector<T*>& Rows;
 
 	private:
-		std::map<long, T*> _keyToRow;
+		std::map<std::string, T*> _keyToRow;
 		std::vector<T*> _rows;
 		std::string _name;
 		std::string _tableName;
@@ -143,7 +173,7 @@ namespace CremaCode
 
 		virtual ~CremaTable()
 		{
-			for each(auto item in _rows)
+			for each (auto item in _rows)
 			{
 				delete item;
 			}
@@ -170,7 +200,7 @@ namespace CremaCode
 			{
 				reader::irow& item = table.rows().at(i);
 				T* row = (T*)(this->CreateRow(item, this));
-				_keyToRow.insert(std::map<long, T*>::value_type(GetKey(row), row));
+				_keyToRow.insert(std::map<std::string, T*>::value_type(GetKey(row), row));
 				_rows.push_back(row);
 			}
 		}
@@ -185,7 +215,7 @@ namespace CremaCode
 			_rows.reserve(rows.size());
 			for each (auto item in rows)
 			{
-				_keyToRow.insert(std::map<long, T*>::value_type(GetKey(item), item));
+				_keyToRow.insert(std::map<std::string, T*>::value_type(GetKey(item), item));
 				_rows.push_back(item);
 			}
 		}
@@ -227,35 +257,35 @@ namespace CremaCode
 		template<typename keytype>
 		const T* FindRow(keytype keyvalue) const
 		{
-			long key = reader::iniutil::generate_hash(keyvalue);
+			std::string& key = reader::iniutil::generate_hash(this->name(), keyvalue);
 			return _keyToRow.find(key)->second;
 		}
 
 		template<typename keytype1, typename keytype2>
 		const T* FindRow(keytype1 keyvalue1, keytype2 keyvalue2) const
 		{
-			long key = reader::iniutil::generate_hash(keyvalue1, keyvalue2);
+			std::string& key = reader::iniutil::generate_hash(this->name(), keyvalue1, keyvalue2);
 			return _keyToRow.find(key)->second;
 		}
 
 		template<typename keytype1, typename keytype2, typename keytype3>
 		const T* FindRow(keytype1 keyvalue1, keytype2 keyvalue2, keytype3 keyvalue3) const
 		{
-			long key = reader::iniutil::generate_hash(keyvalue1, keyvalue2, keyvalue3);
+			std::string& key = reader::iniutil::generate_hash(this->name(), keyvalue1, keyvalue2, keyvalue3);
 			return _keyToRow.find(key)->second;
 		}
 
 		template<typename keytype1, typename keytype2, typename keytype3, typename keytype4>
 		const T* FindRow(keytype1 keyvalue1, keytype2 keyvalue2, keytype3 keyvalue3, keytype4 keyvalue4) const
 		{
-			long key = reader::iniutil::generate_hash(keyvalue1, keyvalue2, keyvalue3, keyvalue4);
+			std::string& key = reader::iniutil::generate_hash(this->name(), keyvalue1, keyvalue2, keyvalue3, keyvalue4);
 			return _keyToRow.find(key)->second;
 		}
 
 		template<typename keytype1, typename keytype2, typename keytype3, typename keytype4, typename keytype5>
 		const T* FindRow(keytype1 keyvalue1, keytype2 keyvalue2, keytype3 keyvalue3, keytype4 keyvalue4, keytype5 keyvalue5) const
 		{
-			long key = reader::iniutil::generate_hash(keyvalue1, keyvalue2, keyvalue3, keyvalue4, keyvalue5);
+			std::string& key = reader::iniutil::generate_hash(this->name(), keyvalue1, keyvalue2, keyvalue3, keyvalue4, keyvalue5);
 			return _keyToRow.find(key)->second;
 		}
 
@@ -278,3 +308,4 @@ namespace CremaCode
 		}
 	};
 } /*namespace CremaCode*/
+

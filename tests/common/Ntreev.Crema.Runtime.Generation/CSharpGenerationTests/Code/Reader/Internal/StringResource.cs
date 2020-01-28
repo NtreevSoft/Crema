@@ -20,11 +20,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Ntreev.Crema.Reader.IO;
+using Ntreev.Crema.Code.Reader.IO;
 using System.Threading;
-using Ntreev.Crema.Reader.Binary;
+using Ntreev.Crema.Code.Reader.Binary;
 
-namespace Ntreev.Crema.Reader.Internal
+namespace Ntreev.Crema.Code.Reader.Internal
 {
     class StringValueDictionary
     {

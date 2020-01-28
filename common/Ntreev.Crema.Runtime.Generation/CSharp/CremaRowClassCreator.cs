@@ -64,6 +64,7 @@ namespace Ntreev.Crema.Runtime.Generation.CSharp
             };
             cc.Parameters.Add(generationInfo.ReaderNamespace, "IRow", "row");
             cc.Parameters.Add(tableInfo.GetCodeType(), "table");
+            cc.BaseConstructorArgs.Add("table.Columns");
             cc.BaseConstructorArgs.Add("row");
 
             // assign table field
@@ -95,22 +96,6 @@ namespace Ntreev.Crema.Runtime.Generation.CSharp
                     }
                     index++;
                 }
-            }
-
-            // invoke SetKey method
-            {
-                var methodRefExp = new CodeMethodReferenceExpression(new CodeThisReferenceExpression(), "SetKey");
-                var methodInvokeExp = new CodeMethodInvokeExpression(methodRefExp);
-
-                foreach (var item in tableInfo.Columns)
-                {
-                    if (item.IsKey == true)
-                    {
-                        var getHashCode = new CodeMethodReferenceExpression(item.GetFieldExpression(), "GetHashCode");
-                        methodInvokeExp.Parameters.Add(new CodeMethodInvokeExpression(getHashCode));
-                    }
-                }
-                cc.Statements.Add(methodInvokeExp);
             }
 
             classType.Members.Add(cc);

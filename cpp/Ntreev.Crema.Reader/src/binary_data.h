@@ -49,18 +49,18 @@ namespace CremaReader {
 				virtual bool has_value_core(const inicolumn& column) const;
 				virtual void set_value(const std::string& columnName, const std::string& text);
 				virtual itable& table() const;
-				virtual long hash() const;
+				virtual std::string hash() const;
 
 				void reserve_fields_ptr(size_t size);
 				char* fields_ptr();
 				void set_table(binary_table& table);
-				void set_hash(long hash);
+				void set_hash(std::string hash);
 				bool equals_key(va_list& vl);
 
 			private:
 				std::vector<char> m_fields;
 				binary_table* m_table;
-				long m_hash;
+				std::string m_hash;
 			};
 
 			class binary_column_array : public icolumn_array
@@ -119,17 +119,10 @@ namespace CremaReader {
 
 			private:
 				size_t keys_size() const;
-				template<typename _type>
-				void set_field_value(const char* buffer, size_t& offset, _type value)
-				{
-					_type* value_ptr = (_type*)(buffer + offset);
-					*value_ptr = value;
-					offset += sizeof(_type);
-				}
 
 			private:
 				std::vector<binary_row> m_rows;
-				std::multimap<long, binary_row*> m_keyTorow;
+				std::multimap<std::string, binary_row*> m_keyTorow;
 				binary_table* m_table;
 			};
 
