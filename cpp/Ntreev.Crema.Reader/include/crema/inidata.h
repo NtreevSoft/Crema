@@ -10,8 +10,7 @@
 #endif
 
 
-namespace CremaReader
-{
+namespace CremaReader {
 	class idataset;
 
 	template<typename _inicontainer, typename _initype>
@@ -83,7 +82,7 @@ namespace CremaReader
 
 		virtual void set_value(const std::string& columnName, const std::string& text) = 0;
 		virtual itable& table() const = 0;
-		virtual long hash() const = 0;
+		virtual std::string hash() const = 0;
 
 		template<typename T>
 		const T& value(const std::string& columnName) const;
@@ -304,7 +303,7 @@ namespace CremaReader
 		virtual idataset& dataset() const = 0;
 
 	protected:
-		itable & operator=(const itable&) { return *this; }
+		itable& operator=(const itable&) { return *this; }
 		itable() {};
 		virtual ~itable() {};
 	};

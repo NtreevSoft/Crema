@@ -20,6 +20,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using System.Linq;
 using Ntreev.Crema.Reader;
 
 namespace Ntreev.Crema.Code
@@ -69,11 +70,13 @@ namespace Ntreev.Crema.Code
 
         private string relationID;
         private string parentID;
-        private int key;
+        private string key;
         private CremaRow parentInternal;
 
-        protected CremaRow(IRow row)
+        protected CremaRow(IColumn[] columns, IRow row)
         {
+            this.key = CremaUtility.GenerateHashCode(row, columns);
+
             for (var i = 0; i < row.Table.Columns.Count; i++)
             {
                 var item = row.Table.Columns[i];
@@ -92,34 +95,9 @@ namespace Ntreev.Crema.Code
 
         public string GetParentID() { return this.parentID; }
 
-        public override int GetHashCode()
+        public string GetCremaHashCode()
         {
             return this.key;
-        }
-
-        protected void SetKey(int key1)
-        {
-            this.key = CremaUtility.GenerateHashCode(key1);
-        }
-
-        protected void SetKey(int key1, int key2)
-        {
-            this.key = CremaUtility.GenerateHashCode(key1, key2);
-        }
-
-        protected void SetKey(int key1, int key2, int key3)
-        {
-            this.key = CremaUtility.GenerateHashCode(key1, key2, key3);
-        }
-
-        protected void SetKey(int key1, int key2, int key3, int key4)
-        {
-            this.key = CremaUtility.GenerateHashCode(key1, key2, key3, key4);
-        }
-
-        protected void SetKey(params int[] keys)
-        {
-            this.key = CremaUtility.GenerateHashCode(keys);
         }
 
         protected static void SetParent<T, U>(T parent, U[] childs)
@@ -140,10 +118,12 @@ namespace Ntreev.Crema.Code
 
     public abstract class CremaTable<T> where T : CremaRow
     {
-        private readonly static T[] emptyRows = new T[] { };
+        private static readonly T[] emptyRows = new T[] { };
+        private static readonly IColumn[] emptyColumns = new IColumn[0];
 
         private T[] rows;
-        private Dictionary<int, T> keyToRow;
+        private IColumn[] columns;
+        private Dictionary<string, T> keyToRow;
         private string name;
         private string tableName;
 
@@ -156,12 +136,13 @@ namespace Ntreev.Crema.Code
         {
             this.name = table.Name;
             this.tableName = this.GetTableName(table.Name);
-            this.keyToRow = new Dictionary<int, T>(table.Rows.Count);
+            this.keyToRow = new Dictionary<string, T>(table.Rows.Count);
+            this.columns = table.Columns.ToArray();
             List<T> rows = new List<T>(table.Rows.Count);
             foreach (var item in table.Rows)
             {
                 T row = this.CreateRowInstance(item, this);
-                this.keyToRow.Add(row.GetHashCode(), row);
+                this.keyToRow.Add(row.GetCremaHashCode(), row);
                 rows.Add(row);
             }
             this.rows = rows.ToArray();
@@ -175,11 +156,11 @@ namespace Ntreev.Crema.Code
             if (rows.Length == 0)
                 return;
 
-            this.keyToRow = new Dictionary<int, T>(rows.Length);
+            this.keyToRow = new Dictionary<string, T>(rows.Length);
             for (int i = 0; i < rows.Length; i++)
             {
                 var item = rows[i];
-                this.keyToRow.Add(item.GetHashCode(), item);
+                this.keyToRow.Add(item.GetCremaHashCode(), item);
             }
             this.rows = rows;
         }
@@ -191,6 +172,17 @@ namespace Ntreev.Crema.Code
                 if (this.rows == null)
                     return emptyRows;
                 return this.rows;
+            }
+        }
+
+        public IColumn[] Columns
+        {
+            get
+            {
+                if (this.columns == null)
+                    return emptyColumns;
+
+                return this.columns;
             }
         }
 
@@ -212,59 +204,15 @@ namespace Ntreev.Crema.Code
 
         protected abstract T CreateRowInstance(IRow row, object table);
 
-        protected T FindRow(int key1)
+        protected T FindRow(string key)
         {
             if (this.keyToRow == null)
                 return null;
 
-            int key = CremaUtility.GenerateHashCode(key1);
-            if (this.keyToRow.ContainsKey(key) == false)
-                return null;
-            return this.keyToRow[key];
-        }
+            if (this.keyToRow.ContainsKey(key))
+                return this.keyToRow[key];
 
-        protected T FindRow(int key1, int key2)
-        {
-            if (this.keyToRow == null)
-                return null;
-
-            int key = CremaUtility.GenerateHashCode(key1, key2);
-            if (this.keyToRow.ContainsKey(key) == false)
-                return null;
-            return this.keyToRow[key];
-        }
-
-        protected T FindRow(int key1, int key2, int key3)
-        {
-            if (this.keyToRow == null)
-                return null;
-
-            int key = CremaUtility.GenerateHashCode(key1, key2, key3);
-            if (this.keyToRow.ContainsKey(key) == false)
-                return null;
-            return this.keyToRow[key];
-        }
-
-        protected T FindRow(int key1, int key2, int key3, int key4)
-        {
-            if (this.keyToRow == null)
-                return null;
-
-            int key = CremaUtility.GenerateHashCode(key1, key2, key3, key4);
-            if (this.keyToRow.ContainsKey(key) == false)
-                return null;
-            return this.keyToRow[key];
-        }
-
-        protected T FindRow(params int[] keys)
-        {
-            if (this.keyToRow == null)
-                return null;
-
-            int key = CremaUtility.GenerateHashCode(keys);
-            if (this.keyToRow.ContainsKey(key) == false)
-                return null;
-            return this.keyToRow[key];
+            return null;
         }
 
         protected void SetRelations<U>(string childName, U[] childs, Action<T, string, U[]> setChildsAction) where U : CremaRow
@@ -310,51 +258,14 @@ namespace Ntreev.Crema.Code
 
     public static class CremaUtility
     {
-        public static int GenerateHashCode(int key)
+        public static string GenerateHashCode(params string[] keys)
         {
-            return key.GetHashCode();
+            return string.Join(",", keys);
         }
 
-        public static int GenerateHashCode(int key1, int key2)
+        public static string GenerateHashCode(IRow row, params IColumn[] columns)
         {
-            int hc = 2;
-            hc = GetHashCodeCore(hc, key1);
-            hc = GetHashCodeCore(hc, key2);
-            return hc;
-        }
-
-        public static int GenerateHashCode(int key1, int key2, int key3)
-        {
-            int hc = 3;
-            hc = GetHashCodeCore(hc, key1);
-            hc = GetHashCodeCore(hc, key2);
-            hc = GetHashCodeCore(hc, key3);
-            return hc;
-        }
-
-        public static int GenerateHashCode(int key1, int key2, int key3, int key4)
-        {
-            int hc = 4;
-            hc = GetHashCodeCore(hc, key1);
-            hc = GetHashCodeCore(hc, key2);
-            hc = GetHashCodeCore(hc, key3);
-            hc = GetHashCodeCore(hc, key4);
-            return hc;
-        }
-
-        public static int GenerateHashCode(params int[] keys)
-        {
-            int hc = keys.Length;
-            for (int i = 0; i < keys.Length; i++)
-            {
-                hc = GetHashCodeCore(hc, keys[i]);
-            }
-            return hc;
-        }
-
-        private static int GetHashCodeCore(int v1, int v2)
-        {
-            return unchecked(v1 * 314159 + v2);
+            return string.Join(",", columns.Where(column => column.IsKey).Select(column => row[column.Name]));
         }
     }
 }

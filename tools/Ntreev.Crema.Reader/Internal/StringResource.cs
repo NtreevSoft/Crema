@@ -22,17 +22,57 @@ using System.Linq;
 using System.Text;
 using Ntreev.Crema.Reader.IO;
 using System.Threading;
+using Ntreev.Crema.Reader.Binary;
 
 namespace Ntreev.Crema.Reader.Internal
 {
+    class StringValueDictionary
+    {
+        private readonly IDictionary<int, string> strings = new Dictionary<int, string>();
+
+        public void Add(int key, string value)
+        {
+            this.strings.Add(key, value);
+        }
+
+        public bool ContainsKey(int id)
+        {
+            return this.strings.ContainsKey(id);
+        }
+
+        public string GetString(int id)
+        {
+            return this.strings[id];
+        }
+
+        public bool Equals(int id, string s)
+        {
+            return this.Equals(id, s, true);
+        }
+
+        public bool Equals(int id, string s, bool caseSensitive)
+        {
+            string s1 = this.GetString(id);
+
+            return StringResource.GetComparer(caseSensitive).Equals(s1, s);
+        }
+    }
+
     static class StringResource
     {
         private static int refCount = 0;
-        private static Dictionary<int, string> strings = new Dictionary<int, string>();
+        private static Dictionary<CremaBinaryTable, StringValueDictionary> tableStrings = new Dictionary<CremaBinaryTable, StringValueDictionary>();
+        private static StringValueDictionary fileStrings = new StringValueDictionary();
 
-        public static void Read(BinaryReader reader)
+        public static void ReadHeader(BinaryReader reader)
+        {
+            StringResource.Read(reader, null);
+        }
+
+        public static void Read(BinaryReader reader, CremaBinaryTable table)
         {
             int stringCount = reader.ReadInt32();
+            var strings = GetTableStrings(table);
 
             for (int i = 0; i < stringCount; i++)
             {
@@ -48,13 +88,32 @@ namespace Ntreev.Crema.Reader.Internal
                         text = Encoding.UTF8.GetString(bytes);
                     }
 
-                    strings[id] = text;
+                    strings.Add(id, text);
                 }
                 else
                 {
                     reader.BaseStream.Seek(length, SeekOrigin.Current);
                 }
             }
+        }
+
+        public static StringValueDictionary GetHeaderStrings()
+        {
+            return StringResource.GetTableStrings(null);
+        }
+
+        public static StringValueDictionary GetTableStrings(CremaBinaryTable table)
+        {
+            if (table == null)
+                return fileStrings;
+
+            if (tableStrings.ContainsKey(table))
+            {
+                return tableStrings[table];
+            }
+
+            tableStrings.Add(table, new StringValueDictionary());
+            return tableStrings[table];
         }
 
         public static StringComparer GetComparer(bool caseSensitive)
@@ -64,23 +123,6 @@ namespace Ntreev.Crema.Reader.Internal
             return StringComparer.CurrentCultureIgnoreCase;
         }
 
-        public static string GetString(int id)
-        {
-            return StringResource.strings[id];
-        }
-
-        public static bool Equals(int id, string s)
-        {
-            return StringResource.Equals(id, s, true);
-        }
-
-        public static bool Equals(int id, string s, bool caseSensitive)
-        {
-            string s1 = StringResource.GetString(id);
-
-            return StringResource.GetComparer(caseSensitive).Equals(s1, s);
-        }
-
         public static int Ref
         {
             get { return StringResource.refCount; }
@@ -88,7 +130,7 @@ namespace Ntreev.Crema.Reader.Internal
             {
                 StringResource.refCount = value;
                 if (StringResource.refCount == 0)
-                    StringResource.strings.Clear();
+                    StringResource.tableStrings.Clear();
             }
         }
     }
