@@ -7,6 +7,3 @@
 [submodule "sub-modules/Ntreev.Library.Commands"]
 	path = sub-modules/Ntreev.Library.Commands
 	url = ../CommandLineParser.git
-[submodule ".sub-modules/GraphQL"]
-	path = sub-modules/GraphQL
-	url = https://github.com/graphql-dotnet/graphql-dotnet
