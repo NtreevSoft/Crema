@@ -17,14 +17,6 @@ namespace CremaReader {
 			internal_util();
 			~internal_util();
 
-			template<typename _type>
-			static void set_field_value(const char* buffer, size_t& offset, _type value)
-			{
-				_type* value_ptr = (_type*)(buffer + offset);
-				*value_ptr = value;
-				offset += sizeof(_type);
-			}
-
 			std::list<CremaReader*> m_readers;
 
 

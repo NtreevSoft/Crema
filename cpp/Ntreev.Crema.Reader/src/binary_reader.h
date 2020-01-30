@@ -31,7 +31,7 @@ namespace CremaReader {
 				binary_table_array m_tables;
 
 			private:
-				binary_table * read_table(std::istream& stream, std::streamoff offset, ReadFlag flag);
+				binary_table* read_table(std::istream& stream, std::streamoff offset, ReadFlag flag);
 				void read_columns(std::istream& stream, binary_table& dataTable, size_t columnCount, ReadFlag flag);
 				void read_rows(std::istream& stream, binary_table& dataTable, size_t rowCount);
 

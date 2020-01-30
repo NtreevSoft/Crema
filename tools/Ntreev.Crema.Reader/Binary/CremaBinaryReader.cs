@@ -137,14 +137,15 @@ namespace Ntreev.Crema.Reader.Binary
             this.tableIndexes = reader.ReadValues<TableIndex>(fileHeader.TableCount);
             this.version = fileHeader.MagicValue;
             this.revision = fileHeader.Revision;
-            
+
             stream.Seek(fileHeader.StringResourcesOffset, SeekOrigin.Begin);
-            StringResource.Read(reader);
-            this.name = StringResource.GetString(fileHeader.Name);
+            StringResource.ReadHeader(reader);
+            var fileHeaderStrings = StringResource.GetHeaderStrings();
+            this.name = fileHeaderStrings.GetString(fileHeader.Name);
             this.tables = new CremaBinaryTableCollection(this, this.tableIndexes);
-            this.typesHashValue = StringResource.GetString(fileHeader.TypesHashValue);
-            this.tablesHashValue = StringResource.GetString(fileHeader.TablesHashValue);
-            this.tags = StringResource.GetString(fileHeader.Tags);
+            this.typesHashValue = fileHeaderStrings.GetString(fileHeader.TypesHashValue);
+            this.tablesHashValue = fileHeaderStrings.GetString(fileHeader.TablesHashValue);
+            this.tags = fileHeaderStrings.GetString(fileHeader.Tags);
 
             for (var i = 0; i < this.tableIndexes.Length; i++)
             {
@@ -168,7 +169,7 @@ namespace Ntreev.Crema.Reader.Binary
             var table = new CremaBinaryTable(this, tableInfo.RowCount, this.options);
 
             reader.Seek(tableHeader.StringResourcesOffset + offset, SeekOrigin.Begin);
-            StringResource.Read(reader);
+            StringResource.Read(reader, table);
 
             reader.Seek(tableHeader.ColumnsOffset + offset, SeekOrigin.Begin);
             this.ReadColumns(reader, table, tableInfo.ColumnCount);
@@ -176,9 +177,10 @@ namespace Ntreev.Crema.Reader.Binary
             reader.Seek(tableHeader.RowsOffset + offset, SeekOrigin.Begin);
             this.ReadRows(reader, table, tableInfo.RowCount);
 
-            table.Name = StringResource.GetString(tableInfo.TableName);
-            table.Category = StringResource.GetString(tableInfo.CategoryName);
-            table.HashValue = StringResource.GetString(tableHeader.HashValue);
+            var tableStrings = StringResource.GetTableStrings(table);
+            table.Name = tableStrings.GetString(tableInfo.TableName);
+            table.Category = tableStrings.GetString(tableInfo.CategoryName);
+            table.HashValue = tableStrings.GetString(tableHeader.HashValue);
 
             return table;
         }
@@ -198,11 +200,12 @@ namespace Ntreev.Crema.Reader.Binary
         {
             var keys = new List<IColumn>();
             var columns = new CremaBinaryColumnCollection(table, columnCount, this.CaseSensitive);
+            var tableStrings = StringResource.GetTableStrings(table);
             for (var i = 0; i < columnCount; i++)
             {
                 var columninfo = reader.ReadValue<ColumnInfo>();
-                var columnName = StringResource.GetString(columninfo.ColumnName);
-                var typeName = StringResource.GetString(columninfo.DataType);
+                var columnName = tableStrings.GetString(columninfo.ColumnName);
+                var typeName = tableStrings.GetString(columninfo.DataType);
                 var isKey = columninfo.Iskey == 0 ? false : true;
 
                 var column = new CremaBinaryColumn(columnName, Utility.NameToType(typeName), isKey);
