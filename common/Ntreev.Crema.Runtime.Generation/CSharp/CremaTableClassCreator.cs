@@ -201,7 +201,9 @@ namespace Ntreev.Crema.Runtime.Generation.CSharp
             {
                 var query = from item in tableInfo.Columns
                     where item.IsKey
-                    select new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(new CodeVariableReferenceExpression(item.Name), "ToString"));
+                    select item.IsCustomType() 
+                        ? new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(new CodeVariableReferenceExpression(item.Name), "ToString"), new CodePrimitiveExpression("D"))
+                        : new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(new CodeVariableReferenceExpression(item.Name), "ToString"));
 
                 var invokeGenerateHashCode = new CodeMethodInvokeExpression(new CodeTypeReferenceExpression("CremaUtility"), "GenerateHashCode");
                 invokeGenerateHashCode.Parameters.AddRange(query.ToArray());
