@@ -556,6 +556,15 @@ namespace Ntreev.Crema.Client.Tables.Properties {
         }
         
         /// <summary>
+        ///   Apply formatting to table numberic cell과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string MenuItem_NumberCellFormatting {
+            get {
+                return ResourceManager.GetString("MenuItem_NumberCellFormatting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Pre_view...과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string MenuItem_Preview {

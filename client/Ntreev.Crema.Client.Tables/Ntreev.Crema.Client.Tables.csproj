@@ -188,6 +188,7 @@
     <Compile Include="MenuItems\EndContentEditMenuItem.cs" />
     <Compile Include="MenuItems\EndTemplateEditMenuItem.cs" />
     <Compile Include="MenuItems\TableMenuItem.cs" />
+    <Compile Include="MenuItems\TableMenus\NumberCellFormattingMenuItem.cs" />
     <Compile Include="MenuItems\TreeViewItems\ViewContentMenuItem.cs" />
     <Compile Include="MenuItems\TreeViewItems\EditContentMenuItem.cs" />
     <Compile Include="MenuItems\TreeViewItems\TagMenus\AllTagsMenuItem.cs" />

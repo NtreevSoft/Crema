@@ -39,6 +39,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Ntreev.Crema.Client.Types.MenuItems.TypeMenus;
 using Xceed.Wpf.DataGrid;
 
 namespace Ntreev.Crema.Client.Types.Dialogs.Views
@@ -92,7 +93,10 @@ namespace Ntreev.Crema.Client.Types.Dialogs.Views
 
         private void PART_DataGridControl_Loaded(object sender, RoutedEventArgs e)
         {
+            var isNumberFormatting = (bool)(this.configs[typeof(NumberCellFormattingMenuItem), nameof(NumberCellFormattingMenuItem.IsNumberFormatting)] ?? false);
+
             var gridControl = sender as ModernDataGridControl;
+            gridControl.IsNumberFormatting = isNumberFormatting;
             if (gridControl.Columns[CremaSchema.ID] is ColumnBase column)
                 column.Visible = false;
             this.configs.Update(this);
