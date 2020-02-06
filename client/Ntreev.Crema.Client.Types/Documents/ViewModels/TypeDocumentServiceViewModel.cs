@@ -101,7 +101,7 @@ namespace Ntreev.Crema.Client.Types.Documents.ViewModels
             }
 
             this.ActivateItem(document);
-            new SelectFieldStrategy(document, document.Source.TypeName, columnName, row);
+            //new SelectFieldStrategy(document, document.Source.TypeName, columnName, row);
         }
 
         public void OpenType(Authentication authentication, IType type)

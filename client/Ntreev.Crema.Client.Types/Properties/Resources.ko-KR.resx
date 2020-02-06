@@ -348,4 +348,7 @@
   <data name="Message_ReceivingInfo" xml:space="preserve">
     <value>정보를 가져오는 중입니다.</value>
   </data>
+  <data name="MenuItem_NumberCellFormatting" xml:space="preserve">
+    <value>숫자형 타입 데이터에 서식 적용</value>
+  </data>
 </root>

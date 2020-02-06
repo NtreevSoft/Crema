@@ -38,6 +38,7 @@ using System.ComponentModel.Composition;
 using Ntreev.Crema.Client.Framework;
 using Ntreev.Library;
 using Ntreev.Crema.Client.Tables.MenuItems.TableMenus;
+using Ntreev.ModernUI.Framework;
 
 namespace Ntreev.Crema.Client.Tables.Documents.Views
 {
@@ -54,6 +55,9 @@ namespace Ntreev.Crema.Client.Tables.Documents.Views
         private QuickFindTableDataMenuItem menuItem = null;
         [Import]
         private IStatusBarService statusBarService = null;
+        [Import]
+        private IAppConfiguration configService;
+
         private ILineInfo lineInfo;
 
         private string columnsHashValue;
@@ -79,8 +83,11 @@ namespace Ntreev.Crema.Client.Tables.Documents.Views
         {
             base.OnApplyTemplate();
 
+            var isNumberFormatting = (bool)(this.configService[typeof(NumberCellFormattingMenuItem), nameof(NumberCellFormattingMenuItem.IsNumberFormatting)] ?? false);
+
             this.dataTableControl.ApplyTemplate();
             this.gridControl = this.dataTableControl.Template.FindName("PART_DataGridControl", this.dataTableControl) as ModernDataGridControl;
+            this.gridControl.IsNumberFormatting = isNumberFormatting;
             if (this.gridControl != null)
             {
                 this.gridControl.ItemsSourceChangeCompleted += GridControl_ItemsSourceChangeCompleted;
@@ -88,7 +95,7 @@ namespace Ntreev.Crema.Client.Tables.Documents.Views
             }
         }
 
-        protected async override void OnIsKeyboardFocusWithinChanged(DependencyPropertyChangedEventArgs e)
+        protected override async void OnIsKeyboardFocusWithinChanged(DependencyPropertyChangedEventArgs e)
         {
             base.OnIsKeyboardFocusWithinChanged(e);
 

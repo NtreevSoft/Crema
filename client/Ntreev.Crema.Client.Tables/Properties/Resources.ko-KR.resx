@@ -438,4 +438,7 @@
   <data name="Label_IgnoreCaseSensitive" xml:space="preserve">
     <value>테이블 키의 대소문자 구분 안함</value>
   </data>
+  <data name="MenuItem_NumberCellFormatting" xml:space="preserve">
+    <value>숫자형 테이블 데이터에 서식 적용</value>
+  </data>
 </root>
