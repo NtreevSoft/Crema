@@ -37,6 +37,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Ntreev.Crema.Client.Types.MenuItems.TypeMenus;
+using Ntreev.ModernUI.Framework;
 
 namespace Ntreev.Crema.Client.Types.Documents.Views
 {
@@ -49,6 +50,8 @@ namespace Ntreev.Crema.Client.Types.Documents.Views
         private ICremaHost cremaHost = null;
         [Import]
         private QuickFindTypeDataMenuItem menuItem = null;
+        [Import]
+        private IAppConfiguration configService;
 
         private ModernDataGridControl gridControl;
 
@@ -82,8 +85,11 @@ namespace Ntreev.Crema.Client.Types.Documents.Views
         {
             base.OnApplyTemplate();
 
+            var isNumberFormatting = (bool)(this.configService[typeof(NumberCellFormattingMenuItem), nameof(NumberCellFormattingMenuItem.IsNumberFormatting)] ?? false);
+
             this.dataTypeControl.ApplyTemplate();
             this.gridControl = this.dataTypeControl.Template.FindName("PART_DataGridControl", this.dataTypeControl) as ModernDataGridControl;
+            this.gridControl.IsNumberFormatting = isNumberFormatting;
 
             this.searchBox.Visibility = Visibility.Collapsed;
             this.searchBox.IsVisibleChanged += SearchBox_IsVisibleChanged;
@@ -130,7 +136,7 @@ namespace Ntreev.Crema.Client.Types.Documents.Views
             }
         }
 
-        protected async override void OnIsKeyboardFocusWithinChanged(DependencyPropertyChangedEventArgs e)
+        protected override async void OnIsKeyboardFocusWithinChanged(DependencyPropertyChangedEventArgs e)
         {
             base.OnIsKeyboardFocusWithinChanged(e);
 

@@ -106,6 +106,7 @@
     <Compile Include="MenuItems\CancelTemplateEditMenuItem.cs" />
     <Compile Include="MenuItems\EndTemplateEditMenuItem.cs" />
     <Compile Include="MenuItems\TreeViewItems\ViewTemplateMenuItem.cs" />
+    <Compile Include="MenuItems\TypeMenus\NumberCellFormattingMenuItem.cs" />
     <Compile Include="MenuItems\TypeMenus\QuickFindTypeDataMenuItem.cs" />
     <Compile Include="MenuItems\TypeMenuItem.cs" />
     <Compile Include="PropertyItems\ViewModels\TypeListBoxItemViewModel.cs" />

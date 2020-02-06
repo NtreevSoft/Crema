@@ -348,4 +348,7 @@
   <data name="Message_ReceivingInfo" xml:space="preserve">
     <value>Receiving information.</value>
   </data>
+  <data name="MenuItem_NumberCellFormatting" xml:space="preserve">
+    <value>Apply formatting to type numberic cell</value>
+  </data>
 </root>
