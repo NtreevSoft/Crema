@@ -37,8 +37,8 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
                 <Separator Width="140" HorizontalAlignment="Left" />
                 <TextBlock FontSize="11" />
                 <TextBlock x:Name="Version" FontSize="11" Text="Version 1.0.0.0" />
-                <TextBlock FontSize="11" Text="email : cremaqa@gmail.com" />
-                <TextBlock FontSize="11" Text="Created by s2quake@ntreev.com" />
+                <TextBlock FontSize="11" Text="email : crema@ntreev.com" />
+                <TextBlock FontSize="11" Text="Created by NtreevSoft" />
             </StackPanel>
         </Border>
     </Grid>
