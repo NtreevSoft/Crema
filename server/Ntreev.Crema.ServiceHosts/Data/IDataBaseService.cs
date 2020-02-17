@@ -41,6 +41,9 @@ namespace Ntreev.Crema.ServiceHosts.Data
         ResultBase<DataBaseMetaData> Subscribe(Guid authenticationToken, string dataBaseName);
 
         [OperationContract]
+        ResultBase<DataBaseMetaData> Subscribe2(Guid authenticationToken, string dataBaseName, string version);
+
+        [OperationContract]
         ResultBase Unsubscribe();
 
         [OperationContract]
@@ -96,6 +99,9 @@ namespace Ntreev.Crema.ServiceHosts.Data
 
         [OperationContract]
         ResultBase<long> GetTableRevision(string itemPath);
+
+        [OperationContract]
+        ResultBase<TableDetailInfo> GetTableDetailInfo(string tableName);
 
         [OperationContract]
         ResultBase<FindResultInfo[]> FindTableItem(string itemPath, string text, FindOptions options);

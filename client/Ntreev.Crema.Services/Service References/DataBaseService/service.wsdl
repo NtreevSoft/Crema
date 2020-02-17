@@ -34,6 +34,15 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="Subscribe2">
+      <soap12:operation soapAction="http://www.ntreev.com/IDataBaseService/Subscribe2" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="Unsubscribe">
       <soap12:operation soapAction="http://www.ntreev.com/IDataBaseService/Unsubscribe" style="document" />
       <wsdl:input>
@@ -198,6 +207,15 @@
     </wsdl:operation>
     <wsdl:operation name="GetTableRevision">
       <soap12:operation soapAction="http://www.ntreev.com/IDataBaseService/GetTableRevision" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTableDetailInfo">
+      <soap12:operation soapAction="http://www.ntreev.com/IDataBaseService/GetTableDetailInfo" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -528,6 +546,12 @@
     </wsdl:operation>
     <wsdl:operation name="OnTablesChanged">
       <soap12:operation soapAction="http://www.ntreev.com/IDataBaseService/OnTablesChanged" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OnTablesDetailInfoChanged">
+      <soap12:operation soapAction="http://www.ntreev.com/IDataBaseService/OnTablesDetailInfoChanged" style="document" />
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>

@@ -15,16 +15,18 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.Data;
+using System.Windows.Controls;
 
-namespace Ntreev.Crema.ServiceModel
+namespace Ntreev.Crema.Client.Tables.PropertyItems.Views
 {
-    internal interface ITableInfoProvider
+    /// <summary>
+    /// TableDetailInfoView.xaml에 대한 상호 작용 논리
+    /// </summary>
+    public partial class TableDetailInfoView : UserControl
     {
-        TableInfo TableInfo
+        public TableDetailInfoView()
         {
-            get;
-            set;
+            InitializeComponent();
         }
     }
 }

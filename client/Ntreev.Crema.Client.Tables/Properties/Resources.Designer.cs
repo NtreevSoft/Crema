@@ -142,6 +142,51 @@ namespace Ntreev.Crema.Client.Tables.Properties {
         }
         
         /// <summary>
+        ///   All Tag Columns과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Label_ColumnsAllTagCount {
+            get {
+                return ResourceManager.GetString("Label_ColumnsAllTagCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Client Tag Columns과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Label_ColumnsClientTagCount {
+            get {
+                return ResourceManager.GetString("Label_ColumnsClientTagCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Table Columns Count과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Label_ColumnsCount {
+            get {
+                return ResourceManager.GetString("Label_ColumnsCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Server Tag Columns과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Label_ColumnsServerTagCount {
+            get {
+                return ResourceManager.GetString("Label_ColumnsServerTagCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Unused Tag Columns과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Label_ColumnsUnusedTagCount {
+            get {
+                return ResourceManager.GetString("Label_ColumnsUnusedTagCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Comment과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Label_Comment {
@@ -322,11 +367,74 @@ namespace Ntreev.Crema.Client.Tables.Properties {
         }
         
         /// <summary>
+        ///   All Tag Rows과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Label_TableAllTagRowCount {
+            get {
+                return ResourceManager.GetString("Label_TableAllTagRowCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Client Tag Rows과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Label_TableClientTagRowCount {
+            get {
+                return ResourceManager.GetString("Label_TableClientTagRowCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Disabled Rows과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Label_TableDisabledRowCount {
+            get {
+                return ResourceManager.GetString("Label_TableDisabledRowCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Enabled Rows과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Label_TableEnabledRowCount {
+            get {
+                return ResourceManager.GetString("Label_TableEnabledRowCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Table Name과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Label_TableName {
             get {
                 return ResourceManager.GetString("Label_TableName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Table Rows Count과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Label_TableRowCount {
+            get {
+                return ResourceManager.GetString("Label_TableRowCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Server Tag Rows과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Label_TableServerTagRowCount {
+            get {
+                return ResourceManager.GetString("Label_TableServerTagRowCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Unused Tag Rows과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Label_TableUnusedTagRowCount {
+            get {
+                return ResourceManager.GetString("Label_TableUnusedTagRowCount", resourceCulture);
             }
         }
         
@@ -975,6 +1083,15 @@ namespace Ntreev.Crema.Client.Tables.Properties {
         public static string Title_TableColumnInfo {
             get {
                 return ResourceManager.GetString("Title_TableColumnInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Table Detail Info과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Title_TableDetailInfo {
+            get {
+                return ResourceManager.GetString("Title_TableDetailInfo", resourceCulture);
             }
         }
         
