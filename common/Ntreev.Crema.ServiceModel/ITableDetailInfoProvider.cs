@@ -15,14 +15,12 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using Ntreev.Crema.Data;
 
-[assembly: AssemblyTitle("Ntreev.Crema.Services")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyProduct("Ntreev.Crema.Services")]
-[assembly: ComVisible(false)]
-[assembly: Guid("c8d364ce-e1d9-452b-af0f-b36e844760a7")]
-
-[assembly: InternalsVisibleTo("Ntreev.Crema.Client.Tables")]
+namespace Ntreev.Crema.ServiceModel
+{
+    internal interface ITableDetailInfoProvider
+    {
+        TableDetailInfo TableDetailInfo { get; }
+    }
+}

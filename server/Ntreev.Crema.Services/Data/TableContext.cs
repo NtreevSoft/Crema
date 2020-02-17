@@ -17,25 +17,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Library.IO;
 using Ntreev.Library.ObjectModel;
-using Ntreev.Crema.Data.Xml;
 using Ntreev.Crema.Data.Xml.Schema;
-using Ntreev.Crema.Services;
 using Ntreev.Crema.Services.Properties;
-using Ntreev.Crema.Services.Users;
 using Ntreev.Crema.Data;
-using System.Xml.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
-using Ntreev.Library.Serialization;
 using Ntreev.Library;
 
 namespace Ntreev.Crema.Services.Data
@@ -56,13 +46,14 @@ namespace Ntreev.Crema.Services.Data
         private ItemsEventHandler<ITableItem> itemsLockChanged;
         private ItemsEventHandler<ITableItem> itemsRevisionChanged;
 
-        public TableContext(DataBase dataBase, IEnumerable<TableInfo> tableInfos)
+        public TableContext(DataBase dataBase, IEnumerable<TableInfo> tableInfos, IEnumerable<TableDetailInfo> tableDetailInfos)
         {
             this.dataBase = dataBase;
             this.repository = dataBase.Repository;
             this.CremaHost.Debug(Resources.Message_TableContextInitialize);
             this.basePath = Path.Combine(dataBase.BasePath, CremaSchema.TableDirectory);
             this.Initialize(tableInfos);
+            this.Initialize(tableDetailInfos);
             this.CremaHost.UserContext.Dispatcher.Invoke(() => this.CremaHost.UserContext.Users.UsersLoggedOut += Users_UsersLoggedOut);
             this.CremaHost.Debug(Resources.Message_TableContextIsCreated);
         }
@@ -803,6 +794,26 @@ namespace Ntreev.Crema.Services.Data
                 }
             }
             this.CremaHost.Debug(Resources.Message_TableLoadingIsCompleted);
+        }
+
+        private void Initialize(IEnumerable<TableDetailInfo> tableDetailInfos)
+        {
+            this.CremaHost.Debug("Update TableDetailInfo");
+            var stopwatch = Stopwatch.StartNew();
+            try
+            {
+                foreach (var item in tableDetailInfos)
+                {
+                    var table = this.Tables[item.Name];
+                    table.UpdateTableDetailInfo(item);
+                }
+            }
+            finally
+            {
+                stopwatch.Stop();
+                this.CremaHost.Debug($"Update TableDetailInfo completed. {stopwatch.ElapsedMilliseconds} ms");
+            }
+
         }
 
         private void Sign(Authentication authentication)

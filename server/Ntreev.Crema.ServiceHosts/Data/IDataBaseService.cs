@@ -16,15 +16,9 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.ServiceModel;
-using Ntreev.Crema.Services;
 using Ntreev.Crema.ServiceModel;
-using System.Threading.Tasks;
 using Ntreev.Crema.Data;
-using Ntreev.Library;
 
 namespace Ntreev.Crema.ServiceHosts.Data
 {
@@ -39,6 +33,9 @@ namespace Ntreev.Crema.ServiceHosts.Data
 
         [OperationContract]
         ResultBase<DataBaseMetaData> Subscribe(Guid authenticationToken, string dataBaseName);
+
+        [OperationContract]
+        ResultBase<DataBaseMetaData> Subscribe2(Guid authenticationToken, string dataBaseName, string version);
 
         [OperationContract]
         ResultBase Unsubscribe();
@@ -96,6 +93,9 @@ namespace Ntreev.Crema.ServiceHosts.Data
 
         [OperationContract]
         ResultBase<long> GetTableRevision(string itemPath);
+
+        [OperationContract]
+        ResultBase<TableDetailInfo> GetTableDetailInfo(string tableName);
 
         [OperationContract]
         ResultBase<FindResultInfo[]> FindTableItem(string itemPath, string text, FindOptions options);

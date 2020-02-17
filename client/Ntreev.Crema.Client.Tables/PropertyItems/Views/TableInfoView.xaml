@@ -28,6 +28,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
     <UserControl.Resources>
         <nmfv:ContentToStringConverter x:Key="contentToStringConverter" />
+        <nmfv:ContentToNumberFormattingStringConverter x:Key="ContentToNumberFormattingStringConverter"/>
     </UserControl.Resources>
 
     <ncpc:HeaderedContentList x:Name="content" HeaderWidth="0.33*">
@@ -57,6 +58,10 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
                                 Content="{Binding TableInfo.Comment}" />
         <HeaderedContentControl Header="{x:Static p:Resources.Label_Tags}" 
                                 Content="{Binding TableInfo.DerivedTags}" />
+        <HeaderedContentControl Header="{x:Static p:Resources.Label_TableRowCount}" 
+                                Content="{Binding TableDetailInfo.TableRowsCount, Converter={StaticResource ContentToNumberFormattingStringConverter}}" />
+        <HeaderedContentControl Header="{x:Static p:Resources.Label_ColumnsCount}" 
+                                Content="{Binding TableDetailInfo.ColumnsCount, Converter={StaticResource ContentToNumberFormattingStringConverter}}" />
     </ncpc:HeaderedContentList>
 
 </UserControl>

@@ -21,6 +21,9 @@ namespace Ntreev.Crema.Services.DataBaseService {
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/Subscribe", ReplyAction="http://www.ntreev.com/IDataBaseService/SubscribeResponse")]
         Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.DataBaseMetaData> Subscribe(System.Guid authenticationToken, string dataBaseName);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/Subscribe2", ReplyAction="http://www.ntreev.com/IDataBaseService/Subscribe2Response")]
+        Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.DataBaseMetaData> Subscribe2(System.Guid authenticationToken, string dataBaseName, string version);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/Unsubscribe", ReplyAction="http://www.ntreev.com/IDataBaseService/UnsubscribeResponse")]
         Ntreev.Crema.ServiceModel.ResultBase Unsubscribe();
         
@@ -77,6 +80,9 @@ namespace Ntreev.Crema.Services.DataBaseService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/GetTableRevision", ReplyAction="http://www.ntreev.com/IDataBaseService/GetTableRevisionResponse")]
         Ntreev.Crema.ServiceModel.ResultBase<long> GetTableRevision(string itemPath);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/GetTableDetailInfo", ReplyAction="http://www.ntreev.com/IDataBaseService/GetTableDetailInfoResponse")]
+        Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.Data.TableDetailInfo> GetTableDetailInfo(string tableName);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.ntreev.com/IDataBaseService/FindTableItem", ReplyAction="http://www.ntreev.com/IDataBaseService/FindTableItemResponse")]
         Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.FindResultInfo[]> FindTableItem(string itemPath, string text, Ntreev.Crema.ServiceModel.FindOptions options);
@@ -193,6 +199,9 @@ namespace Ntreev.Crema.Services.DataBaseService {
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://www.ntreev.com/IDataBaseService/OnTablesChanged")]
         void OnTablesChanged(Ntreev.Library.SignatureDate signatureDate, Ntreev.Crema.Data.TableInfo[] tableInfos);
         
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://www.ntreev.com/IDataBaseService/OnTablesDetailInfoChanged")]
+        void OnTablesDetailInfoChanged(Ntreev.Library.SignatureDate signatureDate, Ntreev.Crema.Data.TableDetailInfo[] tableDetailInfos);
+        
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://www.ntreev.com/IDataBaseService/OnTablesStateChanged")]
         void OnTablesStateChanged(Ntreev.Library.SignatureDate signatureDate, string[] tableNames, Ntreev.Crema.ServiceModel.TableState[] states);
         
@@ -275,6 +284,10 @@ namespace Ntreev.Crema.Services.DataBaseService {
             return base.Channel.Subscribe(authenticationToken, dataBaseName);
         }
         
+        public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.DataBaseMetaData> Subscribe2(System.Guid authenticationToken, string dataBaseName, string version) {
+            return base.Channel.Subscribe2(authenticationToken, dataBaseName, version);
+        }
+        
         public Ntreev.Crema.ServiceModel.ResultBase Unsubscribe() {
             return base.Channel.Unsubscribe();
         }
@@ -349,6 +362,10 @@ namespace Ntreev.Crema.Services.DataBaseService {
         
         public Ntreev.Crema.ServiceModel.ResultBase<long> GetTableRevision(string itemPath) {
             return base.Channel.GetTableRevision(itemPath);
+        }
+        
+        public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.Data.TableDetailInfo> GetTableDetailInfo(string tableName) {
+            return base.Channel.GetTableDetailInfo(tableName);
         }
         
         public Ntreev.Crema.ServiceModel.ResultBase<Ntreev.Crema.ServiceModel.FindResultInfo[]> FindTableItem(string itemPath, string text, Ntreev.Crema.ServiceModel.FindOptions options) {

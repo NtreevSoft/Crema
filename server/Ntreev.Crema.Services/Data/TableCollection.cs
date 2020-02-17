@@ -16,12 +16,9 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Ntreev.Crema.Data;
-using Ntreev.Crema.Data.Xml;
-using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services.Properties;
 using Ntreev.Library;
-using Ntreev.Library.IO;
 using Ntreev.Library.Linq;
 using Ntreev.Library.ObjectModel;
 using System;
@@ -388,6 +385,7 @@ namespace Ntreev.Crema.Services.Data
             this.Repository.Commit(authentication, comment, eventLog);
             this.CremaHost.Info(comment);
             this.UpdateRevision(authentication, tables, dataSet);
+            this.UpdateTableDetailInfo(authentication, tables, dataSet);
             this.OnTablesCreated(new ItemsCreatedEventArgs<ITable>(authentication, tables, args, dataSet));
             this.Context.InvokeItemsCreatedEvent(authentication, tables, args, dataSet);
         }
@@ -400,6 +398,7 @@ namespace Ntreev.Crema.Services.Data
             this.Repository.Commit(authentication, comment, eventLog);
             this.CremaHost.Info(comment);
             this.UpdateRevision(authentication, tables, dataSet);
+            this.UpdateTableDetailInfo(authentication, tables, dataSet);
             this.OnTablesRenamed(new ItemsRenamedEventArgs<ITable>(authentication, tables, oldNames, oldPaths, dataSet));
             this.Context.InvokeItemsRenamedEvent(authentication, tables, oldNames, oldPaths, dataSet);
         }
@@ -412,6 +411,7 @@ namespace Ntreev.Crema.Services.Data
             this.Repository.Commit(authentication, comment, eventLog);
             this.CremaHost.Info(comment);
             this.UpdateRevision(authentication, tables, dataSet);
+            this.UpdateTableDetailInfo(authentication, tables, dataSet);
             this.OnTablesMoved(new ItemsMovedEventArgs<ITable>(authentication, tables, oldPaths, oldCategoryPaths, dataSet));
             this.Context.InvokeItemsMovedEvent(authentication, tables, oldPaths, oldCategoryPaths, dataSet);
         }
@@ -442,6 +442,7 @@ namespace Ntreev.Crema.Services.Data
             this.Repository.Commit(authentication, comment, eventLog);
             this.CremaHost.Info(comment);
             this.UpdateRevision(authentication, tables, dataSet);
+            this.UpdateTableDetailInfo(authentication, tables, dataSet);
             this.OnTablesChanged(new ItemsEventArgs<ITable>(authentication, tables, dataSet));
             this.Context.InvokeItemsChangedEvent(authentication, tables, dataSet);
         }
@@ -454,6 +455,7 @@ namespace Ntreev.Crema.Services.Data
             this.Repository.Commit(authentication, comment, eventLog);
             this.CremaHost.Info(comment);
             this.UpdateRevision(authentication, tables, dataSet);
+            this.UpdateTableDetailInfo(authentication, tables, dataSet);
             this.OnTablesChanged(new ItemsEventArgs<ITable>(authentication, tables));
             this.Context.InvokeItemsChangedEvent(authentication, tables, dataSet);
         }
@@ -469,6 +471,15 @@ namespace Ntreev.Crema.Services.Data
                 {
                     dataTable.UpdateRevision(revision);
                 }
+            }
+        }
+
+        private void UpdateTableDetailInfo(Authentication authentication, Table[] tables, CremaDataSet dataSet)
+        {
+            foreach (var table in tables)
+            {
+                var dataTable = dataSet.Tables[table.Name];
+                table.UpdateTableDetailInfo(dataTable.GetTableDetailInfo());
             }
         }
 

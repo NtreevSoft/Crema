@@ -15,14 +15,18 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using System.Windows.Controls;
 
-[assembly: AssemblyTitle("Ntreev.Crema.Services")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyProduct("Ntreev.Crema.Services")]
-[assembly: ComVisible(false)]
-[assembly: Guid("c8d364ce-e1d9-452b-af0f-b36e844760a7")]
-
-[assembly: InternalsVisibleTo("Ntreev.Crema.Client.Tables")]
+namespace Ntreev.Crema.Client.Tables.PropertyItems.Views
+{
+    /// <summary>
+    /// TableDetailInfoView.xaml에 대한 상호 작용 논리
+    /// </summary>
+    public partial class TableDetailInfoView : UserControl
+    {
+        public TableDetailInfoView()
+        {
+            InitializeComponent();
+        }
+    }
+}

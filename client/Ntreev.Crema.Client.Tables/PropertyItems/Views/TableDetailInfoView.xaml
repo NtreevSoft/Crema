@@ -1,0 +1,67 @@
+﻿<UserControl x:Class="Ntreev.Crema.Client.Tables.PropertyItems.Views.TableDetailInfoView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:data="clr-namespace:Ntreev.Crema.Data;assembly=Ntreev.Crema.Data"
+             xmlns:nmfv="clr-namespace:Ntreev.ModernUI.Framework.Converters;assembly=Ntreev.ModernUI.Framework"
+             xmlns:ncpc="clr-namespace:Ntreev.Crema.Presentation.Controls;assembly=Ntreev.Crema.Presentation"
+             xmlns:local="clr-namespace:Ntreev.Crema.Client.Tables.PropertyItems.Views"
+             xmlns:vm="clr-namespace:Ntreev.Crema.Client.Tables.PropertyItems.ViewModels"
+             xmlns:p="clr-namespace:Ntreev.Crema.Client.Tables.Properties"
+             mc:Ignorable="d"
+             d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance vm:TableDetailInfoViewModel}">
+    <UserControl.Resources>
+        <nmfv:ContentToNumberFormattingStringConverter x:Key="ContentToNumberFormattingStringConverter" />
+
+        <DataTemplate x:Key="HeaderedContentControlDataTemplate">
+            <TextBlock Text="{Binding Converter={StaticResource ContentToNumberFormattingStringConverter}}" />
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <ncpc:HeaderedContentList HeaderWidth="0.33*" ItemTemplate="{StaticResource HeaderedContentControlDataTemplate}">
+        <HeaderedContentControl Header="{x:Static p:Resources.Label_TableRowCount}"
+                                Content="{Binding TableDetailInfo.TableRowsCount}" />
+        <HeaderedContentControl Header="{x:Static p:Resources.Label_TableEnabledRowCount}"
+                                Content="{Binding TableDetailInfo.TableEnabledRowsCount}" />
+        <HeaderedContentControl Header="{x:Static p:Resources.Label_TableDisabledRowCount}"
+                                Content="{Binding TableDetailInfo.TableDisabledRowsCount}" />
+        <HeaderedContentControl Header="{x:Static p:Resources.Label_TableAllTagRowCount}"
+                                Content="{Binding TableDetailInfo.TableAllTagRowsCount}" />
+        <HeaderedContentControl Content="{Binding TableDetailInfo.TableServerTagRowsCount}">
+            <HeaderedContentControl.Header>
+                <TextBlock Foreground="{x:Static vm:TableDetailInfoViewModel.ServerTagBrush}" TextAlignment="Right" TextTrimming="CharacterEllipsis" Text="{x:Static p:Resources.Label_TableServerTagRowCount}" />
+            </HeaderedContentControl.Header>
+        </HeaderedContentControl>
+        <HeaderedContentControl Content="{Binding TableDetailInfo.TableClientTagRowsCount}">
+            <HeaderedContentControl.Header>
+                <TextBlock Foreground="{x:Static vm:TableDetailInfoViewModel.ClientTagBrush}" TextAlignment="Right" TextTrimming="CharacterEllipsis" Text="{x:Static p:Resources.Label_TableClientTagRowCount}" />
+            </HeaderedContentControl.Header>
+        </HeaderedContentControl>
+        <HeaderedContentControl Content="{Binding TableDetailInfo.TableUnusedTagRowsCount}">
+            <HeaderedContentControl.Header>
+                <TextBlock Foreground="{x:Static vm:TableDetailInfoViewModel.UnusedTagBrush}" TextAlignment="Right" TextTrimming="CharacterEllipsis" Text="{x:Static p:Resources.Label_TableUnusedTagRowCount}" />
+            </HeaderedContentControl.Header>
+        </HeaderedContentControl>
+        <HeaderedContentControl Header="{x:Static p:Resources.Label_ColumnsCount}"
+                                Content="{Binding TableDetailInfo.ColumnsCount}" />
+        <HeaderedContentControl Header="{x:Static p:Resources.Label_ColumnsAllTagCount}"
+                                Content="{Binding TableDetailInfo.ColumnsAllTagCount}" />
+        <HeaderedContentControl Content="{Binding TableDetailInfo.ColumnsServerTagCount}">
+            <HeaderedContentControl.Header>
+                <TextBlock Foreground="{x:Static vm:TableDetailInfoViewModel.ServerTagBrush}" TextAlignment="Right" TextTrimming="CharacterEllipsis" Text="{x:Static p:Resources.Label_ColumnsServerTagCount}" />
+            </HeaderedContentControl.Header>
+        </HeaderedContentControl>
+        <HeaderedContentControl Content="{Binding TableDetailInfo.ColumnsClientTagCount}"> 
+            <HeaderedContentControl.Header>
+                <TextBlock Foreground="{x:Static vm:TableDetailInfoViewModel.ClientTagBrush}" TextAlignment="Right" TextTrimming="CharacterEllipsis" Text="{x:Static p:Resources.Label_ColumnsClientTagCount}" />
+            </HeaderedContentControl.Header>
+        </HeaderedContentControl>
+        <HeaderedContentControl Content="{Binding TableDetailInfo.ColumnsUnusedTagCount}">
+            <HeaderedContentControl.Header>
+                <TextBlock Foreground="{x:Static vm:TableDetailInfoViewModel.UnusedTagBrush}" TextAlignment="Right" TextTrimming="CharacterEllipsis" Text="{x:Static p:Resources.Label_ColumnsUnusedTagCount}" />
+            </HeaderedContentControl.Header>
+        </HeaderedContentControl>
+    </ncpc:HeaderedContentList>
+</UserControl>
