@@ -19,12 +19,8 @@ using Ntreev.Crema.Data;
 
 namespace Ntreev.Crema.ServiceModel
 {
-    internal interface ITableInfoProvider
+    internal interface ITableDetailInfoProvider
     {
-        TableInfo TableInfo
-        {
-            get;
-            set;
-        }
+        TableDetailInfo TableDetailInfo { get; }
     }
 }

@@ -20,17 +20,9 @@ using Ntreev.Crema.Services;
 using System;
 using System.Linq;
 using System.ServiceModel;
-using System.Threading.Tasks;
-using System.Windows.Threading;
-using Ntreev.Crema.Data.Xml.Schema;
-using Ntreev.Crema.Data.Xml;
 using Ntreev.Crema.Data;
-using System.Collections.Generic;
 using Ntreev.Library.Linq;
 using Ntreev.Library;
-using Ntreev.Library.Serialization;
-using System.IO;
-using System.Text;
 
 namespace Ntreev.Crema.ServiceHosts.Data
 {
@@ -46,6 +38,7 @@ namespace Ntreev.Crema.ServiceHosts.Data
         private IDataBase dataBase;
         private Authentication authentication;
         private string dataBaseName;
+        private Version clientVersion;
 
         public DataBaseService(ICremaHost cremaHost)
             : base(cremaHost.GetService(typeof(ILogService)) as ILogService)
@@ -94,6 +87,12 @@ namespace Ntreev.Crema.ServiceHosts.Data
                 result.Fault = new CremaFault(e);
             }
             return result;
+        }
+
+        public ResultBase<DataBaseMetaData> Subscribe2(Guid authenticationToken, string dataBaseName, string version)
+        {
+            this.clientVersion = new Version(version);
+            return this.Subscribe(authenticationToken, dataBaseName);
         }
 
         public ResultBase Unsubscribe()
@@ -284,6 +283,15 @@ namespace Ntreev.Crema.ServiceHosts.Data
             {
                 var tableItem = this.cremaHost.Dispatcher.Invoke(() => this.GetTableItem(itemPath));
                 return tableItem.Revision;
+            });
+        }
+
+        public ResultBase<TableDetailInfo> GetTableDetailInfo(string tableName)
+        {
+            return this.Invoke(() =>
+            {
+                var table = this.cremaHost.Dispatcher.Invoke(() => this.GetTable(tableName));
+                return table.TableDetailInfo;
             });
         }
 
@@ -709,8 +717,17 @@ namespace Ntreev.Crema.ServiceHosts.Data
             var userToken = this.authentication.Token;
             var exceptionUserToken = e.UserToken;
             var signatureDate = e.SignatureDate;
-            var values = e.Items.Select(item => item.TableInfo).ToArray();
-            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnTablesChanged(signatureDate, values));
+            var tableInfos = e.Items.Select(item => item.TableInfo).ToArray();
+            this.InvokeEvent(userToken, exceptionUserToken, () => this.Callback.OnTablesChanged(signatureDate, tableInfos));
+
+            if (CremaFeatures.SupportsTableDetailInfo(this.clientVersion))
+            {
+                var tableDetailInfos = e.Items.Select(item => item.TableDetailInfo).ToArray();
+                this.InvokeEvent(userToken, exceptionUserToken, () =>
+                {
+                    this.Callback.OnTablesDetailInfoChanged(signatureDate, tableDetailInfos);
+                });
+            }
         }
 
         private void TableContext_ItemCreated(object sender, ItemsCreatedEventArgs<ITableItem> e)

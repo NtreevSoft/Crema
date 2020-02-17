@@ -18,13 +18,6 @@
 using Ntreev.Crema.Data;
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services;
-using Ntreev.Library;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Client.Framework
 {
@@ -39,6 +32,8 @@ namespace Ntreev.Crema.Client.Framework
         string DisplayName { get; }
 
         TableInfo TableInfo { get; }
+
+        TableDetailInfo TableDetailInfo { get; }
 
         TableState TableState { get; }
 

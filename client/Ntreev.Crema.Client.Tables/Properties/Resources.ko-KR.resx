@@ -441,4 +441,43 @@
   <data name="MenuItem_NumberCellFormatting" xml:space="preserve">
     <value>숫자형 테이블 데이터에 서식 적용</value>
   </data>
+  <data name="Label_ColumnsAllTagCount" xml:space="preserve">
+    <value>All 태그 열</value>
+  </data>
+  <data name="Label_ColumnsClientTagCount" xml:space="preserve">
+    <value>Client 태그 열</value>
+  </data>
+  <data name="Label_ColumnsCount" xml:space="preserve">
+    <value>테이블 열 개수</value>
+  </data>
+  <data name="Label_ColumnsServerTagCount" xml:space="preserve">
+    <value>Server 태그 열</value>
+  </data>
+  <data name="Label_ColumnsUnusedTagCount" xml:space="preserve">
+    <value>Unused 태그 열</value>
+  </data>
+  <data name="Label_TableAllTagRowCount" xml:space="preserve">
+    <value>All 태그 행</value>
+  </data>
+  <data name="Label_TableClientTagRowCount" xml:space="preserve">
+    <value>Client 태그 행</value>
+  </data>
+  <data name="Label_TableDisabledRowCount" xml:space="preserve">
+    <value>비활성 행</value>
+  </data>
+  <data name="Label_TableEnabledRowCount" xml:space="preserve">
+    <value>활성 행</value>
+  </data>
+  <data name="Label_TableRowCount" xml:space="preserve">
+    <value>테이블 행 개수</value>
+  </data>
+  <data name="Label_TableServerTagRowCount" xml:space="preserve">
+    <value>Server 태그 행</value>
+  </data>
+  <data name="Label_TableUnusedTagRowCount" xml:space="preserve">
+    <value>Unused 태그 행</value>
+  </data>
+  <data name="Title_TableDetailInfo" xml:space="preserve">
+    <value>테이블 상세 정보</value>
+  </data>
 </root>

@@ -105,6 +105,8 @@ namespace Ntreev.Crema.Client.Framework
 
         public TableInfo TableInfo => this.descriptor.TableInfo;
 
+        public TableDetailInfo TableDetailInfo => this.descriptor.TableDetailInfo;
+
         public TableState TableState => this.descriptor.TableState;
 
         public TableAttribute TableAttribute => this.descriptor.TableAttribute;

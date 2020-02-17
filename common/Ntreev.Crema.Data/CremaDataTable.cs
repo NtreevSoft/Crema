@@ -776,6 +776,30 @@ namespace Ntreev.Crema.Data
             }
         }
 
+        public TableDetailInfo GetTableDetailInfo()
+        {
+            var cremaDataTable = this.DataSet.Tables[this.Name, this.CategoryPath].Rows;
+            var columnInfos = this.TableInfo.Columns;
+            var tableDetailInfo = new TableDetailInfo
+            {
+                Name = this.Name,
+                CategoryPath = this.CategoryPath,
+                TableRowsCount = cremaDataTable.Count(),
+                TableEnabledRowsCount = cremaDataTable.Count(o => o.IsEnabled),
+                TableDisabledRowsCount = cremaDataTable.Count(o => !o.IsEnabled),
+                TableAllTagRowsCount = cremaDataTable.Count(o => o.Tags == TagInfo.All),
+                TableServerTagRowsCount = cremaDataTable.Count(o => o.Tags == TagInfoUtility.Server),
+                TableClientTagRowsCount = cremaDataTable.Count(o => o.Tags == TagInfoUtility.Client),
+                TableUnusedTagRowsCount = cremaDataTable.Count(o => o.Tags == TagInfo.Unused),
+                ColumnsCount = columnInfos.Count(),
+                ColumnsAllTagCount = columnInfos.Count(o => o.Tags == TagInfo.All),
+                ColumnsServerTagCount = columnInfos.Count(o => o.Tags == TagInfoUtility.Server),
+                ColumnsClientTagCount = columnInfos.Count(o => o.Tags == TagInfoUtility.Client),
+                ColumnsUnusedTagCount = columnInfos.Count(o => o.Tags == TagInfo.Unused)
+            };
+            return tableDetailInfo;
+        }
+
         public long Revision => this.table.Revision;
 
         public bool IgnoreCaseSensitive

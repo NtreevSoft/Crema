@@ -15,15 +15,9 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using Caliburn.Micro;
 using Ntreev.Crema.Client.Framework;
-using Ntreev.Crema.Services;
 using Ntreev.Crema.ServiceModel;
-using System.Windows;
 using Ntreev.ModernUI.Framework;
 using System.ComponentModel;
 using Ntreev.Crema.Data;
@@ -37,6 +31,7 @@ namespace Ntreev.Crema.Client.Tables.PropertyItems.ViewModels
     public class TableInfoViewModel : PropertyItemBase
     {
         private TableInfo tableInfo;
+        private TableDetailInfo tableDetailInfo;
         private ITableDescriptor descriptor;
 
         public TableInfoViewModel()
@@ -51,6 +46,16 @@ namespace Ntreev.Crema.Client.Tables.PropertyItems.ViewModels
             {
                 this.tableInfo = value;
                 this.NotifyOfPropertyChange(nameof(this.TableInfo));
+            }
+        }
+
+        public TableDetailInfo TableDetailInfo
+        {
+            get { return this.tableDetailInfo; }
+            set
+            {
+                this.tableDetailInfo = value;
+                this.NotifyOfPropertyChange(nameof(this.TableDetailInfo));
             }
         }
 
@@ -81,7 +86,12 @@ namespace Ntreev.Crema.Client.Tables.PropertyItems.ViewModels
             if (e.PropertyName == nameof(ITableDescriptor.TableInfo) || e.PropertyName == string.Empty)
             {
                 this.TableInfo = this.descriptor.TableInfo;
+                this.TableDetailInfo = this.descriptor.TableDetailInfo;
                 this.NotifyOfPropertyChange(nameof(this.IsVisible));
+            }
+            else if (e.PropertyName == nameof(ITableDescriptor.TableDetailInfo))
+            {
+                this.TableDetailInfo = this.descriptor.TableDetailInfo;
             }
         }
 
@@ -94,6 +104,7 @@ namespace Ntreev.Crema.Client.Tables.PropertyItems.ViewModels
                     (this.descriptor as INotifyPropertyChanged).PropertyChanged += Descriptor_PropertyChanged;
                 }
                 this.TableInfo = this.descriptor.TableInfo;
+                this.TableDetailInfo = this.descriptor.Target.TableDetailInfo;
             }
 
             this.NotifyOfPropertyChange(nameof(this.IsVisible));

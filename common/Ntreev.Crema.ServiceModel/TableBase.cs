@@ -36,7 +36,7 @@ using Ntreev.Crema.Data;
 
 namespace Ntreev.Crema.ServiceModel
 {
-    internal abstract class TableBase<_I, _C, _IC, _CC, _CT> : PermissionItemBase<_I, _C, _IC, _CC, _CT>, ITableInfoProvider
+    internal abstract class TableBase<_I, _C, _IC, _CC, _CT> : PermissionItemBase<_I, _C, _IC, _CC, _CT>, ITableInfoProvider, ITableDetailInfoProvider
         where _I : TableBase<_I, _C, _IC, _CC, _CT>
         where _C : TableCategoryBase<_I, _C, _IC, _CC, _CT>, new()
         where _IC : ItemContainer<_I, _C, _IC, _CC, _CT>, new()
@@ -62,6 +62,12 @@ namespace Ntreev.Crema.ServiceModel
         public void UpdateTableInfo(TableInfo value)
         {
             this.tableInfo = value;
+            this.OnTableInfoChanged(EventArgs.Empty);
+        }
+
+        public void UpdateTableDetailInfo(TableDetailInfo value)
+        {
+            this.TableDetailInfo = value;
             this.OnTableInfoChanged(EventArgs.Empty);
         }
 
@@ -662,5 +668,7 @@ namespace Ntreev.Crema.ServiceModel
         }
 
         #endregion
+
+        public TableDetailInfo TableDetailInfo { get; private set; }
     }
 }

@@ -20,11 +20,8 @@ using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services.Domains;
 using Ntreev.Library.IO;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Services.Data
 {
@@ -35,6 +32,7 @@ namespace Ntreev.Crema.Services.Data
         private readonly DataBaseRepositoryHost repository;
         private readonly TypeInfo[] typeInfos;
         private readonly TableInfo[] tableInfos;
+        private readonly TableDetailInfo[] tableDetailInfos;
         private readonly string transactionPath;
         private readonly string domainPath;
 
@@ -45,6 +43,7 @@ namespace Ntreev.Crema.Services.Data
             this.repository = repository;
             this.typeInfos = dataBase.TypeContext.Types.Select((Type item) => item.TypeInfo).ToArray();
             this.tableInfos = dataBase.TableContext.Tables.Select((Table item) => item.TableInfo).ToArray();
+            this.tableDetailInfos = dataBase.TableContext.Tables.Select((Table item) => item.TableDetailInfo).ToArray();
             this.transactionPath = Path.Combine(dataBase.CremaHost.WorkingPath, CremaPath.Transaction, $"{dataBase.ID}");
             this.domainPath = Path.Combine(dataBase.CremaHost.WorkingPath, CremaPath.Domain, $"{dataBase.ID}");
             DirectoryUtility.Copy(this.domainPath, this.transactionPath);
@@ -72,7 +71,7 @@ namespace Ntreev.Crema.Services.Data
             this.Sign(authentication);
             this.dataBase.ResettingDataBase(authentication);
             this.RollbackDomains(authentication);
-            this.dataBase.ResetDataBase(authentication, this.typeInfos, this.tableInfos);
+            this.dataBase.ResetDataBase(authentication, this.typeInfos, this.tableInfos, this.tableDetailInfos);
             this.authentication.Expired -= Authentication_Expired;
             this.OnDisposed(EventArgs.Empty);
         }

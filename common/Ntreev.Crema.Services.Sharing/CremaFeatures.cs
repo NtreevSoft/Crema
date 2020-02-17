@@ -16,24 +16,44 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Ntreev.Crema.Services
 {
     public static class CremaFeatures
     {
-        public static bool SupportsToastMessage(Version clientVersion)
+        public static bool SupportsToastMessage(Version version)
         {
-            if (clientVersion.Major == 3 && clientVersion.Minor == 6)
+            if (version == null) return false;
+
+            if (version.Major == 3 && version.Minor == 6)
             {
-                return clientVersion > Version.Parse("3.6.19273.1701");
+                return version > Version.Parse("3.6.19273.1701");
             }
-            else if (clientVersion.Major == 3 && clientVersion.Minor == 7)
+            else if (version.Major == 3 && version.Minor == 7)
             {
-                return clientVersion > Version.Parse("3.7.19273.1701");
+                return version > Version.Parse("3.7.19273.1701");
             }
-            else if (clientVersion.Major == 3 && clientVersion.Minor > 7)
+            else if (version.Major > 3)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public static bool SupportsTableDetailInfo(Version version)
+        {
+            if (version == null) return false;
+
+            if (version.Major == 3 && version.Minor == 6)
+            {
+                return version > Version.Parse("3.6.20037.1540");
+            }
+            else if (version.Major == 3 && version.Minor == 7)
+            {
+                return version > Version.Parse("3.7.20036.1328");
+            }
+            else if (version.Major > 3)
             {
                 return true;
             }

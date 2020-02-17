@@ -441,4 +441,43 @@
   <data name="MenuItem_NumberCellFormatting" xml:space="preserve">
     <value>Apply formatting to table numberic cell</value>
   </data>
+  <data name="Label_ColumnsAllTagCount" xml:space="preserve">
+    <value>All Tag Columns</value>
+  </data>
+  <data name="Label_ColumnsClientTagCount" xml:space="preserve">
+    <value>Client Tag Columns</value>
+  </data>
+  <data name="Label_ColumnsCount" xml:space="preserve">
+    <value>Table Columns Count</value>
+  </data>
+  <data name="Label_ColumnsServerTagCount" xml:space="preserve">
+    <value>Server Tag Columns</value>
+  </data>
+  <data name="Label_ColumnsUnusedTagCount" xml:space="preserve">
+    <value>Unused Tag Columns</value>
+  </data>
+  <data name="Label_TableAllTagRowCount" xml:space="preserve">
+    <value>All Tag Rows</value>
+  </data>
+  <data name="Label_TableClientTagRowCount" xml:space="preserve">
+    <value>Client Tag Rows</value>
+  </data>
+  <data name="Label_TableDisabledRowCount" xml:space="preserve">
+    <value>Disabled Rows</value>
+  </data>
+  <data name="Label_TableEnabledRowCount" xml:space="preserve">
+    <value>Enabled Rows</value>
+  </data>
+  <data name="Label_TableRowCount" xml:space="preserve">
+    <value>Table Rows Count</value>
+  </data>
+  <data name="Label_TableServerTagRowCount" xml:space="preserve">
+    <value>Server Tag Rows</value>
+  </data>
+  <data name="Label_TableUnusedTagRowCount" xml:space="preserve">
+    <value>Unused Tag Rows</value>
+  </data>
+  <data name="Title_TableDetailInfo" xml:space="preserve">
+    <value>Table Detail Info</value>
+  </data>
 </root>

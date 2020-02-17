@@ -210,6 +210,21 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ResultBaseOflong" nillable="true" type="tns:ResultBaseOflong" />
+  <xs:complexType name="ResultBaseOfTableDetailInfoq8erDhHE">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ResultBaseOf{0}{#}" Namespace="http://schemas.ntreev.com" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="TableDetailInfo" Namespace="http://schemas.ntreev.com">
+          </GenericParameter>
+        </GenericType>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Xml" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ResultBaseOfTableDetailInfoq8erDhHE" nillable="true" type="tns:ResultBaseOfTableDetailInfoq8erDhHE" />
   <xs:complexType name="ResultBaseOfArrayOfFindResultInfoq8erDhHE">
     <xs:annotation>
       <xs:appinfo>
@@ -400,6 +415,31 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="TagInfo" nillable="true" type="tns:TagInfo" />
+  <xs:complexType name="ArrayOfTableDetailInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="TableDetailInfo" nillable="true" type="tns:TableDetailInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfTableDetailInfo" nillable="true" type="tns:ArrayOfTableDetailInfo" />
+  <xs:complexType name="TableDetailInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CategoryPath" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ColumnsAllTagCount" type="xs:int" />
+      <xs:element minOccurs="0" name="ColumnsClientTagCount" type="xs:int" />
+      <xs:element minOccurs="0" name="ColumnsCount" type="xs:int" />
+      <xs:element minOccurs="0" name="ColumnsServerTagCount" type="xs:int" />
+      <xs:element minOccurs="0" name="ColumnsUnusedTagCount" type="xs:int" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TableAllTagRowsCount" type="xs:int" />
+      <xs:element minOccurs="0" name="TableClientTagRowsCount" type="xs:int" />
+      <xs:element minOccurs="0" name="TableDisabledRowsCount" type="xs:int" />
+      <xs:element minOccurs="0" name="TableEnabledRowsCount" type="xs:int" />
+      <xs:element minOccurs="0" name="TableRowsCount" type="xs:int" />
+      <xs:element minOccurs="0" name="TableServerTagRowsCount" type="xs:int" />
+      <xs:element minOccurs="0" name="TableUnusedTagRowsCount" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="TableDetailInfo" nillable="true" type="tns:TableDetailInfo" />
   <xs:complexType name="ArrayOfTableState">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="TableState" type="tns:TableState" />

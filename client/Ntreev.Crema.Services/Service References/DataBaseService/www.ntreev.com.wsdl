@@ -23,6 +23,12 @@
   <wsdl:message name="IDataBaseService_Subscribe_OutputMessage">
     <wsdl:part name="parameters" element="tns:SubscribeResponse" />
   </wsdl:message>
+  <wsdl:message name="IDataBaseService_Subscribe2_InputMessage">
+    <wsdl:part name="parameters" element="tns:Subscribe2" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseService_Subscribe2_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Subscribe2Response" />
+  </wsdl:message>
   <wsdl:message name="IDataBaseService_Unsubscribe_InputMessage">
     <wsdl:part name="parameters" element="tns:Unsubscribe" />
   </wsdl:message>
@@ -136,6 +142,12 @@
   </wsdl:message>
   <wsdl:message name="IDataBaseService_GetTableRevision_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetTableRevisionResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseService_GetTableDetailInfo_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetTableDetailInfo" />
+  </wsdl:message>
+  <wsdl:message name="IDataBaseService_GetTableDetailInfo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetTableDetailInfoResponse" />
   </wsdl:message>
   <wsdl:message name="IDataBaseService_FindTableItem_InputMessage">
     <wsdl:part name="parameters" element="tns:FindTableItem" />
@@ -353,6 +365,9 @@
   <wsdl:message name="IDataBaseService_OnTablesChanged_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:OnTablesChanged" />
   </wsdl:message>
+  <wsdl:message name="IDataBaseService_OnTablesDetailInfoChanged_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnTablesDetailInfoChanged" />
+  </wsdl:message>
   <wsdl:message name="IDataBaseService_OnTablesStateChanged_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:OnTablesStateChanged" />
   </wsdl:message>
@@ -406,6 +421,10 @@
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Subscribe">
       <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseService/Subscribe" message="tns:IDataBaseService_Subscribe_InputMessage" />
       <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseService/SubscribeResponse" message="tns:IDataBaseService_Subscribe_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Subscribe2">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseService/Subscribe2" message="tns:IDataBaseService_Subscribe2_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseService/Subscribe2Response" message="tns:IDataBaseService_Subscribe2_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Unsubscribe">
       <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseService/Unsubscribe" message="tns:IDataBaseService_Unsubscribe_InputMessage" />
@@ -482,6 +501,10 @@
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetTableRevision">
       <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseService/GetTableRevision" message="tns:IDataBaseService_GetTableRevision_InputMessage" />
       <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseService/GetTableRevisionResponse" message="tns:IDataBaseService_GetTableRevision_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetTableDetailInfo">
+      <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseService/GetTableDetailInfo" message="tns:IDataBaseService_GetTableDetailInfo_InputMessage" />
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseService/GetTableDetailInfoResponse" message="tns:IDataBaseService_GetTableDetailInfo_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="FindTableItem">
       <wsdl:input wsaw:Action="http://www.ntreev.com/IDataBaseService/FindTableItem" message="tns:IDataBaseService_FindTableItem_InputMessage" />
@@ -628,6 +651,9 @@
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnTablesChanged">
       <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseService/OnTablesChanged" message="tns:IDataBaseService_OnTablesChanged_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnTablesDetailInfoChanged">
+      <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseService/OnTablesDetailInfoChanged" message="tns:IDataBaseService_OnTablesDetailInfoChanged_OutputCallbackMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="OnTablesStateChanged">
       <wsdl:output wsaw:Action="http://www.ntreev.com/IDataBaseService/OnTablesStateChanged" message="tns:IDataBaseService_OnTablesStateChanged_OutputCallbackMessage" />

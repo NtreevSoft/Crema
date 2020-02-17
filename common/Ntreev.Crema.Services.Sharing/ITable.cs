@@ -16,10 +16,6 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
-using System.Threading.Tasks;
 using Ntreev.Crema.Data;
 using Ntreev.Library.ObjectModel;
 using Ntreev.Crema.ServiceModel;
@@ -64,6 +60,8 @@ namespace Ntreev.Crema.Services
         long Revision { get; }
 
         TableInfo TableInfo { get; }
+
+        TableDetailInfo TableDetailInfo { get; }
 
         TableState TableState { get; }
 
