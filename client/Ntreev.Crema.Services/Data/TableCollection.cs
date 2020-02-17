@@ -240,6 +240,9 @@ namespace Ntreev.Crema.Services.Data
 
         internal void UpdateTableDetailInfo(Table[] tables)
         {
+            var version = Version.Parse(this.CremaHost.ServiceInfos[nameof(DataBaseService)].Version);
+            if (!CremaFeatures.SupportsTableDetailInfo(version)) return;
+
             foreach (var table in tables)
             {
                 var tableDetailInfo = this.Service.GetTableDetailInfo(table.Name);

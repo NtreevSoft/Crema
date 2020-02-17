@@ -940,8 +940,12 @@ namespace Ntreev.Crema.Services.Data
                     {
                         service.Faulted += Service_Faulted;
                     }
-                    var version = AppUtility.ProductVersion;
-                    var result = this.service.Subscribe2(this.cremaHost.AuthenticationToken, base.Name, version);
+
+                    ResultBase<DataBaseMetaData> result;
+                    var serverVersion = new Version(this.cremaHost.ServiceInfos[nameof(DataBaseService)].Version);
+                    result = CremaFeatures.SupportsTableDetailInfo(serverVersion)
+                        ? this.service.Subscribe2(this.cremaHost.AuthenticationToken, base.Name, AppUtility.ProductVersion)
+                        : this.service.Subscribe(this.cremaHost.AuthenticationToken, base.Name);
                     result.Validate(authentication);
 #if !DEBUG
                     this.timer = new Timer(30000);

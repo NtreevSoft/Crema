@@ -15,8 +15,10 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using System;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Windows.Media;
 using Ntreev.Crema.Client.Framework;
 using Ntreev.Crema.Client.Tables.Properties;
@@ -37,6 +39,9 @@ namespace Ntreev.Crema.Client.Tables.PropertyItems.ViewModels
         private TableDetailInfo tableDetailInfo;
         private ITableDescriptor descriptor;
 
+        [Import]
+        private ICremaHost cremaHost;
+
         public TableDetailInfoViewModel()
         {
             this.DisplayName = Resources.Title_TableDetailInfo;
@@ -44,11 +49,15 @@ namespace Ntreev.Crema.Client.Tables.PropertyItems.ViewModels
 
         public override bool CanSupport(object obj)
         {
+            if (!this.SupportsTableDetailInfo) return false;
+
             return obj is ITableDescriptor;
         }
 
         public override void SelectObject(object obj)
         {
+            if (!this.SupportsTableDetailInfo) return;
+
             this.Detach();
             this.descriptor = obj as ITableDescriptor;
             this.Attach();
@@ -56,6 +65,15 @@ namespace Ntreev.Crema.Client.Tables.PropertyItems.ViewModels
 
         public override bool IsVisible => this.descriptor != null;
         public override object SelectedObject => this.descriptor;
+
+        private bool SupportsTableDetailInfo
+        {
+            get
+            {
+                var serverVersion = Version.Parse(((CremaHost)cremaHost).ServiceInfos.First().Value.Version);
+                return CremaFeatures.SupportsTableDetailInfo(serverVersion);
+            }
+        }
 
         public TableDetailInfo TableDetailInfo
         {

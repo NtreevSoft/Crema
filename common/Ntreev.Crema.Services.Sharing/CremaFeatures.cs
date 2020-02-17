@@ -21,19 +21,19 @@ namespace Ntreev.Crema.Services
 {
     public static class CremaFeatures
     {
-        public static bool SupportsToastMessage(Version clientVersion)
+        public static bool SupportsToastMessage(Version version)
         {
-            if (clientVersion == null) return false;
+            if (version == null) return false;
 
-            if (clientVersion.Major == 3 && clientVersion.Minor == 6)
+            if (version.Major == 3 && version.Minor == 6)
             {
-                return clientVersion > Version.Parse("3.6.19273.1701");
+                return version > Version.Parse("3.6.19273.1701");
             }
-            else if (clientVersion.Major == 3 && clientVersion.Minor == 7)
+            else if (version.Major == 3 && version.Minor == 7)
             {
-                return clientVersion > Version.Parse("3.7.19273.1701");
+                return version > Version.Parse("3.7.19273.1701");
             }
-            else if (clientVersion.Major > 3)
+            else if (version.Major > 3)
             {
                 return true;
             }
@@ -41,19 +41,19 @@ namespace Ntreev.Crema.Services
             return false;
         }
 
-        public static bool SupportsTableDetailInfo(Version clientVersion)
+        public static bool SupportsTableDetailInfo(Version version)
         {
-            if (clientVersion == null) return false;
+            if (version == null) return false;
 
-            if (clientVersion.Major == 3 && clientVersion.Minor == 6)
+            if (version.Major == 3 && version.Minor == 6)
             {
-                return clientVersion > Version.Parse("3.6.20037.1540");
+                return version > Version.Parse("3.6.20037.1540");
             }
-            else if (clientVersion.Major == 3 && clientVersion.Minor == 7)
+            else if (version.Major == 3 && version.Minor == 7)
             {
-                return clientVersion > Version.Parse("3.7.20036.1328");
+                return version > Version.Parse("3.7.20036.1328");
             }
-            else if (clientVersion.Major > 3)
+            else if (version.Major > 3)
             {
                 return true;
             }
