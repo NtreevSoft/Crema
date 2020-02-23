@@ -28,11 +28,9 @@ using Ntreev.Library.Serialization;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Timers;
 
 namespace Ntreev.Crema.Services.Data
 {
@@ -587,11 +585,11 @@ namespace Ntreev.Crema.Services.Data
             }
         }
 
-        public void ResetDataBase(Authentication authentication, IEnumerable<TypeInfo> typeInfos, IEnumerable<TableInfo> tableInfos)
+        public void ResetDataBase(Authentication authentication, IEnumerable<TypeInfo> typeInfos, IEnumerable<TableInfo> tableInfos, IEnumerable<TableDetailInfo> tableDetailInfos)
         {
             this.DataBases.InvokeDataBaseReset(authentication, this);
 
-            this.Initialize(authentication, typeInfos, tableInfos);
+            this.Initialize(authentication, typeInfos, tableInfos, tableDetailInfos);
 
             var metaDataList = new List<DomainMetaData>();
             foreach (var item in this.cremaHost.DomainContext.Domains)
@@ -1201,6 +1199,7 @@ namespace Ntreev.Crema.Services.Data
                 Revision = this.repositoryHost.Revision,
                 TypeInfos = this.typeContext.Types.Select((Type item) => item.TypeInfo).ToArray(),
                 TableInfos = this.tableContext.Tables.Select((Table item) => item.TableInfo).ToArray(),
+                TableDetailInfos = this.tableContext.Tables.Select((Table item) => item.TableDetailInfo).ToArray()
             };
             JsonSerializerUtility.Write(filename, dataInfo, true);
         }
@@ -1250,9 +1249,9 @@ namespace Ntreev.Crema.Services.Data
                 try
                 {
                     var dataInfo = JsonSerializerUtility.Read<DataBaseDataSerializationInfo>(filename);
-                    if (this.repositoryHost.Revision == dataInfo.Revision)
+                    if (this.repositoryHost.Revision == dataInfo.Revision && dataInfo.TableDetailInfos != null)
                     {
-                        this.Initialize(Authentication.System, dataInfo.TypeInfos, dataInfo.TableInfos);
+                        this.Initialize(Authentication.System, dataInfo.TypeInfos, dataInfo.TableInfos, dataInfo.TableDetailInfos);
                         return;
                     }
                 }
@@ -1270,17 +1269,18 @@ namespace Ntreev.Crema.Services.Data
 
                 var typeInfos = dataSet.Types.Select(item => item.TypeInfo);
                 var tableInfos = dataSet.Tables.Select(item => item.TableInfo);
-                this.Initialize(Authentication.System, typeInfos, tableInfos);
+                var tableDetailInfos = dataSet.Tables.Select(item => item.GetTableDetailInfo());
+                this.Initialize(Authentication.System, typeInfos, tableInfos, tableDetailInfos);
                 this.dataSetCache = dataSet;
             }
         }
 
-        private void Initialize(Authentication authentication, IEnumerable<TypeInfo> typeInfos, IEnumerable<TableInfo> tableInfos)
+        private void Initialize(Authentication authentication, IEnumerable<TypeInfo> typeInfos, IEnumerable<TableInfo> tableInfos, IEnumerable<TableDetailInfo> tableDetailInfos)
         {
             this.typeContext = new TypeContext(this, typeInfos);
             this.typeContext.ItemsLockChanged += (s, e) => this.metaData = null;
             this.typeContext.ItemsAccessChanged += (s, e) => this.metaData = null;
-            this.tableContext = new TableContext(this, tableInfos);
+            this.tableContext = new TableContext(this, tableInfos, tableDetailInfos);
             this.tableContext.ItemsLockChanged += (s, e) => this.metaData = null;
             this.tableContext.ItemsAccessChanged += (s, e) => this.metaData = null;
             base.ResetDataBase(authentication);

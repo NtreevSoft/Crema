@@ -940,7 +940,12 @@ namespace Ntreev.Crema.Services.Data
                     {
                         service.Faulted += Service_Faulted;
                     }
-                    var result = this.service.Subscribe(this.cremaHost.AuthenticationToken, base.Name);
+
+                    ResultBase<DataBaseMetaData> result;
+                    var serverVersion = new Version(this.cremaHost.ServiceInfos[nameof(DataBaseService)].Version);
+                    result = CremaFeatures.SupportsTableDetailInfo(serverVersion)
+                        ? this.service.Subscribe2(this.cremaHost.AuthenticationToken, base.Name, AppUtility.ProductVersion)
+                        : this.service.Subscribe(this.cremaHost.AuthenticationToken, base.Name);
                     result.Validate(authentication);
 #if !DEBUG
                     this.timer = new Timer(30000);
@@ -1084,6 +1089,23 @@ namespace Ntreev.Crema.Services.Data
                 }
                 this.tableContext.Tables.InvokeTablesTemplateChangedEvent(authentication, tables);
             }, nameof(IDataBaseServiceCallback.OnTablesChanged));
+        }
+
+        public void OnTablesDetailInfoChanged(SignatureDate signatureDate, TableDetailInfo[] tableDetailInfos)
+        {
+            this.InvokeAsync(() =>
+            {
+                var authentication = this.userContext.Authenticate(signatureDate);
+                var tables = new Table[tableDetailInfos.Length];
+                for (var i = 0; i < tables.Length; i++)
+                {
+                    var tableDetailInfo = tableDetailInfos[i];
+                    var table = this.tableContext.Tables[tableDetailInfo.Name];
+                    tables[i] = table;
+                    table.SetTableDetailInfo(tableDetailInfo);
+                }
+                this.tableContext.Tables.InvokeTablesTemplateChangedEvent(authentication, tables);
+            }, nameof(IDataBaseServiceCallback.OnTablesDetailInfoChanged));
         }
 
         void IDataBaseServiceCallback.OnTablesStateChanged(SignatureDate signatureDate, string[] tableNames, TableState[] states)

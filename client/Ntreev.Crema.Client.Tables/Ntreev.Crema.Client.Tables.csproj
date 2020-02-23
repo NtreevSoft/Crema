@@ -188,6 +188,7 @@
     <Compile Include="MenuItems\EndContentEditMenuItem.cs" />
     <Compile Include="MenuItems\EndTemplateEditMenuItem.cs" />
     <Compile Include="MenuItems\TableMenuItem.cs" />
+    <Compile Include="MenuItems\TableMenus\NumberCellFormattingMenuItem.cs" />
     <Compile Include="MenuItems\TreeViewItems\ViewContentMenuItem.cs" />
     <Compile Include="MenuItems\TreeViewItems\EditContentMenuItem.cs" />
     <Compile Include="MenuItems\TreeViewItems\TagMenus\AllTagsMenuItem.cs" />
@@ -203,6 +204,7 @@
     <Compile Include="PropertyItems\ViewModels\BaseTableViewModel.cs" />
     <Compile Include="PropertyItems\ViewModels\LockInfoViewModel.cs" />
     <Compile Include="PropertyItems\ViewModels\DerivedTablesViewModel.cs" />
+    <Compile Include="PropertyItems\ViewModels\TableDetailInfoViewModel.cs" />
     <Compile Include="PropertyItems\Views\BaseTableView.xaml.cs">
       <DependentUpon>BaseTableView.xaml</DependentUpon>
     </Compile>
@@ -211,6 +213,9 @@
     </Compile>
     <Compile Include="PropertyItems\Views\ReferencedTablesView.xaml.cs">
       <DependentUpon>ReferencedTablesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyItems\Views\TableDetailInfoView.xaml.cs">
+      <DependentUpon>TableDetailInfoView.xaml</DependentUpon>
     </Compile>
     <Compile Include="PropertyItems\Views\TableInfoView.xaml.cs">
       <DependentUpon>TableInfoView.xaml</DependentUpon>
@@ -355,6 +360,10 @@
     <Page Include="PropertyItems\Views\ReferencedTablesView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PropertyItems\Views\TableDetailInfoView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PropertyItems\Views\TableInfoView.xaml">
       <Generator>MSBuild:Compile</Generator>

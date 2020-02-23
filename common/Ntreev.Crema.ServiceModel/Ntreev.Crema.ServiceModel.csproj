@@ -71,6 +71,7 @@
     <Compile Include="BanChangeType.cs" />
     <Compile Include="DomainAccessType.cs" />
     <Compile Include="DomainUserMetaData.cs" />
+    <Compile Include="ITableDetailInfoProvider.cs" />
     <Compile Include="LockChangeType.cs" />
     <Compile Include="MessageType.cs" />
     <Compile Include="NotifyMessageType.cs" />

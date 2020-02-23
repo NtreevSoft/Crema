@@ -25,9 +25,7 @@ using Ntreev.Library.ObjectModel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Linq;
-using System.Reflection;
 
 namespace Ntreev.Crema.Services.Data
 {
@@ -557,6 +555,12 @@ namespace Ntreev.Crema.Services.Data
         public void SetTableState(TableState tableState)
         {
             base.TableState = tableState;
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public void SetTableDetailInfo(TableDetailInfo tableDetailInfo)
+        {
+            this.UpdateTableDetailInfo(tableDetailInfo);
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]

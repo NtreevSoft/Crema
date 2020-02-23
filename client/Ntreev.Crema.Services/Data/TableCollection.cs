@@ -155,6 +155,7 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.Debug(eventLog);
             this.CremaHost.Info(comment);
             this.UpdateRevision(tables);
+            this.UpdateTableDetailInfo(tables);
             this.OnTablesCreated(new ItemsCreatedEventArgs<ITable>(authentication, tables, args));
             this.Context.InvokeItemsCreatedEvent(authentication, tables, args);
         }
@@ -166,6 +167,7 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.Debug(eventLog);
             this.CremaHost.Info(comment);
             this.UpdateRevision(tables);
+            this.UpdateTableDetailInfo(tables);
             this.OnTablesRenamed(new ItemsRenamedEventArgs<ITable>(authentication, tables, oldNames, oldPaths));
             this.Context.InvokeItemsRenamedEvent(authentication, tables, oldNames, oldPaths);
         }
@@ -177,6 +179,7 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.Debug(eventLog);
             this.CremaHost.Info(comment);
             this.UpdateRevision(tables);
+            this.UpdateTableDetailInfo(tables);
             this.OnTablesMoved(new ItemsMovedEventArgs<ITable>(authentication, tables, oldPaths, oldCategoryPaths));
             this.Context.InvokeItemsMovedEvent(authentication, tables, oldPaths, oldCategoryPaths);
         }
@@ -205,6 +208,7 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.Debug(eventLog);
             this.CremaHost.Info(comment);
             this.UpdateRevision(tables);
+            this.UpdateTableDetailInfo(tables);
             this.OnTablesChanged(new ItemsEventArgs<ITable>(authentication, tables));
             this.Context.InvokeItemsChangedEvent(authentication, tables);
         }
@@ -216,6 +220,7 @@ namespace Ntreev.Crema.Services.Data
             this.CremaHost.Debug(eventLog);
             this.CremaHost.Info(comment);
             this.UpdateRevision(tables);
+            this.UpdateTableDetailInfo(tables);
             this.OnTablesChanged(new ItemsEventArgs<ITable>(authentication, tables));
             this.Context.InvokeItemsChangedEvent(authentication, tables);
         }
@@ -230,6 +235,20 @@ namespace Ntreev.Crema.Services.Data
                 revision.Validate();
 
                 table.UpdateRevision(revision.Value);
+            }
+        }
+
+        internal void UpdateTableDetailInfo(Table[] tables)
+        {
+            var version = Version.Parse(this.CremaHost.ServiceInfos[nameof(DataBaseService)].Version);
+            if (!CremaFeatures.SupportsTableDetailInfo(version)) return;
+
+            foreach (var table in tables)
+            {
+                var tableDetailInfo = this.Service.GetTableDetailInfo(table.Name);
+                tableDetailInfo.Validate();
+
+                table.UpdateTableDetailInfo(tableDetailInfo.Value);
             }
         }
 
