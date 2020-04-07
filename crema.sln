@@ -150,7 +150,6 @@ Global
 		common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems*{0eac90ab-7c7e-47e3-9954-148b45521fcb}*SharedItemsImports = 4
 		common\Ntreev.Crema.Services.Sharing\Ntreev.Crema.Services.Sharing.projitems*{0eac90ab-7c7e-47e3-9954-148b45521fcb}*SharedItemsImports = 4
 		common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems*{0fc60f01-a2ce-4e41-bed0-af56ad18ca39}*SharedItemsImports = 4
-		sub-modules\Ntreev.Library\Ntreev.Library.AssemblyInfo\Ntreev.Library.AssemblyInfo.projitems*{1918437f-4fbf-4731-ac5b-981a4a4cb1f1}*SharedItemsImports = 4
 		sub-modules\Ntreev.ModernUI.Framework\Ntreev.ModernUI.AssemblyInfo\Ntreev.ModernUI.AssemblyInfo.projitems*{1c55fed2-99eb-469d-9dac-a1f7b9e7c790}*SharedItemsImports = 4
 		sub-modules\Ntreev.ModernUI.Framework\Ntreev.ModernUI.AssemblyInfo\Ntreev.ModernUI.AssemblyInfo.projitems*{20c3d3dd-de99-4126-9449-bca12e4d255d}*SharedItemsImports = 4
 		common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems*{20dab068-f188-4ec5-96fa-227c11bba46d}*SharedItemsImports = 4
@@ -195,7 +194,6 @@ Global
 		common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems*{b7b4c207-7729-4147-96c4-b55e85647a66}*SharedItemsImports = 4
 		common\Ntreev.Crema.Services.Sharing\Ntreev.Crema.Services.Sharing.projitems*{b7b4c207-7729-4147-96c4-b55e85647a66}*SharedItemsImports = 4
 		common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems*{bdb528b8-1482-4fcb-8caa-dadc8fad5243}*SharedItemsImports = 4
-		sub-modules\Ntreev.Library.Commands\Ntreev.Library.Commands.Sharing.AssemblyInfo\Ntreev.Library.Commands.Sharing.AssemblyInfo.projitems*{ceb280c0-463f-4e09-a00c-ce3a8326f6ff}*SharedItemsImports = 4
 		common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems*{d8f5b983-c45e-4230-96f5-e2c494d5ff5c}*SharedItemsImports = 4
 		common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems*{da9000e5-f145-4e52-95d6-3ae12e1c6f07}*SharedItemsImports = 4
 		common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems*{e0f76b09-4fe3-4a58-b16d-d136441dc1ae}*SharedItemsImports = 4
