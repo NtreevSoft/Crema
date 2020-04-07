@@ -1142,6 +1142,7 @@ namespace Ntreev.Crema.Data
 
                     if (proposedValue == null || proposedValue == DBNull.Value) return;
 
+                    proposedValue = string.Equals(proposedValue, "Both") ? TagInfo.All.ToString() : proposedValue.ToString();
                     if (TagInfoUtility.Names.Contains(proposedValue) == false)
                     {
                         throw new ArgumentException($"태그 이름 '{proposedValue}' 은(는) 지원하지 않는 태그입니다.");
