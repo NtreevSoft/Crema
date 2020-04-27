@@ -16,6 +16,8 @@ namespace Ntreev.Crema.ServiceHosts.Http
         private readonly ICremaHost cremaHost;
         private readonly CremaService cremaService;
         private IDisposable server;
+        
+        private static readonly bool IsMono = Type.GetType("Mono.Runtime") != null;
 
         [ImportingConstructor]
         public HttpCommandServiceHost(ICremaHost cremaHost, CremaService cremaService)
@@ -26,7 +28,12 @@ namespace Ntreev.Crema.ServiceHosts.Http
 
         public void Open(int port)
         {
-            this.server = WebApp.Start($"http://*:{port}", app =>
+            var option = new StartOptions
+            {
+                Urls = { $"http://*:{port}" },
+                ServerFactory = IsMono ? typeof(OwinServerFactory).Namespace : null
+            };
+            this.server = WebApp.Start(option, app =>
             {
                 var config = new HttpConfiguration();
                 config.ConfigureCrema(this.cremaHost)
