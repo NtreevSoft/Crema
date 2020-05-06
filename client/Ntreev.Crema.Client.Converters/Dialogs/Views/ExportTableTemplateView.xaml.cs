@@ -15,29 +15,18 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.ServiceModel;
-using Ntreev.Crema.Services;
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using Ntreev.Crema.Client.Framework;
+using System.Windows.Controls;
 
-namespace Ntreev.Crema.Client.Converters.Dialogs.ViewModels
+namespace Ntreev.Crema.Client.Converters.Dialogs.Views
 {
-    public class TableRootTreeViewItemViewModel : TableCategoryTreeViewItemViewModel
+    /// <summary>
+    /// ExportTableTemplateView.xaml에 대한 상호 작용 논리
+    /// </summary>
+    public partial class ExportTableTemplateView : UserControl
     {
-        private readonly string dataBaseName;
-
-        public TableRootTreeViewItemViewModel(Authentication authentication, IDataBase dataBase, object owner)
-            : base(authentication, new TableCategoryDescriptor(authentication, dataBase.TableContext.Root, DescriptorTypes.IsRecursive, owner))
+        public ExportTableTemplateView()
         {
-            this.dataBaseName = dataBase.Name;
-            this.IsExpanded = true;
-        }
-
-        public override string DisplayName
-        {
-            get { return this.dataBaseName; }
+            InitializeComponent();
         }
     }
 }

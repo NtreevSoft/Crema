@@ -210,10 +210,22 @@
   <data name="Label_CreateDirectoryIfNotExists" xml:space="preserve">
     <value>Create directory if not exists</value>
   </data>
+  <data name="MenuItem_QuickExport" xml:space="preserve">
+    <value>Quick E_xport</value>
+  </data>
   <data name="Label_GetDomainDataSetIfEditing" xml:space="preserve">
     <value>Get domain dataset when you editing.</value>
   </data>
-  <data name="MenuItem_QuickExport" xml:space="preserve">
-    <value>Quick E_xport</value>
+  <data name="MenuItem_ExportTableTemplate" xml:space="preserve">
+    <value>Export Table Templates</value>
+  </data>
+  <data name="MenuItem_ExportType" xml:space="preserve">
+    <value>Export Types</value>
+  </data>
+  <data name="Title_ExportTableTemplate" xml:space="preserve">
+    <value>Export Table Templates</value>
+  </data>
+  <data name="Title_ExportType" xml:space="preserve">
+    <value>Export Types</value>
   </data>
 </root>
