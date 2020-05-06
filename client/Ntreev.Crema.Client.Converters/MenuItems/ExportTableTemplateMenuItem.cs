@@ -15,29 +15,39 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.ServiceModel;
-using Ntreev.Crema.Services;
-using System;
-using System.Linq;
-using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using Ntreev.Crema.Client.Converters.Dialogs.ViewModels;
+using Ntreev.Crema.Client.Converters.Properties;
 using Ntreev.Crema.Client.Framework;
+using Ntreev.ModernUI.Framework;
 
-namespace Ntreev.Crema.Client.Converters.Dialogs.ViewModels
+namespace Ntreev.Crema.Client.Converters.MenuItems
 {
-    public class TableRootTreeViewItemViewModel : TableCategoryTreeViewItemViewModel
+    [Export(typeof(IMenuItem))]
+    [ParentType(typeof(IToolMenuItem))]
+    class ExportTableTemplateMenuItem : MenuItemBase
     {
-        private readonly string dataBaseName;
+        [Import] private Authenticator authenticator = null;
+        private ICremaAppHost cremaAppHost;
 
-        public TableRootTreeViewItemViewModel(Authentication authentication, IDataBase dataBase, object owner)
-            : base(authentication, new TableCategoryDescriptor(authentication, dataBase.TableContext.Root, DescriptorTypes.IsRecursive, owner))
+        [ImportingConstructor]
+        public ExportTableTemplateMenuItem(ICremaAppHost cremaAppHost)
         {
-            this.dataBaseName = dataBase.Name;
-            this.IsExpanded = true;
+            this.cremaAppHost = cremaAppHost;
+            this.cremaAppHost.Loaded += InvokeCanExecuteChangedEvent;
+            this.cremaAppHost.Unloaded += InvokeCanExecuteChangedEvent;
+            this.DisplayName = Resources.MenuItem_ExportTableTemplate;
         }
 
-        public override string DisplayName
+        protected override async void OnExecute(object parameter)
         {
-            get { return this.dataBaseName; }
+            var dialog = await ExportTableTemplateViewModel.CreateInstanceAsync(this.authenticator, this.cremaAppHost);
+            dialog?.ShowDialog();
+        }
+
+        protected override bool OnCanExecute(object parameter)
+        {
+            return this.cremaAppHost.IsLoaded;
         }
     }
 }

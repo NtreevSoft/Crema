@@ -241,6 +241,24 @@ namespace Ntreev.Crema.Client.Converters.Properties {
         }
         
         /// <summary>
+        ///   Export Table Templates과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string MenuItem_ExportTableTemplate {
+            get {
+                return ResourceManager.GetString("MenuItem_ExportTableTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Export Types과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string MenuItem_ExportType {
+            get {
+                return ResourceManager.GetString("MenuItem_ExportType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   _Import과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string MenuItem_Import {
@@ -345,6 +363,24 @@ namespace Ntreev.Crema.Client.Converters.Properties {
         public static string Title_Export {
             get {
                 return ResourceManager.GetString("Title_Export", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Export Table Templates과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Title_ExportTableTemplate {
+            get {
+                return ResourceManager.GetString("Title_ExportTableTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Export Types과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Title_ExportType {
+            get {
+                return ResourceManager.GetString("Title_ExportType", resourceCulture);
             }
         }
         

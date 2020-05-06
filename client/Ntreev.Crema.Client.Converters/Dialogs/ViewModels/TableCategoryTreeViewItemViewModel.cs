@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Client.Converters.Dialogs.ViewModels
 {
-    class TableCategoryTreeViewItemViewModel : ExportTreeViewItemViewModel
+    public class TableCategoryTreeViewItemViewModel : ExportTreeViewItemViewModel
     {
         private readonly Authentication authentication;
         private readonly TableCategoryDescriptor descriptor;
