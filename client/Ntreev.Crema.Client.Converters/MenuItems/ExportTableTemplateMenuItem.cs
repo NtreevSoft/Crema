@@ -19,12 +19,14 @@ using System.ComponentModel.Composition;
 using Ntreev.Crema.Client.Converters.Dialogs.ViewModels;
 using Ntreev.Crema.Client.Converters.Properties;
 using Ntreev.Crema.Client.Framework;
+using Ntreev.Library;
 using Ntreev.ModernUI.Framework;
 
 namespace Ntreev.Crema.Client.Converters.MenuItems
 {
     [Export(typeof(IMenuItem))]
     [ParentType(typeof(IToolMenuItem))]
+    [Order(ExportMenuItem.Order + 2)]
     class ExportTableTemplateMenuItem : MenuItemBase
     {
         [Import] private Authenticator authenticator = null;

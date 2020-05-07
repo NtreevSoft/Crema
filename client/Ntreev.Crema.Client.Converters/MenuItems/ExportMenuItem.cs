@@ -29,13 +29,17 @@ using Ntreev.Crema.Client.Converters.Dialogs.ViewModels;
 using Ntreev.ModernUI.Framework.ViewModels;
 using Ntreev.ModernUI.Framework;
 using Ntreev.Crema.Client.Converters.Properties;
+using Ntreev.Library;
 
 namespace Ntreev.Crema.Client.Converters.MenuItems
 {
     [Export(typeof(IMenuItem))]
     [ParentType(typeof(IToolMenuItem))]
+    [Order(ExportMenuItem.Order)]
     public class ExportMenuItem : MenuItemBase
     {
+        internal const int Order = 100;
+
         private readonly ICremaAppHost cremaAppHost;
         [Import]
         private Authenticator authenticator = null;
