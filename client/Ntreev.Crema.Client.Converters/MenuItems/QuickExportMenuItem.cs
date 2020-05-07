@@ -21,12 +21,14 @@ using System.Windows.Input;
 using Ntreev.Crema.Client.Converters.Dialogs.ViewModels;
 using Ntreev.Crema.Client.Converters.Properties;
 using Ntreev.Crema.Client.Framework;
+using Ntreev.Library;
 using Ntreev.ModernUI.Framework;
 
 namespace Ntreev.Crema.Client.Converters.MenuItems
 {
     [Export(typeof(IMenuItem))]
     [ParentType(typeof(IToolMenuItem))]
+    [Order(ExportMenuItem.Order + 1)]
     public class QuickExportMenuItem : MenuItemBase
     {
         private readonly ICremaAppHost cremaAppHost;
