@@ -94,15 +94,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Authenticator.cs" />
+    <Compile Include="Dialogs\ViewModels\ExportTypeViewModel.cs" />
     <Compile Include="Dialogs\ViewModels\ExportTableTemplateViewModel.cs" />
+    <Compile Include="Dialogs\ViewModels\TypeCategoryTreeViewItemViewModel.cs" />
     <Compile Include="Dialogs\ViewModels\TableCategoryTreeViewItemViewModel.cs" />
+    <Compile Include="Dialogs\ViewModels\TypeRootTreeViewItemViewModel.cs" />
     <Compile Include="Dialogs\ViewModels\TableRootTreeViewItemViewModel.cs" />
     <Compile Include="Dialogs\ViewModels\ExportTreeViewItemViewModel.cs" />
     <Compile Include="Dialogs\ViewModels\ExportViewModel.cs" />
     <Compile Include="Dialogs\ViewModels\ImportViewModel.cs" />
+    <Compile Include="Dialogs\ViewModels\TypeTreeViewItemViewModel.cs" />
     <Compile Include="Dialogs\ViewModels\TableTreeViewItemViewModel.cs" />
+    <Compile Include="Dialogs\Views\ExportTypeOptionView.xaml.cs">
+      <DependentUpon>ExportTypeOptionView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\Views\ExportOptionView.xaml.cs">
       <DependentUpon>ExportOptionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Views\ExportTypeView.xaml.cs">
+      <DependentUpon>ExportTypeView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\Views\ExportTableTemplateView.xaml.cs">
       <DependentUpon>ExportTableTemplateView.xaml</DependentUpon>
@@ -121,6 +131,9 @@
     </Compile>
     <Compile Include="ITableTemplateExporter.cs" />
     <Compile Include="ITableTemplateExportService.cs" />
+    <Compile Include="ITypeExporter.cs" />
+    <Compile Include="ITypeExportService.cs" />
+    <Compile Include="MenuItems\ExportTypeMenuItem.cs" />
     <Compile Include="MenuItems\ExportTableTemplateMenuItem.cs" />
     <Compile Include="MenuItems\QuickExportMenuItem.cs" />
     <Compile Include="Spreadsheet\Csv\CsvExporterSettings.cs" />
@@ -128,14 +141,20 @@
     <Compile Include="Spreadsheet\Csv\Views\ExporterView.xaml.cs">
       <DependentUpon>ExporterView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Spreadsheet\Excel\ExcelTypeExporterSettings.cs" />
     <Compile Include="Spreadsheet\Excel\ExcelTableTemplateExporterSettings.cs" />
+    <Compile Include="Spreadsheet\Excel\ViewModels\TypeExporterViewModel.cs" />
     <Compile Include="Spreadsheet\Excel\ViewModels\TableTemplateExporterViewModel.cs" />
+    <Compile Include="Spreadsheet\Excel\Views\TypeExporterView.xaml.cs">
+      <DependentUpon>TypeExporterView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Spreadsheet\Excel\Views\TableTemplateExporterView.xaml.cs">
       <DependentUpon>TableTemplateExporterView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Spreadsheet\ViewModels\SpreadsheetTreeViewItemViewModel.cs" />
     <Compile Include="Spreadsheet\Excel\ViewModels\ImporterViewModel.cs" />
     <Compile Include="Spreadsheet\ViewModels\SheetTreeViewItemViewModel.cs" />
+    <Compile Include="TypeExportService.cs" />
     <None Include="app.config" />
     <None Include="Spreadsheet\Excel\ExcelConverter.cs" />
     <Compile Include="Spreadsheet\Excel\ViewModels\ExporterViewModel.cs" />
@@ -196,7 +215,15 @@
     <Resource Include="Images\spreadsheet.png" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Dialogs\Views\ExportTypeOptionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Dialogs\Views\ExportOptionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\Views\ExportTypeView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -231,6 +258,10 @@
     <Page Include="Spreadsheet\Excel\Views\ImporterView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Spreadsheet\Excel\Views\TypeExporterView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Spreadsheet\Excel\Views\TableTemplateExporterView.xaml">
       <SubType>Designer</SubType>
