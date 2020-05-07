@@ -16,18 +16,13 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Shell;
 using Ntreev.Crema.Client.Converters.Properties;
 using Ntreev.Crema.Client.Converters.Spreadsheet.Excel;
-using Ntreev.Crema.Client.Framework;
 using Ntreev.Crema.Data;
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Services;
@@ -108,7 +103,6 @@ namespace Ntreev.Crema.Client.Converters.Dialogs.ViewModels
             var metadata = this.DataBase.Dispatcher.Invoke(() => this.DataBase.GetMetaData(this.Authentication));
             var tableNames = GetTableNames(categories);
             var selectedMetaData = SelectedMetaData(metadata, tableNames).ToArray();
-            this.LastExportedTables = selectedMetaData.Select(o => o.Path).ToArray();
             this.ProgressMessage = Resources.Message_ExportingData;
 
             if (settings.IsSeparable)
@@ -125,13 +119,10 @@ namespace Ntreev.Crema.Client.Converters.Dialogs.ViewModels
                     FillTableInfos(selectedMetaData, ref tableInfos, ref keyPaths, (tableInfo) => tableInfo.CategoryPath, tableInfo => tableInfo.CategoryPath, item => item.TableInfo.CategoryPath);
                 }
 
-                var tasks = new List<Task>();
                 foreach (var item in tableInfos)
                 {
-                    tasks.Add(Task.Run(() => ((ITableTemplateExporter)this.SelectedExporter).Export(keyPaths[item.Key], item.Value.ToArray())));
+                    await Task.Run(() => ((ITableTemplateExporter)this.SelectedExporter).Export(keyPaths[item.Key], item.Value.ToArray()));
                 }
-
-                await Task.WhenAll(tasks.ToArray());
             }
             else
             {
