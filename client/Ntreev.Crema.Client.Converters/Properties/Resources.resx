@@ -216,4 +216,16 @@
   <data name="Label_GetDomainDataSetIfEditing" xml:space="preserve">
     <value>Get domain dataset when you editing.</value>
   </data>
+  <data name="MenuItem_ExportTableTemplate" xml:space="preserve">
+    <value>Export Table Templates</value>
+  </data>
+  <data name="MenuItem_ExportType" xml:space="preserve">
+    <value>Export Types</value>
+  </data>
+  <data name="Title_ExportTableTemplate" xml:space="preserve">
+    <value>Export Table Templates</value>
+  </data>
+  <data name="Title_ExportType" xml:space="preserve">
+    <value>Export Types</value>
+  </data>
 </root>

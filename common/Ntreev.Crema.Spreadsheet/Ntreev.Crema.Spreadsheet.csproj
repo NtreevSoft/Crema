@@ -67,6 +67,8 @@
   <ItemGroup>
     <Compile Include="Csv\SpreadsheetCsvWriter.cs" />
     <Compile Include="Csv\SpreadsheetCsvWriterSettings.cs" />
+    <Compile Include="Excel\ExcelWriter.cs" />
+    <Compile Include="Excel\ExcelWriterSettings.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -16,62 +16,47 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Windows;
-using System.Windows.Threading;
 using Ntreev.Crema.Services;
 using Ntreev.Crema.ServiceModel;
 using Ntreev.Crema.Client.Framework;
-using Ntreev.ModernUI.Framework;
-using System.ComponentModel;
 using Ntreev.Crema.Data;
 using System.Threading.Tasks;
 
 namespace Ntreev.Crema.Client.Converters.Dialogs.ViewModels
 {
-    public class TableCategoryTreeViewItemViewModel : ExportTreeViewItemViewModel
+    public class TypeCategoryTreeViewItemViewModel : ExportTreeViewItemViewModel
     {
         private readonly Authentication authentication;
-        private readonly TableCategoryDescriptor descriptor;
+        private readonly TypeCategoryDescriptor descriptor;
 
-        public TableCategoryTreeViewItemViewModel(Authentication authentication, TableCategoryDescriptor descriptor)
+        public TypeCategoryTreeViewItemViewModel(Authentication authentication, TypeCategoryDescriptor descriptor)
         {
             this.authentication = authentication;
             this.descriptor = descriptor;
 
             foreach (var item in descriptor.Categories)
             {
-                var viewModel = new TableCategoryTreeViewItemViewModel(authentication, item)
+                var viewModel = new TypeCategoryTreeViewItemViewModel(authentication, item)
                 {
                     Parent = this
                 };
             }
 
-            foreach (var item in descriptor.Tables)
+            foreach (var item in descriptor.Types)
             {
-                var viewModel = new TableTreeViewItemViewModel(authentication, item)
+                var viewModel = new TypeTreeViewItemViewModel(authentication, item)
                 {
                     Parent = this
                 };
             }
         }
 
-        public override async Task PreviewAsync(CremaDataSet dataSet)
+        public override Task PreviewAsync(CremaDataSet dataSet)
         {
-            foreach (var item in this.Items.OfType<TableTreeViewItemViewModel>())
-            {
-                if (item.IsChecked == false)
-                    continue;
-
-                await item.PreviewAsync(dataSet);
-            }
+            throw new NotSupportedException();
         }
 
-        public override string DisplayName
-        {
-            get { return this.Name; }
-        }
+        public override string DisplayName => this.Name;
 
         public override bool CanCheck => this.descriptor.AccessType >= AccessType.Guest;
 

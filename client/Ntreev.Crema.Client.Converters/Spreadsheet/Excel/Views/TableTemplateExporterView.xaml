@@ -1,0 +1,66 @@
+﻿<!--===================================================================================================================
+Released under the MIT License.
+    
+Copyright (c) 2018 Ntreev Soft co., Ltd.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the 
+Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+====================================================================================================================-->
+<UserControl x:Class="Ntreev.Crema.Client.Converters.Spreadsheet.Excel.Views.TableTemplateExporterView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Ntreev.Crema.Client.Converters.Spreadsheet.Excel.Views"
+             xmlns:nmfc="clr-namespace:Ntreev.ModernUI.Framework.Controls;assembly=Ntreev.ModernUI.Framework"
+             xmlns:p="clr-namespace:Ntreev.Crema.Client.Converters.Properties"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <nmfc:PropertyItemsControl DockPanel.Dock="Top" HeaderWidth="auto">
+            <Grid nmfc:PropertyItemsControl.Header="{x:Static p:Resources.Label_Path}" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="4" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0" Text="{Binding OutputPath, Delay=600, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" />
+                <nmfc:ErrorBlinker x:Name="errorBlinker" Grid.Column="0" 
+                               Style="{StaticResource ImageErrorBlinker_Style}" />
+                <Button x:Name="SelectPath" Grid.Column="2" Content="..." />
+            </Grid>
+            <CheckBox x:Name="IsSeparableCheckBox" IsChecked="{Binding Settings.IsSeparable, Mode=TwoWay}" Content="{x:Static p:Resources.Label_ExportByFolder}" VerticalAlignment="Center" HorizontalAlignment="Stretch" />
+            <CheckBox IsChecked="{Binding Settings.IsOneTableToOneFile, Mode=TwoWay}" Content="{x:Static p:Resources.Label_ExportOneTableToOneFile}" VerticalAlignment="Center" HorizontalAlignment="Stretch" IsEnabled ="{Binding ElementName=IsSeparableCheckBox, Path=IsChecked}" RenderTransformOrigin="0.5,0.5" >
+                <CheckBox.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform/>
+                        <TranslateTransform X="20" />
+                    </TransformGroup>
+                </CheckBox.RenderTransform>
+            </CheckBox>
+            <CheckBox x:Name="IsIncludeDateCheckBox" IsChecked="{Binding Settings.IsIncludeDate, Mode=TwoWay}" Content="{x:Static p:Resources.Label_IncludeDate}" VerticalAlignment="Center" HorizontalAlignment="Stretch" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width ="100" />
+                    <ColumnDefinition Width ="1*" />
+                </Grid.ColumnDefinitions>
+                <Label Content="{x:Static p:Resources.Label_OutputDateFormat}" Margin="20,0,0,0" Grid.Row="0" Grid.Column="0" />
+                <TextBox Text="{Binding Settings.OutputDateFormat, Delay=600, Mode=TwoWay}" IsEnabled ="{Binding ElementName=IsIncludeDateCheckBox, Path=IsChecked}" Margin="0,0,0,0" Grid.ColumnSpan="2" Grid.Row="0" Grid.Column="1" RenderTransformOrigin="0,0.5" />
+            </Grid>
+            <CheckBox IsChecked="{Binding Settings.OmitAttribute, Mode=TwoWay}" Content="{x:Static p:Resources.Label_OmitAttribute}" VerticalAlignment="Center" HorizontalAlignment="Stretch" />
+            <CheckBox IsChecked="{Binding Settings.OmitSignatureDate, Mode=TwoWay}" Content="{x:Static p:Resources.Label_OmitSignatureDate}" VerticalAlignment="Center" HorizontalAlignment="Stretch" />
+        </nmfc:PropertyItemsControl>
+    </Grid>
+</UserControl>

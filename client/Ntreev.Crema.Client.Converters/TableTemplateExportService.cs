@@ -15,29 +15,23 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.ServiceModel;
-using Ntreev.Crema.Services;
-using System;
-using System.Linq;
 using System.Collections.Generic;
-using Ntreev.Crema.Client.Framework;
+using System.ComponentModel.Composition;
+using System.Linq;
 
-namespace Ntreev.Crema.Client.Converters.Dialogs.ViewModels
+namespace Ntreev.Crema.Client.Converters
 {
-    public class TableRootTreeViewItemViewModel : TableCategoryTreeViewItemViewModel
+    [Export(typeof(ITableTemplateExportService))]
+    class TableTemplateExportService : ITableTemplateExportService
     {
-        private readonly string dataBaseName;
+        private readonly ITableTemplateExporter[] exporters;
 
-        public TableRootTreeViewItemViewModel(Authentication authentication, IDataBase dataBase, object owner)
-            : base(authentication, new TableCategoryDescriptor(authentication, dataBase.TableContext.Root, DescriptorTypes.IsRecursive, owner))
+        [ImportingConstructor]
+        public TableTemplateExportService([ImportMany]IEnumerable<ITableTemplateExporter> exporters)
         {
-            this.dataBaseName = dataBase.Name;
-            this.IsExpanded = true;
+            this.exporters = exporters.ToArray();
         }
 
-        public override string DisplayName
-        {
-            get { return this.dataBaseName; }
-        }
+        public IEnumerable<ITableTemplateExporter> Exporter => this.exporters;
     }
 }
