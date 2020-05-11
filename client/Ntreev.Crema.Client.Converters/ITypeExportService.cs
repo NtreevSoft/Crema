@@ -15,29 +15,12 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.ServiceModel;
-using Ntreev.Crema.Services;
-using System;
-using System.Linq;
 using System.Collections.Generic;
-using Ntreev.Crema.Client.Framework;
 
-namespace Ntreev.Crema.Client.Converters.Dialogs.ViewModels
+namespace Ntreev.Crema.Client.Converters
 {
-    public class TableRootTreeViewItemViewModel : TableCategoryTreeViewItemViewModel
+    public interface ITypeExportService
     {
-        private readonly string dataBaseName;
-
-        public TableRootTreeViewItemViewModel(Authentication authentication, IDataBase dataBase, object owner)
-            : base(authentication, new TableCategoryDescriptor(authentication, dataBase.TableContext.Root, DescriptorTypes.IsRecursive, owner))
-        {
-            this.dataBaseName = dataBase.Name;
-            this.IsExpanded = true;
-        }
-
-        public override string DisplayName
-        {
-            get { return this.dataBaseName; }
-        }
+        IEnumerable<ITypeExporter> Exporter { get; }
     }
 }

@@ -16,8 +16,6 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Windows.Input;
 using Ntreev.Crema.Client.Converters.Dialogs.ViewModels;
 using Ntreev.Crema.Client.Converters.Properties;
 using Ntreev.Crema.Client.Framework;
@@ -28,55 +26,30 @@ namespace Ntreev.Crema.Client.Converters.MenuItems
 {
     [Export(typeof(IMenuItem))]
     [ParentType(typeof(IToolMenuItem))]
-    [Order(ExportMenuItem.Order + 1)]
-    public class QuickExportMenuItem : MenuItemBase
+    [Order(ExportMenuItem.Order + 2)]
+    class ExportTableTemplateMenuItem : MenuItemBase
     {
-        private readonly ICremaAppHost cremaAppHost;
-
-        [Import]
-        private Authenticator authenticator = null;
+        [Import] private Authenticator authenticator = null;
+        private ICremaAppHost cremaAppHost;
 
         [ImportingConstructor]
-        public QuickExportMenuItem(ICremaAppHost cremaAppHost)
+        public ExportTableTemplateMenuItem(ICremaAppHost cremaAppHost)
         {
             this.cremaAppHost = cremaAppHost;
-            this.cremaAppHost.Loaded += this.InvokeCanExecuteChangedEvent;
-            this.cremaAppHost.Unloaded += this.InvokeCanExecuteChangedEvent;
-            this.DisplayName = Resources.MenuItem_QuickExport;
-            this.InputGesture = new KeyGesture(Key.E, ModifierKeys.Control);
+            this.cremaAppHost.Loaded += InvokeCanExecuteChangedEvent;
+            this.cremaAppHost.Unloaded += InvokeCanExecuteChangedEvent;
+            this.DisplayName = Resources.MenuItem_ExportTableTemplate;
+        }
+
+        protected override async void OnExecute(object parameter)
+        {
+            var dialog = await ExportTableTemplateViewModel.CreateInstanceAsync(this.authenticator, this.cremaAppHost);
+            dialog?.ShowDialog();
         }
 
         protected override bool OnCanExecute(object parameter)
         {
             return this.cremaAppHost.IsLoaded;
-        }
-
-        protected override async void OnExecute(object parameter)
-        {
-            var dialog = await ExportViewModel.CreateInstanceAsync(this.authenticator, this.cremaAppHost);
-
-            if (dialog.IsExporting)
-            {
-                AppMessageBox.Show("Now exporting.");
-                return;
-            }
-
-            if (dialog.LastExportedTables == null || !dialog.LastExportedTables.Any())
-            {
-                AppMessageBox.Show("No table to export because there is no last export.");
-                return;
-            }
-
-            if (dialog.CanExport == false)
-            {
-                AppMessageBox.Show("Could not export.");
-                return;
-            }
-
-            var exportTask = dialog.QuickExportAsync(false, () => dialog?.TryClose());
-            dialog?.ShowDialog();
-
-            await exportTask;
         }
     }
 }

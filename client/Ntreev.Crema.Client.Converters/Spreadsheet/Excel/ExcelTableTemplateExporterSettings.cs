@@ -15,37 +15,26 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Library;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Caliburn.Micro;
-using Ntreev.Crema.Client.Converters.Properties;
-using System.ComponentModel;
+using Ntreev.Library;
 
-namespace Ntreev.Crema.Client.Converters
+namespace Ntreev.Crema.Client.Converters.Spreadsheet.Excel
 {
-    public class ExporterSettings : PropertyChangedBase
+    public class ExcelTableTemplateExporterSettings : PropertyChangedBase
     {
-        public readonly static ExporterSettings Default = new ExporterSettings();
+        private static readonly ExcelTableTemplateExporterSettings Default = new ExcelTableTemplateExporterSettings();
 
         private bool omitAttribute;
         private bool omitSignatureDate;
         private bool isSeparable;
         private bool isOneTableToOneFile;
         private bool isIncludeDate;
-        private string outputDateFormat = "yyyy-MM-dd_HH_mm";  // isIncludeDate : true일때 출력하는 날짜 형식
-
-        public ExporterSettings()
-        {
-        }
+        private string outputDateFormat = "yyyy-MM-dd_HH_mm";
 
         [ConfigurationProperty(nameof(isSeparable))]
         public bool IsSeparable
         {
-            get { return this.isSeparable; }
+            get => this.isSeparable;
             set
             {
                 this.isSeparable = value;
@@ -56,7 +45,7 @@ namespace Ntreev.Crema.Client.Converters
         [ConfigurationProperty(nameof(isOneTableToOneFile))]
         public bool IsOneTableToOneFile
         {
-            get { return this.isOneTableToOneFile; }
+            get => this.isOneTableToOneFile;
             set
             {
                 this.isOneTableToOneFile = value;
@@ -67,7 +56,7 @@ namespace Ntreev.Crema.Client.Converters
         [ConfigurationProperty(nameof(isIncludeDate))]
         public bool IsIncludeDate
         {
-            get { return this.isIncludeDate; }
+            get => this.isIncludeDate;
             set
             {
                 this.isIncludeDate = value;
@@ -78,7 +67,7 @@ namespace Ntreev.Crema.Client.Converters
         [ConfigurationProperty(nameof(omitAttribute))]
         public bool OmitAttribute
         {
-            get { return this.omitAttribute; }
+            get => this.omitAttribute;
             set
             {
                 this.omitAttribute = value;
@@ -89,7 +78,7 @@ namespace Ntreev.Crema.Client.Converters
         [ConfigurationProperty(nameof(omitSignatureDate))]
         public bool OmitSignatureDate
         {
-            get { return this.omitSignatureDate; }
+            get => this.omitSignatureDate;
             set
             {
                 this.omitSignatureDate = value;
@@ -100,7 +89,7 @@ namespace Ntreev.Crema.Client.Converters
         [ConfigurationProperty(nameof(outputDateFormat))]
         public string OutputDateFormat
         {
-            get { return this.outputDateFormat; }
+            get => this.outputDateFormat;
             set
             {
                 this.outputDateFormat = value;
