@@ -216,4 +216,16 @@
   <data name="Label_GetDomainDataSetIfEditing" xml:space="preserve">
     <value>편집 중인 데이터 가져오기 (편집 중인 테이블인 경우)</value>
   </data>
+  <data name="MenuItem_ExportTableTemplate" xml:space="preserve">
+    <value>테이블 형태 내보내기</value>
+  </data>
+  <data name="MenuItem_ExportType" xml:space="preserve">
+    <value>타입 내보내기</value>
+  </data>
+  <data name="Title_ExportTableTemplate" xml:space="preserve">
+    <value>테이블 형태 내보내기</value>
+  </data>
+  <data name="Title_ExportType" xml:space="preserve">
+    <value>타입 내보내기</value>
+  </data>
 </root>
