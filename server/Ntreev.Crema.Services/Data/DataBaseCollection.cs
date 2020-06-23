@@ -119,17 +119,20 @@ namespace Ntreev.Crema.Services.Data
                 }
             }
 
-            foreach (var item in settings.DataBaseList)
+            if (settings?.DataBaseList != null)
             {
-                if (this.ContainsKey(item) == true)
+                foreach (var item in settings.DataBaseList)
                 {
-                    var dataBase = this[item];
-                    if (dataBase.IsLoaded == false)
-                        dataBase.Load(Authentication.System);
-                }
-                else
-                {
-                    CremaLog.Error(new DataBaseNotFoundException(item));
+                    if (this.ContainsKey(item) == true)
+                    {
+                        var dataBase = this[item];
+                        if (dataBase.IsLoaded == false)
+                            dataBase.Load(Authentication.System);
+                    }
+                    else
+                    {
+                        CremaLog.Error(new DataBaseNotFoundException(item));
+                    }
                 }
             }
         }
