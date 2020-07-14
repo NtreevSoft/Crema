@@ -116,6 +116,7 @@
     </Compile>
     <Compile Include="IBrowserService.cs" />
     <Compile Include="IPropertyService.cs" />
+    <Compile Include="MenuItems\AlwaysOpenCenterMenuItem.cs" />
     <Compile Include="MenuItems\MovoToWikiMenuItem.cs" />
     <Compile Include="MenuItems\ConnectionItemCopyMenuItem.cs" />
     <Compile Include="MenuItems\ConnectionItemLoginMenuItem.cs" />

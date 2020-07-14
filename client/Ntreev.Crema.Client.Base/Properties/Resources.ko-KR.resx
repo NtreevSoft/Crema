@@ -411,4 +411,7 @@
   <data name="Title_CopyConnectionItem" xml:space="preserve">
     <value>접속 정보 복사</value>
   </data>
+  <data name="MenuItem_AlwaysOpenCenter" xml:space="preserve">
+    <value>항상 부모창 중앙에서 창 열기</value>
+  </data>
 </root>
