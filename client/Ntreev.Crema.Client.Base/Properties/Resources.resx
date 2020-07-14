@@ -411,4 +411,7 @@
   <data name="Title_CopyConnectionItem" xml:space="preserve">
     <value>Copy Connection Item</value>
   </data>
+  <data name="MenuItem_AlwaysOpenCenter" xml:space="preserve">
+    <value>Always open in the center of the owner window</value>
+  </data>
 </root>
