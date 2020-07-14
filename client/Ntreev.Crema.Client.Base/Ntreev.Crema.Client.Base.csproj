@@ -116,6 +116,7 @@
     </Compile>
     <Compile Include="IBrowserService.cs" />
     <Compile Include="IPropertyService.cs" />
+    <Compile Include="MenuItems\AlwaysOpenCenterMenuItem.cs" />
     <Compile Include="MenuItems\MovoToWikiMenuItem.cs" />
     <Compile Include="MenuItems\ConnectionItemCopyMenuItem.cs" />
     <Compile Include="MenuItems\ConnectionItemLoginMenuItem.cs" />
@@ -194,10 +195,13 @@
       <DependentUpon>DataBaseListView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
-    <EmbeddedResource Include="Properties\Resources.ko-KR.resx" />
+    <EmbeddedResource Include="Properties\Resources.ko-KR.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
