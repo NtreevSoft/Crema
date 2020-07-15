@@ -124,6 +124,20 @@ namespace Ntreev.Crema.WindowsServiceHost
         protected override void OnStop()
         {
             base.OnStop();
+            StopService();
+
+            if (IsMonoRuntime) Environment.Exit(0);
+        }
+
+        protected override void OnShutdown()
+        {
+            base.OnShutdown();
+            CremaLog.Debug("Computer shutdown.");
+            StopService();
+        }
+
+        private void StopService()
+        {
             CremaLog.Debug("service close");
             this.cremaService.Close();
             CremaLog.Debug("service closed.");
@@ -139,7 +153,7 @@ namespace Ntreev.Crema.WindowsServiceHost
                 Task.Run(() =>
                 {
                     Thread.Sleep(1000);
-                    this.Stop();
+                    this.StopService();
                 });
             }
         }
