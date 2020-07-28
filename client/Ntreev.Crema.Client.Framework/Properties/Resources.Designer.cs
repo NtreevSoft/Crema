@@ -142,6 +142,15 @@ namespace Ntreev.Crema.Client.Framework.Properties {
         }
         
         /// <summary>
+        ///   Convert Tabs to Spaces과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string MenuItem_ConvertTabToSpaces {
+            get {
+                return ResourceManager.GetString("MenuItem_ConvertTabToSpaces", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   _Copy...과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string MenuItem_Copy {
@@ -169,6 +178,15 @@ namespace Ntreev.Crema.Client.Framework.Properties {
         }
         
         /// <summary>
+        ///   Exit과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string MenuItem_Exit {
+            get {
+                return ResourceManager.GetString("MenuItem_Exit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   File과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string MenuItem_File {
@@ -183,6 +201,15 @@ namespace Ntreev.Crema.Client.Framework.Properties {
         public static string MenuItem_Find {
             get {
                 return ResourceManager.GetString("MenuItem_Find", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Highlight CurrentLine과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string MenuItem_HighlightCurrentLine {
+            get {
+                return ResourceManager.GetString("MenuItem_HighlightCurrentLine", resourceCulture);
             }
         }
         
@@ -241,6 +268,15 @@ namespace Ntreev.Crema.Client.Framework.Properties {
         }
         
         /// <summary>
+        ///   Save과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string MenuItem_Save {
+            get {
+                return ResourceManager.GetString("MenuItem_Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Set _Authority...과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string MenuItem_SetAuthority {
@@ -268,6 +304,42 @@ namespace Ntreev.Crema.Client.Framework.Properties {
         }
         
         /// <summary>
+        ///   Show End of Line과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string MenuItem_ShowEndOfLine {
+            get {
+                return ResourceManager.GetString("MenuItem_ShowEndOfLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Show Line Numbers과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string MenuItem_ShowLineNumbers {
+            get {
+                return ResourceManager.GetString("MenuItem_ShowLineNumbers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Show Space과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string MenuItem_ShowSpaces {
+            get {
+                return ResourceManager.GetString("MenuItem_ShowSpaces", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Show Tabs과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string MenuItem_ShowTabs {
+            get {
+                return ResourceManager.GetString("MenuItem_ShowTabs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   _Unload...과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string MenuItem_Unload {
@@ -291,6 +363,15 @@ namespace Ntreev.Crema.Client.Framework.Properties {
         public static string MenuItem_ViewLog {
             get {
                 return ResourceManager.GetString("MenuItem_ViewLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   WordWrap과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string MenuItem_WordWrap {
+            get {
+                return ResourceManager.GetString("MenuItem_WordWrap", resourceCulture);
             }
         }
         

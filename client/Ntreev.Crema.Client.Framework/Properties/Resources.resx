@@ -222,4 +222,31 @@
   <data name="MenuItem_Options" xml:space="preserve">
     <value>Options</value>
   </data>
+  <data name="MenuItem_ConvertTabToSpaces" xml:space="preserve">
+    <value>Convert Tabs to Spaces</value>
+  </data>
+  <data name="MenuItem_Exit" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="MenuItem_HighlightCurrentLine" xml:space="preserve">
+    <value>Highlight CurrentLine</value>
+  </data>
+  <data name="MenuItem_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="MenuItem_ShowEndOfLine" xml:space="preserve">
+    <value>Show End of Line</value>
+  </data>
+  <data name="MenuItem_ShowLineNumbers" xml:space="preserve">
+    <value>Show Line Numbers</value>
+  </data>
+  <data name="MenuItem_ShowSpaces" xml:space="preserve">
+    <value>Show Space</value>
+  </data>
+  <data name="MenuItem_ShowTabs" xml:space="preserve">
+    <value>Show Tabs</value>
+  </data>
+  <data name="MenuItem_WordWrap" xml:space="preserve">
+    <value>WordWrap</value>
+  </data>
 </root>
