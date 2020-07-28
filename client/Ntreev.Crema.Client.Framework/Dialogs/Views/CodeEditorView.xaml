@@ -169,22 +169,22 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
                 <MenuItem.Header>
                     <TextBlock VerticalAlignment="Center" Text="{x:Static res:Resources.MenuItem_File}" />
                 </MenuItem.Header>
-                <MenuItem Header="Save" cal:Message.Attach="Save" IsEnabled="{Binding IsDirty}" />
+                <MenuItem Header="{x:Static res:Resources.MenuItem_Save}" cal:Message.Attach="Save" IsEnabled="{Binding IsDirty}" />
                 <Separator />
-                <MenuItem Header="E_xit" cal:Message.Attach="Exit" />
+                <MenuItem Header="{x:Static res:Resources.MenuItem_Exit}" cal:Message.Attach="Exit" />
             </MenuItem>
             <MenuItem>
                 <MenuItem.Header>
                     <TextBlock VerticalAlignment="Center" Text="{x:Static res:Resources.MenuItem_Options}" />
                 </MenuItem.Header>
-                <MenuItem Header="Show Line Numbers" IsCheckable="True" IsChecked="{Binding ElementName=textEditor, Path=ShowLineNumbers}" />
-                <MenuItem Header="Show End of Line" IsCheckable="True" IsChecked="{Binding ElementName=textEditor,Path=Options.ShowEndOfLine}" />
-                <MenuItem Header="Show Space" IsCheckable="True" IsChecked="{Binding ElementName=textEditor, Path=Options.ShowSpaces}" />
-                <MenuItem Header="Show Tabs" IsCheckable="True" IsChecked="{Binding ElementName=textEditor, Path=Options.ShowTabs}" />
+                <MenuItem Header="{x:Static res:Resources.MenuItem_ShowLineNumbers}" IsCheckable="True" IsChecked="{Binding ElementName=textEditor, Path=ShowLineNumbers}" />
+                <MenuItem Header="{x:Static res:Resources.MenuItem_ShowEndOfLine}" IsCheckable="True" IsChecked="{Binding ElementName=textEditor,Path=Options.ShowEndOfLine}" />
+                <MenuItem Header="{x:Static res:Resources.MenuItem_ShowSpaces}" IsCheckable="True" IsChecked="{Binding ElementName=textEditor, Path=Options.ShowSpaces}" />
+                <MenuItem Header="{x:Static res:Resources.MenuItem_ShowTabs}" IsCheckable="True" IsChecked="{Binding ElementName=textEditor, Path=Options.ShowTabs}" />
                 <Separator />
-                <MenuItem Header="WordWrap" IsCheckable="True" IsChecked="{Binding ElementName=textEditor, Path=WordWrap}" />
-                <MenuItem Header="Convert Tabs to Spaces" IsCheckable="True" IsChecked="{Binding ElementName=textEditor, Path=Options.ConvertTabsToSpaces}" />
-                <MenuItem Header="Highlight CurrentLine" IsCheckable="True" IsChecked="{Binding ElementName=textEditor, Path=Options.HighlightCurrentLine}" />
+                <MenuItem Header="{x:Static res:Resources.MenuItem_WordWrap}" IsCheckable="True" IsChecked="{Binding ElementName=textEditor, Path=WordWrap}" />
+                <MenuItem Header="{x:Static res:Resources.MenuItem_ConvertTabToSpaces}" IsCheckable="True" IsChecked="{Binding ElementName=textEditor, Path=Options.ConvertTabsToSpaces}" />
+                <MenuItem Header="{x:Static res:Resources.MenuItem_HighlightCurrentLine}" IsCheckable="True" IsChecked="{Binding ElementName=textEditor, Path=Options.HighlightCurrentLine}" />
             </MenuItem>
             <MenuItem>
                 <MenuItem.Header>
