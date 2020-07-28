@@ -24,3 +24,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("Ntreev.Crema.Client.Framework")]
 [assembly: ComVisible(false)]
 [assembly: Guid("7a720ab5-ed24-40ad-b9ca-a64b7b9cbdbf")]
+
+[assembly: InternalsVisibleTo("Ntreev.Crema.Client.Tables")]
+[assembly: InternalsVisibleTo("Ntreev.Crema.Client.Types")]

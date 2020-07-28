@@ -28,11 +28,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using Ntreev.ModernUI.Framework.DataGrid;
 using Xceed.Wpf.DataGrid;
 
 namespace Ntreev.Crema.Client.Framework.Controls
 {
-    class DomainInsertionCell : InsertionCell
+    class DomainInsertionCell : InsertionCell, IEditingContent
     {
         public static readonly DependencyProperty EditingContentProperty =
             DependencyProperty.Register(nameof(EditingContent), typeof(object), typeof(DomainInsertionCell),
@@ -44,7 +45,21 @@ namespace Ntreev.Crema.Client.Framework.Controls
             this.CommandBindings.Add(new CommandBinding(ApplicationCommands.Delete, this.Reset_Execute, this.Reset_CanExecute));
             this.CommandBindings.Insert(0, new CommandBinding(ModernDataGridCommands.MoveToNextColumn, this.MoveToNextColumn_Execute, this.MoveToNextColumn_CanExecute));
             this.CommandBindings.Insert(0, new CommandBinding(ModernDataGridCommands.MoveToPrevColumn, this.MoveToPrevColumn_Execute, this.MoveToPrevColumn_CanExecute));
+            this.CommandBindings.Add(new CommandBinding(ModernDataGridCommands.OpenCodeEditorItem, OpenCodeEditor_Executed, OpenCodeEditor_CanExecute));
             parentRow.Inserted += ParentRow_Inserted;
+        }
+
+        private void OpenCodeEditor_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void OpenCodeEditor_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.GridControl.RaiseEvent(new DataCellEventArgs(this)
+            {
+                RoutedEvent = ModernDataGridControl.OpenCodeEditorOnCellEvent
+            });
         }
 
         public DomainDataGridControl GridControl
