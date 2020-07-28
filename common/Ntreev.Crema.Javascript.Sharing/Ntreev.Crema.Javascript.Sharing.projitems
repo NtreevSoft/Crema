@@ -69,7 +69,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Methods\ListenerHosts\Users\UserItemRenamedEventListenerHost.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\ListenerHosts\Users\UserItemCreatedEventListenerHost.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\ListenerHosts\Users\UserChangedEventListenerHost.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Methods\ToJSONMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\ToJsonMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\RemoveDataBaseEventListenerMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\RemoveEventListenerMethod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Methods\CremaEvents.cs" />

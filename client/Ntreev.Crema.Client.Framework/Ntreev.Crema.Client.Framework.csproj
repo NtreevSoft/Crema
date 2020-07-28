@@ -50,12 +50,16 @@
       <HintPath>..\..\packages\ModernUI.WPF.1.0.9\lib\net45\FirstFloor.ModernUI.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="ICSharpCode.AvalonEdit, Version=6.0.1.278, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\AvalonEdit.6.0.1\lib\net45\ICSharpCode.AvalonEdit.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Caliburn.Micro.3.1.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
       <Private>True</Private>
@@ -84,6 +88,40 @@
     <Compile Include="Controls\Notifications\NotifyMessage.cs" />
     <Compile Include="Controls\Notifications\NotifyMessageDisplayPart.xaml.cs">
       <DependentUpon>NotifyMessageDisplayPart.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ViewModels\CodeEditorViewModel.cs" />
+    <Compile Include="Dialogs\ViewModels\HL\HighlightingTheme\GlobalStyle.cs" />
+    <Compile Include="Dialogs\ViewModels\HL\HighlightingTheme\SyntaxDefinition.cs" />
+    <Compile Include="Dialogs\ViewModels\HL\Interfaces\IHLTheme.cs" />
+    <Compile Include="Dialogs\ViewModels\HL\Interfaces\IThemedHighlightingManager.cs" />
+    <Compile Include="Dialogs\ViewModels\HL\Manager\BusyManager.cs" />
+    <Compile Include="Dialogs\ViewModels\HL\Manager\DefaultHighlightingManager.cs" />
+    <Compile Include="Dialogs\ViewModels\HL\Manager\DelayLoadedHighlightingDefinition.cs" />
+    <Compile Include="Dialogs\ViewModels\HL\Manager\ExtensionMethods.cs" />
+    <Compile Include="Dialogs\ViewModels\HL\Manager\HighlightingBrush.cs" />
+    <Compile Include="Dialogs\ViewModels\HL\Manager\HighlightingLoader.cs" />
+    <Compile Include="Dialogs\ViewModels\HL\Manager\HighlightingThemeLoader.cs" />
+    <Compile Include="Dialogs\ViewModels\HL\Manager\HLTheme.cs" />
+    <Compile Include="Dialogs\ViewModels\HL\Manager\ThemedHighlightingManager.cs" />
+    <Compile Include="Dialogs\ViewModels\HL\Manager\V1Loader.cs" />
+    <Compile Include="Dialogs\ViewModels\HL\Manager\V2Loader.cs" />
+    <Compile Include="Dialogs\ViewModels\HL\Manager\XmlHighlightingDefinition.cs" />
+    <Compile Include="Dialogs\ViewModels\HL\Manager\XshtdLoader.cs" />
+    <Compile Include="Dialogs\ViewModels\HL\Resources\HLResources.cs" />
+    <Compile Include="Dialogs\ViewModels\HL\Xshtd\interfaces\IFreezable.cs" />
+    <Compile Include="Dialogs\ViewModels\HL\Xshtd\interfaces\IHighlightingDefinitionReferenceResolver.cs" />
+    <Compile Include="Dialogs\ViewModels\HL\Xshtd\interfaces\IHighlightingThemeDefinition.cs" />
+    <Compile Include="Dialogs\ViewModels\HL\Xshtd\IXshtdVisitor.cs" />
+    <Compile Include="Dialogs\ViewModels\HL\Xshtd\XhstdThemeDefinition.cs" />
+    <Compile Include="Dialogs\ViewModels\HL\Xshtd\XmlHighlightingThemeDefinition.cs" />
+    <Compile Include="Dialogs\ViewModels\HL\Xshtd\XshtdColor.cs" />
+    <Compile Include="Dialogs\ViewModels\HL\Xshtd\XshtdElement.cs" />
+    <Compile Include="Dialogs\ViewModels\HL\Xshtd\XshtdGlobalStyle.cs" />
+    <Compile Include="Dialogs\ViewModels\HL\Xshtd\XshtdGlobalStyles.cs" />
+    <Compile Include="Dialogs\ViewModels\HL\Xshtd\XshtdSyntaxDefinition.cs" />
+    <Compile Include="Dialogs\Views\CodeEditorThemes\ResourceKeys.cs" />
+    <Compile Include="Dialogs\Views\CodeEditorView.xaml.cs">
+      <DependentUpon>CodeEditorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="IToastMessageService.cs" />
     <Compile Include="ListBoxBase.cs" />
@@ -241,6 +279,50 @@
     <Compile Include="PropertyItemBase.cs" />
     <Compile Include="PropertyServiceBase.cs" />
     <Compile Include="UserDescriptor.cs" />
+    <None Include="Dialogs\ViewModels\HL\LICENSE" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Modes\ModeV1.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Modes\ModeV2.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Modes\ModeV2_htd.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\AS3.xshd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\ASPX.xshd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\Boo.xshd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\Coco-Mode.xshd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\CPP-Mode.xshd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\CSharp-Mode.xshd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\CSS-Mode.xshd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\DOSBATCH.xshd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\FSharp-Mode.xshd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\HLSL.xshd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\HTML-Mode.xshd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\INI.xshd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\Java-Mode.xshd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\JavaScript-Mode.xshd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\Log.xshd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\MarkDown-Mode.xshd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\Pascal.xshd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\Patch-Mode.xshd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\PHP-Mode.xshd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\PLSQL.xshd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\PowerShell.xshd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\Python-Mode.xshd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\Ruby.xshd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\scheme.xshd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\squirrel.xshd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\Tex-Mode.xshd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\TSQL-Mode.xshd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\TXT.xshd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\VB-Mode.xshd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\vtl.xshd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\XML-Mode.xshd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\XmlDoc.xshd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Themes\Dark.xshtd" />
+    <EmbeddedResource Include="Dialogs\ViewModels\HL\Resources\Light\Json.xshd" />
     <None Include="Dialogs\Views\CloseDocumentServiceView.xaml.cs">
       <DependentUpon>CloseDocumentServiceView.xaml</DependentUpon>
     </None>
@@ -387,6 +469,26 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Dialogs\Views\CodeEditorThemes\DarkBrushs.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\Views\CodeEditorThemes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\Views\CodeEditorThemes\Icons.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\Views\CodeEditorThemes\LightBrushs.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\Views\CodeEditorView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Dialogs\Views\LockView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -403,7 +505,9 @@
     </Page>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Images\wordwrap.png" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\lock_checked.png" />
   </ItemGroup>
@@ -507,6 +611,10 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\small_star.png" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Dialogs\ViewModels\HL\images\icon.png" />
   </ItemGroup>
   <Import Project="..\..\common\Ntreev.Crema.AssemblyInfo\Ntreev.Crema.AssemblyInfo.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
