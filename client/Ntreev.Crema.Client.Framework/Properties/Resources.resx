@@ -213,4 +213,13 @@
   <data name="MenuItem_EndEdit" xml:space="preserve">
     <value>End Edit</value>
   </data>
+  <data name="Title_CodeEditor" xml:space="preserve">
+    <value>Code Editor</value>
+  </data>
+  <data name="MenuItem_File" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="MenuItem_Options" xml:space="preserve">
+    <value>Options</value>
+  </data>
 </root>

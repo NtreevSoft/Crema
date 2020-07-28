@@ -213,4 +213,13 @@
   <data name="MenuItem_EndEdit" xml:space="preserve">
     <value>편집 종료</value>
   </data>
+  <data name="Title_CodeEditor" xml:space="preserve">
+    <value>코드 편집기</value>
+  </data>
+  <data name="MenuItem_File" xml:space="preserve">
+    <value>파일</value>
+  </data>
+  <data name="MenuItem_Options" xml:space="preserve">
+    <value>옵션</value>
+  </data>
 </root>
