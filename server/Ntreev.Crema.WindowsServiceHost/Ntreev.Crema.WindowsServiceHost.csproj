@@ -104,6 +104,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="..\..\licenses\Newtonsoft.Json.Schema.license">
+      <Link>Licenses\Newtonsoft.Json.Schema.license</Link>
+    </EmbeddedResource>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>

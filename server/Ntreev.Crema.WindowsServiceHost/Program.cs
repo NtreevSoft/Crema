@@ -18,6 +18,7 @@
 using Ntreev.Crema.Services;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Resources;
 using System.ServiceProcess;
@@ -29,32 +30,27 @@ namespace Ntreev.Crema.WindowsServiceHost
     {
         static Program()
         {
-            RegisterLicense("Newtonsoft_Json_Schema", item => Newtonsoft.Json.Schema.License.RegisterLicense(item));
-        }
+            RegisterLicense($"{typeof(Program).Namespace}.Licenses.Newtonsoft.Json.Schema.license", item => Newtonsoft.Json.Schema.License.RegisterLicense(item));
 
-        static void RegisterLicense(string licenseName, Action<string> action)
-        {
-            var type = typeof(Program);
-            var rm = new ResourceManager($"{type.Namespace}.Properties.Resources", type.Assembly);
-            var obj = (byte[])rm.GetObject(licenseName);
-            if (obj != null)
+            void RegisterLicense(string licenseName, Action<string> action)
             {
-                var license = Encoding.UTF8.GetString(obj);
-                if (string.IsNullOrEmpty(license) == false)
+                try
                 {
-                    try
+                    using (var stream = typeof(Program).Assembly.GetManifestResourceStream(licenseName))
+                    using (var reader = new StreamReader(stream))
                     {
-                        action(license);
+                        var license = reader.ReadToEnd();
+                        if (license == string.Empty)
+                            CremaLog.Warn($"license does not registered : {licenseName}");
+                        else
+                            action(license);
                     }
-                    catch (Exception e)
-                    {
-                        CremaLog.Error(new Exception($"register license failed : {licenseName}", e));
-                    }
-                    return;
+                }
+                catch (Exception e)
+                {
+                    CremaLog.Error(new Exception($"register license failed : {licenseName}", e));
                 }
             }
-
-            CremaLog.Warn($"license does not registered : {licenseName}");
         }
 
         /// <summary>
