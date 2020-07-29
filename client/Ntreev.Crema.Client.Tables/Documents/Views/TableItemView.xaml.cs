@@ -15,30 +15,20 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Caliburn.Micro;
 using Ntreev.ModernUI.Framework.DataGrid.Controls;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Ntreev.Crema.Services;
 using System.ComponentModel.Composition;
 using Ntreev.Crema.Client.Framework;
+using Ntreev.Crema.Client.Framework.Dialogs.ViewModels;
 using Ntreev.Library;
 using Ntreev.Crema.Client.Tables.MenuItems.TableMenus;
 using Ntreev.ModernUI.Framework;
+using Ntreev.ModernUI.Framework.DataGrid;
+using Xceed.Wpf.DataGrid;
 
 namespace Ntreev.Crema.Client.Tables.Documents.Views
 {
@@ -88,10 +78,45 @@ namespace Ntreev.Crema.Client.Tables.Documents.Views
             this.dataTableControl.ApplyTemplate();
             this.gridControl = this.dataTableControl.Template.FindName("PART_DataGridControl", this.dataTableControl) as ModernDataGridControl;
             this.gridControl.IsNumberFormatting = isNumberFormatting;
+            this.gridControl.OpenCodeEditorOnCell += GridControl_OpenCodeEditorOnCell;
             if (this.gridControl != null)
             {
                 this.gridControl.ItemsSourceChangeCompleted += GridControl_ItemsSourceChangeCompleted;
                 this.lineInfo = new GridControlLineInfo(this.gridControl);
+            }
+        }
+
+        private void GridControl_OpenCodeEditorOnCell(object sender, DataCellEventArgs e)
+        {
+            try
+            {
+                var getEditingContent = new Func<DataCell, object>((c) =>
+                {
+                    if (c is IEditingContent content)
+                    {
+                        return content.EditingContent;
+                    }
+
+                    throw new ArgumentException(nameof(c));
+                });
+                var dataCell = getEditingContent(e.Cell);
+                var saveAction = new Action<string>((text) =>
+                {
+                    if (e.Cell is IEditingContent content)
+                    {
+                        content.EditingContent = text;
+                    }
+                });
+                var subTitle = this.dataTableControl.Source.TableName;
+                var dialog = new CodeEditorViewModel(this.configService, saveAction, subTitle) { Text = (dataCell ?? "").ToString() };
+                if (dialog.ShowDialog() == true)
+                {
+                    saveAction?.Invoke(dialog.Text);
+                }
+            }
+            catch (Exception ex)
+            {
+                AppMessageBox.ShowError(ex);
             }
         }
 
