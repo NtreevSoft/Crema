@@ -48,6 +48,7 @@ namespace Ntreev.Crema.Services
         private const string trunkString = "trunk";
         private const string tagsString = "tags";
         private const string branchesString = "branches";
+        private static readonly string AssemblyDirectoryPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
         private CremaSettings settings = new CremaSettings();
         private CompositionContainer container;
 
@@ -172,7 +173,7 @@ namespace Ntreev.Crema.Services
                 assemblyList.Add(Assembly.GetEntryAssembly());
             }
 
-            var query = from directory in EnumerableUtility.Friends(Environment.CurrentDirectory, this.SelectPath())
+            var query = from directory in EnumerableUtility.Friends(AssemblyDirectoryPath, this.SelectPath())
                         let catalog = new DirectoryCatalog(directory)
                         from file in catalog.LoadedFiles
                         select file;
@@ -196,7 +197,7 @@ namespace Ntreev.Crema.Services
 
         public virtual IEnumerable<string> SelectPath()
         {
-            var dllPath = this.NormalizedPath(Environment.CurrentDirectory);
+            var dllPath = this.NormalizedPath(AssemblyDirectoryPath);
             var rootPath = Path.GetDirectoryName(dllPath);
             var repositoryPath = Path.Combine(rootPath, RepositoryModulesPath);
             if (Directory.Exists(repositoryPath) == true)
