@@ -138,6 +138,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="..\..\licenses\Newtonsoft.Json.Schema.license">
+      <Link>Licenses\Newtonsoft.Json.Schema.license</Link>
+    </EmbeddedResource>
     <EmbeddedResource Include="CremaService.resx">
       <DependentUpon>CremaService.cs</DependentUpon>
     </EmbeddedResource>

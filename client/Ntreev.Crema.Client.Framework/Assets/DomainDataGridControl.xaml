@@ -28,9 +28,9 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
         <Grid>
             <Border x:Name="ContentBorder" Padding="{TemplateBinding Padding}" BorderBrush="{TemplateBinding BorderBrush}"
                     BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
-                <xcdg:CellContentPresenter x:Name="PART_CellContentPresenter" 
-                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                <xcdg:CellContentPresenter x:Name="PART_CellContentPresenter"
+                                               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                               VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
             </Border>
             <Border x:Name="InnerBorder" BorderThickness="1" Visibility="Hidden" />
             <Border x:Name="UserBorder" BorderThickness="1" />
