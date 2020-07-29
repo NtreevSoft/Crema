@@ -15,31 +15,20 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.Client.Framework;
-using Ntreev.Crema.Client.Framework.Controls;
 using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Crema.Services;
 using Ntreev.ModernUI.Framework;
 using Ntreev.ModernUI.Framework.DataGrid.Controls;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
 using Ntreev.Library;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Ntreev.Crema.Client.Framework.Dialogs.ViewModels;
 using Ntreev.Crema.Client.Types.MenuItems.TypeMenus;
+using Ntreev.ModernUI.Framework.DataGrid;
 using Xceed.Wpf.DataGrid;
 
 namespace Ntreev.Crema.Client.Types.Dialogs.Views
@@ -96,6 +85,7 @@ namespace Ntreev.Crema.Client.Types.Dialogs.Views
             var isNumberFormatting = (bool)(this.configs[typeof(NumberCellFormattingMenuItem), nameof(NumberCellFormattingMenuItem.IsNumberFormatting)] ?? false);
 
             var gridControl = sender as ModernDataGridControl;
+            gridControl.OpenCodeEditorOnCell += GridControl_OpenCodeEditorOnCell;
             gridControl.IsNumberFormatting = isNumberFormatting;
             if (gridControl.Columns[CremaSchema.ID] is ColumnBase column)
                 column.Visible = false;
@@ -110,6 +100,40 @@ namespace Ntreev.Crema.Client.Types.Dialogs.Views
             this.Settings = new Xceed.Wpf.DataGrid.Settings.SettingsRepository();
             gridControl.SaveUserSettings(this.Settings, Xceed.Wpf.DataGrid.Settings.UserSettings.All);
             this.configs.Commit(this);
+        }
+
+        private void GridControl_OpenCodeEditorOnCell(object sender, DataCellEventArgs e)
+        {
+            try
+            {
+                var getEditingContent = new Func<DataCell, object>((c) =>
+                {
+                    if (c is IEditingContent content)
+                    {
+                        return content.EditingContent;
+                    }
+
+                    throw new ArgumentException(nameof(c));
+                });
+                var dataCell = getEditingContent(e.Cell);
+                var saveAction = new Action<string>((text) =>
+                {
+                    if (e.Cell is IEditingContent content)
+                    {
+                        content.EditingContent = text;
+                    }
+                });
+                var subTitle = this.Domain.Source?.ToString();
+                var dialog = new CodeEditorViewModel(this.configs, saveAction, subTitle) { Text = (dataCell ?? "").ToString() };
+                if (dialog.ShowDialog() == true)
+                {
+                    saveAction?.Invoke(dialog.Text);
+                };
+            }
+            catch (Exception ex)
+            {
+                AppMessageBox.ShowError(ex);
+            }
         }
 
         [ConfigurationProperty("settings")]

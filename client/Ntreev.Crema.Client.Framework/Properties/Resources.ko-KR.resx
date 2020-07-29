@@ -213,4 +213,40 @@
   <data name="MenuItem_EndEdit" xml:space="preserve">
     <value>편집 종료</value>
   </data>
+  <data name="Title_CodeEditor" xml:space="preserve">
+    <value>코드 편집기</value>
+  </data>
+  <data name="MenuItem_File" xml:space="preserve">
+    <value>파일</value>
+  </data>
+  <data name="MenuItem_Options" xml:space="preserve">
+    <value>옵션</value>
+  </data>
+  <data name="MenuItem_ConvertTabToSpaces" xml:space="preserve">
+    <value>탭을 공백으로</value>
+  </data>
+  <data name="MenuItem_Exit" xml:space="preserve">
+    <value>종료</value>
+  </data>
+  <data name="MenuItem_HighlightCurrentLine" xml:space="preserve">
+    <value>현재 행 표시</value>
+  </data>
+  <data name="MenuItem_Save" xml:space="preserve">
+    <value>저장</value>
+  </data>
+  <data name="MenuItem_ShowEndOfLine" xml:space="preserve">
+    <value>라인 끝 표시</value>
+  </data>
+  <data name="MenuItem_ShowLineNumbers" xml:space="preserve">
+    <value>라인 번호 표시</value>
+  </data>
+  <data name="MenuItem_ShowSpaces" xml:space="preserve">
+    <value>공백 표시</value>
+  </data>
+  <data name="MenuItem_ShowTabs" xml:space="preserve">
+    <value>탭 표시</value>
+  </data>
+  <data name="MenuItem_WordWrap" xml:space="preserve">
+    <value>자동 줄바꿈</value>
+  </data>
 </root>

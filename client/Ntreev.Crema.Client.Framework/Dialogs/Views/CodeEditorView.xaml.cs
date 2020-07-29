@@ -15,15 +15,18 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using System.Windows.Controls;
 
-[assembly: AssemblyTitle("Ntreev.Crema.Client.Framework")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyProduct("Ntreev.Crema.Client.Framework")]
-[assembly: ComVisible(false)]
-[assembly: Guid("7a720ab5-ed24-40ad-b9ca-a64b7b9cbdbf")]
-
-[assembly: InternalsVisibleTo("Ntreev.Crema.Client.Tables")]
-[assembly: InternalsVisibleTo("Ntreev.Crema.Client.Types")]
+namespace Ntreev.Crema.Client.Framework.Dialogs.Views
+{
+    /// <summary>
+    /// CodeEditorView.xaml에 대한 상호 작용 논리
+    /// </summary>
+    public partial class CodeEditorView : UserControl
+    {
+        public CodeEditorView()
+        {
+            InitializeComponent();
+        }
+    }
+}
