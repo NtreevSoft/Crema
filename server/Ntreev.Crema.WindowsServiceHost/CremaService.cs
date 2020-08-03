@@ -16,21 +16,11 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.Composition.Hosting;
-using System.Configuration.Install;
-using System.Data;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.ServiceProcess;
-using System.Text;
 using Ntreev.Crema.Services;
 using Ntreev.Crema.ServiceHosts;
-using Ntreev.Crema.WindowsServiceHost.Properties;
-using Ntreev.Library;
 using Ntreev.Library.Commands;
 using Ntreev.Crema.ServiceModel;
 using System.Threading.Tasks;
@@ -54,33 +44,31 @@ namespace Ntreev.Crema.WindowsServiceHost
         }
 
         private static bool IsMonoRuntime => Type.GetType("Mono.Runtime") != null;
+        private const int MonoRuntimeCommandLineArgsCount = 3;
 
         protected override void OnStart(string[] args)
         {
             base.OnStart(args);
 
-            var environmentCommandLineArgs = Environment.GetCommandLineArgs();
-            var baseArgs = IsMonoRuntime == false
-                            ? environmentCommandLineArgs
-                            : Environment.GetCommandLineArgs().Skip(environmentCommandLineArgs.Length - 4).Take(4).ToArray();
-            var path = baseArgs[1];
-            var port = int.Parse(baseArgs[2]);
-            var httpPort = int.Parse(baseArgs[3]);
-
-            this.cremaService = new CremaService()
-            {
-                BasePath = path,
-                Port = port,
-                HttpPort = httpPort
-            };
-
-            CremaLog.Debug("service base path : {0}", path);
-            CremaLog.Debug("service port : {0}", port);
-
             try
             {
+                var environmentCommandLineArgs = Environment.GetCommandLineArgs();
+                var baseArgs = IsMonoRuntime
+                    ? environmentCommandLineArgs.Skip(environmentCommandLineArgs.Length - MonoRuntimeCommandLineArgsCount - 1).Take(MonoRuntimeCommandLineArgsCount + 1).ToArray()
+                    : environmentCommandLineArgs;
+                var path = baseArgs[1];
+                var port = int.Parse(baseArgs[2]);
+                var httpPort = int.Parse(baseArgs[3]);
+
+                this.cremaService = new CremaService()
+                {
+                    BasePath = path,
+                    Port = port,
+                    HttpPort = httpPort
+                };
+
                 CremaLog.Debug(args.Length);
-                if (!IsMonoRuntime && args.Any() == true)
+                if (!IsMonoRuntime && args.Any())
                 {
                     var settings = new Settings()
                     {
@@ -106,6 +94,14 @@ namespace Ntreev.Crema.WindowsServiceHost
                     CremaLog.Debug("service repo name : {0}", settings.RepositoryName);
                     CremaLog.Debug("service repo module : {0}", settings.RepositoryModule);
                     CremaLog.Debug("=========================================================");
+                }
+                else if (args.Any())
+                {
+                    CremaLog.Debug("service base path : {0}", this.cremaService.BasePath);
+                    CremaLog.Debug("service port : {0}", this.cremaService.Port);
+                    CremaLog.Debug("service http port : {0}", this.cremaService.HttpPort ?? -1);
+                    CremaLog.Debug("service repo name : {0}", this.cremaService.RepositoryName);
+                    CremaLog.Debug("service repo module: {0}", this.cremaService.RepositoryModule);
                 }
             }
             catch (Exception e)
