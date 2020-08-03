@@ -15,32 +15,22 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Ntreev.Crema.Services;
 using Ntreev.Crema.Services.Data;
 using Ntreev.Crema.Services.Domains;
 using Ntreev.Crema.Services.Properties;
 using Ntreev.Crema.Services.Users;
 using Ntreev.Crema.ServiceModel;
-using Ntreev.Crema.Data.Xml.Schema;
 using Ntreev.Library;
-using Ntreev.Library.IO;
 using Ntreev.Library.Linq;
-using Ntreev.Library.ObjectModel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.ComponentModel.Composition.Hosting;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Threading;
-using System.Xml;
-using System.Xml.Serialization;
 using System.Security;
 using System.Timers;
 using Ntreev.Crema.Data;
+using Ntreev.Library.Extensions;
 
 namespace Ntreev.Crema.Services
 {
@@ -157,6 +147,11 @@ namespace Ntreev.Crema.Services
 
                 this.repository = this.repositoryProvider.CreateInstance(this.repositoryPath, this.workingPath);
                 this.Info("Repository module : {0}", this.settings.RepositoryModule);
+                this.Info("Repository path : " + this.repositoryPath);
+                foreach (var logger in this.GetService<IEnumerable<ILogService>>())
+                {
+                    this.Info($"{logger.Name} log path : {logger.FileName}");
+                }
                 this.Info(Resources.Message_ServiceStart);
 
                 this.configs = new CremaConfiguration(Path.Combine(this.basePath, "configs.xml"), this.propertiesProvider);
