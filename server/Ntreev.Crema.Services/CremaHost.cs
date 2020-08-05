@@ -128,6 +128,10 @@ namespace Ntreev.Crema.Services
                 {
                     return this.container.GetService(serviceType);
                 }
+                catch (ImportCardinalityMismatchException)
+                {
+                    return null;
+                }
                 catch (Exception e)
                 {
                     CremaLog.Error(e);
