@@ -40,6 +40,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Xml.Linq;
+using Ntreev.Library.Linq;
 using Xceed.Wpf.DataGrid;
 using Xceed.Wpf.DataGrid.Views;
 
@@ -196,7 +197,7 @@ namespace Ntreev.Crema.Presentation.Controls
             {
                 try
                 {
-                    this.dataGridControl.Columns.Add(new Column() { FieldName = CremaSchema.Index, ReadOnly = true, Width = 30, Title = nameof(CremaSchema.Index) });
+                    this.dataGridControl.Columns.Add(new Column() { FieldName = CremaSchema.Index, ReadOnly = true, Width = 50, Title = nameof(CremaSchema.Index) });
                 }
                 catch
                 {
@@ -373,7 +374,11 @@ namespace Ntreev.Crema.Presentation.Controls
 
             if (this.view != null)
             {
-                this.view.FixedColumnCount = 2 + this.Source.PrimaryKey.Length;
+                var firstColumnIndex = FirstPrimaryKeyColumnIndex(this.dataGridControl.VisibleColumns, this.Source.PrimaryKey);
+                if (firstColumnIndex >= 0)
+                {
+                    this.view.FixedColumnCount = firstColumnIndex + 1;
+                }
             }
 
             this.dataGridControl.PropertyChanged -= DataGridControl_PropertyChanged;
@@ -407,6 +412,18 @@ namespace Ntreev.Crema.Presentation.Controls
             this.Focus();
         }
 
+        private static int FirstPrimaryKeyColumnIndex(IEnumerable<ColumnBase> visibleColumns, IReadOnlyCollection<CremaDataColumn> columns)
+        {
+            if (columns == null) return -1;
+            if (columns.Count == 0) return -1;
+
+            var firstPrimaryKeyIndex = columns.FirstOrDefault();
+            if (firstPrimaryKeyIndex == null) return -1;
+
+            var firstColumnIndex = visibleColumns.IndexOf(column => column.FieldName == firstPrimaryKeyIndex.ColumnName);
+            return firstColumnIndex;
+        }
+
         private void InitializeColumn(CremaDataColumn dataColumn, ColumnBase column)
         {
             if (dataColumn.CremaType != null)
@@ -438,7 +455,7 @@ namespace Ntreev.Crema.Presentation.Controls
         {
             try
             {
-                detail.Columns.Add(new Column() { FieldName = CremaSchema.Index, ReadOnly = true, Title = nameof(CremaSchema.Index) });
+                detail.Columns.Add(new Column() { FieldName = CremaSchema.Index, ReadOnly = true, Width = 50, Title = nameof(CremaSchema.Index) });
 #if DEBUG
                 detail.Columns.Add(new Column() { FieldName = CremaSchema.__ParentID__, ReadOnly = true, });
 #endif
@@ -457,7 +474,11 @@ namespace Ntreev.Crema.Presentation.Controls
                 detail.Columns.Add(this.FindResource("creatorColumn") as ColumnBase);
                 detail.Columns.Add(this.FindResource("createdDateTimeColumn") as ColumnBase);
 
-                detail.SetValue(TableView.FixedColumnCountProperty, 2 + table.PrimaryKey.Length);
+                var firstPrimaryKeyColumnIndex = FirstPrimaryKeyColumnIndex(detail.VisibleColumns, table.PrimaryKey);
+                if (firstPrimaryKeyColumnIndex >= 0)
+                {
+                    detail.SetValue(TableView.FixedColumnCountProperty, firstPrimaryKeyColumnIndex + 1);
+                }
             }
             catch
             {
