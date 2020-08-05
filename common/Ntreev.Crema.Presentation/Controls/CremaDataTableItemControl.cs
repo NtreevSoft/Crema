@@ -196,9 +196,7 @@ namespace Ntreev.Crema.Presentation.Controls
             {
                 try
                 {
-#if DEBUG
-                    this.dataGridControl.Columns.Add(new Column() { FieldName = CremaSchema.Index, ReadOnly = true, Width = 30, });
-#endif
+                    this.dataGridControl.Columns.Add(new Column() { FieldName = CremaSchema.Index, ReadOnly = true, Width = 30, Title = nameof(CremaSchema.Index) });
                 }
                 catch
                 {
@@ -351,8 +349,8 @@ namespace Ntreev.Crema.Presentation.Controls
             }
 
             var index = 0;
-#if DEBUG
             this.dataGridControl.Columns[CremaSchema.Index].VisiblePosition = index++;
+#if DEBUG
             if (this.dataGridControl.DetailConfigurations.Any() == true)
             {
                 this.dataGridControl.Columns[CremaSchema.__RelationID__].VisiblePosition = index++;
@@ -440,8 +438,8 @@ namespace Ntreev.Crema.Presentation.Controls
         {
             try
             {
+                detail.Columns.Add(new Column() { FieldName = CremaSchema.Index, ReadOnly = true, Title = nameof(CremaSchema.Index) });
 #if DEBUG
-                detail.Columns.Add(new Column() { FieldName = CremaSchema.Index, ReadOnly = true });
                 detail.Columns.Add(new Column() { FieldName = CremaSchema.__ParentID__, ReadOnly = true, });
 #endif
                 detail.Columns.Add(this.FindResource("tagColumn") as ColumnBase);
