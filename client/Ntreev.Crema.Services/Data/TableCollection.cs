@@ -245,6 +245,8 @@ namespace Ntreev.Crema.Services.Data
 
             foreach (var table in tables)
             {
+                if (table == null) continue;
+
                 var tableDetailInfo = this.Service.GetTableDetailInfo(table.Name);
                 tableDetailInfo.Validate();
 
