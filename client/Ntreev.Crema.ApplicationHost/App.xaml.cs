@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.IO;
@@ -29,6 +30,8 @@ using Ntreev.Library;
 using Ntreev.Library.Commands;
 using System.Text;
 using System.Resources;
+using Ntreev.Crema.ApplicationHost.Properties;
+using Ntreev.Crema.ApplicationHost.Views;
 
 namespace Ntreev.Crema.ApplicationHost
 {
@@ -81,21 +84,36 @@ namespace Ntreev.Crema.ApplicationHost
                 return;
             }
 
-            var splash = new Views.SplashWindow()
+            try
             {
-                Title = AppUtility.ProductName,
-                ThemeColor = Ntreev.Crema.ApplicationHost.Properties.Settings.Default.ThemeColor,
-                Background = Ntreev.Crema.ApplicationHost.Properties.Settings.Default.Background,
-                Foreground = Ntreev.Crema.ApplicationHost.Properties.Settings.Default.Foreground
-            };
-            splash.Show();
+                var splash = new SplashWindow()
+                {
+                    Title = AppUtility.ProductName,
+                    ThemeColor = Settings.Default.ThemeColor,
+                    Background = Settings.Default.Background,
+                    Foreground = Settings.Default.Foreground
+                };
+                splash.Show();
 
-            if (this.FindResource("bootstrapper") is AppBootstrapper bootstrapper)
-            {
-                bootstrapper.Initialize();
+                if (this.FindResource("bootstrapper") is AppBootstrapper bootstrapper)
+                {
+                    bootstrapper.Initialize();
+                }
+                base.OnStartup(e);
+                splash.Close();
             }
-            base.OnStartup(e);
-            splash.Close();
+            catch (ConfigurationErrorsException cee)
+            {
+                foreach (var exception in cee.Errors)
+                {
+                    CremaLog.Error(exception);
+                }
+
+                Settings.Default.Reset();
+
+                MessageBox.Show($"설정 파일을 초기화 하였습니다.\r\n응용 프로그램을 다시 시작하십시오.\r\n\r\n{cee}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                throw;
+            }
         }
 
         protected override void OnExit(ExitEventArgs e)
