@@ -163,9 +163,9 @@ namespace Ntreev.Crema.Services
                     assemblyList.Add(assembly);
                     CremaLog.Debug(assembly.Location);
                 }
-                catch
+                catch (Exception e)
                 {
-
+                    CremaLog.Warn(e);
                 }
             }
 
