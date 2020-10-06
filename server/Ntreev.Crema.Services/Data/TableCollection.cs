@@ -464,6 +464,8 @@ namespace Ntreev.Crema.Services.Data
         {
             foreach (var table in tables)
             {
+                if (table == null) continue;
+
                 var revision = this.Repository.GetRevision(table.XmlPath);
                 table.UpdateRevision(revision);
 
@@ -478,6 +480,8 @@ namespace Ntreev.Crema.Services.Data
         {
             foreach (var table in tables)
             {
+                if (table == null) continue;
+
                 var dataTable = dataSet.Tables[table.Name];
                 table.UpdateTableDetailInfo(dataTable.GetTableDetailInfo());
             }
